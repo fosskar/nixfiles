@@ -7,7 +7,7 @@ stages:
 
 create_release:
   stage: semver
-  image: docker pull mooltiverse/nyx:latest
+  image: mooltiverse/nyx:latest
   only:
     - main
   script:
@@ -19,5 +19,4 @@ create_release:
       --release-types-publication-services=gitlab \
       --services-gitlab-type=GITLAB \
       --services-gitlab-options-AUTHENTICATION_TOKEN="${PIPELINE_TOKEN}" \
-      --services-gitlab-options-REPOSITORY_NAME="${CI_PROJECT_NAME}" \
-      --services-gitlab-options-REPOSITORY_OWNER="<REPO_OWNER>" publish \
+      --services-gitlab-options-REPOSITORY_NAME="${CI_PROJECT_NAME}"
