@@ -1,12 +1,12 @@
 {pkgs, ...}: {
-  programs.gamescope = {
-    enable = true;
-  };
+  #programs.gamescope = {
+  #  enable = true;
+  #};
 
   security.wrappers = {
     gamescope = {
-      owner = "root";
-      group = "root";
+      owner = "simon";
+      group = "wheel";
       source = "${pkgs.gamescope}/bin/gamescope";
       capabilities = "cap_sys_ptrace,cap_sys_nice+pie";
     };
