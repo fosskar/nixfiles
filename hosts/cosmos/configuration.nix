@@ -24,6 +24,9 @@
     ./xserver.nix
     ./thunar.nix
     ./graphics.nix
+    ./gaming/gamemode.nix
+    ./gaming/steam.nix
+    ./gaming/gamescope.nix
   ];
 
   ## systemd-boot

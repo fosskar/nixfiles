@@ -62,6 +62,10 @@
       url = "github:danth/stylix";
     };
 
+    nix-gaming = {
+      url = "github:fufexan/nix-gaming";
+    };
+
     #nixpkgs-wayland = {
     #  url = "github:nix-community/nixpkgs-wayland";
     #  inputs.nixpkgs.follows = "nixpkgs";
@@ -87,6 +91,7 @@
     chaotic,
     lancache,
     stylix,
+    nix-gaming,
     ...
   } @ inputs: let
     system = "x86_64-linux";
