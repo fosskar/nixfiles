@@ -11,4 +11,4 @@ create_release:
   only:
     - main
   script:
-    - nyx --info --preset=extended
+    - nyx --info
