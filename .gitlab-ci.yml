@@ -11,4 +11,4 @@ create_release:
   only:
     - main
   script:
-    - nyx
+    - echo "test"
