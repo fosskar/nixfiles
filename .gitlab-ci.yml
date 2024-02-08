@@ -11,12 +11,4 @@ create_release:
   only:
     - main
   script:
-    - nyx --info --preset=extended \
-      --changelog-path=CHANGELOG.md \
-      --release-types-mainline-git-commit=true mark \
-      --release-types-mainline-description="{{#fileContent}}CHANGELOG.md{{/fileContent}}" \
-      --release-types-mainline-gitcommit=true \
-      --release-types-publication-services=gitlab \
-      --services-gitlab-type=GITLAB \
-      --services-gitlab-options-AUTHENTICATION_TOKEN="${PIPELINE_TOKEN}" \
-      --services-gitlab-options-REPOSITORY_NAME="${CI_PROJECT_NAME}"
+    - nyx --info --preset=extended
