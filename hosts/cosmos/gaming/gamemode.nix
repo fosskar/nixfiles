@@ -1,13 +1,13 @@
 {pkgs, ...}: {
   programs.gamemode = {
     enable = true;
-    enableRenice = true;
-    settings = {
-      general = {
-        softrealtime = "auto";
-        renice = 15;
-      };
-    };
+    #enableRenice = true;
+    #settings = {
+    #  general = {
+    #    softrealtime = "auto";
+    #    renice = 15;
+    #  };
+    #};
   };
   security.wrappers = {
     gamemode = {
