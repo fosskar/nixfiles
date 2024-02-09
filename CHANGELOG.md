@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://gitlab.com/simonoscr/nixfiles/compare/v1.0.0...v1.0.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* hardware configurations and gaming related updates and tests ([bfbfe11](https://gitlab.com/simonoscr/nixfiles/commit/bfbfe115ffde43913c53a096c9af9e5c8ebcd6c9))
+* nixvim structure update ([89b1350](https://gitlab.com/simonoscr/nixfiles/commit/89b135019e94688ca1bbf1c66f25efaa9d27a794))
+
 ## 1.0.0 (2024-02-08)
 
 
