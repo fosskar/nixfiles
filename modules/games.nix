@@ -5,7 +5,6 @@
   ...
 }: {
   home.packages = with pkgs; [
-    gamescope
     goverlay
     teamspeak_client
     protonup-qt
