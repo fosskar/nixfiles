@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://gitlab.com/simonoscr/nixfiles/compare/v1.0.1...v1.0.2) (2024-02-09)
+
+
+### Bug Fixes
+
+* simples things in hyprland; manage game related dependencies and doc ([6f978b6](https://gitlab.com/simonoscr/nixfiles/commit/6f978b65764d57726c6e264af330d479d33e726b))
+
 ## [1.0.1](https://gitlab.com/simonoscr/nixfiles/compare/v1.0.0...v1.0.1) (2024-02-09)
 
 
