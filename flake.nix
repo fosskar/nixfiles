@@ -100,6 +100,14 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/cosmos/configuration.nix
+          {nixpkgs.overlays = [nur.overlay];}
+          # inputs.nixpkgs-wayland.overlay
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.simon = import ./home/simon/home.nix;
+          }
         ];
       };
       "voyager" = nixpkgs.lib.nixosSystem {
@@ -115,16 +123,7 @@
     # standalone home-manager configuration entrypoint
     # available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
-      # personal user
-      "simon@cosmos" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
-        extraSpecialArgs = {inherit inputs;};
-        modules = [
-          {nixpkgs.overlays = [nur.overlay];}
-          # inputs.nixpkgs-wayland.overlay
-          ./home/simon/home.nix
-        ];
-      };
+      # server user
       "oscar@voyager" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = {inherit inputs;};
