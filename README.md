@@ -32,13 +32,13 @@ This repository is a work in progress, and I'm constantly learning more about Ni
 |-|-----------------|--------------|
 | Display Manager | greetd/tuigreet | greetd/tuigreet |
 | Window Manager | Hyprland | i3 |
-| Bar | Ags | - |
+| Bar | Waybar | Polybar |
 | Terminal| Kitty | Kitty |
 | Shell | zsh + Starship | zsh + Starship |
-| Text Editor | Neovim | Neovim |
+| Text Editor | Nixvim(Neovim) | Nixvim(Neovim) |
 | Code Editor | VSCodium | VSCodium |
 | System resource monitor | btop | btop |
-| Fonts | - | - |
+| Fonts | Roboto | - |
 
 ## Systems
 
