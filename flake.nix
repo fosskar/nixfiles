@@ -21,10 +21,6 @@
       url = github:nix-community/NUR;
     };
 
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware/master";
-    };
-
     # nix neovim
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -66,10 +62,10 @@
       url = "github:fufexan/nix-gaming";
     };
 
-    #nixpkgs-wayland = {
-    #  url = "github:nix-community/nixpkgs-wayland";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     ## aylur-gtk-shell
     #ags = {
@@ -87,7 +83,6 @@
     hyprland,
     hyprland-plugins,
     nur,
-    nixos-hardware,
     chaotic,
     lancache,
     stylix,
