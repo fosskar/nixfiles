@@ -1,6 +1,5 @@
 {
   pkgs,
-  config,
   ...
 }: {
   home.packages = with pkgs; [
@@ -14,5 +13,4 @@
     yazi
     joshuto
   ];
-  #home.sessionVariables = systemd.user.sessionVariables;
 }

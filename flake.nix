@@ -87,6 +87,7 @@
     lancache,
     stylix,
     nix-gaming,
+    nixvim,
     ...
   } @ inputs: let
     system = "x86_64-linux";
