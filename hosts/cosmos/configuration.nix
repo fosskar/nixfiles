@@ -44,9 +44,14 @@
     kernel.sysctl = {
       "vm.swappiness" = 20;
     };
-    kernelParams = ["amdgpu.ppfeaturemask=0xfff7ffff"];
+    kernelParams = [
+      "amdgpu.ppfeaturemask=0xfff7ffff"
+      "amd_pstate=passive"
+    ];
   };
 
+  powerManagement.cpuFreqGovernor = "performance";
+  documentation.nixos.enable = false;
   systemd.oomd.enable = false;
 
   console = {

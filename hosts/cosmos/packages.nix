@@ -11,6 +11,7 @@
     corectrl
     dig
     lm_sensors
+    radeon-profile
     # Hyprland
     waybar
     wlogout
