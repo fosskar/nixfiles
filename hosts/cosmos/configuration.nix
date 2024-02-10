@@ -12,7 +12,7 @@
 }: {
   imports = [
     ./audio.nix
-    ./fonts.nix
+    ../../modules/nixos/fonts.nix
     ./hardware-configuration.nix
     ./hardware.nix
     ./xdg.nix
@@ -22,7 +22,7 @@
     ./security.nix
     ./services.nix
     ./xserver.nix
-    ./thunar.nix
+    ../../modules/nixos/filemanager/thunar.nix
     #./graphics.nix
     ./gaming/gamemode.nix
     ./gaming/steam.nix

@@ -1,28 +1,34 @@
-{pkgs, ...}: {
-  imports = [
-    ../../modules/desktop/x11/i3
-    #../../modules/desktop/wayland/ags
-    ../../modules/desktop/wayland/hyprland
-    ../../modules/desktop/wayland/waybar
-    ../../modules/desktop/wayland/wofi.nix
-    ../../modules/desktop/wayland/wlogout
-    ../../modules/browser/firefox.nix
-    ../../modules/shell/cli.nix
-    ../../modules/fonts.nix
-    ../../modules/games.nix
-    ../../modules/git.nix
-    ../../modules/gtk.nix
-    ../../modules/terminals/kitty.nix
-    ../../modules/editors/neovim.nix
-    ../../modules/packages.nix
-    ../../modules/shell/starship.nix
-    ../../modules/editors/vscodium.nix
-    ../../modules/xdg.nix
-    ../../modules/zathura.nix
-    ../../modules/shell/zsh.nix
-    ../../modules/sops.nix
-    #../../modules/stylix.nix
+{pkgs, ...}: let
+  # Define the base path to the modules
+  basePath = ../../modules/home-manager;
+
+  # List of modules to import, relative to the base path
+  modules = [
+    "desktop/x11/i3"
+    # "desktop/wayland/ags"
+    "desktop/wayland/hyprland"
+    "desktop/wayland/waybar"
+    "desktop/wayland/wofi.nix"
+    "desktop/wayland/wlogout"
+    "browser/firefox.nix"
+    "shell/cli.nix"
+    "fonts.nix"
+    "games.nix"
+    "git.nix"
+    "gtk.nix"
+    "terminals/kitty.nix"
+    "editors/neovim.nix"
+    "packages.nix"
+    "shell/starship.nix"
+    "editors/vscodium.nix"
+    "xdg.nix"
+    "zathura.nix"
+    "shell/zsh.nix"
+    "sops.nix"
+    # "stylix.nix"
   ];
+in {
+  imports = builtins.map (module: "${basePath}/${module}") modules;
 
   programs.home-manager.enable = true;
 
