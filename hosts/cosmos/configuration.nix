@@ -16,7 +16,7 @@
     ./hardware-configuration.nix
     ./hardware.nix
     ./xdg.nix
-    ./locale.nix
+    ../../modules/nixos/locale.nix
     ./network.nix
     ./packages.nix
     ./security.nix

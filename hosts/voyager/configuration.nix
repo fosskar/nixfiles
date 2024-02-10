@@ -12,7 +12,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ./locale.nix
+    ../../modules/nixos/locale.nix
     ./network.nix
     ./packages.nix
     ./services.nix
