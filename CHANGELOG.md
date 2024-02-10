@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://gitlab.com/simonoscr/nixfiles/compare/v1.2.0...v1.2.1) (2024-02-10)
+
+
+### Bug Fixes
+
+* restructure sops-nix ([7c3a146](https://gitlab.com/simonoscr/nixfiles/commit/7c3a14699a11c98fe6a5ceac726964b3affc599a))
+
 ## [1.2.0](https://gitlab.com/simonoscr/nixfiles/compare/v1.1.0...v1.2.0) (2024-02-09)
 
 
