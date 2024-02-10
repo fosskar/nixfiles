@@ -2,19 +2,26 @@
   config,
   inputs,
   pkgs,
-  lib,
   ...
-}: {
-  imports = [
-    inputs.sops-nix.homeManagerModules.sops
-  ];
+}: let
+  userhome = "/home/simon";
+  username = "simon";
+in {
+  imports = [inputs.sops-nix.homeManagerModules.sops];
 
   sops = {
-    defaultSopsFile = ../home/simon/secrets.yaml;
+    validateSopsFiles = false;
+    defaultSopsFile = "${userhome}/nixfiles/home/simon/secrets.yaml";
     age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
+    secrets = {
+      c3NoLXB1Yi1rZXk = {
+        mode = "0600";
+        path = "${userhome}/.ssh/id_ed25519.pub";
+      };
+      c3NoLXByaXZhdGUta2V5 = {
+        mode = "0600";
+        path = "${userhome}/.ssh/id_ed25519";
+      };
+    };
   };
-
-  home.packages = with pkgs; [
-    sops
-  ];
 }
