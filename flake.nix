@@ -5,6 +5,11 @@
     # nixos unstable
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    ## nix unstable
+    #nix = {
+    #  url = "github:NixOS/nix";
+    #};
+
     # home-manager
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -63,10 +68,10 @@
       url = "github:fufexan/nix-gaming";
     };
 
-    #nixpkgs-wayland = {
-    #  url = "github:nix-community/nixpkgs-wayland";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     ## aylur-gtk-shell
     #ags = {
