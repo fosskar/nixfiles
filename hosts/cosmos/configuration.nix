@@ -23,7 +23,7 @@
     ./services.nix
     ./xserver.nix
     ../../modules/nixos/filemanager/thunar.nix
-    #./graphics.nix
+    ./graphics.nix
     ./gaming/gamemode.nix
     ./gaming/steam.nix
     ./gaming/gamescope.nix
@@ -40,12 +40,11 @@
       };
       efi.canTouchEfiVariables = true;
     };
-    kernelPackages = pkgs.linuxPackages_xanmod_latest;
+    kernelPackages = pkgs.linuxPackages_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx
     kernel.sysctl = {
       "vm.swappiness" = 20;
     };
     kernelParams = [
-      "amdgpu.ppfeaturemask=0xfff7ffff"
       "amd_pstate=passive"
     ];
   };

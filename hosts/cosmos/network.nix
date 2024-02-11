@@ -5,6 +5,7 @@
 }: {
   networking = {
     hostName = "nixos";
+    wireless.enable = false; #disable wpa-supplicant. nmcli usable for wifi in networkmanager
     networkmanager = {
       enable = true;
       #dns = "systemd-resolved";
@@ -26,10 +27,10 @@
     dnssec = "false";
   };
 
-  systemd.services.NetworkManager-wait-online.enable = false;
+  #systemd.services.NetworkManager-wait-online.enable = false;
 
   services.tailscale = {
-    enable = true;
+    enable = false;
     #useRoutingFeatures = "server";
   };
 }

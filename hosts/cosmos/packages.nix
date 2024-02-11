@@ -8,12 +8,11 @@
     bat
     curl
     alejandra
-    corectrl
     dig
     lm_sensors
     radeon-profile
+    lact
     # Hyprland
-    waybar
     wlogout
     wl-clipboard
     hyprpicker
@@ -25,6 +24,5 @@
     i3lock
     xautolock
     i3status
-    i3-gaps
   ];
 }

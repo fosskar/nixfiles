@@ -4,13 +4,6 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.greetd.enableGnomeKeyring = true;
 
-  ## breaks gamescope in steam. this should set CAP_SYS_NICE for gamescope but didnt work
-  #security.wrappers.gamescope = {
-  #  owner = "root";
-  #  group = "root";
-  #  source = "${pkgs.gamescope}/bin/gamescope";
-  #  capabilities = "cap_sys_nice=eip";
-  #};
 
   systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {

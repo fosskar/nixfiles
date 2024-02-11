@@ -24,5 +24,17 @@
       ];
       extraPackages32 = with pkgs; [mangohud];
     };
+    #fancontrol = {
+    #  enable = true;
+    #  config =
+    #};
+  };
+
+  programs.corectrl = {
+    enable = true;
+    gpuOverclock = {
+      enable = true;
+      ppfeaturemask = "0xffffffff";
+    };
   };
 }

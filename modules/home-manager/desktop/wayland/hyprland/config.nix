@@ -22,9 +22,10 @@
     settings = {
       exec-once = [
         #"ags -b hypr"
+        "waybar"
         "easyeffects --gapplication-service"
         "steam -silent"
-        "waybar"
+        "corectrl"
         "hyprctl setcursor capitaine-cursors 26"
       ];
 
