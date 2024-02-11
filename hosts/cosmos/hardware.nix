@@ -21,6 +21,7 @@
         mangohud
         vaapiVdpau
         libvdpau-va-gl
+        gamescope
       ];
       extraPackages32 = with pkgs; [mangohud];
     };

@@ -49,11 +49,6 @@
       inputs.hyprland.follows = "hyprland";
     };
 
-    # lancache
-    lancache = {
-      url = "github:boffbowsh/nix-lancache";
-    };
-
     # nyx
     chaotic = {
       url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -68,10 +63,10 @@
       url = "github:fufexan/nix-gaming";
     };
 
-    nixpkgs-wayland = {
-      url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #nixpkgs-wayland = {
+    #  url = "github:nix-community/nixpkgs-wayland";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
 
     ## aylur-gtk-shell
     #ags = {
@@ -88,7 +83,6 @@
     hyprland-plugins,
     nur,
     chaotic,
-    lancache,
     stylix,
     nix-gaming,
     nixvim,
@@ -105,8 +99,6 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/cosmos/configuration.nix
-          #{nixpkgs.overlays = [nur.overlay];}
-          # inputs.nixpkgs-wayland.overlay
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

@@ -4,6 +4,7 @@
   programs.gamescope = {
     enable = true;
     capSysNice = false;
+    args = ["--rt"];
   };
 
   #security.wrappers = {
