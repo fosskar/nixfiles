@@ -69,6 +69,11 @@ All notable changes to this project will be documented in this file. See
 * README center nixos ([8277bb6](https://gitlab.com/simonoscr/nixfiles/commit/8277bb64371e75c1f3a812ffbcf66d6bd26c9c69))
 * remove docker pull from image reference in semver stage ([4619a2a](https://gitlab.com/simonoscr/nixfiles/commit/4619a2add8675315ed064fcb7e5fe4ee06f365c2))
 
+
+############################################
+########### MOVED TO GITLAB ################
+############################################
+
 ## [1.8.12](https://github.com/simonoscr/dotfiles/compare/1.8.11...1.8.12) (2024-02-07)
 
 
