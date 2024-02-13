@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.3](https://gitlab.com/simonoscr/nixfiles/compare/v1.3.2...v1.3.3) (2024-02-13)
+
+
+### Bug Fixes
+
+* wl env that breaks vscodium ([57ba1d2](https://gitlab.com/simonoscr/nixfiles/commit/57ba1d213e72ac75feaf29847df70c2a7e349348))
+
 ## [1.3.2](https://gitlab.com/simonoscr/nixfiles/compare/v1.3.1...v1.3.2) (2024-02-12)
 
 
