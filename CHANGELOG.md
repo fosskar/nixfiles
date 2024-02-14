@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.0](https://gitlab.com/simonoscr/nixfiles/compare/v1.3.3...v1.4.0) (2024-02-14)
+
+
+### Features
+
+* add yazi, bat, direnv; added features to security, audio, and shell ([afd848c](https://gitlab.com/simonoscr/nixfiles/commit/afd848c57a9b0ce3fa156d1309d4b3bf54159968))
+
 ## [1.3.3](https://gitlab.com/simonoscr/nixfiles/compare/v1.3.2...v1.3.3) (2024-02-13)
 
 
