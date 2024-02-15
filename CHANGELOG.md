@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.0...v1.4.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* switch firefox pkgs to be able to import bookmarks file; hyprland fixes ([75e3206](https://gitlab.com/simonoscr/nixfiles/commit/75e32060323a520947b92bb515aa6e81764ca983))
+
 ## [1.4.0](https://gitlab.com/simonoscr/nixfiles/compare/v1.3.3...v1.4.0) (2024-02-14)
 
 
