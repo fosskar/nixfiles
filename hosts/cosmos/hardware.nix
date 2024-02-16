@@ -24,13 +24,24 @@
       driSupport = true;
       driSupport32Bit = true;
       extraPackages = with pkgs; [
+        amdvlk
+        goverlay
+        mangohud
+        vaapiVdpau
+        libvdpau-va-gl
+        gamescope
+        rocmPackages.clr
+        rocmPackages.clr.icd
+        rocm-opencl-runtime
+      ];
+      extraPackages32 = with pkgs; [
+        driversi686Linux.amdvlk
         goverlay
         mangohud
         vaapiVdpau
         libvdpau-va-gl
         gamescope
       ];
-      extraPackages32 = with pkgs; [mangohud];
     };
     #fancontrol = {
     #  enable = true;
