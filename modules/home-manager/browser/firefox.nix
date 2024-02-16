@@ -319,7 +319,7 @@
           "privacy.clearOnShutdown.formdata" = true;
           "privacy.clearOnShutdown.cache" = false;
           "privacy.clearOnShutdown.cookies" = false;
-          "privacy.clearOnShutdown.offlineApps" = true;
+          "privacy.clearOnShutdown.offlineApps" = false;
           "privacy.clearOnShutdown.openWindows" = true;
           "privacy.clearOnShutdown.sessions" = false;
           "privacy.clearOnShutdown.siteSettings" = false;
