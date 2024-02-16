@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.3](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.2...v1.4.3) (2024-02-16)
+
+
+### Bug Fixes
+
+* add user to gamemode group; activate hyprland plugin to fix cs2 4:3 streched with SDL_VIDEO_DRIVER=x11 (wayland not working with this fix); fix hyprland env; move hyprland dependend packages to hyprland; ([181033e](https://gitlab.com/simonoscr/nixfiles/commit/181033ef3991f00418d0d4e5cd4484f1c1a08c1e))
+
 ## [1.4.2](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.1...v1.4.2) (2024-02-16)
 
 
