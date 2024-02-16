@@ -268,8 +268,17 @@
         ];
       }
       {
-        name = "Github";
-        url = "https://github.com";
+        name = "Git";
+        bookmarks = [
+          {
+            name = "GitHub";
+            url = "https://github.com";
+          }
+          {
+            name = "GitLab";
+            url = "https://gitlab.com";
+          }
+        ];
       }
       {
         name = "Nix/OS";
