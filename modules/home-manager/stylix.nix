@@ -6,7 +6,7 @@
   imports = [inputs.stylix.homeManagerModules.stylix];
 
   stylix = {
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/brewer.yaml";
     autoEnable = false;
     cursor = {
       package = pkgs.capitaine-cursors;
@@ -34,10 +34,10 @@
         name = "Noto Color Emoji";
       };
       sizes = {
-        applications = 14;
-        desktop = 14;
-        popups = 16;
-        terminal = 13;
+        applications = 10;
+        desktop = 12;
+        popups = 14;
+        terminal = 10;
       };
     };
     polarity = "dark";
@@ -47,16 +47,16 @@
       foot.enable = true;
       gtk.enable = true;
       helix.enable = true;
-      hyprland.enable = true;
-      i3.enable = true;
-      kde.enable = true;
+      hyprland.enable = false; # needs image set
+      i3.enable = false; # needs image set
+      kde.enable = false; # needs image set
       kitty.enable = true;
       kitty.variant256Colors = true;
       nixvim.enable = true;
-      swaylock.enable = true;
+      swaylock.enable = false; # needs image set
       tmux.enable = true;
       vim.enable = true;
-      vscode.enable = true;
+      vscode.enable = false; # ugly af?!!?!?
       waybar.enable = true;
       xfce.enable = true;
       xresources.enable = true;

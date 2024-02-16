@@ -24,8 +24,8 @@
       "redhat.telemetry.enabled" = false;
       "git.enableSmartCommit" = true;
       "git.confirmSync" = false;
-      "terminal.integrated.fontFamily" = "FiraCode Nerd Font Mono Retina";
-      "editor.fontFamily" = "'Robot Regular'";
+      #"terminal.integrated.fontFamily" = "FiraCode Nerd Font Mono Retina";
+      #"editor.fontFamily" = "'Robot Regular'";
       "editor.fontLigatures" = true;
       "editor.fontVariations" = false;
       "github.gitProtocol" = "ssh";

@@ -28,7 +28,7 @@
     "shell/bat.nix"
     "direnv.nix"
     "yazi/yazi.nix"
-    # "stylix.nix"
+    "stylix.nix"
   ];
 in {
   imports = builtins.map (module: "${basePath}/${module}") modules;
