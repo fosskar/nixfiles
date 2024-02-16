@@ -107,8 +107,10 @@
         (f "bitwarden")
         (f "TeamSpeak")
         (f "btop")
+        (f "Picture-in-Picture")
         "immediate, class:(.gamescope-wrapped)"
         "immediate, title:(Counter-Strike 2)"
+        "immediate, class:(cs2)"
       ];
       windowrulev2 = [
         "stayfocused, title:^()$, class:^(steam)$"
@@ -147,6 +149,9 @@
           "SUPER, J, togglesplit"
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
+          "SUPER, D, exec, webcord"
+          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,0x0,1'; corectrl -m 'gaming'"
+          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,0x0,1'; corectrl -m 'gaming'"
 
           (mvfocus "up" "u")
           (mvfocus "down" "d")
