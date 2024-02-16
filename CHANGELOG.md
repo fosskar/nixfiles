@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.5](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.4...v1.4.5) (2024-02-16)
+
+
+### Bug Fixes
+
+* switch to stylix for applications ([79632d0](https://gitlab.com/simonoscr/nixfiles/commit/79632d0a061d523848a5c2c4e8c34cf61f7fcd96))
+
 ## [1.4.4](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.3...v1.4.4) (2024-02-16)
 
 
