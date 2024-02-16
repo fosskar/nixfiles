@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.4](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.3...v1.4.4) (2024-02-16)
+
+
+### Bug Fixes
+
+* add AMDVLK pkg but default to RADV; add opencl pkgs ([b306f9b](https://gitlab.com/simonoscr/nixfiles/commit/b306f9b688c9fcc9169b0d701c85b3d590cfa5ac))
+
 ## [1.4.3](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.2...v1.4.3) (2024-02-16)
 
 
