@@ -131,7 +131,7 @@
           "urlclassifier.trackingSkipURLs" = "*.reddit.com, *.twitter.com, *.tiktok.com";
           "urlclassifier.features.socialtracking.skipURLs" = "*.instagram.com, *.twitter.com";
           "network.cookie.sameSite.noneRequiresSecure" = true;
-          "browser.download.start_downloads_in_tmp_dir" = true;
+          "browser.download.start_downloads_in_tmp_dir" = false;
           "browser.helperApps.deleteTempFileOnExit" = true;
           "browser.uitour.enabled" = false;
           "privacy.globalprivacycontrol.enabled" = true;
@@ -163,11 +163,14 @@
           "dom.security.https_first" = true;
           # PASSWORDS
           "signon.rememberSignons" = false;
+          "signon.autofillForms" = false;
+          "signon.management.page.breach-alerts.enabled" = true;
           "signon.formlessCapture.enabled" = false;
           "signon.privateBrowsingCapture.enabled" = false;
           "network.auth.subresource-http-auth-allow" = 1;
           "editor.truncate_user_pastes" = false;
           # ADDRESS + CREDIT CARD MANAGER
+          "dom.forms.autocomplete.formautofill" = false;
           "extensions.formautofill.addresses.enabled" = false;
           "extensions.formautofill.creditCards.enabled" = false;
           # MIXED CONTENT + CROSS-SITE
@@ -215,7 +218,6 @@
           "captivedetect.canonicalURL" = "";
           "network.captive-portal-service.enabled" = false;
           "network.connectivity-service.enabled" = false;
-          # PESKYFOX
           # MOZILLA UI
           "browser.tabs.warnOnClose" = true;
           "browser.privatebrowsing.vpnpromourl" = "";
@@ -250,13 +252,15 @@
           "browser.urlbar.suggest.calculator" = true;
           "browser.urlbar.unitConversion.enabled" = true;
           "browser.urlbar.trending.featureGate" = false;
+          "browser.search.suggest.enabled.private" = false;
           # NEW TAB PAGE
           "browser.newtabpage.activity-stream.feeds.topsites" = false;
           "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+          "browser.newtabpage.activity-stream.feeds.section.highlights" = false;
           # POCKET
           "extensions.pocket.enabled" = false;
           # DOWNLOADS
-          "browser.download.useDownloadDir" = false;
+          "browser.download.useDownloadDir" = true;
           "browser.download.always_ask_before_handling_new_types" = true;
           "browser.download.manager.addToRecentDocs" = false;
           # PDF
@@ -273,14 +277,14 @@
           "media.ffmpeg.vaapi.enable" = true;
           "media.ffvpx.enabled" = false;
           "media.videocontrols.picture-in-picture.allow-multiple" = true;
-
+          "media.eme.enabled" = true;
+          "media.videocontrols.picture-in-picture.enabled" = true;
           "widget.use-xdg-desktop-portal" = true;
           "browser.toolbars.bookmarks.visibility" = "always";
           "browser.tabs.loadInBackground" = true;
           "network.trr.confirmation_telemetry_enabled" = false;
           "browser.bookmarks.restore_default_bookmarks" = false;
           "browser.ctrlTab.recentlyUsedOrder" = true;
-          "browser.urlbar.suggest.openpage" = false;
           "datareporting.policy.dataSubmissionEnable" = false;
           "datareporting.policy.dataSubmissionPolicyAcceptedVersion" = 2;
           "dom.security.https_only_mode" = true;
@@ -290,7 +294,42 @@
           "privacy.trackingprotection.socialtracking.enabled" = true;
           "browser.urlbar.placeholderName" = "Startpage";
           "browser.search.defaultenginename" = "Startpage";
-          #"browser.startup.homepage" = "https://eu.startpage.com/do/mypage.pl?prfe=1dac62e5595f79947b1cdc2849cc6d26cfc1a64b90d30585411c13b94f8146794ff6196ff1e291fbb48d7ab671ac2e225ba50989b1ef28f0d912c5761bc71423602707ffff1759e9f158126847";
+          #"browser.startup.homepage" = ""; # sets homepage for new tabs or windows. default is "Firefox Home"
+
+          # CYCLE TABS with CTRL+TAB
+          "browser.ctrlTab.sortByRecentlyUsed" = true;
+
+          # OPEN NEW WINDOW
+          "browser.link.open_newwindow" = 3;
+
+          # CONTAINER TABS
+          "privacy.userContext.enabled" = true;
+
+          # DISABLE SPELLCHECK
+          "layout.spellcheckDefault" = 0;
+
+          "accessibility.typeaheadfind" = true;
+
+          # HISTORY
+          "browser.privatebrowsing.autostart" = false;
+          "places.history.enabled" = false;
+          "privacy.sanitize.sanitizeOnShutdown" = true;
+          "privacy.clearOnShutdown.history" = true;
+          "privacy.clearOnShutdown.downloads" = true;
+          "privacy.clearOnShutdown.formdata" = true;
+          "privacy.clearOnShutdown.cache" = false;
+          "privacy.clearOnShutdown.cookies" = false;
+          "privacy.clearOnShutdown.offlineApps" = true;
+          "privacy.clearOnShutdown.openWindows" = true;
+          "privacy.clearOnShutdown.sessions" = false;
+          "privacy.clearOnShutdown.siteSettings" = false;
+
+          # ADDRESS BAR
+          "browser.urlbar.suggest.history" = false;
+          "browser.urlbar.suggest.bookmark" = true;
+          "browser.urlbar.suggest.openpage" = true;
+          "browser.urlbar.suggest.topsites" = false;
+          "browser.urlbar.suggest.searches" = false;
         };
         # nervig af
         #userChrome = builtins.readFile ./theme/userChrome.css;
