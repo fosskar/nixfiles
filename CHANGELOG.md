@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.8](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.7...v1.4.8) (2024-02-17)
+
+
+### Bug Fixes
+
+* add dunst.nix, adjust hyprland plugin settings; move home-packages to hyprland default.nix, update flock ([ea5542b](https://gitlab.com/simonoscr/nixfiles/commit/ea5542bd7dbd9bab16b4e8a6dc0b35e0fd2b28d6))
+
 ## [1.4.7](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.6...v1.4.7) (2024-02-16)
 
 
