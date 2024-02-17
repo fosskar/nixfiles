@@ -10,6 +10,7 @@
     "desktop/wayland/waybar"
     "desktop/wayland/wofi.nix"
     "desktop/wayland/wlogout"
+    "desktop/wayland/dunst.nix"
     "browser/firefox.nix"
     "shell/cli.nix"
     "fonts.nix"

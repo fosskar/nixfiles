@@ -4,15 +4,6 @@
   pkgs,
   ...
 }: {
-  home.packages = with pkgs; [
-    hyprshot
-    wlogout
-    wl-clipboard
-    hyprpicker
-    grim
-    slurp
-  ];
-
   wayland.windowManager.hyprland = {
     systemd.enable = true;
     xwayland.enable = true;
@@ -34,8 +25,10 @@
       misc = {
         disable_hyprland_logo = true;
         force_default_wallpaper = 0;
+        vfr = false;
         vrr = 0;
         mouse_move_enables_dpms = true;
+        no_direct_scanout = false;
       };
 
       input = {
@@ -59,14 +52,14 @@
       decoration = {
         rounding = 10;
         blur = {
-          enabled = true;
-          new_optimizations = "on";
-          size = 3;
-          passes = 1;
+          enabled = false;
+          #new_optimizations = "on";
+          #size = 3;
+          #passes = 1;
         };
-        drop_shadow = "no";
-        shadow_range = 4;
-        shadow_render_power = 3;
+        drop_shadow = false;
+        #shadow_range = 4;
+        #shadow_render_power = 3;
       };
 
       animations = {
@@ -95,7 +88,10 @@
         workspace_swipe = "off";
       };
 
-      xwayland.force_zero_scaling = true;
+      xwayland = {
+        force_zero_scaling = true;
+        use_nearest_neighbor = false;
+      };
 
       windowrule = let
         f = regex: "float, .*(${regex}).*";
@@ -108,14 +104,17 @@
         (f "TeamSpeak")
         (f "btop")
         (f "Picture-in-Picture")
-        "immediate, class:(.gamescope-wrapped)"
-        "immediate, title:(Counter-Strike 2)"
-        "immediate, class:(cs2)"
+        "immediate, class:^(.gamescope-wrapped)$"
+        "immediate, title:^(Counter-Strike 2)$"
+        "immediate, class:^(cs2)$"
+        "workspace 3 silent,^(WebCord)$"
+        "workspace 3 silent,^(Steam)|(steam)$"
       ];
       windowrulev2 = [
         "stayfocused, title:^()$, class:^(steam)$"
         "minsize 1 1, title:^()$, class:^(steam)$"
         "suppressevent maximize, class:.*"
+        "noinitialfocus, title:(^notificationtoasts.*)"
       ];
 
       bind = let
@@ -193,7 +192,6 @@
       env = XDG_CURRENT_DESKTOP,Hyprland
       env = XDG_SESSION_TYPE,wayland
       env = XDG_SESSION_DESKTOP,Hyprland
-      env = WLR_NO_HARDWARE_CURSORS,1
       env = WLR_DRM_NO_ATOMIC,1
       env = OZONE_PLATFORM,wayland
     '';

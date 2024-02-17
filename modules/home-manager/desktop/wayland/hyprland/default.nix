@@ -17,6 +17,12 @@
     packages = with pkgs; [
       seatd
       xwaylandvideobridge
+      hyprshot
+      wlogout
+      wl-clipboard
+      hyprpicker
+      grim
+      slurp
     ];
   };
 
