@@ -16,6 +16,7 @@
         "steam -silent"
         "corectrl"
         "hyprctl setcursor capitaine-cursors 26"
+        "udiskie &" # automatically mount usb
       ];
 
       monitor = [
@@ -23,6 +24,7 @@
       ];
 
       misc = {
+        disable_splash_rendering = true;
         disable_hyprland_logo = true;
         force_default_wallpaper = 0;
         vfr = false;
@@ -149,8 +151,8 @@
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
           "SUPER, D, exec, webcord"
-          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,0x0,1'; corectrl -m 'gaming'"
-          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,0x0,1'; corectrl -m 'gaming'"
+          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,0x0,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'"
+          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,0x0,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'"
 
           (mvfocus "up" "u")
           (mvfocus "down" "d")
@@ -188,6 +190,8 @@
     extraConfig = ''
       env = GDK_BACKEND,wayland,x11
       env = QT_QPA_PLATFORM,wayland;xcb
+      env = QT_AUTO_SCREEN_SCALE_FACTOR,1
+      env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
       env = CLUTTER_BACKEND,wayland
       env = XDG_CURRENT_DESKTOP,Hyprland
       env = XDG_SESSION_TYPE,wayland

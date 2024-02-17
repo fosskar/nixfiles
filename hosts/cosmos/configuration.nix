@@ -23,7 +23,6 @@
     ./services.nix
     ./xserver.nix
     ../../modules/nixos/filemanager/thunar.nix
-    ./graphics.nix
     ./gaming/gamemode.nix
     ./gaming/steam.nix
     ./gaming/gamescope.nix
@@ -42,14 +41,18 @@
     };
     kernelPackages = pkgs.linuxPackages_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx
     kernel.sysctl = {
-      "vm.swappiness" = 20;
+      "vm.swappiness" = 100; # because of ZRAM swap more aggresivly
+      # zram is in memory, no need to readahead
+      # page-cluster refers to the number of pages up to which
+      # consecutive pages are read in from swap in a single attempt
+      "vm.page-cluster" = 0;
+      "vm.max_map_count" = 16777216; # increasing is good for gaming
     };
     kernelParams = [
       "amd_pstate=active"
     ];
   };
 
-  powerManagement.cpuFreqGovernor = "performance";
   documentation.nixos.enable = false;
   systemd.oomd.enable = false;
 
@@ -104,6 +107,9 @@
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
+      # hyprland cachix
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
     gc = {
       automatic = true;

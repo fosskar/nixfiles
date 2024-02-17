@@ -23,6 +23,7 @@
       hyprpicker
       grim
       slurp
+      udiskie
     ];
   };
 

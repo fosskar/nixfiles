@@ -11,8 +11,9 @@
       desktopManager = {
         xterm.enable = false;
       };
-      ## now defaults to "modesetting" driver over device-specific. other driver like "amdpgu", "nouveau" or "radeon" unmaintained: https://github.com/NixOS/nixpkgs/pull/218437
-      #videoDrivers = [ "amdgpu" ];
+      # now defaults to "modesetting" driver anyways over device-specific.
+      # other driver like "amdpgu", "nouveau" or "radeon" unmaintained: https://github.com/NixOS/nixpkgs/pull/218437
+      videoDrivers = ["modesetting"];
       libinput.enable = true;
     };
     ## greetd DM with tuigreet
