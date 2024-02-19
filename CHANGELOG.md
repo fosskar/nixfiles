@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.10](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.9...v1.4.10) (2024-02-19)
+
+
+### Bug Fixes
+
+* switch to xanmod_latest kernel; add loginLimits; stylix settings; hyprland config ([9405e94](https://gitlab.com/simonoscr/nixfiles/commit/9405e94078f662d9b03edb69026626f86c304bdf))
+
 ## [1.4.9](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.8...v1.4.9) (2024-02-17)
 
 
