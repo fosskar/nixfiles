@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.11](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.10...v1.4.11) (2024-02-19)
+
+
+### Bug Fixes
+
+* idk ([6e1774b](https://gitlab.com/simonoscr/nixfiles/commit/6e1774b3a088efbba549025495cca4a6e593263a))
+
 ## [1.4.10](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.9...v1.4.10) (2024-02-19)
 
 
