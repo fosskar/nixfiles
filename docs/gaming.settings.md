@@ -62,3 +62,6 @@ tc qdisc change dev enp14s0 root netem delay 20ms
 ```shell
 tc qdisc add dev br0 root netem delay 10ms 20ms
 ```
+
+
+xrandr --output DP-1 --primary --mode 2560x1440 --scale-from 1440x1080 --rate 165; %command% -novid -nojoy; xrandr --output DP-2 --primary --mode 1920x1080 --transform none --rate 144

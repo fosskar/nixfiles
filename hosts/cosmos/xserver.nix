@@ -14,7 +14,13 @@
       # now defaults to "modesetting" driver anyways over device-specific.
       # other driver like "amdpgu", "nouveau" or "radeon" unmaintained: https://github.com/NixOS/nixpkgs/pull/218437
       videoDrivers = ["modesetting"];
-      libinput.enable = true;
+      libinput = {
+        enable = true;
+        mouse = {
+          accelProfile = "flat";
+          accelSpeed = "0";
+        };
+      };
     };
     ## greetd DM with tuigreet
     greetd = {

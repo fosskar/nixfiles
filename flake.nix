@@ -47,7 +47,6 @@
     # hyprland wm
     hyprland = {
       url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
@@ -68,10 +67,9 @@
       url = "github:fufexan/nix-gaming";
     };
 
-    nixpkgs-wayland = {
-      url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #nixpkgs-wayland = {
+    #  url = "github:nix-community/nixpkgs-wayland";
+    #};
 
     ## aylur-gtk-shell
     #ags = {

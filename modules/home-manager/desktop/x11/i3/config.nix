@@ -8,6 +8,11 @@
     enable = true;
     config = {
       modifier = "Mod4";
+      focus.followMouse = false;
+      focus.mouseWarping = false;
+      menu = "rofi -show drun";
+      workspaceAutoBackAndForth = true;
+      defaultWorkspace = "workspace number 1";
 
       startup = [
         {
@@ -20,6 +25,13 @@
           command = "steam -silent";
         }
       ];
+
+      window = {
+        titlebar = false;
+        border = 2;
+        hideEdgeBorders = "smart";
+      };
+
       keybindings = let
         mod = "Mod4";
       in {
@@ -86,16 +98,34 @@
       };
       bars = [
         {
+          statusCommand = "${pkgs.i3status}/bin/i3status";
           position = "top";
+          workspaceButtons = true;
         }
       ];
       gaps = {
-        inner = 12;
+        inner = 8;
         outer = 5;
         smartGaps = true;
+        smartBorders = "on";
       };
 
-      terminal = "kitty";
+      floating = {
+        titlebar = false;
+        border = 1;
+        criteria = [
+          {class = "^steam$";}
+          {class = "^TeamSpeak$";}
+          {class = "^WebCord$";}
+        ];
+      };
+
+      terminal = "${pkgs.kitty}/bin/kitty";
+
+      #fonts = {
+      #  names = ["Roboto"];
+      #  size = 13.0;
+      #};
     };
   };
   fonts.fontconfig.enable = true;

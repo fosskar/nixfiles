@@ -48,6 +48,18 @@
         id = 0;
         bookmarks = import ./bookmarks.nix;
         isDefault = true;
+        containers = {
+          "Personal" = {
+            id = 1;
+            color = "green";  # one of “blue”, “turquoise”, “green”, “yellow”, “orange”, “red”, “pink”, “purple”, “toolbar”
+            icon = "fingerprint"; # one of “briefcase”, “cart”, “circle”, “dollar”, “fence”, “fingerprint”, “gift”, “vacation”, “food”, “fruit”, “pet”, “tree”, “chill”
+          };
+          "Shopping" = {
+            id = 2;
+            color = "yellow";
+            icon = "circle";
+          };
+        };
         extensions = with inputs.firefox-addons.packages.${pkgs.system}; [
           ublock-origin
           bitwarden

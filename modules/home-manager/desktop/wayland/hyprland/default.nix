@@ -10,7 +10,7 @@
     ./config.nix
     ../swayidle.nix
     ../swaylock.nix
-    ./plugins.nix
+    #./plugins.nix
   ];
 
   home = {

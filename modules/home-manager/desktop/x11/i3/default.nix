@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./config.nix
+    #../polybar.nix
   ];
   xsession = {
     enable = true;
