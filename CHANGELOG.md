@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.0...v1.5.1) (2024-02-22)
+
+
+### Bug Fixes
+
+* disable firefox containers ([01d6ec1](https://gitlab.com/simonoscr/nixfiles/commit/01d6ec1e0f2b0c7db155abe8811df308ec20705d))
+
 ## [1.5.0](https://gitlab.com/simonoscr/nixfiles/compare/v1.4.11...v1.5.0) (2024-02-21)
 
 
