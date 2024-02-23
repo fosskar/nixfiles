@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.4](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.3...v1.5.4) (2024-02-23)
+
+
+### Bug Fixes
+
+* switch to latest (6.7.5) xanmod kernel ([cf1b685](https://gitlab.com/simonoscr/nixfiles/commit/cf1b685ec7f110a7a2a3eec30acd9b35727470c5))
+
 ## [1.5.3](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.2...v1.5.3) (2024-02-23)
 
 
