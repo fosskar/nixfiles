@@ -21,7 +21,7 @@
       ];
 
       monitor = [
-        "DP-1, 3440x1440@165, 0x0, 1"
+        "DP-1,3440x1440@165,auto,1"
       ];
 
       misc = {
@@ -131,14 +131,14 @@
         arr = [1 2 3 4 5 6 7 8 9];
       in
         [
-          #"ALT, Space,     ${e} -t applauncher" # this is for AGS
-          #"SUPER, Tab,     ${e} -t overview"
+          "ALT, Space,     ${e} -t applauncher" # this is for AGS
+          "SUPER, Tab,     ${e} -t overview"
           #"Print,         ${e} -r 'recorder.screenshot()'"
           #"SHIFT,Print,    ${e} -r 'recorder.screenshot(true)'"
           ",Print,exec,hyprshot -m region -o ~/Pictures/Screenshots -- imv"
           "CTRL,Print,exec,hyprshot -m output -o ~/Pictures/Screenshots -- imv"
           "SUPER,Print,exec,hyprshot -m window -o ~/Pictures/Screenshots -- imv"
-          "ALT, Space, exec, wofi --show drun"
+          #"ALT, Space, exec, wofi --show drun"
           "SUPER, W, exec, firefox"
           "SUPER, T, exec, kitty"
           "SUPER, E, exec, thunar"
@@ -152,8 +152,8 @@
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
           "SUPER, D, exec, webcord"
-          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,0x0,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'"
-          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,0x0,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'"
+          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,auto,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'"
+          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'"
 
           (mvfocus "up" "u")
           (mvfocus "down" "d")

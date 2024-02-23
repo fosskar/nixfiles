@@ -5,7 +5,7 @@
   # List of modules to import, relative to the base path
   modules = [
     "desktop/x11/i3"
-    # "desktop/wayland/ags"
+    "desktop/wayland/ags"
     "desktop/wayland/hyprland"
     "desktop/wayland/waybar"
     "desktop/wayland/wofi.nix"

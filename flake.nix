@@ -71,10 +71,10 @@
     #  url = "github:nix-community/nixpkgs-wayland";
     #};
 
-    ## aylur-gtk-shell
-    #ags = {
-    #  url = "github:Aylur/ags";
-    #};
+    # aylur-gtk-shell
+    ags = {
+      url = "github:Aylur/ags";
+    };
   };
 
   outputs = {
