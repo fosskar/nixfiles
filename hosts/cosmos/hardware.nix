@@ -12,7 +12,11 @@
     };
   };
 
-  chaotic.mesa-git.enable = true;
+  chaotic = {
+    mesa-git = {
+      enable = true;
+    };
+  };
 
   hardware = {
     bluetooth.enable = true;
