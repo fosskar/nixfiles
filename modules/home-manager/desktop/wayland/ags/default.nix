@@ -7,10 +7,13 @@
   imports = [inputs.ags.homeManagerModules.default];
 
   home.packages = with pkgs; [
-    sassc
+    swww
     brightnessctl
     gnome.gnome-bluetooth_1_0
     (python311.withPackages (p: [p.python-pam]))
+    bun
+    dart-sass
+    fd
   ];
 
   programs.ags = {
