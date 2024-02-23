@@ -110,8 +110,8 @@
         "immediate, class:^(.gamescope-wrapped)$"
         "immediate, title:^(Counter-Strike 2)$"
         "immediate, class:^(cs2)$"
-        "workspace 3 silent,^(WebCord)$"
-        "workspace 3 silent,^(Steam)|(steam)$"
+        "workspace 2 silent,^(WebCord)$"
+        "workspace 2 silent,^(Steam)|(steam)$"
       ];
       windowrulev2 = [
         "stayfocused, title:^()$, class:^(steam)$"
@@ -138,7 +138,7 @@
           ",Print,exec,hyprshot -m region -o ~/Pictures/Screenshots -- imv"
           "CTRL,Print,exec,hyprshot -m output -o ~/Pictures/Screenshots -- imv"
           "SUPER,Print,exec,hyprshot -m window -o ~/Pictures/Screenshots -- imv"
-          #"ALT, Space, exec, wofi --show drun"
+          #"ALT, Space, exec, wofi --show drun" # when using waybar 
           "SUPER, W, exec, firefox"
           "SUPER, T, exec, kitty"
           "SUPER, E, exec, thunar"
