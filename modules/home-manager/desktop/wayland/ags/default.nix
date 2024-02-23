@@ -15,7 +15,7 @@
 
   programs.ags = {
     enable = true;
-    configDir = ./style1;
+    configDir = ./style2;
     extraPackages = [pkgs.libsoup_3];
   };
 }
