@@ -4,5 +4,6 @@
     element-desktop
     spotify
     solaar
+    piper
   ];
 }

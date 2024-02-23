@@ -12,7 +12,6 @@
     lm_sensors
     radeon-profile
     lact
-    seatd
     # i3
     rofi
     i3blocks

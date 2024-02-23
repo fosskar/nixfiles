@@ -11,6 +11,7 @@
     fstrim.enable = true;
     thermald.enable = true;
     #flatpak.enable = true;
+    ratbagd.enable = true;
 
     udev.extraRules = lib.mkMerge [
       ## rules below set the scheduler to bfq for rotational drives, bfq for SSD/eMMC drives and none for NVMe drives
