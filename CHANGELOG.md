@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.3](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.2...v1.5.3) (2024-02-23)
+
+
+### Bug Fixes
+
+* add piper ([58df67d](https://gitlab.com/simonoscr/nixfiles/commit/58df67dd3b023200a8319acb0074d99fe73eca09))
+
 ## [1.5.2](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.1...v1.5.2) (2024-02-22)
 
 
