@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.5](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.4...v1.5.5) (2024-02-23)
+
+
+### Bug Fixes
+
+* disable waybar and update flock ([2eb6054](https://gitlab.com/simonoscr/nixfiles/commit/2eb605422feee92ea818f37c920501ef60939413))
+* return back to original ags ([c0e8b53](https://gitlab.com/simonoscr/nixfiles/commit/c0e8b533d12672034f9b4c9938fe72eb97ff530a))
+
 ## [1.5.4](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.3...v1.5.4) (2024-02-23)
 
 
