@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.7](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.6...v1.5.7) (2024-02-24)
+
+
+### Bug Fixes
+
+* update and switch kernel ([3e1bc71](https://gitlab.com/simonoscr/nixfiles/commit/3e1bc710d23cff724cff4a70c612396766571a61))
+* update kernel again to xanmod 6.7.5; add kernel.sysctl parameter for low latency; and add inputs ([a84d019](https://gitlab.com/simonoscr/nixfiles/commit/a84d019d6f3a638c2541f6de5ee28a76a84b6772))
+
 ## [1.5.6](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.5...v1.5.6) (2024-02-23)
 
 
