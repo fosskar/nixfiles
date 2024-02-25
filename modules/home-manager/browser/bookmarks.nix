@@ -65,6 +65,10 @@
             url = "https://primevideo.com";
           }
           {
+            name = "WOW TV";
+            url = "https://www.wowtv.de";
+          }
+          {
             name = "Disney+";
             url = "https://disneyplus.com";
           }
