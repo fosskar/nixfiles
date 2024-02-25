@@ -12,11 +12,11 @@
     };
   };
 
-  chaotic = {
-    mesa-git = {
-      enable = true;
-    };
-  };
+  #chaotic = {
+  #  mesa-git = {
+  #    enable = true;
+  #  };
+  #};
 
   environment.etc = {
     "drirc/00-low-latency.conf" = {
