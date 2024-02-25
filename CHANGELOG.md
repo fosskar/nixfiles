@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.0](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.7...v1.6.0) (2024-02-25)
+
+
+### Features
+
+* update flock; big nixpkgs merge staging-next to nixos-unstable ([0bf7f1d](https://gitlab.com/simonoscr/nixfiles/commit/0bf7f1d88ab380db728afbcbcb0f07a3567a9220))
+
 ## [1.5.7](https://gitlab.com/simonoscr/nixfiles/compare/v1.5.6...v1.5.7) (2024-02-24)
 
 
