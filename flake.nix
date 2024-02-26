@@ -75,6 +75,7 @@
 
     #nixpkgs-wayland = {
     #  url = "github:nix-community/nixpkgs-wayland";
+    #  inputs.nixpkgs.follows = "nixpkgs";
     #};
 
     # aylur-gtk-shell
@@ -108,6 +109,7 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/cosmos/configuration.nix
+          #{nixpkgs.overlays = [inputs.nixpkgs-wayland.overlay];}
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
