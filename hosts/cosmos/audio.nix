@@ -19,20 +19,9 @@
     wireplumber.enable = true;
     lowLatency = {
       enable = true;
-      quantum = 512;
+      quantum = 256;
       rate = 44100;
     };
-  };
-
-  environment.etc = {
-    "pipewire/pipewire.conf.d/92-low-latency.conf".text = ''
-      context.properties = {
-        default.clock.rate = 44100
-        default.clock.quantum = 512
-        default.clock.min-quantum = 512
-        default.clock.max-quantum = 512
-      }
-    '';
   };
 
   environment.systemPackages = with pkgs; [
