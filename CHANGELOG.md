@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.2](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.1...v1.6.2) (2024-02-29)
+
+
+### Bug Fixes
+
+* pipewire config anf update flock ([23d05bf](https://gitlab.com/simonoscr/nixfiles/commit/23d05bf679bd42577d41d2ccd2d23f0d22384b35))
+
 ## [1.6.1](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.0...v1.6.1) (2024-02-28)
 
 
