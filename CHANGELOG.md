@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.3](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.2...v1.6.3) (2024-02-29)
+
+
+### Bug Fixes
+
+* add bookmark ([518df6d](https://gitlab.com/simonoscr/nixfiles/commit/518df6d6e56f9bb1cb03825d9c111f26e29c02b0))
+
 ## [1.6.2](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.1...v1.6.2) (2024-02-29)
 
 
