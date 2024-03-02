@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.6](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.5...v1.6.6) (2024-03-02)
+
+
+### Bug Fixes
+
+* change path to secrets ([131276e](https://gitlab.com/simonoscr/nixfiles/commit/131276e6fe5109d062f0cbcfc88e53df7adb5117))
+
 ## [1.6.5](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.4...v1.6.5) (2024-03-02)
 
 
