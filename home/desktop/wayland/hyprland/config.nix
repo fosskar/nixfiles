@@ -15,9 +15,9 @@
         "easyeffects --gapplication-service"
         "steam -silent"
         "corectrl"
-        "hyprctl setcursor capitaine-cursors 26"
         "udiskie &" # automatically mount usb
         "solaar --window=hide"
+        "hyprctl setcursor capitaine-cursors 32"
       ];
 
       monitor = [

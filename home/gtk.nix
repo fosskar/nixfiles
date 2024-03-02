@@ -3,18 +3,14 @@
   config,
   ...
 }: {
-  #home.pointerCursor = {
-  #  package = pkgs.capitaine-cursors;
-  #  name = "capitaine-cursors";
-  #  size = 28;
-  #  gtk.enable = true;
-  #  x11.enable = true;
   #};
 
   home = {
     pointerCursor = {
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
+      package = pkgs.capitaine-cursors;
+      name = "capitaine-cursors";
+      # available sizes for capitaine-cursors are:
+      # 24, 30, 36, 48, 60, 72
       size = 24;
       gtk.enable = true;
       x11.enable = true;
@@ -37,9 +33,9 @@
       package = pkgs.adw-gtk3;
     };
     cursorTheme = {
-      name = "capitaine-cursors";
-      package = pkgs.capitaine-cursors;
-      size = 26;
+      name = config.home.pointerCursor.name;
+      package = config.home.pointerCursor.package;
+      size = config.home.pointerCursor.size;
     };
 
     gtk2 = {
@@ -64,7 +60,13 @@
       gtk-application-prefer-dark-theme = 1;
     };
 
-    gtk4.extraConfig = {gtk-application-prefer-dark-theme = 1;};
+    gtk4.extraConfig = {
+      gtk-xft-antialias = 1;
+      gtk-xft-hinting = 1;
+      gtk-xft-hintstyle = "hintslight";
+      gtk-xft-rgba = "rgb";
+      gtk-application-prefer-dark-theme = 1;
+    };
   };
 
   qt = {
