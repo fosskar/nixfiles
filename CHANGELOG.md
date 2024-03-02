@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.8](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.7...v1.6.8) (2024-03-02)
+
+
+### Bug Fixes
+
+* switched from swaylock+swayidle to hyprlock+hypridle ([555097a](https://gitlab.com/simonoscr/nixfiles/commit/555097a28113476d0ebccaf1ab621e22385e16cc))
+
 ## [1.6.7](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.6...v1.6.7) (2024-03-02)
 
 
