@@ -44,7 +44,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # hyprland wm
+    # hyprland
     hyprland = {
       url = "github:hyprwm/Hyprland";
     };
@@ -52,7 +52,15 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
-    hyprland-portal.url = "github:hyprwm/xdg-desktop-portal-hyprland";
+    hyprland-portal = {
+      url = "github:hyprwm/xdg-desktop-portal-hyprland";
+    };
+    hypridle = {
+      url = "github:hyprwm/hypridle";
+    };
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+    };
 
     # nyx
     chaotic = {
@@ -91,6 +99,8 @@
     sops-nix,
     hyprland,
     hyprland-plugins,
+    hypridle,
+    hyprlock,
     nur,
     chaotic,
     stylix,

@@ -8,17 +8,17 @@
   imports = [
     inputs.hyprland.homeManagerModules.default
     ./config.nix
-    ../swayidle.nix
-    ../swaylock.nix
+    ./hyprlock.nix
+    ./hypridle.nix
+    #../swayidle.nix
+    #../swaylock.nix
     #./plugins.nix
   ];
 
   home = {
     packages = with pkgs; [
-      seatd
       xwaylandvideobridge
       hyprshot
-      wlogout
       wl-clipboard
       hyprpicker
       grim
@@ -35,10 +35,6 @@
       enable = true;
     };
   };
-
-  # start swayidle as part of hyprland, not sway
-  systemd.user.services.swayidle.Install.WantedBy =
-    lib.mkForce ["hyprland-session.target"];
 
   fonts.fontconfig.enable = true;
 

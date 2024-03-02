@@ -17,6 +17,8 @@
     rtkit.enable = true;
     # allow wayland lockers to unlock the screen
     pam.services.swaylock.text = "auth include login";
+    # allow wayland lockers to unlock the screen
+    pam.services.hyprlock.text = "auth include login";
   };
 
   systemd = {
