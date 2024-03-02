@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.0](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.9...v2.0.0) (2024-03-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* restructure repository for clear structure between home-manager(user scope) and nixos(system scope)
+
+### Code Refactoring
+
+* reorganize nixfiles to make more clear what is home-manager and what nix/nixos ([9d1e349](https://gitlab.com/simonoscr/nixfiles/commit/9d1e34986a1712bb0ea38a62a21a50f41264a7c9))
+
 ## [1.6.9](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.8...v1.6.9) (2024-03-02)
 
 
