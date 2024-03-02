@@ -10,9 +10,14 @@
     ./config.nix
     ./hyprlock.nix
     ./hypridle.nix
+    ../ags
+    #./plugins.nix
     #../swayidle.nix
     #../swaylock.nix
-    #./plugins.nix
+    #./waybar"
+    #./wofi.nix"
+    #./wlogout"
+    #./dunst.nix"
   ];
 
   home = {
@@ -23,7 +28,6 @@
       hyprpicker
       grim
       slurp
-      udiskie
     ];
   };
 
