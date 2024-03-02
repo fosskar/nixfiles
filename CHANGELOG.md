@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.5](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.4...v1.6.5) (2024-03-02)
+
+
+### Bug Fixes
+
+* TERM user sessionsenv ([f1fe203](https://gitlab.com/simonoscr/nixfiles/commit/f1fe203209623e0e42f1d1dba6e0937e3c140bb6))
+
 ## [1.6.4](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.3...v1.6.4) (2024-03-02)
 
 
