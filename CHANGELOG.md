@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.9](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.8...v1.6.9) (2024-03-02)
+
+
+### Bug Fixes
+
+* hyprlock settings and shortcut, remove swaylock pam ([240f92a](https://gitlab.com/simonoscr/nixfiles/commit/240f92a6a9c97858bc98d9eb4cdaa8c8bfa56aef))
+
 ## [1.6.8](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.7...v1.6.8) (2024-03-02)
 
 
