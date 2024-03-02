@@ -125,7 +125,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {inherit inputs;};
-            home-manager.users.simon = import ./home/simon/home.nix;
+            home-manager.users.simon = import ./home/profiles/simon/home.nix;
           }
         ];
       };

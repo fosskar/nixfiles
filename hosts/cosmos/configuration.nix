@@ -11,21 +11,21 @@
   ...
 }: {
   imports = [
-    ./audio.nix
-    ../../modules/nixos/fonts.nix
     ./hardware-configuration.nix
     ./hardware.nix
     ./xdg.nix
-    ../../modules/nixos/locale.nix
     ./network.nix
     ./packages.nix
     ./security.nix
     ./services.nix
     ./xserver.nix
-    ../../modules/nixos/filemanager/thunar.nix
-    ./gaming/gamemode.nix
-    ./gaming/steam.nix
-    ./gaming/gamescope.nix
+    ../../system/audio.nix
+    ../../system/fonts.nix
+    ../../system/locale.nix
+    ../../system/filemanager/thunar.nix
+    ../../system/gaming/gamemode.nix
+    ../../system/gaming/steam.nix
+    ../../system/gaming/gamescope.nix
   ];
 
   ## systemd-boot
