@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.7](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.6...v1.6.7) (2024-03-02)
+
+
+### Bug Fixes
+
+* example of adding knownHosts (but not for user) ([e5dbc4a](https://gitlab.com/simonoscr/nixfiles/commit/e5dbc4ad221466d5b06389eb1275193949d2cc34))
+
 ## [1.6.6](https://gitlab.com/simonoscr/nixfiles/compare/v1.6.5...v1.6.6) (2024-03-02)
 
 
