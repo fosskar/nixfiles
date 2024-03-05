@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.0.2...v2.1.0) (2024-03-05)
+
+
+### Features
+
+* update ags; restrcture for server voyager ([6654e8a](https://gitlab.com/simonoscr/nixfiles/commit/6654e8a58fd320b3ecf0456581e1a41676fa4e51))
+
 ## [2.0.2](https://gitlab.com/simonoscr/nixfiles/compare/v2.0.1...v2.0.2) (2024-03-02)
 
 
