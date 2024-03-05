@@ -13,6 +13,7 @@ export const substitutes = {
 }
 
 export default {
+    missing: "image-missing-symbolic",
     fallback: {
         executable: "application-x-executable-symbolic",
         notification: "dialog-information-symbolic",
@@ -62,6 +63,11 @@ export default {
             card: "audio-card-symbolic",
         },
         mixer: "mixer-symbolic",
+    },
+    powerprofile: {
+        balanced: "power-profile-balanced-symbolic",
+        "power-saver": "power-profile-power-saver-symbolic",
+        performance: "power-profile-performance-symbolic",
     },
     asusctl: {
         profile: {

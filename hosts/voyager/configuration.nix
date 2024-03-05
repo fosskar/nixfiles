@@ -12,24 +12,21 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/nixos/locale.nix
     ./network.nix
     ./packages.nix
     ./services.nix
-    ./virtualisation.nix
-    ./k3s.nix
+    ../../system/locale.nix
+    ../../system/virtualisation.nix
+    ../../system/k3s.nix
     ./ssh.nix
     ./security.nix
     ./users.nix
-    ./vaultwarden.nix
-    ./monitoring.nix
-    ./unbound.nix
-    #./kanidm.nix
-    #./openldap.nix
-    ./dashy.nix
-    ./cockpit.nix
-    ./pihole.nix
-    #./kubernetes.nix
+    ../../system/vaultwarden.nix
+    ../../system/monitoring/default.nix
+    ../../system/monitoring/dashy.nix
+    ../../system/monitoring/cockpit.nix
+    ../../system/network/pihole.nix
+    ../../system/network/unbound.nix
   ];
 
   ## systemd-boot
