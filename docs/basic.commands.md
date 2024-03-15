@@ -88,7 +88,7 @@ nixos-rebuild buil-vm --flake .#host
 ```
 
 
-
+  ^
 
 I would use modules config like (untested):
 

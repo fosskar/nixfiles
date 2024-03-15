@@ -3,8 +3,6 @@
   inputs,
   ...
 }: {
-  imports = [inputs.nix-gaming.nixosModules.steamCompat];
-
   programs = {
     steam = {
       enable = true;
@@ -28,9 +26,9 @@
             keyutils
           ];
       };
-      extraCompatPackages = [
-        inputs.nix-gaming.packages.${pkgs.system}.proton-ge
-      ];
+      #extraCompatPackages = [
+      #  proton-ge-custom
+      #];
     };
   };
 }
