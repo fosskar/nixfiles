@@ -15,7 +15,6 @@
         "easyeffects --gapplication-service"
         "steam -silent"
         "corectrl"
-        sudo
         "udiskie &" # automatically mount usb
         #"solaar --window=hide"
         "hyprctl setcursor capitaine-cursors 24"

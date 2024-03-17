@@ -7,7 +7,7 @@
     wineWowPackages.stable
     #wineWowPackages.waylandFull
     winetricks
-    #teamspeak5_client
+    teamspeak5_client
     #bottles
     path-of-building
     #formods

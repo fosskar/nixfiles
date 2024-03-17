@@ -6,6 +6,7 @@
   programs = {
     steam = {
       enable = true;
+      #gamescopeSession.enable = true;
       package = pkgs.steam.override {
         extraPkgs = pkgs:
           with pkgs; [
@@ -26,9 +27,9 @@
             keyutils
           ];
       };
-      #extraCompatPackages = [
-      #  proton-ge-custom
-      #];
+      extraCompatPackages = with pkgs; [
+        proton-ge-custom
+      ];
     };
   };
 }

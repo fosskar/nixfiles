@@ -3,7 +3,7 @@
     enable = true;
     enableCompletion = true;
     completionInit = "autoload -U compinit && compinit";
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     autocd = true;
     syntaxHighlighting = {
       enable = true;
