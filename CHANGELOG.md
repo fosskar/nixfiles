@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.3](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.2...v2.1.3) (2024-03-19)
+
+
+### Bug Fixes
+
+* update at switch linux kernel to latest 6.8.1 ([fa538cd](https://gitlab.com/simonoscr/nixfiles/commit/fa538cd7450e4a1737cfca07a7b1b0f159abf34f))
+
 ## [2.1.2](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.1...v2.1.2) (2024-03-17)
 
 
