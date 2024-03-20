@@ -17,11 +17,11 @@
     pulse.enable = true;
     jack.enable = true;
     wireplumber.enable = true;
-    #lowLatency = {
-    #  enable = true;
-    #  quantum = qr;
-    #  rate = re;
-    #};
+    lowLatency = {
+      enable = true;
+      quantum = 128;
+      rate = 44100;
+    };
     extraConfig.pipewire = {
       "92-low-latency" = {
         "context.properties" = {
@@ -62,5 +62,6 @@
     pulsemixer
     easyeffects
     pamixer
+    alsa-scarlett-gui
   ];
 }

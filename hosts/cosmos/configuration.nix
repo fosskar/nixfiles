@@ -39,7 +39,7 @@
       };
       efi.canTouchEfiVariables = true;
     };
-    kernelPackages = pkgs.linuxPackages_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
+    kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
     kernel.sysctl = {
       # Avoid swapping (locking pages that introduces latency and uses disk IO) unless the system has no more free memory
       "vm.swappiness" = 20; # because of ZRAM swap more aggresivly

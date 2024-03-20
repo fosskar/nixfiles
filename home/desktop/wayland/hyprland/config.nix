@@ -31,7 +31,9 @@
         vfr = false;
         vrr = 0;
         mouse_move_enables_dpms = true;
+        key_press_enables_dpms = true;
         no_direct_scanout = false;
+        disable_autoreload = true;
       };
 
       input = {
@@ -42,11 +44,11 @@
       };
 
       general = {
+        allow_tearing = true;
         gaps_in = 4;
         gaps_out = 6;
         border_size = 1;
         layout = "dwindle";
-        allow_tearing = true;
         resize_on_border = true;
         "col.active_border" = "rgba(00D787ff)";
         "col.inactive_border" = "rgba(333333ff)";
@@ -201,6 +203,7 @@
       ];
     };
     extraConfig = ''
+      env = WLR_DRM_NO_ATOMIC,1
       env = GDK_BACKEND,wayland,x11
       env = QT_QPA_PLATFORM,wayland;xcb
       env = QT_AUTO_SCREEN_SCALE_FACTOR,1
