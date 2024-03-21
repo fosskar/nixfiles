@@ -28,7 +28,7 @@
         disable_splash_rendering = true;
         disable_hyprland_logo = true;
         force_default_wallpaper = 0;
-        vfr = false;
+        vfr = true;
         vrr = 0;
         mouse_move_enables_dpms = true;
         key_press_enables_dpms = true;
@@ -121,13 +121,6 @@
         "immediate, class:^(gamescope|steam_app).*"
         "immediate, fullscreen:1"
 
-        # xwaylandvideobridge
-        "opacity 0.0 override 0.0 override,class:^(xwaylandvideobridge)$"
-        "noanim,class:^(xwaylandvideobridge)$"
-        "noinitialfocus,class:^(xwaylandvideobridge)$"
-        "maxsize 1 1,class:^(xwaylandvideobridge)$"
-        "noblur,class:^(xwaylandvideobridge)$"
-
         # make Firefox PiP window floating and sticky
         "float, title:^(Picture-in-Picture)$"
         "pin, title:^(Picture-in-Picture)$"
@@ -159,15 +152,16 @@
           "SUPER SHIFT, E, exit"
           "SUPER SHIFT, Q, killactive"
           "SUPER, V, togglefloating"
-          "SUPER, F, fullscreen"
+          "SUPER, F, fullscreen, 0"
           "SUPER, O, fakefullscreen"
           "SUPER, J, togglesplit"
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
           "SUPER, D, exec, webcord"
           "SUPER, L, exec, hyprlock"
-          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,auto,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'"
-          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'"
+          "SUPER, M, movetoworkspace, special"
+          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,auto,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'; pkill ags"
+          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'; ags -b hypr & disown"
 
           (mvfocus "up" "u")
           (mvfocus "down" "d")
