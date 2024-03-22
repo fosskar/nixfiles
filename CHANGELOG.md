@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.5](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.4...v2.1.5) (2024-03-22)
+
+
+### Bug Fixes
+
+* ags preventing tearing on fullscreen application so idsable when switching to "gaming"-resolution; update flock ([9268ba7](https://gitlab.com/simonoscr/nixfiles/commit/9268ba700596a3122ade8c89ba37ef2765017286))
+
 ## [2.1.4](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.3...v2.1.4) (2024-03-21)
 
 
