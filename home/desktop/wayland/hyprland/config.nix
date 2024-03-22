@@ -161,7 +161,7 @@
           "SUPER, L, exec, hyprlock"
           "SUPER, M, movetoworkspace, special"
           "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,auto,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'; pkill ags"
-          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'; ags -b hypr & disown"
+          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'; hyprctl dispatch -- exec 'ags -b hypr' --single-instance"
 
           (mvfocus "up" "u")
           (mvfocus "down" "d")
