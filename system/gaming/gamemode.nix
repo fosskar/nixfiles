@@ -10,6 +10,7 @@
       general = {
         reaper_freq = 5;
         desiredgov = "performance";
+        defaultgov = "powersave";
         softrealtime = "auto";
         renice = 15;
         ioprio = 0;
@@ -24,6 +25,10 @@
       #  apply_gpu_optimisations = "accept-responsibility";
       #  gpu_device = 0;
       #  amd_performance_level = "high";
+      #};
+      #cpu = {
+      #  park_cores = false;
+      #  pin_cores = true;
       #};
     };
   };

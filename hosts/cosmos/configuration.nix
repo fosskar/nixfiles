@@ -41,6 +41,10 @@
     };
     kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
     kernel.sysctl = {
+      # The Magic SysRq key is a key combo that allows users connected to the
+      # system console of a Linux kernel to perform some low-level commands.
+      # Disable it, since we don't need it, and is a potential security concern.
+      "kernel.sysrq" = 0;
       # Avoid swapping (locking pages that introduces latency and uses disk IO) unless the system has no more free memory
       "vm.swappiness" = 20; # because of ZRAM swap more aggresivly
       # zram is in memory, no need to readahead
@@ -60,6 +64,14 @@
       "vm.watermark_boost_factor" = 1;
       # Reduce the maximum page lock acquisition latency while retaining adequate throughput [13][14][15]:
       "vm.page_lock_unfairness" = 1;
+      # enable BBR congestion control # Bufferbloat mitigations + slight improvement in throughput & latency
+      "net.ipv4.tcp_congestion_control" = "bbr";
+      "net.core.default_qdisc" = "fq";
+      ## TCP optimization
+      # TCP Fast Open is a TCP extension that reduces network latency by packing
+      # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
+      # both incoming and outgoing connections:
+      "net.ipv4.tcp_fastopen" = 3;
     };
     kernelParams = [
       "amd_pstate=active"
