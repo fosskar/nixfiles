@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.7](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.6...v2.1.7) (2024-03-22)
+
+
+### Bug Fixes
+
+* update ags ([9075e29](https://gitlab.com/simonoscr/nixfiles/commit/9075e294867281155cc2dc470e1cc365e4e8dcf8))
+
 ## [2.1.6](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.5...v2.1.6) (2024-03-22)
 
 
