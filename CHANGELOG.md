@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.6](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.5...v2.1.6) (2024-03-22)
+
+
+### Bug Fixes
+
+* update sysctl congestion_control to BRR ([1e9d2ac](https://gitlab.com/simonoscr/nixfiles/commit/1e9d2ac427f9bb71836fdfa0433a82707d5fc587))
+
 ## [2.1.5](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.4...v2.1.5) (2024-03-22)
 
 
