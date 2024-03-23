@@ -67,11 +67,6 @@
       url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     };
 
-    mesa-git = {
-      url = "git+https://gitlab.freedesktop.org/mesa/mesa?ref=24.0";
-      flake = false;
-    };
-
     # stylix
     stylix = {
       url = "github:danth/stylix";

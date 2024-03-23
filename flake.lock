@@ -683,11 +683,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1710974515,
-        "narHash": "sha256-jZpdsypecYTOO9l12Vy77otGmh9uz8tGzcguifA30Vs=",
+        "lastModified": 1711133180,
+        "narHash": "sha256-WJOahf+6115+GMl3wUfURu8fszuNeJLv9qAWFQl3Vmo=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "1c2acec99933f9835cc7ad47e35303de92d923a4",
+        "rev": "1c2c5e4cabba4c43504ef0f8cc3f3dfa284e2dbb",
         "type": "github"
       },
       "original": {
@@ -1002,11 +1002,11 @@
         "systems": "systems_8"
       },
       "locked": {
-        "lastModified": 1711101603,
-        "narHash": "sha256-5/uA1LoIQ6BhvABbTy46w97vO+q5jcngZ4BOsJtKiXs=",
+        "lastModified": 1711206123,
+        "narHash": "sha256-fVlcA90xQ1//eLhspcISExagsVnR9WYG7ltP2D9OjQQ=",
         "owner": "hyprwm",
         "repo": "hyprlock",
-        "rev": "0db5afb9d618571048bc30958e10b1990130bbb4",
+        "rev": "230f8aadb5123dd7388143aa4f2a5a881a9c0a41",
         "type": "github"
       },
       "original": {
@@ -1061,23 +1061,6 @@
         "owner": "martinvonz",
         "repo": "jj",
         "type": "github"
-      }
-    },
-    "mesa-git": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1710375084,
-        "narHash": "sha256-AEW0Xk/g5n0eDTZpN3UXgq82wEABjoIRKwntcgyO+Ig=",
-        "ref": "24.0",
-        "rev": "90dcd95c0e72fcd0181f71c3bb155bf8e0c5fbd5",
-        "revCount": 183494,
-        "type": "git",
-        "url": "https://gitlab.freedesktop.org/mesa/mesa"
-      },
-      "original": {
-        "ref": "24.0",
-        "type": "git",
-        "url": "https://gitlab.freedesktop.org/mesa/mesa"
       }
     },
     "niri": {
@@ -1401,11 +1384,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1711124705,
-        "narHash": "sha256-vgFQxvs6T9RcaV9sd9Io+RxQuRKovauMvueGajWWanw=",
+        "lastModified": 1711199922,
+        "narHash": "sha256-Oz5WNOPp95K4JLyoNQKyEdaUM5JzliC62jwTpGPqYNE=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "822ec15646b8f7b621468b503118921d644acf39",
+        "rev": "7170aad28139cd3629b2b6ce4c9272bf41c2ad45",
         "type": "github"
       },
       "original": {
@@ -1416,11 +1399,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1711185154,
-        "narHash": "sha256-hmgZyxPTYeLZa49EwRleOS8H2KQUH4OKNZBtb6ZEGMI=",
+        "lastModified": 1711204334,
+        "narHash": "sha256-Wzdv/we5OmxDHx9qxwO9b6XKRm6IS4jwoVbV65g8LxI=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "e54329c26b6839dc402ccefab4ac292edc18bb56",
+        "rev": "676b81c589e5389344eb5c8f5e3fcf321e1dd87d",
         "type": "github"
       },
       "original": {
@@ -1469,7 +1452,6 @@
         "hyprland-plugins": "hyprland-plugins",
         "hyprland-portal": "hyprland-portal",
         "hyprlock": "hyprlock",
-        "mesa-git": "mesa-git",
         "nix-gaming": "nix-gaming",
         "nixpkgs": "nixpkgs_8",
         "nixvim": "nixvim",
