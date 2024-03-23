@@ -1,17 +1,23 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   home.packages = with pkgs; [
     goverlay
     teamspeak_client
-    protonup-qt
     lutris
-    wineWowPackages.stable
-    #wineWowPackages.waylandFull
+    ## WINE
+    #wineWowPackages.stable
+    wineWowPackages.waylandFull
     winetricks
-    teamspeak5_client
+    protonup-qt
+    #teamspeak5_client
     #bottles
     path-of-building
-    #formods
-    r2modman
+    ## Mods
+    #r2modman
+    inputs.nix-gaming.packages.${pkgs.system}.star-citizen
   ];
 
   programs.mangohud = {

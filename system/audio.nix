@@ -33,27 +33,6 @@
         };
       };
     };
-    #extraConfig.pipewire-pulse = {
-    #  "99-low-latency" = {
-    #    "context.modules" = [
-    #      {
-    #        "name" = "libpipewire-module-protocol-pulse";
-    #        "args" = {
-    #          "server.address" = ["unix:native"];
-    #          "pulse.min.req" = "128/44100";
-    #          "pulse.default.req" = "128/44100";
-    #          "pulse.max.req" = "128/44100";
-    #          "pulse.min.quantum" = "128/44100";
-    #          "pulse.max.quantum" = "128/44100";
-    #        };
-    #      }
-    #    ];
-    #    "stream.properties" = {
-    #      "node.latency" = "128/44100";
-    #      "resample.quality" = 1;
-    #    };
-    #  };
-    #};
   };
 
   environment.systemPackages = with pkgs; [

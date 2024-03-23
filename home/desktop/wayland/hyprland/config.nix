@@ -137,7 +137,7 @@
         arr = [1 2 3 4 5 6 7 8 9];
       in
         [
-          "ALT, Space,     ${e} -t applauncher" # this is for AGS
+          "ALT, Space,     ${e} -t launcher" # this is for AGS
           "SUPER, Tab,     ${e} -t overview"
           #"Print,         ${e} -r 'recorder.screenshot()'"
           #"SHIFT,Print,    ${e} -r 'recorder.screenshot(true)'"
