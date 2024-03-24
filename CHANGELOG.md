@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.9](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.8...v2.1.9) (2024-03-24)
+
+
+### Bug Fixes
+
+* update flock; remove unused inputs; disable watchdog; set RADV variables for gaming performance ([910caaf](https://gitlab.com/simonoscr/nixfiles/commit/910caafd79e6d7bea193de619bfb780bbf741e5c))
+
 ## [2.1.8](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.7...v2.1.8) (2024-03-23)
 
 
