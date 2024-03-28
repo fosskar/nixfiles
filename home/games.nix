@@ -6,7 +6,7 @@
   home.packages = with pkgs; [
     goverlay
     teamspeak_client
-    lutris
+    #lutris
     ## WINE
     #wineWowPackages.stable
     wineWowPackages.waylandFull
@@ -17,11 +17,6 @@
     path-of-building
     ## Mods
     #r2modman
-    inputs.nix-gaming.packages.${pkgs.system}.star-citizen
+    #inputs.nix-gaming.packages.${pkgs.system}.star-citizen
   ];
-
-  programs.mangohud = {
-    enable = true;
-    enableSessionWide = false;
-  };
 }

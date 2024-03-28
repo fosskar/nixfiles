@@ -7,6 +7,7 @@
     ../../shell/zsh.nix
     ../../fonts.nix
     ../../games.nix
+    ../../mangohud.nix
     ../../git.nix
     ../../gtk.nix
     ../../terminal/emulators/kitty.nix
