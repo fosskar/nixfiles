@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.10](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.9...v2.1.10) (2024-03-28)
+
+
+### Bug Fixes
+
+* add mangohud.nix and configuration; update flock; remove unused pkgs ([685d76f](https://gitlab.com/simonoscr/nixfiles/commit/685d76fb0e5ac40e2e33835588c8081a399547f0))
+
 ## [2.1.9](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.8...v2.1.9) (2024-03-24)
 
 
