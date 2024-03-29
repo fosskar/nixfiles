@@ -27,7 +27,7 @@
       #    ];
       #};
       extraCompatPackages = with pkgs; [
-        proton-ge-custom
+        proton-ge-bin
       ];
     };
   };
