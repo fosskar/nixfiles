@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.15](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.14...v2.1.15) (2024-03-29)
+
+
+### Bug Fixes
+
+* add user to corectrl group for not entering password on startup ([3dc31f3](https://gitlab.com/simonoscr/nixfiles/commit/3dc31f3abad12b779994c66444b52c8a298c04e4))
+
 ## [2.1.14](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.13...v2.1.14) (2024-03-29)
 
 
