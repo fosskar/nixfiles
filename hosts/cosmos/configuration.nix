@@ -133,6 +133,7 @@
           "audio"
           "video"
           "gamemode"
+          "corectrl"
         ];
       };
     };
