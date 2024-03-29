@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.12](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.11...v2.1.12) (2024-03-29)
+
+
+### Bug Fixes
+
+* steam with proton-ge-bin extra package; update fonts; update flock ([761efcf](https://gitlab.com/simonoscr/nixfiles/commit/761efcf741fd4fa100536c10dfd6b64f64a4c9eb))
+
 ## [2.1.11](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.10...v2.1.11) (2024-03-28)
 
 
