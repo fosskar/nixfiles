@@ -39,9 +39,8 @@
 
       input = {
         kb_layout = "de";
-        follow_mouse = 0;
-        float_switch_override_focus = 2;
-        mouse_refocus = true;
+        follow_mouse = 2;
+        float_switch_override_focus = 1;
         accel_profile = "flat";
         sensitivity = 0;
       };
