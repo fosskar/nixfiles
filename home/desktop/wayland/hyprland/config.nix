@@ -42,6 +42,7 @@
         follow_mouse = 2;
         float_switch_override_focus = 1;
         accel_profile = "flat";
+        force_no_accel = true;
         sensitivity = 0;
       };
 
@@ -60,7 +61,7 @@
         rounding = 10;
         blur = {
           enabled = false;
-          #new_optimizations = "on";
+          #new_optimizations = true;
           #size = 3;
           #passes = 1;
         };
@@ -70,7 +71,7 @@
       };
 
       animations = {
-        enabled = "yes";
+        enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
         animation = [
           "windows, 1, 7, myBezier"
@@ -83,8 +84,8 @@
       };
 
       dwindle = {
-        pseudotile = "yes";
-        preserve_split = "yes";
+        pseudotile = false;
+        preserve_split = true;
       };
 
       master = {
@@ -92,7 +93,7 @@
       };
 
       gestures = {
-        workspace_swipe = "off";
+        workspace_swipe = false;
       };
 
       xwayland = {
