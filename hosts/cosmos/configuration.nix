@@ -33,6 +33,7 @@
     tmp.cleanOnBoot = true;
     loader = {
       timeout = 1;
+      generationsDir.copyKernels = true;
       systemd-boot = {
         enable = true;
         configurationLimit = 5;
@@ -97,6 +98,17 @@
       "net.ipv4.tcp_slow_start_after_idle" = "0";
     };
     kernelParams = [
+      # auto means kernel will automatically decide the pti state
+      "pti=auto" # on | off
+      # CPU idle behaviour
+      #  poll: slightly improve performance at cost of a hotter system (not recommended)
+      #  halt: halt is forced to be used for CPU idle
+      #  nomwait: Disable mwait for CPU C-states
+      "idle=nomwait" # poll | halt | nomwait
+      # disable displaying of the built-in Linux logo
+      "logo.nologo"
+      # disable usb autosuspend
+      "usbcore.autosuspend=-1"
       "amd_pstate=active"
       "nohibernate"
       "nowatchdog"

@@ -11,7 +11,7 @@
     ./hyprlock.nix
     ./hypridle.nix
     ../ags
-    ./plugins.nix
+    #./plugins.nix
     #../swayidle.nix
     #../swaylock.nix
     #./waybar"

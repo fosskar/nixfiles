@@ -11,7 +11,7 @@
     vimAlias = true;
     defaultEditor = true;
 
-    options = {
+    opts = {
       title = true;
 
       ignorecase = true; # ignore case when using lowercase in search

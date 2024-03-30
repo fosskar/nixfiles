@@ -21,7 +21,7 @@
       ];
       kernelModules = ["amdgpu"];
     };
-    kernelModules = ["kvm-amd" "k10temp" "tcp_bbr"];
+    kernelModules = ["k10temp" "tcp_bbr"];
     extraModulePackages = [];
   };
 
