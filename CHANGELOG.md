@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.16](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.15...v2.1.16) (2024-03-30)
+
+
+### Bug Fixes
+
+* disable bugged hyprland plugin - no auto updating headers when updating hyprland; neovim optionchange from options to opts; copyKernels; remove kvm-amd virtualisation from kernelModules -> not used; enableAllFirmware; update flock ([9fe5986](https://gitlab.com/simonoscr/nixfiles/commit/9fe5986278dbf9a9a886ca4617bda584725754e9))
+
 ## [2.1.15](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.14...v2.1.15) (2024-03-29)
 
 
