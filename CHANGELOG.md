@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.19](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.18...v2.1.19) (2024-03-30)
+
+
+### Bug Fixes
+
+* remove custom bezier from hyprland use default ([25120c7](https://gitlab.com/simonoscr/nixfiles/commit/25120c7a500a3d5400f78bac38f09a0cc35ec2d1))
+
 ## [2.1.18](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.17...v2.1.18) (2024-03-30)
 
 
