@@ -109,7 +109,6 @@
         };
         settings = {
           "general.smoothScroll" = true;
-
           # GFX
           "gfx.canvas.accelerated.cache-items" = 4096;
           "gfx.canvas.accelerated.cache-size" = 512;
@@ -282,9 +281,7 @@
           "browser.menu.showViewImageInfo" = true;
           "findbar.highlightAll" = true;
           "layout.word_select.eat_space_to_next_word" = false;
-
           "intl.accept_languages" = "en, de";
-
           # MEDIA
           "media.ffmpeg.vaapi.enable" = true;
           "media.ffvpx.enabled" = false;
@@ -343,9 +340,9 @@
           "browser.urlbar.suggest.topsites" = false;
           "browser.urlbar.suggest.searches" = false;
         };
-        # nervig af
-        #userChrome = builtins.readFile ./theme/userChrome.css;
-        #userContent = builtins.readFile ./theme/userContent.css;
+        # custom theme
+        userChrome = builtins.readFile ./themes/ffultimate/userChrome.css;
+        userContent = builtins.readFile ./themes/ffultimate/userContent.css;
       };
     };
   };

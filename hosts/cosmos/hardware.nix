@@ -36,7 +36,6 @@
   hardware = {
     enableAllFirmware = true;
     bluetooth.enable = true;
-    logitech.wireless.enable = true;
 
     opengl = {
       enable = true;
