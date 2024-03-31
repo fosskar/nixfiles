@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.24](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.23...v2.1.24) (2024-03-31)
+
+
+### Bug Fixes
+
+* firefox icons ([db79fca](https://gitlab.com/simonoscr/nixfiles/commit/db79fcad98d7ffe0ac0199ee5e07970268942f40))
+
 ## [2.1.23](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.22...v2.1.23) (2024-03-31)
 
 
