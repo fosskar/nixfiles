@@ -25,7 +25,7 @@ Hello and welcome to my NixOS setup. Please be aware that I'm still in the early
 Feel free to borrow ideas from my configurations, but keep in mind that they might not always represent the best or most correct approach and make sure you've grasped the basics of NixOS, Nix, Flakes, and Home-Manager.
 
 > [!IMPORTANT]
-This repository is a work in progress, and I'm constantly learning more about NixOS, Nix, Flakes, and Home-Manager.
+> This repository is a work in progress, and I'm constantly learning more about NixOS, Nix, Flakes, and Home-Manager.
 
 ## Showcase
 <p align="center">
