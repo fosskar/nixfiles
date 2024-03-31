@@ -27,6 +27,12 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 > [!IMPORTANT]
 This repository is a work in progress, and I'm constantly learning more about NixOS, Nix, Flakes, and Home-Manager.
 
+## Showcase
+<p align="center">
+  <img src="docs/images/31.03.24_state2.png" alt="showcase image"/>
+</p>
+
+
 ## :snowflake: System Components
 
 | | NixOS - Wayland | NixOS - Xorg |
