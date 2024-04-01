@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.25](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.24...v2.1.25) (2024-04-01)
+
+
+### Bug Fixes
+
+* reduce audio latency ([a65b0ea](https://gitlab.com/simonoscr/nixfiles/commit/a65b0ea910ad0b5c490efc60a0d229ecba7fde3a))
+
 ## [2.1.24](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.23...v2.1.24) (2024-03-31)
 
 
