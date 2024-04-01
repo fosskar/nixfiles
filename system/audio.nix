@@ -19,7 +19,7 @@
     wireplumber.enable = true;
     lowLatency = {
       enable = true;
-      quantum = 128;
+      quantum = 64;
       rate = 44100;
     };
     extraConfig.pipewire = {
@@ -27,9 +27,9 @@
         "context.properties" = {
           "default.clock.rate" = 44100;
           "default.clock.allowed-rates" = [44100];
-          "default.clock.quantum" = 128;
-          "default.clock.min-quantum" = 128;
-          "default.clock.max-quantum" = 128;
+          "default.clock.quantum" = 64;
+          "default.clock.min-quantum" = 64;
+          "default.clock.max-quantum" = 64;
         };
       };
     };
