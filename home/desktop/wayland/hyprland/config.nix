@@ -42,8 +42,8 @@
         follow_mouse = 2;
         float_switch_override_focus = 1;
         accel_profile = "flat";
-        force_no_accel = true;
-        sensitivity = 0;
+        force_no_accel = false;
+        sensitivity = -0.35;
       };
 
       general = {
