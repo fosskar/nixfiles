@@ -5,5 +5,6 @@
     spotify
     solaar
     piper
+    protonmail-desktop
   ];
 }
