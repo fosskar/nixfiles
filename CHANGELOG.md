@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.26](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.25...v2.1.26) (2024-04-06)
+
+
+### Bug Fixes
+
+* add matugen and update flake input ([608fb7c](https://gitlab.com/simonoscr/nixfiles/commit/608fb7ccb55c6a459aaeff1457b3569f6ff93335))
+
 ## [2.1.25](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.24...v2.1.25) (2024-04-01)
 
 
