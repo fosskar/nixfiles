@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.28](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.27...v2.1.28) (2024-04-06)
+
+
+### Bug Fixes
+
+* cleanup; remove unused and doubled configs, options, servvices etc ([b02fc0f](https://gitlab.com/simonoscr/nixfiles/commit/b02fc0faf1a6a04ab6656b4a9bfc53b42f325268))
+
 ## [2.1.27](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.26...v2.1.27) (2024-04-06)
 
 
