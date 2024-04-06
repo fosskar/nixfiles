@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.27](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.26...v2.1.27) (2024-04-06)
+
+
+### Bug Fixes
+
+* add protonmail-desktop beta app ([37e275c](https://gitlab.com/simonoscr/nixfiles/commit/37e275c79077a488ddfce4c8f79ab8f63ff44dfb))
+
 ## [2.1.26](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.25...v2.1.26) (2024-04-06)
 
 
