@@ -3,8 +3,6 @@
     webcord-vencord
     element-desktop
     spotify
-    solaar
-    piper
     protonmail-desktop
   ];
 }
