@@ -4,7 +4,10 @@
   pkgs,
   ...
 }: {
-  imports = [inputs.ags.homeManagerModules.default];
+  imports = [
+    inputs.ags.homeManagerModules.default
+    inputs.matugen.nixosModules.default
+  ];
 
   home.packages = with pkgs; [
     swww
@@ -14,6 +17,7 @@
     bun
     dart-sass
     fd
+    inputs.matugen.packages.${system}.default
   ];
 
   programs.ags = {
