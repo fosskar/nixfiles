@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.28...v2.2.0) (2024-04-07)
+
+
+### Features
+
+* docs; cleanup and pump minor after ref ([8e2e547](https://gitlab.com/simonoscr/nixfiles/commit/8e2e547306aa74aef2136bbe20987575afed47c5))
+
 ## [2.1.28](https://gitlab.com/simonoscr/nixfiles/compare/v2.1.27...v2.1.28) (2024-04-06)
 
 
