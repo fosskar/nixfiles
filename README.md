@@ -47,6 +47,7 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 | System resource monitor | btop | btop |
 | Fonts | Roboto | - |
 
+
 ## Systems
 
 | | MainPC - NixOS | Server - NixOS |
@@ -59,6 +60,7 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 | SSD | 2TB NVMe | 500GB NVMe |
 | MISC | - | - |
 
+
 ## Features
 
 - **Nix Flake**: Manage NixOS and Home-Manager configurations.
@@ -67,9 +69,8 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 - **NUR Integration**: Access the Nix User Repository (NUR) for additional packages and enhancements.
 
-- **Alejandra**: Nix linting
+- **NixVim**: Nix Flake Neovim
 
-- **NixVim**: Nix Flake Neovim config
 
 ## :snowflake: Layout
 
@@ -81,15 +82,14 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 - **Home Environment Configs**: Similarly, the homes/ folder arranges configurations by architecture, which is particularly handy for managing home environments via Nix.
 
+
 ## Search
 
 - [Nix Search](https://search.nixos.org) - Search for Nix packages, NixOS options or Flakes
 - [Home-Manager Options](https://mipmip.github.io/home-manager-option-search/) - Search for Home-Manager options
 - [Nixhub.io](https://www.nixhub.io/) - Search Versions of nix packages
 - [Noogle.dev](https://noogle.dev/) - Noogle is a Nix API search engine. It lets you search nix functions.
-- [Hound](https://search.nix.gsc.io/) -
-
-
+- [Hound](https://search.nix.gsc.io/) - Search things
 
 
 ## Guides
