@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.0...v2.3.1) (2024-04-27)
+
+
+### Bug Fixes
+
+* add globalshortcuts to hyprland for ts3; add media key shortcuts; update mangohud config ([8204343](https://gitlab.com/simonoscr/nixfiles/commit/820434393c45f1dad64ad3853061ba1c167d6e07))
+
 ## [2.3.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.2.0...v2.3.0) (2024-04-24)
 
 
