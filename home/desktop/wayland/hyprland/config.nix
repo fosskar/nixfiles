@@ -156,7 +156,9 @@
           "SUPER, M, movetoworkspace, special"
           "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,auto,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'; pkill ags"
           "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'; hyprctl dispatch -- exec 'ags -b hypr' --single-instance"
-
+          # global shortcuts/keybinds/hotkeys
+          ",F9,pass,^(TeamSpeak 3)$"
+          ",F10,pass,^(TeamSpeak 3)$"
           (mvfocus "up" "u")
           (mvfocus "down" "d")
           (mvfocus "right" "r")
@@ -177,12 +179,13 @@
         ++ (map (i: ws (toString i) (toString i)) arr)
         ++ (map (i: mvtows (toString i) (toString i)) arr);
 
-      bindle = let
-        e = "exec, ags -b hypr -r";
-      in [
-        ",XF86AudioRaiseVolume,  ${e} 'audio.speaker.volume += 0.05; indicator.speaker()'"
-        ",XF86AudioLowerVolume,  ${e} 'audio.speaker.volume -= 0.05; indicator.speaker()'"
-        ",XF86AudioMute,  ${e} 'audio.speaker.volume = 0; indicator.speaker(); audio.speaker.volume = 1; indicator.speaker()'"
+      bindle = [
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ --limit 1.0"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- --limit 0.0"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioPlay, exec, playerctl --player=spotify,firefox play-pause"
+        ", XF86AudioPrev, exec, playerctl --player=spotify,firefox previous"
+        ", XF86AudioNext, exec, playerctl --player=spotify,firefox next"
       ];
 
       bindm = [
@@ -192,7 +195,7 @@
     };
     extraConfig = ''
       env = WLR_DRM_NO_ATOMIC,1
-      env = GDK_BACKEND,wayland,x11
+      env = GDK_BACKEND,wayland,x11,*
       env = QT_QPA_PLATFORM,wayland;xcb
       env = QT_AUTO_SCREEN_SCALE_FACTOR,1
       env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1

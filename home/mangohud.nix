@@ -3,7 +3,7 @@
     enable = true;
     enableSessionWide = false;
     settings = {
-      fps_limit = "300";
+      fps_limit = "400";
       toggle_fps_limit = "F3";
       vsync = 1;
       gl_vsync = 0;
