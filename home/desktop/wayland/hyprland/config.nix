@@ -43,7 +43,7 @@
         float_switch_override_focus = 1;
         accel_profile = "flat";
         force_no_accel = false;
-        sensitivity = -0.35;
+        sensitivity = 0.7;
       };
 
       general = {
@@ -108,7 +108,7 @@
       ];
       windowrulev2 = [
         #"stayfocused,title:^()$,class:^(steam)$"
-        #"minsize 1 1,title:^()$,class:^(steam)$"
+        "minsize 1 1,title:^()$,class:^(steam)$"
         "suppressevent maximize,class:.*"
         "noinitialfocus,title:(^notificationtoasts.*)"
         "immediate, class:^(cs2)$"
