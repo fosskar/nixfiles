@@ -230,8 +230,11 @@
           "captivedetect.canonicalURL" = "";
           "network.captive-portal-service.enabled" = false;
           "network.connectivity-service.enabled" = false;
+          "network.trr.confirmation_telemetry_enabled" = false;
           # MOZILLA UI
           "browser.tabs.warnOnClose" = true;
+          "browser.tabs.loadBookmarksInTabs" = true;
+          "browser.tabs.tabmanager.enabled" = true;
           "browser.privatebrowsing.vpnpromourl" = "";
           "extensions.getAddons.showPane" = false;
           "extensions.htmlaboutaddons.recommendations.enabled" = false;
@@ -240,7 +243,6 @@
           "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" = false;
           "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" = false;
           "browser.preferences.moreFromMozilla" = false;
-          "browser.tabs.tabmanager.enabled" = true;
           "browser.aboutConfig.showWarning" = false;
           "browser.aboutwelcome.enabled" = false;
           # THEME ADJUSTMENTS
@@ -292,7 +294,6 @@
           "widget.use-xdg-desktop-portal" = true;
           "browser.toolbars.bookmarks.visibility" = "always";
           "browser.tabs.loadInBackground" = true;
-          "network.trr.confirmation_telemetry_enabled" = false;
           "browser.bookmarks.restore_default_bookmarks" = false;
           "browser.ctrlTab.recentlyUsedOrder" = true;
           "datareporting.policy.dataSubmissionEnable" = false;
