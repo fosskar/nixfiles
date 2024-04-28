@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.2](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.1...v2.3.2) (2024-04-28)
+
+
+### Bug Fixes
+
+* update lock and firefox settings to open bookmarks in new tab ([e603407](https://gitlab.com/simonoscr/nixfiles/commit/e6034075c2a51f94b3a2015a2fc1b159fc27ff70))
+
 ## [2.3.1](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.0...v2.3.1) (2024-04-27)
 
 
