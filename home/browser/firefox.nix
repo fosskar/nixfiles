@@ -345,6 +345,7 @@
         # custom theme
         userChrome = builtins.readFile ./themes/ffultimate/userChrome.css;
         userContent = builtins.readFile ./themes/ffultimate/userContent.css;
+        extraConfig = builtins.readFile ./themes/ffultimate/user.js;
       };
     };
   };
