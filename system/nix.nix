@@ -20,7 +20,7 @@
       ];
     };
     gc = {
-      automatic = true;
+      automatic = false; # because i am using nh.clean
       dates = "weekly";
       options = "--delete-older-than 1w";
     };

@@ -67,6 +67,8 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 - **Home Manager**: Manage your dotfiles, home environment, and user-specific configurations with Home Manager.
 
+- **nh**: "yet-another-nix-helper". NH reimplements some basic nix commands. Adding functionality on top of the existing solutions, like nixos-rebuild, home-manager cli or nix itself.
+
 - **NUR Integration**: Access the Nix User Repository (NUR) for additional packages and enhancements.
 
 - **NixVim**: Nix Flake Neovim

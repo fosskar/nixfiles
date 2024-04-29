@@ -2,6 +2,12 @@
 
 ## Update
 
+### nh Update
+
+```shell
+nh os switch --update --hostname [hostname]
+```
+
 ### Flake Update
 
 Command to update flake input:

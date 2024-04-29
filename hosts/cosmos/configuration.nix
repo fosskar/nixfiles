@@ -32,6 +32,7 @@
     ../../system/zram.nix
     ../../system/corectrl.nix
     ../../system/console.nix
+    ../../system/nh.nix
     ../../system/filemanager/thunar.nix
     ../../system/gaming/gamemode.nix
     ../../system/gaming/steam.nix
