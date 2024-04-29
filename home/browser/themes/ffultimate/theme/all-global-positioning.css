@@ -30,7 +30,7 @@ Spreadsheet of what every ultima-variable does: https://github.com/soulhotel/FF-
 /*---------------Global variables for quick modifications-------------*/
 
 :root:not([customizing],[chromehidden~="menubar"]){
-    --uc-navbar-height: 52px;
+    --uc-navbar-height: 54px;
     --uc-collapsed-tabs-width: 41px;
 } /*--DO NOT GO LOWER THAN 41PX--*/
 
