@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.4...v2.4.0) (2024-04-29)
+
+
+### Features
+
+* add nh, update README; update docs ([57402f5](https://gitlab.com/simonoscr/nixfiles/commit/57402f5337ee3e18e0e57498965c873bd02fee02))
+
 ## [2.3.4](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.3...v2.3.4) (2024-04-29)
 
 
