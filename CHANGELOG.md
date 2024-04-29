@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.0...v2.4.1) (2024-04-29)
+
+
+### Bug Fixes
+
+* update firefox theme ([a4d12bc](https://gitlab.com/simonoscr/nixfiles/commit/a4d12bc6116480f82bb5bd759fb50d921ad3c6d9))
+* update tabbar height ([41e0bbd](https://gitlab.com/simonoscr/nixfiles/commit/41e0bbd3be7f5bc2e36eb0ec700be78a2cf4d9fc))
+
 ## [2.4.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.4...v2.4.0) (2024-04-29)
 
 
