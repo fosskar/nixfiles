@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.4](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.3...v2.3.4) (2024-04-29)
+
+
+### Bug Fixes
+
+* update flock; hyprland sens and move libinput from services.xserver to services ([65c1ba7](https://gitlab.com/simonoscr/nixfiles/commit/65c1ba7e0703d264d3d95c9c30a48b6d6407e9a8))
+
 ## [2.3.3](https://gitlab.com/simonoscr/nixfiles/compare/v2.3.2...v2.3.3) (2024-04-28)
 
 
