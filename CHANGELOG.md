@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.4](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.3...v2.4.4) (2024-04-30)
+
+
+### Bug Fixes
+
+* add zed editor ([14c3927](https://gitlab.com/simonoscr/nixfiles/commit/14c3927508932fc47676abdba7a8520af9755042))
+
 ## [2.4.3](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.2...v2.4.3) (2024-04-30)
 
 
