@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.3](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.2...v2.4.3) (2024-04-30)
+
+
+### Bug Fixes
+
+* add trusted- and allowed-users; remove chaotix and disable flake input; general update flock ([0e45260](https://gitlab.com/simonoscr/nixfiles/commit/0e452606d2a76ffed7cbb7330ddfac33ae1b600b))
+
 ## [2.4.2](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.1...v2.4.2) (2024-04-30)
 
 
