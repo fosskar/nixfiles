@@ -1,9 +1,5 @@
 {
-  config,
   lib,
-  pkgs,
-  inputs,
-  outputs,
   ...
 }: {
   security.sudo.execWheelOnly = true;

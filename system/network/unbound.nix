@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   ...
 }: {
   services.unbound = {
