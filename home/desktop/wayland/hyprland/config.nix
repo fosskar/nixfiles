@@ -146,6 +146,7 @@ _: {
           "SUPER, J, togglesplit"
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
+          "SUPER, Z, exec, zed"
           "SUPER, D, exec, webcord"
           "SUPER, L, exec, hyprlock"
           "SUPER, M, movetoworkspace, special"
