@@ -1,6 +1,4 @@
-{
-  ...
-}: {
+{...}: {
   virtualisation = {
     libvirtd.enable = true;
     podman = {

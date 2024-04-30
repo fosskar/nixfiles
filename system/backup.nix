@@ -1,6 +1,4 @@
-{
-  ...
-}: {
+{...}: {
   services.borgbackup.jobs = let
     common-excludes = [
       # Largest cache dirs

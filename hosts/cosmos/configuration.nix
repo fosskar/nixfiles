@@ -2,9 +2,7 @@
 ## this is the systems configuration file                                                 ##
 ## use this to configure the system environment, it replaces /etc/nixos/configuration.nix ##
 ############################################################################################
-{
-  ...
-}: {
+{...}: {
   imports = [
     ./hardware-configuration.nix
     ./hardware.nix

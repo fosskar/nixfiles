@@ -1,6 +1,4 @@
-{
-  ...
-}: {
+{...}: {
   networking = {
     hostName = "nixos-server";
     #networkmanager.enable = true;
