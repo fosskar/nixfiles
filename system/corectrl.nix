@@ -1,4 +1,4 @@
-{ ...}: {
+{...}: {
   programs.corectrl = {
     enable = true;
     gpuOverclock = {

@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: {
+{lib, ...}: {
   services = {
     fstrim.enable = true;
     thermald.enable = true;

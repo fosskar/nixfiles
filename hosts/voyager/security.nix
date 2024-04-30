@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: {
+{lib, ...}: {
   security.sudo.execWheelOnly = true;
   security.pam.services.nginx.setEnvironment = false;
   systemd.services.nginx.serviceConfig = {
