@@ -84,19 +84,9 @@
   };
 
   outputs = {
-    self,
     nixpkgs,
     home-manager,
-    sops-nix,
-    hyprland,
-    hyprland-plugins,
-    hypridle,
-    hyprlock,
     nur,
-    chaotic,
-    nix-gaming,
-    nixvim,
-    firefox-addons,
     ...
   } @ inputs: let
     system = "x86_64-linux";

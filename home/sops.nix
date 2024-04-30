@@ -1,11 +1,9 @@
 {
   config,
   inputs,
-  pkgs,
   ...
 }: let
   userhome = "/home/simon";
-  username = "simon";
 in {
   imports = [inputs.sops-nix.homeManagerModules.sops];
 

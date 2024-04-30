@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  inputs,
   ...
 }: {
   sops.secrets.dXNlcl9wYXNzd29yZA.neededForUsers = true;

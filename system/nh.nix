@@ -1,6 +1,4 @@
 {
-  config,
-  pkgs,
   ...
 }: {
   environment.variables.FLAKE = "/home/simon/nixfiles";

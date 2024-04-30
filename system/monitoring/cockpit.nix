@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  input,
   ...
 }: let
   cpkgs = pkgs.nur.repos.dukzcry;
