@@ -5,6 +5,8 @@ _: {
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
+      allowed-users = ["root" "simon" "@wheel"];
+      trusted-users = ["root" "simon" "@wheel"];
       # hyprland cachix
       substituters = [
         "https://hyprland.cachix.org"

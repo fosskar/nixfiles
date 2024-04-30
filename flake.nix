@@ -64,9 +64,9 @@
     };
 
     # nyx
-    chaotic = {
-      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    };
+    #chaotic = {
+    #  url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    #};
 
     nix-gaming = {
       url = "github:fufexan/nix-gaming/6e2db2c21be525330942380e2e839277574404fa";
