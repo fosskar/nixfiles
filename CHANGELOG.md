@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.5](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.4...v2.4.5) (2024-04-30)
+
+
+### Bug Fixes
+
+* add zed hyprland shortcut ([c3ad0d2](https://gitlab.com/simonoscr/nixfiles/commit/c3ad0d229207e711ff7903d590db456c3912a025))
+
 ## [2.4.4](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.3...v2.4.4) (2024-04-30)
 
 
