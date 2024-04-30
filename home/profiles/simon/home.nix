@@ -24,6 +24,7 @@
     #../../stylix.nix
     ../../mpv.nix
     ../../udiskie.nix
+    ../../editors/zed.nix
   ];
 
   programs.home-manager.enable = true;
