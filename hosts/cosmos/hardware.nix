@@ -3,20 +3,12 @@
   pkgs,
   ...
 }: {
-  imports = [inputs.chaotic.nixosModules.default];
-
   environment = {
     variables = {
       AMD_VULKAN_ICD = "RADV";
       RADV_PERFTEST = "gpl,shader_object";
     };
   };
-
-  #chaotic = {
-  #  mesa-git = {
-  #    enable = true;
-  #  };
-  #};
 
   environment.etc = {
     "drirc/00-low-latency.conf" = {
