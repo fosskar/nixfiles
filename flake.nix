@@ -91,7 +91,6 @@
     nixpkgs,
     home-manager,
     nur,
-    hyprland,
     ...
   } @ inputs: let
     system = "x86_64-linux";
