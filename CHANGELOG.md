@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.8...v2.5.0) (2024-05-01)
+
+
+### Features
+
+* **ci:** update pipeline to contains cleanup, lint and tests, add podman ([aff8f58](https://gitlab.com/simonoscr/nixfiles/commit/aff8f582cc42caa5d708e0434c638c94588a0846))
+
 ## [2.4.8](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.7...v2.4.8) (2024-05-01)
 
 
