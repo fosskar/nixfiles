@@ -25,7 +25,7 @@ cleanup:
     - |
       if ! git diff --quiet --exit-code; then
         git add -A;
-        git commit -m "chore: cleanup dead code";
+        git commit -m "ref(nix): cleanup dead nix code";
         git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
       fi
 
@@ -37,7 +37,7 @@ lint:
     - |
       if ! git diff --quiet --exit-code; then
         git add -A;
-        git commit -m "chore: format code";
+        git commit -m "style(nix): format nix code";
         git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
       fi
   needs:
