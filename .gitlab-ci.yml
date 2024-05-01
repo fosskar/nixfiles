@@ -1,13 +1,67 @@
+default:
+  image: nixpkgs/nix-flakes
+  before_script:
+    - git config --global user.email ""
+    - git config --global user.name "Gitlab CI"
+    - git config --global push.followTags true
+    - git checkout $CI_COMMIT_REF_NAME
+    - git remote set-url origin "https://gitlab-ci:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git pull origin $CI_COMMIT_REF_NAME
+
+variables:
+  NIX_PATH: nixpkgs=channel:nixos-unstable
+
 stages:
+  - cleanup
+  - lint
+  - test
   - release
 
+cleanup:
+  stage: cleanup
+  script:
+    - echo "remove dead code"
+    - nix-shell -p deadnix --run "deadnix -eV"
+    - |
+      if ! git diff --quiet --exit-code; then
+        git add -A;
+        git commit -m "chore: cleanup dead code";
+        git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
+      fi
+
+lint:
+  stage: lint
+  script:
+    - nix-shell -p alejandra --run "alejandra -V ;alejandra ."
+    - |
+      if ! git diff --quiet --exit-code; then
+        git add -A;
+        git commit -m "chore: format code";
+        git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
+      fi
+  needs:
+    - cleanup
+
+test:
+  stage: test
+  script:
+    - nix flake show
+    - nix flake check --version --debug
+    #- nix flake check --all-systems --no-update-lock-file --offline
+  needs:
+    - lint
+
 release:
-  image: node:20-buster-slim
+  image: node:slim
   stage: release
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - npm install --location=global semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/commit-analyzer @semantic-release/git
   script:
     - semantic-release
+  needs:
+    - cleanup
+    - lint
+    - test
   only:
     - main

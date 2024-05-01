@@ -30,6 +30,7 @@
     ../../system/gaming/gamemode.nix
     ../../system/gaming/steam.nix
     ../../system/gaming/gamescope.nix
+    ../../system/podman.nix
   ];
   console = {
     earlySetup = true;
