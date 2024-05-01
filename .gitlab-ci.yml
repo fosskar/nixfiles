@@ -33,6 +33,7 @@ lint:
   stage: lint
   script:
     - nix-shell -p alejandra --run "alejandra -V ;alejandra ."
+    - nix-shell -p statix --run "statix check; statix fix --help"
     - |
       if ! git diff --quiet --exit-code; then
         git add -A;
