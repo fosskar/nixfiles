@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://gitlab.com/simonoscr/nixfiles/compare/v2.5.0...v2.5.1) (2024-05-01)
+
+
+### Bug Fixes
+
+* use virtualisation.nix instead of own podman.nix file ([8a96fd3](https://gitlab.com/simonoscr/nixfiles/commit/8a96fd3f7739e32f583c505b953bee5c62fb7fe1))
+
 ## [2.5.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.8...v2.5.0) (2024-05-01)
 
 
