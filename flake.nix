@@ -56,6 +56,10 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    hy3 = {
+      url = "github:outfoxxed/hy3";
+      inputs.hyprland.follows = "hyprland";
+    };
     hypridle = {
       url = "github:hyprwm/hypridle";
     };
@@ -87,6 +91,7 @@
     nixpkgs,
     home-manager,
     nur,
+    hyprland,
     ...
   } @ inputs: let
     system = "x86_64-linux";
