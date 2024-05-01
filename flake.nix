@@ -127,9 +127,9 @@
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
-            #home-manager.useUserPackages = true;
+            home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {inherit inputs;};
-            home-manager.users.simon = import ./home/profiles/oscar/home.nix;
+            home-manager.users.oscar = import ./home/profiles/oscar/home.nix;
           }
         ];
       };
@@ -138,14 +138,6 @@
     # standalone home-manager configuration entrypoint
     # available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
-      # server user
-      "oscar@voyager" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
-        extraSpecialArgs = {inherit inputs;};
-        modules = [
-          ./home/oscar/home.nix
-        ];
-      };
       # work user
       "simon@work" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
