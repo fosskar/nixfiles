@@ -5,7 +5,10 @@
 }: {
   wayland.windowManager.hyprland = {
     enable = true;
-    plugins = [inputs.hyprland-plugins.packages.${pkgs.system}.csgo-vulkan-fix];
+    plugins = [
+      inputs.hyprland-plugins.packages.${pkgs.system}.csgo-vulkan-fix
+      inputs.hy3.packages.${pkgs.system}.hy3
+    ];
     extraConfig = ''
       plugin {
         csgo-vulkan-fix {
