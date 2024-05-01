@@ -4,6 +4,7 @@
 in {
   programs.git = {
     enable = true;
+    lfs.enable = true;
     extraConfig = {
       color.ui = true;
       core.editor = "nvim";
@@ -11,6 +12,15 @@ in {
       github.user = name;
       push.autoSetupRemote = true;
       diff.colorMoved = "default";
+      gpg.format = "ssh";
+      commit.gpgsign = true;
+      pull.rebase = true;
+      init.defaultBranch = "main";
+      url = {
+        "ssh://git@gitlab.com:simonoscr" = {
+          insteadOf = "https://gitlab.com/simonoscr";
+        };
+      };
     };
     userEmail = email;
     userName = name;
@@ -41,10 +51,8 @@ in {
     ignores = [".DS_Store" "*.swp" "Thumbs.db" ".idea/" ".vscode/" ".vscodium/"];
 
     signing = {
-      key = "${config.home.homeDirectory}/.ssh/id_ed25519";
+      key = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
       signByDefault = true;
     };
-
-    extraConfig.gpg.format = "ssh";
   };
 }
