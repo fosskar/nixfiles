@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.6](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.5...v2.4.6) (2024-05-01)
+
+
+### Bug Fixes
+
+* add hy3 hyprland plugin but not activate it and update ([223369d](https://gitlab.com/simonoscr/nixfiles/commit/223369dfbd283571122d78fe7368ddc72bd1925e))
+
 ## [2.4.5](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.4...v2.4.5) (2024-04-30)
 
 
