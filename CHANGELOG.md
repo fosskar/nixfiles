@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.7](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.6...v2.4.7) (2024-05-01)
+
+
+### Bug Fixes
+
+* remove dead code with deadnix ([d640b78](https://gitlab.com/simonoscr/nixfiles/commit/d640b78b4c43c52b758d409fb2fd4ae1263ad2d2))
+
 ## [2.4.6](https://gitlab.com/simonoscr/nixfiles/compare/v2.4.5...v2.4.6) (2024-05-01)
 
 
