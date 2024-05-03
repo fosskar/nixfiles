@@ -1,8 +1,12 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   boot = {
     tmp.cleanOnBoot = true;
     loader = {
-      timeout = 1;
+      timeout = lib.mkDefault 1;
       generationsDir.copyKernels = true;
       systemd-boot = {
         enable = true;

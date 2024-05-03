@@ -16,12 +16,14 @@ stages:
   - lint
   - test
   - release
+  - release_iso
 
 cleanup:
   stage: cleanup
   script:
     - echo "remove dead code"
-    - nix-shell -p deadnix --run "deadnix -eV"
+    - nix run github:astro/deadnix -- -eV
+    #- nix-shell -p deadnix --run "deadnix -eV"
     - |
       if ! git diff --quiet --exit-code; then
         git add -A;
@@ -38,7 +40,8 @@ cleanup:
 lint:
   stage: lint
   script:
-    - nix-shell -p alejandra --run "alejandra -V ;alejandra ."
+    #- nix-shell -p alejandra --run "alejandra -V ;alejandra ."
+    - nix run github:kamadorueda/alejandra .
     - nix-shell -p statix --run "statix check; statix fix -d; statix fix"
     - |
       if ! git diff --quiet --exit-code; then
@@ -75,5 +78,18 @@ release:
     - npm install --location=global semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/commit-analyzer @semantic-release/git
   script:
     - semantic-release
+  only:
+    - main
+
+build_iso:
+  stage: release_iso
+  dependencies:
+    - release
+  script:
+    - nix build .#iso
+    - nix build .#install-iso
+  artifacts:
+    paths:
+      - result
   only:
     - main

@@ -72,6 +72,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # nyx
     #chaotic = {
     #  url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -96,6 +101,7 @@
     nixpkgs,
     home-manager,
     nur,
+    nixos-generators,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -146,6 +152,23 @@
           ./home/work/home.nix
         ];
       };
+    };
+
+    iso = nixos-generators.nixosGenerate {
+      inherit system;
+      specialArgs = {inherit inputs;};
+      modules = [
+        ./hosts/cosmos/configuration.nix
+      ];
+      format = "iso";
+    };
+    install-iso = nixos-generators.nixosGenerate {
+      inherit system;
+      specialArgs = {inherit inputs;};
+      modules = [
+        ./hosts/cosmos/configuration.nix
+      ];
+      format = "install-iso";
     };
   };
 }
