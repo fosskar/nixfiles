@@ -110,7 +110,6 @@ publish:
   - path: '@semantic-release/gitlab'
     assets:
       - nixos.iso
-      - 
 
 success: false
 
