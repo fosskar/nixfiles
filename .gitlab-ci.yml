@@ -15,7 +15,7 @@ stages:
   - cleanup
   - lint
   - test
-  - build_iso
+#  - build_iso
   - release
 
 cleanup:
@@ -70,23 +70,27 @@ test:
       - flake.nix
       - flake.lock
 
-build_nixos_iso:
-  stage: build_iso
-  script:
-    - nix build .#iso
-    #- nix build .#install-iso
-  artifacts:
-    paths:
-      - result
-  only:
-    - main
+#build_nixos_iso:
+#  stage: build_iso
+#  cache:
+#    key: "${CI_COMMIT_REF_SLUG}"
+#    paths:
+#      - /nix/store
+#  script:
+#    - nix build -L .#iso
+#    #- nix build .#install-iso
+#  artifacts:
+#    paths:
+#      - result
+#  only:
+#    - main
 
 release:
   image: node:slim
   stage: release
-  needs:
-    - job: build_nixos_iso
-      artifacts: true
+#  needs:
+#    - job: build_nixos_iso
+#      artifacts: true
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - npm install --location=global semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/commit-analyzer @semantic-release/git
