@@ -3,6 +3,8 @@ branches:
 
 preset: 'conventionalcommits'
 
+tagFormat: "${version}"
+
 verifyConditions:
   - '@semantic-release/changelog'
   - '@semantic-release/git'
@@ -106,6 +108,9 @@ prepare:
 
 publish:
   - path: '@semantic-release/gitlab'
+    assets:
+      - nixos.iso
+      - 
 
 success: false
 

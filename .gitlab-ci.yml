@@ -15,8 +15,8 @@ stages:
   - cleanup
   - lint
   - test
+  - build_iso
   - release
-  - release_iso
 
 cleanup:
   stage: cleanup
@@ -70,7 +70,7 @@ test:
       - flake.nix
       - flake.lock
 
-build_iso:
+build_nixos_iso:
   stage: build_iso
   script:
     - nix build .#iso
