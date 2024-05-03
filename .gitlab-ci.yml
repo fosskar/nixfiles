@@ -85,7 +85,7 @@ release:
   image: node:slim
   stage: release
   needs:
-    - job: build_iso
+    - job: build_nixos_iso
       artifacts: true
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
