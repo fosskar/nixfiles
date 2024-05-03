@@ -1,3 +1,32 @@
+## [2.6.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.5.2...2.6.0) (2024-05-03)
+
+
+### 📦 Other
+
+* **ci:** update gitlab-ci ([ff0eece](https://gitlab.com/simonoscr/nixfiles/commit/ff0eece96e98e7e47fb08f7cd2ceba2ed53e1181))
+* **ci:** update job dependencies ([c0f363e](https://gitlab.com/simonoscr/nixfiles/commit/c0f363eb052d9775c3af4c80327e47033c5a63f9))
+* **flake:** update flake.lock ([d26fc6d](https://gitlab.com/simonoscr/nixfiles/commit/d26fc6d830d96e2168abdd889944de315a1308fb))
+* **semver:** update releaserc config commit message with scope ([684ead5](https://gitlab.com/simonoscr/nixfiles/commit/684ead5b86db48508223a3e0abbc7bef49fa1747))
+
+
+### 🦊 CI/CD
+
+* add assets to release ([f507ac3](https://gitlab.com/simonoscr/nixfiles/commit/f507ac329ef5e3e06c3b01a09792777ab23cd0ce))
+* fix job typo ([858b8e8](https://gitlab.com/simonoscr/nixfiles/commit/858b8e8e6aa5f2e9dc2161b0a1384d74e4f4ec28))
+* test ([319c120](https://gitlab.com/simonoscr/nixfiles/commit/319c12079d3ba3a54c8be213d6e90e54c65238ce))
+* update stages ([3eb3912](https://gitlab.com/simonoscr/nixfiles/commit/3eb391224578d18ba1818b53a90ffa58509e6392))
+
+
+### 🧪 Tests
+
+* remove a nix build install-iso step for testing job ([41265fd](https://gitlab.com/simonoscr/nixfiles/commit/41265fd7f05dc825018c2b2630a4949b1c8e4b58))
+* semantic release ([fe59780](https://gitlab.com/simonoscr/nixfiles/commit/fe59780338af3f7afda92cfa05fa7bf5562a8b0c))
+
+
+### 🚀 Features
+
+* update with iso flake; pipeline update refined semantic-release with gitlab release ([22f88a2](https://gitlab.com/simonoscr/nixfiles/commit/22f88a20e8a5eaed7b9a7df9c6638b82f5134a26))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See
