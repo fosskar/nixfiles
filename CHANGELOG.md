@@ -1,3 +1,25 @@
+## [2.6.1](https://gitlab.com/simonoscr/nixfiles/compare/2.6.0...2.6.1) (2024-05-04)
+
+
+### 📦 Other
+
+* fix releaserc ([151fe05](https://gitlab.com/simonoscr/nixfiles/commit/151fe059eca1e7a043f7d7754ddf615c7c44a1b5))
+* make refactor commit also da patch release ([6befabf](https://gitlab.com/simonoscr/nixfiles/commit/6befabfc2f64a9ec367638032c705a87cf2cb3db))
+* update flock ([540a913](https://gitlab.com/simonoscr/nixfiles/commit/540a913795ba2e041e3fe0bd7b1d72515b68ae41))
+
+
+### 🦊 CI/CD
+
+* added cache for npm ([59552fc](https://gitlab.com/simonoscr/nixfiles/commit/59552fc1b175ead5df6c9a78e58a17d53c25ab89))
+* fixonventional-changelog-conventionalcommits @ v7.0.2 ([ab608ae](https://gitlab.com/simonoscr/nixfiles/commit/ab608aebee52f9ed1668660ca56fbb2460102099))
+* remove npm cache from release job ([0004e4f](https://gitlab.com/simonoscr/nixfiles/commit/0004e4f0236ebdfcdbeade80d1fe28705a3b78f3))
+
+
+### 🛠 Fixes
+
+* disable hyprland debug log but keep option in hyprland config ([7ececd6](https://gitlab.com/simonoscr/nixfiles/commit/7ececd6458bc49bdf971bb9eea5390af4ea6b285))
+* hyprland config option to disable or enable debug logs ([6016a08](https://gitlab.com/simonoscr/nixfiles/commit/6016a0895ae0b10745ff2f8592d9a2d936a9174b))
+
 ## [2.6.0](https://gitlab.com/simonoscr/nixfiles/compare/v2.5.2...2.6.0) (2024-05-03)
 
 
