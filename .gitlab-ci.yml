@@ -93,7 +93,7 @@ release:
 #      artifacts: true
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
-    - npm install --location=global semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/commit-analyzer @semantic-release/git
+    - npm install --location=global semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits@7.0.2 @semantic-release/commit-analyzer @semantic-release/git
   script:
     - semantic-release
   only:
