@@ -32,7 +32,7 @@ analyzeCommits:
       - type: perf      # A code change that improves performance
         release: patch
       - type: refactor  # A code change that neither fixes a bug nor adds a feature
-        release: false
+        release: patch
       - type: revert    # Reverts a previous commit
         release: patch
       - type: style     # Changes that do not affect the meaning of the code
