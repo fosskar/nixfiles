@@ -13,6 +13,7 @@ _: {
         "udiskie &" # automatically mount usb
         #"solaar --window=hide"
         "hyprctl setcursor capitaine-cursors 24"
+        "hypridle"
       ];
 
       monitor = [

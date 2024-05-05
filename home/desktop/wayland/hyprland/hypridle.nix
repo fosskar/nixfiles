@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
@@ -13,26 +12,24 @@
     fi
   '';
 in {
-  imports = [
-    inputs.hypridle.homeManagerModules.hypridle
-  ];
-
   services.hypridle = {
     enable = true;
-    beforeSleepCmd = "${pkgs.systemd}/bin/loginctl lock-session";
-    afterSleepCmd = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
-    lockCmd = lib.getExe config.programs.hyprlock.package;
+    settings = {
+      beforeSleepCmd = "${pkgs.systemd}/bin/loginctl lock-session";
+      afterSleepCmd = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
+      lockCmd = lib.getExe config.programs.hyprlock.package;
 
-    listeners = [
-      {
-        timeout = 180;
-        onTimeout = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
-        onResume = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
-      }
-      {
-        timeout = 3600;
-        onTimeout = suspendScript.outPath;
-      }
-    ];
+      listeners = [
+        {
+          timeout = 180;
+          onTimeout = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
+          onResume = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
+        }
+        {
+          timeout = 3600;
+          onTimeout = suspendScript.outPath;
+        }
+      ];
+    };
   };
 }

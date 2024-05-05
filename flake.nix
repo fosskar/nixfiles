@@ -60,9 +60,6 @@
       url = "github:outfoxxed/hy3";
       inputs.hyprland.follows = "hyprland";
     };
-    hypridle = {
-      url = "github:hyprwm/hypridle";
-    };
     hyprlock = {
       url = "github:hyprwm/hyprlock";
     };
