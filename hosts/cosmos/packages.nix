@@ -15,5 +15,6 @@
     alejandra
     deadnix
     statix
+    cachix
   ];
 }
