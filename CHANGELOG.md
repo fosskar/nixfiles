@@ -1,3 +1,20 @@
+## [2.7.0](https://gitlab.com/simonoscr/nixfiles/compare/2.6.2...2.7.0) (2024-05-05)
+
+
+### 📦 Other
+
+* **flake.lock:** update flock ([3b8260a](https://gitlab.com/simonoscr/nixfiles/commit/3b8260af473df6f494e7d8cf9e41165118ee6662))
+
+
+### 🦊 CI/CD
+
+* remove 'only' rules for all jobs and stages ([7cd835f](https://gitlab.com/simonoscr/nixfiles/commit/7cd835f0d56c280ae32e2ed6d71c730155710528))
+
+
+### 🚀 Features
+
+* add and use own cachix cache ([0c68474](https://gitlab.com/simonoscr/nixfiles/commit/0c684740988e637ef7ad40549afda2dd47095194))
+
 ## [2.6.2](https://gitlab.com/simonoscr/nixfiles/compare/2.6.1...2.6.2) (2024-05-05)
 
 
