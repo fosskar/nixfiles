@@ -327,6 +327,10 @@
             name = "nixpkgs PR-Tracker";
             url = "https://nixpk.gs/pr-tracker.html";
           }
+          {
+            name = "Cachix";
+            url = "https://app.cachix.org";
+          }
         ];
       }
       {
