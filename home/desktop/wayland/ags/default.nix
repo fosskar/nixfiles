@@ -5,7 +5,6 @@
 }: {
   imports = [
     inputs.ags.homeManagerModules.default
-    inputs.matugen.nixosModules.default
   ];
 
   home.packages = with pkgs; [
@@ -16,12 +15,12 @@
     bun
     dart-sass
     fd
-    inputs.matugen.packages.${system}.default
+    #inputs.matugen.packages.${system}.default
   ];
 
   programs.ags = {
     enable = true;
-    configDir = ./style2;
-    extraPackages = [pkgs.libsoup_3];
+    configDir = ./style1;
+    extraPackages = [pkgs.accountsservice];
   };
 }
