@@ -3,22 +3,25 @@
 
   security = {
     sudo.wheelNeedsPassword = false;
-    pam.services.greetd.enableGnomeKeyring = true;
-    pam.loginLimits = [
-      {
-        domain = "@users";
-        item = "rtprio";
-        type = "-";
-        value = 1;
-      }
-    ];
+    pam = {
+      services = {
+        greetd.enableGnomeKeyring = true;
+        # allow wayland lockers to unlock the screen
+        #pam.services.swaylock.text = "auth include login";   # switched to hyprlock
+        hyprlock.text = "auth include login";
+      };
+      loginLimits = [
+        {
+          domain = "@users";
+          item = "rtprio";
+          type = "-";
+          value = 1;
+        }
+      ];
+    };
     polkit.enable = true;
     # userland niceness
     rtkit.enable = true;
-    # allow wayland lockers to unlock the screen
-    #pam.services.swaylock.text = "auth include login";   # switched to hyprlock
-    # allow wayland lockers to unlock the screen
-    pam.services.hyprlock.text = "auth include login";
   };
 
   systemd = {

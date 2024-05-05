@@ -117,10 +117,12 @@
           #{nixpkgs.overlays = [inputs.nixpkgs-wayland.overlay];}
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = {inherit inputs;};
-            home-manager.users.simon = import ./home/profiles/simon/home.nix;
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = {inherit inputs;};
+              users.simon = import ./home/profiles/simon/home.nix;
+            };
           }
         ];
       };
@@ -132,10 +134,12 @@
           ./hosts/voyager/configuration.nix
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = {inherit inputs;};
-            home-manager.users.oscar = import ./home/profiles/oscar/home.nix;
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = {inherit inputs;};
+              users.oscar = import ./home/profiles/oscar/home.nix;
+            };
           }
         ];
       };
@@ -154,6 +158,8 @@
       };
     };
 
+    # nixos-generators format entrypoint
+    # available through 'nix build .#yourFormat'
     iso = nixos-generators.nixosGenerate {
       inherit system;
       specialArgs = {inherit inputs;};

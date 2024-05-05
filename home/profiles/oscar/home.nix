@@ -6,14 +6,12 @@
 
   programs.home-manager.enable = true;
 
-  home.sessionVariables = {
-    TERM = "xterm-256color";
-  };
-
   home = {
     username = "oscar";
     homeDirectory = "/home/oscar";
+    sessionVariables = {
+      TERM = "xterm-256color";
+    };
+    stateVersion = "23.11";
   };
-
-  home.stateVersion = "23.11";
 }
