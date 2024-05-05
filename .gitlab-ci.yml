@@ -30,12 +30,6 @@ cleanup:
         git commit -m "ref(nix): cleanup dead nix code";
         git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
       fi
-  only:
-    changes:
-      - home/**
-      - hosts/**
-      - system/**
-      - flake.nix
 
 lint:
   stage: lint
@@ -49,12 +43,6 @@ lint:
         git commit -m "style(nix): format nix code";
         git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
       fi
-  only:
-    changes:
-      - home/**
-      - hosts/**
-      - system/**
-      - flake.nix
 
 test:
   stage: test
@@ -62,13 +50,6 @@ test:
     - nix flake show
     - nix flake check --version --debug
     #- nix flake check --all-systems --no-update-lock-file --offline
-  only:
-    changes:
-      - home/**
-      - hosts/**
-      - system/**
-      - flake.nix
-      - flake.lock
 
 #build_nixos_iso:
 #  stage: build_iso
