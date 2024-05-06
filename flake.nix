@@ -45,24 +45,23 @@
     };
 
     matugen = {
-      url = "github:/InioX/Matugen";
+      url = "github:InioX/matugen/module";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # hyprland
     hyprland = {
-      url = "github:hyprwm/Hyprland";
+      url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
-    hy3 = {
-      url = "github:outfoxxed/hy3";
-      inputs.hyprland.follows = "hyprland";
-    };
     hyprlock = {
       url = "github:hyprwm/hyprlock";
     };
+
+    yazi.url = "github:sxyazi/yazi";
 
     alejandra = {
       url = "github:kamadorueda/alejandra/3.0.0";
@@ -74,23 +73,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # nyx
-    #chaotic = {
-    #  url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    #};
-
     nix-gaming = {
       url = "github:fufexan/nix-gaming/6e2db2c21be525330942380e2e839277574404fa";
     };
 
-    #nixpkgs-wayland = {
-    #  url = "github:nix-community/nixpkgs-wayland";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
-
     # aylur-gtk-shell
     ags = {
       url = "github:Aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -115,8 +105,6 @@
           home-manager.nixosModules.home-manager
           {
             home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
               extraSpecialArgs = {inherit inputs;};
               users.simon = import ./home/profiles/simon/home.nix;
             };
