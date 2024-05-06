@@ -1,8 +1,5 @@
 _: {
   wayland.windowManager.hyprland = {
-    systemd.enable = true;
-    xwayland.enable = true;
-
     settings = {
       exec-once = [
         "ags -b hypr"
