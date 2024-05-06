@@ -1,3 +1,19 @@
+## [2.7.1](https://gitlab.com/simonoscr/nixfiles/compare/2.7.0...2.7.1) (2024-05-06)
+
+
+### 📦 Other
+
+* **firefox:** add cachix to bookmarks ([5cb5915](https://gitlab.com/simonoscr/nixfiles/commit/5cb591578340e2c30e27ec791ea2cf5f063d9170))
+* **flock:** update flake.lock ([0e83fb1](https://gitlab.com/simonoscr/nixfiles/commit/0e83fb12af2f87e35f1babc83c34061539734479))
+
+
+### 🛠 Fixes
+
+* **flake:** hyprland flake input; ags follow nixpkgs, remove old inputs ([ab3725c](https://gitlab.com/simonoscr/nixfiles/commit/ab3725cf160e9a232eecc7dfc32dc1f80a63a1e7))
+* **hm:** outsource home-manager settings to own .nix file instead of flake ([0d359c4](https://gitlab.com/simonoscr/nixfiles/commit/0d359c4c57b89f48396a7c241e0d2dac1c474505))
+* **hyprland:** add systemd variables and extraCommands ([a0ea2d4](https://gitlab.com/simonoscr/nixfiles/commit/a0ea2d45603ce3ef72cbc75a99265ff299824945))
+* **hyprland:** install hyprland for system instead only with hm; should be better and should added some dependencies; update imports on configuration ([920ebe6](https://gitlab.com/simonoscr/nixfiles/commit/920ebe6610fbbff0048a501eb3c8a7c33922033d))
+
 ## [2.7.0](https://gitlab.com/simonoscr/nixfiles/compare/2.6.2...2.7.0) (2024-05-05)
 
 
