@@ -31,6 +31,8 @@
     ../../system/gaming/steam.nix
     ../../system/gaming/gamescope.nix
     ../../system/virtualisation.nix
+    ../../system/home-manager.nix
+    ../../system/hyprland.nix
   ];
   console = {
     earlySetup = true;
