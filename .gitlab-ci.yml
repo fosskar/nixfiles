@@ -10,6 +10,7 @@ default:
 
 variables:
   NIX_PATH: nixpkgs=channel:nixos-unstable
+  FLAKEREF: $CI_PROJECT_DIR
 
 stages:
   - cleanup
@@ -58,9 +59,10 @@ build:
   variables:
     CACHIX_CACHE_NAME: nixos-gitlab
   before_script:
+    - nix-shell -p nh
     - cachix use "$CACHIX_CACHE_NAME"
   script:
-    - nix-shell -p --run "nh os switch -H cosmos" | cachix push nixos-gitlab
+    - cachix watch-exec $CACHIX_CACHE_NAME -- nh os switch -H cosmos
   artifacts:
     paths:
       - result
