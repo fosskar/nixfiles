@@ -15,6 +15,7 @@ stages:
   - cleanup
   - lint
   - test
+  - build
 #  - build_iso
   - release
 
@@ -50,6 +51,22 @@ test:
     - nix flake show
     - nix flake check --version --debug
     #- nix flake check --all-systems --no-update-lock-file --offline
+
+build:
+  stage: build_iso
+  image: nixpkgs/cachix-flakes
+  variables:
+    CACHIX_CACHE_NAME: nixos-gitlab
+  before_script:
+    - cachix use "$CACHIX_CACHE_NAME"
+  script:
+    - cachix watch-exec $CACHIX_CACHE_NAME -- nixos-rebuild --flake .#cosmos
+    #- cachix watch-exec $CACHIX_CACHE_NAME -- nixos-rebuild --flake .#voyager
+  artifacts:
+    paths:
+      - result
+  only:
+    - main
 
 #build_nixos_iso:
 #  stage: build_iso
