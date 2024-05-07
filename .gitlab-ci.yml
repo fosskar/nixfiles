@@ -53,7 +53,7 @@ test:
     #- nix flake check --all-systems --no-update-lock-file --offline
 
 build:
-  stage: build_iso
+  stage: build
   image: nixpkgs/cachix-flakes
   variables:
     CACHIX_CACHE_NAME: nixos-gitlab
