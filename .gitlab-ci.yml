@@ -7,10 +7,12 @@ default:
     - git checkout $CI_COMMIT_REF_NAME
     - git remote set-url origin "https://gitlab-ci:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
     - git pull origin $CI_COMMIT_REF_NAME
+    - cachix use "$CACHIX_CACHE_NAME"
 
 variables:
   NIX_PATH: nixpkgs=channel:nixos-unstable
   FLAKEREF: $CI_PROJECT_DIR
+  CACHIX_CACHE_NAME: nixos-gitlab
 
 stages:
   - cleanup
@@ -49,15 +51,10 @@ lint:
 build:
   stage: build
   image: nixpkgs/cachix-flakes
-  variables:
-    CACHIX_CACHE_NAME: nixos-gitlab
-  before_script:
-    - nix-env -iA nixpkgs.jq
-    - cachix use "$CACHIX_CACHE_NAME"
   script:
     #- cachix watch-exec $CACHIX_CACHE_NAME -- nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel'
     #- nix build '.#nixosConfigurations.cosmos.config.system.build.toplevel' | cachix push $CACHIX_CACHE_NAME
-    - nix flake archive --json | jq -r '.path,(.inputs|to_entries[].value.path)' | cachix push $CACHIX_CACHE_NAME
+    - nix-shell -p jq --run "nix flake archive --json | jq -r '.path,(.inputs|to_entries[].value.path)' | cachix push $CACHIX_CACHE_NAME"
   artifacts:
     paths:
       - result
