@@ -55,7 +55,7 @@ build:
     - cachix use "$CACHIX_CACHE_NAME"
   script:
     #- cachix watch-exec $CACHIX_CACHE_NAME -- nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel'
-    - nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel' | cachix push $CACHIX_CACHE_NAME
+    - nix build '.#nixosConfigurations.cosmos.config.system.build.toplevel' | cachix push $CACHIX_CACHE_NAME
   artifacts:
     paths:
       - result
