@@ -1,5 +1,5 @@
 default:
-  image: nixpkgs/nix-flakes
+  image: nixpkgs/cachix-flakes
   before_script:
     - git config --global user.email ""
     - git config --global user.name "Gitlab CI"
@@ -50,7 +50,6 @@ lint:
 
 build:
   stage: build
-  image: nixpkgs/cachix-flakes
   script:
     #- cachix watch-exec $CACHIX_CACHE_NAME -- nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel'
     #- nix build '.#nixosConfigurations.cosmos.config.system.build.toplevel' | cachix push $CACHIX_CACHE_NAME
