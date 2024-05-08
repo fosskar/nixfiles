@@ -59,10 +59,9 @@ build:
   variables:
     CACHIX_CACHE_NAME: nixos-gitlab
   before_script:
-    - nix-shell -p nh
     - cachix use "$CACHIX_CACHE_NAME"
   script:
-    - cachix watch-exec $CACHIX_CACHE_NAME -- nh os switch -H cosmos
+    - cachix watch-exec $CACHIX_CACHE_NAME -- nix build $CI_PROJECT_DIR/flake.nix#nixosConfigurations.cosmos.config.system.build.toplevel
   artifacts:
     paths:
       - result
