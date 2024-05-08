@@ -46,13 +46,6 @@ lint:
         git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
       fi
 
-test:
-  stage: test
-  script:
-    - nix flake show
-    - nix flake check --version --debug
-    #- nix flake check --all-systems --no-update-lock-file --offline
-
 build:
   stage: build
   image: nixpkgs/cachix-flakes
@@ -61,7 +54,8 @@ build:
   before_script:
     - cachix use "$CACHIX_CACHE_NAME"
   script:
-    - cachix watch-exec $CACHIX_CACHE_NAME -- nix build $CI_PROJECT_DIR/flake.nix#nixosConfigurations.cosmos.config.system.build.toplevel
+    #- cachix watch-exec $CACHIX_CACHE_NAME -- nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel'
+    - nix-build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel' | cachix push $CACHIX_CACHE_NAME
   artifacts:
     paths:
       - result
