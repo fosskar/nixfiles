@@ -52,6 +52,7 @@ build:
   variables:
     CACHIX_CACHE_NAME: nixos-gitlab
   before_script:
+    - nix-env -iA nixpkgs.jq
     - cachix use "$CACHIX_CACHE_NAME"
   script:
     #- cachix watch-exec $CACHIX_CACHE_NAME -- nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel'
