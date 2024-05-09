@@ -79,9 +79,17 @@ release:
 #  needs:
 #    - job: build_nixos_iso
 #      artifacts: true
-  script:
+  before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
+    - git config --global user.email ""
+    - git config --global user.name "Gitlab CI"
+    - git config --global push.followTags true
+    - git checkout $CI_COMMIT_REF_NAME
+    - git remote set-url origin "https://gitlab-ci:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git pull origin $CI_COMMIT_REF_NAME
+    - cachix use "$CACHIX_CACHE_NAME"
     - npm install --location=global semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits@7.0.2 @semantic-release/commit-analyzer @semantic-release/git
+  script:
     - semantic-release
   only:
     - main
