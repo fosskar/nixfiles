@@ -1,7 +1,4 @@
-{
-  config,
-  ...
-}: let
+{config, ...}: let
   nixsecrets = builtins.fetchGit {
     url = "git+ssh://git@gitlab.com/simonoscr/nixsecrets";
     ref = "main";
