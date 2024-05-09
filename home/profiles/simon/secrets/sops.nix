@@ -1,7 +1,4 @@
-{
-  config,
-  ...
-}: let
+{config, ...}: let
   userhome = "/home/simon";
 in {
   sops = {
