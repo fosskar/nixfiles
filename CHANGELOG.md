@@ -1,3 +1,10 @@
+## [3.0.0](https://gitlab.com/simonoscr/nixfiles/compare/2.7.2...3.0.0) (2024-05-09)
+
+
+### 🧨 Breaking changes!
+
+* **refactor:** restructure repo to better reflect what files are used in different systems ([736a1d0](https://gitlab.com/simonoscr/nixfiles/commit/736a1d09ec929817ff39a1bfd0fe1e563d7364f8))
+
 ## [2.7.2](https://gitlab.com/simonoscr/nixfiles/compare/2.7.1...2.7.2) (2024-05-09)
 
 
