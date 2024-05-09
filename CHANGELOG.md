@@ -1,3 +1,44 @@
+## [2.7.2](https://gitlab.com/simonoscr/nixfiles/compare/2.7.1...2.7.2) (2024-05-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* restructure repo to better reflect what files are used in different hosts; also deleted unused file and split many files up to see better where to find what
+
+### :scissors: Refactor
+
+* restructure repo to better reflect what files are used in different hosts; also deleted unused file and split many files up to see better where to find what ([8d5369a](https://gitlab.com/simonoscr/nixfiles/commit/8d5369a575005606fdda804ed30dfadcffd922a9))
+
+
+### 📔 Docs
+
+* update README ([8aa3054](https://gitlab.com/simonoscr/nixfiles/commit/8aa3054631dfdd5bc042b3bfc4cf84c1be4ac41d))
+
+
+### 📦 Other
+
+* **flake:** update flake.lock ([1519f96](https://gitlab.com/simonoscr/nixfiles/commit/1519f96ca2e0eb4ccb8b65050b38f76f294bf773))
+* **flake:** update flake.lock ([3ab156e](https://gitlab.com/simonoscr/nixfiles/commit/3ab156e9133b690f77cd63a9c43a89f819ba20b3))
+
+
+### 🦊 CI/CD
+
+* switch default image ([41c757b](https://gitlab.com/simonoscr/nixfiles/commit/41c757b210185cf90faa805f1f8611f791259666))
+* test build and push to cachix ([b0068bf](https://gitlab.com/simonoscr/nixfiles/commit/b0068bfc0cda1c1cb98fbddb0f389fcffbab05a3))
+* **fix:** remove ${CI_PROJECT_DIR} from nix build, invalid url just use "." ([b755027](https://gitlab.com/simonoscr/nixfiles/commit/b755027dfe3a7c83b93cb25b4f41bd7abd45cfe3))
+* **fix:** valid build stage ([25f6c5f](https://gitlab.com/simonoscr/nixfiles/commit/25f6c5f2bf414045f7ffcd53effb175cc737a2ca))
+* **test:** fix typo in nix build ([5d37783](https://gitlab.com/simonoscr/nixfiles/commit/5d37783e91d236072eaf6b3cfffa0c622d432ea4))
+
+
+### 🧪 Tests
+
+* **ci:** add jq to get inputs value.path from nix flake json archive ([0ebe4d7](https://gitlab.com/simonoscr/nixfiles/commit/0ebe4d71cde077940711251b46cbd63baa1b3fd9))
+* **ci:** add jq with nix-shell --run and execute nix flake archive in pipeline ([31de671](https://gitlab.com/simonoscr/nixfiles/commit/31de671f765a9a7c87922499dc98d37311a5d5bd))
+* **ci:** build in pipeline and push to cachix ([27d1c86](https://gitlab.com/simonoscr/nixfiles/commit/27d1c8600309b829517805caf4e838da2cc064fa))
+* **ci:** nix build flake ([3a21da3](https://gitlab.com/simonoscr/nixfiles/commit/3a21da34187f1f4e126c0c295535fd90bf561522))
+* **ci:** test nix flake archive instead of nix build, because gitlab-runner has not enought disk space ([54b049d](https://gitlab.com/simonoscr/nixfiles/commit/54b049d254ff606dcd678d8e04be6a991a86c2d5))
+* **ci:** try h in gitlab pipeline ([8304da1](https://gitlab.com/simonoscr/nixfiles/commit/8304da1bd67d2a7f44ad135ea8c7ea7e0597fea0))
+
 ## [2.7.1](https://gitlab.com/simonoscr/nixfiles/compare/2.7.0...2.7.1) (2024-05-06)
 
 
