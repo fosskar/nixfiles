@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   ...
 }: let
   userhome = "/home/simon";
