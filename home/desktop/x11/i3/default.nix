@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   imports = [
     ./config.nix
     #../polybar.nix
@@ -16,4 +16,11 @@
     Exec=startx /home/simon/.xsession
     Type=XSession
   '';
+  home.packages = with pkgs; [
+    rofi
+    i3blocks
+    i3lock
+    xautolock
+    i3status
+  ];
 }

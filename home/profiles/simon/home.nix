@@ -25,6 +25,7 @@
     ../../mpv.nix
     ../../udiskie.nix
     ../../editors/zed.nix
+    ../../polkit-agent.nix
   ];
 
   programs.home-manager.enable = true;

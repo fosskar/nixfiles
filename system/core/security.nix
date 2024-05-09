@@ -1,20 +1,7 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
+  services.gnome.gnome-keyring.enable = true;
+
   boot = {
-    tmp.cleanOnBoot = true;
-    loader = {
-      timeout = lib.mkDefault 1;
-      generationsDir.copyKernels = true;
-      systemd-boot = {
-        enable = true;
-        configurationLimit = 5;
-      };
-      efi.canTouchEfiVariables = true;
-    };
-    kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
     kernel.sysctl = {
       # The Magic SysRq key is a key combo that allows users connected to the
       # system console of a Linux kernel to perform some low-level commands.
@@ -71,22 +58,25 @@
       "net.ipv4.tcp_mtu_probing" = true;
       "net.ipv4.tcp_slow_start_after_idle" = "0";
     };
-    kernelParams = [
-      # auto means kernel will automatically decide the pti state
-      "pti=auto" # on | off
-      # CPU idle behaviour
-      #  poll: slightly improve performance at cost of a hotter system (not recommended)
-      #  halt: halt is forced to be used for CPU idle
-      #  nomwait: Disable mwait for CPU C-states
-      "idle=nomwait" # poll | halt | nomwait
-      # disable displaying of the built-in Linux logo
-      "logo.nologo"
-      # disable usb autosuspend
-      "usbcore.autosuspend=-1"
-      "amd_pstate=active"
-      "nohibernate"
-      "nowatchdog"
-      "modprobe.blacklist=sp5100_tco"
-    ];
+    kernelModules = ["k10temp" "tcp_bbr"];
+  };
+
+  security = {
+    sudo.wheelNeedsPassword = false;
+    # allow wayland lockers to unlock the screen
+    #pam.services.swaylock.text = "auth include login";   # switched to hyprlock
+    pam = {
+      services.hyprlock.text = "auth include login";
+      loginLimits = [
+        {
+          domain = "@users";
+          item = "rtprio";
+          type = "-";
+          value = 1;
+        }
+      ];
+    };
+    polkit.enable = true;
+    rtkit.enable = true;
   };
 }
