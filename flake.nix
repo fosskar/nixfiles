@@ -2,6 +2,8 @@
   description = "simonoscr's flake for nixos and home-manager";
 
   inputs = {
+    systems.url = "github:nix-systems/default-linux";
+
     # nixos unstable
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -14,11 +16,7 @@
     # utils for nix flake
     flake-utils = {
       url = "github:numtide/flake-utils";
-    };
-
-    # nur nix user repository
-    nur = {
-      url = "github:nix-community/NUR";
+      inputs.systems.follows = "systems";
     };
 
     # firefox addons
@@ -52,8 +50,17 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    hypridle = {
+      url = "github:hyprwm/hypridle";
+      inputs.hyprlang.follows = "hyprland/hyprlang";
+      inputs.nixpkgs.follows = "hyprland/nixpkgs";
+      inputs.systems.follows = "hyprland/systems";
+    };
     hyprlock = {
       url = "github:hyprwm/hyprlock";
+      inputs.hyprlang.follows = "hyprland/hyprlang";
+      inputs.nixpkgs.follows = "hyprland/nixpkgs";
+      inputs.systems.follows = "hyprland/systems";
     };
 
     yazi.url = "github:sxyazi/yazi";
@@ -74,23 +81,18 @@
     };
   };
 
-  outputs = {
-    nixpkgs,
-    home-manager,
-    nur,
-    ...
-  } @ inputs: let
+  outputs = inputs: let
     system = "x86_64-linux";
   in {
     # nixos configuration entrypoint
     # available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
-      "desktop" = nixpkgs.lib.nixosSystem {
+      "desktop" = inputs.nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/desktop/configuration.nix
-          home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
               extraSpecialArgs = {inherit inputs;};
@@ -99,13 +101,12 @@
           }
         ];
       };
-      "server" = nixpkgs.lib.nixosSystem {
+      "server" = inputs.nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {inherit inputs;};
         modules = [
-          {nixpkgs.overlays = [nur.overlay];}
           ./hosts/server/configuration.nix
-          home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
               extraSpecialArgs = {inherit inputs;};

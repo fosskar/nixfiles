@@ -2,9 +2,7 @@
   config,
   pkgs,
   ...
-}: let
-  cpkgs = pkgs.nur.repos.dukzcry;
-in {
+}: {
   services.cockpit = {
     enable = true;
     port = 9092;
@@ -40,7 +38,7 @@ in {
   };
   security.pam.services.cockpit = {};
 
-  environment.systemPackages = with pkgs; with cpkgs; [cockpit-machines libvirt-dbus];
+  environment.systemPackages = with pkgs; [libvirt-dbus];
 
   systemd.sockets.cockpit.listenStreams = ["" "${toString config.services.cockpit.port}"];
   programs.virt-manager.enable = true;
