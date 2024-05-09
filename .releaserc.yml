@@ -110,8 +110,6 @@ prepare:
 
 publish:
   - path: '@semantic-release/gitlab'
-    assets:
-      - nixos.iso
 
 
 ci: true

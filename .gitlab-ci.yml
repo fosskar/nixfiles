@@ -52,9 +52,6 @@ build:
     #- cachix watch-exec $CACHIX_CACHE_NAME -- nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel'
     #- nix build '.#nixosConfigurations.cosmos.config.system.build.toplevel' | cachix push $CACHIX_CACHE_NAME
     - nix-shell -p jq --run "nix flake archive --json | jq -r '.path,(.inputs|to_entries[].value.path)' | cachix push $CACHIX_CACHE_NAME"
-  artifacts:
-    paths:
-      - result
   only:
     - main
 
