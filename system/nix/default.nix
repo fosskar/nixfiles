@@ -11,6 +11,5 @@
     ./nixos.nix
     ./nixpkgs.nix
     ./substituters.nix
-    ./pkgs.nix
   ];
 }

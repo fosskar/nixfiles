@@ -1,12 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
-  imports = [
-    inputs.ags.homeManagerModules.default
-  ];
-
+{pkgs, ...}: {
   home.packages = with pkgs; [
     swww
     brightnessctl
@@ -15,7 +7,6 @@
     bun
     dart-sass
     fd
-    #inputs.matugen.packages.${system}.default
   ];
 
   programs.ags = {

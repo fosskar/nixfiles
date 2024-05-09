@@ -1,31 +1,31 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
-    ../../desktop/x11/i3
-    ../../desktop/wayland/hyprland
+    inputs.ags.homeManagerModules.default
+    inputs.hyprland.homeManagerModules.default
+    inputs.hyprlock.homeManagerModules.hyprlock
+    inputs.matugen.nixosModules.default
+    inputs.sops-nix.homeManagerModules.sops
     ../../browser/firefox.nix
-    ../../shell/starship.nix
-    ../../shell/zsh.nix
-    ../../games.nix
-    ../../mangohud.nix
-    ../../git.nix
-    ../../gtk.nix
-    ../../terminal/emulators/kitty.nix
-    ../../terminal/yazi/yazi.nix
-    ../../terminal/cli.nix
-    ../../terminal/bat.nix
-    ../../terminal/btop.nix
-    ../../editors/neovim.nix
+    ../../desktop/wayland/hyprland
+    ../../desktop/x11/i3
+    ../../editors/nixvim.nix
     ../../editors/vscodium.nix
-    ../../packages.nix
-    ../../xdg.nix
-    ../../zathura.nix
-    ../../sops.nix
-    ../../utils.nix
-    #../../stylix.nix
-    ../../mpv.nix
-    ../../udiskie.nix
     ../../editors/zed.nix
-    ../../polkit-agent.nix
+    ../../programs/gtk.nix
+    ../../programs/mangohud.nix
+    ../../programs/mpv.nix
+    ../../programs/packages.nix
+    ../../programs/utils.nix
+    ../../programs/xdg.nix
+    ../../programs/zathura.nix
+    ../../services/system/polkit-agent.nix
+    ../../services/system/udiskie.nix
+    ../../terminal
+    ./secrets/sops.nix
   ];
 
   programs.home-manager.enable = true;
@@ -36,10 +36,6 @@
     sessionVariables = {
       SHELL = "${pkgs.zsh}/bin/zsh";
     };
+    stateVersion = "23.11";
   };
-
-  ## reload system units when changing configs
-  systemd.user.startServices = "sd-switch";
-
-  home.stateVersion = "23.11";
 }

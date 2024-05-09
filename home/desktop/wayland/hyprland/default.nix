@@ -5,7 +5,6 @@
   ...
 }: {
   imports = [
-    inputs.hyprland.homeManagerModules.default
     ./config.nix
     ./hyprlock.nix
     ./hypridle.nix

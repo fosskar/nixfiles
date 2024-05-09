@@ -10,7 +10,6 @@
     ../../system/core/security.nix
     ../../system/core/users.nix
     ../../system/core/zram.nix
-    ../../system/filemanager/thunar.nix
     ../../system/gaming/gamemode.nix
     ../../system/gaming/gamescope.nix
     ../../system/gaming/steam.nix
@@ -24,6 +23,7 @@
     ../../system/programs/gnupg.nix
     ../../system/programs/home-manager.nix
     ../../system/programs/hyprland.nix
+    ../../system/programs/thunar.nix
     ../../system/programs/xdg.nix
     ../../system/programs/zsh.nix
     ../../system/services/greetd.nix

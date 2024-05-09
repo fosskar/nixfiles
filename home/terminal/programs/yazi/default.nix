@@ -1,9 +1,11 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
+    ./theme/filetype.nix
     ./theme/icons.nix
     ./theme/manager.nix
     ./theme/status.nix
@@ -15,6 +17,8 @@
   # yazi file manager
   programs.yazi = {
     enable = true;
+
+    package = inputs.yazi.packages.${pkgs.system}.default;
 
     enableBashIntegration = config.programs.bash.enable;
     enableZshIntegration = config.programs.zsh.enable;

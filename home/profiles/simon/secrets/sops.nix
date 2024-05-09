@@ -5,8 +5,6 @@
 }: let
   userhome = "/home/simon";
 in {
-  imports = [inputs.sops-nix.homeManagerModules.sops];
-
   sops = {
     validateSopsFiles = false;
     defaultSopsFile = "${userhome}/nixsecrets/secrets/simon/secrets.yaml";

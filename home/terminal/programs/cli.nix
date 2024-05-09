@@ -4,10 +4,5 @@
     zip
     unzip
     unrar
-
-    # file managers
-    ranger
-    yazi
-    joshuto
   ];
 }
