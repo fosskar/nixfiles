@@ -11,13 +11,11 @@ default:
 
 variables:
   NIX_PATH: nixpkgs=channel:nixos-unstable
-  FLAKEREF: $CI_PROJECT_DIR
   CACHIX_CACHE_NAME: simonoscr
   NIX_BUILD_FLAGS: "--no-update-lock-file --print-build-logs --show-trace"
 
 stages:
   - check
-  - build
   - release
 
 check:
@@ -32,13 +30,6 @@ check:
         git commit -m "style: alejandra, deadnix, statix, shellcheck, ...";
         git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
       fi
-
-build:
-  stage: build
-  script:
-    - nix-shell -p jq --run "nix flake archive --json | jq -r '.path,(.inputs|to_entries[].value.path)' | cachix push $CACHIX_CACHE_NAME"
-  only:
-    - main
 
 release:
   image: node:slim

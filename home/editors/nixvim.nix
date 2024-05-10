@@ -4,6 +4,7 @@ _: {
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;
+    enableMan = false;
 
     opts = {
       title = true;
