@@ -1,8 +1,7 @@
 {config, ...}: let
   nixsecrets = builtins.fetchGit {
-    url = "https://oauth2:${builtins.getEnv "GITLAB_SECRETS_TOKEN"}@gitlab.com/simonoscr/nixsecrets";
+    url = "https://${builtins.getEnv "GITLAB_SECRETS_TOKEN"}@gitlab.com/simonoscr/nixsecrets";
     ref = "main";
-    rev = "92606f086784c55203a971b756a59c44512447fe";
   };
 in {
   sops = {
