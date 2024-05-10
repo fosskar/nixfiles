@@ -1,3 +1,49 @@
+## [5.0.0](https://gitlab.com/simonoscr/nixfiles/compare/4.0.1...5.0.0) (2024-05-10)
+
+
+### :scissors: Refactor
+
+* **pre-commit-hooks:** fix different linter and formatting issues; and removed things that pre-commit-hook wanted to be removed ([50a8a7b](https://gitlab.com/simonoscr/nixfiles/commit/50a8a7b8d9c1b5f16cc0ff89cbbf0a0efbf973ba))
+
+
+### 👀 Reverts
+
+*  remove added pre-commit-hook substituter for cachix cache ([ad37e1e](https://gitlab.com/simonoscr/nixfiles/commit/ad37e1ec3620a6b834583b8946e569ca0d4f6d37))
+
+
+### 💈 Style
+
+* cleanup code ([d473c86](https://gitlab.com/simonoscr/nixfiles/commit/d473c86d629aa96f1d411f4a74f8b81b1b033770))
+
+
+### 📔 Docs
+
+* add flake-parts information and add pre-commit badge ([ab4bd29](https://gitlab.com/simonoscr/nixfiles/commit/ab4bd29d8ec45acca65474079aa90fc5f765b698))
+
+
+### 📦 Other
+
+* **.gitignore:** add pre-commit-config to gitignore ([8160a27](https://gitlab.com/simonoscr/nixfiles/commit/8160a279b4d883f646dc8d1d42c00b447c6ecb9c))
+
+
+### 🦊 CI/CD
+
+* use nix flake check with pre-commit-hooks ([46955e8](https://gitlab.com/simonoscr/nixfiles/commit/46955e8bae26694614d544e07513a5b69931cc8d))
+
+
+### 🧨 Breaking changes!
+
+* switch to flake-parts for flake; not compatible with versions older versions ([f727109](https://gitlab.com/simonoscr/nixfiles/commit/f72710998e939597af931eec3510581ed0da8e4a))
+
+
+### 🛠 Fixes
+
+* disable sops-nix because cant run in ci env ([4d16b65](https://gitlab.com/simonoscr/nixfiles/commit/4d16b65c65fa1289fe10272b3de851ec66094570))
+* dont use oauth2 for gitlab verification ([c706f5b](https://gitlab.com/simonoscr/nixfiles/commit/c706f5b5fdd74d7b071465663163a5c46abb5857))
+* get nixsecrets repo with oauth2 and https instead of ssh ([6eeb201](https://gitlab.com/simonoscr/nixfiles/commit/6eeb2011f14d54abfba3a379163061e49406114d))
+* **ci:** ssh fetchGit not working in gitlab pipeline; also a dependency-loop with this setup ([355c78b](https://gitlab.com/simonoscr/nixfiles/commit/355c78b7954e59136a4a678e4b5a3de200e8e8ed))
+* **sops-nix:** missing needed rev on fetchGit ([c2eac8c](https://gitlab.com/simonoscr/nixfiles/commit/c2eac8c89a1f3887a488b62f46b5c5a565de9dba))
+
 ## [4.0.1](https://gitlab.com/simonoscr/nixfiles/compare/4.0.0...4.0.1) (2024-05-09)
 
 
