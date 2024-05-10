@@ -9,6 +9,7 @@
     inputs.hyprlock.homeManagerModules.hyprlock
     inputs.matugen.nixosModules.default
     inputs.sops-nix.homeManagerModules.sops
+    inputs.nixvim.homeManagerModules.nixvim
     ../../browser/firefox.nix
     ../../desktop/wayland/hyprland
     ../../desktop/x11/i3

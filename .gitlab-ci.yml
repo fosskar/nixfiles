@@ -5,7 +5,7 @@ default:
     - git config --global user.name "Gitlab CI"
     - git config --global push.followTags true
     - git checkout $CI_COMMIT_REF_NAME
-    - git remote set-url origin "https://gitlab-ci:${PIPELINE_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git remote set-url origin "https://gitlab-ci:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
     - git pull origin $CI_COMMIT_REF_NAME
     - cachix use "$CACHIX_CACHE_NAME"
 
@@ -23,7 +23,7 @@ stages:
 check:
   stage: check
   script:
-    - git clone "https://gitlab-ci:${PIPELINE_TOKEN}@${CI_SERVER_HOST}/simonoscr/nixsecrets.git"
+    - git clone "https://gitlab-ci:${GITLAB_TOKEN}@${CI_SERVER_HOST}/simonoscr/nixsecrets.git"
     - nix flake show --all-systems
     - nix flake check $NIX_BUILD_FLAGS
     - |
