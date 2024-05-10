@@ -1,17 +1,17 @@
 branches:
   - main
 
-preset: 'conventionalcommits'
+preset: "conventionalcommits"
 
 tagFormat: "${version}"
 
 verifyConditions:
-  - '@semantic-release/changelog'
-  - '@semantic-release/git'
-  - '@semantic-release/gitlab'
+  - "@semantic-release/changelog"
+  - "@semantic-release/git"
+  - "@semantic-release/gitlab"
 
 analyzeCommits:
-  - path: '@semantic-release/commit-analyzer'
+  - path: "@semantic-release/commit-analyzer"
     preset: "conventionalcommits"
     releaseRules:
       - type: milestone # A milestone release marking a huge step forward in development
@@ -46,71 +46,70 @@ analyzeCommits:
         release: false
 
 generateNotes:
-  - path: '@semantic-release/release-notes-generator'
+  - path: "@semantic-release/release-notes-generator"
     preset: "conventionalcommits"
     writerOpts:
-      groupBy: 'type'
-      commitGroupsSort: 'title'
-      commitsSort: 'header'
+      groupBy: "type"
+      commitGroupsSort: "title"
+      commitsSort: "header"
     linkCompare: true
     linkReferences: true
     presetConfig:
       types:
-        - type: 'milestone'
-          section: '✨ Milestone'
+        - type: "milestone"
+          section: "✨ Milestone"
           hidden: false
-        - type: 'breaking'
-          section: '🧨 Breaking changes!'
+        - type: "breaking"
+          section: "🧨 Breaking changes!"
           hidden: false
-        - type: 'build'
-          section: '🦊 CI/CD'
+        - type: "build"
+          section: "🦊 CI/CD"
           hidden: false
-        - type: 'chore'
-          section: '📦 Other'
+        - type: "chore"
+          section: "📦 Other"
           hidden: false
-        - type: 'ci'
-          section: '🦊 CI/CD'
+        - type: "ci"
+          section: "🦊 CI/CD"
           hidden: false
-        - type: 'docs'
-          section: '📔 Docs'
+        - type: "docs"
+          section: "📔 Docs"
           hidden: false
-        - type: 'feat'
-          section: '🚀 Features'
+        - type: "feat"
+          section: "🚀 Features"
           hidden: false
-        - type: 'fix'
-          section: '🛠 Fixes'
+        - type: "fix"
+          section: "🛠 Fixes"
           hidden: false
-        - type: 'perf'
-          section: '⏩ Performance'
+        - type: "perf"
+          section: "⏩ Performance"
           hidden: false
-        - type: 'refactor'
-          section: ':scissors: Refactor'
+        - type: "refactor"
+          section: ":scissors: Refactor"
           hidden: false
-        - type: 'revert'
-          section: '👀 Reverts'
+        - type: "revert"
+          section: "👀 Reverts"
           hidden: false
-        - type: 'style'
-          section: '💈 Style'
+        - type: "style"
+          section: "💈 Style"
           hidden: false
-        - type: 'test'
-          section: '🧪 Tests'
+        - type: "test"
+          section: "🧪 Tests"
           hidden: false
-        - type: 'improv'
-          section: '💎 Improvements'
+        - type: "improv"
+          section: "💎 Improvements"
           hidden: false
-        - type: 'deps'
-          section: '🔩 Dependencies'
+        - type: "deps"
+          section: "🔩 Dependencies"
           hidden: false
 
 prepare:
-  - path: '@semantic-release/changelog'
-  - path: '@semantic-release/git'
-    message: 'chore(release): ${nextRelease.version} [skip ci]'
-    assets: ['CHANGELOG.md']
+  - path: "@semantic-release/changelog"
+  - path: "@semantic-release/git"
+    message: "chore(release): ${nextRelease.version} [skip ci]"
+    assets: ["CHANGELOG.md"]
 
 publish:
-  - path: '@semantic-release/gitlab'
-
+  - path: "@semantic-release/gitlab"
 
 ci: true
 success: false

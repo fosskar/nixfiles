@@ -1,4 +1,4 @@
-{
+_: {
   programs.yazi.theme.filetype.rules = [
     {
       name = "*LS_COLORS";

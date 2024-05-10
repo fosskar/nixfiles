@@ -11,14 +11,14 @@
     ./hardware-configuration.nix
     ./network.nix
     ./packages.nix
-    ./services.nix
-    ../../system/locale.nix
-    ../../system/virtualisation.nix
-    ../../system/k3s.nix
-    ./ssh.nix
     ./security.nix
+    ./services.nix
+    ./ssh.nix
     ./users.nix
-    ../../system/vaultwarden.nix
+    ../../system/core/locale.nix
+    ../../system/services/virtualisation.nix
+    ../../system/services/k3s.nix
+    ../../system/services/vaultwarden.nix
     ../../system/monitoring/default.nix
     ../../system/monitoring/dashy.nix
     ../../system/monitoring/cockpit.nix

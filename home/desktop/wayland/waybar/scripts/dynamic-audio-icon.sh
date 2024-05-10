@@ -1,6 +1,6 @@
 #!/bin/bash
 current_sink=$(pactl get-default-sink)
-volume=$(pactl get-sink-volume $current_sink | grep -Po '\d+%' | head -1)
+volume=$(pactl get-sink-volume "$current_sink" | grep -Po '\d+%' | head -1)
 
 if [[ $current_sink == *"Focusrite_Scarlett"* ]]; then
     icon="󰋎" # Example icon for Focusrite

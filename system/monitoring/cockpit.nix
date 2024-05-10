@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{config, ...}: {
   services.cockpit = {
     enable = true;
     port = 9092;
@@ -37,8 +33,6 @@
     };
   };
   security.pam.services.cockpit = {};
-
-  environment.systemPackages = with pkgs; [libvirt-dbus];
 
   systemd.sockets.cockpit.listenStreams = ["" "${toString config.services.cockpit.port}"];
   programs.virt-manager.enable = true;

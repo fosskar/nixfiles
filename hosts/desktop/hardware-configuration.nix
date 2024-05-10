@@ -24,19 +24,19 @@
     extraModulePackages = [];
   };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/322918cb-9eb4-40df-a3a8-44965f8750a1";
-    fsType = "ext4";
-  };
-
-  fileSystems."/test" = {
-    device = "/dev/disk/by-uuid/00e62437-633a-4d72-9fca-026f95e4e254";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/FA25-5762";
-    fsType = "vfat";
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/322918cb-9eb4-40df-a3a8-44965f8750a1";
+      fsType = "ext4";
+    };
+    "/test" = {
+      device = "/dev/disk/by-uuid/00e62437-633a-4d72-9fca-026f95e4e254";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/FA25-5762";
+      fsType = "vfat";
+    };
   };
 
   swapDevices = [];
