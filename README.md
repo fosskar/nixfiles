@@ -8,7 +8,7 @@
 
 <div align="center">
 
-[![pipeline status](https://gitlab.com/simonoscr/nixfiles/badges/main/pipeline.svg)](https://gitlab.com/simonoscr/nixfiles/-/commits/main)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) [![pipeline status](https://gitlab.com/simonoscr/nixfiles/badges/main/pipeline.svg)](https://gitlab.com/simonoscr/nixfiles/-/commits/main)
 [![Latest Release](https://gitlab.com/simonoscr/nixfiles/-/badges/release.svg)](https://gitlab.com/simonoscr/nixfiles/-/releases)
 
 </div>
@@ -60,13 +60,13 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 ## Features
 
-- **Nix Flake**: Manage NixOS and Home-Manager configurations.
+- **nix-flake**: Manage NixOS and Home-Manager configurations.
 
-- **Home Manager**: Manage your dotfiles, home environment, and user-specific configurations with Home Manager.
+- **flake-parts**: A good way to manage flake with less boilerplate.
+
+- **home-manager**: Manage your dotfiles, home environment, and user-specific configurations with Home Manager.
 
 - **nh**: "yet-another-nix-helper". NH reimplements some basic nix commands. Adding functionality on top of the existing solutions, like nixos-rebuild, home-manager cli or nix itself.
-
-- **NUR Integration**: Access the Nix User Repository (NUR) for additional packages and enhancements.
 
 - **NixVim**: Nix Flake Neovim
 
