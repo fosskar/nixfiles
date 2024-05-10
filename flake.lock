@@ -51,11 +51,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1715344452,
-        "narHash": "sha256-a88/183a0k0c/TmzxZhB5dx0jfNl5aDR6QfZxy5Gg0M=",
+        "lastModified": 1715359851,
+        "narHash": "sha256-yGdBqEO6kYOYRoDj+l6DGyCYkrX7u2Zi2KulRjq4wws=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "e0635e5e5f790c66c8bf5b7660075b63a324a0eb",
+        "rev": "929f7e7c87912a9b1579eac1bfd96aea37c14b18",
         "type": "gitlab"
       },
       "original": {
@@ -320,11 +320,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715337997,
-        "narHash": "sha256-ve562FlHVa7xhLfkFc1ihg1kuuq55IMfkxAgBQcFUY0=",
+        "lastModified": 1715358385,
+        "narHash": "sha256-/IQ5UheQ2Ehm79nqn8KUuxZo5mk768gZ9uV6lHIKP8s=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "4855bfb6ce20225a1b0e2aae2379da909ab38350",
+        "rev": "e6a315900db775da3bb3138bab8caa70dafdaf9e",
         "type": "github"
       },
       "original": {
@@ -380,35 +380,6 @@
       "original": {
         "owner": "hyprwm",
         "repo": "hyprcursor",
-        "type": "github"
-      }
-    },
-    "hypridle": {
-      "inputs": {
-        "hyprlang": [
-          "hyprland",
-          "hyprlang"
-        ],
-        "nixpkgs": [
-          "hyprland",
-          "nixpkgs"
-        ],
-        "systems": [
-          "hyprland",
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1713472482,
-        "narHash": "sha256-7Ft5WZTMIjXOGgRCf31DZBwK6RK8xkeKlD5vFXz3gII=",
-        "owner": "hyprwm",
-        "repo": "hypridle",
-        "rev": "7cff4581a3753154fc5b41f39a098fad49b777b1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hyprwm",
-        "repo": "hypridle",
         "type": "github"
       }
     },
@@ -511,35 +482,6 @@
       "original": {
         "owner": "hyprwm",
         "repo": "hyprlang",
-        "type": "github"
-      }
-    },
-    "hyprlock": {
-      "inputs": {
-        "hyprlang": [
-          "hyprland",
-          "hyprlang"
-        ],
-        "nixpkgs": [
-          "hyprland",
-          "nixpkgs"
-        ],
-        "systems": [
-          "hyprland",
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1714843107,
-        "narHash": "sha256-89WxndRGO3CGuWE5XCaHKnsV3IKBRdOWqScp6o8enT4=",
-        "owner": "hyprwm",
-        "repo": "hyprlock",
-        "rev": "c87af3aa1f6e6bd06cffaabcc400bd45e26d565a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hyprwm",
-        "repo": "hyprlock",
         "type": "github"
       }
     },
@@ -842,10 +784,8 @@
         "firefox-addons": "firefox-addons",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "hypridle": "hypridle",
         "hyprland": "hyprland",
         "hyprland-plugins": "hyprland-plugins",
-        "hyprlock": "hyprlock",
         "matugen": "matugen",
         "nix-gaming": "nix-gaming",
         "nixpkgs": "nixpkgs_3",

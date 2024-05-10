@@ -1,13 +1,8 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    alejandra
-    deadnix
-    statix
-  ];
-
+_: {
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
     enableZshIntegration = true;
+    enableBashIntegration = true;
   };
 }
