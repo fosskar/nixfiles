@@ -13,10 +13,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # utils for nix flake
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    ## utils for nix flake
+    #flake-utils = {
+    #  url = "github:numtide/flake-utils";
+    #  inputs.systems.follows = "systems";
+    #};
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
     };
 
     # firefox addons
@@ -52,23 +61,22 @@
     };
     hypridle = {
       url = "github:hyprwm/hypridle";
-      inputs.hyprlang.follows = "hyprland/hyprlang";
-      inputs.nixpkgs.follows = "hyprland/nixpkgs";
-      inputs.systems.follows = "hyprland/systems";
+      inputs = {
+        hyprlang.follows = "hyprland/hyprlang";
+        nixpkgs.follows = "hyprland/nixpkgs";
+        systems.follows = "hyprland/systems";
+      };
     };
     hyprlock = {
       url = "github:hyprwm/hyprlock";
-      inputs.hyprlang.follows = "hyprland/hyprlang";
-      inputs.nixpkgs.follows = "hyprland/nixpkgs";
-      inputs.systems.follows = "hyprland/systems";
+      inputs = {
+        hyprlang.follows = "hyprland/hyprlang";
+        nixpkgs.follows = "hyprland/nixpkgs";
+        systems.follows = "hyprland/systems";
+      };
     };
 
     yazi.url = "github:sxyazi/yazi";
-
-    alejandra = {
-      url = "github:kamadorueda/alejandra/3.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     nix-gaming = {
       url = "github:fufexan/nix-gaming/6e2db2c21be525330942380e2e839277574404fa";
@@ -81,40 +89,120 @@
     };
   };
 
-  outputs = inputs: let
-    system = "x86_64-linux";
-  in {
-    # nixos configuration entrypoint
-    # available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = {
-      "desktop" = inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/desktop/configuration.nix
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              extraSpecialArgs = {inherit inputs;};
-              users.simon = import ./home/profiles/simon/home.nix;
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux"];
+
+      imports = [
+        inputs.pre-commit-hooks.flakeModule
+      ];
+
+      perSystem = {
+        config,
+        pkgs,
+        ...
+      }: {
+        pre-commit.settings = {
+          excludes = [
+            "flake.lock"
+            "CHANGELOG.md"
+            "LICENSE"
+          ];
+          hooks = {
+            alejandra.enable = true;
+
+            statix.enable = true;
+            statix-write = {
+              enable = true;
+              name = "Statix Write";
+              entry = "${pkgs.statix}/bin/statix fix";
+              language = "system";
+              pass_filenames = false;
             };
-          }
-        ];
+
+            deadnix = {
+              enable = true;
+              settings = {
+                edit = true;
+              };
+            };
+
+            #yamllint.enable = true;
+
+            #typos = {
+            #  enable = true;
+            #  settings = {
+            #    write = true;
+            #    configPath = "./.typos.toml";
+            #  };
+            #};
+
+            #prettier = {
+            #  enable = true;
+            #  excludes = [".js" ".md" ".ts" ".scss" ".css"];
+            #  settings = {
+            #    write = true;
+            #    configPath = "./.prettierrc.yaml";
+            #  };
+            #};
+
+            shellcheck = {
+              enable = true;
+              excludes = ["png"];
+              types_or = ["shell"];
+            };
+
+            pre-commit-hook-ensure-sops.enable = true;
+          };
+        };
+        devShells.default = pkgs.mkShell {
+          packages = [
+            pkgs.alejandra
+            pkgs.deadnix
+            pkgs.statix
+            pkgs.git
+            pkgs.nodePackages.prettier
+          ];
+          name = "nixfiles";
+          DIRENV_LOG_FORMAT = "";
+          shellHook = ''
+            ${config.pre-commit.installationScript}
+            echo 1>&2 "Welcome to the development shell!"
+          '';
+        };
+        formatter = pkgs.alejandra;
       };
-      "server" = inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/server/configuration.nix
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              extraSpecialArgs = {inherit inputs;};
-              users.oscar = import ./home/profiles/oscar/home.nix;
-            };
-          }
-        ];
+      flake = {
+        nixosConfigurations = {
+          desktop = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {inherit inputs;};
+            modules = [
+              ./hosts/desktop/configuration.nix
+              inputs.home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  extraSpecialArgs = {inherit inputs;};
+                  users.simon = import ./home/profiles/simon/home.nix;
+                };
+              }
+            ];
+          };
+          server = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {inherit inputs;};
+            modules = [
+              ./hosts/server/configuration.nix
+              inputs.home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  extraSpecialArgs = {inherit inputs;};
+                  users.oscar = import ./home/profiles/oscar/home.nix;
+                };
+              }
+            ];
+          };
+        };
       };
     };
-  };
 }
