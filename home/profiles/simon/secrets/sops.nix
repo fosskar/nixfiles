@@ -2,11 +2,13 @@
   nixsecrets = builtins.fetchGit {
     url = "https://${builtins.getEnv "GITLAB_SECRETS_TOKEN"}@gitlab.com/simonoscr/nixsecrets";
     ref = "main";
+    rev = "92606f086784c55203a971b756a59c44512447fe";
   };
 in {
   sops = {
     validateSopsFiles = true;
     defaultSopsFile = "${nixsecrets}/secrets/simon/secrets.yaml";
+    #defaultSopsFile = "${config.home.homeDirectory}nixsecrets/secrets/simon/secrets.yaml";
     age = {
       sshKeyPaths = ["${config.home.homeDirectory}/.ssh/id_ed25519"];
       keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
