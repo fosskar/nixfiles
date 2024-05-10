@@ -25,7 +25,7 @@
     ../../services/system/polkit-agent.nix
     ../../services/system/udiskie.nix
     ../../terminal
-    #./secrets/sops.nix
+    ./secrets/sops.nix
   ];
 
   programs.home-manager.enable = true;

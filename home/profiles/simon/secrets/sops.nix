@@ -1,14 +1,13 @@
 {config, ...}: let
-  nixsecrets = builtins.fetchGit {
-    url = "https://${builtins.getEnv "GITLAB_SECRETS_TOKEN"}@gitlab.com/simonoscr/nixsecrets";
-    ref = "main";
-    rev = "92606f086784c55203a971b756a59c44512447fe";
-  };
+  inCI = builtins.getEnv "CI" == "true";
+  secretsPath =
+    if inCI
+    then "${builtins.getEnv "CI_PROJECT_DIR"}/nixsecrets/secrets/simon/secrets.yaml"
+    else "${config.home.homeDirectory}/nixsecrets/secrets/simon/secrets.yaml";
 in {
   sops = {
-    validateSopsFiles = true;
-    defaultSopsFile = "${nixsecrets}/secrets/simon/secrets.yaml";
-    #defaultSopsFile = "${config.home.homeDirectory}nixsecrets/secrets/simon/secrets.yaml";
+    validateSopsFiles = false;
+    defaultSopsFile = secretsPath;
     age = {
       sshKeyPaths = ["${config.home.homeDirectory}/.ssh/id_ed25519"];
       keyFile = "${config.xdg.configHome}/sops/age/keys.txt";

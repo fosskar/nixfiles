@@ -23,6 +23,8 @@ stages:
 check:
   stage: check
   script:
+    - "git config --global http.extraHeader 'Authorization: Bearer $CI_JOB_TOKEN'"
+    - git clone https://gitlab-ci:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/nixsecrets.git
     - nix flake show --all-systems
     - nix flake check $NIX_BUILD_FLAGS
     - |
