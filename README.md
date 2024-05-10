@@ -2,28 +2,26 @@
 
 <div align="center">
 
-[![built with nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix%20Flakes&color=41439a)](https://builtwithnix.org) [![NixOS unstable](https://img.shields.io/badge/NixOS-unstable-informational.svg?style=flat&logo=nixos&logoColor=CAD3F5&colorA=24273A&colorB=8AADF4)](https://github.com/nixos/nixpkgs)
-
-</div>
-
-<div align="center">
+[![built with nix-flake](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix%20Flakes&color=41439a)](https://builtwithnix.org) [![NixOS unstable](https://img.shields.io/badge/NixOS-unstable-informational.svg?style=flat&logo=nixos&logoColor=CAD3F5&colorA=24273A&colorB=8AADF4)](https://github.com/nixos/nixpkgs)
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) [![pipeline status](https://gitlab.com/simonoscr/nixfiles/badges/main/pipeline.svg)](https://gitlab.com/simonoscr/nixfiles/-/commits/main)
 [![Latest Release](https://gitlab.com/simonoscr/nixfiles/-/badges/release.svg)](https://gitlab.com/simonoscr/nixfiles/-/releases)
 
-</div>
-
 ---
 
 <br>
-<div align="center">
   <img src="https://raw.githubusercontent.com/NixOS/nixos-artwork/master/logo/nixos-white.png" width="500px" alt="NixOS logo"/>
-</div>
 <br>
 
+</div>
+
 ---
+
+<div align="center">
 
 ## Intro
+
+</div>
 
 Hello and welcome to my NixOS setup. Please be aware that I'm still in the early stages of learning all this. The setup here was created with the help of multiple examples and inspiration from other dotfile and nix-config repositories (see [Credits](https://gitlab.com/simonoscr/nixfiles#credits)).
 
@@ -31,6 +29,8 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 > [!IMPORTANT]
 > This repository is a work in progress, and I'm constantly learning more about NixOS, Nix, Flakes, and Home-Manager.
+
+<div align="center">
 
 ## :snowflake: System Components
 
@@ -57,8 +57,13 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 | Mainboard | MSI MAG B650 Tomahawk | shit |
 | SSD | 2TB NVMe | 500GB NVMe |
 
+</div>
+
+<div align="center">
 
 ## Features
+
+</div>
 
 - **nix-flake**: Manage NixOS and Home-Manager configurations.
 
@@ -70,8 +75,11 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 - **NixVim**: Nix Flake Neovim
 
+<div align="center">
 
 ## :snowflake: Repo Layout
+
+</div>
 
 - **docs**: This folder contains different README files. Like a little wiki but not really structured. Sorry.
 
@@ -81,8 +89,11 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 - **system**: This folder contains everything thats is nixos related. Like program, service, network and nix configuration itself. Like the counterpart of the home/ folder for system-wide things.
 
+<div align="center">
 
 ## Search
+
+</div>
 
 - [NixOS Search](https://search.nixos.org) - Search for Nix packages, NixOS options or Flakes
   - [Options Search](https://search.nixos.org/options)
@@ -94,8 +105,11 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 - [Hound](https://search.nix.gsc.io/) - Search things
 - [nixpkgs PR-Tracker](https://nixpk.gs/pr-tracker.html)
 
+<div align="center">
 
 ## Guides
+
+</div>
 
 - [NixOS Wiki](https://nixos.wiki/)
   - [NixOS Installation Guide](https://nixos.wiki/wiki/NixOS_Installation_Guide)
@@ -103,13 +117,16 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
   - [Nix Flake Installation Guide](https://nixos.wiki/wiki/Flakes)
 - [Cachix Docs](https://docs.cachix.org/)
 
+<div align="center">
 
 ## Credits
+
+</div>
 
 My repository is inspired by a diverse range of dotfiles and nix-configurations repositories across GitHub, GitLab (and maybe Codeberg). While I've gathered ideas from numerous places, there are a few key repositories that significantly influenced this repository:
 
 - [fufexan Dotfiles](https://github.com/fufexan/dotfiles)
-  - helped me very much to find a good repository structure and also good and clean .nix configurations
+  - helped me very much to find a good repository structure and also good and clean .nix configurations and i learned from his repos how to build with nix
 - [Matt Dotfiles](https://gitlab.com/usmcamp0811/dotfiles)
   - also borrowed a little structure and content of .nix files
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
