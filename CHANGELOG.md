@@ -1,3 +1,26 @@
+## [5.0.1](https://gitlab.com/simonoscr/nixfiles/compare/5.0.0...5.0.1) (2024-05-10)
+
+
+### 👀 Reverts
+
+* **ci:** changes to the token variable for gitlab ([3fefce0](https://gitlab.com/simonoscr/nixfiles/commit/3fefce0fa639e976d6596192887156d356962a16))
+
+
+### 💈 Style
+
+* **format:** statix code; a pattern is empty, use `_` instead ([994bcc9](https://gitlab.com/simonoscr/nixfiles/commit/994bcc9a851b2288aab9d1f6fee11139293a1842))
+
+
+### 🦊 CI/CD
+
+* **fix:** repository url for nixsecrets ([210a9e2](https://gitlab.com/simonoscr/nixfiles/commit/210a9e2179677029e13c53fc83b2912d3d245867))
+* **fix:** update pipeline-token variable ([4ef7fbb](https://gitlab.com/simonoscr/nixfiles/commit/4ef7fbb193b0c58174eb8bc2055fd47da86ca386))
+
+
+### 🛠 Fixes
+
+* **sops-nix:** to get secrets working with sops-nix in ci, but also when building locally; so with a dynamic CI part to determine the environment where sops-nix got executed ([13f359b](https://gitlab.com/simonoscr/nixfiles/commit/13f359bd2fca42617242fc7942b88aedd515a6aa))
+
 ## [5.0.0](https://gitlab.com/simonoscr/nixfiles/compare/4.0.1...5.0.0) (2024-05-10)
 
 
