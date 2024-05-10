@@ -18,12 +18,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    ## utils for nix flake
-    #flake-utils = {
-    #  url = "github:numtide/flake-utils";
-    #  inputs.systems.follows = "systems";
-    #};
-
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
     };
