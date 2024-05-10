@@ -1,3 +1,15 @@
+## [5.1.0](https://gitlab.com/simonoscr/nixfiles/compare/5.0.2...5.1.0) (2024-05-10)
+
+
+### 📔 Docs
+
+* update README for better formatting and reading ([a419969](https://gitlab.com/simonoscr/nixfiles/commit/a4199698e47feee874d65aa27ebe191a3ff11c5f))
+
+
+### 🚀 Features
+
+* add direnv to flake ([33ce09f](https://gitlab.com/simonoscr/nixfiles/commit/33ce09f76a3929bd19500408b12869bc9fd9b734))
+
 ## [5.0.2](https://gitlab.com/simonoscr/nixfiles/compare/5.0.1...5.0.2) (2024-05-10)
 
 
