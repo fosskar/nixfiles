@@ -13,69 +13,35 @@ variables:
   NIX_PATH: nixpkgs=channel:nixos-unstable
   FLAKEREF: $CI_PROJECT_DIR
   CACHIX_CACHE_NAME: simonoscr
+  NIX_BUILD_FLAGS: "--no-update-lock-file --print-build-logs --show-trace"
 
 stages:
-  - cleanup
-  - lint
-  - test
+  - check
   - build
-#  - build_iso
   - release
 
-cleanup:
-  stage: cleanup
+check:
+  stage: check
   script:
-    - echo "remove dead code"
-    - nix-shell -p deadnix --run "deadnix -V; deadnix; deadnix -e"
+    - nix flake show --all-systems
+    - nix flake check $NIX_BUILD_FLAGS
     - |
       if ! git diff --quiet --exit-code; then
         git add -A;
-        git commit -m "ref(nix): cleanup dead nix code";
-        git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
-      fi
-
-lint:
-  stage: lint
-  script:
-    - nix-shell -p alejandra --run "alejandra -V ;alejandra ."
-    - nix-shell -p statix --run "statix check; statix fix -d; statix fix"
-    - |
-      if ! git diff --quiet --exit-code; then
-        git add -A;
-        git commit -m "style(nix): format nix code";
+        git commit -m "style: alejandra, deadnix, statix, shellcheck, ...";
         git push -o ci.skip origin "$CI_COMMIT_REF_NAME"
       fi
 
 build:
   stage: build
   script:
-    #- cachix watch-exec $CACHIX_CACHE_NAME -- nix build '${CI_PROJECT_DIR}.#nixosConfigurations.cosmos.config.system.build.toplevel'
-    #- nix build '.#nixosConfigurations.cosmos.config.system.build.toplevel' | cachix push $CACHIX_CACHE_NAME
     - nix-shell -p jq --run "nix flake archive --json | jq -r '.path,(.inputs|to_entries[].value.path)' | cachix push $CACHIX_CACHE_NAME"
   only:
     - main
 
-#build_nixos_iso:
-#  stage: build_iso
-#  cache:
-#    key: "${CI_COMMIT_REF_SLUG}"
-#    paths:
-#      - /nix/store
-#  script:
-#    - nix build -L .#iso
-#    #- nix build .#install-iso
-#  artifacts:
-#    paths:
-#      - result
-#  only:
-#    - main
-
 release:
   image: node:slim
   stage: release
-#  needs:
-#    - job: build_nixos_iso
-#      artifacts: true
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - git config --global user.email ""
