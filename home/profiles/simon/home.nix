@@ -6,7 +6,6 @@
   imports = [
     inputs.ags.homeManagerModules.default
     inputs.hyprland.homeManagerModules.default
-    inputs.hyprlock.homeManagerModules.hyprlock
     inputs.matugen.nixosModules.default
     inputs.sops-nix.homeManagerModules.sops
     inputs.nixvim.homeManagerModules.nixvim

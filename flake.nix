@@ -53,22 +53,6 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
-    hypridle = {
-      url = "github:hyprwm/hypridle";
-      inputs = {
-        hyprlang.follows = "hyprland/hyprlang";
-        nixpkgs.follows = "hyprland/nixpkgs";
-        systems.follows = "hyprland/systems";
-      };
-    };
-    hyprlock = {
-      url = "github:hyprwm/hyprlock";
-      inputs = {
-        hyprlang.follows = "hyprland/hyprlang";
-        nixpkgs.follows = "hyprland/nixpkgs";
-        systems.follows = "hyprland/systems";
-      };
-    };
 
     yazi.url = "github:sxyazi/yazi";
 
