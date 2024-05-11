@@ -2,8 +2,11 @@ _: {
   services = {
     xserver = {
       enable = true;
-      displayManager.startx.enable = true;
-      displayManager.lightdm.enable = false;
+      windowManager.i3.enable = true;
+      displayManager = {
+        startx.enable = true;
+        lightdm.enable = false;
+      };
       desktopManager = {
         xterm.enable = false;
       };
