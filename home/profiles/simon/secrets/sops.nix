@@ -1,10 +1,18 @@
-{config, ...}: let
+{
+  config,
+  inputs,
+  ...
+}: let
   inCI = builtins.getEnv "CI" == "true";
   secretsPath =
     if inCI
     then "${builtins.getEnv "CI_PROJECT_DIR"}/nixsecrets/secrets/simon/secrets.yaml"
     else "${config.home.homeDirectory}/nixsecrets/secrets/simon/secrets.yaml";
 in {
+  imports = [
+    inputs.sops-nix.homeManagerModules.sops
+  ];
+
   sops = {
     validateSopsFiles = false;
     defaultSopsFile = secretsPath;
@@ -23,5 +31,6 @@ in {
       dXNlcl9wYXNzd29yZA = {};
     };
   };
+
   systemd.user.services.mbsync.Unit.After = ["sops-nix.service"];
 }

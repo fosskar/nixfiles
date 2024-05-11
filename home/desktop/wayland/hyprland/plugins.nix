@@ -4,19 +4,20 @@
   ...
 }: {
   wayland.windowManager.hyprland = {
-    enable = true;
-    plugins = [
-      inputs.hyprland-plugins.packages.${pkgs.system}.csgo-vulkan-fix
-      inputs.hy3.packages.${pkgs.system}.hy3
+    plugins = with inputs.hyprland-plugins.packages.${pkgs.system}; [
+      csgo-vulkan-fix
+      #hy3
+      #hyprbars
     ];
-    extraConfig = ''
-      plugin {
-        csgo-vulkan-fix {
-          res_w = 1920
-          res_h = 1440
-          class = cs2
-        }
-      }
-    '';
+
+    settings = {
+      plugin = {
+        csgo-vulkan-fix = {
+          res_w = 1920;
+          res_h = 1080;
+          class = "cs2";
+        };
+      };
+    };
   };
 }

@@ -1,37 +1,30 @@
 {
-  pkgs,
   inputs,
+  pkgs,
   ...
 }: {
   imports = [
-    ./config.nix
-    ./hyprlock.nix
-    ./hypridle.nix
+    inputs.hyprland.homeManagerModules.default
+    ./binds.nix
+    ./settings.nix
+    ./rules.nix
+    ../hyprlock.nix
+    ../hypridle.nix
     ../ags
     #./plugins.nix
-    #../swayidle.nix
-    #../swaylock.nix
     #./waybar"
-    #./wofi.nix"
-    #./wlogout"
-    #./dunst.nix"
   ];
 
-  home = {
-    packages = with pkgs; [
-      xwaylandvideobridge
-      hyprshot
-      wl-clipboard
-      hyprpicker
-      grim
-      slurp
-    ];
-  };
+  home.packages = with pkgs; [
+    xwaylandvideobridge #for screensharing xwayland application
+    hyprshot
+    wl-clipboard
+    hyprpicker
+  ];
 
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     systemd = {
       enable = true;
       variables = ["--all"];
