@@ -1,3 +1,10 @@
+## [5.2.4](https://gitlab.com/simonoscr/nixfiles/compare/5.2.3...5.2.4) (2024-05-11)
+
+
+### 🛠 Fixes
+
+* update zsh and starship configurationand splitup files ([4568e8b](https://gitlab.com/simonoscr/nixfiles/commit/4568e8b1cdc5ec01d4b23029d8fce201b073b56c))
+
 ## [5.2.3](https://gitlab.com/simonoscr/nixfiles/compare/5.2.2...5.2.3) (2024-05-11)
 
 
