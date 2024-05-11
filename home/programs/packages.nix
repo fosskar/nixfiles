@@ -4,7 +4,6 @@
     spotify
 
     ## gaming
-    goverlay
     teamspeak_client
     #lutris
     ## WINE
