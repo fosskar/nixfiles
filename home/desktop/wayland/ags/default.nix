@@ -8,13 +8,13 @@
   ];
 
   home.packages = with pkgs; [
-    which
+    swww
+    brightnessctl
+    bun
     dart-sass
     fd
     inputs.matugen.packages.${system}.default
-    swww
     gnome.gnome-bluetooth_1_0
-    bun
   ];
 
   programs.ags = {
