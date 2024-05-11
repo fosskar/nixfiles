@@ -1,3 +1,10 @@
+## [5.1.2](https://gitlab.com/simonoscr/nixfiles/compare/5.1.1...5.1.2) (2024-05-11)
+
+
+### :scissors: Refactor
+
+* **cleanup:** hyprland files splitup and cleanup, inputs management sops-nix+hyprland+ags, update flock ([f159c03](https://gitlab.com/simonoscr/nixfiles/commit/f159c031e04266cceff68beda924329a4c51509d))
+
 ## [5.1.1](https://gitlab.com/simonoscr/nixfiles/compare/5.1.0...5.1.1) (2024-05-11)
 
 
