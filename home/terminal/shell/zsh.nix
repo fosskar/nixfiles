@@ -29,6 +29,10 @@ _: {
       ignoreSpace = true;
     };
     shellAliases = {
+      g = "git";
+      k = "kubectl";
+      d = "docker";
+      p = "podman";
       cls = "clear";
       ".." = "cd ..";
       "..." = "cd ../..";
