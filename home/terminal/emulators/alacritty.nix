@@ -17,10 +17,10 @@ _: {
       scrolling.history = 10000;
 
       font = {
-        normal.family = "FiraCode Nerd Mono Font";
-        bold.family = "FiraCode Nerd Mono Font Bold";
-        italic.family = "FiraCode Nerd Mono Font Italic";
-        size = 14;
+        normal.family = "JetBrains Mono";
+        bold.family = "JetBrains Mono";
+        italic.family = "JetBrains Mono";
+        size = 10;
       };
       colors = {
         primary = {

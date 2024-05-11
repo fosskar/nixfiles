@@ -1,6 +1,10 @@
 _: {
   programs.kitty = {
     enable = true;
+    font = {
+      size = 10;
+      name = "JetBrains Mono";
+    };
 
     settings = {
       scrollback_lines = 10000;

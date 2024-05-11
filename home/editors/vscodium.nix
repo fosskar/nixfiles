@@ -13,6 +13,8 @@
       ms-azuretools.vscode-docker
       yzhang.markdown-all-in-one
       kamadorueda.alejandra
+      editorconfig.editorconfig
+      mkhl.direnv
     ];
     userSettings = {
       "files.autoSave" = "afterDelay";
@@ -24,8 +26,9 @@
       "redhat.telemetry.enabled" = false;
       "git.enableSmartCommit" = true;
       "git.confirmSync" = false;
-      #"terminal.integrated.fontFamily" = "FiraCode Nerd Font Mono Retina";
-      #"editor.fontFamily" = "'Robot Regular'";
+      "terminal.integrated.fontFamily" = "JetBrains Mono";
+      "editor.fontFamily" = "'JetBrains Mono'";
+      "editor.fontSize" = 15;
       "editor.fontLigatures" = true;
       "editor.fontVariations" = false;
       "github.gitProtocol" = "ssh";
