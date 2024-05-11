@@ -1,3 +1,10 @@
+## [5.2.3](https://gitlab.com/simonoscr/nixfiles/compare/5.2.2...5.2.3) (2024-05-11)
+
+
+### 🛠 Fixes
+
+* **audio:** wireplumber audo channel-switch-config to remove easyeffects; and remove easyeffects ([420e052](https://gitlab.com/simonoscr/nixfiles/commit/420e05201eef418b4e2426b59e5d3d541e823a3e))
+
 ## [5.2.2](https://gitlab.com/simonoscr/nixfiles/compare/5.2.1...5.2.2) (2024-05-11)
 
 
