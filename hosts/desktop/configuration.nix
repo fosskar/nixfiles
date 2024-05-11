@@ -6,6 +6,7 @@
   imports = [
     ../../system/core/boot.nix
     ../../system/core/console.nix
+    ../../system/core/dbus.nix
     ../../system/core/locale.nix
     ../../system/core/security.nix
     ../../system/core/users.nix
@@ -15,6 +16,7 @@
     ../../system/gaming/steam.nix
     ../../system/hardware/amdgpu.nix
     ../../system/hardware/bluetooth.nix
+    ../../system/hardware/fwupd.nix
     ../../system/network
     ../../system/nix
     ../../system/programs/corectrl.nix
@@ -23,9 +25,11 @@
     ../../system/programs/gnupg.nix
     ../../system/programs/home-manager.nix
     ../../system/programs/hyprland.nix
+    ../../system/programs/seahorse.nix
     ../../system/programs/thunar.nix
     ../../system/programs/xdg.nix
     ../../system/programs/zsh.nix
+    ../../system/services/gnome-services.nix
     ../../system/services/greetd.nix
     ../../system/services/libinput.nix
     ../../system/services/pipewire.nix

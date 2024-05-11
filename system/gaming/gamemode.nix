@@ -12,20 +12,6 @@
         ioprio = 0;
         inhibit_screensaver = 0;
       };
-      #custom = {
-      #  start = ;
-      #  end = ;
-      #  script_timeout = 10;
-      #};
-      #gpu = {
-      #  apply_gpu_optimisations = "accept-responsibility";
-      #  gpu_device = 0;
-      #  amd_performance_level = "high";
-      #};
-      #cpu = {
-      #  park_cores = false;
-      #  pin_cores = true;
-      #};
     };
   };
   security.wrappers = {

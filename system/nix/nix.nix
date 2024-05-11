@@ -1,15 +1,9 @@
 {
   config,
-  pkgs,
   inputs,
   lib,
   ...
 }: {
-  environment.systemPackages = with pkgs; [
-    git
-    cachix
-  ];
-
   nix = {
     # pin the registry to avoid downloading and evaling a new nixpkgs version every time
     registry = lib.mapAttrs (_: v: {flake = v;}) inputs;
@@ -24,6 +18,8 @@
       allowed-users = ["root" "simon" "@wheel"];
       trusted-users = ["root" "simon" "@wheel"];
       flake-registry = "/etc/nix/registry.json";
+      keep-derivations = true;
+      keep-outputs = true;
     };
     gc = {
       automatic = false; # because i am using nh.clean

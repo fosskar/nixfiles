@@ -24,9 +24,11 @@ in {
     secrets = {
       c3NoLXB1Yi1rZXk = {
         path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
+        mode = "0600";
       };
       c3NoLXByaXZhdGUta2V5 = {
         path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+        mode = "0600";
       };
       dXNlcl9wYXNzd29yZA = {};
     };

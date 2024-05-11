@@ -1,12 +1,13 @@
 {pkgs, ...}: {
   fonts = {
+    enableDefaultPackages = false;
     fontconfig = {
       enable = true;
       defaultFonts = {
-        serif = ["Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" "Noto Color Emoji"];
-        sansSerif = ["Roboto"];
-        monospace = ["JetBrainsMono"];
-        emoji = ["Noto Color Emoji"];
+        serif = ["Symbols Nerd Font" "Noto Serif" "Noto Color Emoji"];
+        sansSerif = ["Symbols Nerd Font" "Inter" "Noto Color Emoji"];
+        monospace = ["Symbols Nerd Font" "JetBrains Mono" "Noto Color Emoji"];
+        emoji = ["Symbols Nerd Font" "Noto Color Emoji"];
       };
       antialias = true;
       cache32Bit = true;
@@ -18,17 +19,10 @@
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
+      jetbrains-mono
       roboto
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      (nerdfonts.override {
-        fonts = [
-          "FiraCode"
-          "JetBrainsMono"
-          "FiraMono"
-        ];
-      })
+      (google-fonts.override {fonts = ["Inter"];})
+      (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
     ];
   };
 }

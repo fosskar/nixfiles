@@ -1,26 +1,27 @@
 {config, ...}: let
-  email = "117449098+simonoscr@users.noreply.github.com";
+  email = "13078509-simonoscr@users.noreply.gitlab.com";
   name = "simonoscr";
 in {
   programs.git = {
     enable = true;
     lfs.enable = true;
+    delta = {
+      enable = true;
+      options.dark = true;
+    };
     extraConfig = {
       color.ui = true;
       core.editor = "nvim";
-      credential.helper = "store";
       github.user = name;
       push.autoSetupRemote = true;
       diff.colorMoved = "default";
-      gpg.format = "ssh";
+      gpg = {
+        format = "ssh";
+        #ssh.allowedSignersFile = config.home.homeDirectory + "/" + config.xdg.configFile."git/allowed_signers".target;
+      };
       commit.gpgsign = true;
       pull.rebase = true;
       init.defaultBranch = "main";
-      url = {
-        "ssh://git@gitlab.com:simonoscr" = {
-          insteadOf = "https://gitlab.com/simonoscr";
-        };
-      };
     };
     userEmail = email;
     userName = name;
@@ -51,8 +52,11 @@ in {
     ignores = [".DS_Store" "*.swp" "Thumbs.db" ".idea" ".vscode" ".vscodium" ".direnv" "pre-commit-config.yaml" "results"];
 
     signing = {
-      key = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
+      key = "${config.home.homeDirectory}/.ssh/id_ed25519";
       signByDefault = true;
     };
   };
+  #xdg.configFile."git/allowed_signers".text = ''
+  #  ${cfg.userEmail} namespaces="git" ${key}
+  #'';
 }
