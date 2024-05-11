@@ -56,10 +56,6 @@
 
     yazi.url = "github:sxyazi/yazi";
 
-    nix-gaming = {
-      url = "github:fufexan/nix-gaming/6e2db2c21be525330942380e2e839277574404fa";
-    };
-
     # aylur-gtk-shell
     ags = {
       url = "github:Aylur/ags";
