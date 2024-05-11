@@ -15,6 +15,7 @@
     ../../programs/mangohud.nix
     ../../programs/mpv.nix
     ../../programs/packages.nix
+    ../../programs/qt.nix
     ../../programs/utils.nix
     ../../programs/xdg.nix
     ../../programs/zathura.nix

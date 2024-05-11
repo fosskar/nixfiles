@@ -11,7 +11,10 @@ _: {
     };
   };
   services = {
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      settings.UseDns = true;
+    };
     resolved.enable = true;
   };
   #systemd.services.NetworkManager-wait-online.enable = false;

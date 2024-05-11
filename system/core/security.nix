@@ -1,6 +1,4 @@
 _: {
-  services.gnome.gnome-keyring.enable = true;
-
   boot = {
     kernel.sysctl = {
       # The Magic SysRq key is a key combo that allows users connected to the
@@ -56,7 +54,7 @@ _: {
       "net.ipv4.tcp_rfc1337" = 1;
       # Enable MTU probing
       "net.ipv4.tcp_mtu_probing" = true;
-      "net.ipv4.tcp_slow_start_after_idle" = "0";
+      "net.ipv4.tcp_slow_start_after_idle" = 0;
     };
     kernelModules = ["k10temp" "tcp_bbr"];
   };
@@ -67,14 +65,6 @@ _: {
     #pam.services.swaylock.text = "auth include login";   # switched to hyprlock
     pam = {
       services.hyprlock.text = "auth include login";
-      loginLimits = [
-        {
-          domain = "@users";
-          item = "rtprio";
-          type = "-";
-          value = 1;
-        }
-      ];
     };
     polkit.enable = true;
     rtkit.enable = true;

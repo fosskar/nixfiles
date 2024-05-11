@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   programs.mpv = {
     enable = true;
+    defaultProfiles = ["gpu-hq"];
     config = {
       border = false;
       gpu-context = "wayland";
@@ -9,6 +10,6 @@
       profile = "gpu-hq";
       vo = "gpu";
     };
-    scripts = with pkgs.mpvScripts; [mpris thumbnail sponsorblock];
+    scripts = [pkgs.mpvScripts.mpris];
   };
 }

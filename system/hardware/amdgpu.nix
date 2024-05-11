@@ -21,29 +21,19 @@
   };
 
   hardware = {
-    enableAllFirmware = true;
-    bluetooth.enable = true;
-
     opengl = {
       enable = true;
       driSupport = true;
       driSupport32Bit = true;
       extraPackages = with pkgs; [
-        amdvlk
+        libva
         vaapiVdpau
         libvdpau-va-gl
-        rocmPackages.clr
-        rocmPackages.clr.icd
       ];
       extraPackages32 = with pkgs; [
-        driversi686Linux.amdvlk
         vaapiVdpau
         libvdpau-va-gl
       ];
     };
-    #fancontrol = {
-    #  enable = true;
-    #  config =
-    #};
   };
 }
