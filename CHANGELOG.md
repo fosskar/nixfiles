@@ -1,3 +1,10 @@
+## [5.2.5](https://gitlab.com/simonoscr/nixfiles/compare/5.2.4...5.2.5) (2024-05-11)
+
+
+### 🛠 Fixes
+
+* **audio:** more pipewire and wireplumber tweaks ([af96307](https://gitlab.com/simonoscr/nixfiles/commit/af96307175006256b6ede91516255750e0f23b04))
+
 ## [5.2.4](https://gitlab.com/simonoscr/nixfiles/compare/5.2.3...5.2.4) (2024-05-11)
 
 
