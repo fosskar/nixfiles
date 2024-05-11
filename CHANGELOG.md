@@ -1,3 +1,21 @@
+## [5.2.1](https://gitlab.com/simonoscr/nixfiles/compare/5.2.0...5.2.1) (2024-05-11)
+
+
+### 📦 Other
+
+* **flake:** update flock ([c27a7ce](https://gitlab.com/simonoscr/nixfiles/commit/c27a7ce75bf475a4129331c8574bd4f4a2b32b15))
+
+
+### 🦊 CI/CD
+
+* remove check job, because why running check in ci when having PRE-COMMIT(!)-hook? yeah ([8f9b743](https://gitlab.com/simonoscr/nixfiles/commit/8f9b743e225046170b8ab708f1373910fbcaf789))
+* remove dead code from release stage ([489cfc5](https://gitlab.com/simonoscr/nixfiles/commit/489cfc595fd7737a65919c4d09b6d3f242f76f7f))
+
+
+### 🛠 Fixes
+
+* **editors/terminal:** add fonts to editors,emulators and terminals, adjust editorconfig ([c126a8f](https://gitlab.com/simonoscr/nixfiles/commit/c126a8fee8e13cfcb958224cf0b511820ce02c15))
+
 ## [5.2.0](https://gitlab.com/simonoscr/nixfiles/compare/5.1.3...5.2.0) (2024-05-11)
 
 
