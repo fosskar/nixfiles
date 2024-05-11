@@ -19,6 +19,7 @@
     ../../programs/utils.nix
     ../../programs/xdg.nix
     ../../programs/zathura.nix
+    ../../services/audio.nix
     ../../services/system/polkit-agent.nix
     ../../services/system/udiskie.nix
     ../../terminal

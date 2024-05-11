@@ -4,7 +4,6 @@
       exec-once = [
         "ags -b hypr"
         #"waybar"
-        "easyeffects --gapplication-service"
         "steam -silent"
         "corectrl"
         "udiskie &"
