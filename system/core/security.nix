@@ -1,6 +1,8 @@
 _: {
   boot = {
     kernel.sysctl = {
+      # 20-shed.conf
+      "kernel.sched_cfs_bandwidth_slice_us" = 3000;
       # The Magic SysRq key is a key combo that allows users connected to the
       # system console of a Linux kernel to perform some low-level commands.
       # Disable it, since we don't need it, and is a potential security concern.
@@ -11,7 +13,7 @@ _: {
       # page-cluster refers to the number of pages up to which
       # consecutive pages are read in from swap in a single attempt
       "vm.page-cluster" = 0;
-      "vm.max_map_count" = 16777216; # increasing is good for gaming
+      "vm.max_map_count" = 2147483642; # increasing is good for gaming USE MAX_INT
       # If you have enough free RAM increase the watermark scale factor to further reduce the likelihood of allocation stalls (explanations [7][8]). Setting watermark distances to 5% of RAM:
       "vm.watermark_scale_factor" = 500;
       # Proactive compaction for (Transparent) Hugepage allocation reduces the average but not necessarily the maximum allocation stalls. Disable proactive compaction because it introduces jitter according to kernel documentation (inner workings):
@@ -54,6 +56,9 @@ _: {
       "net.ipv4.tcp_rfc1337" = 1;
       # Enable MTU probing
       "net.ipv4.tcp_mtu_probing" = true;
+      # This is required due to some games being unable to reuse their TCP ports
+      # if they're killed and restarted quickly - the default timeout is too large.
+      "net.ipv4.tcp_fin_timeout" = 5;
       "net.ipv4.tcp_slow_start_after_idle" = 0;
     };
     kernelModules = ["k10temp" "tcp_bbr"];

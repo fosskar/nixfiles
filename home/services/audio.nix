@@ -15,4 +15,23 @@
       }
     ]
   '';
+
+  home.file.".config/wireplumber/wireplumber.conf.d/99-low-latency.conf".text = ''
+    monitor.alsa.rules = [
+      {
+        matches = [
+          {
+            node.name = "~alsa_output.*"
+          }
+        ]
+        actions = {
+          update-props = {
+            audio.format = "S32LE";
+            audio.rate = 44100 * 2;
+            api.alsa.period-size" = 2;
+          }
+        }
+      }
+    ]
+  '';
 }
