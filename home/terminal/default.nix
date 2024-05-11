@@ -8,6 +8,6 @@
     ./programs/nix.nix
     ./programs/yazi
     ./shell/starship.nix
-    ./shell/zsh.nix
+    ./shell/zsh
   ];
 }
