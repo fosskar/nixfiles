@@ -1,3 +1,15 @@
+## [5.2.2](https://gitlab.com/simonoscr/nixfiles/compare/5.2.1...5.2.2) (2024-05-11)
+
+
+### 📦 Other
+
+* **flake:** update flock ([d044b9c](https://gitlab.com/simonoscr/nixfiles/commit/d044b9ce6187f0b8a3aac6181242e98c15295f41))
+
+
+### 🛠 Fixes
+
+* add aliases to zsh ([4b85b9c](https://gitlab.com/simonoscr/nixfiles/commit/4b85b9c3fc285ee33848f084cf106b1ffa67da24))
+
 ## [5.2.1](https://gitlab.com/simonoscr/nixfiles/compare/5.2.0...5.2.1) (2024-05-11)
 
 
