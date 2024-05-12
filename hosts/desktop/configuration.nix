@@ -44,7 +44,6 @@
     printing.enable = true;
     fstrim.enable = true;
     thermald.enable = true;
-    #flatpak.enable = true;
   };
 
   ### DON'T TOUCH!
