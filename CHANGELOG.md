@@ -1,3 +1,20 @@
+## [5.2.9](https://gitlab.com/simonoscr/nixfiles/compare/5.2.8...5.2.9) (2024-05-12)
+
+
+### 📦 Other
+
+* **flake:** update flock ([f002bee](https://gitlab.com/simonoscr/nixfiles/commit/f002beecd1a45d14ec147443dce3ac551f1be743))
+
+
+### 🛠 Fixes
+
+* add gamemode to extraGroups to user, zram settings and info,  Linux console font ([6116fc8](https://gitlab.com/simonoscr/nixfiles/commit/6116fc837b17edaf0309dcb33892f45e8bc5a975))
+* hardware and boot changes ([84621ff](https://gitlab.com/simonoscr/nixfiles/commit/84621ffdf95086d75c5254bcbedc638a0b4c147c))
+* more udiski settings ([f00fe2c](https://gitlab.com/simonoscr/nixfiles/commit/f00fe2c4d12ce0b81bcedd4eb0b919ed0191d3e7))
+* remove thunar and adjust shortcuts to yazi ([1e13ef2](https://gitlab.com/simonoscr/nixfiles/commit/1e13ef296e5596c143b62cecaf1dd133f28f49d7))
+* udev rules for drives and controller and card reader ([0565407](https://gitlab.com/simonoscr/nixfiles/commit/0565407895fac9d91111e10a35e1d71e59054191))
+* **gaming:** set extest for steam, information about cap_sys for gamescope, enable inhibit_screensaver for gamemode ([cd6fb05](https://gitlab.com/simonoscr/nixfiles/commit/cd6fb0554b4649df8b159158dd769ef2bdbed693))
+
 ## [5.2.8](https://gitlab.com/simonoscr/nixfiles/compare/5.2.7...5.2.8) (2024-05-12)
 
 
