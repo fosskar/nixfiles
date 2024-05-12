@@ -1,4 +1,4 @@
-{...}: {
+{inputs, ...}: {
   imports = [inputs.pre-commit-hooks.flakeModule];
 
   pre-commit.settings = {
