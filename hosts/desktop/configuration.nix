@@ -26,7 +26,6 @@
     ../../system/programs/home-manager.nix
     ../../system/programs/hyprland.nix
     ../../system/programs/seahorse.nix
-    ../../system/programs/thunar.nix
     ../../system/programs/xdg.nix
     ../../system/programs/zsh.nix
     ../../system/services/gnome-services.nix

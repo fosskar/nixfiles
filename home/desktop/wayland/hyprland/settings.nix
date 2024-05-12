@@ -22,7 +22,7 @@
         "XDG_SESSION_TYPE,wayland"
         "XDG_SESSION_DESKTOP,Hyprland"
         "OZONE_PLATFORM,wayland"
-        "SDL_VIDEODRIVER,wayland"
+        #"SDL_VIDEODRIVER,wayland"
       ];
 
       debug = {

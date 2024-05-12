@@ -33,7 +33,7 @@
       in {
         "${mod}+t" = "exec kitty";
         "${mod}+w" = "exec firefox";
-        "${mod}+e" = "exec thunar";
+        "${mod}+e" = "exec kitty -e yazi";
         "${mod}+c" = "exec code";
         "${mod}+Shift+q" = "kill";
 

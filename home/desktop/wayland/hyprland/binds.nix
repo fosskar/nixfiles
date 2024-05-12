@@ -22,7 +22,7 @@ _: {
           #"ALT, Space, exec, wofi --show drun" # when using waybar
           "SUPER, W, exec, firefox"
           "SUPER, T, exec, kitty"
-          "SUPER, E, exec, thunar"
+          "SUPER, E, exec, kitty -e yazi"
           "ALT, Tab, focuscurrentorlast"
           "SUPER SHIFT, E, exit"
           "SUPER SHIFT, Q, killactive"
