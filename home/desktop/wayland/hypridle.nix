@@ -15,19 +15,21 @@ in {
   services.hypridle = {
     enable = true;
     settings = {
-      beforeSleepCmd = "${pkgs.systemd}/bin/loginctl lock-session";
-      afterSleepCmd = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
-      lockCmd = lib.getExe config.programs.hyprlock.package;
-
-      listeners = [
+      general = {
+        before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+        after_sleep_cmd = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
+        lock_cmd = lib.getExe config.programs.hyprlock.package;
+        ignore_dbus_inhibit = false; # whether to ignore dbus-sent idle-inhibit requests (used by e.g. firefox or steam)
+      };
+      listener = [
         {
           timeout = 180;
-          onTimeout = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
-          onResume = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
+          on-timeout = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
+          on-resume = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
         }
         {
           timeout = 3600;
-          onTimeout = suspendScript.outPath;
+          on-timeout = suspendScript.outPath;
         }
       ];
     };

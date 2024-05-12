@@ -33,6 +33,4 @@ in {
       dXNlcl9wYXNzd29yZA = {};
     };
   };
-
-  systemd.user.services.mbsync.Unit.After = ["sops-nix.service"];
 }
