@@ -10,7 +10,7 @@
         softrealtime = "auto";
         renice = 15;
         ioprio = 0;
-        inhibit_screensaver = 0;
+        inhibit_screensaver = 1; # https://nixos.wiki/wiki/Gamemode#Known_Errors
       };
     };
   };
