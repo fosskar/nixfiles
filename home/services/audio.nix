@@ -26,9 +26,7 @@
         ]
         actions = {
           update-props = {
-            audio.format = "S32LE";
-            audio.rate = 44100 * 2;
-            api.alsa.period-size" = 2;
+            api.alsa.period-size = 256;
           }
         }
       }

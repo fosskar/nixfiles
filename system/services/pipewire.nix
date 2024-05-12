@@ -4,8 +4,8 @@
   ...
 }: let
   q = 64;
-  r = 44100;
-  qr = "64/44100";
+  r = 48000;
+  qr = "64/48000";
 in {
   sound.enable = true;
   hardware.pulseaudio.enable = lib.mkForce false;
@@ -22,7 +22,7 @@ in {
         context = {
           properties.default.clock = {
             rate = r;
-            allowed-rates = [r];
+            allowed-rates = [44100 48000];
             quantum = q;
             min-quantum = q;
             max-quantum = q;
@@ -34,7 +34,7 @@ in {
               args = {
                 nice.level = -15;
                 rt = {
-                  prio = 88;
+                  prio = 70;
                   time.soft = 200000;
                   time.hard = 200000;
                 };
