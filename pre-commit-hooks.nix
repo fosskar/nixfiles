@@ -1,7 +1,7 @@
 {inputs, ...}: {
   imports = [inputs.pre-commit-hooks.flakeModule];
 
-  pre-commit.settings = {
+  perSystem.pre-commit.settings = {
     excludes = [
       "flake.lock"
       "CHANGELOG.md"

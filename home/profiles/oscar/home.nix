@@ -1,7 +1,7 @@
 {...}: {
   imports = [
     ../../terminal/shell/starship.nix
-    ../../terminal/shell/zsh.nix
+    ../../terminal/shell/zsh
   ];
 
   programs.home-manager.enable = true;
