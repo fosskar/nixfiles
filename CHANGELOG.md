@@ -1,3 +1,10 @@
+## [5.2.6](https://gitlab.com/simonoscr/nixfiles/compare/5.2.5...5.2.6) (2024-05-12)
+
+
+### 🛠 Fixes
+
+* **pre-commit-hook:** move pre-commit-hook config to a seperate file out of flake.nix ([7ff78ec](https://gitlab.com/simonoscr/nixfiles/commit/7ff78ecbfd3d0ba21a1cbdc50318ac1f9806fcfb))
+
 ## [5.2.5](https://gitlab.com/simonoscr/nixfiles/compare/5.2.4...5.2.5) (2024-05-11)
 
 
