@@ -1,7 +1,7 @@
 _: {
   console = {
     earlySetup = true;
-    font = "latarcyrheb-sun16";
+    font = "Lat2-Terminus16";
     keyMap = "de";
     colors = [
       "171717"
