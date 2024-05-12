@@ -1,3 +1,11 @@
+## [5.2.7](https://gitlab.com/simonoscr/nixfiles/compare/5.2.6...5.2.7) (2024-05-12)
+
+
+### 🛠 Fixes
+
+* typo in pre-commit-hook.nix ([b8feb19](https://gitlab.com/simonoscr/nixfiles/commit/b8feb19ab65dfb0ff260fbac7e27c473850d1ee5))
+* **pre-commit-hook:** fix missing input ([07b7b70](https://gitlab.com/simonoscr/nixfiles/commit/07b7b7026363558f6417f40e748204d378a7c015))
+
 ## [5.2.6](https://gitlab.com/simonoscr/nixfiles/compare/5.2.5...5.2.6) (2024-05-12)
 
 
