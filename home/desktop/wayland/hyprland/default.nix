@@ -11,8 +11,8 @@
     ../hyprlock.nix
     ../hypridle.nix
     ../ags
-    #./plugins.nix
-    #./waybar"
+    ./plugins.nix
+    #./waybar
   ];
 
   home.packages = with pkgs; [
