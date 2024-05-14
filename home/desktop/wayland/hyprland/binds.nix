@@ -13,7 +13,8 @@ _: {
       in
         [
           "ALT, Space,     ${e} -t launcher" # this is for AGS
-          "SUPER, Tab,     ${e} -t overview"
+          #"SUPER, Tab,     ${e} -t overview"
+          "SUPER, Tab, hyprexpo:expo, toggle"
           #"Print,         ${e} -r 'recorder.screenshot()'"
           #"SHIFT,Print,    ${e} -r 'recorder.screenshot(true)'"
           ",Print,exec,hyprshot -m region -o ~/Pictures/Screenshots -- imv"
