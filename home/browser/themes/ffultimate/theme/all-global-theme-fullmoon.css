@@ -62,6 +62,10 @@ color-scheme: dark !important; /*--<--dont touch--*/
     - Full Moon Color Palette Application
 -------------------------------------------------------------------------------------*/
 
+#main-window:not([lwtheme="true"]) {background-color: var(--uc-ultima-window) !important;}
+
+#main-window:not([lwtheme="true"]) {--toolbar-bgcolor: var(--uc-ultima-window) !important;}
+  
 #main-window:not([lwtheme]), :root:not([lwtheme]) {
 
   --tab-selected-bgcolor: var(--uc-active) !important;
@@ -334,7 +338,7 @@ body {background: var(--toolbar-bgcolor) !important;}
 /*side bar themed*/
 
 #main-window[lwtheme="true"] #sidebar-header
-  { background: var(--uc-sb-lwt) !important;
+  { background: var(--uc-sb-lwt) !important; 
 } #main-window[lwtheme="true"] #sidebar {
   background: var(--uc-sb-lwt) !important;
 } #main-window[lwtheme="true"] #sidebar-box {
@@ -360,7 +364,7 @@ body {background: var(--toolbar-bgcolor) !important;}
 #main-window[lwtheme="true"] .tab-content[pinned="true"] .tab-background
   { background: var(--lwt-accent-color);}
 
-#main-window[lwtheme="true"]
+#main-window[lwtheme="true"] 
   {--tab-selected-bgcolor: var(--lwt-accent-color) !important;}
 
 .tabbrowser-tab[pending="true"] {opacity: 0.3 !important;}
@@ -412,7 +416,7 @@ splitter {@media (-moz-platform: windows) { & {
 /*
 .tab-background:is([selected], [multiselected]) {
   box-shadow: 0 0 4px rgba(0,0,0,.4);}
-*/
+*/  
 /* tab background selected */
 /*
 .tab-background:is([selected], [multiselected]) {
@@ -463,11 +467,11 @@ splitter {@media (-moz-platform: windows) { & {
 
 /*--extension menu--*/
 #main-window:not([lwtheme]) #unified-extensions-button {
-  list-style-image: url("icons/extensions.png") !important;
+  list-style-image: url("icons/extensions.svg") !important;
   fill: var(--uc-ultima-accent-iii) !important;
 }
 #main-window[lwtheme="true"] #unified-extensions-button {
-  list-style-image: url("icons/extensions.png") !important;
+  list-style-image: url("icons/extensions.svg") !important;
   fill: var(--lwt-accent-color) !important;
 }
 /*--bookmarks folder icon--*/

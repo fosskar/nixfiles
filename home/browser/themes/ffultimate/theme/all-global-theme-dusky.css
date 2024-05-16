@@ -163,7 +163,7 @@
 
 /*-----------------side bar-----------------*/
 
-#sidebar-header {
+#sidebar-header { 
   background-color: var(--uc-sb-themed) !important;
 } #sidebar {
   background-color: var(--uc-sb-themed) !important;
@@ -176,7 +176,7 @@
 
 /*--the panel that holds the vertical tabs--*/
 
-#main-window:not([lwtheme]) #tabbrowser-tabs {
+#main-window:not([lwtheme]) #tabbrowser-tabs { 
   background: var(--uc-tabs-background);
   --tab-loading-fill: var(--uc-ultima-accent-i) !important;
 }
@@ -419,7 +419,7 @@ splitter {@media (-moz-platform: windows) { & {
 /*
 .tab-background:is([selected], [multiselected]) {
   box-shadow: 0 0 4px rgba(0,0,0,.4);}
-*/
+*/  
 /* tab background selected */
 /*
 .tab-background:is([selected], [multiselected]) {
@@ -473,11 +473,11 @@ stroke: var(--toolbarbutton-icon-fill) !important;
 
 /*--extension menu--*/
 #main-window:not([lwtheme]) #unified-extensions-button {
-  list-style-image: url("icons/extensions.png") !important;
+  list-style-image: url("icons/extensions.svg") !important;
   fill: var(--uc-ultima-accent-iii) !important;
 }
 #main-window[lwtheme="true"] #unified-extensions-button {
-  list-style-image: url("icons/extensions.png") !important;
+  list-style-image: url("icons/extensions.svg") !important;
   fill: var(--lwt-accent-color) !important;
 }
 /*--bookmarks folder icon--*/

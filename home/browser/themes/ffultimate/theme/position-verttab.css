@@ -212,14 +212,14 @@ scrollbox[orient="horizontal"] {
   height: 16px !important;
   width: 16px !important;
   border-radius: var(--uc-button-border) !important;
-  /* display: none !important; */
+  display: none !important;
   /*--removable--*/
 }
 
 #tabbrowser-tabs .close-icon {
   padding: 2px !important;
   border-radius: var(--uc-button-border) !important;
-  /* display: none !important; */
+  display: none !important;
   /*--removable--*/
 }
 
@@ -346,9 +346,9 @@ scrollbox[orient="horizontal"] {
   display: none;
 }
 
-
+  
 /* make sure closed tabs update the scrollbox */
-
+  
 .tabbrowser-tab:not([pinned], [fadein]) {
   max-width: 0.1px !important;
   min-width: 0.1px !important;
@@ -360,7 +360,7 @@ scrollbox[orient="horizontal"] {
   margin-bottom: -2.3px !important;
 }
 
-
+  
 /*-----------------------------------END OF ADJUSTMENTS-------------------------------------*/
 
 
