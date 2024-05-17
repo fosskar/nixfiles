@@ -93,6 +93,7 @@
         };
         formatter = pkgs.alejandra;
       };
+
       flake = {
         nixosConfigurations = {
           desktop = inputs.nixpkgs.lib.nixosSystem {
@@ -122,6 +123,12 @@
                 };
               }
             ];
+          };
+        };
+        homeConfigurations = {
+          work = inputs.home-manager.lib.homeManagerConfiguration {
+            specialArgs = {inherit inputs;};
+            modules = [./home/profiles/work/home.nix];
           };
         };
       };
