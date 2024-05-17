@@ -1,3 +1,24 @@
+## [5.2.11](https://gitlab.com/simonoscr/nixfiles/compare/5.2.10...5.2.11) (2024-05-17)
+
+
+### 📔 Docs
+
+* update README ([4856ce2](https://gitlab.com/simonoscr/nixfiles/commit/4856ce2a4e8a41aff75959d4bec7062fdb5a728f))
+
+
+### 📦 Other
+
+* **flake:** update flock ([9184371](https://gitlab.com/simonoscr/nixfiles/commit/918437190e1906027ea5c602951ac0047211bfc2))
+
+
+### 🛠 Fixes
+
+* add home.nix for work profile ([0811831](https://gitlab.com/simonoscr/nixfiles/commit/0811831fe2df41509b94940c43bd940a396e8e69))
+* add homeConfiguration for work setup ([2582187](https://gitlab.com/simonoscr/nixfiles/commit/25821876cff9634ec32be090f367c284bc31da2c))
+* hyprland plugins, settings and binds ([4319c50](https://gitlab.com/simonoscr/nixfiles/commit/4319c50cd54cf7c2fd8dc1248dada9e491efad36))
+* mute shortcut for teamspeak ([9bb5eb1](https://gitlab.com/simonoscr/nixfiles/commit/9bb5eb1013f44cd6e1af8240d5f6b98ff7b655e1))
+* update firefox theme ([351f3a9](https://gitlab.com/simonoscr/nixfiles/commit/351f3a9297e9dccbc1d7b484c104482f7b4261ef))
+
 ## [5.2.10](https://gitlab.com/simonoscr/nixfiles/compare/5.2.9...5.2.10) (2024-05-14)
 
 
