@@ -1,25 +1,33 @@
 _: {
   wayland.windowManager.hyprland = {
     settings = {
-      windowrule = let
-        f = regex: "float, .*(${regex}).*";
-      in [
-        (f "steam")
-        (f "WebCord")
-        (f "pavucontrol")
-        (f "com.github.Aylur.ags")
-        (f "bitwarden")
-        (f "TeamSpeak")
-        (f "btop")
-        (f "Picture-in-Picture")
-        "workspace 2 silent,^(WebCord)$"
-        "workspace 2 silent,^(Steam)|(steam)$"
-      ];
       windowrulev2 = [
-        #"stayfocused,title:^()$,class:^(steam)$"
-        "minsize 1 1,title:^()$,class:^(steam)$"
+        # webcord
+        "float, initialclass:^(WebCord)$"
+        "workspace 2, initialclass:^(WebCord)$"
+        "size 450 600, initialclass:^(WebCord)$"
+        "center, initialclass:^(WebCord)$"
+
+        # steam
+        "float, initialclass:^(steam)$"
+        "workspace 2, initialclass:^(steam)$"
+        "size 450 600, title:^(Steam)$"
+        "size 1000 300, title:^(Friends List)$"
+        "size 800 800, title:^(Steam Settings)$"
+        "center, initialclass:^(steam)$"
+
+        # ts3
+        "float, initialclass:^(TeamSpeak 3)$"
+        "workspace 2, initialclass:^(TeamSpeak 3)$"
+        "size 450 600, initialclass:^(TeamSpeak 3)$"
+        "center, initialclass:^(TeamSpeak 3)$"
+
+        # suppress notification events when gaming
+        "idleinhibit fullscreen, class:.*"
         "suppressevent maximize,class:.*"
         "noinitialfocus,title:(^notificationtoasts.*)"
+
+        # immediate
         "immediate, class:^(cs2)$"
         "immediate, class:^(gamescope|steam_app).*"
         "immediate, fullscreen:1"

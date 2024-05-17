@@ -5,7 +5,7 @@
 }: {
   wayland.windowManager.hyprland = {
     plugins = with inputs.hyprland-plugins.packages.${pkgs.system}; [
-      csgo-vulkan-fix
+      #csgo-vulkan-fix
       #hy3
       #hyprbars
     ];
