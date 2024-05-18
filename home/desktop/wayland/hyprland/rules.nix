@@ -9,18 +9,21 @@ _: {
         "center, initialclass:^(WebCord)$"
 
         # steam
-        "float, initialclass:^(steam)$"
-        "workspace 2, initialclass:^(steam)$"
+        "float, title:^(Steam)$"
+        "workspace 2, title:^(Steam)$"
         "size 450 600, title:^(Steam)$"
+
+        "float, title:^(Steam)$"
         "size 1000 300, title:^(Friends List)$"
+        "workspace 2, title:^(Steam)$"
+
         "size 800 800, title:^(Steam Settings)$"
-        "center, initialclass:^(steam)$"
+        "workspace 2, title:^(Steam)$"
 
         # ts3
-        "float, initialclass:^(TeamSpeak 3)$"
-        "workspace 2, initialclass:^(TeamSpeak 3)$"
-        "size 450 600, initialclass:^(TeamSpeak 3)$"
-        "center, initialclass:^(TeamSpeak 3)$"
+        "float, title:^(TeamSpeak 3)$"
+        "workspace 2, title:^(TeamSpeak 3)$"
+        "size 450 600, title:^(TeamSpeak 3)$"
 
         # suppress notification events when gaming
         "idleinhibit fullscreen, class:.*"
