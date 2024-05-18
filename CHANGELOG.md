@@ -1,3 +1,17 @@
+## [5.2.12](https://gitlab.com/simonoscr/nixfiles/compare/5.2.11...5.2.12) (2024-05-18)
+
+
+### 📦 Other
+
+* ref and update ([18926a6](https://gitlab.com/simonoscr/nixfiles/commit/18926a666c47307801e925bf5240585da33472b7))
+* **flake:** update flock ([79f60ad](https://gitlab.com/simonoscr/nixfiles/commit/79f60ad5021fea510d2e719415e92e45154fd941))
+
+
+### 🛠 Fixes
+
+* add fs.file_max to sysctl for gaming ([3659b06](https://gitlab.com/simonoscr/nixfiles/commit/3659b06dd0a174016fbd85511951427679c1b3fd))
+* hyprland settings, envs and rules ([211d7a8](https://gitlab.com/simonoscr/nixfiles/commit/211d7a87134c439ff2ef323350c90f5550921319))
+
 ## [5.2.11](https://gitlab.com/simonoscr/nixfiles/compare/5.2.10...5.2.11) (2024-05-17)
 
 
