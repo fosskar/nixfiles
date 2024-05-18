@@ -13,7 +13,9 @@ _: {
       # page-cluster refers to the number of pages up to which
       # consecutive pages are read in from swap in a single attempt
       "vm.page-cluster" = 0;
-      "vm.max_map_count" = 2147483642; # increasing is good for gaming USE MAX_INT
+      # increasing is good for gaming USE MAX_INT
+      "vm.max_map_count" = 16777216;
+      "fs.file-max" = 524288;
       # If you have enough free RAM increase the watermark scale factor to further reduce the likelihood of allocation stalls (explanations [7][8]). Setting watermark distances to 5% of RAM:
       "vm.watermark_scale_factor" = 500;
       # Proactive compaction for (Transparent) Hugepage allocation reduces the average but not necessarily the maximum allocation stalls. Disable proactive compaction because it introduces jitter according to kernel documentation (inner workings):
