@@ -25,13 +25,13 @@
 
     settings = {
       manager = {
-        layout = [1 4 3];
+        layout = [0 4 4];
         sort_by = "alphabetical";
         sort_sensitive = true;
         sort_reverse = false;
         sort_dir_first = true;
         linemode = "none";
-        show_hidden = false;
+        show_hidden = true;
         show_symlink = true;
       };
 
@@ -39,6 +39,16 @@
         tab_size = 2;
         max_width = 600;
         max_height = 900;
+        image_filter = "triangle";
+        image_quality = 90;
+        sixel_fraction = 15;
+        ueberzug_scale = 1;
+        ueberzug_offset = [
+          0
+          0
+          0
+          0
+        ];
         cache_dir = "${config.xdg.cacheHome}";
       };
     };
