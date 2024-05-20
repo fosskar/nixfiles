@@ -26,7 +26,7 @@
       ];
 
       debug = {
-        disable_logs = true;
+        disable_logs = false;
       };
 
       monitor = [
