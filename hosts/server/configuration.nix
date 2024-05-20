@@ -17,16 +17,9 @@
     ./users.nix
     ../../system/core/locale.nix
     ../../system/services/virtualisation.nix
-    ../../system/services/k3s.nix
-    ../../system/services/vaultwarden.nix
-    ../../system/monitoring/default.nix
-    ../../system/monitoring/dashy.nix
-    ../../system/monitoring/cockpit.nix
-    ../../system/network/pihole.nix
-    ../../system/network/unbound.nix
+    ../../system/services/kubernetes.nix
   ];
 
-  ## systemd-boot
   boot = {
     tmp.cleanOnBoot = true;
     loader = {

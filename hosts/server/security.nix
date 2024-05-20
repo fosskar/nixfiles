@@ -1,9 +1,5 @@
 {lib, ...}: {
   security.sudo.execWheelOnly = true;
-  security.pam.services.nginx.setEnvironment = false;
-  systemd.services.nginx.serviceConfig = {
-    SupplementaryGroups = ["shadow"];
-  };
   fonts.fontconfig.enable = false;
 
   environment = {

@@ -10,33 +10,6 @@ _: {
       allowedTCPPorts = [22 53 80 443];
       allowedUDPPorts = [53];
     };
-    useDHCP = false;
-    nameservers = ["127.0.0.1"];
-    defaultGateway = "192.168.178.1";
-    defaultGateway6 = {
-      address = "fe80::1eed:6fff:fef1:8f6f";
-      interface = "wlo1";
-    };
-    #extraHosts = ''
-    #'';
-    interfaces.wlo1 = {
-      ipv4 = {
-        addresses = [
-          {
-            address = "192.168.178.91";
-            prefixLength = 24;
-          }
-        ];
-      };
-      ipv6 = {
-        addresses = [
-          {
-            address = "2a04:4540:641c:2300:b2dc:efff:fe81:46f6";
-            prefixLength = 64;
-          }
-        ];
-      };
-    };
   };
 
   ## FIXME add initrd ssh host key
