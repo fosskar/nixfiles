@@ -7,7 +7,6 @@
   r = 48000;
   qr = "64/48000";
 in {
-  sound.enable = true;
   hardware.pulseaudio.enable = lib.mkForce false;
   services.pipewire = {
     enable = true;
