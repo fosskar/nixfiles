@@ -1,3 +1,20 @@
+## [5.2.13](https://gitlab.com/simonoscr/nixfiles/compare/5.2.12...5.2.13) (2024-05-20)
+
+
+### 📦 Other
+
+* **flake:** update flock ([08f565b](https://gitlab.com/simonoscr/nixfiles/commit/08f565b3f5a04c6ec487cf873600364440dec260))
+
+
+### 🛠 Fixes
+
+* disable bluetooth power on boot ([b6e92d8](https://gitlab.com/simonoscr/nixfiles/commit/b6e92d80fbbbd15e9b485318575d332e18115c57))
+* firefox settings ([4e967a0](https://gitlab.com/simonoscr/nixfiles/commit/4e967a04d95c606577d56c07222276d1824124d9))
+* hyprland things and add ags config file ([aa04654](https://gitlab.com/simonoscr/nixfiles/commit/aa04654e57c15ad6c4f186ec83ad69900e6fb6e7))
+* update server related things with k8s ([270ff1c](https://gitlab.com/simonoscr/nixfiles/commit/270ff1c656ab5e93f8cdc7ac21ad2039e0318d69))
+* **editors:** add extensions to vscodium ([b81653e](https://gitlab.com/simonoscr/nixfiles/commit/b81653e4a6fee4a88da471f10b71aa565bd35cae))
+* **yazi:** ajdust settings for image preview and layout ([e7f22a8](https://gitlab.com/simonoscr/nixfiles/commit/e7f22a89875f394d645dcd617c51f9eb611303c8))
+
 ## [5.2.12](https://gitlab.com/simonoscr/nixfiles/compare/5.2.11...5.2.12) (2024-05-18)
 
 
