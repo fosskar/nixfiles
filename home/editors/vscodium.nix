@@ -6,17 +6,20 @@
     mutableExtensionsDir = false;
     package = pkgs.vscodium;
     extensions = with pkgs.vscode-extensions; [
+      editorconfig.editorconfig
       pkief.material-icon-theme
       bbenoist.nix
       jnoortheen.nix-ide
       redhat.vscode-yaml
-      ms-azuretools.vscode-docker
       yzhang.markdown-all-in-one
       kamadorueda.alejandra
       editorconfig.editorconfig
       mkhl.direnv
+      eamodio.gitlens
+      christian-kohler.path-intellisense
     ];
     userSettings = {
+      "update.mode" = "none";
       "files.autoSave" = "afterDelay";
       "files.insertFinalNewline" = true;
       "files.trimFinalNewlines" = true;
