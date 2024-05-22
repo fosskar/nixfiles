@@ -1,5 +1,12 @@
-{
-  home.file.".config/wireplumber/wireplumber.conf.d/51-change-channels.conf".text = ''
+_: let
+  xdg.configHome = let
+    x = builtins.getEnv "XDG_CONFIG_HOME";
+  in
+    if x != ""
+    then x
+    else "${builtins.getEnv "HOME"}/.config";
+in {
+  home.file."${xdg.configHome}/wireplumber/wireplumber.conf.d/51-change-channels.conf".text = ''
     monitor.alsa.rules = [
       {
         matches = [
@@ -16,7 +23,7 @@
     ]
   '';
 
-  home.file.".config/wireplumber/wireplumber.conf.d/99-low-latency.conf".text = ''
+  home.file."${xdg.configHome}/wireplumber/wireplumber.conf.d/99-low-latency.conf".text = ''
     monitor.alsa.rules = [
       {
         matches = [
