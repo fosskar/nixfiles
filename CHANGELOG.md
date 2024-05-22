@@ -1,3 +1,20 @@
+## [5.2.14](https://gitlab.com/simonoscr/nixfiles/compare/5.2.13...5.2.14) (2024-05-22)
+
+
+### 📦 Other
+
+* **flake:** update flock ([826966b](https://gitlab.com/simonoscr/nixfiles/commit/826966b9cb0549f9e8fe465e02ee034bd0611b5d))
+* **flake:** update flock ([3a8e049](https://gitlab.com/simonoscr/nixfiles/commit/3a8e049a4df34b880e830d80bb9f3b2deab1b86b))
+* **flake:** update flock ([bfc430e](https://gitlab.com/simonoscr/nixfiles/commit/bfc430ea9d6208d484d2a96b1fd2a901c234d77b))
+
+
+### 🛠 Fixes
+
+* disable old sound.enable setting for basic ALSA implentation (kind of deprecated) ([f0bcb90](https://gitlab.com/simonoscr/nixfiles/commit/f0bcb90298cbfe9252164e6b5a4307c5bac75303))
+* **adio:** set dynamic HOME or XDG_CONFIG_HOME for config files ([c3f2e3f](https://gitlab.com/simonoscr/nixfiles/commit/c3f2e3ff420413f74b3dca8e8a4cbf8ca39ec283))
+* **gaming:** add vkbasalt and config,, also adust mangohud config ([097b002](https://gitlab.com/simonoscr/nixfiles/commit/097b002afda3eded7371b4e54a519cebf1e850b8))
+* **server:** adjust kubernetes deployment and add utils ([32ac77f](https://gitlab.com/simonoscr/nixfiles/commit/32ac77f5a2689b1c82b737f03478cdeeaab8a337))
+
 ## [5.2.13](https://gitlab.com/simonoscr/nixfiles/compare/5.2.12...5.2.13) (2024-05-20)
 
 
