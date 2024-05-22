@@ -1,8 +1,8 @@
 {pkgs, ...}:
 # see https://nixos.org/nixos/manual/index.html#sec-kubernetes
 let
-  kubeMasterIP = "10.0.0.1";
-  kubeMasterHostname = "127.0.0.1";
+  kubeMasterIP = "192.168.178.91";
+  kubeMasterHostname = "localhost";
   kubeMasterAPIServerPort = 6443;
 in {
   networking.extraHosts = "${kubeMasterIP} ${kubeMasterHostname}";
@@ -25,7 +25,10 @@ in {
 
     #apiserver.enable = true;
 
-    addons.dns.enable = true;
+    addons = {
+      dns.enable = true;
+      flannel.enable = true;
+    };
 
     kubelet.extraOpts = "--fail-swap-on=false";
   };
