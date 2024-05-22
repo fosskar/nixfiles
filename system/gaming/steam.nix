@@ -1,4 +1,8 @@
 {pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    vkbasalt
+  ];
+
   programs.steam = {
     enable = true;
     extest.enable = true;
