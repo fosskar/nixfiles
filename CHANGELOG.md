@@ -1,3 +1,10 @@
+## [5.4.0](https://gitlab.com/simonoscr/nixfiles/compare/5.3.0...5.4.0) (2024-05-27)
+
+
+### 🚀 Features
+
+* **ags:** move to fetchFromGitHub to automatically updating ags config instead of downloading manually ([b833f40](https://gitlab.com/simonoscr/nixfiles/commit/b833f4017e04e39b7c30d0f88f0b873fb985d93b))
+
 ## [5.3.0](https://gitlab.com/simonoscr/nixfiles/compare/5.2.14...5.3.0) (2024-05-27)
 
 
