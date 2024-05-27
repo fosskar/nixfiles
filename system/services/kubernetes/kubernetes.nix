@@ -1,12 +1,17 @@
-{pkgs, ...}:
-# see https://nixos.org/nixos/manual/index.html#sec-kubernetes
-let
-  kubeMasterIP = "192.168.178.91";
-  kubeMasterHostname = "localhost";
+{pkgs, ...}: let
+  # When using easyCerts=true the IP Address must resolve to the master on creation.
+  # So use simply 127.0.0.1 in that case. Otherwise you will have errors like this https://github.com/NixOS/nixpkgs/issues/59364
+  kubeMasterIP = "10.1.1.2";
+  kubeMasterHostname = "127.0.0.1";
   kubeMasterAPIServerPort = 6443;
 in {
+  imports = [
+    ./argocd.nix
+  ];
+  # resolve master hostname
   networking.extraHosts = "${kubeMasterIP} ${kubeMasterHostname}";
 
+  # packages for administration tasks
   environment.systemPackages = with pkgs; [
     kompose
     kubectl
@@ -23,13 +28,10 @@ in {
       advertiseAddress = kubeMasterIP;
     };
 
-    #apiserver.enable = true;
+    # use coredns
+    addons.dns.enable = true;
 
-    addons = {
-      dns.enable = true;
-      flannel.enable = true;
-    };
-
+    # needed if you use swap
     kubelet.extraOpts = "--fail-swap-on=false";
   };
 }

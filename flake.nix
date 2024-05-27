@@ -61,6 +61,9 @@
       url = "github:Aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixhelm.url = "github:farcaller/nixhelm";
+    nix-kube-generators.url = "github:farcaller/nix-kube-generators";
   };
 
   outputs = inputs:
@@ -75,7 +78,9 @@
         config,
         pkgs,
         ...
-      }: {
+      }: let
+        kubelib = inputs.nix-kube-generators.lib {inherit pkgs;};
+      in {
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             alejandra
@@ -92,6 +97,14 @@
           '';
         };
         formatter = pkgs.alejandra;
+
+        packages.default = pkgs.writeShellScriptBin "deploy-argo" ''
+          ${kubelib.buildHelmChart {
+            name = "argocd";
+            chart = (inputs.nixhelm.charts {inherit pkgs;}).argoproj.argo-cd;
+            namespace = "argocd";
+          }}
+        '';
       };
 
       flake = {

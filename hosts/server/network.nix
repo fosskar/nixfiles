@@ -7,8 +7,8 @@ _: {
       enable = true;
       allowPing = true;
       logRefusedConnections = false;
-      allowedTCPPorts = [22 53 80 443];
-      allowedUDPPorts = [53];
+      allowedTCPPorts = [22 53 80 443 6443];
+      allowedUDPPorts = [53 8472];
     };
   };
 
@@ -26,19 +26,10 @@ _: {
   #  };
   #};
 
-  systemd = {
-    services = {
-      NetworkManager-wait-online.enable = false;
-      systemd-networkd.stopIfChanged = false;
-      systemd-resolved.stopIfChanged = false;
-    };
-    network.wait-online.enable = false;
-  };
-
-  services.fail2ban.enable = true;
+  services.fail2ban.enable = false;
 
   services.tailscale = {
-    enable = true;
+    enable = false;
     #useRoutingFeatures = "server";
   };
 }

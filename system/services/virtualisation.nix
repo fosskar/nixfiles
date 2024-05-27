@@ -1,5 +1,6 @@
 _: {
   virtualisation = {
+    containerd.enable = true;
     libvirtd.enable = true;
     podman = {
       enable = true;
