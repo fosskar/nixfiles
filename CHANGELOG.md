@@ -1,3 +1,21 @@
+## [5.5.0](https://gitlab.com/simonoscr/nixfiles/compare/5.4.0...5.5.0) (2024-05-29)
+
+
+### 📦 Other
+
+* **flake:** update flock ([5a86324](https://gitlab.com/simonoscr/nixfiles/commit/5a863245c685cc7b90e9de3b7ff4fc002650ceac))
+
+
+### 🚀 Features
+
+* **desktop:** add ollama with oterm but disable it ([fc10b28](https://gitlab.com/simonoscr/nixfiles/commit/fc10b288b148eedcf7b6fa6d7dbb1307a8ab5980))
+
+
+### 🛠 Fixes
+
+* **hyprland:** update windows rules, hypridle, default settings ([2747f4b](https://gitlab.com/simonoscr/nixfiles/commit/2747f4bd26805a87a92b7c1ad16a9cfec3e8e8e6))
+* **hyprland:** windowrules ([0676c4e](https://gitlab.com/simonoscr/nixfiles/commit/0676c4e3480574aca84906464bd87435fe0b15df))
+
 ## [5.4.0](https://gitlab.com/simonoscr/nixfiles/compare/5.3.0...5.4.0) (2024-05-27)
 
 
