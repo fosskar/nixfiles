@@ -31,6 +31,7 @@
     ../../system/services/gnome-services.nix
     ../../system/services/greetd.nix
     ../../system/services/libinput.nix
+    #../../system/services/ollama.nix # holy shit need to build HOURS
     ../../system/services/pipewire.nix
     ../../system/services/udev.nix
     ../../system/services/virtualisation.nix
