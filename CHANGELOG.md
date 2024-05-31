@@ -1,3 +1,10 @@
+## [5.5.1](https://gitlab.com/simonoscr/nixfiles/compare/5.5.0...5.5.1) (2024-05-31)
+
+
+### 🛠 Fixes
+
+* homeConfiguration for work profile ([88b2fa1](https://gitlab.com/simonoscr/nixfiles/commit/88b2fa171edf8bf7bd4b881b68bec31b2dac9ffe))
+
 ## [5.5.0](https://gitlab.com/simonoscr/nixfiles/compare/5.4.0...5.5.0) (2024-05-29)
 
 
