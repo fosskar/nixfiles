@@ -1,3 +1,15 @@
+## [5.5.2](https://gitlab.com/simonoscr/nixfiles/compare/5.5.1...5.5.2) (2024-05-31)
+
+
+### 📦 Other
+
+* **flake:** update flock ([cba9072](https://gitlab.com/simonoscr/nixfiles/commit/cba90724cd0d73b0b7d5c585c7d4fd078cb44d6b))
+
+
+### 🛠 Fixes
+
+* **hyprland:** steam windowrules ([6910da4](https://gitlab.com/simonoscr/nixfiles/commit/6910da4e03f18b9dfd8deaca18796eab285297af))
+
 ## [5.5.1](https://gitlab.com/simonoscr/nixfiles/compare/5.5.0...5.5.1) (2024-05-31)
 
 
