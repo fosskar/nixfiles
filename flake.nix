@@ -118,7 +118,7 @@
               {
                 home-manager = {
                   extraSpecialArgs = {inherit inputs;};
-                  users.simon = import ./home/profiles/simon/home.nix;
+                  users.simon.imports = [./home/profiles/simon/home.nix];
                 };
               }
             ];
@@ -132,7 +132,7 @@
               {
                 home-manager = {
                   extraSpecialArgs = {inherit inputs;};
-                  users.oscar = import ./home/profiles/oscar/home.nix;
+                  users.oscar.imports = [./home/profiles/oscar/home.nix];
                 };
               }
             ];
