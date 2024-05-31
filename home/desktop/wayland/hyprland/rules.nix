@@ -3,13 +3,13 @@ _: {
     settings = {
       windowrulev2 = [
         # webcord
-        "workspace 2, class:^(WebCord)$"
+        "workspace 2 silent, class:^(WebCord)$"
 
         # steam
-        "workspace 2, class:^(steam)$"
+        "workspace 2 silent, class:^(steam)$"
 
         # ts3
-        "workspace 2, title:^(TeamSpeak 3)$"
+        "workspace 2 silent, title:^(TeamSpeak 3)$"
 
         # suppress notification events when gaming
         "suppressevent maximize,class:.*"
