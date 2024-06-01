@@ -29,7 +29,7 @@ _: {
   services.fail2ban.enable = false;
 
   services.tailscale = {
-    enable = false;
+    enable = true;
     #useRoutingFeatures = "server";
   };
 }

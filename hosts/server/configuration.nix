@@ -18,6 +18,7 @@
     ../../system/core/locale.nix
     ../../system/services/virtualisation.nix
     ../../system/services/kubernetes/k3s.nix
+    ../../system/services/kubernetes/helm.nix
     #../../system/services/kubernetes/kubernetes.nix
   ];
 

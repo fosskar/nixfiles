@@ -9,6 +9,9 @@ _: {
     firewall = {
       enable = true;
     };
+    extraHosts = ''
+      192.168.178.91 argocd.space
+    '';
   };
   services = {
     openssh = {

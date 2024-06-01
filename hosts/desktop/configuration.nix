@@ -18,6 +18,7 @@
     ../../system/hardware/bluetooth.nix
     ../../system/hardware/fwupd.nix
     ../../system/network
+    ../../system/network/tailscale.nix
     ../../system/nix
     ../../system/programs/corectrl.nix
     ../../system/programs/dconf.nix
