@@ -30,5 +30,64 @@
             tls: false
       '';
     };
+    argocd-apps = {
+      chart = "argocd-apps";
+      namespace = "argocd";
+      version = "2.0.0";
+      repo = "https://argoproj.github.io/argo-helm";
+      valuesYaml = ''
+        applications:
+          bootstrap:
+            namespace: argocd
+            finalizers:
+            - resources-finalizer.argocd.argoproj.io
+            project: argocd
+            sources:
+            - repoURL: https://gitlab.com/simonoscr/gitops-bootstrap.git
+              path: bootstrap
+              targetRevision: HEAD
+            destination:
+              server: https://kubernetes.default.svc
+              namespace: argocd
+            syncPolicy:
+              automated:
+                prune: true
+                selfHeal: true
+              syncOptions:
+              - CreateNamespace=true
+        projects:
+          argocd:
+            namespace: argocd
+            permitOnlyProjectScopedClusters: false
+            finalizers:
+            - resources-finalizer.argocd.argoproj.io
+            description: ArgoCD Bootstrap Project
+            sourceRepos:
+            - "*"
+            destinations:
+            - namespace: argocd
+              server: https://kubernetes.default.svc
+            #clusterResourceWhitelist: []
+            #clusterResourceBlacklist: []
+            #namespaceResourceBlacklist:
+            #- group: ""
+            #  kind: ResourceQuota
+            #- group: ""
+            #  kind: LimitRange
+            #- group: ""
+            #  kind: NetworkPolicy
+            #  orphanedResources: {}
+            #  roles: []
+            #namespaceResourceWhitelist:
+            #- group: "apps"
+            #  kind: Deployment
+            #- group: "apps"
+            #  kind: StatefulSet
+            orphanedResources: {}
+            roles: []
+            sourceNamespaces:
+            - argocd
+      '';
+    };
   };
 }
