@@ -19,16 +19,16 @@ in {
       description = "Whether to enable NetworkManager.";
     };
 
-    nameservers = mkOption {
-      type = types.listOf types.str;
-      default = ["192.168.178.91"];
-      description = "DNS nameservers.";
+    wireless = mkOption {
+      type = types.bool;
+      default = false; # Default to false, overridden as needed
+      description = "Whether to enable wireless.";
     };
 
-    resolved = mkOption {
-      type = types.attrs;
-      default = {};
-      description = "Systemd-resolved settings.";
+    extraHosts = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "Extra hosts for /etc/hosts.";
     };
 
     tailscale = mkOption {
@@ -39,7 +39,7 @@ in {
 
     networkManagerWaitOnline = mkOption {
       type = types.bool;
-      default = false;
+      default = true;
       description = "Whether to enable NetworkManager-wait-online.";
     };
   };
@@ -48,13 +48,6 @@ in {
     networking = {
       inherit (cfg) hostName;
       networkmanager.enable = cfg.networkManager;
-      inherit (cfg) nameservers;
-    };
-
-    services.resolved = {
-      enable = true; # Assuming you always want this enabled as per your config
-      domains = cfg.resolved.domains or ["space"];
-      dnssec = cfg.resolved.dnssec or false;
     };
 
     systemd.services.NetworkManager-wait-online.enable = cfg.networkManagerWaitOnline;

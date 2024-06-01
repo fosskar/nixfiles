@@ -10,7 +10,7 @@ _: {
       enable = true;
     };
     extraHosts = ''
-      192.168.178.91 argocd.space
+      192.168.178.91 argocd.space prometheus.space grafana.space thanos.space
     '';
   };
   services = {
