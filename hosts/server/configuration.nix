@@ -16,10 +16,19 @@
     ./ssh.nix
     ./users.nix
     ../../system/core/locale.nix
+    ../../system/core/console.nix
+    ../../system/core/zram.nix
+    ../../system/hardware/fwupd.nix
+    ../../system/nix/nixos.nix
+    ../../system/nix/nh.nix
+    ../../system/nix/nixpkgs.nix
+    ../../system/nix/substituters.nix
+    ../../system/programs/dconf.nix
+    ../../system/programs/gnupg.nix
+    ../../system/programs/zsh.nix
     ../../system/services/virtualisation.nix
     ../../system/services/kubernetes/k3s.nix
     ../../system/services/kubernetes/helm.nix
-    #../../system/services/kubernetes/kubernetes.nix
   ];
 
   boot = {
@@ -61,32 +70,6 @@
       AllowSuspend=no
       AllowHibernation=no
     '';
-  };
-
-  console = {
-    earlySetup = true;
-    font = "Lat2-Terminus16";
-    keyMap = "de";
-  };
-
-  zramSwap = {
-    enable = true;
-    memoryPercent = 20;
-    swapDevices = 1;
-  };
-
-  ## programs
-  programs = {
-    zsh = {
-      enable = true;
-    };
-    dconf = {
-      enable = true;
-    };
-    gnupg.agent = {
-      enable = true;
-      enableSSHSupport = true;
-    };
   };
 
   ## flakes nix

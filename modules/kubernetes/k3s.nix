@@ -126,7 +126,10 @@ in
     in
       mkIf cfg.enable {
         networking.firewall.trustedInterfaces = mkIf (!cfg.disableFlannel) ["cni0"];
-        environment.systemPackages = [cfg.package];
+        environment.systemPackages = [
+          cfg.package
+          (pkgs.writeShellScriptBin "k3s-reset-node" (builtins.readFile ./k3s-reset-node))
+        ];
         services = {
           k3s = {
             enable = true;
@@ -217,5 +220,9 @@ in
               );
             }
           );
+        systemd.services.k3s = {
+          wants = ["containerd.service"];
+          after = ["containerd.service"];
+        };
       };
   }

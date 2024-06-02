@@ -18,20 +18,12 @@
         isNormalUser = true;
         extraGroups = [
           "wheel"
-          "kubernetes"
         ];
         shell = pkgs.zsh;
-      };
-      libvirtd = {
-        group = "libvirtd";
-        home = "/var/lib/libvirtd";
-        createHome = true;
-        isSystemUser = true;
       };
     };
     groups = {
       nixos = {};
-      libvirtd = {};
     };
   };
 }

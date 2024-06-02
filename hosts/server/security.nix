@@ -6,6 +6,4 @@
     variables.BROWSER = "echo";
     defaultPackages = lib.mkForce []; # no extra default packages are installed
   };
-
-  sound.enable = false;
 }
