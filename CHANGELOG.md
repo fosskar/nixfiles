@@ -1,3 +1,22 @@
+## [5.6.0](https://gitlab.com/simonoscr/nixfiles/compare/5.5.2...5.6.0) (2024-06-02)
+
+### 📦 Other
+
+* **flake:** update flock ([97a59f9](https://gitlab.com/simonoscr/nixfiles/commit/97a59f94b59b749c832cf3d24728ee105e97b226))
+
+### 🦊 CI/CD
+
+* update semantic-release job ([fe19ba9](https://gitlab.com/simonoscr/nixfiles/commit/fe19ba93cc5722015a0375d8d78502e011b8b5d8))
+
+### 🚀 Features
+
+* k3s+helm setup ([5dc8c79](https://gitlab.com/simonoscr/nixfiles/commit/5dc8c799d932a4321cb0ff93b48372499316848e))
+* **server:** k3s and helm module to install k3s and helm and install and update helm-charts directly on k3s and network settings ([aea41ac](https://gitlab.com/simonoscr/nixfiles/commit/aea41ac72f35937080334295114be1a83fec7033))
+
+### 🛠 Fixes
+
+* add syncOptions CreateNamespace true ([f803775](https://gitlab.com/simonoscr/nixfiles/commit/f803775c8b64b4b33186263829a2561e7259af6a))
+
 ## [5.5.2](https://gitlab.com/simonoscr/nixfiles/compare/5.5.1...5.5.2) (2024-05-31)
 
 
