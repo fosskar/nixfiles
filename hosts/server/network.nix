@@ -8,7 +8,7 @@ _: {
       allowPing = true;
       logRefusedConnections = false;
       allowedTCPPorts = [22 53 80 443 6443];
-      allowedUDPPorts = [53 8472];
+      allowedUDPPorts = [53];
     };
   };
 

@@ -9,7 +9,6 @@
     dig
     # hypervisor
     qemu
-    operator-sdk
     k9s
   ];
 }

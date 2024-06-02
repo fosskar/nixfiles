@@ -1,9 +1,9 @@
 _: {
-  environment.variables.FLAKE = "/home/simon/nixfiles";
+  environment.variables.FLAKE = "${builtins.getEnv "HOME"}/nixfiles";
 
   programs.nh = {
     enable = true;
-    flake = "/home/simon/nixfiles";
+    flake = "${builtins.getEnv "HOME"}/nixfiles";
     clean = {
       enable = true;
       extraArgs = "--keep 3";
