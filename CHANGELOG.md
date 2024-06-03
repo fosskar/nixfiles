@@ -1,3 +1,9 @@
+## [5.8.0](https://gitlab.com/simonoscr/nixfiles/compare/5.7.0...5.8.0) (2024-06-03)
+
+### 🚀 Features
+
+* work setup with i3 etc ([359319b](https://gitlab.com/simonoscr/nixfiles/commit/359319b352e7bfc01eb6c2c764aef921feab51d0))
+
 ## [5.7.0](https://gitlab.com/simonoscr/nixfiles/compare/5.6.0...5.7.0) (2024-06-02)
 
 ### 🚀 Features
