@@ -1,3 +1,14 @@
+## [5.8.1](https://gitlab.com/simonoscr/nixfiles/compare/5.8.0...5.8.1) (2024-06-03)
+
+### 📦 Other
+
+* **flake:** update flock ([c0559d6](https://gitlab.com/simonoscr/nixfiles/commit/c0559d6482eb828170443688b69868e333ba1ffe))
+
+### 🛠 Fixes
+
+* nh flake env ([a40d5ef](https://gitlab.com/simonoscr/nixfiles/commit/a40d5efe9168c0f3872b2e6e711df951c5ae6400))
+* **firefox:** move from startpage to duckduckgo search ([d250734](https://gitlab.com/simonoscr/nixfiles/commit/d2507343efd066ebd06490128ce8768489b5dee3))
+
 ## [5.8.0](https://gitlab.com/simonoscr/nixfiles/compare/5.7.0...5.8.0) (2024-06-03)
 
 ### 🚀 Features
