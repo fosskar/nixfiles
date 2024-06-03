@@ -82,7 +82,6 @@ in {
         extensions = with inputs.firefox-addons.packages.${pkgs.system}; [
           ublock-origin
           bitwarden
-          startpage-private-search
           darkreader
           side-view
           multi-account-containers
@@ -90,17 +89,9 @@ in {
         #https://sourcegraph.com/search?q=context:global+lang:nix&patternType=standard&sm=1
         search = {
           force = true;
-          default = "Startpage";
+          default = "DuckDuckGo";
+          privateDefault = "DuckDuckGo";
           engines = {
-            "Startpage" = {
-              urls = [
-                {
-                  template = "https://www.startpage.com/do/dsearch?query={searchTerms}";
-                }
-              ];
-              icon = "https://www.startpage.com/sp/cdn/favicons/favicon--default.ico";
-              definedAliases = ["@sp"];
-            };
             "Nix Packages" = {
               urls = [
                 {
@@ -120,11 +111,24 @@ in {
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
               definedAliases = ["@np"];
             };
-            "NixOS Wiki" = {
-              urls = [{template = "https://nixos.wiki/index.php?search={searchTerms}";}];
-              iconUpdateURL = "https://nixos.wiki/favicon.png";
-              updateInterval = 24 * 60 * 60 * 1000;
-              definedAliases = ["@nw"];
+            "Nix Options" = {
+              urls = [
+                {
+                  template = "https://search.nixos.org/options";
+                  params = [
+                    {
+                      name = "type";
+                      value = "options";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+              iconUpdateURL = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["@no"];
             };
           };
         };
