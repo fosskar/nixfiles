@@ -13,8 +13,8 @@
     settings = {
       plugin = {
         csgo-vulkan-fix = {
-          res_w = 1280;
-          res_h = 960;
+          res_w = 1440;
+          res_h = 1080;
           class = "cs2";
         };
       };
