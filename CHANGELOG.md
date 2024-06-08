@@ -1,3 +1,23 @@
+## [5.9.0](https://gitlab.com/simonoscr/nixfiles/compare/5.8.2...5.9.0) (2024-06-08)
+
+### 📦 Other
+
+* **flake:** update flock ([934679f](https://gitlab.com/simonoscr/nixfiles/commit/934679fb6b9de7be35a23f060029a431d97b658e))
+
+### 🚀 Features
+
+* add xdg mimeApps ([7d3a6db](https://gitlab.com/simonoscr/nixfiles/commit/7d3a6dbda89b80d7f1d24508fb5afa5abe990942))
+
+### 🛠 Fixes
+
+* adjust greetd login message ([2bdbd03](https://gitlab.com/simonoscr/nixfiles/commit/2bdbd03457d2b6c2653d84d3c446326c11c0e37e))
+* disable containerd ([46b54a5](https://gitlab.com/simonoscr/nixfiles/commit/46b54a536c2ca2ba76aa4baaf65dc8a974b913c0))
+* disable xdg-desktop-portal-wl ([c0d075f](https://gitlab.com/simonoscr/nixfiles/commit/c0d075f8fd199801d91b05e3155c1fa9bcb05b4b))
+* remove bluetooth ([99d85e2](https://gitlab.com/simonoscr/nixfiles/commit/99d85e2cab40e0c2f032d6e62a55e666ed08a5a1))
+* update dbus config ([b419030](https://gitlab.com/simonoscr/nixfiles/commit/b4190309f02888979679cd5f77e035787e6c67a5))
+* update tailscale config ([cd6a181](https://gitlab.com/simonoscr/nixfiles/commit/cd6a181b3f70279d301a34c117448eb9657c8701))
+* **profile:** add yq to work profile ([0e36f78](https://gitlab.com/simonoscr/nixfiles/commit/0e36f78502806cf583e43bb9e3a1ea3d17ad5144))
+
 ## [5.8.2](https://gitlab.com/simonoscr/nixfiles/compare/5.8.1...5.8.2) (2024-06-04)
 
 ### 📦 Other
