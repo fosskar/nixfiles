@@ -8,7 +8,7 @@
   sessionsData = config.services.displayManager.sessionData.desktops;
   xsessionsPath = "${sessionsData}/share/xsessions";
   wayland-sessionsPath = "${sessionsData}/share/wayland-sessions";
-  nixos = "${config.system.nixos.label}";
+  #nixos = "${config.system.nixos.label}";
   kernel = "${config.boot.kernelPackages.kernel.version}";
 in {
   # greetd DM with tuigreet
@@ -19,7 +19,7 @@ in {
         terminal.vt = 1;
         default_session = {
           user = "greeter";
-          command = "${tuigreet} --greeting 'Welcome to NixOS ${nixos}, Kernel: XanMod ${kernel}' --time --asterisks --user-menu --theme 'border=cyan;button=yellow' --cmd Hyprland --sessions ${wayland-sessionsPath}:${xsessionsPath}";
+          command = "${tuigreet} --greeting 'NixOS: unstable, Kernel: XanMod ${kernel}' --time --asterisks --user-menu --theme 'border=cyan;button=yellow' --cmd Hyprland --sessions ${wayland-sessionsPath}:${xsessionsPath}";
         };
       };
     };
