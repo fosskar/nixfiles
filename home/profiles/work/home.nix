@@ -37,6 +37,7 @@
       libreoffice
       remmina
       obsidian
+      yq
     ];
     sessionVariables.BROWSER = "firefox";
   };
