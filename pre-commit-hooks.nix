@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   imports = [inputs.pre-commit-hooks.flakeModule];
 
   perSystem.pre-commit.settings = {
@@ -8,12 +12,18 @@
       "LICENSE"
     ];
     hooks = {
-      alejandra = {
+      #alejandra = {
+      #  enable = true;
+      #  fail_fast = true;
+      #  settings = {
+      #    check = false;
+      #  };
+      #};
+
+      nixfmt = {
         enable = true;
         fail_fast = true;
-        settings = {
-          check = false;
-        };
+        package = pkgs.nixfmt-rfc-style;
       };
 
       statix = {
