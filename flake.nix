@@ -78,10 +78,10 @@
       }: {
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
-            alejandra
             deadnix
             statix
             nodePackages.prettier
+            nixfmt-rfc-style
           ];
           name = "nixfiles";
           DIRENV_LOG_FORMAT = "";
@@ -90,7 +90,7 @@
             echo 1>&2 "Welcome to the development shell!"
           '';
         };
-        formatter = pkgs.alejandra;
+        formatter = pkgs.nixfmt-rfc-style;
       };
 
       flake = {
