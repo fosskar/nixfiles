@@ -15,8 +15,8 @@
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
       builders-use-substitutes = true;
-      allowed-users = ["root" "simon" "@wheel"];
-      trusted-users = ["root" "simon" "@wheel"];
+      allowed-users = ["root" "@wheel"];
+      trusted-users = ["root" "@wheel"];
       flake-registry = "/etc/nix/registry.json";
       keep-derivations = true;
       keep-outputs = true;
