@@ -12,7 +12,7 @@
     ../../system/core/users.nix
     ../../system/core/zram.nix
     ../../system/gaming/gamemode.nix
-    ../../system/gaming/gamescope.nix
+    #../../system/gaming/gamescope.nix
     ../../system/gaming/steam.nix
     ../../system/hardware/amdgpu.nix
     ../../system/hardware/fwupd.nix
@@ -32,6 +32,7 @@
     ../../system/services/greetd.nix
     ../../system/services/libinput.nix
     #../../system/services/ollama.nix # holy shit need to build HOURS with my potato
+    #../../system/services/openrecall.nix #FIXME TESTING
     ../../system/services/pipewire.nix
     ../../system/services/udev.nix
     ../../system/services/virtualisation.nix
