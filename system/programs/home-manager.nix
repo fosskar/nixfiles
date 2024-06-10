@@ -9,5 +9,6 @@
     sharedModules = [
       inputs.sops-nix.homeManagerModules.sops
     ];
+    backupFileExtension = "backup";
   };
 }
