@@ -21,11 +21,13 @@
         "XDG_SESSION_TYPE,wayland"
         "XDG_SESSION_DESKTOP,Hyprland"
         "OZONE_PLATFORM,wayland"
+        #"NIXOS_OZONE_WL,1"
         #"SDL_VIDEODRIVER,wayland"
       ];
 
       debug = {
-        disable_logs = false;
+        disable_logs = true;
+        error_position = 1;
       };
 
       monitor = [

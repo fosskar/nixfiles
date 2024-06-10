@@ -8,7 +8,8 @@
       owner = "Aylur";
       repo = "dotfiles";
       rev = "main";
-      sha256 = "1zyly2089l5rgcd4z61n7vln5132iyf1jiljnpadas79j03a8p5p";
+      #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
+      hash = "sha256-ZJvnDWCLqNaHbMJCKIHrGo5fHbMqhM2CU7oDF5CnTSs=";
     }
     + "/ags";
 in {

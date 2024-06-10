@@ -16,7 +16,7 @@
   ];
 
   home.packages = with pkgs; [
-    xwaylandvideobridge #for screensharing xwayland application
+    #xwaylandvideobridge #for screensharing xwayland application
     hyprshot
     wl-clipboard
     hyprpicker
