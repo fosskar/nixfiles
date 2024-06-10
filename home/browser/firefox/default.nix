@@ -7,7 +7,8 @@
     owner = "soulhotel";
     repo = "FF-ULTIMA";
     rev = "main";
-    sha256 = "1fcs799kvc6glzjc605pkf0l5n2d06j5k79ignn59cv3lmlri9ba";
+    #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
+    hash = "sha256-xaHugFRlUgVZd3wXsbF63gX/X/iSmm4N/ZsalG4s6Lk=";
   };
 in {
   home = {
@@ -28,7 +29,7 @@ in {
       DisableFirefoxAccounts = true;
       DontCheckDefaultBrowser = true;
       DisableSetDesktopBackground = true;
-      NoDefaultBookmarks = true; # This policy must be removed or set to false, otherwise bookmarks cannot be added or removed by Nix
+      NoDefaultBookmarks = true;
       OfferToSaveLogins = false;
       OfferToSaveLoginsDefault = false;
       PasswordManagerEnabled = false;
@@ -61,22 +62,52 @@ in {
         UrlbarInterventions = false;
         MoreFromMozilla = false;
       };
+      #ExtensionSettings = with builtins; let
+      #  extension = shortId: uuid: {
+      #    name = uuid;
+      #    value = {
+      #      install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/${shortId}/latest.xpi";
+      #      installation_mode = "force_installed";
+      #    };
+      #  };
+      #in
+      #  listToAttrs [
+      #    (extension "ublock-origin" "uBlock0@raymondhill.net")
+      #    (extension "bitwarden-password-manager" "{446900e4-71c2-419f-a6a7-df9c091e268b}")
+      #  ];
+      #"*".installation_mode = "blocked";
     };
     profiles = {
       default = {
         id = 0;
         bookmarks = import ./bookmarks.nix;
         isDefault = true;
+        ## #FIXME until home-manager can overwrite files or overwrite .backup files
         #containers = {
         #  "Personal" = {
         #    id = 1;
-        #    color = "green";  # one of “blue”, “turquoise”, “green”, “yellow”, “orange”, “red”, “pink”, “purple”, “toolbar”
+        #    color = "green"; # one of “blue”, “turquoise”, “green”, “yellow”, “orange”, “red”, “pink”, “purple”, “toolbar”
         #    icon = "fingerprint"; # one of “briefcase”, “cart”, “circle”, “dollar”, “fence”, “fingerprint”, “gift”, “vacation”, “food”, “fruit”, “pet”, “tree”, “chill”
         #  };
         #  "Shopping" = {
         #    id = 2;
         #    color = "yellow";
-        #    icon = "circle";
+        #    icon = "cart";
+        #  };
+        #  "SocialMedia" = {
+        #    id = 3;
+        #    color = "orange";
+        #    icon = "tree";
+        #  };
+        #  "Google" = {
+        #    id = 4;
+        #    color = "red";
+        #    icon = "fence";
+        #  };
+        #  "Streaming" = {
+        #    id = 5;
+        #    color = "purple";
+        #    icon = "chill";
         #  };
         #};
         extensions = with inputs.firefox-addons.packages.${pkgs.system}; [
@@ -84,9 +115,8 @@ in {
           bitwarden
           darkreader
           side-view
-          multi-account-containers
+          #multi-account-containers #FIXME
         ];
-        #https://sourcegraph.com/search?q=context:global+lang:nix&patternType=standard&sm=1
         search = {
           force = true;
           default = "DuckDuckGo";
@@ -557,8 +587,6 @@ in {
         # custom theme
         userChrome = builtins.readFile "${ffTheme}/userChrome.css";
         userContent = builtins.readFile "${ffTheme}/userContent.css";
-        #userChrome = builtins.readFile ./themes/ffultimate/userChrome.css;
-        #userContent = builtins.readFile ./themes/ffultimate/userContent.css;
         extraConfig = builtins.readFile ./user.js;
       };
     };
