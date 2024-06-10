@@ -2,17 +2,16 @@
   home.packages = with pkgs; [
     webcord-vencord
     spotify
-
     ## gaming
     teamspeak_client
     #lutris
     ## WINE
     #wineWowPackages.stable
-    wineWowPackages.waylandFull
-    winetricks
+    #wineWowPackages.waylandFull
+    #winetricks
     #teamspeak5_client
     #bottles
-    path-of-building
+    #path-of-building
     ## Mods
     #r2modman
   ];
