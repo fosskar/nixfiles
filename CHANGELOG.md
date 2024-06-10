@@ -1,3 +1,28 @@
+## [5.10.0](https://gitlab.com/simonoscr/nixfiles/compare/5.9.0...5.10.0) (2024-06-10)
+
+### 📦 Other
+
+* **flake:** update flock ([10a425e](https://gitlab.com/simonoscr/nixfiles/commit/10a425e00dd53798832bb8d83ad89ba333d17c75))
+* **flake:** update flock ([680b9ba](https://gitlab.com/simonoscr/nixfiles/commit/680b9badb8712caf3879cd28b8f97b2d333b3747))
+* **flake:** update flock and pre-commit-hook flake-shell ([cabaebe](https://gitlab.com/simonoscr/nixfiles/commit/cabaebe3d668a2dc6a59260942c82c90dfc98688))
+
+### 🚀 Features
+
+* add openrecall module ([e5a2854](https://gitlab.com/simonoscr/nixfiles/commit/e5a2854ac47613a6be38e878b166ebf6ac641954))
+* **network:** add quad9 dns and dnsovertls ([703772b](https://gitlab.com/simonoscr/nixfiles/commit/703772b9c6b4d93fbf62809a8f382f79c8dd9c63))
+
+### 🛠 Fixes
+
+* disable gamescope module ([46905f5](https://gitlab.com/simonoscr/nixfiles/commit/46905f50e19f72fe53bfbddecbce9130b29e6a83))
+* disable gamescope, add but disable openrecall .nix ([8ed1bf7](https://gitlab.com/simonoscr/nixfiles/commit/8ed1bf7c789ffa3d25dbb614809be236650fc415))
+* home-manager backupFileExtension ([59d49ac](https://gitlab.com/simonoscr/nixfiles/commit/59d49ac939b98c6317e8b4f3ec87570822ea24d5))
+* hyprland move error banner to bottom, disable xwaylandbridge ([3aae032](https://gitlab.com/simonoscr/nixfiles/commit/3aae0321e142aacc0884547b11bbfe040b74285e))
+* nixfmt rfc style from alejandra ([c6a2c52](https://gitlab.com/simonoscr/nixfiles/commit/c6a2c52253ba98d1f15b106d2432cb8fd77e469a))
+* pre-commit-hook with nixfmt-rfc-style instead of alejandra ([552b652](https://gitlab.com/simonoscr/nixfiles/commit/552b6528ace4c5b613821423494456c96535e6b6))
+* **firefox:** update hash for theme and update policies and extensions ([919e868](https://gitlab.com/simonoscr/nixfiles/commit/919e868794a3dbce411219d84c30bf408deb1400))
+* **mangohud:** add vkbasalt to mangohud config and update unused packages ([318cb22](https://gitlab.com/simonoscr/nixfiles/commit/318cb2238c7badf84cc93ac336b6f5d1d36454c5))
+* **steam:** removed vkbasalt from steam config and remove extest ([edd1d33](https://gitlab.com/simonoscr/nixfiles/commit/edd1d33c952378b7ae94b556bf7917368694fa26))
+
 ## [5.9.0](https://gitlab.com/simonoscr/nixfiles/compare/5.8.2...5.9.0) (2024-06-08)
 
 ### 📦 Other
