@@ -1,6 +1,7 @@
 _: {
   networking = {
     wireless.enable = false; #disable wpa-supplicant. nmcli usable for wifi in networkmanager
+    nameservers = ["9.9.9.9#dns.quad9.net"];
     networkmanager = {
       enable = true;
       dns = "systemd-resolved";
@@ -18,7 +19,10 @@ _: {
       enable = true;
       settings.UseDns = true;
     };
-    resolved.enable = true;
+    resolved = {
+      enable = true;
+      dnsovertls = "opportunistic";
+    };
   };
   #systemd.services.NetworkManager-wait-online.enable = false;
 }
