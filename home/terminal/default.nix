@@ -5,7 +5,7 @@
     ./programs/btop.nix
     ./programs/cli.nix
     ./programs/git.nix
-    ./programs/nix.nix
+    ./programs/direnv.nix
     ./programs/yazi
     ./shell/starship.nix
     ./shell/zsh

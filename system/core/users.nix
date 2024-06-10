@@ -8,7 +8,6 @@
       "corectrl"
       "gamemode" # https://nixos.wiki/wiki/Gamemode#Known_Errors
       "input"
-      "libvirtd"
       "networkmanager"
       "video"
       "wheel"

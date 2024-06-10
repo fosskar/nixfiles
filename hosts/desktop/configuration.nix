@@ -35,7 +35,7 @@
     #../../system/services/openrecall.nix #FIXME TESTING
     ../../system/services/pipewire.nix
     ../../system/services/udev.nix
-    ../../system/services/virtualisation.nix
+    ../../system/services/podman.nix
     ../../system/services/xserver.nix
     ./hardware-configuration.nix
   ];
@@ -45,7 +45,6 @@
   services = {
     printing.enable = true;
     fstrim.enable = true;
-    thermald.enable = true;
   };
 
   ### DON'T TOUCH!
