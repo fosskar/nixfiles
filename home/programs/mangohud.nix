@@ -1,4 +1,4 @@
-_: let
+{pkgs, ...}: let
   xdg.configHome = let
     x = builtins.getEnv "XDG_CONFIG_HOME";
   in
@@ -6,11 +6,13 @@ _: let
     then x
     else "${builtins.getEnv "HOME"}/.config";
 in {
+  home.packages = [pkgs.vkbasalt];
+
   home.file."${xdg.configHome}/vkBasalt/vkBasalt.conf".text = ''
     effects = cas
     toggleKey = Home
     enableOnLaunch = True
-    casSharpness = 0.4
+    casSharpness = 0.5
   '';
 
   programs.mangohud = {
@@ -45,7 +47,6 @@ in {
       gamemode = true;
       vkbasalt = true;
       throttling_status = true;
-      #media_player_color = "ffffff";
       background_alpha = 0.4;
       font_size = 14;
 
