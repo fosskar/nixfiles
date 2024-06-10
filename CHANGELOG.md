@@ -1,3 +1,17 @@
+## [5.10.2](https://gitlab.com/simonoscr/nixfiles/compare/5.10.1...5.10.2) (2024-06-10)
+
+### 📦 Other
+
+* **flake:** update flock ([e83f2a2](https://gitlab.com/simonoscr/nixfiles/commit/e83f2a20fd2ddc27855591ce67aeaafe429a7ab6))
+
+### 🛠 Fixes
+
+* allowed- and trusted-users because simon is already in the wheel group ([1571670](https://gitlab.com/simonoscr/nixfiles/commit/1571670289f278555e9e9f88ecf5171f8a991c38))
+* remove direnv entry i already have a direnv.nix file ([c79fe35](https://gitlab.com/simonoscr/nixfiles/commit/c79fe35c61871d45f53a6e69e0de5642b136cd09))
+* remove unused nix config files ([055a25d](https://gitlab.com/simonoscr/nixfiles/commit/055a25d0ce09c1db9bfaa8fd62bbac6132798cc0))
+* rename virtualisation.nix to podmand.nix and disable libvirtd ([2f61f8a](https://gitlab.com/simonoscr/nixfiles/commit/2f61f8aa56b07adfa7bf26114a70a08fe038400e))
+* rename virtualisation.nix to podmand.nix and disable libvirtd ([7f55a79](https://gitlab.com/simonoscr/nixfiles/commit/7f55a792a7edde26c97b6ff9042b52e7469e877d))
+
 ## [5.10.1](https://gitlab.com/simonoscr/nixfiles/compare/5.10.0...5.10.1) (2024-06-10)
 
 ### 🛠 Fixes
