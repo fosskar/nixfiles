@@ -1,3 +1,7 @@
+default:
+  tags:
+    - nixos
+
 stages:
   - release
 
