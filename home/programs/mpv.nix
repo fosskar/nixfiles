@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+_: {
   programs.mpv = {
     enable = true;
     defaultProfiles = ["gpu-hq"];
@@ -10,6 +10,5 @@
       profile = "gpu-hq";
       vo = "gpu";
     };
-    scripts = [pkgs.mpvScripts.mpris];
   };
 }
