@@ -7,18 +7,31 @@ _: {
       dns = "systemd-resolved";
       wifi.powersave = true;
     };
+
     firewall = {
       enable = true;
     };
-    extraHosts = ''
-      192.168.178.91 argocd.space prometheus.space grafana.space thanos.space vaultwarden.space home.space
-    '';
+    nftables = {
+      enable = true;
+    };
+
+    hosts = {
+      "192.168.178.91" = [
+        "argocd.space"
+        "prometheus.space"
+        "grafana.space"
+        "vaultwarden.space"
+        "home.space"
+      ];
+    };
   };
+
   services = {
     openssh = {
       enable = true;
       settings.UseDns = true;
     };
+
     resolved = {
       enable = true;
       dnsovertls = "opportunistic";
