@@ -23,17 +23,26 @@
   gtk = {
     enable = true;
     font = {
-      name = "Roboto Regular";
-      package = pkgs.roboto;
+      name = "Inter";
+      package = pkgs.inter;
     };
     theme = {
       name = "adw-gtk3-dark";
-      package = pkgs.adw-gtk3;
+      package = pkgs.adw-gtk3.overrideAttrs (_self: _super: {
+        postInstall = ''
+          rm -rf $out/share/themes/adw-gtk3/gtk-4.0
+          rm -rf $out/share/themes/adw-gtk3-dark/gtk-4.0
+        '';
+      });
     };
     cursorTheme = {
       inherit (config.home.pointerCursor) name;
       inherit (config.home.pointerCursor) package;
       inherit (config.home.pointerCursor) size;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
     };
 
     gtk2 = {
@@ -46,10 +55,6 @@
       '';
     };
 
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
     gtk3.extraConfig = {
       gtk-xft-antialias = 1;
       gtk-xft-hinting = 1;
