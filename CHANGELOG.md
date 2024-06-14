@@ -1,3 +1,21 @@
+## [5.11.0](https://gitlab.com/simonoscr/nixfiles/compare/5.10.2...5.11.0) (2024-06-14)
+
+### 📦 Other
+
+* **flake:** update flock ([3ed5b7b](https://gitlab.com/simonoscr/nixfiles/commit/3ed5b7b51dbcc45c69ce5ba430b6071c8e0dcbf9))
+* **flake:** update flock ([ec60bbe](https://gitlab.com/simonoscr/nixfiles/commit/ec60bbe20c796b417d8f4391195cd139e6b2848f))
+
+### 🚀 Features
+
+* **modules:** greetd ([7fa72ae](https://gitlab.com/simonoscr/nixfiles/commit/7fa72ae2c34330a10397fa95786019dd30613765))
+
+### 🛠 Fixes
+
+* enable r2modman ([0294965](https://gitlab.com/simonoscr/nixfiles/commit/0294965e854860a633cae48497c4448e0c873f44))
+* remove gtk4 files on postinstall ([c8406a5](https://gitlab.com/simonoscr/nixfiles/commit/c8406a56eb4bebd3122f48d8903bd6aeeb7b78c4))
+* **hyprland:** update hyprlock, hypridle and hyprland settings and config ([df387f2](https://gitlab.com/simonoscr/nixfiles/commit/df387f2ffb5938ded99a3cca00a9fd0d5e1758f1))
+* **network:** move hosts to extra entry ([f86d271](https://gitlab.com/simonoscr/nixfiles/commit/f86d27177a6a61732d115149a6466807dba190c8))
+
 ## [5.10.2](https://gitlab.com/simonoscr/nixfiles/compare/5.10.1...5.10.2) (2024-06-10)
 
 ### 📦 Other
