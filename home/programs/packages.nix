@@ -13,6 +13,6 @@
     #bottles
     #path-of-building
     ## Mods
-    #r2modman
+    r2modman
   ];
 }
