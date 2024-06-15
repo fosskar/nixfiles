@@ -3,7 +3,7 @@
   secretsPath =
     if inCI
     then "${builtins.getEnv "CI_PROJECT_DIR"}/nixsecrets/secrets/simon/secrets.yaml"
-    else "${config.home.homeDirectory}/nixsecrets/secrets/simon/secrets.yaml";
+    else "${config.home.homeDirectory}/code/nixsecrets/secrets/simon/secrets.yaml";
 in {
   sops = {
     validateSopsFiles = false;
