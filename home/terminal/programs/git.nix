@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  pkgs,
+  ...
+}: let
   email = "13078509-simonoscr@users.noreply.gitlab.com";
   name = "simonoscr";
 in {
@@ -22,6 +26,9 @@ in {
       commit.gpgsign = true;
       pull.rebase = true;
       init.defaultBranch = "main";
+      credential.helper = "${
+        pkgs.git.override {withLibsecret = true;}
+      }/bin/git-credential-libsecret";
     };
     userEmail = email;
     userName = name;
