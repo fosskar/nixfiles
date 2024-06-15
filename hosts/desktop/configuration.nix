@@ -4,40 +4,40 @@
 ############################################################################################
 {...}: {
   imports = [
-    ../../system/core/boot.nix
-    ../../system/core/console.nix
-    ../../system/core/dbus.nix
-    ../../system/core/locale.nix
-    ../../system/core/security.nix
-    ../../system/core/users.nix
-    ../../system/core/zram.nix
-    ../../system/gaming/gamemode.nix
-    #../../system/gaming/gamescope.nix
-    ../../system/gaming/steam.nix
-    ../../system/hardware/amdgpu.nix
-    ../../system/hardware/fwupd.nix
-    ../../system/network
-    ../../system/network/tailscale.nix
-    ../../system/nix
-    ../../system/programs/corectrl.nix
-    ../../system/programs/dconf.nix
-    ../../system/programs/fonts.nix
-    ../../system/programs/gnupg.nix
-    ../../system/programs/home-manager.nix
-    ../../system/programs/hyprland.nix
-    ../../system/programs/seahorse.nix
-    ../../system/programs/xdg.nix
-    ../../system/programs/zsh.nix
-    ../../system/services/gnome-services.nix
-    ../../system/services/greetd.nix
-    ../../system/services/libinput.nix
-    #../../system/services/ollama.nix # holy shit need to build HOURS with my potato
-    #../../system/services/openrecall.nix #FIXME TESTING
-    ../../system/services/pipewire.nix
-    ../../system/services/udev.nix
-    ../../system/services/podman.nix
-    ../../system/services/xserver.nix
-    ./hardware-configuration.nix
+    ./core/boot.nix
+    ./core/console.nix
+    ./core/dbus.nix
+    ./core/locale.nix
+    ./core/security.nix
+    ./core/users.nix
+    ./core/zram.nix
+    ./gaming/gamemode.nix
+    #./gaming/gamescope.nix
+    ./gaming/steam.nix
+    ./hardware/amdgpu.nix
+    ./hardware/fwupd.nix
+    ./hardware/hardware-configuration.nix
+    ./network
+    ./network/tailscale.nix
+    ./nix
+    ./programs/corectrl.nix
+    ./programs/dconf.nix
+    ./programs/fonts.nix
+    ./programs/gnupg.nix
+    ./programs/home-manager.nix
+    ./programs/hyprland.nix
+    ./programs/seahorse.nix
+    ./programs/xdg.nix
+    ./programs/zsh.nix
+    ./services/gnome-services.nix
+    ./services/greetd.nix
+    ./services/libinput.nix
+    #./services/ollama.nix # holy shit need to build HOURS with my potato
+    #./services/openrecall.nix #FIXME TESTING
+    ./services/pipewire.nix
+    ./services/podman.nix
+    ./services/udev.nix
+    ./services/xserver.nix
   ];
 
   networking.hostName = "nixos";
