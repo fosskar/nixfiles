@@ -1,3 +1,9 @@
+## [6.0.1](https://gitlab.com/simonoscr/nixfiles/compare/6.0.0...6.0.1) (2024-06-15)
+
+### 🛠 Fixes
+
+* remove home-manager from server ([de7f96f](https://gitlab.com/simonoscr/nixfiles/commit/de7f96f349f645f6d66545f689dbc3d63f4b1e24))
+
 ## [6.0.0](https://gitlab.com/simonoscr/nixfiles/compare/5.11.1...6.0.0) (2024-06-15)
 
 ### ✨ Milestone
