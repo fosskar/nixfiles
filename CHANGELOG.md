@@ -1,3 +1,20 @@
+## [5.11.1](https://gitlab.com/simonoscr/nixfiles/compare/5.11.0...5.11.1) (2024-06-15)
+
+### 📦 Other
+
+* **flake:** update flake ([cbc29a5](https://gitlab.com/simonoscr/nixfiles/commit/cbc29a5383a419b69ab57ded51fb6ffc1a37d1f3))
+
+### 🧪 Tests
+
+* added unready devtoys package ([abac38e](https://gitlab.com/simonoscr/nixfiles/commit/abac38e64db66289b9682f46336605abb3006638))
+
+### 🛠 Fixes
+
+* disable credential-helper-libsecret ([013fba2](https://gitlab.com/simonoscr/nixfiles/commit/013fba210748f6063c94ae810cb892446b5ffcc1))
+* secret and ssh key handling ([cdf79ba](https://gitlab.com/simonoscr/nixfiles/commit/cdf79ba936df898ec0a5c392234fb685c92f6118))
+* update flake and set correct FLAKE url for nh ([b1dbaca](https://gitlab.com/simonoscr/nixfiles/commit/b1dbaca2003f4863998fe564e04562a21f1b3ccf))
+* **git:** added git-credential-helper with libsecret ([8793463](https://gitlab.com/simonoscr/nixfiles/commit/8793463565d4e9e8ad28cf339c582185ae60fc50))
+
 ## [5.11.0](https://gitlab.com/simonoscr/nixfiles/compare/5.10.2...5.11.0) (2024-06-14)
 
 ### 📦 Other
