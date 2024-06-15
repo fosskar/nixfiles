@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   imports = [
-    ../../../modules/kubernetes/k3s.nix
+    ../../../../modules/nixos/kubernetes/k3s.nix
   ];
 
   services.k3sManaged = {

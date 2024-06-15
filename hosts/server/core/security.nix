@@ -1,4 +1,4 @@
-_: {
+{lib, ...}: {
   boot = {
     kernel.sysctl = {
       # 20-shed.conf
@@ -70,11 +70,6 @@ _: {
     sudo.wheelNeedsPassword = false;
     # allow wayland lockers to unlock the screen
     #pam.services.swaylock.text = "auth include login";   # switched to hyprlock
-    pam = {
-      services.hyprlock.text = "auth include login";
-    };
-    polkit.enable = true;
-    rtkit.enable = true;
     tpm2.enable = true;
   };
   environment = {

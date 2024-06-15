@@ -1,41 +1,28 @@
 _: {
   networking = {
-    wireless.enable = false; #disable wpa-supplicant. nmcli usable for wifi in networkmanager
-    nameservers = ["9.9.9.9#dns.quad9.net"];
-    networkmanager = {
-      enable = true;
-      dns = "systemd-resolved";
-      wifi.powersave = true;
-    };
-
+    hostName = "nixos-server";
+    #networkmanager.enable = true;
+    wireless.enable = true;
     firewall = {
       enable = true;
-    };
-    nftables = {
-      enable = true;
-    };
-
-    hosts = {
-      "192.168.178.91" = [
-        "argocd.space"
-        "prometheus.space"
-        "grafana.space"
-        "vaultwarden.space"
-        "home.space"
-      ];
+      allowPing = true;
+      logRefusedConnections = false;
+      allowedTCPPorts = [22 53 80 443 6443];
+      allowedUDPPorts = [53];
     };
   };
 
-  services = {
-    openssh = {
-      enable = true;
-      settings.UseDns = true;
-    };
-
-    resolved = {
-      enable = true;
-      dnsovertls = "opportunistic";
-    };
-  };
-  #systemd.services.NetworkManager-wait-online.enable = false;
+  ## FIXME add initrd ssh host key
+  #boot.initrd.network = {
+  #  enable = true;
+  #  ssh = {
+  #    enable = true;
+  #    port = 22;
+  #    #hostKeys = [
+  #    #  #FIXME this has to be manually uploaded during installation...
+  #    #  # scp /tmp/initrd-ssh-key root@95.217.199.121:/mnt/var/lib/initrd-ssh-key
+  #    #  "/var/lib/initrd-ssh-key"
+  #    #];
+  #  };
+  #};
 }
