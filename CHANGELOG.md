@@ -1,3 +1,13 @@
+## [7.0.0](https://gitlab.com/simonoscr/nixfiles/compare/6.0.1...7.0.0) (2024-06-15)
+
+### ✨ Milestone
+
+* split home-manager profiles ([1c2a51f](https://gitlab.com/simonoscr/nixfiles/commit/1c2a51f6831f526616327af486a08b12e4c66511))
+
+### 🛠 Fixes
+
+* split sops from ssh config file to seperate file for server ([536eac8](https://gitlab.com/simonoscr/nixfiles/commit/536eac837896cccf6cb2b243c085321775fdd9d4))
+
 ## [6.0.1](https://gitlab.com/simonoscr/nixfiles/compare/6.0.0...6.0.1) (2024-06-15)
 
 ### 🛠 Fixes
