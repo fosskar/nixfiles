@@ -2,11 +2,7 @@
 ## this is the systems configuration file                                                 ##
 ## use this to configure the system environment, it replaces /etc/nixos/configuration.nix ##
 ############################################################################################
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{...}: {
   imports = [
     ./hardware-configuration.nix
     ./network.nix
@@ -31,34 +27,9 @@
     ../../system/services/kubernetes/helm.nix
   ];
 
-  boot = {
-    tmp.cleanOnBoot = true;
-    loader = {
-      timeout = 2;
-      systemd-boot = {
-        enable = true;
-        configurationLimit = 10;
-      };
-      efi.canTouchEfiVariables = true;
-    };
-    kernelPackages = pkgs.linuxPackages_latest;
-  };
-
   environment.noXlibs = false;
 
   documentation.info.enable = false;
-
-  system.autoUpgrade = {
-    enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L"
-    ];
-    dates = "2:00";
-    randomizedDelaySec = "30min";
-  };
 
   systemd = {
     enableEmergencyMode = false;
@@ -70,16 +41,6 @@
       AllowSuspend=no
       AllowHibernation=no
     '';
-  };
-
-  ## flakes nix
-  nix = {
-    settings = {
-      experimental-features = "nix-command flakes";
-      auto-optimise-store = true;
-      allowed-users = ["root" "oscar" "@wheel"];
-      trusted-users = ["root" "oscar" "@wheel"];
-    };
   };
 
   ### DON'T TOUCH!
