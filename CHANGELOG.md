@@ -1,3 +1,14 @@
+## [6.0.0](https://gitlab.com/simonoscr/nixfiles/compare/5.11.1...6.0.0) (2024-06-15)
+
+### ✨ Milestone
+
+* split configuration ([c029aaf](https://gitlab.com/simonoscr/nixfiles/commit/c029aaffc7c8c4d24d10aeec4fd61db9df27e022))
+* split configuration server and desktop conf ([e22e76f](https://gitlab.com/simonoscr/nixfiles/commit/e22e76f65ae5f62f4a6ea0fbd730300e57e46d20))
+
+### 🛠 Fixes
+
+* ssh agent dont add keys ([4b7f0b5](https://gitlab.com/simonoscr/nixfiles/commit/4b7f0b5bb374b619b1eb80a35f9d19f3c2ac06a6))
+
 ## [5.11.1](https://gitlab.com/simonoscr/nixfiles/compare/5.11.0...5.11.1) (2024-06-15)
 
 ### 📦 Other
