@@ -1,5 +1,5 @@
 {
-  imports = [../../modules/openrecall.nix];
+  imports = [ ../../modules/openrecall.nix ];
 
   services.openrecall.enable = true;
 }

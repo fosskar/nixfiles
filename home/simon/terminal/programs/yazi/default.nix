@@ -3,7 +3,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     ./theme/filetype.nix
     ./theme/icons.nix
@@ -12,7 +13,7 @@
   ];
 
   # general file info
-  home.packages = [pkgs.exiftool];
+  home.packages = [ pkgs.exiftool ];
 
   # yazi file manager
   programs.yazi = {
@@ -25,7 +26,11 @@
 
     settings = {
       manager = {
-        layout = [0 4 4];
+        layout = [
+          0
+          4
+          4
+        ];
         sort_by = "alphabetical";
         sort_sensitive = true;
         sort_reverse = false;

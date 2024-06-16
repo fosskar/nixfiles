@@ -1,3 +1,1 @@
-_: {
-  services.fail2ban.enable = true;
-}
+_: { services.fail2ban.enable = true; }

@@ -34,28 +34,28 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 ## :snowflake: System Components
 
-| | NixOS - Wayland | NixOS - Xorg |
-|-|-----------------|--------------|
-| Display Manager | greetd/tuigreet | greetd/tuigreet |
-| Window Manager | Hyprland | i3 |
-| Bar | Ags | i3status |
-| Terminal| Kitty | Kitty |
-| Shell | zsh + Starship | zsh + Starship |
-| Text Editor | Nixvim(Neovim) | Nixvim(Neovim) |
-| Code Editor | VSCodium/Zed | VSCodium/Zed |
-| System resource monitor | btop | btop |
+|                         | NixOS - Wayland | NixOS - Xorg    |
+| ----------------------- | --------------- | --------------- |
+| Display Manager         | greetd/tuigreet | greetd/tuigreet |
+| Window Manager          | Hyprland        | i3              |
+| Bar                     | Ags             | i3status        |
+| Terminal                | Kitty           | Kitty           |
+| Shell                   | zsh + Starship  | zsh + Starship  |
+| Text Editor             | Nixvim(Neovim)  | Nixvim(Neovim)  |
+| Code Editor             | VSCodium/Zed    | VSCodium/Zed    |
+| System resource monitor | btop            | btop            |
 
 
 ## Systems
 
-| | MainPC - NixOS | Server - NixOS |
-|-|-----------------|--------------|
-| Name | Desktop | Server |
-| CPU | AMD Ryzen 7 7800X3D | Intel® Processor Alder Lake-N100 |
-| GPU | AMD Radeon RX 7800 XT | Intel UHD Graphics |
-| RAM | 32GB DDR5-6000 | 16GB DDR4-3200 |
-| Mainboard | MSI MAG B650 Tomahawk | shit |
-| SSD | 2TB NVMe | 500GB NVMe |
+|           | MainPC - NixOS        | Server - NixOS                   |
+| --------- | --------------------- | -------------------------------- |
+| Name      | Desktop               | Server                           |
+| CPU       | AMD Ryzen 7 7800X3D   | Intel® Processor Alder Lake-N100 |
+| GPU       | AMD Radeon RX 7800 XT | Intel UHD Graphics               |
+| RAM       | 32GB DDR5-6000        | 16GB DDR4-3200                   |
+| Mainboard | MSI MAG B650 Tomahawk | shit                             |
+| SSD       | 2TB NVMe              | 500GB NVMe                       |
 
 </div>
 

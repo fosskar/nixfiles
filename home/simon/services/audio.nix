@@ -1,11 +1,12 @@
-_: let
-  xdg.configHome = let
-    x = builtins.getEnv "XDG_CONFIG_HOME";
-  in
-    if x != ""
-    then x
-    else "${builtins.getEnv "HOME"}/.config";
-in {
+_:
+let
+  xdg.configHome =
+    let
+      x = builtins.getEnv "XDG_CONFIG_HOME";
+    in
+    if x != "" then x else "${builtins.getEnv "HOME"}/.config";
+in
+{
   home.file."${xdg.configHome}/wireplumber/wireplumber.conf.d/51-change-channels.conf".text = ''
     monitor.alsa.rules = [
       {

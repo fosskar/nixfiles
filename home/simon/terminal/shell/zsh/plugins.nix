@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.zsh.plugins = [
     {
       # Must be before plugins that wrap widgets, such as zsh-autosuggestions or fast-syntax-highlighting

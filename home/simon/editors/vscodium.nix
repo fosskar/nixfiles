@@ -12,7 +12,7 @@
       jnoortheen.nix-ide
       redhat.vscode-yaml
       yzhang.markdown-all-in-one
-      kamadorueda.alejandra
+      #kamadorueda.alejandra
       editorconfig.editorconfig
       mkhl.direnv
       eamodio.gitlens
@@ -34,6 +34,7 @@
       "editor.fontSize" = 15;
       "editor.fontLigatures" = true;
       "editor.fontVariations" = false;
+      "editor.formatOnSave" = true;
       "github.gitProtocol" = "ssh";
       "git.alwaysShowStagedChangesResourceGroup" = true;
       "git.branchRandomName.dictionary" = [
@@ -44,6 +45,14 @@
       "editor.tabSize" = 2;
       "git.rebaseWhenSync" = true;
       "direnv.restart.automatic" = true;
+      "nix.enableLanguageServer" = true;
+      "nix.serverPath" = "${pkgs.nixd}/bin/nixd";
+      "nix.formatterPath" = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+      "nix.serverSettings" = {
+        nixd = {
+          formatting.command = [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];
+        };
+      };
     };
   };
 }

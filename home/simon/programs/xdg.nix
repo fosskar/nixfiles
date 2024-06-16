@@ -1,24 +1,36 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
-  browser = ["firefox"];
-  editor = ["codium"];
-  imageViewer = ["org.gnome.Loupe"];
-  videoPlayer = ["mpv"];
-  audioPlayer = ["mpv"];
+{ config, pkgs, ... }:
+let
+  browser = [ "firefox" ];
+  editor = [ "codium" ];
+  imageViewer = [ "org.gnome.Loupe" ];
+  videoPlayer = [ "mpv" ];
+  audioPlayer = [ "mpv" ];
 
-  xdgAssociations = type: program: list:
-    builtins.listToAttrs (map (e: {
+  xdgAssociations =
+    type: program: list:
+    builtins.listToAttrs (
+      map (e: {
         name = "${type}/${e}";
         value = program;
-      })
-      list);
+      }) list
+    );
 
-  image = xdgAssociations "image" imageViewer ["png" "jpeg" "gif"];
-  video = xdgAssociations "video" videoPlayer ["mp4" "avi" "mkv"];
-  audio = xdgAssociations "audio" audioPlayer ["mp3" "flac" "wav" "aac"];
+  image = xdgAssociations "image" imageViewer [
+    "png"
+    "jpeg"
+    "gif"
+  ];
+  video = xdgAssociations "video" videoPlayer [
+    "mp4"
+    "avi"
+    "mkv"
+  ];
+  audio = xdgAssociations "audio" audioPlayer [
+    "mp3"
+    "flac"
+    "wav"
+    "aac"
+  ];
   browserTypes =
     (xdgAssociations "application" browser [
       "json"
@@ -38,24 +50,30 @@
     ]);
 
   # XDG MIME types
-  associations = builtins.mapAttrs (_: v: (map (e: "${e}.desktop") v)) ({
+  associations = builtins.mapAttrs (_: v: (map (e: "${e}.desktop") v)) (
+    {
       "application/x-shellscript" = editor;
-      "inode/directory" = ["yazi"];
-      "application/pdf" = ["org.pwmt.zathura-pdf-mupdf"];
-      "x-scheme-handler/chrome" = ["chromium-browsee"];
-      "x-scheme-handler/spotify" = ["spotify"];
+      "inode/directory" = [ "yazi" ];
+      "application/pdf" = [ "org.pwmt.zathura-pdf-mupdf" ];
+      "x-scheme-handler/chrome" = [ "chromium-browsee" ];
+      "x-scheme-handler/spotify" = [ "spotify" ];
       "image/svg" = editor;
       "image/svg+xml" = editor;
       "text/plain" = editor;
       "text/html" = browser;
-      "text/x-csrc" = ["codium" "nvim"];
+      "text/x-csrc" = [
+        "codium"
+        "nvim"
+      ];
       "text/css" = editor;
     }
     // image
     // video
     // audio
-    // browserTypes);
-in {
+    // browserTypes
+  );
+in
+{
   xdg = {
     enable = true;
     cacheHome = config.home.homeDirectory + "/.local/cache";

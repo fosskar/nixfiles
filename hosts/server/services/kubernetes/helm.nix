@@ -1,7 +1,5 @@
 {
-  imports = [
-    ../../../../modules/nixos/kubernetes/helm.nix
-  ];
+  imports = [ ../../../../modules/nixos/kubernetes/helm.nix ];
   system.k3s.helm.enable = true;
   system.k3s.helm.charts = {
     argocd = {

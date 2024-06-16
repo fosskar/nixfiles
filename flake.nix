@@ -79,66 +79,69 @@
     };
   };
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux"];
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
 
-      imports = [
-        ./pre-commit-hooks.nix
-      ];
+      imports = [ ./pre-commit-hooks.nix ];
 
-      perSystem = {
-        config,
-        pkgs,
-        ...
-      }: {
-        devShells.default = pkgs.mkShell rec {
-          name = "nixfiles";
-          nativeBuildInputs = with pkgs; [
-            alejandra
-            deadnix
-            statix
-            nodePackages.prettier
-            nixfmt-rfc-style
-          ];
-          DIRENV_LOG_FORMAT = "";
-          shellHook = ''
-            ${config.pre-commit.installationScript}
-            echo -e "\n\033[1;36m❄️ Welcome to the \033[1;33m'${name}'\033[1;36m devshell ❄️\033[0m\n"
-          '';
+      perSystem =
+        { config, pkgs, ... }:
+        {
+          devShells.default = pkgs.mkShell rec {
+            name = "nixfiles";
+            nativeBuildInputs = with pkgs; [
+              #alejandra
+              deadnix
+              statix
+              nodePackages.prettier
+              nixfmt-rfc-style
+            ];
+            DIRENV_LOG_FORMAT = "";
+            shellHook = ''
+              ${config.pre-commit.installationScript}
+              echo -e "\n\033[1;36m❄️ Welcome to the \033[1;33m'${name}'\033[1;36m devshell ❄️\033[0m\n"
+            '';
+          };
+          formatter = pkgs.nixfmt-rfc-style;
         };
-        formatter = pkgs.nixfmt-rfc-style;
-      };
 
       flake = {
         nixosConfigurations = {
           desktop = inputs.nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            specialArgs = {inherit inputs;};
+            specialArgs = {
+              inherit inputs;
+            };
             modules = [
               ./hosts/desktop/configuration.nix
               inputs.home-manager.nixosModules.home-manager
               {
                 home-manager = {
-                  extraSpecialArgs = {inherit inputs;};
-                  users.simon.imports = [./home/simon/home.nix];
+                  extraSpecialArgs = {
+                    inherit inputs;
+                  };
+                  users.simon.imports = [ ./home/simon/home.nix ];
                 };
               }
             ];
           };
           server = inputs.nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            specialArgs = {inherit inputs;};
-            modules = [
-              ./hosts/server/configuration.nix
-            ];
+            specialArgs = {
+              inherit inputs;
+            };
+            modules = [ ./hosts/server/configuration.nix ];
           };
         };
         homeConfigurations = {
           work = inputs.home-manager.lib.homeManagerConfiguration {
             pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-            extraSpecialArgs = {inherit inputs;};
-            modules = [./home/work/home.nix];
+            extraSpecialArgs = {
+              inherit inputs;
+            };
+            modules = [ ./home/work/home.nix ];
           };
         };
       };

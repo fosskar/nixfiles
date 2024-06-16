@@ -1,8 +1,5 @@
+{ pkgs, config, ... }:
 {
-  pkgs,
-  config,
-  ...
-}: {
   home = {
     pointerCursor = {
       name = "Bibata-Modern-Classic";
@@ -24,7 +21,7 @@
     enable = true;
     font = {
       name = "Inter";
-      package = pkgs.google-fonts.override {fonts = ["Inter"];};
+      package = pkgs.google-fonts.override { fonts = [ "Inter" ]; };
     };
     theme = {
       name = "adw-gtk3-dark";

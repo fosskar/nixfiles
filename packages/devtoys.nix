@@ -5,7 +5,7 @@
   cmake,
   makeWrapper,
 }:
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "devtoys";
   version = "1.0.13.0";
 
@@ -16,7 +16,10 @@ stdenv.mkDerivation rec {
     sha256 = lib.fakeSha256; # Replace with the actual sha256
   };
 
-  nativeBuildInputs = [cmake makeWrapper];
+  nativeBuildInputs = [
+    cmake
+    makeWrapper
+  ];
 
   buildPhase = ''
     cmake . -DCMAKE_INSTALL_PREFIX=$out
@@ -31,6 +34,6 @@ stdenv.mkDerivation rec {
     description = "DevToys - All-in-one toolbox for developers";
     license = licenses.mit; # Replace with the actual license
     platforms = platforms.unix;
-    maintainers = with maintainers; [your-github-username];
+    maintainers = with maintainers; [ your-github-username ];
   };
 }

@@ -13,14 +13,10 @@ _: {
       };
     };
     vm2 = {
-      /*
-      ...similar configuration...
-      */
+      # ...similar configuration...
     };
     vm3 = {
-      /*
-      ...similar configuration...
-      */
+      # ...similar configuration...
     };
   };
 }

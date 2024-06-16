@@ -1,7 +1,6 @@
-{pkgs, ...}: {
-  imports = [
-    ../../../../modules/nixos/kubernetes/k3s.nix
-  ];
+{ pkgs, ... }:
+{
+  imports = [ ../../../../modules/nixos/kubernetes/k3s.nix ];
 
   services.k3sManaged = {
     enable = true;

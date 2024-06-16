@@ -1,3 +1,1 @@
-_: {
-  documentation.nixos.enable = false;
-}
+_: { documentation.nixos.enable = false; }

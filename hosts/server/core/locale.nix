@@ -1,24 +1,20 @@
+{ lib, config, ... }:
 {
-  lib,
-  config,
-  ...
-}:
-with lib; {
   options.locale = {
-    timeZone = mkOption {
-      type = types.str;
+    timeZone = lib.mkOption {
+      type = lib.types.str;
       default = "Europe/Berlin";
       description = "The system's time zone.";
     };
 
-    defaultLocale = mkOption {
-      type = types.str;
+    defaultLocale = lib.mkOption {
+      type = lib.types.str;
       default = "en_US.UTF-8";
       description = "The default system locale.";
     };
 
-    extraLocaleSettings = mkOption {
-      type = types.attrsOf types.str;
+    extraLocaleSettings = lib.mkOption {
+      type = lib.types.attrsOf lib.types.str;
       default = {
         LC_ADDRESS = "de_DE.UTF-8";
         LC_IDENTIFICATION = "de_DE.UTF-8";
@@ -33,9 +29,9 @@ with lib; {
       description = "Additional locale settings.";
     };
 
-    keyboardLayout = mkOption {
-      type = types.attrs;
-      default = {};
+    keyboardLayout = lib.mkOption {
+      type = lib.types.attrs;
+      default = { };
       description = "Keyboard layout settings.";
     };
   };

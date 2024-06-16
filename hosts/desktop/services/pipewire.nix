@@ -1,12 +1,10 @@
-{
-  lib,
-  pkgs,
-  ...
-}: let
+{ lib, pkgs, ... }:
+let
   q = 64;
   r = 48000;
   qr = "64/48000";
-in {
+in
+{
   hardware.pulseaudio.enable = lib.mkForce false;
   services.pipewire = {
     enable = true;
@@ -21,7 +19,10 @@ in {
         context = {
           properties.default.clock = {
             rate = r;
-            allowed-rates = [44100 48000];
+            allowed-rates = [
+              44100
+              48000
+            ];
             quantum = q;
             min-quantum = q;
             max-quantum = q;
@@ -29,7 +30,10 @@ in {
           modules = [
             {
               name = "libpipewire-module-rtkit";
-              flags = ["ifexists" "nofail"];
+              flags = [
+                "ifexists"
+                "nofail"
+              ];
               args = {
                 nice.level = -15;
                 rt = {
@@ -42,7 +46,7 @@ in {
             {
               name = "libpipewire-module-protocol-pulse";
               args = {
-                server.address = ["unix:native"];
+                server.address = [ "unix:native" ];
                 pulse.min = {
                   req = qr;
                   quantum = qr;
