@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: let
@@ -18,8 +19,12 @@ in {
       settings = {
         terminal.vt = 1;
         default_session = {
-          user = "greeter";
+          user = "simon";
           command = "${tuigreet} --greeting 'NixOS: unstable, Kernel: XanMod ${kernel}' --time --asterisks --user-menu --theme 'border=cyan;button=yellow' --cmd Hyprland --sessions ${wayland-sessionsPath}:${xsessionsPath}";
+        };
+        initial_session = {
+          command = "${lib.getExe config.programs.hyprland.package}";
+          user = "simon";
         };
       };
     };
