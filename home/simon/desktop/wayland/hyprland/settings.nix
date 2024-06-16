@@ -8,6 +8,7 @@
         "corectrl"
         "udiskie &"
         "hyprctl setcursor ${config.home.pointerCursor.name} ${toString config.home.pointerCursor.size}"
+        "hyprlock"
       ];
       env = [
         "WLR_DRM_NO_ATOMIC,1"
@@ -20,7 +21,7 @@
         "XDG_SESSION_TYPE,wayland"
         "XDG_SESSION_DESKTOP,Hyprland"
         "OZONE_PLATFORM,wayland"
-        #"NIXOS_OZONE_WL,1"
+        "NIXOS_OZONE_WL,1"
         #"SDL_VIDEODRIVER,wayland"
       ];
 
