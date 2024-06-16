@@ -84,12 +84,83 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      imports = [ ./pre-commit-hooks.nix ];
+      #imports = [ ./pre-commit-hooks.nix ];
 
       perSystem =
-        { config, pkgs, ... }:
         {
-          devShells.default = pkgs.mkShell rec {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          checks = {
+            pre-commit = inputs.pre-commit-hooks.lib.${system}.run {
+              excludes = [
+                "flake.lock"
+                "CHANGELOG.md"
+                "LICENSE"
+              ];
+              src = ./.;
+              hooks = {
+                nixfmt = {
+                  enable = true;
+                  package = pkgs.nixfmt-rfc-style;
+                };
+                statix = {
+                  enable = true;
+                  fail_fast = true;
+                };
+                deadnix = {
+                  enable = true;
+                  fail_fast = true;
+                  settings = {
+                    edit = true;
+                  };
+                };
+                yamllint = {
+                  enable = true;
+                  fail_fast = true;
+                  settings = {
+                    format = "colored";
+                    preset = "relaxed";
+                    configuration = ''
+                      ---
+
+                      extends: relaxed
+
+                      rules:
+                        braces:
+                          level: warning
+                          max-spaces-inside: 1
+                        brackets:
+                          level: warning
+                          max-spaces-inside: 1
+                        colons:
+                          level: warning
+                        commas:
+                          level: warning
+                        comments: disable
+                        comments-indentation: disable
+                        document-start: disable
+                        empty-lines:
+                          level: warning
+                        hyphens:
+                          level: warning
+                        indentation:
+                          level: warning
+                          indent-sequences: consistent
+                        line-length: disable
+                        truthy: disable
+                    '';
+                  };
+                };
+                pre-commit-hook-ensure-sops.enable = true;
+              };
+            };
+          };
+          devShells.default = pkgs.mkShell {
+            inherit (config.checks.pre-commit) shellHook;
             name = "nixfiles";
             nativeBuildInputs = with pkgs; [
               #alejandra
@@ -99,10 +170,10 @@
               nixfmt-rfc-style
             ];
             DIRENV_LOG_FORMAT = "";
-            shellHook = ''
-              ${config.pre-commit.installationScript}
-              echo -e "\n\033[1;36m❄️ Welcome to the \033[1;33m'${name}'\033[1;36m devshell ❄️\033[0m\n"
-            '';
+            #shellHook = ''
+            #  ${config.pre-commit.installationScript}
+            #  echo -e "\n\033[1;36m❄️ Welcome to the \033[1;33m'${name}'\033[1;36m devshell ❄️\033[0m\n"
+            #'';
           };
           formatter = pkgs.nixfmt-rfc-style;
         };
