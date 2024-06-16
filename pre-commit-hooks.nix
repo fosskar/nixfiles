@@ -8,6 +8,7 @@
       "CHANGELOG.md"
       "LICENSE"
     ];
+    src = ./.;
     hooks = {
       #alejandra = {
       #  enable = true;
