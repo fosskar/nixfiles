@@ -1,8 +1,5 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{ pkgs, inputs, ... }:
+let
   ffTheme = pkgs.fetchFromGitHub {
     owner = "soulhotel";
     repo = "FF-ULTIMA";
@@ -10,7 +7,8 @@
     #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
     sha256 = "6WgZMvHIozChYvoySBmCNwXW/VZ0XGgS/Eh5Q3Fn4JM=";
   };
-in {
+in
+{
   home = {
     sessionVariables.BROWSER = "firefox";
     file.".mozilla/firefox/default/chrome/theme".source = "${ffTheme}/theme";
@@ -139,7 +137,7 @@ in {
                 }
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@np"];
+              definedAliases = [ "@np" ];
             };
             "Nix Options" = {
               urls = [
@@ -158,7 +156,7 @@ in {
                 }
               ];
               iconUpdateURL = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@no"];
+              definedAliases = [ "@no" ];
             };
           };
         };

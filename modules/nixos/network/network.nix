@@ -1,44 +1,41 @@
-{
-  lib,
-  config,
-  ...
-}:
-with lib; let
+{ lib, config, ... }:
+let
   cfg = config.myNetwork;
-in {
+in
+{
   options.myNetwork = {
-    hostName = mkOption {
-      type = types.str;
+    hostName = lib.mkOption {
+      type = lib.types.str;
       default = "nixos";
       description = "The host name for the system.";
     };
 
-    networkManager = mkOption {
-      type = types.bool;
+    networkManager = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Whether to enable NetworkManager.";
     };
 
-    wireless = mkOption {
-      type = types.bool;
+    wireless = lib.mkOption {
+      type = lib.types.bool;
       default = false; # Default to false, overridden as needed
       description = "Whether to enable wireless.";
     };
 
-    extraHosts = mkOption {
-      type = types.listOf types.str;
-      default = [];
+    extraHosts = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
       description = "Extra hosts for /etc/hosts.";
     };
 
-    tailscale = mkOption {
-      type = types.bool;
+    tailscale = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Whether to enable Tailscale.";
     };
 
-    networkManagerWaitOnline = mkOption {
-      type = types.bool;
+    networkManagerWaitOnline = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Whether to enable NetworkManager-wait-online.";
     };

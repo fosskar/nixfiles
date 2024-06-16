@@ -1,7 +1,7 @@
 _: {
   programs.mpv = {
     enable = true;
-    defaultProfiles = ["gpu-hq"];
+    defaultProfiles = [ "gpu-hq" ];
     config = {
       border = false;
       gpu-context = "wayland";

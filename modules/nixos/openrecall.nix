@@ -4,9 +4,9 @@
   pkgs,
   ...
 }:
-with lib; let
-  pythonEnv = pkgs.python3.withPackages (ps:
-    with ps; [
+let
+  pythonEnv = pkgs.python3.withPackages (
+    ps: with ps; [
       ps.flask
       ps.numpy
       ps.pillow
@@ -35,7 +35,7 @@ with lib; let
           inherit pname version;
           hash = "sha256-bre5AIzydCiBH6M66zXzM024Hj98wt1J7HxuWpSznxI=";
         };
-        buildInputs = with pkgs; [
+        buildInputs = [
           pkgs.xorg.libX11
           pkgs.xorg.libXrandr
         ];
@@ -44,9 +44,9 @@ with lib; let
           sed -i 's|find_library("Xrandr")|"${pkgs.xorg.libXrandr}/lib/libXrandr.so"|' src/mss/linux.py
         '';
         doCheck = false;
-        pythonImportsCheck = ["mss"];
+        pythonImportsCheck = [ "mss" ];
       })
-      (ps.buildPythonPackage rec {
+      (buildPythonPackage {
         pname = "doctr";
         version = "latest";
         src = pkgs.fetchFromGitHub {
@@ -57,9 +57,10 @@ with lib; let
         };
         doCheck = false;
       })
-    ]);
+    ]
+  );
 
-  openrecall = pkgs.stdenv.mkDerivation rec {
+  openrecall = pkgs.stdenv.mkDerivation {
     pname = "openrecall";
     version = "latest";
 
@@ -75,7 +76,7 @@ with lib; let
       pkgs.python3Packages.pip
       pkgs.python3Packages.virtualenv
     ];
-    buildInputs = [pythonEnv];
+    buildInputs = [ pythonEnv ];
 
     installPhase = ''
       mkdir -p $out
@@ -97,24 +98,25 @@ with lib; let
     meta = with lib; {
       description = "openrecall";
       license = licenses.mit;
-      maintainers = with maintainers; [simonoscr];
+      maintainers = with maintainers; [ simonoscr ];
     };
   };
-in {
+in
+{
   options.services.openrecall = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = false;
       description = "Enable the OpenRecall service.";
     };
   };
 
-  config = mkIf config.services.openrecall.enable {
+  config = lib.mkIf config.services.openrecall.enable {
     systemd.services.openrecall = {
       description = "OpenRecall Service";
 
-      after = ["network.target"];
-      wantedBy = ["multi-user.target"];
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
         ExecStart = ''
@@ -133,7 +135,7 @@ in {
     };
 
     users = {
-      groups.openrecall = {};
+      groups.openrecall = { };
       users.openrecall = {
         isSystemUser = true;
         group = "openrecall";
@@ -146,6 +148,6 @@ in {
       "d /var/lib/openrecall/.cache/huggingface 0755 openrecall openrecall -"
     ];
 
-    networking.firewall.allowedTCPPorts = [8082];
+    networking.firewall.allowedTCPPorts = [ 8082 ];
   };
 }

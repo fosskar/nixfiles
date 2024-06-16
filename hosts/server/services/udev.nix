@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   services = {
     udev.extraRules = lib.mkMerge [
       ## rules below set the scheduler to bfq for rotational drives, bfq for SSD/eMMC drives and none for NVMe drives

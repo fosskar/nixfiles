@@ -1,5 +1,6 @@
-{inputs, ...}: {
-  imports = [inputs.pre-commit-hooks.flakeModule];
+{ inputs, ... }:
+{
+  imports = [ inputs.pre-commit-hooks.flakeModule ];
 
   perSystem.pre-commit.settings = {
     excludes = [
@@ -8,13 +9,13 @@
       "LICENSE"
     ];
     hooks = {
-      alejandra = {
-        enable = true;
-        fail_fast = true;
-        settings = {
-          check = false;
-        };
-      };
+      #alejandra = {
+      #  enable = true;
+      #  fail_fast = true;
+      #  settings = {
+      #    check = false;
+      #  };
+      #};
 
       statix = {
         enable = true;
@@ -86,8 +87,8 @@
 
       shellcheck = {
         enable = true;
-        excludes = ["png"];
-        types_or = ["shell"];
+        excludes = [ "png" ];
+        types_or = [ "shell" ];
       };
 
       pre-commit-hook-ensure-sops.enable = true;

@@ -1,12 +1,13 @@
-{pkgs, ...}: let
-  xdg.configHome = let
-    x = builtins.getEnv "XDG_CONFIG_HOME";
-  in
-    if x != ""
-    then x
-    else "${builtins.getEnv "HOME"}/.config";
-in {
-  home.packages = [pkgs.vkbasalt];
+{ pkgs, ... }:
+let
+  xdg.configHome =
+    let
+      x = builtins.getEnv "XDG_CONFIG_HOME";
+    in
+    if x != "" then x else "${builtins.getEnv "HOME"}/.config";
+in
+{
+  home.packages = [ pkgs.vkbasalt ];
 
   home.file."${xdg.configHome}/vkBasalt/vkBasalt.conf".text = ''
     effects = cas
@@ -50,7 +51,7 @@ in {
       background_alpha = 0.4;
       font_size = 14;
 
-      background_color = 020202;
+      background_color = 20202;
       position = "top-left";
       text_color = "ffffff";
       round_corners = 5;

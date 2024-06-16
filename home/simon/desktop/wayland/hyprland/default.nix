@@ -12,7 +12,6 @@
     ../hypridle.nix
     ../ags
     ./plugins.nix
-    #./waybar
   ];
 
   home.packages = with pkgs; [

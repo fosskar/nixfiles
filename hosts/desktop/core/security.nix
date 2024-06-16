@@ -63,7 +63,10 @@ _: {
       "net.ipv4.tcp_fin_timeout" = 5;
       "net.ipv4.tcp_slow_start_after_idle" = 0;
     };
-    kernelModules = ["k10temp" "tcp_bbr"];
+    kernelModules = [
+      "k10temp"
+      "tcp_bbr"
+    ];
   };
 
   security = {

@@ -3,20 +3,30 @@
   inputs,
   lib,
   ...
-}: {
+}:
+{
   nix = {
     # pin the registry to avoid downloading and evaling a new nixpkgs version every time
-    registry = lib.mapAttrs (_: v: {flake = v;}) inputs;
+    registry = lib.mapAttrs (_: v: { flake = v; }) inputs;
 
     # set the path for channels compat
     nixPath = lib.mapAttrsToList (key: _: "${key}=flake:${key}") config.nix.registry;
 
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = true;
       builders-use-substitutes = true;
-      allowed-users = ["root" "@wheel"];
-      trusted-users = ["root" "@wheel"];
+      allowed-users = [
+        "root"
+        "@wheel"
+      ];
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
       flake-registry = "/etc/nix/registry.json";
       keep-derivations = true;
       keep-outputs = true;

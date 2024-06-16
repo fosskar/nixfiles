@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   users.users.simon = {
     initialPassword = "123";
     isNormalUser = true;

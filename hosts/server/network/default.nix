@@ -11,8 +11,14 @@ _: {
     firewall = {
       enable = true;
       allowPing = true;
-      allowedTCPPorts = [22 53 80 443 6443];
-      allowedUDPPorts = [53];
+      allowedTCPPorts = [
+        22
+        53
+        80
+        443
+        6443
+      ];
+      allowedUDPPorts = [ 53 ];
     };
   };
 

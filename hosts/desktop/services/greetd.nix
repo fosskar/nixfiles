@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
   #hyprland-session = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/share/wayland-sessions";
   sessionsData = config.services.displayManager.sessionData.desktops;
@@ -11,7 +12,8 @@
   wayland-sessionsPath = "${sessionsData}/share/wayland-sessions";
   #nixos = "${config.system.nixos.label}";
   kernel = "${config.boot.kernelPackages.kernel.version}";
-in {
+in
+{
   # greetd DM with tuigreet
   services = {
     greetd = {

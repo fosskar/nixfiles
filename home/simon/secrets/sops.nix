@@ -1,15 +1,18 @@
-{config, ...}: let
+{ config, ... }:
+let
   inCI = builtins.getEnv "CI" == "true";
   secretsPath =
-    if inCI
-    then "${builtins.getEnv "CI_PROJECT_DIR"}/nixsecrets/secrets/simon/secrets.yaml"
-    else "${config.home.homeDirectory}/code/nixsecrets/secrets/simon/secrets.yaml";
-in {
+    if inCI then
+      "${builtins.getEnv "CI_PROJECT_DIR"}/nixsecrets/secrets/simon/secrets.yaml"
+    else
+      "${config.home.homeDirectory}/code/nixsecrets/secrets/simon/secrets.yaml";
+in
+{
   sops = {
     validateSopsFiles = false;
     defaultSopsFile = secretsPath;
     age = {
-      sshKeyPaths = ["${config.home.homeDirectory}/.ssh/id_ed25519"];
+      sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
       keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
       generateKey = false;
     };
@@ -22,7 +25,7 @@ in {
         path = "${config.home.homeDirectory}/.ssh/id_ed25519";
         mode = "0600";
       };
-      dXNlcl9wYXNzd29yZA = {};
+      dXNlcl9wYXNzd29yZA = { };
     };
   };
 }

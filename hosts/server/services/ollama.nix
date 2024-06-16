@@ -1,10 +1,9 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   services.ollama = {
     enable = true;
     acceleration = "rocm";
   };
 
-  environment.systemPackages = with pkgs; [
-    oterm
-  ];
+  environment.systemPackages = with pkgs; [ oterm ];
 }
