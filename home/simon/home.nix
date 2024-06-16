@@ -28,8 +28,6 @@
     ./terminal
   ];
 
-  programs.home-manager.enable = true;
-
   home = {
     username = "simon";
     homeDirectory = "/home/simon";
@@ -38,7 +36,10 @@
     };
     stateVersion = "23.11";
   };
+
   manual = {
+    html.enable = false;
+    json.enable = false;
     manpages.enable = false;
   };
 }

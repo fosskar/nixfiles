@@ -1,18 +1,19 @@
 {pkgs, ...}: {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
-    ./home-manager.nix
     ./browser/firefox
     ./desktop/x11/i3
     ./editors/vscodium.nix
     ./editors/nixvim.nix
     ./editors/zed.nix
+    ./nix
     ./programs/autorandr.nix
     ./programs/dircolors.nix
     ./programs/docker.nix
     ./programs/fzf.nix
     ./programs/gpg.nix
     ./programs/gtk.nix
+    ./programs/home-manager.nix
     ./programs/jq.nix
     ./programs/k9s.nix
     ./programs/packages.nix
@@ -30,13 +31,6 @@
     ./terminal
   ];
 
-  programs.home-manager.enable = true;
-
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowUnfreePredicate = _: true;
-  };
-
   home = {
     username = "simon";
     homeDirectory = "/home/simon";
@@ -44,20 +38,5 @@
       SHELL = "${pkgs.zsh}/bin/zsh";
     };
     stateVersion = "23.11";
-    packages = with pkgs; [
-      slack
-      virt-manager
-      libreoffice
-      remmina
-      obsidian
-      yq
-    ];
-    sessionVariables.BROWSER = "firefox";
-  };
-
-  manual = {
-    html.enable = false;
-    json.enable = false;
-    manpages.enable = false;
   };
 }
