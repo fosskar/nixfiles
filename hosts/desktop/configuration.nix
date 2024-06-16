@@ -36,6 +36,7 @@
     #./services/openrecall.nix #FIXME TESTING
     ./services/pipewire.nix
     ./services/podman.nix
+    ./services/powerprofile.nix
     ./services/udev.nix
     ./services/xserver.nix
   ];
