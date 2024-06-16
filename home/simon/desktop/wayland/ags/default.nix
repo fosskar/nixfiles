@@ -9,7 +9,7 @@
       repo = "dotfiles";
       rev = "main";
       #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
-      hash = "sha256-ZJvnDWCLqNaHbMJCKIHrGo5fHbMqhM2CU7oDF5CnTSs=";
+      sha256 = "ybp43TjPWnXKcDBnMyN6djysdbq4UPqzEE17/xVxtPY=";
     }
     + "/ags";
 in {
