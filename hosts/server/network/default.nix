@@ -1,4 +1,9 @@
 _: {
+  imports = [
+    ./fail2ban.nix
+    ./tailscale.nix
+  ];
+
   networking = {
     hostName = "nixos-server";
     #networkmanager.enable = true;
@@ -6,7 +11,6 @@ _: {
     firewall = {
       enable = true;
       allowPing = true;
-      logRefusedConnections = false;
       allowedTCPPorts = [22 53 80 443 6443];
       allowedUDPPorts = [53];
     };
