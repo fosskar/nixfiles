@@ -1,3 +1,11 @@
+## [7.0.4](https://gitlab.com/simonoscr/nixfiles/compare/7.0.3...7.0.4) (2024-06-16)
+
+### 🛠 Fixes
+
+* cleanup unsued .nix files and update hyprlock ([465b1b4](https://gitlab.com/simonoscr/nixfiles/commit/465b1b4f21695fb2d58590e905d8a145694791c1))
+* **ags:** add powerprofile and adjust dependencies ([f54a94b](https://gitlab.com/simonoscr/nixfiles/commit/f54a94b7ae50757c554e29e19c6391bb77afa699))
+* **direnv:** adjust devshell ([49b5679](https://gitlab.com/simonoscr/nixfiles/commit/49b567914b5bd74192f4572045d8718f2fabbcd3))
+
 ## [7.0.3](https://gitlab.com/simonoscr/nixfiles/compare/7.0.2...7.0.3) (2024-06-16)
 
 ### 📦 Other
