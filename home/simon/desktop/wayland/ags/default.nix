@@ -1,8 +1,5 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: let
+{ inputs, pkgs, ... }:
+let
   agsConfig =
     pkgs.fetchFromGitHub {
       owner = "Aylur";
@@ -12,18 +9,17 @@
       sha256 = "ybp43TjPWnXKcDBnMyN6djysdbq4UPqzEE17/xVxtPY=";
     }
     + "/ags";
-in {
-  imports = [
-    inputs.ags.homeManagerModules.default
-  ];
+in
+{
+  imports = [ inputs.ags.homeManagerModules.default ];
 
-  home.packages = with pkgs; [
-    brightnessctl # not working anyway because of OLED
-    bun
-    dart-sass
-    fd
-    swww
-    inputs.matugen.packages.${system}.default
+  home.packages = [
+    pkgs.brightnessctl # not working anyway because of OLED
+    pkgs.bun
+    pkgs.dart-sass
+    pkgs.fd
+    pkgs.swww
+    inputs.matugen.packages.${pkgs.system}.default
   ];
 
   programs.ags = {
