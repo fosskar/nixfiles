@@ -1,8 +1,5 @@
+{ inputs, pkgs, ... }:
 {
-  inputs,
-  pkgs,
-  ...
-}: {
   programs.hyprlock = {
     enable = true;
     package = inputs.hyprlock.packages.${pkgs.system}.hyprlock;
@@ -23,7 +20,7 @@
 
           blur_passes = 0;
           blur_size = 10;
-          noise = 0.0117;
+          noise = 1.17e-2;
           contrast = 0.8916;
           brightness = 0.8172;
           vibrancy = 0.1696;
@@ -40,7 +37,7 @@
             height = 50;
           };
           outline_thickness = 1;
-          dots_size = 0.30;
+          dots_size = 0.3;
           dots_spacing = 0.15;
           dots_center = true;
           outer_color = "rgba(20, 20, 20, 1)";

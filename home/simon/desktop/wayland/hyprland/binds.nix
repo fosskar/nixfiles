@@ -1,16 +1,29 @@
 _: {
   wayland.windowManager.hyprland = {
     settings = {
-      bind = let
-        binding = mod: cmd: key: arg: "${mod}, ${key}, ${cmd}, ${arg}";
-        mvfocus = binding "SUPER" "movefocus";
-        ws = binding "SUPER" "workspace";
-        resizeactive = binding "SUPER CTRL" "resizeactive";
-        mvactive = binding "SUPER ALT" "moveactive";
-        mvtows = binding "SUPER SHIFT" "movetoworkspace";
-        e = "exec, ags -b hypr";
-        arr = [1 2 3 4 5 6 7 8 9];
-      in
+      bind =
+        let
+          binding =
+            mod: cmd: key: arg:
+            "${mod}, ${key}, ${cmd}, ${arg}";
+          mvfocus = binding "SUPER" "movefocus";
+          ws = binding "SUPER" "workspace";
+          resizeactive = binding "SUPER CTRL" "resizeactive";
+          mvactive = binding "SUPER ALT" "moveactive";
+          mvtows = binding "SUPER SHIFT" "movetoworkspace";
+          e = "exec, ags -b hypr";
+          arr = [
+            1
+            2
+            3
+            4
+            5
+            6
+            7
+            8
+            9
+          ];
+        in
         [
           "ALT, Space,     ${e} -t launcher" # this is for AGS
           "SUPER, Tab,     ${e} -t overview"
@@ -25,6 +38,7 @@ _: {
           "SUPER, T, exec, kitty"
           "SUPER, E, exec, kitty -e yazi"
           "ALT, Tab, focuscurrentorlast"
+          "SUPER, G, togglegroup"
           "SUPER SHIFT, E, exit"
           "SUPER SHIFT, Q, killactive"
           "SUPER, V, togglefloating"
