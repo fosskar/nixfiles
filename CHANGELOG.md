@@ -1,3 +1,13 @@
+## [7.1.0](https://gitlab.com/simonoscr/nixfiles/compare/7.0.6...7.1.0) (2024-06-17)
+
+### 💈 Style
+
+* format repo with nixfmt-rfc-style ([60bf5ae](https://gitlab.com/simonoscr/nixfiles/commit/60bf5aed52226153f8374531b9796e7176fad50a))
+
+### 🚀 Features
+
+* cleanup and format ([697198e](https://gitlab.com/simonoscr/nixfiles/commit/697198e3a8709c3a331af2346dfeebf4562da493))
+
 ## [7.0.6](https://gitlab.com/simonoscr/nixfiles/compare/7.0.5...7.0.6) (2024-06-17)
 
 ### 💈 Style
