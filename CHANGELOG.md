@@ -1,3 +1,17 @@
+## [7.1.2](https://gitlab.com/simonoscr/nixfiles/compare/7.1.1...7.1.2) (2024-06-18)
+
+### 🛠 Fixes
+
+* adjust work profile with custom configs ([91a1245](https://gitlab.com/simonoscr/nixfiles/commit/91a1245e55efa6eaa690c51a4924c48c47032dcf))
+* adjust work profile with custom configs ([c7478cf](https://gitlab.com/simonoscr/nixfiles/commit/c7478cffb80cc94935a12d1048759ddb80972dab))
+* adjust work profile with custom configs ([aafb950](https://gitlab.com/simonoscr/nixfiles/commit/aafb950b91cfdb4bbfe07a7721d50df6e4c690dc))
+* adjust work profile with custom configs ([34c49ca](https://gitlab.com/simonoscr/nixfiles/commit/34c49ca5ae064a02d90390a133cbfb21d8eb5eac))
+* adjust work profile with custom configs ([07fbc64](https://gitlab.com/simonoscr/nixfiles/commit/07fbc645e6fe24e515f595aaab22794c659f6a92))
+* adjust work profile with custom configs ([b8c7caf](https://gitlab.com/simonoscr/nixfiles/commit/b8c7caf47365cfa5477bbf399b8f0a82283ce217))
+* adjust work profile with custom configs ([084c0df](https://gitlab.com/simonoscr/nixfiles/commit/084c0dfa18caaa1ece723998bdc29876cf819ab7))
+* adjust work profile with custom configs ([b9fb8f7](https://gitlab.com/simonoscr/nixfiles/commit/b9fb8f77d292850331ad5d468368c6ce6b177eb2))
+* adjust work profile with custom configs ([bc5c7b6](https://gitlab.com/simonoscr/nixfiles/commit/bc5c7b65e0e94a8ac4878df5e1648cd64d6bab5f))
+
 ## [7.1.1](https://gitlab.com/simonoscr/nixfiles/compare/7.1.0...7.1.1) (2024-06-18)
 
 ### 🛠 Fixes
