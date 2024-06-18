@@ -7,6 +7,7 @@
     # notes
     obsidian
     libreoffice
+    kdePackages.okular
 
     # communication
     slack

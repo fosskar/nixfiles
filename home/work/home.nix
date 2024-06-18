@@ -10,7 +10,7 @@
     ./nix
     ./programs/autorandr.nix
     ./programs/dircolors.nix
-    #./programs/docker.nix
+    ./programs/docker.nix
     ./programs/fzf.nix
     ./programs/gpg.nix
     ./programs/gtk.nix
@@ -40,4 +40,5 @@
     };
     stateVersion = "23.11";
   };
+  targets.genericLinux.enable = true;
 }

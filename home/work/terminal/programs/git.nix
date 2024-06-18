@@ -14,7 +14,6 @@ in
     extraConfig = {
       color.ui = true;
       core.editor = "nvim";
-      github.user = name;
       push.autoSetupRemote = true;
       diff.colorMoved = "default";
       gpg = {
