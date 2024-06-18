@@ -16,7 +16,7 @@ _: {
       docs = "$HOME/Documents";
       pics = "$HOME/Pictures";
       vids = "$HOME/Videos";
-      nix = "$HOME/nixfiles";
+      nix = "$HOME/code/nixfiles";
     };
 
     initExtra = ''
@@ -24,6 +24,9 @@ _: {
       zstyle ':completion:*' menu select
       zstyle ':completion:*' verbose true
       zstyle ':completion:*' completer _complete _ignored _approximate
+      if [ -f ~/.zshrc_custom ]; then
+        source ~/.zshrc_custom
+      fi
     '';
 
     history = {
