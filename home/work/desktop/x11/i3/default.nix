@@ -2,8 +2,8 @@
 {
   imports = [
     ./config.nix
-    #../polybar.nix
     ./i3status.nix
+    ../rofi.nix
   ];
   xsession = {
     enable = true;
@@ -11,12 +11,6 @@
       enable = true;
     };
   };
-  fonts.fontconfig.enable = true;
 
-  home.packages = with pkgs; [
-    rofi
-    i3blocks
-    i3lock
-    xautolock
-  ];
+  home.packages = with pkgs; [ i3lock ];
 }

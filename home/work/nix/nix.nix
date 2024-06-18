@@ -23,12 +23,10 @@
       builders-use-substitutes = true;
       allowed-users = [
         "root"
-        "simon"
         "@wheel"
       ];
       trusted-users = [
         "root"
-        "simon"
         "@wheel"
       ];
       flake-registry = "/etc/nix/registry.json";

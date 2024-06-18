@@ -18,6 +18,7 @@
 
     # cli
     yq
+    nh
 
     # Audio
     pavucontrol

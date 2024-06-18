@@ -46,11 +46,11 @@ _: {
           path = "/proc/sys/net/ipv4/conf/vpn0";
         };
       };
-      "time" = {
+      "tztime local" = {
         position = 9;
         enable = true;
         settings = {
-          format = " %d.%m.%y | %H:%M ";
+          format = " %d.%m.%y   %H:%M ";
         };
       };
       "memory" = {
@@ -62,11 +62,11 @@ _: {
           format_degraded = " MEMORY: %free ";
         };
       };
-      "cpu_usage" = {
+      "load" = {
         position = 7;
         enable = true;
         settings = {
-          format = "  %usage ";
+          format = "   %1min ";
         };
       };
       "disk /" = {

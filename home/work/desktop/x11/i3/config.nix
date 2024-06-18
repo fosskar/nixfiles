@@ -4,9 +4,11 @@
     enable = true;
     config = {
       modifier = "Mod4";
-      focus.followMouse = false;
-      focus.mouseWarping = false;
-      menu = "rofi -show drun";
+      focus = {
+        followMouse = false;
+        mouseWarping = false;
+      };
+      menu = "rofi -show drun -show-icons";
       workspaceAutoBackAndForth = true;
       defaultWorkspace = "workspace number 1";
 
@@ -106,11 +108,9 @@
           "${mod}+Shift+t" = "layout tabbed";
           "${mod}+Shift+g" = "sticky toggle";
           "${mod}+v" = "floating toggle";
-          "${mod}+space" = "exec --no-startup-id dmenu_run";
-          #"${mod}+space" = "focus mode_toggle";
           "${mod}+Ctrl+greater" = "move workspace to output right";
           "${mod}+Ctrl+less" = "move workspace to output left";
-          "${mod}+d" = "exec rofi -show drun -show-icons";
+          "${mod}+space" = "exec rofi -show drun -show-icons";
           "${mod}+1" = "workspace 1";
           "${mod}+2" = "workspace 2";
           "${mod}+3" = "workspace 3";
@@ -145,8 +145,8 @@
           statusCommand = "${pkgs.i3status}/bin/i3status";
           position = "top";
           workspaceButtons = true;
-          trayPadding = 0;
-          trayOutput = "DP-1";
+          trayPadding = 6;
+          trayOutput = "primary";
           colors = {
             background = "#222222";
             statusline = "#eeeeee";
@@ -185,9 +185,6 @@
         titlebar = false;
         border = 1;
         criteria = [
-          { class = "^steam$"; }
-          { class = "^TeamSpeak$"; }
-          { class = "^WebCord$"; }
           { class = "KeePassXC"; }
           { class = "zoom"; }
           { class = "Slack"; }
@@ -197,10 +194,9 @@
       terminal = "${pkgs.kitty}/bin/kitty";
 
       fonts = {
-        names = [ "Roboto" ];
+        names = [ "Inter" ];
         size = 16.0;
       };
     };
   };
-  fonts.fontconfig.enable = true;
 }
