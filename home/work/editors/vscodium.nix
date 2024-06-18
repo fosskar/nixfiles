@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  home = {
+    sessionVariables.EDITOR = "code";
+  };
   programs.vscode = {
     enable = true;
     enableUpdateCheck = false;

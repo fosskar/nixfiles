@@ -1,8 +1,12 @@
-_: {
+{ config, ... }:
+{
   programs.ssh = {
     enable = true;
+    includes = [ "${config.home.homeDirectory}/.ssh/extra_config" ];
     extraConfig = ''
-      Include ~/.ssh/extra_config
+      Host gitlab.com
+        User git
+        IdentityFile ${config.home.homeDirectory}/.ssh/id_rsa
     '';
   };
 }

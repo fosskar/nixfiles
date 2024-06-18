@@ -39,5 +39,8 @@
     git-credential-keepassxc
     bitwarden-desktop
     kubecm
+
+    # misc
+    brightnessctl
   ];
 }
