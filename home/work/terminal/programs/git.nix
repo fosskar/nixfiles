@@ -1,6 +1,6 @@
 { config, ... }:
 let
-  email = "simon.siedl@mecom.de";
+  email = "";
   name = "Simon Siedl";
 in
 {
