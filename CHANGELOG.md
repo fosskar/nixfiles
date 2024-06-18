@@ -1,3 +1,9 @@
+## [7.1.4](https://gitlab.com/simonoscr/nixfiles/compare/7.1.3...7.1.4) (2024-06-18)
+
+### 🛠 Fixes
+
+* work profile i3 setup and configs ([e0b9283](https://gitlab.com/simonoscr/nixfiles/commit/e0b9283fea8fcc0cf59d688a3a5727014691bdc7))
+
 ## [7.1.3](https://gitlab.com/simonoscr/nixfiles/compare/7.1.2...7.1.3) (2024-06-18)
 
 ### 🛠 Fixes
