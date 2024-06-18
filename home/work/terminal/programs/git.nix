@@ -64,7 +64,7 @@ in
     ];
 
     signing = {
-      key = "${config.home.homeDirectory}/.ssh/id_ed25519";
+      key = "${config.home.homeDirectory}/.ssh/id_rsa";
       signByDefault = true;
     };
   };

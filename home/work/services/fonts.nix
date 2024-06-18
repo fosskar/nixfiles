@@ -18,12 +18,6 @@
         ];
         emoji = [ "Noto Color Emoji" ];
       };
-      antialias = true;
-      cache32Bit = true;
-      hinting = {
-        enable = true;
-        autohint = true;
-      };
     };
   };
   home.packages = with pkgs; [
