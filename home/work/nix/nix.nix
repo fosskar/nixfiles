@@ -2,10 +2,12 @@
   config,
   inputs,
   lib,
+  pkgs,
   ...
 }:
 {
   nix = {
+    package = pkgs.nix;
     # pin the registry to avoid downloading and evaling a new nixpkgs version every time
     registry = lib.mapAttrs (_: v: { flake = v; }) inputs;
 
@@ -21,10 +23,12 @@
       builders-use-substitutes = true;
       allowed-users = [
         "root"
+        "simon"
         "@wheel"
       ];
       trusted-users = [
         "root"
+        "simon"
         "@wheel"
       ];
       flake-registry = "/etc/nix/registry.json";
@@ -33,8 +37,12 @@
     };
     gc = {
       automatic = true;
-      dates = "weekly";
       options = "--delete-older-than 1w";
     };
+  };
+  manual = {
+    html.enable = false;
+    json.enable = false;
+    manpages.enable = false;
   };
 }

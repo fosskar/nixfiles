@@ -2,15 +2,15 @@
 {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
-    ./browser/firefox
-    ./desktop/x11/i3
+    #./browser/firefox
+    #./desktop/x11/i3
     ./editors/vscodium.nix
     ./editors/nixvim.nix
     ./editors/zed.nix
     ./nix
     ./programs/autorandr.nix
     ./programs/dircolors.nix
-    ./programs/docker.nix
+    #./programs/docker.nix
     ./programs/fzf.nix
     ./programs/gpg.nix
     ./programs/gtk.nix
