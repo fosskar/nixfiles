@@ -1,3 +1,9 @@
+## [7.1.1](https://gitlab.com/simonoscr/nixfiles/compare/7.1.0...7.1.1) (2024-06-18)
+
+### 🛠 Fixes
+
+* work profile ([9b02895](https://gitlab.com/simonoscr/nixfiles/commit/9b02895d2d052c5b16f3f0e969e6e7322e4bec85))
+
 ## [7.1.0](https://gitlab.com/simonoscr/nixfiles/compare/7.0.6...7.1.0) (2024-06-17)
 
 ### 💈 Style
