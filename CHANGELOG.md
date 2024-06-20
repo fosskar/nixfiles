@@ -1,3 +1,10 @@
+## [7.1.6](https://gitlab.com/simonoscr/nixfiles/compare/7.1.5...7.1.6) (2024-06-20)
+
+### 🛠 Fixes
+
+* work profile i3 setup and configs ([060ae87](https://gitlab.com/simonoscr/nixfiles/commit/060ae87efad974bb61b1866b1c8ab4500752b39f))
+* work profile i3 setup and configs for autorandr ([6808991](https://gitlab.com/simonoscr/nixfiles/commit/68089916b2b39cc788b4490d265ecfd2e276d62b))
+
 ## [7.1.5](https://gitlab.com/simonoscr/nixfiles/compare/7.1.4...7.1.5) (2024-06-19)
 
 ### 📦 Other
