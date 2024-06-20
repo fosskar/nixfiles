@@ -1,5 +1,6 @@
 _: {
   networking = {
+    hostName = "nixos";
     wireless.enable = false; # disable wpa-supplicant. nmcli usable for wifi in networkmanager
     nameservers = [ "9.9.9.9#dns.quad9.net" ];
     networkmanager = {
