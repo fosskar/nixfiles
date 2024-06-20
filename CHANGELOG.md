@@ -1,3 +1,13 @@
+## [7.2.0](https://gitlab.com/simonoscr/nixfiles/compare/7.1.8...7.2.0) (2024-06-20)
+
+### :scissors: Refactor
+
+* cleanup double entries and move some keys ([1ff0e00](https://gitlab.com/simonoscr/nixfiles/commit/1ff0e00b9f22ce4e32762b92310695d6eed23746))
+
+### 🚀 Features
+
+* added iso configuration to flake for server and desktop ([864812a](https://gitlab.com/simonoscr/nixfiles/commit/864812af45280ba6b88b320fbe6c5535e6790e3d))
+
 ## [7.1.8](https://gitlab.com/simonoscr/nixfiles/compare/7.1.7...7.1.8) (2024-06-20)
 
 ### 🛠 Fixes
