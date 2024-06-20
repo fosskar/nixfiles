@@ -1,3 +1,9 @@
+## [7.1.7](https://gitlab.com/simonoscr/nixfiles/compare/7.1.6...7.1.7) (2024-06-20)
+
+### 🛠 Fixes
+
+* **work:** add cosign to packages ([ba95139](https://gitlab.com/simonoscr/nixfiles/commit/ba951399fda5460a81c7006e8699c35cad1be255))
+
 ## [7.1.6](https://gitlab.com/simonoscr/nixfiles/compare/7.1.5...7.1.6) (2024-06-20)
 
 ### 🛠 Fixes
