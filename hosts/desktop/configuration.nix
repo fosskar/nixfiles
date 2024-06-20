@@ -38,8 +38,6 @@
     ./services/xserver.nix
   ];
 
-  networking.hostName = "nixos";
-
   services = {
     printing.enable = true;
     fstrim.enable = true;

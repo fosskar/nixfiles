@@ -72,8 +72,6 @@
 
   security = {
     sudo.wheelNeedsPassword = false;
-    # allow wayland lockers to unlock the screen
-    #pam.services.swaylock.text = "auth include login";   # switched to hyprlock
     tpm2.enable = true;
   };
   environment = {

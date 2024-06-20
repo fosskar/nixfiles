@@ -1,8 +1,5 @@
 { pkgs, ... }:
 {
-  hardware.firmware = with pkgs; [
-    linux-firmware
-    alsa-firmware
-  ];
+  hardware.firmware = with pkgs; [ linux-firmware ];
   services.fwupd.enable = true;
 }
