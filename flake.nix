@@ -13,11 +13,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # nix pre-commit-hook
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # flake-parts
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
     };
@@ -40,6 +42,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # matugen colors
     matugen = {
       url = "github:InioX/matugen/module";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -70,6 +73,7 @@
       };
     };
 
+    # yazi file explorer
     yazi.url = "github:sxyazi/yazi";
 
     # aylur-gtk-shell
@@ -137,6 +141,35 @@
               inherit inputs;
             };
             modules = [ ./hosts/server/configuration.nix ];
+          };
+          desktopISO = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit inputs;
+            };
+            modules = [
+              ./iso/desktopiso.nix
+              inputs.home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  extraSpecialArgs = {
+                    inherit inputs;
+                  };
+                  users.simon.imports = [ ./home/simon/home.nix ];
+                };
+              }
+              "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
+            ];
+          };
+          serverISO = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit inputs;
+            };
+            modules = [
+              ./iso/serveriso.nix
+              "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
+            ];
           };
         };
         homeConfigurations = {
