@@ -12,7 +12,7 @@
         "hyprlock"
       ];
       env = [
-        "WLR_DRM_NO_ATOMIC,1"
+        #"WLR_DRM_NO_ATOMIC,1"
         "GDK_BACKEND,wayland,x11,*"
         "QT_QPA_PLATFORM,wayland;xcb"
         "QT_AUTO_SCREEN_SCALE_FACTOR,1"
@@ -59,7 +59,7 @@
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
         force_default_wallpaper = 0;
-        vfr = false;
+        vfr = true;
         vrr = 0;
         mouse_move_enables_dpms = true;
         key_press_enables_dpms = true;
