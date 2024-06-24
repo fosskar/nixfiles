@@ -30,43 +30,41 @@
         #  };
         #};
 
-        yamllint = {
-          enable = true;
-          fail_fast = true;
-          settings = {
-            format = "colored";
-            preset = "relaxed";
-            configuration = ''
-              ---
-
-              extends: relaxed
-
-              rules:
-                braces:
-                  level: warning
-                  max-spaces-inside: 1
-                brackets:
-                  level: warning
-                  max-spaces-inside: 1
-                colons:
-                  level: warning
-                commas:
-                  level: warning
-                comments: disable
-                comments-indentation: disable
-                document-start: disable
-                empty-lines:
-                  level: warning
-                hyphens:
-                  level: warning
-                indentation:
-                  level: warning
-                  indent-sequences: consistent
-                line-length: disable
-                truthy: disable
-            '';
-          };
-        };
+        #yamllint = {
+        #  enable = true;
+        #  fail_fast = true;
+        #  settings = {
+        #    format = "colored";
+        #    preset = "relaxed";
+        #    configuration = ''
+        #      ---
+        #      extends: relaxed
+        #      rules:
+        #        braces:
+        #          level: warning
+        #          max-spaces-inside: 1
+        #        brackets:
+        #          level: warning
+        #          max-spaces-inside: 1
+        #        colons:
+        #          level: warning
+        #        commas:
+        #          level: warning
+        #        comments: disable
+        #        comments-indentation: disable
+        #        document-start: disable
+        #        empty-lines:
+        #          level: warning
+        #        hyphens:
+        #          level: warning
+        #        indentation:
+        #          level: warning
+        #          indent-sequences: consistent
+        #        line-length: disable
+        #        truthy: disable
+        #    '';
+        #  };
+        #};
 
         prettier = {
           enable = true;
