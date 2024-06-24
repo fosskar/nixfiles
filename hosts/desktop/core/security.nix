@@ -71,10 +71,11 @@ _: {
 
   security = {
     sudo.wheelNeedsPassword = false;
-    # allow wayland lockers to unlock the screen
-    #pam.services.swaylock.text = "auth include login";   # switched to hyprlock
     pam = {
-      services.hyprlock.text = "auth include login";
+      services = {
+        hyprlock.text = "auth include login";
+        ags = { };
+      };
     };
     polkit.enable = true;
     rtkit.enable = true;

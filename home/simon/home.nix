@@ -25,6 +25,8 @@
     ./terminal
   ];
 
+  programs.home-manager.enable = true;
+
   home = {
     username = "simon";
     homeDirectory = "/home/simon";
