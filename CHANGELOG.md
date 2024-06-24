@@ -1,3 +1,18 @@
+## [7.3.0](https://gitlab.com/simonoscr/nixfiles/compare/7.2.0...7.3.0) (2024-06-24)
+
+### 📦 Other
+
+* **flake:** update flake ([3cdbd31](https://gitlab.com/simonoscr/nixfiles/commit/3cdbd31f75d83568705a4e19e633ff38fd3314ea))
+* **lint:** remove yamllin ([c31f502](https://gitlab.com/simonoscr/nixfiles/commit/c31f5022a124e46b8199dca2a9a321de44816f9a))
+
+### 🚀 Features
+
+* new amdgpu and graphic options and remove deprecated ([5404487](https://gitlab.com/simonoscr/nixfiles/commit/5404487fdb7c50e21e0ecdeb25210a578b571fa8))
+
+### 🛠 Fixes
+
+* add packages ([fe0923d](https://gitlab.com/simonoscr/nixfiles/commit/fe0923dbf8ddf3be8ce263d2228ee5d5a116c2f6))
+
 ## [7.2.0](https://gitlab.com/simonoscr/nixfiles/compare/7.1.8...7.2.0) (2024-06-20)
 
 ### :scissors: Refactor
