@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   environment = {
     variables = {
@@ -19,6 +19,21 @@
         </driconf>
       '';
     };
+  };
+
+  boot = {
+    kernelModules = [
+      "kvm-amd"
+      #"amd-pstate" # only needed for kernel version between 5.17 and 6.1
+      "zenpower"
+    ];
+    kernelParams = [
+      "amd_pstate=active"
+      "amd_pstate.shared_mem=1"
+      "amdgpu.exp_hw_support=1"
+    ];
+    blacklistedKernelModules = [ "k10temp" ];
+    extraModulePackages = [ config.boot.kernelPackages.zenpower ];
   };
 
   hardware = {
