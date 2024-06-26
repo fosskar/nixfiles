@@ -1,6 +1,6 @@
-default:
-  tags:
-    - nixos
+#default:
+#  tags:
+#    - nixos
 
 stages:
   - release
