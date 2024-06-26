@@ -25,10 +25,10 @@
     ./programs/gnupg.nix
     ./programs/home-manager.nix
     ./programs/hyprland.nix
-    ./programs/seahorse.nix
+    #./programs/seahorse.nix # not needed without gnome-keyring
     ./programs/xdg.nix
     ./programs/zsh.nix
-    ./services/gnome-services.nix
+    #./services/gnome-services.nix #WHY?
     ./services/greetd.nix
     ./services/libinput.nix
     ./services/pipewire.nix
