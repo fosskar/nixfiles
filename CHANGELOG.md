@@ -1,3 +1,23 @@
+## [7.3.1](https://gitlab.com/simonoscr/nixfiles/compare/7.3.0...7.3.1) (2024-06-26)
+
+### 📦 Other
+
+* **flake:** update flake ([71fa7a2](https://gitlab.com/simonoscr/nixfiles/commit/71fa7a21a8ccc66b711cdd5e8cce434bc4603401))
+* **flake:** update flake ([f304610](https://gitlab.com/simonoscr/nixfiles/commit/f30461083395b5b06a710e1d5632cd3c9d0efcfd))
+
+### 🦊 CI/CD
+
+* no tag until gitlab-runner is running ([7b87d27](https://gitlab.com/simonoscr/nixfiles/commit/7b87d27dbfca9ec3d0595fd4efdf0694ba018518))
+
+### 🛠 Fixes
+
+* cleanup home-manager for desktop ([21e8385](https://gitlab.com/simonoscr/nixfiles/commit/21e8385e82818d56d3b3a08b6a83d17f83709cf2))
+* enable hyprland vfr and atomic set ([c38c357](https://gitlab.com/simonoscr/nixfiles/commit/c38c357bf794bbece9804857d2770dc389678bd8))
+* firefox profile for work ([8a21c46](https://gitlab.com/simonoscr/nixfiles/commit/8a21c4668006ce136c44d165b920c7bc508d0b02))
+* gitlab-runner with podman WIP ([d76cf86](https://gitlab.com/simonoscr/nixfiles/commit/d76cf8642ef235a4099b475f5c169bec62e3bee8))
+* hardware and security changes and cleanups ([c263414](https://gitlab.com/simonoscr/nixfiles/commit/c263414b084801f9a566fcbc2e865eeddb2a204a))
+* hyprland things ([3a1581f](https://gitlab.com/simonoscr/nixfiles/commit/3a1581ffe7417a417157010875fbd180cdb2fa6a))
+
 ## [7.3.0](https://gitlab.com/simonoscr/nixfiles/compare/7.2.0...7.3.0) (2024-06-24)
 
 ### 📦 Other
