@@ -4,7 +4,6 @@
     settings = {
       exec-once = [
         "ags -b hypr"
-        #"waybar"
         "steam -silent"
         "corectrl"
         "udiskie &"

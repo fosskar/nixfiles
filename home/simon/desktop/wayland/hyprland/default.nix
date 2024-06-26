@@ -9,7 +9,7 @@
     ../hyprlock.nix
     ../hypridle.nix
     ../ags
-    ./plugins.nix
+    #./plugins.nix
   ];
 
   home.packages = with pkgs; [
