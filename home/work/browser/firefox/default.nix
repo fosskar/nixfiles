@@ -69,34 +69,6 @@
       work = {
         id = 0;
         isDefault = true;
-        ## #FIXME until home-manager can overwrite files or overwrite .backup files
-        #containers = {
-        #  "Personal" = {
-        #    id = 1;
-        #    color = "green"; # one of “blue”, “turquoise”, “green”, “yellow”, “orange”, “red”, “pink”, “purple”, “toolbar”
-        #    icon = "fingerprint"; # one of “briefcase”, “cart”, “circle”, “dollar”, “fence”, “fingerprint”, “gift”, “vacation”, “food”, “fruit”, “pet”, “tree”, “chill”
-        #  };
-        #  "Shopping" = {
-        #    id = 2;
-        #    color = "yellow";
-        #    icon = "cart";
-        #  };
-        #  "SocialMedia" = {
-        #    id = 3;
-        #    color = "orange";
-        #    icon = "tree";
-        #  };
-        #  "Google" = {
-        #    id = 4;
-        #    color = "red";
-        #    icon = "fence";
-        #  };
-        #  "Streaming" = {
-        #    id = 5;
-        #    color = "purple";
-        #    icon = "chill";
-        #  };
-        #};
         extensions = with inputs.firefox-addons.packages.${pkgs.system}; [
           ublock-origin
           bitwarden
