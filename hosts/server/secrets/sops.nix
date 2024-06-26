@@ -20,6 +20,7 @@
       V0lGSQ = {
         path = "/etc/wpa_supplicant.conf";
       };
+      Z2l0bGFiLXJ1bm5lci1yZWdpc3RyYXRpb24 = { };
     };
   };
 }

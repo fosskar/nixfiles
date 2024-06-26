@@ -23,6 +23,7 @@
     ./secrets/sops.nix
     ./services/kubernetes/helm.nix
     ./services/kubernetes/k3s.nix
+    ./services/gitlab-runner.nix
     ./services/podman.nix
     ./services/ssh.nix
     ./services/udev.nix
