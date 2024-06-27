@@ -4,6 +4,11 @@ let
   name = "Simon Siedl";
 in
 {
+
+  #home.file.".config/git/allowed_signers".source = "${config.home.homeDirectory}/.ssh/id_rsa.pub}";
+
+  #home.file.".ssh/allowed_signers".text = "* ${builtins.readFile /home/simon/.ssh/id_rsa.pub}";
+
   programs.git = {
     enable = true;
     lfs.enable = true;
@@ -18,7 +23,7 @@ in
       diff.colorMoved = "default";
       gpg = {
         format = "ssh";
-        #ssh.allowedSignersFile = config.home.homeDirectory + "/" + config.xdg.configFile."git/allowed_signers".target;
+        ssh.allowedSignersFile = "${config.xdg.configHome}/git/allowed_signers";
       };
       commit.gpgsign = true;
       pull.rebase = true;
@@ -69,7 +74,11 @@ in
       signByDefault = true;
     };
   };
-  #xdg.configFile."git/allowed_signers".text = ''
-  #  ${cfg.userEmail} namespaces="git" ${key}
+  #home.sessionVariables.SSH_AUTH_SOCK = "$HOME/.ssh/agent.sock";
+  #home.activationScripts.sshAgent = ''
+  #  if [ ! -S $SSH_AUTH_SOCK ]; then
+  #    eval $(ssh-agent -a $SSH_AUTH_SOCK)
+  #  fi
+  #  ssh-add ${config.home.homeDirectory}/.ssh/id_rsa
   #'';
 }
