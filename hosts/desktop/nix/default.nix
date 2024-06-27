@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   imports = [
     ./nh.nix
@@ -6,10 +6,5 @@
     ./nixos.nix
     ./nixpkgs.nix
     ./substituters.nix
-  ];
-
-  environment.systemPackages = with pkgs; [
-    git
-    cachix
   ];
 }
