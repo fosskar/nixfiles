@@ -12,7 +12,6 @@ _: {
       enable = true;
       allowPing = true;
       allowedTCPPorts = [
-        22
         53
         80
         443

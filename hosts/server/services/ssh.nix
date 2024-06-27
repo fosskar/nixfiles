@@ -22,6 +22,7 @@ _: {
         AllowAgentForwarding no
         AllowStreamLocalForwarding no
       '';
+      openFirewall = true;
     };
   };
 }
