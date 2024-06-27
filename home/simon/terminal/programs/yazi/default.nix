@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   inputs,
   ...
@@ -32,10 +33,10 @@
           4
         ];
         sort_by = "alphabetical";
-        sort_sensitive = true;
+        sort_sensitive = false;
         sort_reverse = false;
         sort_dir_first = true;
-        linemode = "none";
+        linemode = "size";
         show_hidden = true;
         show_symlink = true;
       };
@@ -55,6 +56,49 @@
           0
         ];
         cache_dir = "${config.xdg.cacheHome}";
+      };
+      opener = {
+        edit = [
+          {
+            run = "nvim \"$@\"";
+            desc = "$EDITOR";
+            block = true;
+            for = "unix";
+          }
+        ];
+        open = [
+          {
+            run = "xdg-open \"$@\"";
+            desc = "Open";
+            for = "linux";
+          }
+        ];
+        reveal = [
+          {
+            run = "${lib.getExe pkgs.exiftool} \"$1\"; echo \"Press enter to exit\"; read _";
+            block = true;
+            desc = "Show EXIF";
+            for = "unix";
+          }
+        ];
+        play = [
+          {
+            run = "${lib.getExe pkgs.mpv} \"$@\"";
+            orphan = true;
+            for = "unix";
+          }
+          {
+            run = "${lib.getExe pkgs.mpv} \"%1\"";
+            orphan = true;
+            for = "windows";
+          }
+          {
+            run = "${lib.getExe pkgs.mediainfo} \"$1\"; echo \"Press enter to exit\"; read _";
+            block = true;
+            desc = "Show media info";
+            for = "unix";
+          }
+        ];
       };
     };
   };
