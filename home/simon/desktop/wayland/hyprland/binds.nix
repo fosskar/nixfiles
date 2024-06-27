@@ -1,4 +1,5 @@
-_: {
+{ config, ... }:
+{
   wayland.windowManager.hyprland = {
     settings = {
       bind =
@@ -51,9 +52,9 @@ _: {
           "SUPER, D, exec, webcord"
           "SUPER, L, exec, pgrep hyprlock || hyprlock"
           "SUPER, M, movetoworkspace, special"
-          #"SUPER, Next, exec, sudo ~/.config/hypr/hypr_gamemode.sh"
-          "SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,auto,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'; pkill ags"
-          "SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'; hyprctl dispatch -- exec 'ags -b hypr' --single-instance"
+          "SUPER, Next, exec, ${config.xdg.configHome}/hypr/hypr-gamemode.sh"
+          #"SUPER, Next, exec, hyprctl keyword monitor 'DP-1,2560x1440@165,auto,1'; hyprctl --batch keyword 'animations:enabled 0'; corectrl -m 'gaming'; pkill ags"
+          #"SUPER, Prior, exec, hyprctl keyword monitor 'DP-1,3440x1440@165,auto,1'; hyprctl --batch 'keyword animations:enabled 1'; corectrl -m 'gaming'; hyprctl dispatch -- exec 'ags -b hypr' --single-instance"
           ## global shortcuts/keybinds/hotkeys
           ",F9,pass,title:^(TeamSpeak 3)$"
           ",F10,pass,title:^(TeamSpeak 3)$"

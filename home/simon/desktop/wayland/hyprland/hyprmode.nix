@@ -1,26 +1,32 @@
-{ config, ... }:
+{ config, pkgs, ... }:
+let
+  hypr_gamemode = pkgs.writeShellScriptBin "hypr-gamemode" ''
+    HYPRGAMEMODE=$(hyprctl getoption animations:enabled | awk 'NR==1{print $2}')
+
+    if [ "$HYPRGAMEMODE" = 1 ] ; then
+      hyprctl keyword animations:enabled 0
+      hyprctl keyword decoration:drop_shadow 0
+      hyprctl keyword decoration:blur:enabled 0
+      hyprctl keyword general:gaps_in 0
+      hyprctl keyword general:gaps_out 0
+      hyprctl keyword general:border_size 1
+      hyprctl keyword decoration:rounding 0
+      hyprctl keyword monitor "DP-1,2560x1440@165,auto,1" 2> /dev/null
+      corectrl -m "gaming"
+      pkill -f ags
+      exit
+    fi
+    hyprctl keyword monitor "DP-1,3440x1440@165,auto,1" 2> /dev/null
+    hyprctl reload
+    hyprctl dispatch -- exec "ags -b hypr" --single-instance
+    corectrl -m "gaming"
+  '';
+in
 {
-  home.file."${config.xdg.configHome}/hypr/hypr_gamemode.sh" = {
+  home.file."${config.xdg.configHome}/hypr/hypr-gamemode.sh" = {
     text = ''
-      #!/usr/bin/env zsh
-
-      HYPRGAMEMODE=$(hyprctl getoption animations:enabled | awk 'NR==1{print $2}')
-
-      if [ "$HYPRGAMEMODE" = 1 ] ; then
-          hyprctl --batch "\
-              keyword animations:enabled 0;\
-              keyword decoration:drop_shadow 0;\
-              keyword decoration:blur:enabled 0;\
-              keyword general:gaps_in 0;\
-              keyword general:gaps_out 0;\
-              keyword general:border_size 1;\
-              keyword decoration:rounding 0;\
-              keyword monitor 'DP-1,2560x1440@165,auto,1'"
-          corectrl -m 'gaming'
-          pkill ags
-          exit
-      fi
-      hyprctl reload
+      ${hypr_gamemode}/bin/hypr-gamemode
     '';
+    executable = true;
   };
 }
