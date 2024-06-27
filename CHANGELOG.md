@@ -1,3 +1,19 @@
+## [7.4.0](https://gitlab.com/simonoscr/nixfiles/compare/7.3.1...7.4.0) (2024-06-27)
+
+### 📦 Other
+
+* **flake:** update flake ([7393a9b](https://gitlab.com/simonoscr/nixfiles/commit/7393a9b4b6f4f5d7c0ed530c0d842b66a377856d))
+
+### 🚀 Features
+
+* added hypr-gamemode script that does some magic like disabling effects, set performance mode, remove ags bar etc. ([66e932e](https://gitlab.com/simonoscr/nixfiles/commit/66e932e87eaae9fe515f082a11d73b54cd3bb6d4))
+* locale setup ([c177dd4](https://gitlab.com/simonoscr/nixfiles/commit/c177dd44a12a5654b799a56804ee59c427dec23e))
+
+### 🛠 Fixes
+
+* set opener in yazi ([6b85dc9](https://gitlab.com/simonoscr/nixfiles/commit/6b85dc972fe879a3e10c58b48e8e9d5843212e2f))
+* **graphics:** extraPackages not needed for amdgpu ([f6ac467](https://gitlab.com/simonoscr/nixfiles/commit/f6ac467a35ff781d2346daf2df07a3babd5e2887))
+
 ## [7.3.1](https://gitlab.com/simonoscr/nixfiles/compare/7.3.0...7.3.1) (2024-06-26)
 
 ### 📦 Other
