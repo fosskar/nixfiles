@@ -1,3 +1,9 @@
+## [7.4.1](https://gitlab.com/simonoscr/nixfiles/compare/7.4.0...7.4.1) (2024-06-27)
+
+### 🛠 Fixes
+
+* adjust git config ([e1abac9](https://gitlab.com/simonoscr/nixfiles/commit/e1abac9d59d808696577b85bfadf20f5c4938a25))
+
 ## [7.4.0](https://gitlab.com/simonoscr/nixfiles/compare/7.3.1...7.4.0) (2024-06-27)
 
 ### 📦 Other
