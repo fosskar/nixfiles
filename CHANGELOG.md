@@ -1,3 +1,14 @@
+## [7.4.2](https://gitlab.com/simonoscr/nixfiles/compare/7.4.1...7.4.2) (2024-06-27)
+
+### 📦 Other
+
+* **flake:** update flake ([c135fe6](https://gitlab.com/simonoscr/nixfiles/commit/c135fe6f4d2cfe69737f75a31f1045f1828dd933))
+
+### 🛠 Fixes
+
+* nix config ([9c4a167](https://gitlab.com/simonoscr/nixfiles/commit/9c4a167dc92147972660696e250203f5a72e10e0))
+* ssh for server ([54b6a96](https://gitlab.com/simonoscr/nixfiles/commit/54b6a962b488c73475e06f09c53823a7fe71a280))
+
 ## [7.4.1](https://gitlab.com/simonoscr/nixfiles/compare/7.4.0...7.4.1) (2024-06-27)
 
 ### 🛠 Fixes
