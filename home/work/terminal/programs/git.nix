@@ -23,7 +23,8 @@ in
       commit.gpgsign = true;
       pull.rebase = true;
       init.defaultBranch = "main";
-      core.sshCommand = "ssh -i ${config.home.homeDirectory}/.ssh/id_rsa";
+      auto.fetch = true;
+      #core.sshCommand = "ssh -i ${config.home.homeDirectory}/.ssh/id_rsa";
     };
     userEmail = email;
     userName = name;
