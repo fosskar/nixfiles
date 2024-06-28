@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   programs.kitty = {
     enable = true;
@@ -29,8 +29,20 @@
 
       cursor = "#d8caac";
     };
-    environment = {
-      "SHELL" = "${pkgs.zsh}/bin/zsh";
-    };
+  };
+  pam.sessionVariables = {
+    KITTY_DISABLE_WAYLAND = 1;
+    LANGUAGE = "en";
+    LANG = "en_US.UTF-8";
+    LC_NUMERIC = "de_DE.UTF-8";
+    LC_TIME = "de_DE.UTF-8";
+    LC_MONETARY = "de_DE.UTF-8";
+    LC_PAPER = "de_DE.UTF-8";
+    LC_NAME = "de_DE.UTF-8";
+    LC_ADDRESS = "de_DE.UTF-8";
+    LC_TELEPHONE = "de_DE.UTF-8";
+    LC_MEASUREMENT = "de_DE.UTF-8";
+    LC_IDENTIFICATION = "e_DE.UTF-8";
+    PAPERSIZE = "a4";
   };
 }

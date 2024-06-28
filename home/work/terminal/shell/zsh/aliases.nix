@@ -1,7 +1,6 @@
 _: {
   programs.zsh.shellAliases = {
-    # make sudo use aliases
-    sudo = "sudo ";
+    sudo = "sudo env PATH=$PATH"; # FIXME this is insane because PATH is different when executing commands with sudo so PATH is not preserved holyhist
 
     # nix
     remote-test-voyager = "nixos-rebuild test --target-host oscar@nixos-server --use-remote-sudo --upgrade --flake .#voyager";
