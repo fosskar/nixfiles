@@ -14,8 +14,6 @@
     # set the path for channels compat
     nixPath = lib.mapAttrsToList (key: _: "${key}=flake:${key}") config.nix.registry;
 
-    channel.enable = false;
-
     settings = {
       experimental-features = [
         "nix-command"
