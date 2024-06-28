@@ -1,3 +1,9 @@
+## [7.5.1](https://gitlab.com/simonoscr/nixfiles/compare/7.5.0...7.5.1) (2024-06-28)
+
+### 🛠 Fixes
+
+* terminal and PATH issue with sudo ([e0f0e97](https://gitlab.com/simonoscr/nixfiles/commit/e0f0e9712d04e4ba5a015de410f710159c78e586))
+
 ## [7.5.0](https://gitlab.com/simonoscr/nixfiles/compare/7.4.4...7.5.0) (2024-06-28)
 
 ### 🚀 Features
