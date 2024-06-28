@@ -1,3 +1,10 @@
+## [7.4.4](https://gitlab.com/simonoscr/nixfiles/compare/7.4.3...7.4.4) (2024-06-28)
+
+### 🛠 Fixes
+
+* add secret management to work profile ([51ec7fb](https://gitlab.com/simonoscr/nixfiles/commit/51ec7fbbaf9540e50c319aefb726d814a4e773a1))
+* nix and nixpkgs configs ([04c456d](https://gitlab.com/simonoscr/nixfiles/commit/04c456dc9eff234634a7d05345662b04f9b226ef))
+
 ## [7.4.3](https://gitlab.com/simonoscr/nixfiles/compare/7.4.2...7.4.3) (2024-06-28)
 
 ### 🛠 Fixes
