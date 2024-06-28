@@ -25,14 +25,8 @@
       http-connections = 0;
       auto-optimise-store = true;
       builders-use-substitutes = true;
-      allowed-users = [
-        "root"
-        "@wheel"
-      ];
-      trusted-users = [
-        "root"
-        "@wheel"
-      ];
+      allowed-users = [ "root" ];
+      trusted-users = [ "root" ];
       flake-registry = "/etc/nix/registry.json";
       keep-derivations = true;
       keep-outputs = true;
