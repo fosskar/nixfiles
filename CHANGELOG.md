@@ -1,3 +1,9 @@
+## [7.5.0](https://gitlab.com/simonoscr/nixfiles/compare/7.4.4...7.5.0) (2024-06-28)
+
+### 🚀 Features
+
+* update and enable alacritty instead of kitty and also update shortcuts for work profile i3 and cleanup ([0895fb2](https://gitlab.com/simonoscr/nixfiles/commit/0895fb27b3c76d8e0454fe4e94e5315c5b65d18d))
+
 ## [7.4.4](https://gitlab.com/simonoscr/nixfiles/compare/7.4.3...7.4.4) (2024-06-28)
 
 ### 🛠 Fixes
