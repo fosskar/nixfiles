@@ -2,6 +2,10 @@
 {
   imports = [ inputs.nixvim.homeManagerModules.nixvim ];
 
+  home = {
+    sessionVariables.EDITOR = "nvim";
+  };
+
   programs.nixvim = {
     enable = true;
     viAlias = true;

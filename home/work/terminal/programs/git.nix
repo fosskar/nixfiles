@@ -4,6 +4,7 @@ let
   name = "Simon Siedl";
 in
 {
+
   programs.git = {
     enable = true;
     lfs.enable = true;
@@ -28,6 +29,7 @@ in
     };
 
     userEmail = email;
+    #userEmail = config.sops.templates."workmail".content;
     userName = name;
 
     aliases = {
