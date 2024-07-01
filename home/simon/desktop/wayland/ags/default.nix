@@ -6,7 +6,7 @@ let
       repo = "dotfiles";
       rev = "main";
       #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
-      sha256 = "ybp43TjPWnXKcDBnMyN6djysdbq4UPqzEE17/xVxtPY=";
+      sha256 = "2zDH36hBRnKLwtoYYMhWBaqukm2NMs0t32n1JbSooOE=";
     }
     + "/ags";
 in
