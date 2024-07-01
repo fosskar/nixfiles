@@ -1,3 +1,9 @@
+## [7.5.3](https://gitlab.com/simonoscr/nixfiles/compare/7.5.2...7.5.3) (2024-07-01)
+
+### 🛠 Fixes
+
+* **work:** zsh as default shell with kitty and kitty as default terminal ([b741ac0](https://gitlab.com/simonoscr/nixfiles/commit/b741ac080aae9d3aa52dd630bfbb2527230b4c04))
+
 ## [7.5.2](https://gitlab.com/simonoscr/nixfiles/compare/7.5.1...7.5.2) (2024-07-01)
 
 ### 📦 Other
