@@ -1,7 +1,6 @@
-{ inputs, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [
-    inputs.sops-nix.homeManagerModules.sops
     ./browser/firefox
     ./desktop/x11/i3
     ./editors/vscodium.nix
