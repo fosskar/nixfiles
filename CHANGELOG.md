@@ -1,3 +1,11 @@
+## [7.5.4](https://gitlab.com/simonoscr/nixfiles/compare/7.5.3...7.5.4) (2024-07-01)
+
+### 🛠 Fixes
+
+* default EDITOR to nvim and add evolution with all plugins to pkgs ([463f25a](https://gitlab.com/simonoscr/nixfiles/commit/463f25a76970739cb363a2760e2e9f3a593e9faf))
+* Inter font to Inter Variable font ([f5eccbd](https://gitlab.com/simonoscr/nixfiles/commit/f5eccbd3005a67662a1847cce2021dd973a2e374))
+* sops hm module ([07cb1a0](https://gitlab.com/simonoscr/nixfiles/commit/07cb1a0fbb627f5679d9af3789891e13e690e134))
+
 ## [7.5.3](https://gitlab.com/simonoscr/nixfiles/compare/7.5.2...7.5.3) (2024-07-01)
 
 ### 🛠 Fixes
