@@ -3,6 +3,7 @@
   imports = [
     ./nix.nix
     ./nixpkgs.nix
+    ./substituters.nix
   ];
 
   home.packages = with pkgs; [ cachix ];

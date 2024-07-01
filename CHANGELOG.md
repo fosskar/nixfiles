@@ -1,3 +1,27 @@
+## [7.5.4](https://gitlab.com/simonoscr/nixfiles/compare/7.5.3...7.5.4) (2024-07-01)
+
+### 🛠 Fixes
+
+* default EDITOR to nvim and add evolution with all plugins to pkgs ([463f25a](https://gitlab.com/simonoscr/nixfiles/commit/463f25a76970739cb363a2760e2e9f3a593e9faf))
+* Inter font to Inter Variable font ([f5eccbd](https://gitlab.com/simonoscr/nixfiles/commit/f5eccbd3005a67662a1847cce2021dd973a2e374))
+* sops hm module ([07cb1a0](https://gitlab.com/simonoscr/nixfiles/commit/07cb1a0fbb627f5679d9af3789891e13e690e134))
+
+## [7.5.3](https://gitlab.com/simonoscr/nixfiles/compare/7.5.2...7.5.3) (2024-07-01)
+
+### 🛠 Fixes
+
+* **work:** zsh as default shell with kitty and kitty as default terminal ([b741ac0](https://gitlab.com/simonoscr/nixfiles/commit/b741ac080aae9d3aa52dd630bfbb2527230b4c04))
+
+## [7.5.2](https://gitlab.com/simonoscr/nixfiles/compare/7.5.1...7.5.2) (2024-07-01)
+
+### 📦 Other
+
+* **flake:** update flake ([4dbb9dc](https://gitlab.com/simonoscr/nixfiles/commit/4dbb9dcd32a9c3da53ef567ce49ea65eebefbf73))
+
+### 🛠 Fixes
+
+* add trusted subtituters and update ([37da3ab](https://gitlab.com/simonoscr/nixfiles/commit/37da3ab14e674c7b66bdf6977a3261a4364c3f1b))
+
 ## [7.5.1](https://gitlab.com/simonoscr/nixfiles/compare/7.5.0...7.5.1) (2024-06-28)
 
 ### 🛠 Fixes

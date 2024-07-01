@@ -11,7 +11,7 @@
 
     # communication
     slack
-    evolution
+    evolutionWithPlugins
 
     # virt
     virt-manager

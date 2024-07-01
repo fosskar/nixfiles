@@ -1,5 +1,7 @@
-{ config, ... }:
+{ inputs, config, ... }:
 {
+  imports = [ inputs.sops-nix.homeManagerModules.sops ];
+
   sops = {
     validateSopsFiles = false;
     defaultSopsFile = "${config.home.homeDirectory}/code/nixsecrets/secrets/work/secrets.yaml";
@@ -18,6 +20,12 @@
         mode = "0600";
       };
       ZW1haWw = { };
+
     };
+    #templates = {
+    #  "workmail".content = ''
+    #    ${config.sops.placeholder.ZW1haWw}
+    #  '';
+    #};
   };
 }

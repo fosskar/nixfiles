@@ -20,7 +20,7 @@ _: {
         normal.family = "JetBrainsMono Nerd Font";
         bold.family = "JetBrainsMono Nerd Font";
         italic.family = "JetBrainsMono Nerd Font";
-        size = 8;
+        size = 9;
       };
       colors = {
         draw_bold_text_with_bright_colors = true;
