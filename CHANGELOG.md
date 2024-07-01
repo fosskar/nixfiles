@@ -1,3 +1,13 @@
+## [7.5.2](https://gitlab.com/simonoscr/nixfiles/compare/7.5.1...7.5.2) (2024-07-01)
+
+### 📦 Other
+
+* **flake:** update flake ([4dbb9dc](https://gitlab.com/simonoscr/nixfiles/commit/4dbb9dcd32a9c3da53ef567ce49ea65eebefbf73))
+
+### 🛠 Fixes
+
+* add trusted subtituters and update ([37da3ab](https://gitlab.com/simonoscr/nixfiles/commit/37da3ab14e674c7b66bdf6977a3261a4364c3f1b))
+
 ## [7.5.1](https://gitlab.com/simonoscr/nixfiles/compare/7.5.0...7.5.1) (2024-06-28)
 
 ### 🛠 Fixes
