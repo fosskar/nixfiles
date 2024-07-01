@@ -4,6 +4,8 @@
     enable = true;
     cacheHome = config.home.homeDirectory + "/.local/cache";
 
+    mime.enable = true;
+
     userDirs = {
       enable = true;
       createDirectories = true;
@@ -16,7 +18,7 @@
   home.packages = [
     # used by `gio open` and xdp-gtk
     (pkgs.writeShellScriptBin "xdg-terminal-exec" ''
-      foot "$@"
+      kitty "$@"
     '')
     pkgs.xdg-utils
   ];
