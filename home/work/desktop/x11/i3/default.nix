@@ -2,9 +2,10 @@
 {
   imports = [
     ./config.nix
-    ./i3status.nix
-    #../lock.nix
+    ./i3status-rust.nix
+    ../lock.nix
     ../rofi.nix
+    ../dunst.nix
   ];
   xsession = {
     enable = true;

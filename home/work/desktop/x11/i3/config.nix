@@ -142,7 +142,7 @@
         };
       bars = [
         {
-          statusCommand = "${pkgs.i3status}/bin/i3status";
+          statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ~/.config/i3status-rust/config-custom.toml";
           position = "top";
           workspaceButtons = true;
           trayOutput = "primary";
@@ -194,7 +194,7 @@
       terminal = "${pkgs.kitty}/bin/kitty";
 
       fonts = {
-        names = [ "Inter" ];
+        names = [ "Inter Variable" ];
         size = 16.0;
       };
     };
