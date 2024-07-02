@@ -11,7 +11,7 @@
           "Noto Color Emoji"
         ];
         sansSerif = [
-          "Inter Variable"
+          "Inter"
           "Noto Color Emoji"
         ];
         monospace = [
