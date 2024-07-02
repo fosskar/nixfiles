@@ -19,6 +19,8 @@
     # cli
     yq
     nh
+    toybox
+    nettools
 
     # Audio
     pavucontrol
