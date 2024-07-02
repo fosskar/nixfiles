@@ -1,11 +1,11 @@
 {
   nix.settings = {
     trusted-substituters = [
-      "https://cache.nixos.org?priority=10?trusted=1"
-      "https://simonoscr.cachix.org?trusted=1"
-      "https://hyprland.cachix.org?trusted=1"
-      "https://nix-community.cachix.org?trusted=1"
-      "https://yazi.cachix.org?trusted=1"
+      "https://cache.nixos.org?priority=10"
+      "https://yazi.cachix.org"
+      "https://nix-community.cachix.org"
+      "https://hyprland.cachix.org1"
+      "https://simonoscr.cachix.org"
     ];
 
     trusted-public-keys = [
