@@ -1,3 +1,9 @@
+## [7.6.2](https://gitlab.com/simonoscr/nixfiles/compare/7.6.1...7.6.2) (2024-07-02)
+
+### 🛠 Fixes
+
+* move substituters config to flakes nixConfig ([95a0d5d](https://gitlab.com/simonoscr/nixfiles/commit/95a0d5d09a8985fd2af63cfdafaaf204ddd44289))
+
 ## [7.6.1](https://gitlab.com/simonoscr/nixfiles/compare/7.6.0...7.6.1) (2024-07-02)
 
 ### 🛠 Fixes
