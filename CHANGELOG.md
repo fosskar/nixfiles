@@ -1,3 +1,15 @@
+## [7.6.0](https://gitlab.com/simonoscr/nixfiles/compare/7.5.4...7.6.0) (2024-07-02)
+
+### 📦 Other
+
+* **flake:** update flake ([5a6ca3d](https://gitlab.com/simonoscr/nixfiles/commit/5a6ca3d0559549c71398b84aad5a059900811427))
+* **flake:** update flake ([7914356](https://gitlab.com/simonoscr/nixfiles/commit/7914356fc898aed963486cb71c42fe9c1d5ff35e))
+* **flake:** update flake ([0e7d7a4](https://gitlab.com/simonoscr/nixfiles/commit/0e7d7a4b87f5d3d2393de4cb994093d794546daf))
+
+### 🚀 Features
+
+* **i3 work:** add dunst and i3status-rust for i3status; update i3lock and packages with utils ([06f641f](https://gitlab.com/simonoscr/nixfiles/commit/06f641fbcdc03cddd07dad0c7efd1cf2a8434f48))
+
 ## [7.5.4](https://gitlab.com/simonoscr/nixfiles/compare/7.5.3...7.5.4) (2024-07-01)
 
 ### 🛠 Fixes
