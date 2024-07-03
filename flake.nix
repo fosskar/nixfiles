@@ -2,14 +2,15 @@
   description = "simonoscr's flake for nixos and home-manager";
 
   nixConfig = {
-    trusted-substituters = [
+    extra-experimental-features = "nix-command flakes";
+    extra-trusted-substituters = [
       "https://cache.nixos.org?priority=10"
       "https://yazi.cachix.org"
       "https://nix-community.cachix.org"
       "https://hyprland.cachix.org1"
       "https://simonoscr.cachix.org"
     ];
-    trusted-public-keys = [
+    extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "simonoscr.cachix.org-1:pTFtYU3a9SXL+Fw6S3sZ8uk+Vd33Yoothd771oGNJBE="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
