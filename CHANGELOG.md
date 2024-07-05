@@ -1,3 +1,17 @@
+## [7.6.3](https://gitlab.com/simonoscr/nixfiles/compare/7.6.2...7.6.3) (2024-07-05)
+
+### 📦 Other
+
+* **flake:** update flake ([5e19225](https://gitlab.com/simonoscr/nixfiles/commit/5e192259de8e3f831017ec54cecbef52252c9e3d))
+* **flake:** update flake ([bd2169b](https://gitlab.com/simonoscr/nixfiles/commit/bd2169b5a728e0aab71b30624ec813a707053ebd))
+* **flake:** update flake ([bb04451](https://gitlab.com/simonoscr/nixfiles/commit/bb04451418fb165f19de7f3293307b421d65aacd))
+* **flake:** update flake ([b42cbab](https://gitlab.com/simonoscr/nixfiles/commit/b42cbab2399403c11d6149580c93d5358dc2b479))
+* **flake:** update nixConfig ([c098f97](https://gitlab.com/simonoscr/nixfiles/commit/c098f9744260cd30c3221974de5480bfb3d2bb08))
+
+### 🛠 Fixes
+
+* add helm shell alias ([1e5224c](https://gitlab.com/simonoscr/nixfiles/commit/1e5224c45c5ff9b37678c9b1acdf17dfa0e2dff3))
+
 ## [7.6.2](https://gitlab.com/simonoscr/nixfiles/compare/7.6.1...7.6.2) (2024-07-02)
 
 ### 🛠 Fixes

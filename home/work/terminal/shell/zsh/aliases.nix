@@ -28,6 +28,7 @@ _: {
     # cli
     g = "git";
     k = "kubectl";
+    h = "helm";
     d = "docker";
     p = "podman";
     code = "codium";
