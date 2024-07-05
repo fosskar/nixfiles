@@ -1,3 +1,9 @@
+## [7.7.0](https://gitlab.com/simonoscr/nixfiles/compare/7.6.3...7.7.0) (2024-07-05)
+
+### 🚀 Features
+
+* add packages.nix ([2495cc0](https://gitlab.com/simonoscr/nixfiles/commit/2495cc028111d3d64f7cfe17cf5f3a0ad3cbc68f))
+
 ## [7.6.3](https://gitlab.com/simonoscr/nixfiles/compare/7.6.2...7.6.3) (2024-07-05)
 
 ### 📦 Other
