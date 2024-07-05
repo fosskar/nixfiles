@@ -35,6 +35,7 @@ _: {
 
     resolved = {
       enable = true;
+      dnssec = "allow-downgrade";
       dnsovertls = "opportunistic";
     };
   };

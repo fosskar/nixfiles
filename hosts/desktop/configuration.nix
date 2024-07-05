@@ -19,6 +19,7 @@
     ./network
     ./network/tailscale.nix
     ./nix
+    ./pkgs/packages.nix
     ./programs/corectrl.nix
     ./programs/dconf.nix
     ./programs/fonts.nix
