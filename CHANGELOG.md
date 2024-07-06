@@ -1,3 +1,9 @@
+## [7.7.2](https://gitlab.com/simonoscr/nixfiles/compare/7.7.1...7.7.2) (2024-07-06)
+
+### 🛠 Fixes
+
+* **gitlab-runner:** update from registrationToken to authenticationToken ([5b3a1e7](https://gitlab.com/simonoscr/nixfiles/commit/5b3a1e7e918ab65c2e10b6d7dabae358a16a2966))
+
 ## [7.7.1](https://gitlab.com/simonoscr/nixfiles/compare/7.7.0...7.7.1) (2024-07-06)
 
 ### 📦 Other
