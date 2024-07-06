@@ -1,3 +1,13 @@
+## [7.7.3](https://gitlab.com/simonoscr/nixfiles/compare/7.7.2...7.7.3) (2024-07-06)
+
+### 📦 Other
+
+* **flake:** update flake ([1f34c0b](https://gitlab.com/simonoscr/nixfiles/commit/1f34c0b18202903ead48ba3795068b2d36aa9046))
+
+### 🛠 Fixes
+
+* **git:** set pull.rebase to true ([4a6cb4b](https://gitlab.com/simonoscr/nixfiles/commit/4a6cb4bee4f3e30dd443aaa7bf1108d6ff9d8e09))
+
 ## [7.7.2](https://gitlab.com/simonoscr/nixfiles/compare/7.7.1...7.7.2) (2024-07-06)
 
 ### 🛠 Fixes
