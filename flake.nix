@@ -40,6 +40,7 @@
     # flake-parts
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
     # firefox addons
@@ -62,8 +63,11 @@
 
     # matugen colors
     matugen = {
-      url = "github:InioX/matugen/module";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:InioX/matugen";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "hyprland/systems";
+      };
     };
 
     # hyprland
