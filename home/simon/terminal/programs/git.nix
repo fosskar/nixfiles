@@ -22,7 +22,7 @@ in
         #ssh.allowedSignersFile = config.home.homeDirectory + "/" + config.xdg.configFile."git/allowed_signers".target;
       };
       commit.gpgsign = true;
-      pull.rebase = false;
+      pull.rebase = true;
       init.defaultBranch = "main";
       fetch.auto = true;
     };
