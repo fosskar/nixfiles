@@ -1,3 +1,14 @@
+## [7.7.1](https://gitlab.com/simonoscr/nixfiles/compare/7.7.0...7.7.1) (2024-07-06)
+
+### 📦 Other
+
+* **flake:** update flake ([267a6d3](https://gitlab.com/simonoscr/nixfiles/commit/267a6d382ce2bdc0d1f73ba7ce08ce020d1bf694))
+
+### 🛠 Fixes
+
+* **flake:** update inputs ([d7f699c](https://gitlab.com/simonoscr/nixfiles/commit/d7f699cd0dfdc77f1311e2b97caf0cab0fcb4922))
+* **gaming:** steam without extrapkgs and gamescope with capsysnice enabled ([03c7d1a](https://gitlab.com/simonoscr/nixfiles/commit/03c7d1af4755be416449db2b43c3255d7c14d6aa))
+
 ## [7.7.0](https://gitlab.com/simonoscr/nixfiles/compare/7.6.3...7.7.0) (2024-07-05)
 
 ### 🚀 Features
