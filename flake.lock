@@ -51,11 +51,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1720167363,
-        "narHash": "sha256-GIQZdHXLC2u7QyXAtb9WsOqwmRpeCqcqX/AR7INiiXY=",
+        "lastModified": 1720238603,
+        "narHash": "sha256-XWcTKM/uVy7GP7QT8skZ9ywPqIPLhb9Sw7qBH+ZF5YM=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "cea36a02a4619e009d7fac7df1bc2acba825c5a4",
+        "rev": "c8799be7f004121f87ad702d61980d738405a51a",
         "type": "gitlab"
       },
       "original": {
@@ -113,7 +113,9 @@
     },
     "flake-parts": {
       "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib"
+        "nixpkgs-lib": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1719994518,
@@ -278,11 +280,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720167120,
-        "narHash": "sha256-K9JYdlPiyaXp33JRg7CT8rMwH56e4ncXSsXW/YKnNXc=",
+        "lastModified": 1720188602,
+        "narHash": "sha256-lC3byBmhVZFzWl/dCic8+cKUEEAXAswWOYjq4paFmbo=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "bbe6e94737289c8cb92d4d8f9199fbfe4f11c0ba",
+        "rev": "e3582e5151498bc4d757e8361431ace8529e7bb7",
         "type": "github"
       },
       "original": {
@@ -381,11 +383,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1720092067,
-        "narHash": "sha256-ebMlTz4wm+Md5BkCk6uGcRUvOvyjtc4bENvVSO5jrBI=",
+        "lastModified": 1720213509,
+        "narHash": "sha256-aPYf8Jnu1fMgMYMgQnH433/Fcqfky1Z5ZuzCkNKcR1U=",
         "ref": "refs/heads/main",
-        "rev": "0a6e83005f1910b5c1ec78476fcffc05af47833a",
-        "revCount": 4906,
+        "rev": "cc98594c3aed0b542e03818371a4636f549f80e1",
+        "revCount": 4908,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -499,11 +501,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720109085,
-        "narHash": "sha256-NILSaE2xkB4lns9c8BAgrhTdjm1j5QWW3CXQORvfHZE=",
+        "lastModified": 1720261469,
+        "narHash": "sha256-A+YZ+J5XgbbDLVva63ASrIWkRjPJwHwt8R7CFhJ5yxA=",
         "owner": "hyprwm",
         "repo": "hyprlock",
-        "rev": "9737bf64849bb490198a959fc98565041e290ac2",
+        "rev": "7fb3c03500761b576257aafe64181bfe29d66a26",
         "type": "github"
       },
       "original": {
@@ -591,19 +593,22 @@
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
+        ],
+        "systems": [
+          "hyprland",
+          "systems"
         ]
       },
       "locked": {
-        "lastModified": 1699310205,
-        "narHash": "sha256-G/w5emPS6OtSwLclW1ji5dwjLec0ey06IU/Xj96W9f0=",
+        "lastModified": 1719821386,
+        "narHash": "sha256-KyDPTF8AdcN7SaanCUtlZMDHAHNYXtrryfcN28PIwTs=",
         "owner": "InioX",
         "repo": "matugen",
-        "rev": "ceead3ee416bffa337c5243c60d69022572a4cdf",
+        "rev": "250809841ed4133ced82d78e3d46e2425f86694f",
         "type": "github"
       },
       "original": {
         "owner": "InioX",
-        "ref": "module",
         "repo": "matugen",
         "type": "github"
       }
@@ -643,18 +648,6 @@
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
-      }
-    },
-    "nixpkgs-lib": {
-      "locked": {
-        "lastModified": 1719876945,
-        "narHash": "sha256-Fm2rDDs86sHy0/1jxTOKB1118Q0O3Uc7EC0iXvXKpbI=",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/5daf0514482af3f97abaefc78a6606365c9108e2.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/5daf0514482af3f97abaefc78a6606365c9108e2.tar.gz"
       }
     },
     "nixpkgs-stable": {
@@ -735,11 +728,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1720191961,
-        "narHash": "sha256-p67UionzurpCRjSIhhgRgRAapZLfXHG9nvQQ37qerdA=",
+        "lastModified": 1720267267,
+        "narHash": "sha256-oXroBCRyTtHmiDqSFrTmLC//8fef5ECd6uEsh3bkerc=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "b59fa976d0f42eba35bf89c8fbc4107de7ef1db2",
+        "rev": "843fb302ebaa2559b7c50ad69ba9a00ae1a5836d",
         "type": "github"
       },
       "original": {
