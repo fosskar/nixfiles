@@ -6,7 +6,7 @@
     clear-docker-cache.enable = true;
     services.nixos-gitlab-runner = {
       #description = "gitlab-runner on nixos server with podman"; # doesnt work with auth-token only UI
-      registrationConfigFile = config.sops.secrets.Z2l0bGFiLXJ1bm5lci1yZWdpc3RyYXRpb24.path;
+      authenticationTokenConfigFile = config.sops.secrets.Z2l0bGFiLXJ1bm5lci1yZWdpc3RyYXRpb24.path;
       dockerImage = "alpine";
       #tagList = [ "nixos" ]; # doesnt work with auth-token only UI
       #runUntagged = false; # doesnt work with auth-token only UI
