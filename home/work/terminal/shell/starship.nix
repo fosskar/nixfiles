@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   home.sessionVariables.STARSHIP_CACHE = "${config.xdg.cacheHome}/starship";
 
@@ -8,26 +8,48 @@
     enableBashIntegration = true;
 
     settings = {
+      format = lib.concatStrings [
+        "$all"
+        "($cmd_duration)"
+        "$fill"
+        "$kubernetes"
+        "$terraform"
+        "$package"
+        "$nix_shell"
+        "$line_break"
+        "$status"
+        "$jobs"
+        "$character"
+      ];
       add_newline = true;
+      character = {
+        success_symbol = "[](bold green)";
+        error_symbol = "[](bold red)";
+        vicmd_symbol = "[](bold yellow)";
+        format = "$symbol [|](bold bright-black) ";
+      };
+
+      directory = {
+        format = "[ $path]($style) ";
+      };
+
       hostname = {
         ssh_only = true;
-        disabled = false;
-        format = "@[$hostname](bold blue) "; # the whitespace at the end is actually important
       };
 
       kubernetes = {
         disabled = false;
       };
 
-      git_commit.commit_hash_length = 7;
-      git_branch.style = "bold purple";
-      lua.symbol = "[ ](blue) ";
-      python.symbol = "[ ](blue) ";
-      rust.symbol = "[ ](red) ";
-      golang.symbol = "[󰟓 ](blue)";
-      c.symbol = "[ ](black)";
-      nodejs.symbol = "[󰎙 ](yellow)";
-      package.symbol = "📦 ";
+      nix_shell = {
+        symbol = "[ ](blue) ";
+        format = "[$symbol(\($name\))]($style) ";
+        heuristic = true;
+      };
+
+      fill = {
+        symbol = " ";
+      };
     };
   };
 }

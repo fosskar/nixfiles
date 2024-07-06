@@ -11,13 +11,28 @@
       name = "JetBrainsMono Nerd Font";
     };
 
+    keybindings = {
+      #"ctrl+shift+m" = "toggle_maximized";
+      #"ctrl+shift+f" = "show_scrollback"; # search in the current window
+    };
+
     settings = {
       shell = "${pkgs.zsh}/bin/zsh";
+      term = "xterm-256color";
+
+      confirm_os_window_close = "0";
       scrollback_lines = 10000;
+      show_hyperlink_targets = "yes";
+      underline_hyperlinks = "never";
+      disable_ligatures = "cursor";
       placement_strategy = "center";
 
+      tab_bar_edge = "top";
+      tab_bar_style = "powerline";
+      tab_powerline_style = "slanted";
+
       enable_audio_bell = "yes";
-      visual_bell_duration = "0.1";
+      visual_bell_duration = "0.05";
 
       copy_on_select = "clipboard";
 
