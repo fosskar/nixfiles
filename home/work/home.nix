@@ -8,8 +8,6 @@
     ./editors/zed.nix
     ./nix
     ./programs/autorandr.nix
-    ./programs/dircolors.nix
-    ./programs/fzf.nix
     ./programs/gpg.nix
     ./programs/gtk.nix
     ./programs/home-manager.nix
@@ -18,7 +16,6 @@
     ./programs/packages.nix
     ./programs/qt.nix
     ./programs/ssh.nix
-    ./programs/tmux.nix
     ./programs/xdg.nix
     ./programs/zathura.nix
     ./secrets/sops.nix

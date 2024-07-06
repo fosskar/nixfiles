@@ -5,8 +5,6 @@
 
     extraCompatPackages = [ pkgs.proton-ge-bin ];
 
-    gamescopeSession.enable = true;
-
     # fix gamescope inside steam
     #package = pkgs.steam.override {
     #  extraPkgs =

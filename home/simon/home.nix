@@ -15,7 +15,6 @@
     ./programs/packages.nix
     ./programs/qt.nix
     ./programs/ssh.nix
-    ./programs/utils.nix
     ./programs/xdg.nix
     ./programs/zathura.nix
     ./secrets/sops.nix
