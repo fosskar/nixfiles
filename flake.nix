@@ -131,7 +131,7 @@
             DIRENV_LOG_FORMAT = "";
             shellHook = ''
               ${config.pre-commit.installationScript}
-              echo -e "\n\033[1;36m❄️ Welcome to the \033[1;33m'${name}'\033[1;36m devshell ❄️\033[0m\n"
+              echo -e "\n\033[1;36m  Welcome to the \033[1;33m'${name}'\033[1;36m devshell  \033[0m\n"
             '';
           };
           formatter = pkgs.nixfmt-rfc-style;
