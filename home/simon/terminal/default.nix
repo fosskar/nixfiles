@@ -1,6 +1,7 @@
 {
   imports = [
     ./emulators/kitty.nix
+    ./emulators/wezterm.nix
     ./programs/bat.nix
     ./programs/btop.nix
     ./programs/cli.nix
