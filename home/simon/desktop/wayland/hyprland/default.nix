@@ -9,6 +9,7 @@
     ../hyprlock.nix
     ../hypridle.nix
     ../ags
+    ../shortcuts_info.nix
     #./plugins.nix
   ];
 
