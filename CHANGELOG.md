@@ -1,3 +1,9 @@
+## [7.8.3](https://gitlab.com/simonoscr/nixfiles/compare/7.8.2...7.8.3) (2024-07-07)
+
+### 🛠 Fixes
+
+* **gaming:** tweaks and remove corectl ([7c48b9a](https://gitlab.com/simonoscr/nixfiles/commit/7c48b9ad72fd0aee08a1be7cfdbd92face60e0ea))
+
 ## [7.8.2](https://gitlab.com/simonoscr/nixfiles/compare/7.8.1...7.8.2) (2024-07-07)
 
 ### 🛠 Fixes
