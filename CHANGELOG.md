@@ -1,3 +1,9 @@
+## [7.8.2](https://gitlab.com/simonoscr/nixfiles/compare/7.8.1...7.8.2) (2024-07-07)
+
+### 🛠 Fixes
+
+* **firefox:** WIP add default arkenfox user.js ([8c8636c](https://gitlab.com/simonoscr/nixfiles/commit/8c8636cecb08aefc5b9df47d8f2649cf6f83d52d))
+
 ## [7.8.1](https://gitlab.com/simonoscr/nixfiles/compare/7.8.0...7.8.1) (2024-07-07)
 
 ### 🛠 Fixes
