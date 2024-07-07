@@ -10,8 +10,8 @@
     settings = {
       format = lib.concatStrings [
         "$all"
-        "($cmd_duration)"
-        "$fill"
+        "$cmd_duration"
+        "$fill "
         "$kubernetes"
         "$terraform"
         "$package"
@@ -23,14 +23,18 @@
       ];
       add_newline = true;
       character = {
-        success_symbol = "[](bold green)";
-        error_symbol = "[](bold red)";
+        success_symbol = "[󱞪](bold green)";
+        error_symbol = "[󱞪](bold red)";
         vicmd_symbol = "[](bold yellow)";
-        format = "$symbol [|](bold bright-black) ";
+      };
+
+      cmd_duration = {
+        format = "[$duration]($style) ";
       };
 
       directory = {
-        format = "[ $path]($style) ";
+        style = "bold green";
+        format = "[  $path]($style) ";
       };
 
       hostname = {
@@ -39,16 +43,18 @@
 
       kubernetes = {
         disabled = false;
+        symbol = "󱃾 ";
+        format = "[$symbol$context]($style) ";
       };
 
       nix_shell = {
-        symbol = "[ ](blue) ";
+        symbol = " ";
         format = "[$symbol(\($name\))]($style) ";
         heuristic = true;
       };
 
       fill = {
-        symbol = " ";
+        symbol = "-";
       };
     };
   };
