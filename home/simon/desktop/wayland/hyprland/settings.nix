@@ -5,7 +5,6 @@
       exec-once = [
         "ags -b hypr"
         "steam -silent"
-        "corectrl"
         "udiskie &"
         "hyprctl setcursor ${config.home.pointerCursor.name} ${toString config.home.pointerCursor.size}"
         "hyprlock"
