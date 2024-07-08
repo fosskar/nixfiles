@@ -37,8 +37,6 @@
     vault
     vagrant
     minikube
-    podman
-    docker
     minio-client
 
     # security

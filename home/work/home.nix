@@ -22,6 +22,7 @@
     ./services/autorandr.nix
     ./services/flameshot.nix
     ./services/fonts.nix
+    ./services/podman.nix
     ./services/polkit-agent.nix
     ./services/remmina.nix
     ./services/udiskie.nix
