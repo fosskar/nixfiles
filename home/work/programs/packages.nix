@@ -39,6 +39,7 @@
     minikube
     podman
     docker
+    minio-client
 
     # security
     keepassxc
