@@ -1,3 +1,9 @@
+## [7.9.2](https://gitlab.com/simonoscr/nixfiles/compare/7.9.1...7.9.2) (2024-07-08)
+
+### 🛠 Fixes
+
+* **wezterm:** adjust config ([ff1fa2e](https://gitlab.com/simonoscr/nixfiles/commit/ff1fa2e9b8dfaa2fcd17149949bc1e281a178f6c))
+
 ## [7.9.1](https://gitlab.com/simonoscr/nixfiles/compare/7.9.0...7.9.1) (2024-07-08)
 
 ### 🛠 Fixes
