@@ -1,3 +1,10 @@
+## [7.9.1](https://gitlab.com/simonoscr/nixfiles/compare/7.9.0...7.9.1) (2024-07-08)
+
+### 🛠 Fixes
+
+* add pkgs ([38ed834](https://gitlab.com/simonoscr/nixfiles/commit/38ed834b8b65a6d224c3ddda3a3409079a89d83e))
+* **terminal:** add wezterm, adjust config for wezterm starship and i3 ([ae02955](https://gitlab.com/simonoscr/nixfiles/commit/ae0295502679da8ea06bf9174cad0af2ab280cad))
+
 ## [7.9.0](https://gitlab.com/simonoscr/nixfiles/compare/7.8.3...7.9.0) (2024-07-07)
 
 ### 🚀 Features
