@@ -5,40 +5,37 @@
     enableBashIntegration = true;
     enableZshIntegration = true;
 
-    colorSchemes = {
-      "owntheme" = {
-        ansi = [
-          "#000000"
-          "#ff5555"
-          "#50fa7b"
-          "#f1fa8c"
-          "#bd93f9"
-          "#ff79c6"
-          "#8be9fd"
-          "#bfbfbf"
-        ];
-        brights = [
-          "#4d4d4d"
-          "#ff6e67"
-          "#5af78e"
-          "#f4f99d"
-          "#caa9fa"
-          "#ff92d0"
-          "#9aedfe"
-          "#e6e6e6"
-        ];
-        foreground = "#eeeeee";
-        background = "#171717";
-        cursor_bg = "#d8caac";
-        cursor_border = "#d8caac";
-        cursor_fg = "#171717";
-        selection_bg = "#00d787";
-        selection_fg = "#171717";
-      };
+    colorSchemes.ownTheme = {
+      ansi = [
+        "#000000"
+        "#d16969"
+        "#50fa7b"
+        "#f1fa8c"
+        "#bd93f9"
+        "#ff79c6"
+        "#8be9fd"
+        "#bfbfbf"
+      ];
+      brights = [
+        "#4d4d4d"
+        "#ff6e67"
+        "#5af78e"
+        "#f4f99d"
+        "#caa9fa"
+        "#ff92d0"
+        "#9aedfe"
+        "#e6e6e6"
+      ];
+      foreground = "#eeeeee";
+      background = "#171717";
+      cursor_bg = "#d8caac";
+      cursor_border = "#d8caac";
+      cursor_fg = "#171717";
+      selection_bg = "#00d787";
+      selection_fg = "#171717";
     };
 
     extraConfig = ''
-      local wez = require "wezterm"
       return {
         default_prog = { "/home/simon/.nix-profile/bin/zsh" },
         enable_wayland = false,
@@ -54,12 +51,13 @@
         bold_brightens_ansi_colors = true,
         freetype_load_target = "Normal",
         font_size = 10.0,
-        line_height = 1.0,
         harfbuzz_features = { "calt=1", "clig=1", "liga=1" },
-        color_scheme = "owntheme",
+        color_scheme = "ownTheme",
         window_padding = {
-          left = "8pt", right = "8pt",
-          bottom = "2pt", top = "2pt"
+          left = "8",
+          right = "8",
+          bottom = "0",
+          top = "0"
         },
         default_cursor_style = "BlinkingBar",
         enable_scroll_bar = false,
