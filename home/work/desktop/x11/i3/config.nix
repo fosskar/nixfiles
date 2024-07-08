@@ -70,15 +70,15 @@
           mod = "Mod4";
         in
         {
-          "${mod}+t" = "exec nixGL kitty";
-          "${mod}+r" = "exec nixGL alacritty";
+          "${mod}+t" = "exec nixGL wezterm";
+          "${mod}+r" = "exec nixGL kitty";
           "${mod}+w" = "exec firefox";
           "${mod}+z" = "exec zoom";
           "${mod}+s" = "exec slack";
           "${mod}+o" = "exec obsidian";
           "Print" = "exec flameshot";
           "${mod}+Shift+e" = "exec nautilus";
-          "${mod}+e" = "exec nixGL kitty -e yazi";
+          "${mod}+e" = "exec nixGL wezterm -e yazi";
           "${mod}+c" = "exec codium";
           "${mod}+Shift+q" = "kill";
           "${mod}+j" = "focus left";

@@ -45,11 +45,6 @@
         disabled = false;
         symbol = "󱃾 ";
         format = "[$symbol$context]($style) ";
-        contexts = {
-          context_pattern = ".*-prd$";
-          style = "bold red";
-          symbol = "󱃾  ";
-        };
       };
 
       nix_shell = {
