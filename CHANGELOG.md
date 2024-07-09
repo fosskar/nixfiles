@@ -1,3 +1,21 @@
+## [7.11.0](https://gitlab.com/simonoscr/nixfiles/compare/7.10.1...7.11.0) (2024-07-09)
+
+### 📦 Other
+
+* **flake:** update flake ([233713f](https://gitlab.com/simonoscr/nixfiles/commit/233713f819f2a7610da05f9ba7a55c037844f185))
+
+### 🚀 Features
+
+* **firefox:** update config for up-to-date user.js and settings ([cd73569](https://gitlab.com/simonoscr/nixfiles/commit/cd73569c9e8d9bdcadd9c70f97d5647c3f6ee2e8))
+
+### 🛠 Fixes
+
+* **boot:** enable systemd-boot initrd ([dfaaf3c](https://gitlab.com/simonoscr/nixfiles/commit/dfaaf3c71bb3dda23fd3130a7247fbf8c3264f99))
+* **firefox-work:** update also firefox config and settings for work profile ([6b76eb2](https://gitlab.com/simonoscr/nixfiles/commit/6b76eb20e75d0714da630670a5aadad4bd44de05))
+* **hyprland:** add hyprcursor env ([2b7c84f](https://gitlab.com/simonoscr/nixfiles/commit/2b7c84fbe3244600a94d7baa1713bba1a815e115))
+* **nixpkgs:** remove programs that cant be build because of nose python error ([3a127fc](https://gitlab.com/simonoscr/nixfiles/commit/3a127fc367fd3043c8dd3da78de81209fa641633))
+* **podman:** update podman home-manager module WIP ([2603e76](https://gitlab.com/simonoscr/nixfiles/commit/2603e7618a1b7255cb4ae56ded1d41688bff1537))
+
 ## [7.10.1](https://gitlab.com/simonoscr/nixfiles/compare/7.10.0...7.10.1) (2024-07-08)
 
 ### 📦 Other
