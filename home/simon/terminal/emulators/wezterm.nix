@@ -54,7 +54,7 @@
         harfbuzz_features = { 'calt=1', 'clig=1', 'liga=1' },
         color_scheme = "ownTheme",
         window_padding = {
-          left = "8p",
+          left = "8",
           right = "8",
           bottom = "0",
           top = "0"
