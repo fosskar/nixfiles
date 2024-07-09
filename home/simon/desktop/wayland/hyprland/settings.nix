@@ -22,6 +22,9 @@
         "OZONE_PLATFORM,wayland"
         #"NIXOS_OZONE_WL,1"
         #"SDL_VIDEODRIVER,wayland"
+        "HYPRCURSOR_THEME,${config.home.pointerCursor.name}"
+        "HYPRCURSOR_SIZE,${toString config.home.pointerCursor.size}"
+
       ];
       general = {
         border_size = 1;
