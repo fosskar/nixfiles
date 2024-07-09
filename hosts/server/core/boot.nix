@@ -11,6 +11,9 @@
       };
       efi.canTouchEfiVariables = true;
     };
+    initrd.systemd = {
+      enable = true;
+    };
     kernelPackages = pkgs.linuxPackages_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
     kernelParams = [
       # disable displaying of the built-in Linux logo
