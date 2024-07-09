@@ -36,8 +36,8 @@
           "SUPER,Print,exec,hyprshot -m window -o ~/Pictures/Screenshots -- imv"
           #"ALT, Space, exec, wofi --show drun" # when using waybar
           "SUPER, W, exec, firefox"
-          "SUPER, T, exec, kitty"
-          "SUPER, E, exec, kitty -e yazi"
+          "SUPER, T, exec, wezterm"
+          "SUPER, E, exec, wezterm -e yazi"
           "ALT, Tab, focuscurrentorlast"
           "SUPER, G, togglegroup"
           "SUPER SHIFT, E, exit"
