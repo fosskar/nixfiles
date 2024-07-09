@@ -4,6 +4,9 @@
   pkgs,
   ...
 }:
+
+####FIXME looks like setui/setgid currently not supported by nix: https://nixos.wiki/wiki/Podman
+
 let
   cfg = config.services.podman;
 
@@ -20,6 +23,26 @@ let
         ]
     }
   '';
+
+  podmanSetupScript =
+    let
+      registriesConf = pkgs.writeText "registries.conf" ''
+        [registries.search]
+        registries = ['docker.io']
+        [registries.block]
+        registries = []
+      '';
+    in
+    pkgs.writeScript "podman-setup" ''
+      #!${pkgs.runtimeShell}
+      # Dont overwrite customised configuration
+      if ! test -f ~/.config/containers/policy.json; then
+        install -Dm555 ${pkgs.skopeo.src}/default-policy.json ~/.config/containers/policy.json
+      fi
+      if ! test -f ~/.config/containers/registries.conf; then
+        install -Dm555 ${registriesConf} ~/.config/containers/registries.conf
+      fi
+    '';
 
 in
 {
@@ -69,21 +92,11 @@ in
       '';
     };
 
-    policyJson = mkOption {
+    defaultConfig = mkOption {
       type = types.str;
-      default = defaultPolicy;
-      example = ''
-        {
-            "default": [
-                {
-                    "type": "insecureAcceptAnything"
-                }
-            ]
-        }
-      '';
+      default = podmanSetupScript;
       description = ''
-        Custom policy.json content for Podman. This will be written to
-        <code>~/.config/containers/policy.json</code>.
+        .json content for Podman.
       '';
     };
   };
@@ -92,8 +105,6 @@ in
     lib.mkMerge [
       {
         home.packages = [ cfg.package ];
-
-        xdg.configFile."containers/policy.json".text = cfg.policyJson;
 
         systemd.user = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux) {
 
@@ -136,7 +147,6 @@ in
       }
       (lib.mkIf cfg.dockerSocket {
         home.sessionVariables = {
-          "PODMAN_USERNS" = "keep-id";
           "DOCKER_HOST" = "unix:///run/user/$UID/podman/podman.sock";
         };
       })
