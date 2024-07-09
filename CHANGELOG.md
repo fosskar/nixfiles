@@ -1,3 +1,9 @@
+## [7.11.1](https://gitlab.com/simonoscr/nixfiles/compare/7.11.0...7.11.1) (2024-07-09)
+
+### 🛠 Fixes
+
+* **wezterm:** fix padding typo and add wezterm to hyprland shortcuts ([b19ca71](https://gitlab.com/simonoscr/nixfiles/commit/b19ca715dc537f6eef6b1d402aee59f84e079107))
+
 ## [7.11.0](https://gitlab.com/simonoscr/nixfiles/compare/7.10.1...7.11.0) (2024-07-09)
 
 ### 📦 Other
