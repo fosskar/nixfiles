@@ -191,7 +191,7 @@
           "security.ssl.require_safe_negotiation" = true;
           "security.tls.enable_0rtt_data" = false;
           "security.OCSP.enabled" = 1;
-          "security.OCSP.require" = true;
+          "security.OCSP.require" = false;
           "security.cert_pinning.enforcement_level" = 2;
           "security.remote_settings.crlite_filters.enabled" = true;
           "security.pki.crlite_mode" = 2;
