@@ -42,7 +42,7 @@
     # security
     keepassxc
     git-credential-keepassxc
-    bitwarden-desktop
+    #bitwarden-desktop
     kubecm
     cosign
 
