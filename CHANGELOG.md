@@ -1,3 +1,9 @@
+## [7.12.1](https://gitlab.com/simonoscr/nixfiles/compare/7.12.0...7.12.1) (2024-07-11)
+
+### 🛠 Fixes
+
+* **yazi:** enable image preview again with fixed nose for python ([a8c0cc9](https://gitlab.com/simonoscr/nixfiles/commit/a8c0cc97a196c60f9661bca85fbf4e47a294fef3))
+
 ## [7.12.0](https://gitlab.com/simonoscr/nixfiles/compare/7.11.3...7.12.0) (2024-07-11)
 
 ### 🚀 Features
