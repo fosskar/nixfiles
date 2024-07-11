@@ -9,7 +9,7 @@
         hide_cursor = true;
         grace = 3;
         no_fade_in = false;
-        ignore_empty_input = true;
+        ignore_empty_input = false;
       };
 
       background = [

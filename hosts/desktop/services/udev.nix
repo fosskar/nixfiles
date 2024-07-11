@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   services = {
     udev.extraRules = ''
       ## rules below set the scheduler to bfq for rotational drives, bfq for SSD/eMMC drives and none for NVMe drives
@@ -14,6 +15,13 @@ _: {
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:05C4.*", MODE="0666"
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="09cc", MODE="0666"
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:09CC.*", MODE="0666"
+
+      ACTION=="remove",\
+      ENV{ID_BUS}=="usb",\
+      ENV{ID_MODEL_ID}=="0407",\
+      ENV{ID_VENDOR_ID}=="1050",\
+      ENV{ID_VENDOR}=="Yubico",\
+      RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
     '';
   };
 }

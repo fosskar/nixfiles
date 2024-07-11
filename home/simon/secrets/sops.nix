@@ -26,6 +26,11 @@ in
         mode = "0600";
       };
       dXNlcl9wYXNzd29yZA = { };
+
+      u2f_keys = {
+        path = "${config.home.homeDirectory}/.yubico/authorized_yubikeys";
+        mode = "0600";
+      };
     };
   };
 }

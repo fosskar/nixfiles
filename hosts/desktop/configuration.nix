@@ -37,6 +37,7 @@
     ./services/powerprofile.nix
     ./services/udev.nix
     ./services/xserver.nix
+    ./services/yubikey.nix
   ];
 
   services = {
