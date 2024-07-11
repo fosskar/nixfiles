@@ -41,13 +41,6 @@
         show_symlink = true;
       };
 
-      plugin = {
-        prepend_previewers = {
-          mime = "image/*";
-          exec = "noop";
-        };
-      };
-
       preview = {
         tab_size = 2;
         max_width = 600;
@@ -55,13 +48,13 @@
         image_filter = "triangle";
         image_quality = 90;
         sixel_fraction = 15;
-        #ueberzug_scale = 1;
-        #ueberzug_offset = [
-        #  0
-        #  0
-        #  0
-        #  0
-        #];
+        ueberzug_scale = 1;
+        ueberzug_offset = [
+          0
+          0
+          0
+          0
+        ];
         cache_dir = "${config.xdg.cacheHome}";
       };
       opener = {
