@@ -1,3 +1,9 @@
+## [8.0.2](https://gitlab.com/simonoscr/nixfiles/compare/8.0.1...8.0.2) (2024-07-12)
+
+### 🛠 Fixes
+
+* **work:** increase stateVersion to 24.05 for work nixos ([fa50af8](https://gitlab.com/simonoscr/nixfiles/commit/fa50af83b5169a5694d5f8b72ffe0c953ea5823b))
+
 ## [8.0.1](https://gitlab.com/simonoscr/nixfiles/compare/8.0.0...8.0.1) (2024-07-12)
 
 ### 📦 Other
