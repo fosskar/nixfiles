@@ -2,6 +2,7 @@
 {
   imports = [
     ./browser/firefox
+    ./desktop/wayland/hyprland
     ./desktop/x11/i3
     ./editors/vscodium.nix
     ./editors/nixvim.nix
