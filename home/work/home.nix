@@ -6,7 +6,6 @@
     ./editors/vscodium.nix
     ./editors/nixvim.nix
     ./editors/zed.nix
-    ./nix
     ./programs/autorandr.nix
     ./programs/gpg.nix
     ./programs/gtk.nix
@@ -21,8 +20,6 @@
     ./secrets/sops.nix
     ./services/autorandr.nix
     ./services/flameshot.nix
-    ./services/fonts.nix
-    ./services/podman.nix
     ./services/polkit-agent.nix
     ./services/remmina.nix
     ./services/udiskie.nix
@@ -37,5 +34,4 @@
     };
     stateVersion = "23.11";
   };
-  targets.genericLinux.enable = true;
 }

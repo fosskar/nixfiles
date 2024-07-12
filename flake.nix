@@ -22,7 +22,7 @@
   inputs = {
     systems.url = "github:nix-systems/default-linux";
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -150,6 +150,21 @@
               }
             ];
           };
+          work = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit inputs;
+            };
+            modules = [
+              ./hosts/work/configuration.nix
+              inputs.home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  users.simon.imports = [ ./home/work/home.nix ];
+                };
+              }
+            ];
+          };
           server = inputs.nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             specialArgs = {
@@ -185,15 +200,6 @@
               ./iso/serveriso.nix
               "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
             ];
-          };
-        };
-        homeConfigurations = {
-          work = inputs.home-manager.lib.homeManagerConfiguration {
-            pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-            extraSpecialArgs = {
-              inherit inputs;
-            };
-            modules = [ ./home/work/home.nix ];
           };
         };
       };

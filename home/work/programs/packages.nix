@@ -7,25 +7,14 @@
     # notes
     obsidian
     libreoffice
-    kdePackages.okular
 
     # communication
     slack
-    evolutionWithPlugins
-
-    # virt
-    virt-manager
 
     # cli
     yq
-    nh
     toybox
     nettools
-
-    # Audio
-    pavucontrol
-    playerctl
-    pamixer
 
     # devops tools
     kubectl
