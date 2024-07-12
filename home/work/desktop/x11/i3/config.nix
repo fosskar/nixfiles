@@ -51,9 +51,7 @@
       };
 
       startup = [
-        #{
-        #  command = "xrandr --output DP-1 --mode 3440x1440 --rate 165";
-        #}
+        { command = "--no-startup-id keepassxc"; }
         { command = "--no-startup-id nm-applet"; }
         { command = "--no-startup-id blueman-applet"; }
         { command = "--no-startup-id dex --autostart --environment i3"; }
@@ -70,15 +68,15 @@
           mod = "Mod4";
         in
         {
-          "${mod}+t" = "exec nixGL wezterm";
-          "${mod}+r" = "exec nixGL kitty";
+          "${mod}+t" = "exec wezterm";
+          "${mod}+r" = "exec kitty";
           "${mod}+w" = "exec firefox";
           "${mod}+z" = "exec zoom";
           "${mod}+s" = "exec slack";
           "${mod}+o" = "exec obsidian";
           "Print" = "exec flameshot";
           "${mod}+Shift+e" = "exec nautilus";
-          "${mod}+e" = "exec nixGL wezterm -e yazi";
+          "${mod}+e" = "exec wezterm -e yazi";
           "${mod}+c" = "exec codium";
           "${mod}+Shift+q" = "kill";
           "${mod}+j" = "focus left";
