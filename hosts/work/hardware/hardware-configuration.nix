@@ -10,34 +10,28 @@
   boot = {
     initrd = {
       availableKernelModules = [
-        "nvme"
         "xhci_pci"
-        "ahci"
+        "thunderbolt"
+        "vmd"
+        "nvme"
+        "usb_storage"
         "usbhid"
+        "sd_mod"
       ];
     };
   };
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/322918cb-9eb4-40df-a3a8-44965f8750a1";
-      fsType = "ext4";
-      options = [
-        "noatime"
-        "nodiratime"
-        "discard"
-      ];
-    };
-    "/test" = {
-      device = "/dev/disk/by-uuid/00e62437-633a-4d72-9fca-026f95e4e254";
+      device = "/dev/disk/by-uuid/d7f71a41-3c79-4651-b11b-c58c184adfbc";
       fsType = "ext4";
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/FA25-5762";
+      device = "/dev/disk/by-uuid/D915-8AD2";
       fsType = "vfat";
       options = [
-        "fmask=0022"
-        "dmask=0022"
+        "fmask=0077"
+        "dmask=0077"
       ];
     };
   };
