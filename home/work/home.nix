@@ -32,6 +32,6 @@
     sessionVariables = {
       SHELL = "${pkgs.zsh}/bin/zsh";
     };
-    stateVersion = "23.11";
+    stateVersion = "24.05";
   };
 }

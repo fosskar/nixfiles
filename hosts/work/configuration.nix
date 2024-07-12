@@ -38,4 +38,7 @@
     printing.enable = true;
     fstrim.enable = true;
   };
+
+  ### DON'T TOUCH!
+  system.stateVersion = "24.05";
 }
