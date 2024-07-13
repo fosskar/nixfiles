@@ -1,3 +1,9 @@
+## [8.2.4](https://gitlab.com/simonoscr/nixfiles/compare/8.2.3...8.2.4) (2024-07-13)
+
+### 🛠 Fixes
+
+* disable fingerprint ([ab8cecd](https://gitlab.com/simonoscr/nixfiles/commit/ab8cecdeb78e8a06ea67683ec9d6a69025c18626))
+
 ## [8.2.3](https://gitlab.com/simonoscr/nixfiles/compare/8.2.2...8.2.3) (2024-07-13)
 
 ### 🛠 Fixes
