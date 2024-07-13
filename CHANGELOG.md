@@ -1,3 +1,9 @@
+## [8.2.2](https://gitlab.com/simonoscr/nixfiles/compare/8.2.1...8.2.2) (2024-07-13)
+
+### :scissors: Refactor
+
+* **work:** cleanup and sort alpha ([48367d2](https://gitlab.com/simonoscr/nixfiles/commit/48367d2e64b80cd28ccd4639290c33009e32f102))
+
 ## [8.2.1](https://gitlab.com/simonoscr/nixfiles/compare/8.2.0...8.2.1) (2024-07-13)
 
 ### 🛠 Fixes
