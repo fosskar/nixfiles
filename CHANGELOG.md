@@ -1,3 +1,15 @@
+## [8.2.6](https://gitlab.com/simonoscr/nixfiles/compare/8.2.5...8.2.6) (2024-07-13)
+
+### 📦 Other
+
+* **flake:** update flake.lock ([54aa3af](https://gitlab.com/simonoscr/nixfiles/commit/54aa3af202c9b3f288a4e3fa8dc2cc26d2b363dc))
+
+### 🛠 Fixes
+
+* pkg and secret ([b37a427](https://gitlab.com/simonoscr/nixfiles/commit/b37a4279e6d95cd252786313024443dc6d8998bd))
+* remove docker and use podman instead ([7e911fa](https://gitlab.com/simonoscr/nixfiles/commit/7e911fad7288061d041156d064646b81d6818d88))
+* remove vpn from i3status ([704498f](https://gitlab.com/simonoscr/nixfiles/commit/704498fc9ca16692dfb6deecf32d415be9b5a5c2))
+
 ## [8.2.5](https://gitlab.com/simonoscr/nixfiles/compare/8.2.4...8.2.5) (2024-07-13)
 
 ### 📦 Other
