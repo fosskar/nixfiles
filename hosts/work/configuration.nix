@@ -30,7 +30,7 @@
     ./programs/zsh.nix
     ./services/autorandr.nix
     ./services/container.nix
-    ./services/fingerprint.nix
+    #./services/fingerprint.nix
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
