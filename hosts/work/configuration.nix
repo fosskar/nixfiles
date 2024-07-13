@@ -9,6 +9,7 @@
     ./core/console.nix
     ./core/dbus.nix
     ./core/locale.nix
+    ./core/secureboot.nix
     ./core/security.nix
     ./core/users.nix
     ./core/zram.nix
@@ -17,11 +18,11 @@
     ./nix
     ./pkgs/packages.nix
     ./programs/dconf.nix
+    ./programs/evolution.nix
     ./programs/fonts.nix
     ./programs/gnupg.nix
     ./programs/home-manager.nix
-    ./programs/hyprland.nix
-    ./programs/seahorse.nix
+    ./programs/i3lock.nix
     ./programs/xdg.nix
     ./programs/virt-manager.nix
     ./programs/zsh.nix
@@ -37,6 +38,7 @@
   services = {
     printing.enable = true;
     fstrim.enable = true;
+    thermald.enable = true;
   };
 
   ### DON'T TOUCH!
