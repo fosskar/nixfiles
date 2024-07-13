@@ -1,3 +1,9 @@
+## [8.1.2](https://gitlab.com/simonoscr/nixfiles/compare/8.1.1...8.1.2) (2024-07-13)
+
+### 🛠 Fixes
+
+* **work:** update hardware-configuration ([ab7c5a8](https://gitlab.com/simonoscr/nixfiles/commit/ab7c5a87a43edc0cff922c2fe79b8dae88592151))
+
 ## [8.1.1](https://gitlab.com/simonoscr/nixfiles/compare/8.1.0...8.1.1) (2024-07-13)
 
 ### 📦 Other
