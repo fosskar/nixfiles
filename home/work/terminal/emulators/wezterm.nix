@@ -37,7 +37,7 @@
 
     extraConfig = ''
       return {
-        default_prog = { "/home/simon/.nix-profile/bin/zsh" },
+        default_prog = { "zsh" },
         enable_wayland = false,
         scrollback_lines = 10000,
         enable_scroll_bar = false,

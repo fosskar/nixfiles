@@ -1,4 +1,6 @@
 _: {
+  imports = [ ./nm-applet.nix ];
+
   networking = {
     hostName = "nixos-work";
     wireless.enable = false; # disable wpa-supplicant. nmcli usable for wifi in networkmanager

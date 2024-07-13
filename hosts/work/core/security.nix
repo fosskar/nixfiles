@@ -67,12 +67,6 @@ _: {
 
   security = {
     sudo.wheelNeedsPassword = false;
-    pam = {
-      services = {
-        hyprlock.text = "auth include login";
-        ags = { };
-      };
-    };
     polkit.enable = true;
     rtkit.enable = true;
     tpm2.enable = true;

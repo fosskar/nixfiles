@@ -10,6 +10,8 @@
       "networkmanager"
       "video"
       "wheel"
+      "docker"
+      "podman"
     ];
   };
 }
