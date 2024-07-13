@@ -66,7 +66,10 @@ _: {
   };
 
   security = {
-    sudo.wheelNeedsPassword = false;
+    sudo = {
+      wheelNeedsPassword = false;
+      execWheelOnly = true;
+    };
     polkit.enable = true;
     rtkit.enable = true;
     tpm2.enable = true;

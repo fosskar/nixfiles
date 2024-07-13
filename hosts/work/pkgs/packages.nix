@@ -1,9 +1,13 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
-    zoom-us
-    glxinfo
-    lshw
-    sbctl
-  ];
+
+  environment = {
+    defaultPackages = lib.mkForce [ ]; # remove default packages
+    systemPackages = with pkgs; [
+      zoom-us
+      glxinfo
+      lshw
+      sbctl
+    ];
+  };
 }
