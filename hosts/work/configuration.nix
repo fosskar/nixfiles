@@ -9,7 +9,7 @@
     ./core/console.nix
     ./core/dbus.nix
     ./core/locale.nix
-    #./core/secureboot.nix
+    ./core/secureboot.nix
     ./core/security.nix
     ./core/users.nix
     ./core/zram.nix
@@ -30,7 +30,7 @@
     ./programs/zsh.nix
     ./services/autorandr.nix
     ./services/container.nix
-    #./services/fingerprint.nix
+    ./services/fingerprint.nix
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
