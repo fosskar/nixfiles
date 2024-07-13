@@ -154,21 +154,6 @@
               }
             ];
           };
-          work = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs;
-            };
-            modules = [
-              ./hosts/work/configuration.nix
-              inputs.home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  users.simon.imports = [ ./home/work/home.nix ];
-                };
-              }
-            ];
-          };
           server = inputs.nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             specialArgs = {
