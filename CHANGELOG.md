@@ -1,3 +1,9 @@
+## [8.2.3](https://gitlab.com/simonoscr/nixfiles/compare/8.2.2...8.2.3) (2024-07-13)
+
+### 🛠 Fixes
+
+* add luks boot ([60f7d26](https://gitlab.com/simonoscr/nixfiles/commit/60f7d262de5f1763e75bc73bee02cc4dcf94faf8))
+
 ## [8.2.2](https://gitlab.com/simonoscr/nixfiles/compare/8.2.1...8.2.2) (2024-07-13)
 
 ### :scissors: Refactor
