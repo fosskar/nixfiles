@@ -7,24 +7,9 @@
     };
   };
 
-  environment.etc = {
-    "drirc/00-low-latency.conf" = {
-      text = ''
-        <driconf>
-           <device>
-               <application name="Default">
-                   <option name="vblank_mode" value="0" />
-               </application>
-           </device>
-        </driconf>
-      '';
-    };
-  };
-
   boot = {
     kernelModules = [
       "kvm-amd"
-      #"amd-pstate" # only needed for kernel version between 5.17 and 6.1
       "zenpower"
     ];
     kernelParams = [
