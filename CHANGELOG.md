@@ -1,3 +1,13 @@
+## [8.4.2](https://gitlab.com/simonoscr/nixfiles/compare/8.4.1...8.4.2) (2024-07-16)
+
+### 📦 Other
+
+* **flake:** update flake ([dddc240](https://gitlab.com/simonoscr/nixfiles/commit/dddc240b9468ea54b0f4cc54066af914b1258f95))
+
+### 🛠 Fixes
+
+* fix typo tailray ([a6c9869](https://gitlab.com/simonoscr/nixfiles/commit/a6c98697722533fbd3f08561f2a4224c7e79893f))
+
 ## [8.4.1](https://gitlab.com/simonoscr/nixfiles/compare/8.4.0...8.4.1) (2024-07-16)
 
 ### 🛠 Fixes
