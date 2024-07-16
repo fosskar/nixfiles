@@ -2,6 +2,7 @@
 {
   imports = [
     inputs.matugen.nixosModules.default
+    inputs.tailray.homeManagerModules.default
     ./browser/firefox
     ./desktop/wayland/hyprland
     ./desktop/x11/i3
@@ -20,6 +21,7 @@
     ./secrets/sops.nix
     ./services/audio.nix
     ./services/polkit-agent.nix
+    ./services/tailtray.nix
     ./services/udiskie.nix
     ./terminal
   ];
