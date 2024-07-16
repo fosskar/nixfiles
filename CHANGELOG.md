@@ -1,3 +1,10 @@
+## [8.4.1](https://gitlab.com/simonoscr/nixfiles/compare/8.4.0...8.4.1) (2024-07-16)
+
+### 🛠 Fixes
+
+* gpu and performance ([2797815](https://gitlab.com/simonoscr/nixfiles/commit/279781555fcef4359aa2b0e78bee795ad83eb208))
+* udev rules for wooting ([4bd6ee8](https://gitlab.com/simonoscr/nixfiles/commit/4bd6ee83eecc5380cc6b07b02fa593d4a859aea7))
+
 ## [8.4.0](https://gitlab.com/simonoscr/nixfiles/compare/8.3.1...8.4.0) (2024-07-16)
 
 ### 📦 Other
