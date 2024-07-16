@@ -31,6 +31,9 @@ _: {
       "net.ipv4.tcp_syncookies" = 1;
       # Incomplete protection again TIME-WAIT assassination
       "net.ipv4.tcp_rfc1337" = 1;
+      # This is required due to some games being unable to reuse their TCP ports
+      # if they're killed and restarted quickly - the default timeout is too large.
+      "net.ipv4.tcp_fin_timeout" = 5;
 
       ### TCP OPTIMIZATION
       # TCP Fast Open is a TCP extension that reduces network latency by packing
@@ -42,6 +45,7 @@ _: {
       "net.core.default_qdisc" = "cake";
 
       ### PERFORMANCE
+      "kernel.sched_cfs_bandwidth_slice_us" = 3000;
       # Avoid swapping (locking pages that introduces latency and uses disk IO) unless the system has no more free memory
       "vm.swappiness" = 150; # because of ZRAM swap more aggresivly
       # zram is in memory, no need to readahead
