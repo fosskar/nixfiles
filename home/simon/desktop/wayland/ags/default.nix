@@ -11,7 +11,7 @@ let
     + "/ags";
 in
 {
-  imports = [ inputs.ags.homeManagerModules.default ];
+  imports = [ inputs.ags.homeManagerModules.ags ];
 
   home.packages = [
     pkgs.brightnessctl # not working anyway because of OLED
