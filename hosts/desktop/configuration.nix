@@ -26,24 +26,18 @@
     ./programs/gnupg.nix
     ./programs/home-manager.nix
     ./programs/hyprland.nix
-    #./programs/seahorse.nix # not needed without gnome-keyring
+    ./programs/seahorse.nix
     ./programs/xdg.nix
     ./programs/zsh.nix
-    #./services/gnome-services.nix #WHY?
+    ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
     ./services/pipewire.nix
     ./services/podman.nix
-    ./services/powerprofile.nix
+    ./services/services.nix
     ./services/udev.nix
-    ./services/xserver.nix
     ./services/yubikey.nix
   ];
-
-  services = {
-    printing.enable = true;
-    fstrim.enable = true;
-  };
 
   ### DON'T TOUCH!
   system.stateVersion = "23.11";
