@@ -9,14 +9,29 @@ _: {
     completionInit = "autoload -U compinit && compinit";
     autosuggestion.enable = true;
     autocd = true;
-    syntaxHighlighting.enable = true;
+    syntaxHighlighting = {
+      enable = true;
+      highlighters = [
+        "main"
+        "brackets"
+        "pattern"
+        "root"
+      ];
+      #patterns = {
+      #  "rm *" = "fg=green,bold,bg=red";
+      #};
+      styles = {
+        "g" = "fg=magenta,bold";
+        "k" = "fg=cyan,bold";
+      };
+    };
 
     dirHashes = {
       dl = "$HOME/Downloads";
       docs = "$HOME/Documents";
       pics = "$HOME/Pictures";
       vids = "$HOME/Videos";
-      nix = "$HOME/nixfiles";
+      nix = "$HOME/code/nixfiles";
     };
 
     initExtra = ''
@@ -29,8 +44,9 @@ _: {
     history = {
       share = true;
       expireDuplicatesFirst = true;
-      extended = true;
+      extended = false;
       ignoreDups = true;
+      ignoreAllDups = true;
       ignoreSpace = true;
       save = 100000;
       size = 100000;

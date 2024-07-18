@@ -24,7 +24,6 @@ _: {
     scu = "systemctl --user ";
     jcu = "journalctl --user";
     diff = "diff --color=auto";
-    #myip = "${dig} @resolver4.opendns.com myip.opendns.com +short";
 
     # cli
     g = "git";
