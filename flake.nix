@@ -21,8 +21,9 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.1";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     firefox-addons = {
@@ -85,11 +86,6 @@
     };
 
     impermanence.url = "github:nix-community/impermanence";
-
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -97,18 +93,39 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      imports = [ ./pre-commit-hooks.nix ];
+      imports = [ inputs.pre-commit-hooks.flakeModule ];
 
       perSystem =
         { config, pkgs, ... }:
         {
           pre-commit = {
             settings = {
+              excludes = [
+                "flake.lock"
+                "CHANGELOG.md"
+                "LICENSE"
+              ];
+              src = ./.;
               hooks = {
                 nixfmt = {
                   enable = true;
                   package = pkgs.nixfmt-rfc-style;
                 };
+                prettier = {
+                  enable = true;
+                  fail_fast = true;
+                  excludes = [
+                    ".md"
+                    ".nix"
+                    ".yaml"
+                    ".yml"
+                  ];
+                  settings = {
+                    write = true;
+                  };
+                };
+
+                pre-commit-hook-ensure-sops.enable = true;
               };
             };
           };
