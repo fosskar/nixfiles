@@ -7,7 +7,7 @@
 }:
 {
   nix = {
-    package = pkgs.nix; # Versions.latest;
+    #package = pkgs.nixVersions.latest; # Versions.latest;
     # pin the registry to avoid downloading and evaling a new nixpkgs version every time
     registry = lib.mapAttrs (_: v: { flake = v; }) inputs;
 
@@ -42,6 +42,7 @@
       keep-outputs = true;
       fallback = true;
       warn-dirty = false;
+      nix-path = [ "nixpkgs=${pkgs.path}" ]; # FIXME https://discourse.nixos.org/t/24-05-add-flake-to-nix-path/46310/9
     };
     gc = {
       automatic = false; # because i am using nh.clean
