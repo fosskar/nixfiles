@@ -1,3 +1,26 @@
+## [8.4.3](https://gitlab.com/simonoscr/nixfiles/compare/8.4.2...8.4.3) (2024-07-19)
+
+### 📦 Other
+
+* **flake:** update flake ([a70b0da](https://gitlab.com/simonoscr/nixfiles/commit/a70b0da404586b41139a7c07dcd49b3b2ee1c099))
+* **flake:** update flake ([75527f6](https://gitlab.com/simonoscr/nixfiles/commit/75527f65d8dd7c6618d9b02c7d9e1a4ae7d48f3f))
+* **flake:** update flake ([98571c8](https://gitlab.com/simonoscr/nixfiles/commit/98571c882be5a6d3e28b73e566db85700696cbde))
+
+### 🦊 CI/CD
+
+* fixed tag 22.4.1 for node image because of bug ([c5b7561](https://gitlab.com/simonoscr/nixfiles/commit/c5b756161ac9b28f542a0916cc1b5bdc91bd813c))
+* fixed tag for node image because of bug ([62c44f8](https://gitlab.com/simonoscr/nixfiles/commit/62c44f8eeac5c18cc10635c9c7ee67244e79e2d4))
+
+### 🛠 Fixes
+
+* remove i3 ([f314b7d](https://gitlab.com/simonoscr/nixfiles/commit/f314b7d409e1ae7816b5cd7ff77939ab4ec2e6c3))
+* substituters ([1225b00](https://gitlab.com/simonoscr/nixfiles/commit/1225b00a94fb4981ead5e4edc4c6ca450bb6ce99))
+* update different small services ([67a3ef7](https://gitlab.com/simonoscr/nixfiles/commit/67a3ef78905c11c776707287a1a709848051829d))
+* WIP add iso ([4bdd647](https://gitlab.com/simonoscr/nixfiles/commit/4bdd647632f5c29a9b05b2f441721c1cbcc66554))
+* **ags:** update new hm module ([e96d9ac](https://gitlab.com/simonoscr/nixfiles/commit/e96d9ac6be7063738c819509b50bca4fcf06df8c))
+* **direnv:** suppress logging ([9944966](https://gitlab.com/simonoscr/nixfiles/commit/994496614bd99f90d7923daf834b8c2b239bc318))
+* **zsh:** update config ([98e421f](https://gitlab.com/simonoscr/nixfiles/commit/98e421f298110a9cfe10f5635b029306f4cb93d2))
+
 ## [8.4.2](https://gitlab.com/simonoscr/nixfiles/compare/8.4.1...8.4.2) (2024-07-16)
 
 ### 📦 Other
