@@ -12,6 +12,7 @@
     ./programs/gtk.nix
     ./programs/mangohud.nix
     ./programs/mpv.nix
+    ./programs/nix-index.nix
     ./programs/packages.nix
     ./programs/qt.nix
     ./programs/ssh.nix
