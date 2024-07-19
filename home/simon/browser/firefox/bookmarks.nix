@@ -4,6 +4,10 @@
     toolbar = true;
     bookmarks = [
       {
+        name = "Searchix";
+        url = "https://searchix.alanpearce.eu/";
+      }
+      {
         name = "News";
         bookmarks = [
           {
@@ -285,15 +289,11 @@
         ];
       }
       {
-        name = "Nix/OS";
+        name = "NixOS";
         bookmarks = [
           {
-            name = "Manual";
-            url = "https://nixos.org/manual/nixos/stable/nixos";
-          }
-          {
             name = "Wiki";
-            url = "https://nixos.wiki";
+            url = "https://wiki.nixos.org";
           }
           {
             name = "Package Search";
@@ -304,23 +304,11 @@
             url = "https://search.nixos.org/options";
           }
           {
-            name = "Hound";
-            url = "https://search.nix.gsc.io";
-          }
-          {
-            name = "Noogle";
-            url = "https://noogle.dev";
-          }
-          {
             name = "HM Option Search";
             url = "https://mipmip.github.io/home-manager-option-search";
           }
           {
-            name = "Snowfall";
-            url = "https://snowfall.org";
-          }
-          {
-            name = "Noogle";
+            name = "Noogle Nix Functions";
             url = "https://noogle.dev";
           }
           {
@@ -341,10 +329,6 @@
             url = "https://trainingportal.linuxfoundation.org";
           }
         ];
-      }
-      {
-        name = "Nix Search";
-        url = "https://search.nixos.org";
       }
       {
         name = "Sourcegraph Search";
