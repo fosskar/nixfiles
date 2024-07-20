@@ -10,7 +10,7 @@
         "hyprlock"
       ];
       env = [
-        #"WLR_DRM_NO_ATOMIC,1"
+        #"AQ_NO_ATOMIC,1"
         "GDK_BACKEND,wayland,x11,*"
         "QT_QPA_PLATFORM,wayland;xcb"
         "QT_AUTO_SCREEN_SCALE_FACTOR,1"
