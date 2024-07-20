@@ -1,3 +1,15 @@
+## [8.5.1](https://gitlab.com/simonoscr/nixfiles/compare/8.5.0...8.5.1) (2024-07-20)
+
+### 📦 Other
+
+* **flake:** update flake ([3412065](https://gitlab.com/simonoscr/nixfiles/commit/34120650c62469effdfd8cf8df1948e42b12ce91))
+* **flake:** update flake ([8dc66d9](https://gitlab.com/simonoscr/nixfiles/commit/8dc66d9b823b92cfc46915a77720f1cd112a5754))
+
+### 🛠 Fixes
+
+* **firefox:** importing bookmarks ([360d062](https://gitlab.com/simonoscr/nixfiles/commit/360d0626b4f1a99b27b21ae5b8601a7a2bc660dc))
+* **yubikey:** drop unused packages and enable u2f ([3e67959](https://gitlab.com/simonoscr/nixfiles/commit/3e67959027bf0fa57b76859831f7864ba2bbb806))
+
 ## [8.5.0](https://gitlab.com/simonoscr/nixfiles/compare/8.4.3...8.5.0) (2024-07-19)
 
 ### 📦 Other
