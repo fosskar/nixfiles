@@ -16,7 +16,6 @@ in
 
   programs.firefox = {
     enable = true;
-    package = pkgs.firefox;
     policies = {
       AppAutoUpdate = false;
       OverrideFirstRunPage = "";
@@ -27,7 +26,7 @@ in
       DisableFirefoxAccounts = true;
       DontCheckDefaultBrowser = true;
       DisableSetDesktopBackground = true;
-      NoDefaultBookmarks = true;
+      NoDefaultBookmarks = false; # must be false to prevent getting my own bookmarks
       OfferToSaveLogins = false;
       OfferToSaveLoginsDefault = false;
       PasswordManagerEnabled = false;
