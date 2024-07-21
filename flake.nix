@@ -170,7 +170,7 @@
               inherit inputs;
             };
             modules = [
-              ./iso/desktopiso.nix
+              ./images/desktopiso.nix
               inputs.home-manager.nixosModules.home-manager
               {
                 home-manager = {
