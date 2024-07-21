@@ -5,38 +5,35 @@
 { ... }:
 {
   imports = [
-    ./core/boot.nix
-    ./core/console.nix
-    ./core/dbus.nix
-    ./core/locale.nix
-    ./core/security.nix
-    ./core/users.nix
-    ./core/zram.nix
-    ./gaming/gamemode.nix
-    ./gaming/gamescope.nix
-    ./gaming/steam.nix
+    ./core
+    ./gaming
     ./hardware
     ./network
-    ./network/tailscale.nix
     ./nix
     ./pkgs/packages.nix
     ./programs/corectrl.nix
     ./programs/dconf.nix
+    ./programs/direnv.nix
     ./programs/fonts.nix
+    ./programs/git.nix
     ./programs/gnupg.nix
     ./programs/home-manager.nix
     ./programs/hyprland.nix
+    ./programs/less.nix
     ./programs/seahorse.nix
     ./programs/xdg.nix
+    ./programs/xwayland.nix
     ./programs/zsh.nix
+    ./security
+    ./services/audio.nix
+    ./services/fs.nix
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
-    ./services/pipewire.nix
-    ./services/podman.nix
-    ./services/services.nix
+    ./services/print.nix
     ./services/udev.nix
-    ./services/yubikey.nix
+    ./services/virtualisation.nix
+    ./services/zram.nix
   ];
 
   ### DON'T TOUCH!

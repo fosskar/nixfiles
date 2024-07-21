@@ -1,10 +1,11 @@
 { ... }:
 {
   imports = [
+    ./docs.nix
     ./nh.nix
     ./nix.nix
-    ./nixos.nix
     ./nixpkgs.nix
     ./substituters.nix
+    ./system.nix
   ];
 }

@@ -9,6 +9,7 @@
 
   boot = {
     kernelModules = [
+      "amd-pstate"
       "kvm-amd"
       "zenpower"
     ];

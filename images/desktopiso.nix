@@ -4,9 +4,7 @@
     ../hosts/desktop/core/console.nix
     ../hosts/desktop/core/dbus.nix
     ../hosts/desktop/core/locale.nix
-    ../hosts/desktop/core/security.nix
     ../hosts/desktop/core/users.nix
-    ../hosts/desktop/core/zram.nix
     ../hosts/desktop/hardware/fwupd.nix
     ../hosts/desktop/network
     ../hosts/desktop/network/tailscale.nix
@@ -22,17 +20,9 @@
     ../hosts/desktop/services/gnome-services.nix
     ../hosts/desktop/services/greetd.nix
     ../hosts/desktop/services/libinput.nix
-    ../hosts/desktop/services/pipewire.nix
-    ../hosts/desktop/services/podman.nix
-    ../hosts/desktop/services/powerprofile.nix
+    ../hosts/desktop/services/audio.nix
     ../hosts/desktop/services/udev.nix
-    ../hosts/desktop/services/xserver.nix
   ];
-
-  services = {
-    printing.enable = true;
-    fstrim.enable = true;
-  };
 
   system.stateVersion = "23.11";
 }

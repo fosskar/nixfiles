@@ -1,8 +1,10 @@
 { pkgs, ... }:
 {
   users.users.simon = {
-    initialPassword = "123";
     isNormalUser = true;
+    createHome = true;
+    home = "/home/simon";
+    initialPassword = "123";
     shell = pkgs.zsh;
     extraGroups = [
       "audio"
@@ -12,6 +14,12 @@
       "networkmanager"
       "video"
       "wheel"
+      "power"
+      "podman"
+      "git"
+      "libvirtd"
+      "nix"
+      "network"
     ];
   };
 }
