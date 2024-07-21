@@ -30,6 +30,7 @@
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
+    ./services/power.nix
     ./services/print.nix
     ./services/udev.nix
     ./services/virtualisation.nix
