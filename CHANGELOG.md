@@ -1,3 +1,17 @@
+## [8.6.0](https://gitlab.com/simonoscr/nixfiles/compare/8.5.1...8.6.0) (2024-07-21)
+
+### 📦 Other
+
+* **flake:** update flake ([8fdc9f8](https://gitlab.com/simonoscr/nixfiles/commit/8fdc9f8f3c6e4eb9d94feb46d804e3aa57ec0a5e))
+
+### 🚀 Features
+
+* **refactor:** add bunch of extra config files and modules ([813a8c5](https://gitlab.com/simonoscr/nixfiles/commit/813a8c5614d6ed31f009fee2301e2a2703308210))
+
+### 🛠 Fixes
+
+* **iso:** in flake.nix file ([7bc6ca5](https://gitlab.com/simonoscr/nixfiles/commit/7bc6ca5aaf8481dc34ba748984003c938333c683))
+
 ## [8.5.1](https://gitlab.com/simonoscr/nixfiles/compare/8.5.0...8.5.1) (2024-07-20)
 
 ### 📦 Other
