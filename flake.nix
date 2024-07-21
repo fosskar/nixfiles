@@ -49,11 +49,6 @@
       };
     };
 
-    tailray = {
-      url = "github:NotAShelf/tailray";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     hyprland = {
       url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     };
@@ -149,12 +144,12 @@
             };
             modules = [
               ./hosts/desktop/configuration.nix
-              inputs.home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  users.simon.imports = [ ./home/simon/home.nix ];
-                };
-              }
+              #inputs.home-manager.nixosModules.home-manager
+              #{
+              #  home-manager = {
+              #    users.simon.imports = [ ./home/simon/home.nix ];
+              #  };
+              #}
             ];
           };
           server = inputs.nixpkgs.lib.nixosSystem {
@@ -164,25 +159,25 @@
             };
             modules = [ ./hosts/server/configuration.nix ];
           };
-          desktopISO = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs;
-            };
-            modules = [
-              ./images/desktopiso.nix
-              inputs.home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  extraSpecialArgs = {
-                    inherit inputs;
-                  };
-                  users.simon.imports = [ ./home/simon/home.nix ];
-                };
-              }
-              "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
-            ];
-          };
+          #desktopISO = inputs.nixpkgs.lib.nixosSystem {
+          #  system = "x86_64-linux";
+          #  specialArgs = {
+          #    inherit inputs;
+          #  };
+          #  modules = [
+          #    ./images/desktopiso.nix
+          #    inputs.home-manager.nixosModules.home-manager
+          #    {
+          #      home-manager = {
+          #        extraSpecialArgs = {
+          #          inherit inputs;
+          #        };
+          #        users.simon.imports = [ ./home/simon/home.nix ];
+          #      };
+          #    }
+          #    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
+          #  ];
+          #};
         };
       };
     };
