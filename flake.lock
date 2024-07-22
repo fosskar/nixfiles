@@ -406,11 +406,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1721579496,
-        "narHash": "sha256-WUce0N5hCMKa3ckTbAx1Sa8qkrIoQV4+wdpWg9G2QrM=",
+        "lastModified": 1721592569,
+        "narHash": "sha256-zvfdcMTg5IMseo3VoIXTU+7VNJK9NaXl+HrCkhY2DGc=",
         "ref": "refs/heads/main",
-        "rev": "e6fc9873b5e10e7ac00085da7d599776ed72f297",
-        "revCount": 4944,
+        "rev": "33e933e2a020c874037df568d6c033ae20f30bf7",
+        "revCount": 4948,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -811,11 +811,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1721571110,
-        "narHash": "sha256-W4KLBlN3g5fABz1Hv/O9Vwq0mFwY3XYuAyGLege1tVM=",
+        "lastModified": 1721592379,
+        "narHash": "sha256-pJzkjy4+sM9+5IfrZMTWAiB0m/m4eiV4fmnqxtVNonI=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "8eb5763bbbb414c432ced741c5fe8052154d0816",
+        "rev": "d2f733efb4962903b77af330c4c03a63f2f72968",
         "type": "github"
       },
       "original": {
