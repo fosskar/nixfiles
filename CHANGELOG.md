@@ -1,3 +1,9 @@
+## [8.7.2](https://gitlab.com/simonoscr/nixfiles/compare/8.7.1...8.7.2) (2024-07-22)
+
+### 🛠 Fixes
+
+* **gtk:** store gtk themes in a more prominent place ([91c976b](https://gitlab.com/simonoscr/nixfiles/commit/91c976b3d1ab1ee36d90af0db9f62d1232fc0e6c))
+
 ## [8.7.1](https://gitlab.com/simonoscr/nixfiles/compare/8.7.0...8.7.1) (2024-07-21)
 
 ### 🛠 Fixes
