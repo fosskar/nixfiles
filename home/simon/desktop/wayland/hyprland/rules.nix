@@ -20,8 +20,6 @@ _: {
 
         # immediate
         "immediate, class:^(cs2)$"
-        "immediate, class:^(gamescope|steam_app).*"
-        "immediate, fullscreen:1"
 
         # make Firefox PiP window floating and sticky
         "float, title:^(Picture-in-Picture)$"
