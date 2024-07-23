@@ -21,6 +21,8 @@ let
   '';
 in
 {
+  # when activated this sets display and performance settings for gaming
+
   home.file."${config.xdg.configHome}/hypr/hypr-gamemode.sh" = {
     text = ''
       ${hypr_gamemode}/bin/hypr-gamemode
