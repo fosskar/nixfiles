@@ -84,7 +84,7 @@
         }
         {
           monitor = "";
-          text = "";
+          text = "  ";
           color = "rgb(255, 255, 255)";
           font_family = "Inter";
           font_size = 32;

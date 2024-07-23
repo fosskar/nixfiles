@@ -6,10 +6,19 @@
   ...
 }:
 let
+  # do not suspend when audio is running
   suspendScript = pkgs.writeShellScript "suspend-script" ''
     ${lib.getExe pkgs.playerctl} -a status | ${lib.getExe pkgs.ripgrep} running -q
     if [ $? == 1 ]; then
       ${pkgs.systemd}/bin/systemctl suspend
+    fi
+  '';
+
+  # do not shut off monitor when audio is running but not focused
+  dpmsScript = pkgs.writeShellScript "dmps-script" ''
+    ${lib.getExe pkgs.playerctl} -a status | ${lib.getExe pkgs.ripgrep} running -q
+    if [ $? == 1 ]; then
+      hyprctl dispatch dpms off
     fi
   '';
 in
@@ -26,7 +35,7 @@ in
       listener = [
         {
           timeout = 180;
-          on-timeout = "hyprctl dispatch dpms off";
+          on-timeout = dpmsScript.outPath;
           on-resume = "hyprctl dispatch dpms on";
         }
         {
