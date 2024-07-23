@@ -1,3 +1,18 @@
+## [8.7.4](https://gitlab.com/simonoscr/nixfiles/compare/8.7.3...8.7.4) (2024-07-23)
+
+### 📦 Other
+
+* **flake:** update flock ([d201b54](https://gitlab.com/simonoscr/nixfiles/commit/d201b54427553cb3fe2b389603a8801fa042bc9a))
+
+### 🛠 Fixes
+
+* hardware and boot fixes ([5e62f51](https://gitlab.com/simonoscr/nixfiles/commit/5e62f511523a49fd6d9be7b5682d115265aed8dd))
+* hyprgamemode ([22e9c26](https://gitlab.com/simonoscr/nixfiles/commit/22e9c26e408e85234f771036a91c83f2ae690e56))
+* move substis to nixConfig ([19423ad](https://gitlab.com/simonoscr/nixfiles/commit/19423adb9139f897b8bfb4d969273579cad17d45))
+* update secrets management ([9fc91f9](https://gitlab.com/simonoscr/nixfiles/commit/9fc91f96447c0d194f7439969ec6c014fbf25095))
+* xdg dirs ([092da72](https://gitlab.com/simonoscr/nixfiles/commit/092da729733100649185e9760a54b31c03e34a14))
+* **zsh:** move to .zsh dir ([5bf31a1](https://gitlab.com/simonoscr/nixfiles/commit/5bf31a102d5dad23581cc433926190bd75b8d509))
+
 ## [8.7.3](https://gitlab.com/simonoscr/nixfiles/compare/8.7.2...8.7.3) (2024-07-23)
 
 ### :scissors: Refactor
