@@ -1,14 +1,13 @@
 { pkgs, inputs, ... }:
 {
   imports = [
-    inputs.matugen.nixosModules.default
     ./browser/firefox
     ./desktop/wayland/hyprland
     ./editors
+    ./gaming
     ./nix
     ./pkgs
     ./programs
-    ./secrets
     ./services
     ./terminal
     ./themes

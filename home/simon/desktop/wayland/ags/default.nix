@@ -14,12 +14,11 @@ in
   imports = [ inputs.ags.homeManagerModules.ags ];
 
   home.packages = [
-    pkgs.brightnessctl # not working anyway because of OLED
-    pkgs.bun
-    pkgs.dart-sass
-    pkgs.fd
-    pkgs.swww
-    inputs.matugen.packages.${pkgs.system}.default
+    pkgs.brightnessctl # not working anyway because of OLED but needed for this ags setup
+    pkgs.bun # needed
+    pkgs.dart-sass # needed
+    pkgs.fd # needed
+    pkgs.swww # needed
   ];
 
   programs.ags = {

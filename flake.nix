@@ -41,14 +41,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    matugen = {
-      url = "github:InioX/matugen";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "hyprland/systems";
-      };
-    };
-
     hyprland = {
       url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     };
