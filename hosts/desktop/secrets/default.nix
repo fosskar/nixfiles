@@ -1,46 +1,60 @@
 { inputs, config, ... }:
-# for CI/CD puprose currently not used
 let
-  inCI = builtins.getEnv "CI" == "true";
-
-  secretsPath =
-    if inCI then
-      "${builtins.getEnv "CI_PROJECT_DIR"}/nixsecrets/secrets/simon/secrets.yaml"
-    else
-      "/home/simon/code/nixsecrets/secrets/simon/secrets.yaml";
+  secretsDirectory = builtins.toString inputs.nixsecrets;
+  secretsFile = "${secretsDirectory}/secrets/simon/secrets.yaml";
 in
 {
   imports = [ inputs.sops-nix.nixosModules.sops ];
 
   sops = {
-    validateSopsFiles = false;
-    defaultSopsFile = secretsPath;
+    validateSopsFiles = true;
+    defaultSopsFile = secretsFile;
+
+    # age
     age = {
       sshKeyPaths = [ "/home/simon/.ssh/id_ed25519" ];
+
+      # i use ssh key
       keyFile = "/home/simon/.config/sops/age/keys.txt";
       generateKey = false;
     };
+
+    # disable importing host ssh keys
+    gnupg.sshKeyPaths = [ ];
+
+    # secrets
     secrets = {
-      c3NoLXB1Yi1rZXk = {
+      "ssh/id_ed25519.pub" = {
         path = "/home/simon/.ssh/id_ed25519.pub";
         owner = "simon";
         mode = "0600";
       };
-      c3NoLXByaXZhdGUta2V5 = {
+      "ssh/id_ed25519" = {
         path = "/home/simon/.ssh/id_ed25519";
         owner = "simon";
         mode = "0600";
       };
-      dXNlcl9wYXNzd29yZA = {
-        owner = "simon";
-        mode = "0644";
+      "user/password" = {
+        neededForUsers = true;
+      };
+      "user/pin" = {
+        neededForUsers = true;
       };
 
-      u2f_keys = {
+      "yubikey/u2f_keys" = {
         path = "/home/simon/.yubico/authorized_yubikeys";
         owner = "simon";
         mode = "0644";
       };
+      "git/github/github-pat" = { };
+      "git/github/fg-github-pat" = { };
+
+      "git/gitlab/gitlab-pat" = { };
+    };
+    templates = {
+      "nix-access-tokens".content = ''access-tokens = github.com=${
+        config.sops.placeholder."git/github/github-pat"
+      } gitlab.com=PAT:${config.sops.placeholder."git/gitlab/gitlab-pat"}'';
     };
   };
 }

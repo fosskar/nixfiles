@@ -65,5 +65,8 @@
       automatic = true;
       dates = [ "04:00" ];
     };
+    extraOptions = ''
+      !include ${config.sops.templates."nix-access-tokens".path}
+    '';
   };
 }
