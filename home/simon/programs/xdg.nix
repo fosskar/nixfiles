@@ -47,8 +47,8 @@ in
       # disable unused home dirs
       download = "${config.home.homeDirectory}/Downloads";
       documents = "${config.home.homeDirectory}/Documents";
-      pictures = "${config.home.homeDirectory}/Media/Pictures";
-      videos = "${config.home.homeDirectory}/Media/Videos";
+      pictures = "${config.home.homeDirectory}/Pictures";
+      videos = "${config.home.homeDirectory}/Videos";
       desktop = null;
       publicShare = null;
       music = null;
