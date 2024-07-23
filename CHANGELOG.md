@@ -1,3 +1,20 @@
+## [8.7.3](https://gitlab.com/simonoscr/nixfiles/compare/8.7.2...8.7.3) (2024-07-23)
+
+### :scissors: Refactor
+
+* cleanup double entries and move some keys ([ea1f6ff](https://gitlab.com/simonoscr/nixfiles/commit/ea1f6ff0556fc5d56ad4bd92aa09b199940b615e))
+
+### 📦 Other
+
+* **flake:** update flake ([52d699c](https://gitlab.com/simonoscr/nixfiles/commit/52d699cda640365584301700505206b938d8c797))
+
+### 🛠 Fixes
+
+* drop matugen ([3265823](https://gitlab.com/simonoscr/nixfiles/commit/32658232f20a83ce13b06a656304712f5d05fe0f))
+* ja ([91dea02](https://gitlab.com/simonoscr/nixfiles/commit/91dea0219c24b062d0fc9d990782bf81eeb92074))
+* **hyprland:** update config ([1e214af](https://gitlab.com/simonoscr/nixfiles/commit/1e214af45257626eee95d998fd9b1110af836959))
+* **i3:** updae bind ([2c3656a](https://gitlab.com/simonoscr/nixfiles/commit/2c3656aa1e0b8d33852dc2df336b58f2acf320ef))
+
 ## [8.7.2](https://gitlab.com/simonoscr/nixfiles/compare/8.7.1...8.7.2) (2024-07-22)
 
 ### 🛠 Fixes
