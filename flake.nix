@@ -1,6 +1,23 @@
 {
   description = "simonoscr's flake for nixos and home-manager";
 
+  nixConfig = {
+    substituters = [
+      "https://cache.nixos.org?priority=10"
+      "https://nix-community.cachix.org"
+      "https://hyprland.cachix.org"
+      "https://yazi.cachix.org"
+      "https://simonoscr.cachix.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
+      "simonoscr.cachix.org-1:pTFtYU3a9SXL+Fw6S3sZ8uk+Vd33Yoothd771oGNJBE="
+    ];
+  };
+
   inputs = {
     systems.url = "github:nix-systems/default-linux";
 
@@ -73,6 +90,12 @@
     };
 
     impermanence.url = "github:nix-community/impermanence";
+
+    # private secrets repo
+    nixsecrets = {
+      url = "git+ssh://git@gitlab.com/simonoscr/nixsecrets.git?ref=main&shallow=1";
+      flake = false;
+    };
   };
 
   outputs =
