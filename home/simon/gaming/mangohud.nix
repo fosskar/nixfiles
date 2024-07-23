@@ -1,21 +1,5 @@
 { pkgs, ... }:
-let
-  xdg.configHome =
-    let
-      x = builtins.getEnv "XDG_CONFIG_HOME";
-    in
-    if x != "" then x else "${builtins.getEnv "HOME"}/.config";
-in
 {
-  home.packages = [ pkgs.vkbasalt ];
-
-  home.file."${xdg.configHome}/vkBasalt/vkBasalt.conf".text = ''
-    effects = cas
-    toggleKey = Home
-    enableOnLaunch = True
-    casSharpness = 0.5
-  '';
-
   programs.mangohud = {
     enable = true;
     enableSessionWide = false;
@@ -26,21 +10,9 @@ in
       gl_vsync = 0;
       legacy_layout = false;
       gpu_stats = false;
-      #gpu_temp = false;
-      #gpu_power = false;
-      #gpu_text = "GPU";
-      #gpu_color = "2e9762";
       cpu_stats = false;
-      #cpu_temp = false;
-      #cpu_color = "2e97cb";
-      #cpu_text = "CPU";
       vram = false;
-      #vram_color = "ad64c1";
-      #ram_color = "c26693";
       fps = true;
-      #engine_color = "eb5b5b";
-      #vulkan_driver = true;
-      #wine_color = "eb5b5b";
       frametime = true;
       frame_timing = false;
       frametime_color = "00ff00";

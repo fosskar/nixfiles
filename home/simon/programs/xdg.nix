@@ -44,11 +44,12 @@ in
       enable = true;
       createDirectories = true;
 
+      # disable unused home dirs
       download = "${config.home.homeDirectory}/Downloads";
-      desktop = "${config.home.homeDirectory}/Desktop";
       documents = "${config.home.homeDirectory}/Documents";
       pictures = "${config.home.homeDirectory}/Media/Pictures";
       videos = "${config.home.homeDirectory}/Media/Videos";
+      desktop = null;
       publicShare = null;
       music = null;
       templates = null;

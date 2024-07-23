@@ -72,6 +72,7 @@
         "**/.direnv" = true;
       };
       # nix
+      # i use the nixd lang server here
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "${pkgs.nixd}/bin/nixd";
       "nix.formatterPath" = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
