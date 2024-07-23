@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  # user space systemd polkit service
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
     Unit = {
       Description = "polkit-gnome-authentication-agent-1";

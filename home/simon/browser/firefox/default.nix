@@ -59,66 +59,25 @@ in
         UrlbarInterventions = false;
         MoreFromMozilla = false;
       };
-      #ExtensionSettings = with builtins; let
-      #  extension = shortId: uuid: {
-      #    name = uuid;
-      #    value = {
-      #      install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/${shortId}/latest.xpi";
-      #      installation_mode = "force_installed";
-      #    };
-      #  };
-      #in
-      #  listToAttrs [
-      #    (extension "ublock-origin" "uBlock0@raymondhill.net")
-      #    (extension "bitwarden-password-manager" "{446900e4-71c2-419f-a6a7-df9c091e268b}")
-      #  ];
-      #"*".installation_mode = "blocked";
     };
     profiles = {
       default = {
         id = 0;
         bookmarks = import ./bookmarks.nix;
         isDefault = true;
-        ## #FIXME until home-manager can overwrite files or overwrite .backup files
-        #containers = {
-        #  "Personal" = {
-        #    id = 1;
-        #    color = "green"; # one of “blue”, “turquoise”, “green”, “yellow”, “orange”, “red”, “pink”, “purple”, “toolbar”
-        #    icon = "fingerprint"; # one of “briefcase”, “cart”, “circle”, “dollar”, “fence”, “fingerprint”, “gift”, “vacation”, “food”, “fruit”, “pet”, “tree”, “chill”
-        #  };
-        #  "Shopping" = {
-        #    id = 2;
-        #    color = "yellow";
-        #    icon = "cart";
-        #  };
-        #  "SocialMedia" = {
-        #    id = 3;
-        #    color = "orange";
-        #    icon = "tree";
-        #  };
-        #  "Google" = {
-        #    id = 4;
-        #    color = "red";
-        #    icon = "fence";
-        #  };
-        #  "Streaming" = {
-        #    id = 5;
-        #    color = "purple";
-        #    icon = "chill";
-        #  };
-        #};
         extensions = with inputs.firefox-addons.packages.${pkgs.system}; [
           ublock-origin
           bitwarden
           darkreader
           side-view
-          #multi-account-containers #FIXME
         ];
         search = {
+          # force set ddg as default search engine
           force = true;
           default = "DuckDuckGo";
           privateDefault = "DuckDuckGo";
           engines = {
+            # shortcut to search for nixos pkgs with @np
             "Nix Packages" = {
               urls = [
                 {
@@ -138,6 +97,7 @@ in
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
               definedAliases = [ "@np" ];
             };
+            # shortcut to search for nixos pkgs with @no
             "Nix Options" = {
               urls = [
                 {

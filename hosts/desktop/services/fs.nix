@@ -16,7 +16,7 @@
       "noatime"
       "nodev"
       "nosuid"
-      "size=256M"
+      "size=128M"
     ];
   };
   # enable the unified cgroup hierarchy (cgroupsv2)

@@ -7,6 +7,7 @@ let
     if x != "" then x else "${builtins.getEnv "HOME"}/.config";
 in
 {
+  ## this can switch left and right channel. needed this for my old headset
   #home.file."${xdg.configHome}/wireplumber/wireplumber.conf.d/51-change-channels.conf".text = ''
   #  monitor.alsa.rules = [
   #    {

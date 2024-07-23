@@ -2,7 +2,7 @@
 ## this is the systems configuration file                                                 ##
 ## use this to configure the system environment, it replaces /etc/nixos/configuration.nix ##
 ############################################################################################
-{ ... }:
+{ inputs, ... }:
 {
   imports = [
     ./core
@@ -23,6 +23,7 @@
     ./programs/xdg.nix
     ./programs/xwayland.nix
     ./programs/zsh.nix
+    ./secrets
     ./security
     ./services/audio.nix
     ./services/fs.nix

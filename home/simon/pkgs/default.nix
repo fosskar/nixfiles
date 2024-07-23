@@ -12,8 +12,8 @@
     spotify
 
     # audio
-    #teamspeak_client
-    teamspeak5_client
+    teamspeak_client
+    #teamspeak5_client
 
     # gaming
     #r2modman
