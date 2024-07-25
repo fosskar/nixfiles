@@ -10,7 +10,7 @@
 ---
 
 <br>
-  <img src="https://raw.githubusercontent.com/NixOS/nixos-artwork/master/logo/nixos-white.png" width="500px" alt="NixOS logo"/>
+  <img src="https://raw.githubusercontent.com/NixOS/nixos-artwork/master/logo/nix-snowflake-colours.svg" width="300px" alt="NixOS logo"/>
 <br>
 
 </div>
@@ -29,6 +29,44 @@ Feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 > [!IMPORTANT]
 > This repository is a work in progress, and I'm constantly learning more about NixOS, Nix, Flakes, and Home-Manager.
+
+## WIP
+
+### Desktop
+
+* [ ] flake-utils
+  * [x] initial setup
+  * [ ] utilize flake-utils
+* [ ] Create ISO image
+  * [ ] with hm or not?
+  * [ ] weekly Pipeline that builds the image
+* [x] pre-commit-hook
+  * [x] use nixfmt RFC
+  * [x] prettier
+  * [x] pre-commit-hook-sops
+* [ ] sops-nix
+  * [x] initial setup
+  * [ ] better secret management
+  * [x] stay pure
+* [ ] ags
+  * [ ] use own ags setup
+* [ ] use non-flake inputs
+
+### Server
+
+* [ ] general hardening
+  * [ ] ssh
+  * [ ] firewall
+  * [ ] kernel
+* [x] kubernetes
+  * [x] k3s
+  * [x] deploy with argocd+helm+nix
+  * [x] bootstrap
+    * [ ] yamllint
+    * [ ] shellcheck
+    * [x] prettier
+* [ ] tailscale
+  * [ ] setup
 
 <div align="center">
 
