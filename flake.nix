@@ -79,6 +79,12 @@
       url = "git+ssh://git@gitlab.com/simonoscr/nixsecrets.git?ref=main&shallow=1";
       flake = false;
     };
+
+    # private secrets repo
+    agstheme = {
+      url = "git+ssh://git@gitlab.com/simonoscr/ags.git?ref=main&shallow=1";
+      flake = false;
+    };
   };
 
   outputs =
