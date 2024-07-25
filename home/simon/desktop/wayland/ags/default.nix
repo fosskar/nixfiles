@@ -9,6 +9,8 @@ let
       sha256 = "2zDH36hBRnKLwtoYYMhWBaqukm2NMs0t32n1JbSooOE=";
     }
     + "/ags";
+
+  agsDirectory = builtins.toString inputs.agstheme;
 in
 {
   imports = [ inputs.ags.homeManagerModules.ags ];
@@ -24,5 +26,6 @@ in
   programs.ags = {
     enable = true;
     configDir = agsConfig;
+    #configDir = agsDirectory;
   };
 }
