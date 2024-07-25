@@ -1,3 +1,18 @@
+## [8.7.6](https://gitlab.com/simonoscr/nixfiles/compare/8.7.5...8.7.6) (2024-07-25)
+
+### 📔 Docs
+
+* update readme with checklist ([8d491f0](https://gitlab.com/simonoscr/nixfiles/commit/8d491f00646ba8aad83538a9afaf87ac8a2e05cc))
+
+### 📦 Other
+
+* **flake:** update flock ([5c8ac7b](https://gitlab.com/simonoscr/nixfiles/commit/5c8ac7b92d0162d08a1b240f93bb2520747d881b))
+
+### 🛠 Fixes
+
+* add agstheme as non flake input ([3ca0c70](https://gitlab.com/simonoscr/nixfiles/commit/3ca0c7089d402e1167d88ca4c987143d16dfdc97))
+* initial setup for using own ags WIP ([0405e3e](https://gitlab.com/simonoscr/nixfiles/commit/0405e3ed8bf7053a5fe2e29c70b9813117b5d151))
+
 ## [8.7.5](https://gitlab.com/simonoscr/nixfiles/compare/8.7.4...8.7.5) (2024-07-23)
 
 ### 👀 Reverts
