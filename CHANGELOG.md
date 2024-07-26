@@ -1,3 +1,18 @@
+## [8.7.7](https://gitlab.com/simonoscr/nixfiles/compare/8.7.6...8.7.7) (2024-07-26)
+
+### :scissors: Refactor
+
+* server configuration ([7cd3d90](https://gitlab.com/simonoscr/nixfiles/commit/7cd3d90f0fe06e3b5bab0a3cc93d25629a65344b))
+
+### 📔 Docs
+
+* update README ([058afd5](https://gitlab.com/simonoscr/nixfiles/commit/058afd57ec8b5eb35423b12d594a4a7352867132))
+* update readme capital letters not needed ([10f0fdb](https://gitlab.com/simonoscr/nixfiles/commit/10f0fdba7d9d25d50c07888043821c30e26058b8))
+
+### 📦 Other
+
+* **flake:** update flock ([3185a20](https://gitlab.com/simonoscr/nixfiles/commit/3185a20e46e686fddc6ac8297b849cedb3921afb))
+
 ## [8.7.6](https://gitlab.com/simonoscr/nixfiles/compare/8.7.5...8.7.6) (2024-07-25)
 
 ### 📔 Docs
