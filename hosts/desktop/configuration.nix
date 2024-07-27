@@ -26,13 +26,17 @@
     ./secrets
     ./security
     ./services/audio.nix
+    ./services/earlyoom.nix
     ./services/fs.nix
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
+    ./services/ollama.nix
     ./services/power.nix
     ./services/printing.nix
+    ./services/systemd.nix
     ./services/udev.nix
+    ./services/udiskie.nix
     ./services/virtualisation.nix
     ./services/zram.nix
     ../../home/home-manager.nix
