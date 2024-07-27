@@ -74,6 +74,11 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
+    tailray = {
+      url = "github:NotAShelf/tailray";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # private secrets repo
     nixsecrets = {
       url = "git+ssh://git@gitlab.com/simonoscr/nixsecrets.git?ref=main&shallow=1";
