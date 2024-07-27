@@ -428,11 +428,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1722096947,
-        "narHash": "sha256-uMt45fyadfOsfvxd9hGVle/ebsL5Zmu0E6w1th7TEi0=",
+        "lastModified": 1722099103,
+        "narHash": "sha256-2Ebhf5kYsszJV/05KdlE5R0S8w/fsgB8VBvjnlbKl+c=",
         "ref": "refs/heads/main",
-        "rev": "ae638d997d45e6183adafc6942b1b8fcc70f8928",
-        "revCount": 4996,
+        "rev": "10e8af00d61ee2d647af82712c4070eaec875cdb",
+        "revCount": 4998,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -596,11 +596,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1721324102,
-        "narHash": "sha256-WAZ0X6yJW1hFG6otkHBfyJDKRpNP5stsRqdEuHrFRpk=",
+        "lastModified": 1722098849,
+        "narHash": "sha256-D3wIZlBNh7LuZ0NaoCpY/Pvu+xHxIVtSN+KkWZYvvVs=",
         "owner": "hyprwm",
         "repo": "hyprutils",
-        "rev": "962582a090bc233c4de9d9897f46794280288989",
+        "rev": "5dcbbc1e3de40b2cecfd2007434d86e924468f1f",
         "type": "github"
       },
       "original": {
@@ -905,6 +905,7 @@
         "pre-commit-hooks": "pre-commit-hooks",
         "sops-nix": "sops-nix",
         "systems": "systems_4",
+        "tailray": "tailray",
         "yazi": "yazi"
       }
     },
@@ -1026,6 +1027,26 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tailray": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1721562678,
+        "narHash": "sha256-xyYdmxHtoWXqbmJPd0Gf7AYl6Uh+25u8oT5/9Cr0JTU=",
+        "owner": "NotAShelf",
+        "repo": "tailray",
+        "rev": "fc87440670258725a35a3c39fccf48b957cb77e1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NotAShelf",
+        "repo": "tailray",
         "type": "github"
       }
     },
