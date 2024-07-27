@@ -17,6 +17,7 @@
       christian-kohler.path-intellisense
       esbenp.prettier-vscode
       alefragnani.project-manager
+      continue.continue
     ];
     userSettings = {
       "update.mode" = "none";
@@ -67,7 +68,6 @@
       "editor.acceptSuggestionOnEnter" = "off";
       "editor.bracketPairColorization.enabled" = true;
       "editor.minimap.enabled" = false;
-      "open-in-browser.default" = "firefox";
       "search.exclude" = {
         "**/.direnv" = true;
       };
@@ -89,12 +89,14 @@
       # yaml
       "yaml.format.enable" = true;
       "[yaml]" = {
-        "defaultFormatter" = "redhat.vscode-yaml";
+        "editor.defaultFormatter" = "redhat.vscode-yaml";
       };
       # markdown
       "[markdown]" = {
         "editor.defaultFormatter" = "yzhang.markdown-all-in-one";
       };
+      "continue.telemetryEnabled" = false;
+      "continue.enableTabAutocomplete" = true;
     };
   };
 }
