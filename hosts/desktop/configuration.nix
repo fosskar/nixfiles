@@ -31,7 +31,7 @@
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
-    ./services/ollama.nix
+    ./services/llm/ollama.nix
     ./services/power.nix
     ./services/printing.nix
     ./services/systemd.nix

@@ -1,0 +1,22 @@
+{
+  "models": [
+    {
+      "title": "Open-WebUI",
+      "provider": "ollama",
+      "model": "AUTODETECT",
+      "completionOptions": {},
+      "apiBase": "http://nixos:8080/ollama",
+      "requestOptions": {
+        "headers": {
+          "Authorization": "Bearer sk-0b043a79c6e94074904d990fcc19889c"
+        }
+      }
+    }
+  ],
+  "tabAutocompleteModel": {
+    "title": "Autocompletion",
+    "provider": "ollama",
+    "model": "starcoder2"
+  },
+  "allowAnonymousTelemetry": false
+}
