@@ -16,7 +16,7 @@
   "tabAutocompleteModel": {
     "title": "Autocompletion",
     "provider": "ollama",
-    "model": "starcoder2"
+    "model": "deepseek-coder-v2"
   },
   "allowAnonymousTelemetry": false
 }
