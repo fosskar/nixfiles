@@ -1,3 +1,13 @@
+## [8.9.0](https://gitlab.com/simonoscr/nixfiles/compare/8.8.3...8.9.0) (2024-07-27)
+
+### 📦 Other
+
+* **flake:** update flock ([eae9e27](https://gitlab.com/simonoscr/nixfiles/commit/eae9e275ad487fa3fce09b47b0679e26f76ebf59))
+
+### 🚀 Features
+
+* tailray a tailscale systray ([7d48ac1](https://gitlab.com/simonoscr/nixfiles/commit/7d48ac1872eff732d6703cb59a4ce20ad0019687))
+
 ## [8.8.3](https://gitlab.com/simonoscr/nixfiles/compare/8.8.2...8.8.3) (2024-07-27)
 
 ### 📦 Other
