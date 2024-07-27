@@ -1,3 +1,27 @@
+## [8.8.0](https://gitlab.com/simonoscr/nixfiles/compare/8.7.7...8.8.0) (2024-07-27)
+
+### 📦 Other
+
+* **flake:** update flock ([bc58970](https://gitlab.com/simonoscr/nixfiles/commit/bc5897013aa3df99efd2510ec947fa0e594d7be8))
+* **flake:** update flock ([c21b77a](https://gitlab.com/simonoscr/nixfiles/commit/c21b77a3d3ca429b47482852ae8e4047e8f4563c))
+
+### 🚀 Features
+
+* **llm:** add ollama with open-webui for local llm ([22d3916](https://gitlab.com/simonoscr/nixfiles/commit/22d3916e883f6ad617eb8918414838c1fac20c44))
+* **oom:** add earlyoom for better handling of oom scenarios ([314043b](https://gitlab.com/simonoscr/nixfiles/commit/314043b3ae11b0af032e0b6080b841b52a9ac81a))
+* **systemd:** add systemd config file and disable ttys and set default timeouts ([e4799ea](https://gitlab.com/simonoscr/nixfiles/commit/e4799ea2917136383a13f8ec9943992d00d7b2bd))
+
+### 🛠 Fixes
+
+* **fonts:** update fonts and add some default ones for comp ([91a0f02](https://gitlab.com/simonoscr/nixfiles/commit/91a0f02da406cf849d95e8d1f3b59e7417b06877))
+* **gpu:** enable amd rocm for local llm ([1fd6098](https://gitlab.com/simonoscr/nixfiles/commit/1fd6098728e9256faf191c5c98a2092431ae6808))
+* **greetd:** adjust session paths ([a398903](https://gitlab.com/simonoscr/nixfiles/commit/a398903139aa9637b8e70667a7d7b66eb52120d1))
+* **pam:** add pams ([ed4dfb0](https://gitlab.com/simonoscr/nixfiles/commit/ed4dfb0e44d18d721693462ffd0c134f886ec72c))
+* **polit:** switch polkit from gnome to pantheon agent ([674b3ac](https://gitlab.com/simonoscr/nixfiles/commit/674b3acaf4088dcc76f3f0e177ccf1d13100463e))
+* **polkit:** change windows rules for pantheon polkit agent instead of gnome ([3553400](https://gitlab.com/simonoscr/nixfiles/commit/3553400d2269c8a91f9b10b117a9282bffd1b1c9))
+* **udiskie:** storage daemon for system ([c1dd726](https://gitlab.com/simonoscr/nixfiles/commit/c1dd72653c5875ee0ab7b54528bd3364292a1edc))
+* **vscode:** remove invalid settings and add continue extension to use local llm in vscode ([7751653](https://gitlab.com/simonoscr/nixfiles/commit/77516533f62b704f0513d6b5a963d41a0639aa96))
+
 ## [8.7.7](https://gitlab.com/simonoscr/nixfiles/compare/8.7.6...8.7.7) (2024-07-26)
 
 ### :scissors: Refactor
