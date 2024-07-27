@@ -20,7 +20,7 @@
       # may come to bite me in the ass when that happens.
       services = lib.mapAttrs (_: lib.mkForce) {
         "getty@tty1".enable = false;
-        "autovt@tty1".enable = true;
+        "autovt@tty1".enable = false;
         "getty@tty7".enable = false;
         "autovt@tty7".enable = false;
         "kmsconvt@tty1".enable = false;
