@@ -27,7 +27,7 @@ _: {
 
         # dim around specific applications
         "dimaround, class:^(xdg-desktop-portal-gtk)$"
-        "dimaround, class:^(polkit-gnome-authentication-agent-1)$"
+        "dimaround, class:^(polkit-pantheon-authentication-agent-1)$"
       ];
     };
   };
