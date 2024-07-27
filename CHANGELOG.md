@@ -1,3 +1,13 @@
+## [8.8.3](https://gitlab.com/simonoscr/nixfiles/compare/8.8.2...8.8.3) (2024-07-27)
+
+### 📦 Other
+
+* **flake:** update flock ([4bcff81](https://gitlab.com/simonoscr/nixfiles/commit/4bcff814d6c22c4a425687ee9b055dd5172a7521))
+
+### 🛠 Fixes
+
+* **failscale:** update settings ([c11fbf8](https://gitlab.com/simonoscr/nixfiles/commit/c11fbf88f8d7e789b65ffc0bf5b755d49e0ebd28))
+
 ## [8.8.2](https://gitlab.com/simonoscr/nixfiles/compare/8.8.1...8.8.2) (2024-07-27)
 
 ### 📦 Other
