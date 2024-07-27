@@ -5,7 +5,7 @@
       "provider": "ollama",
       "model": "AUTODETECT",
       "completionOptions": {},
-      "apiBase": "http://nixos:8080/ollama",
+      "apiBase": "http://desktop:8080/ollama",
       "requestOptions": {
         "headers": {
           "Authorization": "Bearer sk-0b043a79c6e94074904d990fcc19889c"
