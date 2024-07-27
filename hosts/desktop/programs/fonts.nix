@@ -2,7 +2,10 @@
 {
   fonts = {
     enableDefaultPackages = false;
-    fontDir.enable = true;
+    fontDir = {
+      enable = true;
+      decompressFonts = true;
+    };
     fontconfig = {
       enable = true;
       defaultFonts = {
@@ -28,11 +31,24 @@
       };
     };
     packages = with pkgs; [
+      # defaults worth keeping
+      dejavu_fonts
+      liberation_ttf # for PDFs, Roman
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
+      openmoji-color
+      openmoji-black
+      roboto
+      material-icons # used in widgets and such
+      material-design-icons
       (google-fonts.override { fonts = [ "Inter" ]; })
-      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      (nerdfonts.override {
+        fonts = [
+          "JetBrainsMono"
+          "NerdFontsSymbolsOnly"
+        ];
+      })
     ];
   };
 }
