@@ -95,6 +95,7 @@
       "[markdown]" = {
         "editor.defaultFormatter" = "yzhang.markdown-all-in-one";
       };
+      # continue local llm settings
       "continue.telemetryEnabled" = false;
       "continue.enableTabAutocomplete" = true;
     };
