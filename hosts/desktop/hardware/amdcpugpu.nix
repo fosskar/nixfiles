@@ -22,7 +22,7 @@
     amdgpu = {
       legacySupport.enable = false;
       initrd.enable = true;
-      opencl.enable = false; # ROCM maybe for LLM
+      opencl.enable = true; # ROCM maybe for LLM
       amdvlk = {
         enable = false; # I am using RADV
         #package = "";
