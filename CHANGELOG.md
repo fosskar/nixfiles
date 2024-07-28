@@ -1,3 +1,15 @@
+## [9.0.2](https://gitlab.com/simonoscr/nixfiles/compare/9.0.1...9.0.2) (2024-07-28)
+
+### 📦 Other
+
+* **flake:** update flock ([f658b4f](https://gitlab.com/simonoscr/nixfiles/commit/f658b4f68a472ad2966eb83925b42694e88ca22c))
+
+### 🛠 Fixes
+
+* update custom kernel with security features ([4f5d629](https://gitlab.com/simonoscr/nixfiles/commit/4f5d62957dc9712c40c26307e4170d1e47d70422))
+* **vscodium:** add wezterm as external terminal ([bcccf4c](https://gitlab.com/simonoscr/nixfiles/commit/bcccf4c3dc0f5198f56b82823e1ad063eb6592f1))
+* **zsh:** add run function to run easiert nix-shell commands ([caf5235](https://gitlab.com/simonoscr/nixfiles/commit/caf5235f7d9b74893cb5a544d0c7b2f6ac13b9e3))
+
 ## [9.0.1](https://gitlab.com/simonoscr/nixfiles/compare/9.0.0...9.0.1) (2024-07-28)
 
 ### 📦 Other
