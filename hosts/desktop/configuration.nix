@@ -8,6 +8,7 @@
     ./core
     ./gaming
     ./hardware
+    ./kernel
     ./network
     ./nix
     ./pkgs/packages.nix
