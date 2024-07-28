@@ -53,6 +53,8 @@
       "terminal.integrated.shellIntegration.enabled" = true;
       "terminal.integrated.smoothScrolling" = true;
       "terminal.integrated.defaultProfile.linux" = "zsh";
+      "terminal.explorerKind" = "both";
+      "terminal.external.linuxExec" = "${pkgs.zsh}/bin/wezterm";
       "terminal.integrated.profiles.linux" = {
         bash.path = "${pkgs.bash}/bin/bash";
         zsh.path = "${pkgs.zsh}/bin/zsh";
