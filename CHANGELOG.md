@@ -1,3 +1,24 @@
+## [9.0.0](https://gitlab.com/simonoscr/nixfiles/compare/8.9.0...9.0.0) (2024-07-28)
+
+### 📔 Docs
+
+* **firefox:** comment on two config params for hardware video acceleration with VA_API ([78144f3](https://gitlab.com/simonoscr/nixfiles/commit/78144f3c47ed31fea2fd94da53ddf73e48dbf318))
+
+### 📦 Other
+
+* **flake:** update flock ([d3e9130](https://gitlab.com/simonoscr/nixfiles/commit/d3e9130502d56cc1520f0ae62d89afbe27f70ba4))
+* **flake:** update flock ([b3bad1a](https://gitlab.com/simonoscr/nixfiles/commit/b3bad1a7ec3b8a986382cf388265519003044035))
+
+### 🧨 Breaking changes!
+
+* added latest xanmod-git kernel with custom patches ([df313dd](https://gitlab.com/simonoscr/nixfiles/commit/df313ddac54dfe2037030886dcc7c36cad77efec))
+
+### 🛠 Fixes
+
+* **ags:** split up multiple configurations and use flake input as non-flake instead of fetchfromgithub ([ad1e130](https://gitlab.com/simonoscr/nixfiles/commit/ad1e130ba90a457e64f2a21ca7776fb1f8acc99e))
+* **llm:** continoue config update for depp-code ([fc88a77](https://gitlab.com/simonoscr/nixfiles/commit/fc88a77ce967318dc2031378703cb72763959d02))
+* **tmpf:** increase size to 75% of RAM to be able to build custom kernel ([94c902a](https://gitlab.com/simonoscr/nixfiles/commit/94c902a35fa1583f19c46666302e31e0b138a7bf))
+
 ## [8.9.0](https://gitlab.com/simonoscr/nixfiles/compare/8.8.3...8.9.0) (2024-07-27)
 
 ### 📦 Other
