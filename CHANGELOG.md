@@ -1,3 +1,13 @@
+## [9.0.1](https://gitlab.com/simonoscr/nixfiles/compare/9.0.0...9.0.1) (2024-07-28)
+
+### 📦 Other
+
+* **flake:** update flock ([1cb1163](https://gitlab.com/simonoscr/nixfiles/commit/1cb1163d437d684ebd6d0773cf2a0599d0660c3e))
+
+### 🛠 Fixes
+
+* update xanmod custom kernel to 6.10.1 ([94a7b11](https://gitlab.com/simonoscr/nixfiles/commit/94a7b114620f75edb046f683e6ea386081028fb0))
+
 ## [9.0.0](https://gitlab.com/simonoscr/nixfiles/compare/8.9.0...9.0.0) (2024-07-28)
 
 ### 📔 Docs
