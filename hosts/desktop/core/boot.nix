@@ -29,7 +29,7 @@
       # The size of the tmpfs, in percentage form
       # this defaults to 50% of your ram, which is a good default
       # but should be tweaked based on your systems capabilities
-      tmpfsSize = "50%";
+      tmpfsSize = "75%";
     };
 
     initrd = {
@@ -49,7 +49,8 @@
       };
     };
 
-    kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
+    ## use custom xanmod kernel
+    #kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
 
     kernelParams = [
       # https://en.wikipedia.org/wiki/Kernel_page-table_isolation
