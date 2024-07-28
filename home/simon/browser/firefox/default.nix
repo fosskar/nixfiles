@@ -410,11 +410,11 @@ in
           "privacy.globalprivacycontrol.enabled" = true;
 
           # MEDIA
-          "media.ffmpeg.vaapi.enabled" = true;
+          "media.ffmpeg.vaapi.enabled" = true; # Hardware video acceleration with VA_API
           "media.eme.enabled" = true;
           "media.videocontrols.picture-in-picture.enabled" = true;
           "media.autoplay.default" = 5;
-          "gfx.webrender.all" = true;
+          "gfx.webrender.all" = true; # set webrender composition
 
           # IMAGE CACHE
           "image.mem.decode_bytes_at_a_time" = 32768;
