@@ -40,6 +40,18 @@ _: {
       zstyle ':completion:*' menu select
       zstyle ':completion:*' verbose true
       zstyle ':completion:*' completer _complete _ignored _approximate
+
+      # run command
+      run() {
+          local pkgname="$1"
+          local appname="$1"
+
+          if [ -n "$2" ]; then
+              appname="$2"
+          fi
+
+          nix-shell -p "$pkgname" --run "$appname"
+      }
     '';
 
     history = {
