@@ -28,7 +28,7 @@ in
 
         # Optimized for performance
         # this is already set on the Xanmod kernel
-        # CC_OPTIMIZE_FOR_PERFORMANCE_O3 = yes;
+        CC_OPTIMIZE_FOR_PERFORMANCE_O3 = yes;
       };
     }
   ];

@@ -125,7 +125,7 @@
       # except when they coincide with updates to the ctime or mtime
       "rootflags=noatime"
       # linux security modules
-      "lsm=landlock,lockdown,yama,integrity,apparmor,bpf,tomoyo,selinux"
+      "lsm=landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,bpf,tomoyo,selinux"
       # prevent the kernel from blanking plymouth out of the fb
       "fbcon=nodefer"
       # the format that will be used for integrity audit logs

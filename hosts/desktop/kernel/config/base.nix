@@ -196,8 +196,8 @@ in
         TCP_AO = yes; # network/security. TCP auth option. https://www.phoronix.com/news/TCP-AO-Linux-Kernel-Updated  Specs:https://datatracker.ietf.org/doc/html/rfc5925
 
         # RCU Debugging
-        # RCU_CPU_STALL_TIMEOUT = "60"; #xanmod github and cachyos use 60
-        # RCU_CPU_STALL_CPUTIME = yes; # enabled in xanmod github. Cachyos and nix xanmod disable this.
+        RCU_CPU_STALL_TIMEOUT = freeform "60"; # xanmod github and cachyos use 60
+        RCU_CPU_STALL_CPUTIME = yes; # enabled in xanmod github. Cachyos and nix xanmod disable this.
 
         # Linear Address Masking (LAM): modifies the checking that is applied to 64-bit linear addresses, allowing software to use of the untranslated address bits for metadata.
         # The capability can be used for efficient address sanitizers (ASAN) implementation and for optimizations in JITs.

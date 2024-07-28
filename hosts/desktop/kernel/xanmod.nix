@@ -17,7 +17,6 @@ let
   inherit (lib.versions) pad majorMinor;
 
   version = "6.10.1";
-  baseVersion = "6.10";
   vendorSuffix = "xanmod1";
 
   pname = "linux-xanmod";
@@ -32,7 +31,7 @@ let
       src = fetchFromGitHub {
         owner = "xanmod";
         repo = "linux";
-        rev = "${baseVersion}";
+        rev = "refs/tags/${version}-${vendorSuffix}";
         #sha256 = pkgs.lib.fakeSha256;
         sha256 = "dxWSHTawJvxK5yabBd7pu/7kE6awYogT4nB7K/Pj+BU=";
       };

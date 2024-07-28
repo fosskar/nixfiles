@@ -9,19 +9,15 @@ let
   inherit (lib.strings) hasSuffix;
   inherit (lib.filesystem) listFilesRecursive;
 
-  # Get hostname from meta module.
+  # get hostname
   inherit (config.networking) hostName;
 
-  # Call the custom Xanmod package. Any future kernel builds from different sources
-  # should be added in the packages directory.
+  # call the custom Xanmod package
   inherit (pkgs.callPackage ./xanmod.nix { inherit hostName; }) xanmod_custom;
 in
 {
-  # Autodiscover Nix files containing patch configurations
-  # with patchfiles or extraStructuredConfig. This is not the
-  # most optimized way to do it, but it works.
   imports = [ ./config ];
 
-  # use custom Xanmod kernel
+  # set custom xanmod kernel
   boot.kernelPackages = pkgs.linuxPackagesFor xanmod_custom;
 }
