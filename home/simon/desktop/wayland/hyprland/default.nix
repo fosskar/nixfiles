@@ -8,7 +8,8 @@
     ./rules.nix
     ./hyprlock.nix
     ./hypridle.nix
-    ../ags
+    ../ags/aylur-style.nix
+    #../ags/hyprpanel.nix
     ./shortcuts_info.nix
     #./plugins.nix
   ];

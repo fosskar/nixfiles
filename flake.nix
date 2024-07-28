@@ -85,9 +85,12 @@
       flake = false;
     };
 
-    # private secrets repo
-    agstheme = {
-      url = "git+ssh://git@gitlab.com/simonoscr/ags.git?ref=main&shallow=1";
+    #hyprpanel = {
+    #  url = "github:Jas-SinghFSU/HyprPanel";
+    #  flake = false;
+    #};
+    agsdotfiles = {
+      url = "github:Aylur/dotfiles";
       flake = false;
     };
   };
