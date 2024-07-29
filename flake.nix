@@ -33,12 +33,23 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        devshell.follows = "";
+        flake-compat.follows = "";
+        git-hooks.follows = "";
+        nix-darwin.follows = "";
+        treefmt-nix.follows = "";
+      };
     };
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "";
+      };
     };
 
     hyprland = {
@@ -65,7 +76,9 @@
       };
     };
 
-    yazi.url = "github:sxyazi/yazi";
+    yazi = {
+      url = "github:sxyazi/yazi";
+    };
 
     ags = {
       url = "github:Aylur/ags";
