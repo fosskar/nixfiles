@@ -1,3 +1,19 @@
+## [9.0.3](https://gitlab.com/simonoscr/nixfiles/compare/9.0.2...9.0.3) (2024-07-29)
+
+### 📦 Other
+
+* **flake:** update flake ([5932aae](https://gitlab.com/simonoscr/nixfiles/commit/5932aaecb35c33f6bd75567940f5e1f276a15dab))
+* **flake:** update flock ([f6774db](https://gitlab.com/simonoscr/nixfiles/commit/f6774dbf195ef5bdea0c0b26bed4202c9a7f3434))
+* **flake:** update flock ([ebb2da4](https://gitlab.com/simonoscr/nixfiles/commit/ebb2da4467155146d28635e387783e319b056f4f))
+* **flake:** update flock ([26b7ff6](https://gitlab.com/simonoscr/nixfiles/commit/26b7ff69b5fd8f9119d8cbc6881158927c15023d))
+
+### 🛠 Fixes
+
+* **dpmsScript:** get Playing ([0c24d22](https://gitlab.com/simonoscr/nixfiles/commit/0c24d22916e7670cd2c8823ad2d91db9fa1cc8ba))
+* **firefox:** add shyfox ([919d428](https://gitlab.com/simonoscr/nixfiles/commit/919d4286d225c61dece9cbc1c178d444260a2c7e))
+* **hypridle:** remove suspend keep running ([b52ccc6](https://gitlab.com/simonoscr/nixfiles/commit/b52ccc6ca60f78226b82ab411034e15efc014e06))
+* **hyprpanel:** wip still not used bcs hyprland dont start with it ([3c032c7](https://gitlab.com/simonoscr/nixfiles/commit/3c032c7dda3f843ae9824d2bc83bbc8392b38343))
+
 ## [9.0.2](https://gitlab.com/simonoscr/nixfiles/compare/9.0.1...9.0.2) (2024-07-28)
 
 ### 📦 Other
