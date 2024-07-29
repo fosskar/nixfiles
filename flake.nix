@@ -85,10 +85,10 @@
       flake = false;
     };
 
-    #hyprpanel = {
-    #  url = "github:Jas-SinghFSU/HyprPanel";
-    #  flake = false;
-    #};
+    hyprpanel = {
+      url = "github:Jas-SinghFSU/HyprPanel";
+      flake = false;
+    };
     agsdotfiles = {
       url = "github:Aylur/dotfiles";
       flake = false;

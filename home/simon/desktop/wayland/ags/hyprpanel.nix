@@ -24,24 +24,31 @@ in
   home.packages = with pkgs; [
     bun # needed
     dart-sass # needed
+    brightnessctl # needed
 
-    #optional
-    brightnessctl
-    #bluez
-    #bluez-utils
-    #grimblast
+    bluez
+    bluez-tools
+    grimblast
     gpu-screen-recorder
-    #python
+    python3
     gpustat
   ];
 
-  programs.ags = {
-    enable = true;
-    configDir = ./hyprpanel;
+  xdg.configFile."ags" = {
+    source = agsDirectory;
+    target = "ags";
+    recursive = true;
+    #onChange = ''
+    #  rm -rf ${config.xdg.configHome}/ags
+    #  cp -r ${config.xdg.configHome}/ags_init ${config.xdg.configHome}/ags
+    #  chmod -R u+w ${config.xdg.configHome}/ags
+    #'';
   };
 
-  #xdg.configFile."ags".source = config.lib.file.mkOutOfStoreSymlink agsDirectory;
-  #home.file.".config/ags".source = lib.file.mkOutOfStoreSymlink agsDirectory;
+  programs.ags = {
+    enable = true;
+    #configDir = agsDirectory;
+  };
 
   #home.file.".config/ags/hyprpanel.json".text = ''
   #  {
