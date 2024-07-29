@@ -1,17 +1,31 @@
-{ pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 let
-  ffTheme = pkgs.fetchFromGitHub {
+  ffultima = pkgs.fetchFromGitHub {
     owner = "soulhotel";
     repo = "FF-ULTIMA";
     rev = "1.8.1";
     #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
     sha256 = "a+QWOfvGBIDWxVOd7mgYNB9fdW6FWzbE5KT7KbntDZk=";
   };
+
+  shyfox = pkgs.fetchFromGitHub {
+    owner = "Naezr";
+    repo = "ShyFox";
+    rev = "b8687644566e10eae652227b07cb97a6d4b09d63";
+    #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
+    sha256 = "EkT1vf3JJdBaM3trlrurGmPNWsBu79HoH0dTWWTVD28=";
+  };
 in
 {
   home = {
     sessionVariables.BROWSER = "firefox";
-    file.".mozilla/firefox/default/chrome/theme".source = "${ffTheme}/theme";
+    #file.".mozilla/firefox/${config.programs.firefox.profiles.simon.path}/chrome".source = "${ffultima}/theme";
+    file.".mozilla/firefox/${config.programs.firefox.profiles.simon.path}/chrome".source = "${shyfox}/chrome";
   };
 
   programs.firefox = {
@@ -61,7 +75,7 @@ in
       };
     };
     profiles = {
-      default = {
+      simon = {
         id = 0;
         bookmarks = import ./bookmarks.nix;
         isDefault = true;
@@ -69,7 +83,7 @@ in
           ublock-origin
           bitwarden
           darkreader
-          side-view
+          sidebery
         ];
         search = {
           # force set ddg as default search engine
@@ -276,7 +290,6 @@ in
           "dom.event.clipboardevents.enabled" = false;
           "dom.event.contextmenu.enabled" = false;
           "dom.gamepad.enabled" = false;
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
 
           # MISCELLANEOUS
           "browser.download.start_downloads_in_tmp_dir" = true;
@@ -471,11 +484,21 @@ in
           "devtools.selfxss.count" = 0;
           "device.sensors.enabled" = false;
           "places.history.enabled" = false;
+
+          # this enableds custom userChrome and userContent css files
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+
+          # make here custom shyfox or ff-ultima user.js settings here
+          # shyfox
         };
-        # custom theme
-        userChrome = builtins.readFile "${ffTheme}/userChrome.css";
-        userContent = builtins.readFile "${ffTheme}/userContent.css";
-        extraConfig = builtins.readFile ./user.js;
+        ## custom theme
+        # FF_ULTIMA
+        #userChrome = builtins.readFile "${ffultima}/userChrome.css";
+        #userContent = builtins.readFile "${ffultima}/userContent.css";
+        #extraConfig = builtins.readFile "${ffultima}/user.js";
+
+        # shyfox
+        extraConfig = builtins.readFile "${shyfox}/user.js";
       };
     };
   };
