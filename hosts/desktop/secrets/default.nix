@@ -54,7 +54,7 @@ in
     templates = {
       "nix-access-tokens".content = ''access-tokens = github.com=${
         config.sops.placeholder."git/github/github-pat"
-      } gitlab.com=PAT:${config.sops.placeholder."git/gitlab/gitlab-pat"}'';
+      }'';
     };
   };
 }
