@@ -1,15 +1,10 @@
 { pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    zed-editor
-    nixd
-  ];
-
   xdg.configFile."zed/settings.json".text = builtins.toJSON {
     theme = {
       mode = "system";
-      light = "VSCode Dark Modern";
-      dark = "VSCode Dark Modern";
+      light = "VSCode Dark Modern - Custom";
+      dark = "VSCode Dark Modern - Custom";
     };
     base_keymap = "VSCode";
     features = {
@@ -247,6 +242,7 @@
       line_height = "standard";
       detect_venv = {
         on = {
+
           directories = [
             ".env"
             "env"
