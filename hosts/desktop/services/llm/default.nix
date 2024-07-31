@@ -2,6 +2,6 @@
 {
   imports = [
     ./ollama.nix
-    ./open-webui.nix
+    #./open-webui.nix
   ];
 }

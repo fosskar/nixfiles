@@ -8,7 +8,7 @@
     ./core
     ./gaming
     ./hardware
-    ./kernel
+    #./kernel # <- this is custom xanmod kernel need too long to build annoying
     ./network
     ./nix
     ./pkgs/packages.nix

@@ -49,8 +49,8 @@
       };
     };
 
-    ## use custom xanmod kernel
-    #kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
+    ## use custom xanmod kernel no
+    kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
 
     kernelParams = [
       # https://en.wikipedia.org/wiki/Kernel_page-table_isolation
