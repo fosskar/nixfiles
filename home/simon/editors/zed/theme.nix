@@ -30,7 +30,7 @@
           "ghost_element.active" = null;
           "ghost_element.selected" = null;
           "ghost_element.disabled" = null;
-          "text" = "#F2F2F2";
+          "text" = "#ffffff";
           "text.muted" = "#9D9D9D";
           "text.placeholder" = null;
           "text.disabled" = null;
