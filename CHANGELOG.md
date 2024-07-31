@@ -1,3 +1,10 @@
+## [9.0.5](https://gitlab.com/simonoscr/nixfiles/compare/9.0.4...9.0.5) (2024-07-31)
+
+### 🛠 Fixes
+
+* **zed:** split up settings, theme and config ([fdaf185](https://gitlab.com/simonoscr/nixfiles/commit/fdaf185bd4904c12698f9fdbd57a22987a603577))
+* **zed:** split up settings, theme and config ([87b7bab](https://gitlab.com/simonoscr/nixfiles/commit/87b7babc2ada85396b92ef2d856cb139c63ef3aa))
+
 ## [9.0.4](https://gitlab.com/simonoscr/nixfiles/compare/9.0.3...9.0.4) (2024-07-31)
 
 ### 📦 Other
