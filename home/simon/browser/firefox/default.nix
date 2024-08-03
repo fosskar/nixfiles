@@ -84,6 +84,7 @@ in
           bitwarden
           darkreader
           sidebery
+          simplelogin
         ];
         search = {
           # force set ddg as default search engine
