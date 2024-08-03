@@ -1,6 +1,5 @@
 { pkgs, ... }:
 {
-
   imports = [
     ./settings.nix
     ./theme.nix

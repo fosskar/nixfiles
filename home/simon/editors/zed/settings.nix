@@ -164,7 +164,6 @@
     show_call_status_icon = true;
     enable_language_server = true;
     linked_edits = true;
-    language_servers = [ "${pkgs.nixd}/bin/nixd" ];
     autosave = {
       after_delay = {
         milliseconds = 500;
@@ -177,6 +176,7 @@
     tabs = {
       git_status = true;
       close_position = "right";
+      file_icons = true;
     };
     preview_tabs = {
       enabled = true;
@@ -314,12 +314,14 @@
       };
       Nix = {
         format_on_save = "on";
+        language_servers = [ "nixd" ];
         formatter = {
           external = {
             arguments = [ ];
             command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
           };
         };
+        #"formatter" = "language_server";
       };
       TypeScript = {
         language_servers = [
@@ -347,12 +349,12 @@
     lsp = {
       nixd = {
         binary = {
-          path = /usr/bin/env;
-          arguments = [ "nil" ];
+          path = "${pkgs.nixd}/bin/nixd";
+          arguments = [ ];
         };
       };
     };
-    vim = {
+    svim = {
       use_system_clipboard = "always";
       use_multiline_find = false;
       use_smartcase_find = false;

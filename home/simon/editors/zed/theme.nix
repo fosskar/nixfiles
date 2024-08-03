@@ -11,7 +11,7 @@
         style = {
           "background.appearance" = "opaque";
           "border" = "#2B2B2B";
-          "border.variant" = "#2B2B2B";
+          "border.variant" = "#808080";
           "border.focused" = "#0078D4";
           "border.selected" = "#2B2B2B";
           "border.transparent" = "#2B2B2B";
@@ -30,8 +30,8 @@
           "ghost_element.active" = null;
           "ghost_element.selected" = null;
           "ghost_element.disabled" = null;
-          "text" = "#ffffff";
-          "text.muted" = "#9D9D9D";
+          "text" = "#FFFFFF";
+          "text.muted" = "#D9D9D9";
           "text.placeholder" = null;
           "text.disabled" = null;
           "text.accent" = null;
@@ -60,10 +60,10 @@
           "editor.background" = "#1F1F1F";
           "editor.gutter.background" = "#1F1F1F";
           "editor.subheader.background" = null;
-          "editor.active_line.background" = "#5AC1FE3D";
-          "editor.highlighted_line.background" = "#5AC1FE3D";
-          "editor.line_number" = "#6E7681";
-          "editor.active_line_number" = "#CCCCCC";
+          "editor.active_line.background" = "#3E3E3EAD";
+          "editor.highlighted_line.background" = "#264F78";
+          "editor.line_number" = "#717171";
+          "editor.active_line_number" = "#D9D9D9";
           "editor.invisible" = null;
           "editor.wrap_guide" = "#2B2B2B";
           "editor.active_wrap_guide" = "#2B2B2B";
