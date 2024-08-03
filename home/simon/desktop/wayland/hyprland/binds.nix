@@ -45,7 +45,6 @@
           "SUPER, G, togglegroup"
           "SUPER, V, togglefloating"
           "SUPER, F, fullscreen, 0"
-          "SUPER, O, fakefullscreen"
           "SUPER, J, togglesplit"
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
