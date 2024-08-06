@@ -80,6 +80,10 @@
       };
     };
 
+    hyprpanel = {
+      url = "github:Jas-SinghFSU/HyprPanel";
+    };
+
     yazi = {
       url = "github:sxyazi/yazi";
     };
@@ -102,10 +106,6 @@
       flake = false;
     };
 
-    hyprpanel = {
-      url = "github:Jas-SinghFSU/HyprPanel";
-      flake = false;
-    };
     agsdotfiles = {
       url = "github:Aylur/dotfiles";
       flake = false;
@@ -120,7 +120,12 @@
       imports = [ inputs.pre-commit-hooks.flakeModule ];
 
       perSystem =
-        { config, pkgs, ... }:
+        {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
         {
           pre-commit = {
             settings = {
@@ -162,6 +167,11 @@
             '';
           };
           formatter = pkgs.nixfmt-rfc-style;
+
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [ inputs.hyprpanel.overlay.${system} ];
+          };
         };
 
       flake = {
