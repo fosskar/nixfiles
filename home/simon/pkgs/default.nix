@@ -6,14 +6,14 @@
     webcord-vencord
     protonmail-desktop
     (lowPrio proton-pass) # FIXME package collision between proton-mail and proton-pass app.asar
-    #bitwarden-desktop
+    bitwarden-desktop
 
     # media
     spotify
 
     # audio
     teamspeak_client
-    #teamspeak5_client
+    teamspeak5_client
 
     # gaming
     #r2modman
