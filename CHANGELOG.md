@@ -1,3 +1,15 @@
+## [9.1.1](https://gitlab.com/simonoscr/nixfiles/compare/9.1.0...9.1.1) (2024-08-06)
+
+### 📦 Other
+
+* **flake:** update flake ([003ee02](https://gitlab.com/simonoscr/nixfiles/commit/003ee0285fa59290d2e583b0718092a089c5a01b))
+
+### 🛠 Fixes
+
+* **fs:** remove deprecated feature ([5f61351](https://gitlab.com/simonoscr/nixfiles/commit/5f613515333f7a780fb0009739f29a76efadaf49))
+* **hyprland:** update hyprland config and add hyprpanel ([054553e](https://gitlab.com/simonoscr/nixfiles/commit/054553e14d3591f1c5b754d2f24676bb352aa5d1))
+* **pkgs:** add teamspeak5 and bitwarden-desktop ([b51c84d](https://gitlab.com/simonoscr/nixfiles/commit/b51c84df153bb835bf80a9b90924690edae63667))
+
 ## [9.1.0](https://gitlab.com/simonoscr/nixfiles/compare/9.0.5...9.1.0) (2024-08-03)
 
 ### 📦 Other
