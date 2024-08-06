@@ -19,8 +19,4 @@
       "size=128M"
     ];
   };
-  # enable the unified cgroup hierarchy (cgroupsv2)
-  # NOTE: we use mkForce ensure that we are making cgroupsv2 the default
-  # some services, i.e. lxd,  tries to disable it
-  systemd.enableUnifiedCgroupHierarchy = lib.mkForce true;
 }
