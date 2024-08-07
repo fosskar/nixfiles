@@ -1,3 +1,14 @@
+## [9.1.2](https://gitlab.com/simonoscr/nixfiles/compare/9.1.1...9.1.2) (2024-08-07)
+
+### 📦 Other
+
+* **flake:** update flake ([7e64b38](https://gitlab.com/simonoscr/nixfiles/commit/7e64b38157b5250781c3afd075ae491d66fd3725))
+* **flake:** update flake ([2122e77](https://gitlab.com/simonoscr/nixfiles/commit/2122e772a60971db0d80257e8c547fa0e0da0931))
+
+### 🛠 Fixes
+
+* **qt:** theming why did i even remove this ([cbc7db2](https://gitlab.com/simonoscr/nixfiles/commit/cbc7db2708b06740fbab84a66e199ea601858b48))
+
 ## [9.1.1](https://gitlab.com/simonoscr/nixfiles/compare/9.1.0...9.1.1) (2024-08-06)
 
 ### 📦 Other
