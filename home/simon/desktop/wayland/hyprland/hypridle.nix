@@ -40,10 +40,10 @@ in
           on-resume = "hyprctl dispatch dpms on";
         }
         # at the time no suspend please iam running llm in my local network until better solution like own server?!?!
-        #{
-        #  timeout = 3600;
-        #  on-timeout = suspendScript.outPath;
-        #}
+        {
+          timeout = 3600;
+          on-timeout = suspendScript.outPath;
+        }
       ];
     };
   };
