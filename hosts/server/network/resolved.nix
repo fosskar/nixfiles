@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   services = {
     resolved = {
       # enable systemd DNS resolver daemon
