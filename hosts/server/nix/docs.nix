@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   documentation = {
     # whether to enable the `doc` output of packages
     # generally in ${pkg}/share/ as plaintext or html

@@ -1,5 +1,4 @@
-{ config, lib, ... }:
-{
+_: {
   boot = {
     kernelModules = [ "tcp_bbr" ];
     kernel.sysctl = {
