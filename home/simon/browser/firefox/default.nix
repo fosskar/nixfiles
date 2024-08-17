@@ -16,9 +16,9 @@ let
   shyfox = pkgs.fetchFromGitHub {
     owner = "Naezr";
     repo = "ShyFox";
-    rev = "b8687644566e10eae652227b07cb97a6d4b09d63";
+    rev = "73a25ebd70f5c02fe61dc96467550b8b8f146d3b";
     #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
-    sha256 = "EkT1vf3JJdBaM3trlrurGmPNWsBu79HoH0dTWWTVD28=";
+    sha256 = "lVE0NbModRylA8s2SlBI85pMMob9dvwv0MgnKrXGqHo=";
   };
 in
 {
