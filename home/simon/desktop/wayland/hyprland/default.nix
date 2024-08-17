@@ -1,7 +1,6 @@
 { inputs, pkgs, ... }:
 {
   imports = [
-    inputs.hyprland.homeManagerModules.default
     ./binds.nix
     ./hyprmode.nix
     ./settings.nix
@@ -23,6 +22,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.default;
     xwayland.enable = true; # true is default, but i set it anyways
     systemd = {
       enable = true;
