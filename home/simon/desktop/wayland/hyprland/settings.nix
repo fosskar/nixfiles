@@ -3,11 +3,13 @@
   wayland.windowManager.hyprland = {
     settings = {
       exec-once = [
+        "hyprlock"
+        "hyprctl setcursor ${config.home.pointerCursor.name} ${toString config.home.pointerCursor.size}"
         "ags -b hypr"
         "steam -silent"
+        "corectrl"
         "udiskie &"
-        "hyprctl setcursor ${config.home.pointerCursor.name} ${toString config.home.pointerCursor.size}"
-        "hyprlock"
+
       ];
       env = [
         #"AQ_NO_ATOMIC,1"

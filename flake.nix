@@ -16,7 +16,7 @@
 
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs-small";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     flake-parts = {
@@ -117,12 +117,7 @@
       imports = [ inputs.pre-commit-hooks.flakeModule ];
 
       perSystem =
-        {
-          config,
-          pkgs,
-          system,
-          ...
-        }:
+        { config, pkgs, ... }:
         {
           pre-commit = {
             settings = {
@@ -172,13 +167,7 @@
             '';
           };
           formatter = pkgs.nixfmt-rfc-style;
-
-          _module.args.pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [ inputs.hyprpanel.overlay.${system} ];
-          };
         };
-
       flake = {
         nixosConfigurations = {
           desktop = inputs.nixpkgs.lib.nixosSystem {
