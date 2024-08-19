@@ -1,3 +1,27 @@
+## [9.1.3](https://gitlab.com/simonoscr/nixfiles/compare/9.1.2...9.1.3) (2024-08-19)
+
+### 💈 Style
+
+* **lint:** apply deadnix and statix and add it also to pre-commit-hook ([fdd570a](https://gitlab.com/simonoscr/nixfiles/commit/fdd570a78632235069adbf471b667ac317d5f735))
+* **lint:** apply linting ([1d9609f](https://gitlab.com/simonoscr/nixfiles/commit/1d9609f8982a70cb967083f139390eb8d1762ee8))
+
+### 📦 Other
+
+* **deps:** update node docker tag to v22.6.0 ([d9c2dd1](https://gitlab.com/simonoscr/nixfiles/commit/d9c2dd1e53c950f5ebb5cd98da471bda8117b128))
+* **flake:** update flake ([f115102](https://gitlab.com/simonoscr/nixfiles/commit/f11510243545368d5214257535f83fc83977d8a7))
+* **flake:** update flake ([5ce458c](https://gitlab.com/simonoscr/nixfiles/commit/5ce458cc273adf9fc91a546077d52c92dfbab786))
+* **flake:** update flake ([13a8a47](https://gitlab.com/simonoscr/nixfiles/commit/13a8a47f4dadc9202918544918f05b073140ba23))
+* **flake:** update flake ([4f331f2](https://gitlab.com/simonoscr/nixfiles/commit/4f331f25c15ad5f1a410dea4754d3b7d391f09c0))
+
+### 🛠 Fixes
+
+* **firefox:** update shyfox ([cfb4154](https://gitlab.com/simonoscr/nixfiles/commit/cfb41543490dafe5fd6af1ce2f4bbb687c4deaff))
+* **hyprland:** update hyprland config ([ac4dec7](https://gitlab.com/simonoscr/nixfiles/commit/ac4dec7b6848da476595ebd0a15609720dc944b9))
+* **hyprland:** update plugins and startup ([526e5e6](https://gitlab.com/simonoscr/nixfiles/commit/526e5e6ce01b49c071e728b2a0877c724ca38e5d))
+* **hyprland:** use nixos module instead of upstream module ([d84dd6a](https://gitlab.com/simonoscr/nixfiles/commit/d84dd6a9b4a3afa15dab0b738406b1af6c8219da))
+* **kitty:** enable kitty ([797d516](https://gitlab.com/simonoscr/nixfiles/commit/797d516e34e16f133bf7e6245404f5f3b69f7bdd))
+* **llm:** enable ollama and open-webui again ([cad3ec1](https://gitlab.com/simonoscr/nixfiles/commit/cad3ec127e77fce8a9b757cdb9914fbfcde41903))
+
 ## [9.1.2](https://gitlab.com/simonoscr/nixfiles/compare/9.1.1...9.1.2) (2024-08-07)
 
 ### 📦 Other
