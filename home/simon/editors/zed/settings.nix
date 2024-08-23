@@ -11,6 +11,7 @@
       inline_completion_provider = "none";
     };
     buffer_font_family = "JetBrainsMono Nerd Font";
+    buffer_font_fallbacks = [ ];
     buffer_font_features = {
       calt = true;
     };
@@ -18,6 +19,7 @@
     buffer_font_weight = 400;
     buffer_line_height = "standard";
     ui_font_family = "Inter";
+    ui_font_fallbacks = [ ];
     ui_font_features = {
       calt = false;
     };
@@ -35,11 +37,14 @@
     restore_on_startup = "last_workspace";
     drop_target_size = 0.2;
     when_closing_with_no_tabs = "platform_default";
+    use_system_path_prompts = true;
     cursor_blink = true;
     current_line_highlight = "all";
     show_completions_on_input = true;
     show_completion_documentation = true;
     completion_documentation_secondary_query_debounce = 300;
+    auto_signature_help = false;
+    show_signature_help_after_edits = true;
     show_wrap_guides = true;
     wrap_guides = [ ];
     redact_private_values = false;
@@ -93,6 +98,7 @@
     vertical_scroll_margin = 3;
     scroll_sensitivity = 1.0;
     relative_line_numbers = false;
+    search_wrap = true;
     seed_search_query_from_cursor = "always";
     inlay_hints = {
       enabled = true;
@@ -109,7 +115,7 @@
       file_icons = true;
       folder_icons = true;
       git_status = true;
-      indent_size = 20;
+      indent_size = 10;
       auto_reveal_entries = true;
       auto_fold_dirs = false;
       scrollbar = {
@@ -123,7 +129,7 @@
       file_icons = true;
       folder_icons = true;
       git_status = true;
-      indent_size = 20;
+      indent_size = 10;
       auto_reveal_entries = true;
       auto_fold_dirs = true;
     };
@@ -146,24 +152,29 @@
       default_width = 380;
     };
     assistant = {
-      version = 1;
+      version = 2;
       enabled = true;
       button = true;
       dock = "right";
       default_width = 640;
       default_height = 320;
-      provider = {
-        name = "ollama";
-        default_model = {
-          name = "deepseek-coder-v2 =16b";
-          max_tokens = 2048;
-          #keep_alive = -1;
-        };
+      default_model = {
+        provider = "ollama";
+        model = "deepseek-coder-v2:16b";
+      };
+    };
+    slash-commands = {
+      docs = {
+        enabled = false;
+      };
+      projects = {
+        enabled = false;
       };
     };
     show_call_status_icon = true;
     enable_language_server = true;
     linked_edits = true;
+    language_servers = [ ];
     autosave = {
       after_delay = {
         milliseconds = 500;
@@ -218,6 +229,7 @@
         enabled = true;
       };
     };
+    load_direnv = "shell_hook";
     inline_completions = {
       disabled_globs = [ ".env" ];
     };
@@ -252,7 +264,6 @@
           activate_script = "default";
         };
       };
-      load_direnv = "direct";
       toolbar = {
         title = true;
       };
@@ -267,6 +278,8 @@
       JSONC = [
         "**/.zed/**/*.json"
         "**/zed/**/*.json"
+        "**/Zed/**/*.json"
+        "tsconfig.json"
       ];
     };
     auto_install_extensions = {
@@ -308,6 +321,7 @@
       };
       Markdown = {
         format_on_save = "on";
+        use_on_type_format = false;
         prettier = {
           allowed = true;
         };
@@ -345,7 +359,15 @@
         };
       };
     };
-    prettier = { };
+    language_models = {
+      ollama = {
+        aou_url = "https://locahost:11434";
+      };
+    };
+    prettier = {
+      allowed = true;
+
+    };
     lsp = {
       nixd = {
         binary = {
@@ -354,7 +376,7 @@
         };
       };
     };
-    svim = {
+    vim = {
       use_system_clipboard = "always";
       use_multiline_find = false;
       use_smartcase_find = false;
@@ -369,5 +391,7 @@
     };
     line_indicator_format = "long";
     proxy = null;
+    command_aliases = { };
+    ssh_connections = null;
   };
 }
