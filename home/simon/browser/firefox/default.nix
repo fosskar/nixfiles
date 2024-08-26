@@ -16,9 +16,9 @@ let
   shyfox = pkgs.fetchFromGitHub {
     owner = "Naezr";
     repo = "ShyFox";
-    rev = "73a25ebd70f5c02fe61dc96467550b8b8f146d3b";
+    rev = "bd41f885f19771b12e23c522ccaafe33af59a1c7";
     #sha256 = pkgs.lib.fakeSha256; # used to get the latest hash
-    sha256 = "lVE0NbModRylA8s2SlBI85pMMob9dvwv0MgnKrXGqHo=";
+    sha256 = "w4kaOjz51FYYS58TrPVI/OgZ8At9mbPXj2G3X/N7Lu8=";
   };
 in
 {
@@ -138,8 +138,8 @@ in
           #ARKENFOX
           #
           #    name: arkenfox user.js
-          #    date: 7 June 2024
-          # version: 126
+          #    date: 26 August 2024
+          # version: 128
           #    urls: https://github.com/arkenfox/user.js [repo]
           #        : https://arkenfox.github.io/gui/ [interactive]
           # license: MIT: https://github.com/arkenfox/user.js/blob/master/LICENSE.txt
@@ -157,10 +157,8 @@ in
 
           # GEOLOCATION
           "geo.enabled" = false;
-          "geo.provider.network.url" = "";
           "geo.provider.ms-windows-location" = false;
           "geo.provider.use_corelocation" = false;
-          "geo.provider.use_gpsd" = false;
           "geo.provider.use_geoclue" = false;
           "browser.geolocation.warning.infoURL" = "";
 
@@ -210,6 +208,7 @@ in
           # BLOCK IMPLICIT OUTBOUND
           "network.prefetch-next" = false;
           "network.dns.disablePrefetch" = true;
+          "network.dns.disablePrefetchFromHTTPS" = true;
           "network.predictor.enabled" = false;
           "network.predictor.enabled-prefetch" = false;
           "browser.places.speculativeConnect.enabled" = false;
@@ -224,6 +223,9 @@ in
           # LOCATION BAR / SEARCH BAR / SUGGESTIONS / HISTORY / FORMS
           "browser.search.suggest.enabled" = false;
           "browser.urlbar.speculativeConnect.enabled" = false;
+          "browser.urlbar.quicksuggest.enabled" = false;
+          "browser.urlbar.suggest.quicksuggest.nonsponsored" = false;
+          "browser.urlbar.suggest.quicksuggest.sponsored" = false;
           "browser.urlbar.suggest.searches" = false;
           "browser.urlbar.suggest.engines" = false;
           "browser.urlbar.suggest.history" = false;
@@ -319,6 +321,8 @@ in
           "extensions.formautofill.creditCards.enabled" = false;
 
           # ETP (ENHANCED TRACKING PROTECTION)
+          "browser.contentanalysis.enabled" = false;
+          "browser.contentanalysis.default_result" = 0;
           "browser.contentblocking.category" = "strict";
           "browser.contentblocking.report.hide_vpn_banner" = true;
           "browser.contentblocking.report.mobile-ios.url" = "";
@@ -360,17 +364,10 @@ in
           "privacy.clearHistory.cookiesAndStorage" = false;
           "privacy.sanitize.timeSpan" = 0;
 
-          # FPP (fingerprintingProtection) & RFP (resistFingerprinting)
-          "privacy.resistFingerprinting" = false; # FIXME breaks sites
-          #"privacy.resistFingerprinting.block_mozAddonManager" = true;
-          #"privacy.resistFingerprinting.letterboxing" = true;
-          #"privacy.window.maxInnerWidth" = 1600;
-          #"privacy.window.maxInnerHeight" = 900;
           "privacy.spoof_english" = 1;
           "browser.display.use_system_colors" = false;
           "browser.link.open_newwindow" = 3;
           "browser.link.open_newwindow.restriction" = 0;
-          "webgl.disabled" = false;
 
           # DON'T TOUCH
           "extensions.blocklist.enabled" = true;
