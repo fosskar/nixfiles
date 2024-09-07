@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+_: {
   environment = {
     variables = {
       AMD_VULKAN_ICD = "RADV";
@@ -8,14 +7,10 @@
   };
 
   boot = {
-    kernelModules = [
-      "amd-pstate"
-      "kvm-amd"
-      "zenpower"
-    ];
+    kernelModules = [ "kvm-amd" ];
     kernelParams = [ "amd_pstate=active" ];
-    blacklistedKernelModules = [ "k10temp" ];
-    extraModulePackages = [ config.boot.kernelPackages.zenpower ];
+    blacklistedKernelModules = [ ];
+    extraModulePackages = [ ];
   };
 
   hardware = {
