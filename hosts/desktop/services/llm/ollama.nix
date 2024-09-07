@@ -5,9 +5,11 @@ _: {
       acceleration = "rocm";
       # the models to download as soon as the service starts. Search for models of your choice from: https://ollama.com/library
       loadModels = [ ]; # is shit better pull manually
-      rocmOverrideGfx = "11.0.1";
+      rocmOverrideGfx = "11.0.2";
       openFirewall = true;
-      #host = "localhost";
+      port = 11434;
+      host = "127.0.0.1";
+
     };
 
     # UI but currently using open-webui
