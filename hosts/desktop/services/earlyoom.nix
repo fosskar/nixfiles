@@ -2,23 +2,19 @@
 {
   # Avoid the Linux kernel locking itself when we're putting too much
   # strain on the memory. This helps avoid having to shut down
-  # forcefully when we OOM - which is preferable since we also disable SysRq.
-  # See:
-  #  <https://dataswamp.org/~solene/2022-09-28-earlyoom.html>
+  # forcefully when we OOM
   services.earlyoom = {
     enable = true;
-    enableNotifications = true; # annoying, but we want to know what's killed
+    enableNotifications = true;
     reportInterval = 0;
     freeSwapThreshold = 2;
     freeMemThreshold = 4;
     extraArgs =
       let
-        # applications that we would like to avoid killing
-        # when system is under high memory pressure
+        # i care about those applications
         appsToAvoid = lib.concatStringsSep "|" [
           "Hyprland" # avoid killing the graphical session
           "wezterm" # terminal, might have unsaved files
-          "cryptsetup" # avoid killing the disk encryption manager
           "dbus-.*" # avoid killing the dbus daemon & the dbus broker
           "Xwayland" # avoid killing the X11 server
           "gpg-agent" # avoid killing the gpg agent
@@ -27,19 +23,13 @@
           "ssh-agent" # avoid killing the ssh agent
         ];
 
-        # apps that we would like killed first
-        # those are likely the ones draining most memory
+        # dont care about those apps please delete electrom from the internet
         appsToPrefer = lib.concatStringsSep "|" [
-          # browsers
           "Web Content"
           "Isolated Web Co"
           "chromium.*"
-          # electron applications
-          "electron" # I wish we could kill electron permanently
+          "electron"
           ".*.exe"
-          "java.*"
-          # added 2024-05-12: PipeWire locked down my system as it failed to acquire RT privileges
-          "pipewire(.*)" # catch pipewire and pipewire-pulse
         ];
       in
       [
