@@ -5,4 +5,5 @@ _: {
 
     gvfs.enable = true;
   };
+  programs.gnome-disks.enable = true;
 }
