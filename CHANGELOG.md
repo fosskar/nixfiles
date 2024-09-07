@@ -1,3 +1,13 @@
+## [9.2.1](https://gitlab.com/simonoscr/nixfiles/compare/9.2.0...9.2.1) (2024-09-07)
+
+### 📦 Other
+
+* **lint:** cleanup ([47b1405](https://gitlab.com/simonoscr/nixfiles/commit/47b1405e1fab5930a4b05a5cda665ef65820b8bb))
+
+### 🛠 Fixes
+
+* **u2f:** fix settings keys ([a3594cd](https://gitlab.com/simonoscr/nixfiles/commit/a3594cdfa37e1b9a3c572cfe33463d1b025dbb1f))
+
 ## [9.2.0](https://gitlab.com/simonoscr/nixfiles/compare/9.1.5...9.2.0) (2024-09-07)
 
 ### 📦 Other
