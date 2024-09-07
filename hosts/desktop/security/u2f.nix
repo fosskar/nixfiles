@@ -8,9 +8,11 @@
   security.pam = {
     u2f = {
       enable = true;
-      cue = true;
-      control = "sufficient";
-      interactive = true;
+      settings = {
+        cue = true;
+        control = "sufficient";
+        interactive = true;
+      };
     };
     services = {
       login.u2fAuth = true;
