@@ -1,44 +1,23 @@
 { pkgs, ... }:
 {
   services = {
-    udev.packages = with pkgs; [
-      yubikey-personalization
-      libu2f-host
-    ];
     pcscd.enable = true;
-    yubikey-agent.enable = true;
-  };
-
-  programs = {
-    yubikey-touch-detector.enable = true;
-    #ssh.startAgent = true;
+    udev.packages = [ pkgs.yubikey-personalization ];
   };
 
   security.pam = {
-    #u2f = {
-    #  enable = true;
-    #  cue = true;
-    #  control = "sufficient";
-    #  interactive = true;
-    #};
-    #yubico = {
-    #  enable = true;
-    #  debug = true;
-    #  mode = "challenge-response";
-    #  id = [ "29507896" ];
-    #};
+    u2f = {
+      enable = true;
+      cue = true;
+      control = "sufficient";
+      interactive = true;
+    };
     services = {
       login.u2fAuth = true;
       greetd.u2fAuth = true;
       hyprlock.u2fAuth = true;
     };
   };
-
-  #users.users.yubikey = {
-  #  isNormalUser = true;
-  #  extraGroups = [ "wheel" ];
-  #  shell = "/run/current-system/sw/bin/bash";
-  #};
 
   environment.systemPackages = with pkgs; [
     yubikey-manager
