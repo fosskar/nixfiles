@@ -26,5 +26,7 @@
         "kmsconvt@tty1".enable = false;
         "kmsconvt@tty7".enable = false;
       };
+      # because we use more cranular earlyoom - we wait for better oomd implementation
+      oomd.enable = false;
     };
 }
