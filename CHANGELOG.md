@@ -1,3 +1,26 @@
+## [9.2.0](https://gitlab.com/simonoscr/nixfiles/compare/9.1.5...9.2.0) (2024-09-07)
+
+### 📦 Other
+
+* **flake:** update flake ([ee30c93](https://gitlab.com/simonoscr/nixfiles/commit/ee30c9389ff2753417c9dad7c31f26fd7c88b544))
+* **lint:** cleanup ([a57e9bd](https://gitlab.com/simonoscr/nixfiles/commit/a57e9bdbc9abed7ec2216247f5717b16629f7d5c))
+
+### 🚀 Features
+
+* **systemd:** disable oomd ([0c688de](https://gitlab.com/simonoscr/nixfiles/commit/0c688de2501fef618faca11c6244bd690d45ed81))
+
+### 🛠 Fixes
+
+* **amdgpu:** remove zenpower and modules ([d99ffcb](https://gitlab.com/simonoscr/nixfiles/commit/d99ffcb22ef12decf2a97370fa966939832cf228))
+* **avahi:** disable ([2a661f0](https://gitlab.com/simonoscr/nixfiles/commit/2a661f002fd149d8bfaeae66a16a148da617fd73))
+* **earlyoom:** refine service to kill and not to kill ([cd78b89](https://gitlab.com/simonoscr/nixfiles/commit/cd78b8996b414c733e80dfe68589d785fec11980))
+* **gnome:** add disk utility ([b0678d0](https://gitlab.com/simonoscr/nixfiles/commit/b0678d0baaea8f784498d15b4607a957a465b1cb))
+* **greetd:** remove [secure] StandardInput ([91e0293](https://gitlab.com/simonoscr/nixfiles/commit/91e029300468e87d44ef9cd469fbbda6183fc729))
+* **hyprmode:** increase hz back to 165 again ([c7e9b20](https://gitlab.com/simonoscr/nixfiles/commit/c7e9b20eb087d7a45b783c12ee637d8b9d5f5c81))
+* **network:** remove deprecated systctl commands; enable strict dnsovertls; iwd as wifi backend ([8afcfcd](https://gitlab.com/simonoscr/nixfiles/commit/8afcfcd2beb14404c32da0d232a403c085dc6543))
+* **pipewire:** disable jack ([d478763](https://gitlab.com/simonoscr/nixfiles/commit/d47876395b4385ea8b03b0461874fb0d6cef2c43))
+* **u2f:** cleanup yubikey setup and remove unused services and programs ([f7c0ece](https://gitlab.com/simonoscr/nixfiles/commit/f7c0ece7f2de8cf2790d355864b1ad198faca231))
+
 ## [9.1.5](https://gitlab.com/simonoscr/nixfiles/compare/9.1.4...9.1.5) (2024-09-07)
 
 ### 📦 Other
