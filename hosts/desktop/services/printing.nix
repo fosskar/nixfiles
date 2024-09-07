@@ -11,7 +11,7 @@
     };
     # required for network discovery of printers
     avahi = {
-      enable = true;
+      enable = false;
       # resolve .local domains for printers
       nssmdns4 = true;
       # pass avahi port(s) to the firewall
