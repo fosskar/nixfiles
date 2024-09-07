@@ -11,7 +11,8 @@ let
       hyprctl keyword general:gaps_out 0
       hyprctl keyword general:border_size 1
       hyprctl keyword decoration:rounding 0
-      hyprctl keyword monitor "DP-1,2560x1440@144,0x0,1" 2> /dev/null
+      hyprctl keyword misc:vfr 0
+      hyprctl keyword monitor "DP-1,2560x1440@165,0x0,1" 2> /dev/null
       pkill -f ags
       powerprofilesctl set performance
       exit
