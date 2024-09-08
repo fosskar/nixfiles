@@ -29,48 +29,6 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 > this repository is a work in progress, and i'm constantly learning more about nixos, nix, flakes, and home-manager and all of it's utilities.
 
-## wip
-
-* [ ] cachix
-  * [x] setup own cache
-  * [ ] push in cache (maybe pipeline?)
-
-### desktop
-
-* [ ] flake-parts
-  * [x] initial setup
-  * [ ] utilize flake-parts
-* [ ] create iso image
-  * [ ] with hm or not?
-  * [ ] weekly Pipeline that builds the image
-* [x] pre-commit-hook
-  * [x] use nixfmt rfc
-  * [x] prettier
-  * [x] pre-commit-hook-sops
-* [ ] sops-nix
-  * [x] initial setup
-  * [ ] better secret management
-  * [x] stay pure
-* [ ] ags
-  * [ ] use own ags setup
-* [ ] use non-flake inputs
-
-### server
-
-* [ ] general hardening
-  * [ ] ssh
-  * [ ] firewall
-  * [ ] kernel
-* [x] kubernetes
-  * [x] k3s
-  * [x] deploy with argocd+helm+nix
-  * [x] bootstrap
-    * [ ] yamllint
-    * [ ] shellcheck
-    * [x] prettier
-* [ ] tailscale
-  * [ ] setup
-
 <div align="center">
 
 ## system components
