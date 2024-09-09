@@ -27,5 +27,6 @@ in
     enable = true;
     #configDir = agsConfig;
     configDir = agsDirectory;
+    systemd.enable = true;
   };
 }
