@@ -1,4 +1,6 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [ toybox ];
+  environment.systemPackages = with pkgs; [
+    toybox
+  ];
 }
