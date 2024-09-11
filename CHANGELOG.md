@@ -1,3 +1,18 @@
+## [9.3.0](https://gitlab.com/simonoscr/nixfiles/compare/9.2.2...9.3.0) (2024-09-11)
+
+### 📦 Other
+
+* **flake:** update flake ([c922f3b](https://gitlab.com/simonoscr/nixfiles/commit/c922f3b284633d224a5e6d303e0f9ca953d42c75))
+
+### 🚀 Features
+
+* **kernel:** switch to linux_cachyos-lto kernel ([62a2832](https://gitlab.com/simonoscr/nixfiles/commit/62a2832f52e207f06f2acb76fcf4a5a1ccd8abb8))
+
+### 🛠 Fixes
+
+* **hyprpanel:** update ([dde5528](https://gitlab.com/simonoscr/nixfiles/commit/dde55285d70d27fdf7cb2398ac5a83c0884e9916))
+* **nix:** add chaotic nyx idk substituters ([a07f17b](https://gitlab.com/simonoscr/nixfiles/commit/a07f17bf68b6932c22a6eb25dbd517ec6b2d4a0e))
+
 ## [9.2.2](https://gitlab.com/simonoscr/nixfiles/compare/9.2.1...9.2.2) (2024-09-09)
 
 ### 📔 Docs
