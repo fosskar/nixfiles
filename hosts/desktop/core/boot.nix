@@ -4,7 +4,7 @@
 
   boot = {
     ## use custom xanmod kernel no
-    kernelPackages = pkgs.linuxPackages_cachyos; # pkgs.linuxPackages_cachyos, pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
+    kernelPackages = pkgs.linuxPackages_cachyos-lto; # pkgs.linuxPackages_cachyos, pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
 
     supportedFilesystems = [
       "ext4"
@@ -44,7 +44,7 @@
       # The size of the tmpfs, in percentage form
       # this defaults to 50% of your ram, which is a good default
       # but should be tweaked based on your systems capabilities
-      tmpfsSize = "75%";
+      tmpfsSize = "90%";
     };
 
     initrd = {
