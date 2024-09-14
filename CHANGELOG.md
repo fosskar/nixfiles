@@ -1,3 +1,14 @@
+## [9.3.1](https://gitlab.com/simonoscr/nixfiles/compare/9.3.0...9.3.1) (2024-09-14)
+
+### 📦 Other
+
+* **flake:** update flake ([4a5cea6](https://gitlab.com/simonoscr/nixfiles/commit/4a5cea6fed308cd6427b8fb9bd6a5752fda5b011))
+* **lint:** renovate.json ([2176475](https://gitlab.com/simonoscr/nixfiles/commit/217647532f22163cda0a3c956fd386f7efa5d054))
+
+### 🛠 Fixes
+
+* **nix:** use latest nix version ([adfd656](https://gitlab.com/simonoscr/nixfiles/commit/adfd6569c38c7c43daa935b4e03982017074ccad))
+
 ## [9.3.0](https://gitlab.com/simonoscr/nixfiles/compare/9.2.2...9.3.0) (2024-09-11)
 
 ### 📦 Other
