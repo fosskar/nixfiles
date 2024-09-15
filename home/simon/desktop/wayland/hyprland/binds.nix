@@ -48,6 +48,7 @@
           "SUPER, J, togglesplit"
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
+          "SUPER, O, exec, ts3client"
           "SUPER, Z, exec, zed"
           "SUPER, D, exec, webcord"
           "SUPER, L, exec, pgrep hyprlock || hyprlock"
