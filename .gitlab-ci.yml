@@ -6,7 +6,7 @@ stages:
   - release
 
 release:
-  image: node:22.8.0-slim
+  image: node:22.9.0-slim
   stage: release
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
