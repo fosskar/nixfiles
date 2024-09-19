@@ -1,5 +1,4 @@
 include:
   - project: simonoscr/pipeline-templates
-    ref: main
-    file: .semantic-release.gitlab-ci.yml
+    file: semantic-release.gitlab-ci.yml
 
