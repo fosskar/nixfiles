@@ -1,25 +1,36 @@
 _: {
   programs.git = {
     aliases = {
+      a = "add --patch";
       ad = "add";
-      br = "branch";
-      co = "commit";
+
+      b = "branch";
+      ba = "branch -a";
+      bd = "branch --delete";
+      bD = "branch -D";
+
+      c = "commit";
       ca = "commit --amend";
       cm = "commit -m";
-      checko = "checkout";
+      co = "checkout";
+      cb = "checkout --branch";
+      cl = "clone";
       d = "diff";
       ds = "diff --staged";
+      h = "show";
       p = "push";
       pf = "push --force-with-lease";
       pl = "pull";
       l = "log";
       r = "rebase";
-      ss = "status --short";
-      st = "status";
+      s = "status --short --branch";
+      ss = "status";
+      st = "stash";
+      stc = "stash clear";
       forgor = "commit --amend --no-edit";
       graph = "log --all --decorate --graph --oneline";
       oops = "checkout --";
-      fe = "fetch";
+      f = "fetch";
       sw = "switch";
     };
   };
