@@ -1,3 +1,20 @@
+## [9.3.3](https://gitlab.com/simonoscr/nixfiles/compare/9.3.2...9.3.3) (2024-09-19)
+
+### 📦 Other
+
+* **flake:** update flake ([d93579f](https://gitlab.com/simonoscr/nixfiles/commit/d93579f583e480cb95572b94db8a01208025aaef))
+
+### 🦊 CI/CD
+
+* fix typo in template file name ([ddf43f8](https://gitlab.com/simonoscr/nixfiles/commit/ddf43f8777384f20c7d0a44223cf3ff9e0b59ee1))
+* use pipeline template ([149b250](https://gitlab.com/simonoscr/nixfiles/commit/149b2501093a8f0b2210b36fe55d7d72666c5b90))
+* use pipeline template ([fd1b0f2](https://gitlab.com/simonoscr/nixfiles/commit/fd1b0f2d3f7d00cd3d1c64ce1ad81bee4226d38a))
+* **deps:** update node.js to v22.9.0 ([1af00e6](https://gitlab.com/simonoscr/nixfiles/commit/1af00e6f1774f9ce3b87bd839b0febbf4ca7ac17))
+
+### 🛠 Fixes
+
+* **git:** add more git aliases ([b573f5b](https://gitlab.com/simonoscr/nixfiles/commit/b573f5b41b99c0e3f0e4c50dfff7f689e810dd2c))
+
 ## [9.3.2](https://gitlab.com/simonoscr/nixfiles/compare/9.3.1...9.3.2) (2024-09-15)
 
 ### 📦 Other
