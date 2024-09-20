@@ -365,7 +365,6 @@ in
     };
     prettier = {
       allowed = true;
-
     };
     lsp = {
       nixd = {
