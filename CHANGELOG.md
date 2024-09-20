@@ -1,3 +1,9 @@
+## [9.3.4](https://gitlab.com/simonoscr/nixfiles/compare/9.3.3...9.3.4) (2024-09-20)
+
+### 🛠 Fixes
+
+* **zed:** update config ([86cda71](https://gitlab.com/simonoscr/nixfiles/commit/86cda713ebfd931d24408fd46a6312f60c3c8889))
+
 ## [9.3.3](https://gitlab.com/simonoscr/nixfiles/compare/9.3.2...9.3.3) (2024-09-19)
 
 ### 📦 Other
