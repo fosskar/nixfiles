@@ -5,6 +5,7 @@
     shellIntegration = {
       enableZshIntegration = true;
       enableBashIntegration = true;
+      enableFishIntegration = true;
     };
     font = {
       size = 10;

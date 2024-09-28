@@ -24,8 +24,9 @@ _: {
       l = "log";
       r = "rebase";
       s = "status --short --branch";
+      st = "status --short --branch";
       ss = "status";
-      st = "stash";
+      sta = "stash";
       stc = "stash clear";
       forgor = "commit --amend --no-edit";
       graph = "log --all --decorate --graph --oneline";
