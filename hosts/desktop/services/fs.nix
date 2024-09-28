@@ -18,4 +18,16 @@ _: {
       "size=128M"
     ];
   };
+  # zen browser cache on tmpfs
+  fileSystems."/home/simon/.cache/zen" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    noCheck = true;
+    options = [
+      "noatime"
+      "nodev"
+      "nosuid"
+      "size=128M"
+    ];
+  };
 }

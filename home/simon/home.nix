@@ -2,6 +2,7 @@
 {
   imports = [
     ./browser/firefox
+    ./browser/zen
     ./desktop/wayland/hyprland
     ./editors
     ./gaming

@@ -39,7 +39,8 @@
           "SUPER, Next, exec, ${config.xdg.configHome}/hypr/hypr-gamemode.sh"
           "SUPER, H, exec, ${config.xdg.configHome}/shortcut_info.sh"
 
-          "SUPER, W, exec, firefox"
+          "SUPER, W, exec, zen"
+          "SUPER, B, exec, firefox"
           "SUPER, T, exec, wezterm"
           "SUPER, E, exec, wezterm -e yazi"
           "SUPER, G, togglegroup"
@@ -49,7 +50,7 @@
           "SUPER, P, pseudo"
           "SUPER, C, exec, codium"
           "SUPER, O, exec, ts3client"
-          "SUPER, Z, exec, zed"
+          "SUPER, Z, exec, zeditor"
           "SUPER, D, exec, webcord"
           "SUPER, L, exec, pgrep hyprlock || hyprlock"
           "SUPER, M, movetoworkspace, special"

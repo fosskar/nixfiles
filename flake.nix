@@ -55,6 +55,11 @@
       };
     };
 
+    zen-browser = {
+      url = "github:fufexan/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hyprland = {
       url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     };
