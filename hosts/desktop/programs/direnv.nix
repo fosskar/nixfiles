@@ -11,5 +11,8 @@ _: {
 
     # Enable loading direnv in nix-shell, nix shell or nix develop
     loadInNixShell = true;
+
+    # load envs or echo messages
+    direnvrcExtra = "";
   };
 }

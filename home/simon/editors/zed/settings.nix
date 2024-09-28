@@ -14,10 +14,6 @@ in
       inline_completion_provider = "none";
     };
     buffer_font_family = "JetBrainsMono Nerd Font";
-    buffer_font_fallbacks = [ ];
-    buffer_font_features = {
-      calt = true;
-    };
     buffer_font_size = 15;
     buffer_font_weight = 400;
     buffer_line_height = "standard";
@@ -35,13 +31,14 @@ in
     };
     multi_cursor_modifier = "alt";
     vim_mode = false;
-    hover_popover_enabled = true;
-    confirm_quit = false;
+    hover_popover_enabled = false;
+    confirm_quit = true;
     restore_on_startup = "last_workspace";
     drop_target_size = 0.2;
     when_closing_with_no_tabs = "platform_default";
     use_system_path_prompts = true;
     cursor_blink = true;
+    cursor_shape = "bar";
     current_line_highlight = "all";
     show_completions_on_input = true;
     show_completion_documentation = true;
@@ -63,9 +60,9 @@ in
     use_on_type_format = true;
     use_autoclose = true;
     use_auto_surround = true;
-    always_treat_brackets_as_autoclosed = true;
+    always_treat_brackets_as_autoclosed = false;
     show_inline_completions = true;
-    show_whitespaces = "selection";
+    show_whitespaces = "boundary";
     calls = {
       mute_on_join = true;
       share_on_join = false;
@@ -83,6 +80,7 @@ in
       selected_symbol = true;
       diagnostics = true;
     };
+    unnecessary_code_fade = 0.5;
     double_click_in_multibuffer = "select";
     gutter = {
       line_numbers = true;
@@ -108,9 +106,15 @@ in
       show_type_hints = true;
       show_parameter_hints = true;
       show_other_hints = true;
-      show_background = true;
+      show_background = false;
       edit_debounce_ms = 700;
       scroll_debounce_ms = 50;
+    };
+    search = {
+      whole_word = false;
+      case_sensitive = false;
+      include_ignored = false;
+      regex = true;
     };
     project_panel = {
       button = true;
@@ -119,21 +123,22 @@ in
       file_icons = true;
       folder_icons = true;
       git_status = true;
-      indent_size = 10;
+      indent_size = 15;
       auto_reveal_entries = true;
       auto_fold_dirs = false;
       scrollbar = {
-        show = "always";
+        show = "never";
       };
     };
+    projects_online_by_default = true;
     outline_panel = {
       button = true;
-      default_width = 300;
+      default_width = 240;
       dock = "left";
       file_icons = true;
       folder_icons = true;
       git_status = true;
-      indent_size = 10;
+      indent_size = 15;
       auto_reveal_entries = true;
       auto_fold_dirs = true;
     };
@@ -183,7 +188,7 @@ in
     };
     tab_bar = {
       show = true;
-      show_nav_history_buttons = true;
+      show_nav_history_buttons = false;
     };
     tabs = {
       git_status = true;
@@ -192,18 +197,18 @@ in
     };
     preview_tabs = {
       enabled = true;
-      enable_preview_from_file_finder = false;
-      enable_preview_from_code_navigation = false;
+      enable_preview_from_file_finder = true;
+      enable_preview_from_code_navigation = true;
     };
     remove_trailing_whitespace_on_save = true;
     extend_comment_on_newline = false;
     ensure_final_newline_on_save = true;
     format_on_save = "on";
     formatter = "auto";
-    soft_wrap = "prefer_line";
+    soft_wrap = "editor_width";
     preferred_line_length = 80;
     hard_tabs = false;
-    tab_size = 3;
+    tab_size = 2;
     telemetry = {
       diagnostics = false;
       metrics = false;
@@ -240,12 +245,16 @@ in
     };
     terminal = {
       shell = "system";
-      dock = "bottom";
+      dock = "right";
       default_width = 640;
       default_height = 320;
-      working_directory = "current_project_directory";
+      working_directory = {
+        always = {
+          directory = "~/code";
+        };
+      };
       blinking = "terminal_controlled";
-      alternate_scroll = "off";
+      alternate_scroll = "on";
       option_as_meta = false;
       copy_on_select = false;
       button = true;
@@ -255,10 +264,7 @@ in
       line_height = "standard";
       detect_venv = {
         on = {
-
           directories = [
-            ".env"
-            "env"
             ".venv"
             "venv"
           ];
@@ -281,22 +287,25 @@ in
         "**/zed/**/*.json"
         "**/Zed/**/*.json"
         "tsconfig.json"
+        "pyrightconfig.json"
       ];
+      Dockerfile = [ "Dockerfile*" ];
     };
     auto_install_extensions = {
       html = true;
       nix = true;
       dockerfile = true;
+      toml = true;
+      git-firefly = true;
+      xml = true;
+      vscode-dark-modern = true;
+      java = true;
+      docker-compose = true;
     };
     languages = {
-      HTML = {
-        prettier = {
-          allowed = true;
-        };
-      };
+      HTML = { };
       Java = {
         prettier = {
-          allowed = true;
           plugins = [ "prettier-plugin-java" ];
         };
       };
@@ -306,36 +315,24 @@ in
           "vtsls"
           "..."
         ];
-        prettier = {
-          allowed = true;
-        };
       };
-      JSON = {
-        prettier = {
-          allowed = true;
-        };
-      };
-      JSONC = {
-        prettier = {
-          allowed = true;
-        };
-      };
+      JSON = { };
+      JSONC = { };
       Markdown = {
-        format_on_save = "on";
         use_on_type_format = false;
-        prettier = {
-          allowed = true;
-        };
       };
       Nix = {
-        format_on_save = "on";
-        language_servers = [ "nixd" ];
         formatter = {
           external = {
-            arguments = [ ];
             command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+            arguments = [ ];
           };
         };
+        prettier = {
+          allowed = false;
+        };
+        language_servers = [ "nixd" ]; # [ "nixd", "!nil" ] OR [ "nil", "!nixd" ]
+        soft_wrap = "preferred_line_length";
       };
       TypeScript = {
         language_servers = [
@@ -343,26 +340,23 @@ in
           "vtsls"
           "..."
         ];
-        prettier = {
-          allowed = true;
-        };
       };
       XML = {
         prettier = {
-          allowed = true;
           plugins = [ "@prettier/plugin-xml" ];
         };
       };
       YAML = {
         prettier = {
-          allowed = true;
+          allowed = false;
         };
+        language_servers = [ "yaml-language-server" ];
+        soft_wrap = "preferred_line_length";
       };
     };
     language_models = {
       ollama = {
-        api_url = "http://127.0.0.1:11434/v1";
-        low_speed_timeout_in_seconds = 600;
+        api_url = "http://localhost:11434";
         available_models = [
           {
             provider = "ollama";
@@ -375,19 +369,42 @@ in
     };
     prettier = {
       allowed = true;
+      trailingComma = "es5";
+      tabWidth = 2;
+      semi = false;
+      singleQuote = true;
     };
     lsp = {
       nixd = {
-        command = "${pkgs.nixd}/bin/nixd";
-        arguments = [ "--stdio" ];
+        binary = {
+          path_lookup = true;
+        };
+      };
+      ## future nil support in nix extension? see: https://github.com/zed-extensions/nix/pull/13
+      #nil = {
+      #  binary = {
+      #    path_lookup = true;
+      #  };
+      #};
+      yaml-language-server = {
+        settings = {
+          yaml = {
+            keyOrdering = true; # Enforces alphabetical ordering of keys in maps
+          };
+        };
       };
     };
+    jupyter = {
+      enabled = true;
+    };
     vim = {
+      toggle_relative_line_number = false;
       use_system_clipboard = "always";
       use_multiline_find = false;
       use_smartcase_find = false;
+      custom_digraphs = { };
     };
-    server_url = "https://zed.dev";
+    server_url = "";
     preview = { };
     nightly = { };
     stable = { };
@@ -399,5 +416,8 @@ in
     proxy = null;
     command_aliases = { };
     ssh_connections = null;
+    experimental.context_servers = {
+      servers = [ ];
+    };
   };
 }

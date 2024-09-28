@@ -162,14 +162,18 @@
               };
             };
           };
-          devShells.default = pkgs.mkShell rec {
-            name = "nixfiles";
-            nativeBuildInputs = config.pre-commit.settings.enabledPackages;
-            shellHook = ''
-              ${config.pre-commit.installationScript}
-              echo -e "\n\033[1;36m  Welcome to the \033[1;33m'${name}'\033[1;36m devshell  \033[0m\n"
-            '';
-          };
+          devShells.default =
+            let
+              shellName = "nixfiles";
+            in
+            pkgs.mkShell {
+              name = shellName;
+              nativeBuildInputs = config.pre-commit.settings.enabledPackages;
+              shellHook = ''
+                ${config.pre-commit.installationScript}
+                echo -e "\n\033[1;36m  Welcome to the \033[1;33m'${shellName}'\033[1;36m devshell  \033[0m\n"
+              '';
+            };
           formatter = pkgs.nixfmt-rfc-style;
         };
       flake = {
