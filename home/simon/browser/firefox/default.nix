@@ -184,6 +184,7 @@ in
           "toolkit.coverage.endpoint.base" = "";
           "browser.newtabpage.activity-stream.feeds.telemetry" = false;
           "browser.newtabpage.activity-stream.telemetry" = false;
+          "browser.newtabpage.activity-stream.weather.locationSearchEnabled" = false;
 
           # STUDIES
           "app.shield.optoutstudies.enabled" = false;
@@ -219,6 +220,7 @@ in
           "network.file.disable_unc_paths" = true;
           "network.gio.supported-protocols" = "";
           "network.trr.mode" = 2;
+          "network.dns.native_https_query" = true;
 
           # LOCATION BAR / SEARCH BAR / SUGGESTIONS / HISTORY / FORMS
           "browser.search.suggest.enabled" = false;
@@ -239,6 +241,7 @@ in
           "browser.urlbar.weather.featureGate" = false;
           "browser.urlbar.yelp.featureGate" = false;
           "browser.urlbar.clipboard.featureGate" = false;
+          "browser.urlbar.fakespot.featureGate" = false;
           "browser.formfill.enable" = false;
           "layout.css.visited_links_enabled" = false;
           "browser.search.separatePrivateDefault" = true;
@@ -288,6 +291,7 @@ in
           "dom.forms.autocomplete.formautofill" = false;
           "dom.battery.enabled" = false;
           "dom.webnotifications.enabled" = false;
+          "dom.webnotifications.privateBrowsing.enabled" = false;
           "dom.push.enabled" = false;
           "dom.security.https_only_mode_ever_enabled" = true;
           "dom.event.clipboardevents.enabled" = false;
@@ -310,6 +314,7 @@ in
           "browser.download.alwaysOpenPanel" = false;
           "browser.download.manager.addToRecentDocs" = false;
           "browser.download.always_ask_before_handling_new_types" = true;
+          "browser.download.enable_spam_prevention" = true;
 
           # EXTENSIONS
           "extensions.postDownloadThirdPartyPrompt" = false;
@@ -339,29 +344,27 @@ in
           "privacy.clearOnShutdown.history" = true;
           "privacy.clearOnShutdown.downloads" = true;
           "privacy.clearOnShutdown.formdata" = true;
-          "privacy.clearOnShutdown.cache" = true;
-          "privacy.clearOnShutdown_v2.cache" = true;
           "privacy.clearOnShutdown.cookies" = false;
-          "privacy.clearOnShutdown_v2.cookiesAndStorage" = false;
           "privacy.clearOnShutdown.offlineApps" = true;
           "privacy.clearOnShutdown.openWindows" = true;
           "privacy.clearOnShutdown.sessions" = false;
           "privacy.clearOnShutdown_v2.historyFormDataAndDownloads" = true;
-          "privacy.clearOnShutdown.siteSettings" = false;
           "privacy.clearOnShutdown_v2.siteSettings" = false;
+          "privacy.clearOnShutdown_v2.cache" = true;
+          "privacy.clearOnShutdown_v2.cookiesAndStorage" = false;
           "privacy.clearSiteData.cache" = true;
           "privacy.clearSiteData.cookiesAndStorage" = false;
           "privacy.clearSiteData.historyFormDataAndDownloads" = true;
           "privacy.clearSiteData.siteSettings" = false;
-          "privacy.cpd.cache" = true;
           "privacy.clearHistory.cache" = true;
+          "privacy.clearHistory.historyFormDataAndDownloads" = true;
+          "privacy.clearHistory.cookiesAndStorage" = false;
+          "privacy.cpd.cache" = true;
           "privacy.cpd.formdata" = true;
           "privacy.cpd.history" = true;
-          "privacy.clearHistory.historyFormDataAndDownloads" = true;
           "privacy.cpd.cookies" = false;
           "privacy.cpd.sessions" = true;
           "privacy.cpd.offlineApps" = false;
-          "privacy.clearHistory.cookiesAndStorage" = false;
           "privacy.sanitize.timeSpan" = 0;
 
           "privacy.spoof_english" = 1;
@@ -419,10 +422,12 @@ in
           "privacy.trackingprotection.cryptomining.enabled" = true;
           "privacy.trackingprotection.fingerprinting.enabled" = true;
           "privacy.globalprivacycontrol.enabled" = true;
+          "privacy.fingerprintingprotection" = true;
 
           # MEDIA
           "media.ffmpeg.vaapi.enabled" = true; # Hardware video acceleration with VA_API
           "media.eme.enabled" = true;
+          "media.eme.playready.enabled" = true;
           "media.videocontrols.picture-in-picture.enabled" = true;
           "media.autoplay.default" = 5;
           "gfx.webrender.all" = true; # set webrender composition

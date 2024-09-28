@@ -5,7 +5,11 @@
     bookmarks = [
       {
         name = "Searchix";
-        url = "https://searchix.alanpearce.eu/";
+        url = "https://searchix.alanpearce.eu";
+      }
+      {
+        name = "Reddit";
+        url = "https://redlib.privacy.com.de";
       }
       {
         name = "News";
@@ -96,7 +100,7 @@
       }
       {
         name = "Twitch";
-        url = "https://twitch.tv";
+        url = "https://safetwitch.lunar.icu";
       }
       {
         name = "YouTube";
