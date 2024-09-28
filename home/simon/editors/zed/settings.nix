@@ -108,6 +108,7 @@ in
       show_type_hints = true;
       show_parameter_hints = true;
       show_other_hints = true;
+      show_background = true;
       edit_debounce_ms = 700;
       scroll_debounce_ms = 50;
     };
@@ -202,7 +203,7 @@ in
     soft_wrap = "prefer_line";
     preferred_line_length = 80;
     hard_tabs = false;
-    tab_size = 2;
+    tab_size = 3;
     telemetry = {
       diagnostics = false;
       metrics = false;
@@ -361,6 +362,15 @@ in
     language_models = {
       ollama = {
         api_url = "http://127.0.0.1:11434/v1";
+        low_speed_timeout_in_seconds = 600;
+        available_models = [
+          {
+            provider = "ollama";
+            name = "deepseek-coder-v2:16b";
+            max_tokens = 12000;
+            keep_alive = "3m";
+          }
+        ];
       };
     };
     prettier = {
