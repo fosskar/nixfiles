@@ -245,7 +245,7 @@ in
     };
     terminal = {
       shell = "system";
-      dock = "right";
+      dock = "bottom";
       default_width = 640;
       default_height = 320;
       working_directory = {
