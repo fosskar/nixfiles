@@ -7,5 +7,4 @@ _: {
     # tl;dr: upgrade manually, review changelogs.
     autoUpgrade.enable = false;
   };
-  environment.noXlibs = false;
 }
