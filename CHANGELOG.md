@@ -1,3 +1,13 @@
+## [9.5.0](https://gitlab.com/simonoscr/nixfiles/compare/9.4.0...9.5.0) (2024-10-02)
+
+### 📦 Other
+
+* **flake:** update flake inputs ([8ca5394](https://gitlab.com/simonoscr/nixfiles/commit/8ca53946b823ce38298524d5713cac93575c4e96))
+
+### 🚀 Features
+
+* **vm:** vagrant for spinning up vms to test ansible playbooks ([77f49cb](https://gitlab.com/simonoscr/nixfiles/commit/77f49cb915fda858be48a1a9063e9b69774acb3e))
+
 ## [9.4.0](https://gitlab.com/simonoscr/nixfiles/compare/9.3.4...9.4.0) (2024-10-01)
 
 ### 📦 Other
