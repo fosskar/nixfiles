@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   config = {
     services = {
       # storage daemon required for udiskie auto-mount
