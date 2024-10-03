@@ -1,3 +1,15 @@
+## [9.5.1](https://gitlab.com/simonoscr/nixfiles/compare/9.5.0...9.5.1) (2024-10-03)
+
+### 📦 Other
+
+* **flake:** update flake ([c68a4dd](https://gitlab.com/simonoscr/nixfiles/commit/c68a4dddd220c34231713278521afe71a6547db5))
+
+### 🛠 Fixes
+
+* **browser:** add brave as backup chromium browser ([d30bbc8](https://gitlab.com/simonoscr/nixfiles/commit/d30bbc8d8f41578eb132271abc7c705e0d45a687))
+* **game:** try to get gamescope working with steam ([760b583](https://gitlab.com/simonoscr/nixfiles/commit/760b5830c7ddc5fa7f424c56d8b33652cfc79163))
+* **hyprland:** enable plugins ([0740977](https://gitlab.com/simonoscr/nixfiles/commit/0740977f65fec6ef07bf1f856457b0d427f04234))
+
 ## [9.5.0](https://gitlab.com/simonoscr/nixfiles/compare/9.4.0...9.5.0) (2024-10-02)
 
 ### 📦 Other
