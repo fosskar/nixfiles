@@ -183,7 +183,7 @@ in
     language_servers = [ ];
     autosave = {
       after_delay = {
-        milliseconds = 500;
+        milliseconds = 2000;
       };
     };
     tab_bar = {
