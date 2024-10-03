@@ -1,3 +1,24 @@
+## [10.0.0](https://gitlab.com/simonoscr/nixfiles/compare/9.5.2...10.0.0) (2024-10-03)
+
+### 📦 Other
+
+* lint ([931578f](https://gitlab.com/simonoscr/nixfiles/commit/931578f537216799d72066c4f1c840068c0c372e))
+* use variables for locations ([e60b78c](https://gitlab.com/simonoscr/nixfiles/commit/e60b78c5ed6f07865be18a2b28efbf52d7f40bbb))
+* **flake:** update flake ([726f4bf](https://gitlab.com/simonoscr/nixfiles/commit/726f4bf9392501b51bf7445b0a4ad1fc72ebdade))
+
+### 🧨 Breaking changes!
+
+* **flake:** removed flake-parts and moved to nix-system ([d05a802](https://gitlab.com/simonoscr/nixfiles/commit/d05a8027202bf5934962bdbc7e0f92cca88befa6))
+
+### 🚀 Features
+
+* **vim:** removed nixvim and use just neovim ([4a3b8eb](https://gitlab.com/simonoscr/nixfiles/commit/4a3b8eb9520cf3d4c66c3faa9f60ff6a95a2e943))
+
+### 🛠 Fixes
+
+* **starship:** update prompt settings ([67c7716](https://gitlab.com/simonoscr/nixfiles/commit/67c7716cd5fffc43830b70e2ce682cb36359b958))
+* **zed:** update editor settings ([a09fea0](https://gitlab.com/simonoscr/nixfiles/commit/a09fea006519c5f9090a3f845481d56ab87b8763))
+
 ## [9.5.2](https://gitlab.com/simonoscr/nixfiles/compare/9.5.1...9.5.2) (2024-10-03)
 
 ### 🛠 Fixes
