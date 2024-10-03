@@ -1,7 +1,7 @@
 _: {
   imports = [
     ./editorconfig.nix
-    ./nixvim.nix
+    ./neovim.nix
     ./vscodium.nix
     ./zed
   ];
