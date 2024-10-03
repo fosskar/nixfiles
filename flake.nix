@@ -2,10 +2,10 @@
   description = "simonoscr's flake for nixos and home-manager";
 
   inputs = {
-    systems.url = "github:nix-systems/default-linux";
-
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
+
+    systems.url = "github:nix-systems/x86_64-linux";
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
@@ -19,11 +19,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-small";
@@ -32,19 +27,6 @@
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        devshell.follows = "";
-        flake-compat.follows = "";
-        git-hooks.follows = "";
-        nix-darwin.follows = "";
-        treefmt-nix.follows = "";
-      };
     };
 
     sops-nix = {
@@ -115,103 +97,104 @@
   };
 
   outputs =
-    inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" ];
-
-      imports = [ inputs.pre-commit-hooks.flakeModule ];
-
-      perSystem =
-        { config, pkgs, ... }:
-        {
-          pre-commit = {
-            settings = {
+    {
+      self,
+      systems,
+      nixpkgs,
+      ...
+    }@inputs:
+    let
+      inherit (self) outputs;
+      eachSystem = nixpkgs.lib.genAttrs (import systems);
+    in
+    {
+      checks = eachSystem (system: {
+        pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+          excludes = [
+            "flake.lock"
+            "CHANGELOG.md"
+            "LICENSE"
+          ];
+          src = ./.;
+          hooks = {
+            nixfmt-rfc-style = {
+              enable = true;
+            };
+            prettier = {
+              enable = true;
+              fail_fast = true;
               excludes = [
-                "flake.lock"
-                "CHANGELOG.md"
-                "LICENSE"
+                ".md"
+                ".nix"
+                ".yaml"
+                ".yml"
               ];
-              src = ./.;
-              hooks = {
-                nixfmt-rfc-style = {
-                  enable = true;
-                };
-                prettier = {
-                  enable = true;
-                  fail_fast = true;
-                  excludes = [
-                    ".md"
-                    ".nix"
-                    ".yaml"
-                    ".yml"
-                  ];
-                  settings = {
-                    write = true;
-                  };
-                };
-                deadnix = {
-                  enable = true;
-                  fail_fast = true;
-                };
-                #statix = {
-                #  enable = true;
-                #  fail_fast = true;
-                #};
-
-                pre-commit-hook-ensure-sops.enable = true;
+              settings = {
+                write = true;
               };
             };
+            deadnix = {
+              enable = true;
+              fail_fast = true;
+            };
+            #statix = {
+            #  enable = true;
+            #  fail_fast = true;
+            #};
+            pre-commit-hook-ensure-sops.enable = true;
           };
-          devShells.default = pkgs.mkShell {
-            name = "nixfiles";
-            nativeBuildInputs = config.pre-commit.settings.enabledPackages;
-            shellHook = ''
-              ${config.pre-commit.installationScript}
-            '';
+        };
+      });
+      devShells = eachSystem (system: {
+        default = nixpkgs.legacyPackages.${system}.mkShell {
+          name = "nixfiles";
+          inherit (self.checks.${system}.pre-commit-check) shellHook;
+          buildInputs = self.checks.${system}.pre-commit-check.enabledPackages;
+        };
+      });
+
+      formatter = eachSystem (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+
+      #overlays = import ./overlays { inherit inputs; };
+
+      #packages = eachSystem (system: import ./pkgs nixpkgs.legacyPackages.${system});
+
+      nixosConfigurations = {
+        desktop = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
           };
-          formatter = pkgs.nixfmt-rfc-style;
+          modules = [
+            ./hosts/desktop/configuration.nix
+          ];
         };
 
-      flake = {
-        nixosConfigurations = {
-          desktop = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs;
-            };
-            modules = [
-              ./hosts/desktop/configuration.nix
-            ];
+        server = inputs.nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
           };
-
-          server = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs;
-            };
-            modules = [ ./hosts/server/configuration.nix ];
-          };
-
-          #desktopISO = inputs.nixpkgs.lib.nixosSystem {
-          #  system = "x86_64-linux";
-          #  specialArgs = {
-          #    inherit inputs;
-          #  };
-          #  modules = [
-          #    ./images/desktopiso.nix
-          #    inputs.home-manager.nixosModules.home-manager
-          #    {
-          #      home-manager = {
-          #        extraSpecialArgs = {
-          #          inherit inputs;
-          #        };
-          #        users.simon.imports = [ ./home/simon/home.nix ];
-          #      };
-          #    }
-          #    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
-          #  ];
-          #};
+          modules = [ ./hosts/server/configuration.nix ];
         };
+
+        #desktopISO = inputs.nixpkgs.lib.nixosSystem {
+        #  system = "x86_64-linux";
+        #  specialArgs = {
+        #    inherit inputs;
+        #  };
+        #  modules = [
+        #    ./images/desktopiso.nix
+        #    inputs.home-manager.nixosModules.home-manager
+        #    {
+        #      home-manager = {
+        #        extraSpecialArgs = {
+        #          inherit inputs;
+        #        };
+        #        users.simon.imports = [ ./home/simon/home.nix ];
+        #      };
+        #    }
+        #    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
+        #  ];
+        #};
       };
     };
 }
