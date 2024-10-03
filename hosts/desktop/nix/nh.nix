@@ -1,9 +1,10 @@
-_: {
-  environment.variables.FLAKE = "/home/simon/code/nixfiles";
+{ config, ... }:
+{
+  environment.variables.FLAKE = "${config.users.users.simon.home}/code/nixfiles";
 
   programs.nh = {
     enable = true;
-    flake = "/home/simon/code/nixfiles";
+    flake = "${config.users.users.simon.home}/code/nixfiles";
     clean = {
       enable = true;
       dates = "weekly";
