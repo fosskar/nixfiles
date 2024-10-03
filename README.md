@@ -39,9 +39,9 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 | window manager  |     | [hyprland](https://github.com/hyprwm/Hyprland)                                                |
 | bar             |     | [ags](https://github.com/Aylur/ags)                                                           |
 | terminal        |     | [wezterm](https://github.com/wez/wezterm)                                                     |
-| shell           |     | zsh + [starship](https://github.com/starship/starship)                                        |
-| text editor     |     | [nixvim](https://github.com/nix-community/nixvim)[(neovim)](https://github.com/neovim/neovim) |
-| code editor     |     | [vscodium](https://github.com/VSCodium/vscodium)/[zed](https://github.com/zed-industries/zed) |
+| shell           |     | fish + [starship](https://github.com/starship/starship)                                       |
+| text editor     |     | [(neovim)](https://github.com/neovim/neovim)                                                  |
+| code editor     |     | [zed-editor](https://github.com/zed-industries/zed)                                           |
 
 
 ## systems
@@ -65,13 +65,11 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 * [**nix-flake**](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake.html): manage nixos and home-manager configurations.
 
-* [**flake-parts**](https://github.com/hercules-ci/flake-parts): a good way to manage flake with less boilerplate.
+* [**nix-systems**](https://github.com/nix-systems/nix-systems): easy way to manage systems in a flake.
 
 * [**home-manager**](https://github.com/nix-community/home-manager): manage your dotfiles, home environment, and user-specific configurations with home-manager.
 
 * [**nh**](https://github.com/viperML/nh): "yet-another-nix-helper". `nh` reimplements some basic nix commands. adding functionality on top of the existing solutions, like nixos-rebuild, home-manager cli or nix itself.
-
-- [**nixvim**](https://www.startpage.com/do/dsearch?query=nixvim+github): nix flake neovim
 
 <div align="center">
 
@@ -127,6 +125,8 @@ my repository is inspired by a diverse range of dotfiles and nix-configurations 
 
 * [fufexan dotfiles](https://github.com/fufexan/dotfiles)
   * helped me very much to find a good repository structure and also good and clean .nix configurations and i learned from his repos how to build with nix
+* [NotAShelf nyx](https://github.com/notashelf/nyx)
+  * it is really comprehensive, overwhelming for me but very very helpful
 * [matt dotfiles](https://gitlab.com/usmcamp0811/dotfiles)
   * also borrowed a little structure and content of .nix files
 * [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
