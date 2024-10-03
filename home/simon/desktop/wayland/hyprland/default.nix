@@ -10,7 +10,7 @@
     ../ags/aylur-style.nix
     #../ags/hyprpanel.nix
     ./shortcuts_info.nix
-    #./plugins.nix
+    ./plugins.nix
   ];
 
   home.packages = with pkgs; [
