@@ -332,7 +332,6 @@ in
           allowed = false;
         };
         language_servers = [ "nixd" ]; # [ "nixd", "!nil" ] OR [ "nil", "!nixd" ]
-        soft_wrap = "preferred_line_length";
       };
       TypeScript = {
         language_servers = [
@@ -351,7 +350,6 @@ in
           allowed = false;
         };
         language_servers = [ "yaml-language-server" ];
-        soft_wrap = "preferred_line_length";
       };
     };
     language_models = {
@@ -404,7 +402,7 @@ in
       use_smartcase_find = false;
       custom_digraphs = { };
     };
-    server_url = "";
+    server_url = "https://zed.dev";
     preview = { };
     nightly = { };
     stable = { };
