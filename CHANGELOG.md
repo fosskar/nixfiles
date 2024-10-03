@@ -1,3 +1,9 @@
+## [9.5.2](https://gitlab.com/simonoscr/nixfiles/compare/9.5.1...9.5.2) (2024-10-03)
+
+### 🛠 Fixes
+
+* **zed:** fixed line wrapping and server url ([38c6502](https://gitlab.com/simonoscr/nixfiles/commit/38c650259cd1adbdfb41cca8e5d0624f0e23f9f9))
+
 ## [9.5.1](https://gitlab.com/simonoscr/nixfiles/compare/9.5.0...9.5.1) (2024-10-03)
 
 ### 📦 Other
