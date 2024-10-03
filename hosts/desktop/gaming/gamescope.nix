@@ -5,6 +5,7 @@ _: {
     args = [
       "--rt"
       "--expose-wayland"
+      #"--mangoapp"
     ];
   };
 
