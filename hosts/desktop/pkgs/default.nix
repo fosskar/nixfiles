@@ -9,5 +9,7 @@
     vagrant
     molecule
     terraform
+
+    ventoy-full
   ];
 }
