@@ -1,9 +1,12 @@
 { config, ... }:
 let
-  browser = [ "firefox.desktop" ];
-  zathura = [ "zathura.desktop" ];
-  fileManager = [ "yazi.desktop" ];
-  mailer = [ "proton-mail.desktop" ];
+  #browser = [ "firefox.desktop" ];
+  browser = [ "zen-browser" ];
+  chromeBrowser = [ "brave" ];
+  zathura = [ "zathura" ];
+  fileManager = [ "yazi" ];
+  mailer = [ "proton-mail" ];
+  editor = [ "zeditor" ];
 
   associations = {
     "text/html" = browser;
@@ -12,6 +15,7 @@ let
     "x-scheme-handler/ftp" = browser;
     "x-scheme-handler/about" = browser;
     "x-scheme-handler/unknown" = browser;
+    "x-scheme-handler/chrome" = chromeBrowser;
     "application/xhtml+xml" = browser;
     "application/x-extension-htm" = browser;
     "application/x-extension-html" = browser;
@@ -24,8 +28,11 @@ let
     "audio/*" = [ "mpv.desktop" ];
     "video/*" = [ "mpv.desktop" ];
     "image/*" = [ "imv.desktop" ];
-    "application/json" = browser;
+
     "application/pdf" = zathura;
+
+    "application/json" = editor;
+    "text/plain" = editor;
 
     "x-scheme-handler/spotify" = [ "spotify.desktop" ];
     "x-scheme-handler/discord" = [ "WebCord.desktop" ];
@@ -45,23 +52,23 @@ in
       createDirectories = true;
 
       # disable unused home dirs
-      download = "${config.home.homeDirectory}/Downloads";
-      documents = "${config.home.homeDirectory}/Documents";
-      pictures = "${config.home.homeDirectory}/Pictures";
-      videos = "${config.home.homeDirectory}/Videos";
+      download = "${config.home.homeDirectory}/downloads";
+      documents = "${config.home.homeDirectory}/documents";
+      pictures = "${config.home.homeDirectory}/pictures";
+      videos = null;
       desktop = null;
       publicShare = null;
       music = null;
       templates = null;
 
       extraConfig = {
-        XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
+        XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/screenshots";
       };
     };
 
     mimeApps = {
       enable = true;
-      associations.added = associations;
+      #associations.added = associations;
       defaultApplications = associations;
     };
   };
