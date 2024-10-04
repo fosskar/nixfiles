@@ -157,7 +157,24 @@
 
       #overlays = import ./overlays { inherit inputs; };
 
-      #packages = eachSystem (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      #packages = eachSystem (
+      #  system:
+      #  let
+      #    pkgs = import nixpkgs { inherit system; };
+      #  in
+      #  {
+      #    offline-iso = nixos-generators.nixosGenerate {
+      #      system = system;
+      #      specialArgs = {
+      #        pkgs = pkgs;
+      #      };
+      #      modules = [
+      #        ./images/offline-iso.nix
+      #      ];
+      #      format = "iso";
+      #    };
+      #  }
+      #);
 
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
@@ -169,32 +186,21 @@
           ];
         };
 
-        server = inputs.nixpkgs.lib.nixosSystem {
+        server = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
           };
           modules = [ ./hosts/server/configuration.nix ];
         };
 
-        #desktopISO = inputs.nixpkgs.lib.nixosSystem {
-        #  system = "x86_64-linux";
-        #  specialArgs = {
-        #    inherit inputs;
-        #  };
-        #  modules = [
-        #    ./images/desktopiso.nix
-        #    inputs.home-manager.nixosModules.home-manager
-        #    {
-        #      home-manager = {
-        #        extraSpecialArgs = {
-        #          inherit inputs;
-        #        };
-        #        users.simon.imports = [ ./home/simon/home.nix ];
-        #      };
-        #    }
-        #    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
-        #  ];
-        #};
+        installer-iso = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [
+            ./images/installer-iso.nix
+          ];
+        };
       };
     };
 }
