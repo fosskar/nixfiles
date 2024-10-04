@@ -14,9 +14,6 @@ _: {
         enableGnomeKeyring = true;
       };
 
-      tuigreet = {
-        enableGnomeKeyring = true;
-      };
     };
   };
 }

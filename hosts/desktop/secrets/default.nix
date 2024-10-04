@@ -16,7 +16,7 @@ in
 
       # i use ssh key ed25519 so i can generate age key directly from it. so i neither need to reference an age key nor do i need to backup my age key.
       # this is very convinient
-      #keyFile = "${config.users.users.simon.home}/.config/sops/age/keys.txt";
+      keyFile = "${config.users.users.simon.home}/.config/sops/age/keys.txt";
       generateKey = true;
     };
 
@@ -42,11 +42,8 @@ in
         neededForUsers = true;
       };
 
-      "yubikey/u2f_keys" = {
-        path = "${config.users.users.simon.home}/.yubico/authorized_yubikeys";
-        owner = "simon";
-        mode = "0644";
-      };
+      "yubikey/u2f_keys" = { };
+
       "git/github/github-pat" = { };
       "git/github/fg-github-pat" = { };
 
