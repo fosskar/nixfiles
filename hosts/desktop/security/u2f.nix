@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   services = {
     pcscd.enable = true;
@@ -8,10 +8,11 @@
   security.pam = {
     u2f = {
       enable = true;
+      control = "sufficient";
       settings = {
         cue = true;
-        control = "sufficient";
         interactive = true;
+        authfile = config.sops.secrets."yubikey/u2f_keys".path;
       };
     };
     services = {
@@ -23,9 +24,9 @@
 
   environment.systemPackages = with pkgs; [
     yubikey-manager
-    yubikey-manager-qt
     yubikey-personalization
     yubikey-personalization-gui
     age-plugin-yubikey
+    yubioath-flutter
   ];
 }
