@@ -1,3 +1,22 @@
+## [10.0.1](https://gitlab.com/simonoscr/nixfiles/compare/10.0.0...10.0.1) (2024-10-04)
+
+### 📔 Docs
+
+* update README ([163c07a](https://gitlab.com/simonoscr/nixfiles/commit/163c07a9545cbce7646bcc3b5cf8aa433a88ac38))
+
+### 📦 Other
+
+* **flake:** update flake ([a75120a](https://gitlab.com/simonoscr/nixfiles/commit/a75120abf78a22d2b7f25db3e46e76d2fb235855))
+
+### 🛠 Fixes
+
+* delete desktop.iso ([b6de985](https://gitlab.com/simonoscr/nixfiles/commit/b6de985c3056833a024d2b41ea3dc7f9ea7b9fdb))
+* **hyprland:** enable plugins and update settings and packages ([810807f](https://gitlab.com/simonoscr/nixfiles/commit/810807f0e94ea31162808d0028e5af85ff076105))
+* **images:** added different image templates ([6d92f46](https://gitlab.com/simonoscr/nixfiles/commit/6d92f4645242e5801eac4ada69bed39ab60fb8d5))
+* **pkgs:** add pkg ([c37747a](https://gitlab.com/simonoscr/nixfiles/commit/c37747a872b6421d805b1b473a45bf4c1ec595a0))
+* **security:** setup yubikey and u2f_keys corectly finally ([45660a7](https://gitlab.com/simonoscr/nixfiles/commit/45660a79075ad0223e4768adb13d0818a68488f1))
+* **xdg:** update mimeApps ([3253ca9](https://gitlab.com/simonoscr/nixfiles/commit/3253ca9209d809e7ceb339732c1452a846fcc240))
+
 ## [10.0.0](https://gitlab.com/simonoscr/nixfiles/compare/9.5.2...10.0.0) (2024-10-03)
 
 ### 📦 Other
