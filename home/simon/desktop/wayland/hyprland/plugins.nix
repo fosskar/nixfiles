@@ -1,7 +1,7 @@
 { inputs, pkgs, ... }:
 {
   wayland.windowManager.hyprland = {
-    plugins = with inputs.hyprland-plugins.packages.${pkgs.system}; [
+    plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
       csgo-vulkan-fix
       #hy3
       #hyprbars
