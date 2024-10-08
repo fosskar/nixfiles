@@ -24,7 +24,8 @@
     ./programs/seahorse.nix
     ./programs/xdg.nix
     ./programs/xwayland.nix
-    ./secrets
+    ./secrets/sops-nix.nix
+    #./secrets/agenix.nix
     ./security
     ./services/audio.nix
     ./services/earlyoom.nix
