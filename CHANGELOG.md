@@ -1,3 +1,19 @@
+## [10.1.0](https://gitlab.com/simonoscr/nixfiles/compare/10.0.1...10.1.0) (2024-10-08)
+
+### 📦 Other
+
+* **flake:** update flake ([35b84fd](https://gitlab.com/simonoscr/nixfiles/commit/35b84fd0f9db65b34df68bc55464afbfb0fb8964))
+
+### 🚀 Features
+
+* restructure secrets and prepare agenix ([5e2de8e](https://gitlab.com/simonoscr/nixfiles/commit/5e2de8ee681c53147d8bef5b959ecfddfc4b55ff))
+
+### 🛠 Fixes
+
+* **flake:** add agenix input ([d61063d](https://gitlab.com/simonoscr/nixfiles/commit/d61063dc0d10b318aac5310d74711cf3f1581325))
+* **nix:** use secret instead of rendered template for nix-access-token to prevent github rate-limit ([3d9f9f8](https://gitlab.com/simonoscr/nixfiles/commit/3d9f9f806cf7cb5632904ab50251680fa1662d7d))
+* **ssh:** enable keytoagent ([102aa56](https://gitlab.com/simonoscr/nixfiles/commit/102aa56df617e088b906ccdd47a61ff7ca4a8120))
+
 ## [10.0.1](https://gitlab.com/simonoscr/nixfiles/compare/10.0.0...10.0.1) (2024-10-04)
 
 ### 📔 Docs
