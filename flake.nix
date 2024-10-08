@@ -46,7 +46,7 @@
     };
 
     zen-browser = {
-      url = "github:simonoscr/zen-browser-flake";
+      url = "gitlab:simonoscr/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
