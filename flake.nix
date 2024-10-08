@@ -37,8 +37,16 @@
       };
     };
 
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        darwin.follows = "";
+      };
+    };
+
     zen-browser = {
-      url = "github:fufexan/zen-browser-flake";
+      url = "github:simonoscr/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -86,8 +94,7 @@
 
     # private secrets repo
     nixsecrets = {
-      url = "git+ssh://git@gitlab.com/simonoscr/nixsecrets.git?ref=main&shallow=1";
-      flake = false;
+      url = "git+ssh://git@gitlab.com/simonoscr/nixsecrets";
     };
 
     agsdotfiles = {
