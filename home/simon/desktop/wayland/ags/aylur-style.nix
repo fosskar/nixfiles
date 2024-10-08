@@ -27,6 +27,9 @@ in
     enable = true;
     #configDir = agsConfig;
     configDir = agsDirectory;
-    systemd.enable = true;
+    systemd = {
+      enable = true;
+      busName = "hypr";
+    };
   };
 }
