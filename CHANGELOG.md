@@ -1,3 +1,9 @@
+## [10.2.1](https://gitlab.com/simonoscr/nixfiles/compare/10.2.0...10.2.1) (2024-10-11)
+
+### 🛠 Fixes
+
+* yubiokey login, xdg, and update flake ([0aa5209](https://gitlab.com/simonoscr/nixfiles/commit/0aa5209d26bc1c640af20d00f83ed6fc272df4e2))
+
 ## [10.2.0](https://gitlab.com/simonoscr/nixfiles/compare/10.1.1...10.2.0) (2024-10-11)
 
 ### 📦 Other
