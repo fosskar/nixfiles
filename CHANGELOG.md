@@ -1,3 +1,13 @@
+## [10.2.0](https://gitlab.com/simonoscr/nixfiles/compare/10.1.1...10.2.0) (2024-10-11)
+
+### 📦 Other
+
+* **flake:** update flake ([74ee294](https://gitlab.com/simonoscr/nixfiles/commit/74ee294544a85767dc4c115a118c3797a626bbe7))
+
+### 🚀 Features
+
+* setup gpg and ssh correctly for yubikey ([9cf387c](https://gitlab.com/simonoscr/nixfiles/commit/9cf387c6078280dd2f39b5ea0a3352d22185e251))
+
 ## [10.1.1](https://gitlab.com/simonoscr/nixfiles/compare/10.1.0...10.1.1) (2024-10-08)
 
 ### 📦 Other
