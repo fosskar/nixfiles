@@ -1,7 +1,7 @@
 { config, ... }:
 let
   #browser = [ "firefox.desktop" ];
-  browser = [ "zen-browser" ];
+  browser = [ "zen" ];
   chromeBrowser = [ "brave" ];
   zathura = [ "zathura" ];
   fileManager = [ "yazi" ];

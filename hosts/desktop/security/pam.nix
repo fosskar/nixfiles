@@ -9,11 +9,9 @@ _: {
       login = {
         enableGnomeKeyring = true;
       };
-
       greetd = {
         enableGnomeKeyring = true;
       };
-
     };
   };
 }
