@@ -7,6 +7,7 @@
     protonmail-desktop
     (lowPrio proton-pass) # FIXME package collision between proton-mail and proton-pass app.asar
     bitwarden-desktop
+    element-desktop-wayland
 
     # media
     spotify
