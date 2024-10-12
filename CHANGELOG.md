@@ -1,3 +1,21 @@
+## [10.3.0](https://gitlab.com/simonoscr/nixfiles/compare/10.2.1...10.3.0) (2024-10-12)
+
+### 📦 Other
+
+* **flake:** update flake ([4ef8c5a](https://gitlab.com/simonoscr/nixfiles/commit/4ef8c5ad93afbc9c26efe48f33084bb5e8cba687))
+* **flake:** update flake ([bb6ca2f](https://gitlab.com/simonoscr/nixfiles/commit/bb6ca2f8962055024c58f9e2085b1bfaab13c489))
+
+### 🚀 Features
+
+* **kernel:** dont use LTO kernel because of missing moduels and set scheduler to scx_rustland ([3b8ea89](https://gitlab.com/simonoscr/nixfiles/commit/3b8ea89b9bdc2a3519a50451097cc853cda03e41))
+
+### 🛠 Fixes
+
+* **gaming:** add star-citizen from nix-gaming ([70a9427](https://gitlab.com/simonoscr/nixfiles/commit/70a94277a135428327cf55d91ddc0195a5f99e9a))
+* **hyprland:** remove element-desktop from autostart ([2e373a6](https://gitlab.com/simonoscr/nixfiles/commit/2e373a6b054101fd1066125fd4e611dcf9763656))
+* **hyprland:** update flake input and autostart program ([adc9e15](https://gitlab.com/simonoscr/nixfiles/commit/adc9e15ac9e09005190781c729a7cbb7cd1a6e61))
+* **pkgs:** add element-desktop ([6c10181](https://gitlab.com/simonoscr/nixfiles/commit/6c101819785e9c93e47b2a056d7603f8e09eaa53))
+
 ## [10.2.1](https://gitlab.com/simonoscr/nixfiles/compare/10.2.0...10.2.1) (2024-10-11)
 
 ### 🛠 Fixes
