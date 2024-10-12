@@ -5,7 +5,6 @@
       exec-once = [
         "hyprctl setcursor ${config.home.pointerCursor.name} ${toString config.home.pointerCursor.size}"
         "steam -silent"
-        "element-desktop"
         "corectrl"
         "udiskie &"
       ];
