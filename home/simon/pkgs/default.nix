@@ -17,7 +17,7 @@
     #teamspeak5_client
 
     # gaming
-    r2modman
+    #r2modman
     #lutris
     #wineWowPackages.stable
     #wineWowPackages.waylandFull
@@ -26,12 +26,11 @@
     #path-of-building
 
     # archives
-    peazip # should replcace all other unpack/uinarchive tools
     zip
     unzip
     unrar
 
     # backup chromium browser
-    brave
+    #brave
   ];
 }
