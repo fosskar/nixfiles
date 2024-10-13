@@ -1,3 +1,9 @@
+## [10.4.1](https://gitlab.com/simonoscr/nixfiles/compare/10.4.0...10.4.1) (2024-10-13)
+
+### 🛠 Fixes
+
+* **pkgs:** disable unused pkgs ([3941f53](https://gitlab.com/simonoscr/nixfiles/commit/3941f53022ca404aedc98c63c7c1021c23ca5ff6))
+
 ## [10.4.0](https://gitlab.com/simonoscr/nixfiles/compare/10.3.1...10.4.0) (2024-10-13)
 
 ### 📦 Other
