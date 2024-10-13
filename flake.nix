@@ -52,7 +52,12 @@
 
     hyprland = {
       url = "github:hyprwm/Hyprland";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+      };
     };
+
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
@@ -82,7 +87,10 @@
 
     ags = {
       url = "github:Aylur/ags";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+      };
     };
 
     impermanence.url = "github:nix-community/impermanence";
