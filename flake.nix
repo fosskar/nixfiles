@@ -24,8 +24,6 @@
       inputs.nixpkgs.follows = "nixpkgs-small";
     };
 
-    nix-gaming.url = "github:fufexan/nix-gaming";
-
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -103,6 +101,9 @@
       url = "github:Aylur/dotfiles";
       flake = false;
     };
+
+    # gaming
+    nix-gaming.url = "github:fufexan/nix-gaming";
   };
 
   outputs =

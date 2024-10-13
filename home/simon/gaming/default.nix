@@ -1,7 +1,7 @@
 _: {
   imports = [
     ./mangohud.nix
-    #./star-citizen.nix
+    ./star-citizen.nix
     ./vkbasalt.nix
   ];
 }
