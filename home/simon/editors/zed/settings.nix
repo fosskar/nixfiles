@@ -127,7 +127,7 @@ in
       auto_reveal_entries = true;
       auto_fold_dirs = false;
       scrollbar = {
-        show = "never";
+        show = "auto";
       };
     };
     projects_online_by_default = true;
@@ -235,7 +235,7 @@ in
         enabled = true;
       };
     };
-    load_direnv = "shell_hook";
+    load_direnv = "direct";
     inline_completions = {
       disabled_globs = [ ".env" ];
     };
@@ -254,6 +254,7 @@ in
         };
       };
       blinking = "terminal_controlled";
+      cursor_shape = "block";
       alternate_scroll = "on";
       option_as_meta = false;
       copy_on_select = false;
