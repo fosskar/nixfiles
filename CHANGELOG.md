@@ -1,3 +1,23 @@
+## [10.5.0](https://gitlab.com/simonoscr/nixfiles/compare/10.4.1...10.5.0) (2024-10-18)
+
+### 📦 Other
+
+* **flake:** add more nixpkgs inputs ([1f9575f](https://gitlab.com/simonoscr/nixfiles/commit/1f9575ffcf1e2384bed90a9e31aab1c4c1c393b1))
+* **flake:** update flake ([b42f568](https://gitlab.com/simonoscr/nixfiles/commit/b42f568202e3a05538a1cc5925b1c644ec104dde))
+* **flake:** update flake ([bc3b4cd](https://gitlab.com/simonoscr/nixfiles/commit/bc3b4cdd3c379dd94ecb32eb3ca76e4ec4583ea8))
+* **flake:** update flake.lock ([aed5220](https://gitlab.com/simonoscr/nixfiles/commit/aed5220072fe19634f4485ab6fec92152f9715d5))
+
+### 🚀 Features
+
+* add templates ([ee2724e](https://gitlab.com/simonoscr/nixfiles/commit/ee2724e6cfdde173e6c1b3c3d8b9ded2d430b4a9))
+* **overlays:** add nixpkgs stable, git and unstable inputs as overlays ([7571b30](https://gitlab.com/simonoscr/nixfiles/commit/7571b30f894ea64b0d8faf408cc998d331e4f388))
+
+### 🛠 Fixes
+
+* **nix:** add comments and update system-features ([62813a5](https://gitlab.com/simonoscr/nixfiles/commit/62813a5bae6c8a2ac7eaf02e55a9a7ff90e40a7b))
+* **pkgs:** disable broken packages ([ea17ba5](https://gitlab.com/simonoscr/nixfiles/commit/ea17ba5e760d357ca8df3d60e17d657e90d6eec3))
+* **zed:** update config ([db92f67](https://gitlab.com/simonoscr/nixfiles/commit/db92f67360f9fca6b4dd18705647a9d63f7087bf))
+
 ## [10.4.1](https://gitlab.com/simonoscr/nixfiles/compare/10.4.0...10.4.1) (2024-10-13)
 
 ### 🛠 Fixes
