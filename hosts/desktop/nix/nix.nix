@@ -16,6 +16,9 @@
       # flakeInputs filters out non-flake inputs from system flake registry
       registry = lib.mapAttrs (_: v: { flake = v; }) flakeInputs;
 
+      ## the above solution is a more dynamic approach and not only registers all flake inputs (including self) but furthermore also filters out non-flake inputs
+      # registry.<name>.flake = inputs.self;
+
       # set the path for channels compat
       nixPath = lib.mapAttrsToList (key: _: "${key}=flake:${key}") config.nix.registry;
 
@@ -45,15 +48,13 @@
           "@wheel"
         ];
         system-features = [
-          "nixos-test"
           "kvm"
-          "recursive-nix"
           "big-parallel"
         ];
         flake-registry = "/etc/nix/registry.json";
         # Continue building derivations even if one fails
         keep-going = true;
-        # for direnv GC roots
+        # for direnv garbage-collection roots
         keep-derivations = true;
         keep-outputs = true;
         fallback = true;
@@ -63,8 +64,8 @@
       };
       gc = {
         automatic = false; # because i am using nh.clean
-        dates = "weekly";
-        options = "--delete-older-than 1w";
+        #dates = "weekly";
+        #options = "--delete-older-than 1w";
       };
       optimise = {
         automatic = true;
