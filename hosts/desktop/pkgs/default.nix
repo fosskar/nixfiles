@@ -6,10 +6,13 @@
     # test
     ansible
     virt-manager
-    vagrant
+    #vagrant
     molecule
     terraform
 
     ventoy-full
+
+    brave
+    libarchive
   ];
 }

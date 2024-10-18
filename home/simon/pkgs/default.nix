@@ -6,7 +6,7 @@
     webcord-vencord
     protonmail-desktop
     (lowPrio proton-pass) # FIXME package collision between proton-mail and proton-pass app.asar
-    bitwarden-desktop
+    #bitwarden-desktop
     element-desktop-wayland
 
     # media
@@ -32,5 +32,9 @@
 
     # backup chromium browser
     #brave
+
+    # needed for graphene installer
+    android-udev-rules
+    android-tools
   ];
 }
