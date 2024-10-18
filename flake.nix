@@ -2,8 +2,10 @@
   description = "simonoscr's flake for nixos and home-manager";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # default
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
+    nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # current master on git
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05"; # current stable
 
     systems.url = "github:nix-systems/x86_64-linux";
 
