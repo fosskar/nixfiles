@@ -1,3 +1,13 @@
+## [10.5.1](https://gitlab.com/simonoscr/nixfiles/compare/10.5.0...10.5.1) (2024-10-19)
+
+### 📦 Other
+
+* **flake:** update flake.lock ([5b1991f](https://gitlab.com/simonoscr/nixfiles/commit/5b1991f4477c8377caf7c0f481b7751c572377c1))
+
+### 🛠 Fixes
+
+* **zed-editor:** use hm module ([773ddac](https://gitlab.com/simonoscr/nixfiles/commit/773ddac54053bc4f5bdd42524e250a3711d4b48f))
+
 ## [10.5.0](https://gitlab.com/simonoscr/nixfiles/compare/10.4.1...10.5.0) (2024-10-18)
 
 ### 📦 Other
