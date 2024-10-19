@@ -1,3 +1,9 @@
+## [11.0.0](https://gitlab.com/simonoscr/nixfiles/compare/10.5.1...11.0.0) (2024-10-19)
+
+### 🧨 Breaking changes!
+
+* making everything a module in home-manager WIP ([56a0715](https://gitlab.com/simonoscr/nixfiles/commit/56a0715f81c4adc20f709fe0700da0ca2a1f5144))
+
 ## [10.5.1](https://gitlab.com/simonoscr/nixfiles/compare/10.5.0...10.5.1) (2024-10-19)
 
 ### 📦 Other
