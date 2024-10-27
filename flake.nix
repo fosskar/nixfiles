@@ -34,7 +34,7 @@
     };
 
     # hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "github:hyprwm/Hyprland?rev=b6e226c3200276978e487a68a16fd696fcb7e7c8";
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
