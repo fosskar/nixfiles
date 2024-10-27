@@ -1,3 +1,9 @@
+## [11.1.2](https://gitlab.com/simonoscr/nixfiles/compare/11.1.1...11.1.2) (2024-10-27)
+
+### 🛠 Fixes
+
+* **checks:** lint ([ce794b1](https://gitlab.com/simonoscr/nixfiles/commit/ce794b100ea227cf5bf5febfe37db78bbb823894))
+
 ## [11.1.1](https://gitlab.com/simonoscr/nixfiles/compare/11.1.0...11.1.1) (2024-10-27)
 
 ### 🛠 Fixes
