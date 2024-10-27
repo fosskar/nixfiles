@@ -79,7 +79,7 @@ in
   };
 
   networking = {
-    hostName = hostName;
+    inherit hostName;
   };
 
   environment = {

@@ -122,42 +122,9 @@
     in
     {
       checks = eachSystem (system: {
-        pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-          excludes = [
-            "flake.lock"
-            "CHANGELOG.md"
-            "LICENSE"
-          ];
-          src = ./.;
-          hooks = {
-            nixfmt-rfc-style = {
-              enable = true;
-            };
-            prettier = {
-              enable = true;
-              fail_fast = true;
-              excludes = [
-                ".md"
-                ".nix"
-                ".yaml"
-                ".yml"
-              ];
-              settings = {
-                write = true;
-              };
-            };
-            deadnix = {
-              enable = true;
-              fail_fast = true;
-            };
-            #statix = {
-            #  enable = true;
-            #  fail_fast = true;
-            #};
-            pre-commit-hook-ensure-sops.enable = true;
-          };
-        };
+        pre-commit-check = import "${self}/checks/pre-commit-hook" { inherit self inputs system; };
       });
+
       devShells = eachSystem (system: {
         default = nixpkgs.legacyPackages.${system}.mkShell {
           name = "nixfiles";
