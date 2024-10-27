@@ -33,27 +33,26 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 ## system components
 
-|                 |     |                                                                                               |
-| --------------- | --- | --------------------------------------------------------------------------------------------- |
-| display manager |     | [greetd/tuigreet](https://github.com/apognu/tuigreet)                                         |
-| window manager  |     | [hyprland](https://github.com/hyprwm/Hyprland)                                                |
-| bar             |     | [ags](https://github.com/Aylur/ags)                                                           |
-| terminal        |     | [wezterm](https://github.com/wez/wezterm)                                                     |
-| shell           |     | fish + [starship](https://github.com/starship/starship)                                       |
-| text editor     |     | [(neovim)](https://github.com/neovim/neovim)                                                  |
-| code editor     |     | [zed-editor](https://github.com/zed-industries/zed)                                           |
-
+|                 |     |                                                         |
+| --------------- | --- | ------------------------------------------------------- |
+| display manager |     | [greetd/tuigreet](https://github.com/apognu/tuigreet)   |
+| window manager  |     | [hyprland](https://github.com/hyprwm/Hyprland)          |
+| bar             |     | [ags](https://github.com/Aylur/ags)                     |
+| terminal        |     | [wezterm](https://github.com/wez/wezterm)               |
+| shell           |     | fish + [starship](https://github.com/starship/starship) |
+| text editor     |     | [(neovim)](https://github.com/neovim/neovim)            |
+| code editor     |     | [zed-editor](https://github.com/zed-industries/zed)     |
 
 ## systems
 
-|           | desktop               | server                           |
-| --------- | --------------------- | -------------------------------- |
-| Name      | desktop               | server                           |
+|           | desktop               | server                            |
+| --------- | --------------------- | --------------------------------- |
+| Name      | desktop               | server                            |
 | CPU       | amd ryzen 7 7800x3d   | intel® processor alder lake-n100 |
-| GPU       | amd radeon rx 7800xt  | intel uhd graphics               |
-| RAM       | 32gb ddr5-6000        | 16gb ddr4-3200                   |
-| Mainboard | msi mag b650 tomahawk | shit                             |
-| SSD       | 2tb nvme              | 500gb nvme                       |
+| GPU       | amd radeon rx 7800xt  | intel uhd graphics                |
+| RAM       | 32gb ddr5-6000        | 16gb ddr4-3200                    |
+| Mainboard | msi mag b650 tomahawk | shit                              |
+| SSD       | 2tb nvme              | 500gb nvme                        |
 
 </div>
 
@@ -63,13 +62,13 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 </div>
 
-* [**nix-flake**](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake.html): manage nixos and home-manager configurations.
+- [**nix-flake**](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake.html): manage nixos and home-manager configurations.
 
-* [**nix-systems**](https://github.com/nix-systems/nix-systems): easy way to manage systems in a flake.
+- [**nix-systems**](https://github.com/nix-systems/nix-systems): easy way to manage systems in a flake.
 
-* [**home-manager**](https://github.com/nix-community/home-manager): manage your dotfiles, home environment, and user-specific configurations with home-manager.
+- [**home-manager**](https://github.com/nix-community/home-manager): manage your dotfiles, home environment, and user-specific configurations with home-manager.
 
-* [**nh**](https://github.com/viperML/nh): "yet-another-nix-helper". `nh` reimplements some basic nix commands. adding functionality on top of the existing solutions, like nixos-rebuild, home-manager cli or nix itself.
+- [**nh**](https://github.com/viperML/nh): "yet-another-nix-helper". `nh` reimplements some basic nix commands. adding functionality on top of the existing solutions, like nixos-rebuild, home-manager cli or nix itself.
 
 <div align="center">
 
@@ -77,13 +76,13 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 </div>
 
-* [**home**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/home): this folder contains configurations for home-manager. In the profiles subfolder are the differenct home-manager profiles. here i have everything user related in it
+- [**home**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/home): this folder contains configurations for home-manager. In the profiles subfolder are the differenct home-manager profiles. here i have everything user related in it
 
-* [**hosts**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/hosts?ref_type=heads): the hosts/ folder helps me organize my different hosts
+- [**hosts**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/hosts?ref_type=heads): the hosts/ folder helps me organize my different hosts
 
-* [**images**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/images?ref_type=heads): .nix files for defining different configs for building iso images
+- [**images**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/images?ref_type=heads): .nix files for defining different configs for building iso images
 
-* [**modules**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/modules?ref_type=heads): own, custom nixos or home-manager modules
+- [**modules**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/modules?ref_type=heads): own, custom nixos or home-manager modules
 
 <div align="center">
 
@@ -91,17 +90,17 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 </div>
 
-* [searchix](https://searchix.alanpearce.eu): all-in-one search tool. search for options and packages for nixos, darwin and home-manager.
+- [searchix](https://searchix.alanpearce.eu): all-in-one search tool. search for options and packages for nixos, darwin and home-manager.
 
-* [official nixos search](https://search.nixos.org)
-  * [options search](https://search.nixos.org/options)
-  * [packages search](https://search.nixos.org/packages)
-  * [flakes search](https://search.nixos.org/flakes)
-* [home-manager options](https://mipmip.github.io/home-manager-option-search/)
-* [nixhub.io](https://www.nixhub.io/) - search versions of nix packages
-* [noogle.dev](https://noogle.dev/) - noogle is a Nnx api search engine. it lets you search nix functions.
-* [hound](https://search.nix.gsc.io/) - Search nix things?
-* [nixpkgs pr-tracker](https://nixpk.gs/pr-tracker.html)
+- [official nixos search](https://search.nixos.org)
+  - [options search](https://search.nixos.org/options)
+  - [packages search](https://search.nixos.org/packages)
+  - [flakes search](https://search.nixos.org/flakes)
+- [home-manager options](https://mipmip.github.io/home-manager-option-search/)
+- [nixhub.io](https://www.nixhub.io/) - search versions of nix packages
+- [noogle.dev](https://noogle.dev/) - noogle is a Nnx api search engine. it lets you search nix functions.
+- [hound](https://search.nix.gsc.io/) - Search nix things?
+- [nixpkgs pr-tracker](https://nixpk.gs/pr-tracker.html)
 
 <div align="center">
 
@@ -109,11 +108,11 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 </div>
 
-* [official nixos wiki](https://wiki.nixos.org)
-  * [nixos installation guide](https://nixos.wiki/wiki/NixOS_Installation_Guide)
-  * [nix installation guide](https://nixos.wiki/wiki/Nix_Installation_Guide)
-  * [nix flake installation guide](https://nixos.wiki/wiki/Flakes)
-* [cachix docs](https://docs.cachix.org/)
+- [official nixos wiki](https://wiki.nixos.org)
+  - [nixos installation guide](https://nixos.wiki/wiki/NixOS_Installation_Guide)
+  - [nix installation guide](https://nixos.wiki/wiki/Nix_Installation_Guide)
+  - [nix flake installation guide](https://nixos.wiki/wiki/Flakes)
+- [cachix docs](https://docs.cachix.org/)
 
 <div align="center">
 
@@ -123,13 +122,13 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 my repository is inspired by a diverse range of dotfiles and nix-configurations repositories across github, gitlab (and maybe codeberg). while i've gathered ideas from numerous places, there are a few key repositories that significantly influenced this repository:
 
-* [fufexan dotfiles](https://github.com/fufexan/dotfiles)
-  * helped me very much to find a good repository structure and also good and clean .nix configurations and i learned from his repos how to build with nix
-* [NotAShelf nyx](https://github.com/notashelf/nyx)
-  * it is really comprehensive, overwhelming for me but very very helpful
-* [matt dotfiles](https://gitlab.com/usmcamp0811/dotfiles)
-  * also borrowed a little structure and content of .nix files
-* [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
-  * helped me a lot for server related configurations
-* [Aylur dotfiles](https://github.com/Aylur/dotfiles)
-  * thank you very much for ags config
+- [fufexan dotfiles](https://github.com/fufexan/dotfiles)
+  - helped me very much to find a good repository structure and also good and clean .nix configurations and i learned from his repos how to build with nix
+- [NotAShelf nyx](https://github.com/notashelf/nyx)
+  - it is really comprehensive, overwhelming for me but very very helpful
+- [matt dotfiles](https://gitlab.com/usmcamp0811/dotfiles)
+  - also borrowed a little structure and content of .nix files
+- [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
+  - helped me a lot for server related configurations
+- [Aylur dotfiles](https://github.com/Aylur/dotfiles)
+  - thank you very much for ags config

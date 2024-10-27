@@ -118,14 +118,14 @@
     }@inputs:
     let
       inherit (self) outputs;
-      eachSystem = nixpkgs.lib.genAttrs (import systems);
+      forAllSystems = nixpkgs.lib.genAttrs (import systems);
     in
     {
-      checks = eachSystem (system: {
+      checks = forAllSystems (system: {
         pre-commit-check = import "${self}/checks/pre-commit-hook" { inherit self inputs system; };
       });
 
-      devShells = eachSystem (system: {
+      devShells = forAllSystems (system: {
         default = nixpkgs.legacyPackages.${system}.mkShell {
           name = "nixfiles";
           inherit (self.checks.${system}.pre-commit-check) shellHook;
@@ -133,11 +133,11 @@
         };
       });
 
-      formatter = eachSystem (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       #overlays = import "${self}/overlays" { inherit self; }; # no
 
-      #packages = eachSystem (
+      #packages = forAllSystems (
       #  system:
       #  let
       #    pkgs = import nixpkgs { inherit system; };

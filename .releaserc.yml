@@ -16,33 +16,33 @@ analyzeCommits:
     releaseRules:
       - type: milestone # A milestone release marking a huge step forward in development
         release: major
-      - type: breaking  # Changes that break something makes something incompatible to earlier version
+      - type: breaking # Changes that break something makes something incompatible to earlier version
         release: major
-      - type: build     # Changes that affect the build system or external dependencies
+      - type: build # Changes that affect the build system or external dependencies
         release: patch
-      - type: chore     # Other changes that don't modify src or test files
+      - type: chore # Other changes that don't modify src or test files
         release: false
-      - type: ci        # Changes to our CI configuration files and scripts
+      - type: ci # Changes to our CI configuration files and scripts
         release: false
-      - type: docs      # Documentation only changes
+      - type: docs # Documentation only changes
         release: false
-      - type: feat      # A new feature
+      - type: feat # A new feature
         release: minor
-      - type: fix       # A bug fix
+      - type: fix # A bug fix
         release: patch
-      - type: perf      # A code change that improves performance
+      - type: perf # A code change that improves performance
         release: patch
-      - type: refactor  # A code change that neither fixes a bug nor adds a feature
+      - type: refactor # A code change that neither fixes a bug nor adds a feature
         release: patch
-      - type: revert    # Reverts a previous commit
+      - type: revert # Reverts a previous commit
         release: patch
-      - type: style     # Changes that do not affect the meaning of the code
+      - type: style # Changes that do not affect the meaning of the code
         release: false
-      - type: test      # Adding missing tests or correcting existing tests
+      - type: test # Adding missing tests or correcting existing tests
         release: false
-      - type: improv    # A change which improves an already existing feature or aspect
+      - type: improv # A change which improves an already existing feature or aspect
         release: patch
-      - type: deps      # Dependency changes/updates/downgrades
+      - type: deps # Dependency changes/updates/downgrades
         release: false
 
 generateNotes:

@@ -154,9 +154,20 @@
             };
           };
           prettier = {
-            allowed = false;
+            allowed = true;
           };
-          language_servers = [ "nixd" ]; # [ "nixd", "!nil" ] OR [ "nil", "!nixd" ]
+          language_servers = [
+            "nixd"
+            "!nil"
+          ];
+        };
+        Markdown = {
+          format_on_save = "on";
+          use_on_type_format = false;
+          remove_trailing_whitespace_on_save = false; # If you rely on invisible trailing whitespace being converted to <br />
+          prettier = {
+            allowed = true;
+          };
         };
       };
       lsp = {
