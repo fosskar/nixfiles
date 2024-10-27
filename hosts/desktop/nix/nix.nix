@@ -15,11 +15,13 @@
       # pin the registry to avoid downloading and evaling a new nixpkgs version every time
       # flakeInputs filters out non-flake inputs from system flake registry
       registry = lib.mapAttrs (_: v: { flake = v; }) flakeInputs;
+      #registry = mappedRegistry;
 
       ## the above solution is a more dynamic approach and not only registers all flake inputs (including self) but furthermore also filters out non-flake inputs
       # registry.<name>.flake = inputs.self;
 
-      # set the path for channels compat
+      # This will additionally add your inputs to the system's legacy channels
+      # Making legacy nix commands consistent as well
       nixPath = lib.mapAttrsToList (key: _: "${key}=flake:${key}") config.nix.registry;
 
       channel.enable = false;
@@ -36,7 +38,9 @@
         cores = 0;
         max-jobs = "auto";
         connect-timeout = 5;
-        http-connections = 35;
+        http-connections = 50;
+        log-lines = 50;
+        sandbox = true;
         auto-optimise-store = true;
         builders-use-substitutes = true;
         allowed-users = [
