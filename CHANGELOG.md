@@ -1,3 +1,9 @@
+## [11.1.3](https://gitlab.com/simonoscr/nixfiles/compare/11.1.2...11.1.3) (2024-10-27)
+
+### 🛠 Fixes
+
+* last working commit ([eb627e8](https://gitlab.com/simonoscr/nixfiles/commit/eb627e88065b291be36f94d50deb889ce2d2e246))
+
 ## [11.1.2](https://gitlab.com/simonoscr/nixfiles/compare/11.1.1...11.1.2) (2024-10-27)
 
 ### 🛠 Fixes
