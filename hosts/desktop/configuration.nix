@@ -34,7 +34,7 @@
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/libinput.nix
-    #./services/llm # too oft too broken
+    ./services/llm # too oft too broken
     ./services/power.nix
     ./services/printing.nix
     ./services/systemd.nix
