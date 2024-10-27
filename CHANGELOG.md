@@ -1,3 +1,14 @@
+## [11.0.2](https://gitlab.com/simonoscr/nixfiles/compare/11.0.1...11.0.2) (2024-10-27)
+
+### 📦 Other
+
+* **flake:** update flake.lock ([e75caff](https://gitlab.com/simonoscr/nixfiles/commit/e75cafffa2ba2fb40e53b7163a390fa1b14d2696))
+
+### 🛠 Fixes
+
+* **llm:** enable ollama and open-webui again ([d41a62f](https://gitlab.com/simonoscr/nixfiles/commit/d41a62f785877233f75328c61b36b464dc768529))
+* **zed-editor:** update and restructure settings ([2b14a8e](https://gitlab.com/simonoscr/nixfiles/commit/2b14a8e3555ca97dab8d82f49f3ea7623f10dbe8))
+
 ## [11.0.1](https://gitlab.com/simonoscr/nixfiles/compare/11.0.0...11.0.1) (2024-10-26)
 
 ### 📦 Other
