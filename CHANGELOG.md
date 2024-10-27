@@ -1,3 +1,10 @@
+## [11.1.1](https://gitlab.com/simonoscr/nixfiles/compare/11.1.0...11.1.1) (2024-10-27)
+
+### 🛠 Fixes
+
+* **checks:** make separate checks dir ([474cdfd](https://gitlab.com/simonoscr/nixfiles/commit/474cdfd8285718250d47fb5500691f2a4a8cf12b))
+* **checks:** make separate checks dir ([e238cff](https://gitlab.com/simonoscr/nixfiles/commit/e238cff9569d06b506b85c2fbbd25f35ce5bf5c7))
+
 ## [11.1.0](https://gitlab.com/simonoscr/nixfiles/compare/11.0.2...11.1.0) (2024-10-27)
 
 ### 🚀 Features
