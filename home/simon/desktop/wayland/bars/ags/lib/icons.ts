@@ -75,17 +75,6 @@ export default {
     "power-saver": "power-profile-power-saver-symbolic",
     performance: "power-profile-performance-symbolic",
   },
-  asusctl: {
-    profile: {
-      Balanced: "power-profile-balanced-symbolic",
-      Quiet: "power-profile-power-saver-symbolic",
-      Performance: "power-profile-performance-symbolic",
-    },
-    mode: {
-      Integrated: "processor-symbolic",
-      Hybrid: "controller-symbolic",
-    },
-  },
   battery: {
     charging: "battery-flash-symbolic",
     warning: "battery-empty-symbolic",

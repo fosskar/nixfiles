@@ -1,6 +1,5 @@
 import PanelButton from "../PanelButton";
 import icons from "lib/icons";
-import asusctl from "service/asusctl";
 
 const notifications = await Service.import("notifications");
 const bluetooth = await Service.import("bluetooth");
@@ -9,30 +8,13 @@ const network = await Service.import("network");
 const powerprof = await Service.import("powerprofiles");
 
 const ProfileIndicator = () => {
-  const visible = asusctl.available
-    ? asusctl.bind("profile").as((p) => p !== "Balanced")
-    : powerprof.bind("active_profile").as((p) => p !== "balanced");
+  const visible = powerprof.bind("active_profile").as((p) => p !== "balanced");
 
-  const icon = asusctl.available
-    ? asusctl.bind("profile").as((p) => icons.asusctl.profile[p])
-    : powerprof.bind("active_profile").as((p) => icons.powerprofile[p]);
+  const icon = powerprof
+    .bind("active_profile")
+    .as((p) => icons.powerprofile[p]);
 
   return Widget.Icon({ visible, icon });
-};
-
-const ModeIndicator = () => {
-  if (!asusctl.available) {
-    return Widget.Icon({
-      setup(self) {
-        Utils.idle(() => (self.visible = false));
-      },
-    });
-  }
-
-  return Widget.Icon({
-    visible: asusctl.bind("mode").as((m) => m !== "Hybrid"),
-    icon: asusctl.bind("mode").as((m) => icons.asusctl.mode[m]),
-  });
 };
 
 const MicrophoneIndicator = () =>
@@ -106,7 +88,6 @@ export default () =>
     on_scroll_down: () => (audio.speaker.volume -= 0.02),
     child: Widget.Box([
       ProfileIndicator(),
-      ModeIndicator(),
       DNDIndicator(),
       BluetoothIndicator(),
       NetworkIndicator(),
