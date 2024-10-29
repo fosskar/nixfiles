@@ -1,3 +1,19 @@
+## [11.2.0](https://gitlab.com/simonoscr/nixfiles/compare/11.1.3...11.2.0) (2024-10-29)
+
+### 📦 Other
+
+* **flake:** update flake.lock ([1051662](https://gitlab.com/simonoscr/nixfiles/commit/105166254228563ea4f35556aac11d61d7949c95))
+
+### 🚀 Features
+
+* add initial ags bar ([eb4c959](https://gitlab.com/simonoscr/nixfiles/commit/eb4c959a7fd559324f0e17b8b5d8b03e69ba9944))
+
+### 🛠 Fixes
+
+* add templates ([3dde146](https://gitlab.com/simonoscr/nixfiles/commit/3dde1467455a84b20e5d9c2a01292a8582df2ae2))
+* removed asusctl ([a85d246](https://gitlab.com/simonoscr/nixfiles/commit/a85d24611d9b3e339e2ed09d939dfba1e355e402))
+* update ags and hyprland shoprtcuts for ags ([b4546a0](https://gitlab.com/simonoscr/nixfiles/commit/b4546a0be2b68f8e660a5653f4184b1fe78f9215))
+
 ## [11.1.3](https://gitlab.com/simonoscr/nixfiles/compare/11.1.2...11.1.3) (2024-10-27)
 
 ### 🛠 Fixes
