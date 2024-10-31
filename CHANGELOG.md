@@ -1,3 +1,19 @@
+## [11.3.0](https://gitlab.com/simonoscr/nixfiles/compare/11.2.0...11.3.0) (2024-10-31)
+
+### 📦 Other
+
+* update flake ([57ada21](https://gitlab.com/simonoscr/nixfiles/commit/57ada211a5b401d4f1305e350ec6d1fc9d1a0aca))
+* update flake ([2863c5b](https://gitlab.com/simonoscr/nixfiles/commit/2863c5bc256a37f49089fe73ef8df51656c81d45))
+
+### 🚀 Features
+
+* add and enable hyprpanel ([924bc34](https://gitlab.com/simonoscr/nixfiles/commit/924bc3407f8211d5d8207bbaa616a8ca0cc5c99b))
+* add anyrun ([31152cd](https://gitlab.com/simonoscr/nixfiles/commit/31152cd38807fce60fa44733ae21e093ca00c5cc))
+
+### 🛠 Fixes
+
+* make it possible to chose bars witrh module definition ([7c68105](https://gitlab.com/simonoscr/nixfiles/commit/7c68105a532d5b6678a907f5b0fc3050b72a561d))
+
 ## [11.2.0](https://gitlab.com/simonoscr/nixfiles/compare/11.1.3...11.2.0) (2024-10-29)
 
 ### 📦 Other
