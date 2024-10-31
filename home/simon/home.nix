@@ -38,11 +38,8 @@
           hyprmode.enable = true;
           plugins.enable = true;
         };
-        bars = {
-          ags = {
-            enable = true;
-          };
-        };
+        bar = "hyprpanel";
+        applauncher = "anyrun";
       };
     };
     editors = {

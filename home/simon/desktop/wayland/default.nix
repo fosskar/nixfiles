@@ -1,6 +1,7 @@
 _: {
   imports = [
-    ./hyprland
+    ./applauncher
     ./bars
+    ./hyprland
   ];
 }

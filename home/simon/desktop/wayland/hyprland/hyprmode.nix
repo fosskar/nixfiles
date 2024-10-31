@@ -23,13 +23,11 @@ let
       hyprctl keyword decoration:rounding 0
       hyprctl keyword misc:vfr 0
       hyprctl keyword monitor "DP-1,2560x1440@165,0x0,1" 2> /dev/null
-      pkill -f ags
       powerprofilesctl set performance
       exit
     fi
     hyprctl keyword monitor "DP-1,3440x1440@165,0x0,1" 2> /dev/null
     hyprctl reload
-    hyprctl dispatch -- exec "ags" --single-instance
     powerprofilesctl set balanced
   '';
 in

@@ -12,6 +12,7 @@
           resizeactive = binding "SUPER CTRL" "resizeactive";
           mvactive = binding "SUPER ALT" "moveactive";
           mvtows = binding "SUPER SHIFT" "movetoworkspace";
+          ar = "exec, anyrun";
           e = "exec, ags";
           arr = [
             1
@@ -29,6 +30,9 @@
           # ags specific shortcuts
           "ALT, Space, ${e} -t launcher" # this is for ags Launcher
           "SUPER, Tab, ${e} -t overview"
+
+          # hyprpanel specific shortcuts
+          "ALT, Space, ${ar}" # anyrun launcher
 
           # screenshots
           ",Print,exec,hyprshot -m region -o ~/Pictures/Screenshots -- imv"
