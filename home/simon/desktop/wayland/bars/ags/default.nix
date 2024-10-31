@@ -1,27 +1,21 @@
 {
   lib,
   config,
-  inputs,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
 
 let
-  cfg = config.module.desktop.wayland.bars.ags;
+  cfg = config.module.desktop.wayland.bar;
 in
 {
   imports = [
     inputs.ags.homeManagerModules.default
   ];
 
-  options = {
-    module.desktop.wayland.bars.ags = {
-      enable = mkEnableOption "Enables ags";
-    };
-  };
-
-  config = mkIf cfg.enable {
+  config = mkIf (cfg == "ags") {
     programs.ags = {
       enable = true;
       configDir = ../ags;
