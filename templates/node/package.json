@@ -1,6 +1,6 @@
 {
   "name": "sample-nodejs",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Sample node program",
   "bin": {
     "sample-node": "build/index.js"
@@ -9,8 +9,8 @@
     "build": "tsc",
     "start": "npm run build && node build/index.js"
   },
-  "author": "NotAShelf",
-  "license": "MIT",
+  "author": "",
+  "license": "",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.0.4",
