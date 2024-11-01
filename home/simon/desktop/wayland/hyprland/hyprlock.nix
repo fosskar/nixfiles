@@ -23,11 +23,9 @@ in
       package = inputs.hyprlock.packages.${pkgs.system}.hyprlock;
       settings = {
         general = {
-          disable_loading_bar = false;
+          disable_loading_bar = true;
           hide_cursor = true;
-          grace = 3;
-          no_fade_in = false;
-          ignore_empty_input = false;
+          immediate_render = true;
         };
 
         background = [
@@ -48,19 +46,18 @@ in
 
         input-field = [
           {
-            monitor = "DP-1";
+            monitor = "";
 
-            size = {
-              width = 300;
-              height = 50;
-            };
+            size = "300, 60";
             outline_thickness = 1;
             dots_size = 0.3;
-            dots_spacing = 0.15;
+            dots_spacing = 0.1;
             dots_center = true;
+            dots_rounding = "-2";
             outer_color = "rgba(20, 20, 20, 1)";
             inner_color = "rgba(51, 209, 122, 1)";
             font_color = "rgb(255, 255, 255)";
+            font_family = "Inter";
             fade_on_empty = false;
             placeholder_text = ''<span font_family="Inter">passwd</span>'';
             hide_input = false;
@@ -75,8 +72,8 @@ in
             text = "<b>$TIME</b>";
             color = "rgb(255, 255, 255)";
             font_family = "Inter";
-            font_size = 96;
-            position = "0, 0";
+            font_size = 94;
+            position = "0, -40";
             halign = "center";
             valign = "top";
           }
@@ -86,7 +83,7 @@ in
             color = "rgb(255, 255, 255)";
             font_family = "Inter";
             font_size = 24;
-            position = "0, -150";
+            position = "0, -170";
             halign = "center";
             valign = "top";
           }
@@ -99,16 +96,6 @@ in
             position = "0, 200";
             halign = "center";
             valign = "center";
-          }
-          {
-            monitor = "";
-            text = "  ";
-            color = "rgb(255, 255, 255)";
-            font_family = "Inter";
-            font_size = 32;
-            position = "0, 20";
-            halign = "center";
-            valign = "bottom";
           }
         ];
       };

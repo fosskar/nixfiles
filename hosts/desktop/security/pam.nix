@@ -1,12 +1,11 @@
 _: {
   security.pam = {
     services = {
-      hyprlock = {
-        text = "auth include login";
+      login = {
         enableGnomeKeyring = true;
       };
-      ags = { };
-      login = {
+      hyprlock = {
+        text = "auth include login";
         enableGnomeKeyring = true;
       };
       greetd = {

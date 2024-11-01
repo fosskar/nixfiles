@@ -20,6 +20,7 @@ _: {
 
         # immediate
         "immediate, class:^(cs2)$"
+        "immediate, class:^(deadlock)$"
 
         # make Firefox PiP window floating and sticky
         "float, title:^(Picture-in-Picture)$"
