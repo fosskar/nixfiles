@@ -15,22 +15,22 @@ inputs.pre-commit-hooks.lib.${system}.run {
   hooks =
     let
       fail_fast = true;
-      verbose = true;
     in
+    #verbose = true;
     {
       nixfmt-rfc-style = {
         enable = true;
-        inherit fail_fast verbose;
+        inherit fail_fast;
       };
 
       flake-checker = {
         enable = true;
-        inherit fail_fast verbose;
+        inherit fail_fast;
       };
 
       nil = {
         enable = true;
-        inherit fail_fast verbose;
+        inherit fail_fast;
       };
 
       prettier = {
@@ -38,17 +38,17 @@ inputs.pre-commit-hooks.lib.${system}.run {
         settings = {
           write = true;
         };
-        inherit fail_fast verbose;
+        inherit fail_fast;
       };
 
       deadnix = {
         enable = true;
-        inherit fail_fast verbose;
+        inherit fail_fast;
       };
 
       statix = {
         enable = true;
-        inherit fail_fast verbose;
+        inherit fail_fast;
       };
 
       markdownlint = {
@@ -57,7 +57,7 @@ inputs.pre-commit-hooks.lib.${system}.run {
           MD013 = {
             line_length = 0;
           };
-          inherit fail_fast verbose;
+          inherit fail_fast;
         };
       };
 
