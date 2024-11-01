@@ -1,3 +1,14 @@
+## [11.3.1](https://gitlab.com/simonoscr/nixfiles/compare/11.3.0...11.3.1) (2024-11-01)
+
+### 📦 Other
+
+* update flake ([5332f81](https://gitlab.com/simonoscr/nixfiles/commit/5332f8155e3cc0dcdf29f551041c3068666a5242))
+
+### 🛠 Fixes
+
+* allowed ip ranges for kde-connect ([d05401e](https://gitlab.com/simonoscr/nixfiles/commit/d05401e8aebdd36b2f01375cea86df9072292e64))
+* use hyprlock login instead of greetd ([6c85a63](https://gitlab.com/simonoscr/nixfiles/commit/6c85a6330236a714df87215a612f3f2bb532098b))
+
 ## [11.3.0](https://gitlab.com/simonoscr/nixfiles/compare/11.2.0...11.3.0) (2024-10-31)
 
 ### 📦 Other
