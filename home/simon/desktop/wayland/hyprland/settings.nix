@@ -7,6 +7,7 @@
         "steam -silent"
         "corectrl"
         "udiskie &"
+        "hyprlock"
       ];
       env = [
         #"AQ_NO_ATOMIC,1"
@@ -23,8 +24,8 @@
         #"SDL_VIDEODRIVER,wayland"
         "HYPRCURSOR_THEME,${config.home.pointerCursor.name}"
         "HYPRCURSOR_SIZE,${toString config.home.pointerCursor.size}"
-
       ];
+
       general = {
         border_size = 1;
         allow_tearing = true;
@@ -74,7 +75,7 @@
 
       render = {
         direct_scanout = true;
-        explicit_sync = 1;
+        explicit_sync = 2;
       };
 
       debug = {

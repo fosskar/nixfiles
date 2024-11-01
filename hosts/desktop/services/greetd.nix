@@ -1,35 +1,32 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
-let
-  tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
-  #hyprland-session = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/share/wayland-sessions";
-  sessionsData = config.services.displayManager.sessionData.desktops;
-  sessionsPaths = lib.concatStringsSep ":" [
-    "${sessionsData}/share/xsessions"
-    "${sessionsData}/share/wayland-sessions"
-  ];
-  #nixos = "${config.system.nixos.label}";
-  kernel = "${config.boot.kernelPackages.kernel.version}";
-in
+#tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
+#hyprland-session = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/share/wayland-sessions";
+#sessionsData = config.services.displayManager.sessionData.desktops;
+#sessionsPaths = lib.concatStringsSep ":" [
+#  "${sessionsData}/share/xsessions"
+#  "${sessionsData}/share/wayland-sessions"
+#];
+#kernel = "${config.boot.kernelPackages.kernel.version}";
 {
   # greetd DM with tuigreet
   services = {
     greetd = {
       enable = true;
-      settings = {
+      settings = rec {
         terminal.vt = 1;
-        default_session = {
-          user = "simon";
-          command = "${tuigreet} --greeting 'NixOS: unstable, Kernel: XanMod ${kernel}' --time --asterisks --remember --remember-user-session  --theme 'border=cyan;button=yellow' --cmd Hyprland --sessions '${sessionsPaths}'";
-        };
-        #initial_session = {
-        #  command = "${lib.getExe config.programs.hyprland.package}";
+        #default_session = {
         #  user = "simon";
+        #  command = "${tuigreet} --greeting 'NixOS: unstable, Kernel: XanMod ${kernel}' --time --asterisks --remember --remember-user-session  --theme 'border=cyan;button=yellow' --cmd Hyprland --sessions '${sessionsPaths}'";
         #};
+        initial_session = {
+          command = "${lib.getExe config.programs.hyprland.package}";
+          user = "simon";
+        };
+        default_session = initial_session;
       };
     };
   };
