@@ -1,3 +1,10 @@
+## [12.0.0](https://gitlab.com/simonoscr/nixfiles/compare/11.3.2...12.0.0) (2024-11-01)
+
+### 🧨 Breaking changes!
+
+* **deps:** update dependency @types/node to v22 ([cbd0173](https://gitlab.com/simonoscr/nixfiles/commit/cbd017375524c3e9df6984b11aa9a64c021d755e))
+* **deps:** update dependency @typescript-eslint/eslint-plugin to v8 ([d1190a3](https://gitlab.com/simonoscr/nixfiles/commit/d1190a37c53220db652544f8cf0441d114672a8c))
+
 ## [11.3.2](https://gitlab.com/simonoscr/nixfiles/compare/11.3.1...11.3.2) (2024-11-01)
 
 ### 📦 Other
