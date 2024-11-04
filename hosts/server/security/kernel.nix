@@ -61,7 +61,6 @@
         # See:
         #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-rnd-bits>
         #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-min-addr>
-        "vm.mmap_rnd_bits" = 32;
         "vm.mmap_min_addr" = 65536;
       };
     };

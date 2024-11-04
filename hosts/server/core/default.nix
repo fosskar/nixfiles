@@ -2,7 +2,7 @@ _: {
   imports = [
     ./boot.nix
     ./dbus.nix
-    #./impermanence.nix
+    ./disko.nix
     ./locale.nix
     ./systemd.nix
     ./users.nix
