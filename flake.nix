@@ -7,7 +7,7 @@
     nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # current master on git
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05"; # current stable
 
-    systems.url = "github:nix-systems/x86_64-linux";
+    systems.url = "github:nix-systems/default-linux";
 
     # nix-community
     home-manager = {
@@ -18,6 +18,12 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-small";
     };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     impermanence.url = "github:nix-community/impermanence";
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -134,6 +140,8 @@
         };
       });
 
+      templates = import "${self}/templates" { inherit self; };
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       #overlays = import "${self}/overlays" { inherit self; }; # no
@@ -174,6 +182,27 @@
           modules = [ ./hosts/server/configuration.nix ];
         };
 
+        k3s-master-test-1 = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [ ./hosts/k8s/k3s-master-test-1/configuration.nix ];
+        };
+
+        k3s-worker-test-1 = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [ ./hosts/k8s/k3s-worker-test-1/configuration.nix ];
+        };
+
+        k3s-worker-test-2 = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [ ./hosts/k8s/k3s-worker-test-2/configuration.nix ];
+        };
+
         installer-iso = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
@@ -183,7 +212,5 @@
           ];
         };
       };
-
-      templates = import "${self}/templates" { inherit self; };
     };
 }
