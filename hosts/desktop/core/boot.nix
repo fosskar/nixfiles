@@ -18,6 +18,9 @@
 
     swraid.enable = lib.mkDefault false;
 
+    # Enable binfmt emulation of aarch64-linux, this is required for cross compilation.
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
+
     loader = {
       timeout = lib.mkDefault 2;
       generationsDir.copyKernels = true;
