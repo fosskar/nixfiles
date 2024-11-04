@@ -18,15 +18,15 @@
     };
     services = {
       login.u2fAuth = true;
-      hyprlock.u2fAuth = true;
+      greetd.u2fAuth = true;
     };
   };
 
   environment.systemPackages = with pkgs; [
-    yubikey-manager
+    #yubikey-manager
     yubikey-personalization
     yubikey-personalization-gui
     age-plugin-yubikey
-    yubioath-flutter
+    #yubioath-flutter
   ];
 }
