@@ -1,3 +1,21 @@
+## [12.1.0](https://gitlab.com/simonoscr/nixfiles/compare/12.0.0...12.1.0) (2024-11-04)
+
+### 📦 Other
+
+* update flake ([f7a72fa](https://gitlab.com/simonoscr/nixfiles/commit/f7a72fa0fcdf168d30b279c3590d739697ffeef6))
+
+### 🚀 Features
+
+* add k8s cluster ([1c7a42f](https://gitlab.com/simonoscr/nixfiles/commit/1c7a42f00c3e463efcd71aa8c79b9ab2e2f76f60))
+* add nixosConfigurations for k8s cluster and use default-systems because of arm arch ([7be45a5](https://gitlab.com/simonoscr/nixfiles/commit/7be45a59741a7f7e431264f0fc0faa3e4dbb075f))
+* enable crosscompile with binfmt for aarch64 ([2a03334](https://gitlab.com/simonoscr/nixfiles/commit/2a033342b333acd6c7d389eb45ad3d99577d80dc))
+* update server deployment ([6ce7737](https://gitlab.com/simonoscr/nixfiles/commit/6ce7737cc608661a486d566ab5567248e18b969a))
+
+### 🛠 Fixes
+
+* disable broken packages for now ([d068e9e](https://gitlab.com/simonoscr/nixfiles/commit/d068e9e785a5dac63c859346a36114ee8eaa1fa3))
+* update template ([a3fab87](https://gitlab.com/simonoscr/nixfiles/commit/a3fab87e81fa32c1a0b81ee7e4b68f2d78914be1))
+
 ## [12.0.0](https://gitlab.com/simonoscr/nixfiles/compare/11.3.2...12.0.0) (2024-11-01)
 
 ### 🧨 Breaking changes!
