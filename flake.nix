@@ -128,6 +128,7 @@
       forAllSystems = nixpkgs.lib.genAttrs (import systems);
     in
     {
+
       checks = forAllSystems (system: {
         pre-commit-check = import "${self}/checks/pre-commit-hook" { inherit self inputs system; };
       });
@@ -182,25 +183,25 @@
           modules = [ ./hosts/server/configuration.nix ];
         };
 
-        k3s-master-test-1 = nixpkgs.lib.nixosSystem {
+        k3s-control-1 = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
           };
-          modules = [ ./hosts/k8s/k3s-master-test-1/configuration.nix ];
+          modules = [ ./hosts/k8s/k3s-control-1/configuration.nix ];
         };
 
-        k3s-worker-test-1 = nixpkgs.lib.nixosSystem {
+        k3s-worker-1 = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
           };
-          modules = [ ./hosts/k8s/k3s-worker-test-1/configuration.nix ];
+          modules = [ ./hosts/k8s/k3s-worker-1/configuration.nix ];
         };
 
-        k3s-worker-test-2 = nixpkgs.lib.nixosSystem {
+        k3s-worker-2 = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
           };
-          modules = [ ./hosts/k8s/k3s-worker-test-2/configuration.nix ];
+          modules = [ ./hosts/k8s/k3s-worker-2/configuration.nix ];
         };
 
         installer-iso = nixpkgs.lib.nixosSystem {
@@ -210,6 +211,43 @@
           modules = [
             ./images/installer-iso.nix
           ];
+        };
+      };
+      colmena = {
+        meta = {
+          name = "k8s";
+          nixpkgs = import inputs.nixpkgs {
+            system = "aarch64-linux";
+          };
+          specialArgs = {
+            inherit inputs;
+          };
+        };
+
+        k3s-control-1 = {
+          deployment = {
+            targetHost = "188.245.201.191";
+            tags = [ "control" ];
+          };
+          imports = [ ./hosts/k8s/k3s-control-1/configuration.nix ];
+          time.timeZone = "Europe/Berlin";
+        };
+        k3s-worker-1 = {
+          deployment = {
+            targetHost = "128.140.113.184";
+            tags = [ "worker" ];
+          };
+          imports = [ ./hosts/k8s/k3s-worker-1/configuration.nix ];
+          time.timeZone = "Europe/Berlin";
+        };
+        k3s-worker-2 = {
+          deployment = {
+            targetHost = "138.201.88.53";
+            targetPort = 22;
+            tags = [ "worker" ];
+          };
+          imports = [ ./hosts/k8s/k3s-worker-2/configuration.nix ];
+          time.timeZone = "Europe/Berlin";
         };
       };
     };

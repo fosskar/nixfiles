@@ -16,5 +16,7 @@
     libarchive
 
     minikube
+
+    colmena
   ];
 }
