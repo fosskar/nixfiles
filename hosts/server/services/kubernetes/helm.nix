@@ -34,7 +34,7 @@
     argocd-apps = {
       chart = "argocd-apps";
       namespace = "argocd";
-      version = "2.0.0";
+      version = "2.0.2";
       repo = "https://argoproj.github.io/argo-helm";
       valuesYaml = ''
         applications:
