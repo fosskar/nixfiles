@@ -38,7 +38,9 @@
 
       decoration = {
         rounding = 8;
-        drop_shadow = false;
+        shadow = {
+          enabled = false;
+        };
         blur = {
           enabled = false;
         };
