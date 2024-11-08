@@ -1,6 +1,8 @@
-_: {
+{ pkgs, ... }:
+{
   chaotic.scx = {
     enable = true;
-    scheduler = "scx_rustland"; # scx_rustland is default
+    package = pkgs.scx.rustland;
+    scheduler = "scx_rustland"; # rustland is default
   };
 }
