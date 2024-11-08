@@ -23,40 +23,6 @@
     extraModulePackages = [ ];
   };
 
-  fileSystems = {
-    "/" = {
-      options = [ "subvol=@root" ];
-    };
-
-    "/nix" = {
-      options = [
-        "subvol=@nix"
-        "compress-force=zstd:1"
-        "noatime"
-        "noacl"
-      ];
-    };
-
-    "/persist" = {
-      options = [
-        "subvol=@persist"
-        "compress-force=zstd:1"
-        "noatime"
-      ];
-    };
-
-    "/tmp" = {
-      options = [
-        "subvol=@tmp"
-        "compress-force=zstd:1"
-        "noatime"
-      ];
-    };
-
-  };
-
-  swapDevices = [ ];
-
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction

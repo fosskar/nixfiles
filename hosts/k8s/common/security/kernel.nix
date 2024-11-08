@@ -131,6 +131,7 @@
       #  0 (default): basic integrity auditing messages
       #  1: additional integrity auditing messages
       "integrity_audit=1"
+      "vm.swappiness=40"
     ];
     blacklistedKernelModules = [
       # Obscure network protocols

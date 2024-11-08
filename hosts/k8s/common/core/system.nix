@@ -10,4 +10,8 @@ _: {
       AllowHibernation=no
     '';
   };
+  services.journald.extraConfig = ''
+    SystemMaxUse=100M
+    RuntimeMaxUse=50M
+  '';
 }

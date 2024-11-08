@@ -1,8 +1,6 @@
 { pkgs, lib, ... }:
 {
   boot = {
-    swraid.enable = lib.mkDefault false;
-
     tmp.cleanOnBoot = true;
 
     loader = {

@@ -1,5 +1,5 @@
 _: {
   imports = [
-    ./fwupd.nix
+    ./disko.nix
   ];
 }
