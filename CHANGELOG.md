@@ -1,3 +1,19 @@
+## [13.0.0](https://gitlab.com/simonoscr/nixfiles/compare/12.1.0...13.0.0) (2024-11-08)
+
+### 🧨 Breaking changes!
+
+* **k8s:** add k3s deployment, gitops, initial helm-charts etc ([2c525ef](https://gitlab.com/simonoscr/nixfiles/commit/2c525efb12a11093849af20c4aa3a54b4b4a77b9))
+
+### 🚀 Features
+
+* add colmena deployment ([d553c80](https://gitlab.com/simonoscr/nixfiles/commit/d553c808fc7a1ae3d485abb3506884e98267c35f))
+
+### 🛠 Fixes
+
+* update hyprland config ([3218301](https://gitlab.com/simonoscr/nixfiles/commit/32183015fcfb4f8c1eae283e2ad7379c771c9f6c))
+* update scheduler ([84baf5b](https://gitlab.com/simonoscr/nixfiles/commit/84baf5bed7b51281c84cdb9587f10f80a461d982))
+* **server:** argocd for server ([5094a3b](https://gitlab.com/simonoscr/nixfiles/commit/5094a3b22865f4f2a013386aef55b59e6e732a9f))
+
 ## [12.1.0](https://gitlab.com/simonoscr/nixfiles/compare/12.0.0...12.1.0) (2024-11-04)
 
 ### 📦 Other
