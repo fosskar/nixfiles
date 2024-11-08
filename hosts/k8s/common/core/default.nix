@@ -1,10 +1,8 @@
 _: {
   imports = [
     ./boot.nix
-    ./dbus.nix
-    ./disko.nix
     ./locale.nix
-    ./systemd.nix
+    ./system.nix
     ./users.nix
   ];
 }

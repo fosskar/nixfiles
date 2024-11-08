@@ -5,9 +5,8 @@
 { lib, ... }:
 {
   imports = [
-    ./k3s-master-test-1.nix
+    ./k3s-control-1.nix
     ./hardware-configuration.nix
-    ../common/modules/k3sModule.nix
     ../common/core
     ../common/hardware
     ../common/network
@@ -16,15 +15,12 @@
     ../common/programs/zsh.nix
     ../common/secrets
     ../common/security
-    ../common/services/podman.nix
-    ../common/services/ssh.nix
-    ../common/services/udev.nix
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
   networking = {
-    hostName = "k3s-master-test-1";
+    hostName = "k3s-control-1";
   };
 
   ### DON'T TOUCH!

@@ -1,7 +1,7 @@
 { config, ... }:
 {
   users = {
-    mutableUsers = true; # disable useradd + passwd
+    mutableUsers = false; # disable useradd + passwd
 
     users = {
       root = {
