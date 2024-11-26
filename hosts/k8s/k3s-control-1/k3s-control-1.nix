@@ -59,7 +59,7 @@
                 dynamicClusterDistribution: true
               server:
                 ingress:
-                  enable: true
+                  enabled: true
                   annotations:
                     traefik.ingress.kubernetes.io/router.entrypoints: web
                   ingressClassName: traefik
