@@ -2,7 +2,6 @@ _: {
   environment = {
     variables = {
       AMD_VULKAN_ICD = "RADV";
-      RADV_PERFTEST = "gpl,shader_object";
     };
   };
 
