@@ -39,7 +39,7 @@
           spec = {
             repo = "https://argoproj.github.io/argo-helm";
             chart = "argo-cd";
-            version = "7.7.0";
+            version = "7.7.5";
             targetNamespace = "argocd";
             createNamespace = true;
             bootstrap = true;
@@ -57,8 +57,6 @@
                     type: git
               controller:
                 dynamicClusterDistribution: true
-              dex:
-                enabled: false
               server:
                 service:
                   type: NodePort

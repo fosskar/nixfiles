@@ -873,11 +873,11 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1732615076,
-        "narHash": "sha256-aLL9VRth4KBcgXWusk2EoE7RVBm0xz/cmgUzVcI6vSc=",
+        "lastModified": 1732619134,
+        "narHash": "sha256-lnMmABPWZAaWX/Bu4a9mF0Y/4iEAoJOZB3h9SrNKPPc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a833a6d94a8e6224e8e6c09ed3d47860665f67ee",
+        "rev": "dafe47b3c8bb54c65e5a28bcad88894e4bb6a6e0",
         "type": "github"
       },
       "original": {
@@ -1068,11 +1068,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1730911778,
-        "narHash": "sha256-gl3AWIKCfyWqYvBIoRp4WsnDXzaralvc0u9M0Qjgzjs=",
+        "lastModified": 1732618122,
+        "narHash": "sha256-gNpri6nJwGIip0FR1X55HNHZO4b6Kq5JeO3UH8x+JnE=",
         "ref": "refs/heads/main",
-        "rev": "330d201079e81195226dcb66259ff9638abb4c99",
-        "revCount": 68,
+        "rev": "4bbb31e9f98a268aff8c8fde2144a87b56cc9d5a",
+        "revCount": 69,
         "type": "git",
         "url": "ssh://git@gitlab.com/simonoscr/nixsecrets"
       },
