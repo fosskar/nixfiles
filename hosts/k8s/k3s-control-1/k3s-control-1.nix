@@ -19,7 +19,7 @@
       #"--flannel-backend=none"
       #"--disable-network-policy"
       #"--disable metrics-server"
-      "--disable local-storage" # mayastore
+      #"--disable local-storage"
       #"--disable-kube-proxy"
       #"--disable-cloud-controller"
       #"--kubelet-arg=register-with-taints=node.cilium.io/agent-not-ready:NoExecute"
