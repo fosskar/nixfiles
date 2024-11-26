@@ -36,12 +36,20 @@ in
       hyprpicker # color picker
     ];
 
+    home.sessionVariables = {
+      QT_QPA_PLATFORM = "wayland";
+      QT_AUTO_SCREEN_SCALE_FACTOR = 1;
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
+      SDL_VIDEODRIVER = "wayland";
+      GDK_BACKEND = "wayland";
+      CLUTTER_BACKEND = "wayland";
+    };
+
     wayland.windowManager.hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      xwayland.enable = true; # true is default, but i set it anyways
+      package = inputs.hyprland.packages.${pkgs.system}.default;
       systemd = {
-        enable = true;
+        enable = false;
         variables = [ "--all" ];
         extraCommands = [
           "systemctl --user stop graphical-session.target"
@@ -49,5 +57,6 @@ in
         ];
       };
     };
+    systemd.user.targets.tray.Unit.Requires = lib.mkForce [ "graphical-session.target" ];
   };
 }

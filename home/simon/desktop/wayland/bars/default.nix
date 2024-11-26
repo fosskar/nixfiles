@@ -15,7 +15,6 @@ with lib;
   };
 
   imports = [
-    ./ags
     ./hyprpanel
   ];
 }
