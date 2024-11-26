@@ -7,14 +7,14 @@
     protonmail-desktop
     (lowPrio proton-pass) # FIXME package collision between proton-mail and proton-pass app.asar
     protonvpn-gui
-    #bitwarden-desktop
-    element-desktop-wayland
+    bitwarden-desktop
+    #element-desktop-wayland
 
     # media
     spotify
 
     # audio
-    teamspeak_client
+    teamspeak3
     #teamspeak5_client
 
     # gaming
@@ -32,7 +32,7 @@
     unrar
 
     # needed for graphene installer
-    android-udev-rules
-    android-tools
+    #android-udev-rules
+    #android-tools
   ];
 }
