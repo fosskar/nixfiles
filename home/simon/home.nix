@@ -79,7 +79,7 @@
       };
       programs = {
         git.enable = true;
-        yazi.enable = false;
+        yazi.enable = true;
         bat.enable = true;
         btop.enable = true;
         dircolors.enable = true;
