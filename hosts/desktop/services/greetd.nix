@@ -3,44 +3,32 @@
   lib,
   ...
 }:
-#tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
-#hyprland-session = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/share/wayland-sessions";
-#sessionsData = config.services.displayManager.sessionData.desktops;
-#sessionsPaths = lib.concatStringsSep ":" [
-#  "${sessionsData}/share/xsessions"
-#  "${sessionsData}/share/wayland-sessions"
-#];
-#kernel = "${config.boot.kernelPackages.kernel.version}";
 {
   # greetd DM with tuigreet
   services = {
-    greetd = {
-      enable = true;
-      settings = rec {
-        terminal.vt = 1;
-        #default_session = {
-        #  user = "simon";
-        #  command = "${tuigreet} --greeting 'NixOS: unstable, Kernel: XanMod ${kernel}' --time --asterisks --remember --remember-user-session  --theme 'border=cyan;button=yellow' --cmd Hyprland --sessions '${sessionsPaths}'";
-        #};
-        initial_session = {
-          command = "${lib.getExe config.programs.hyprland.package}";
+    greetd =
+      let
+        session = {
+          command = "${lib.getExe config.programs.uwsm.package} start hyprland-uwsm.desktop";
           user = "simon";
         };
-        default_session = initial_session;
+      in
+      {
+        enable = true;
+        settings = {
+          terminal.vt = 1;
+          initial_session = session;
+          default_session = session;
+        };
       };
-    };
   };
 
-  # Suppress error messages on tuigreet. They sometimes obscure the TUI
-  # boundaries of the greeter.
-  # See: https://github.com/apognu/tuigreet/issues/68#issuecomment-1586359960
-  systemd.services.greetd.serviceConfig = {
-    Type = "idle";
-    #StandardInputs = "tty";
-    StandardOutput = "tty";
-    StandardError = "journal";
-    TTYReset = true;
-    TTYVHangup = true;
-    TTYVTDisallocate = true;
+  programs.uwsm = {
+    enable = true;
+    waylandCompositors.hyprland = {
+      binPath = "/run/current-system/sw/bin/Hyprland";
+      prettyName = "Hyprland";
+      comment = "Hyprland managed by UWSM";
+    };
   };
 }
