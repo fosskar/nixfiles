@@ -58,8 +58,13 @@
               controller:
                 dynamicClusterDistribution: true
               server:
-                service:
-                  type: NodePort
+                ingress:
+                  enable: true
+                  annotations:
+                    traefik.ingress.kubernetes.io/router.entrypoints: web
+                  ingressClassName: traefik
+                  hostname: argocd.simonoscar.space
+                  path
               notifications:
                 enabled: false
             '';
