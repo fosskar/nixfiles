@@ -77,7 +77,6 @@
 
     anyrun = {
       url = "github:anyrun-org/anyrun";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # secrets
@@ -94,7 +93,6 @@
       url = "github:Mic92/sops-nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        nixpkgs-stable.follows = "";
       };
     };
     nixsecrets = {
