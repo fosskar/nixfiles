@@ -33,12 +33,9 @@
       ];
     };
     nameservers = [
-      # cloudflare, yuck
-      # shares data
-      "1.1.1.1"
-      "1.0.0.1"
-      "2606:4700:4700::1111"
-      "2606:4700:4700::1001"
+      # mullevad
+      "194.242.2.2"
+      "2a07:e340::2"
 
       # quad9, said to be the best
       # shares *less* data
@@ -48,5 +45,4 @@
       "2620:fe::9"
     ];
   };
-  #programs.nm-applet.enable = true;
 }

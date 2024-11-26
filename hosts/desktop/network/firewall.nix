@@ -4,9 +4,6 @@ _: {
       enable = true;
       trustedInterfaces = [
         "tailscale0"
-        "virbr0"
-        "virbr1"
-        "vnet0"
       ];
       allowedTCPPortRanges = [
         {
