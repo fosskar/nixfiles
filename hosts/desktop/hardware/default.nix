@@ -6,4 +6,6 @@ _: {
     ./hardware-configuration.nix
     ./wooting.nix
   ];
+
+  hardware.enableAllFirmware = true;
 }
