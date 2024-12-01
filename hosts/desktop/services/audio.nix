@@ -39,7 +39,7 @@ in
               args = {
                 nice.level = -15;
                 rt = {
-                  prio = 70;
+                  prio = 88;
                   time = {
                     soft = 200000;
                     hard = 200000;
