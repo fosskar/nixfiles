@@ -1,8 +1,7 @@
-{ pkgs, ... }:
-{
-  chaotic.scx = {
+_: {
+  services.scx = {
     enable = true;
-    package = pkgs.scx_git.rustland;
-    scheduler = "scx_rustland"; # rustland is default
+    scheduler = "scx_lavd"; # best for gaming? scx since kernel 6.12 so no chaotic-nyx required anymore
+    extraArgs = [ "--performance" ];
   };
 }
