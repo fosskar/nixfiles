@@ -44,6 +44,8 @@
             createNamespace = true;
             bootstrap = true;
             valuesContent = ''
+              global:
+                domain: argocd.simonoscar.space
               configs:
                 cm:
                   statusbadge.enabled: true
@@ -60,8 +62,6 @@
               server:
                 ingress:
                   enabled: true
-                  annotations:
-                    traefik.ingress.kubernetes.io/router.entrypoints: web
                   ingressClassName: traefik
                   hostname: argocd.simonoscar.space
               notifications:
