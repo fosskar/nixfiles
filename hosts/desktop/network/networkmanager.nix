@@ -1,7 +1,5 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [ networkmanagerapplet ];
-
   networking = {
     wireless = {
       enable = false;
@@ -19,21 +17,17 @@
     };
     networkmanager = {
       enable = true;
-      wifi.backend = "iwd";
+      wifi = {
+        backend = "iwd";
+        macAddress = "random";
+        powersave = true;
+        scanRandMacAddress = true;
+      };
       dns = "systemd-resolved";
     };
 
-    hosts = {
-      "192.168.178.91" = [
-        "argocd.space"
-        "prometheus.space"
-        "grafana.space"
-        "vaultwarden.space"
-        "home.space"
-      ];
-    };
     nameservers = [
-      # mullevad
+      # mullevad also best
       "194.242.2.2"
       "2a07:e340::2"
 
@@ -45,4 +39,9 @@
       "2620:fe::9"
     ];
   };
+  # prevent nm-wait-online timeout after nm upgrades
+  systemd.services.NetworkManager-wait-online.serviceConfig.ExecStart = [
+    ""
+    "${pkgs.networkmanager}/bin/nm-online -q"
+  ];
 }
