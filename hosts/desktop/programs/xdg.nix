@@ -2,11 +2,12 @@
 {
   xdg.portal = {
     enable = true;
+    wlr.enable = false;
     config = {
-      common.default = [ "gtk" ];
+      common.default = [ "*" ];
       hyprland.default = [
-        "gtk"
         "hyprland"
+        "gtk"
       ];
     };
     xdgOpenUsePortal = true;
