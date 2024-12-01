@@ -24,14 +24,19 @@
         emoji = [ "Noto Color Emoji" ];
       };
       antialias = true;
+      includeUserConf = true;
       cache32Bit = true;
+      allowBitmaps = false;
+      allowType1 = false; # Poor rendering
       hinting = {
         enable = true;
         autohint = true;
+        style = "full";
       };
     };
     packages = with pkgs; [
       # defaults worth keeping
+      inter
       dejavu_fonts
       liberation_ttf # for PDFs, Roman
       noto-fonts
@@ -42,13 +47,9 @@
       roboto
       material-icons # used in widgets and such
       material-design-icons
-      (google-fonts.override { fonts = [ "Inter" ]; })
-      (nerdfonts.override {
-        fonts = [
-          "JetBrainsMono"
-          "NerdFontsSymbolsOnly"
-        ];
-      })
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.symbols-only
+      nerd-fonts.zed-mono
     ];
   };
 }
