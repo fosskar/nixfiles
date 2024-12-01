@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # default
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
     nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # current master on git
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05"; # current stable
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11"; # current stable
 
     systems.url = "github:nix-systems/default-linux";
 
