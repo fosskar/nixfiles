@@ -16,11 +16,15 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.sessionVariables = {
+      GTK_THEME = config.gtk.theme.name;
+    };
+
     gtk = {
       enable = true;
       font = {
         name = "Inter";
-        package = pkgs.google-fonts.override { fonts = [ "Inter" ]; };
+        package = pkgs.inter;
       };
       theme = {
         name = "adw-gtk3-dark";
