@@ -1,6 +1,6 @@
 _: {
   programs.corectrl = {
-    enable = true;
+    enable = false;
     gpuOverclock = {
       enable = true;
       ppfeaturemask = "0xffffffff";
