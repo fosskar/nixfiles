@@ -55,23 +55,16 @@
         auto_fold_dirs = false;
       };
       assistant = {
+        version = "2";
         default_model = {
-          provider = "zed.dev";
-          model = "claude-3-5-sonnet-20240620";
+          provider = "ollama";
+          model = "deepseek-coder-v2:16b";
         };
       };
       language_models = {
         ollama = {
-          low_speed_timeout_in_seconds = 60;
-          available_models = [
-            {
-              provider = "ollama";
-              name = "deepseek-coder-v2:16b";
-              display_name = "DeepSeek Coder v2";
-              max_tokens = 33000;
-              keep_alive = "10m";
-            }
-          ];
+          api_url = "http://localhost:11434";
+          low_speed_timeout_in_seconds = 900;
         };
       };
       autosave = {
@@ -147,18 +140,22 @@
       };
       languages = {
         Nix = {
-          formatter = {
-            external = {
-              command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
-              arguments = [ "-" ];
-            };
-          };
-          prettier = {
-            allowed = true;
-          };
+          formatter = [
+            {
+              language_server = {
+                name = "nixd";
+              };
+            }
+            {
+              external = {
+                command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+                arguments = [ ];
+              };
+            }
+          ];
           language_servers = [
             "nixd"
-            "!nil"
+            "nil"
           ];
         };
         Markdown = {
@@ -172,26 +169,17 @@
       };
       lsp = {
         nixd = {
-          binary = {
-            path_lookup = true;
-          };
-        };
-        ## future nil support in nix extension? see: https://github.com/zed-extensions/nix/pull/13
-        #nil = {
-        #  binary = {
-        #    path_lookup = true;
-        #  };
-        #};
-        yaml-language-server = {
           settings = {
-            yaml = {
-              keyOrdering = true; # Enforces alphabetical ordering of keys in maps
+            diagnostics = {
+              suppress = [ "sema-extra-with" ];
             };
           };
         };
-        json-language-server = {
-          binary = {
-            path_lookup = true;
+        nil = {
+          settings = {
+            diagnostics = {
+              ignored = [ "unused_binding" ];
+            };
           };
         };
       };
