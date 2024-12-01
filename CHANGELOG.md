@@ -1,3 +1,53 @@
+## [13.2.0](https://gitlab.com/simonoscr/nixfiles/compare/13.1.0...13.2.0) (2024-12-01)
+
+### 📦 Other
+
+* update flake ([f0dd100](https://gitlab.com/simonoscr/nixfiles/commit/f0dd1006626735ef99caaa2b89ccc53801687654))
+* update flake ([a81ebd2](https://gitlab.com/simonoscr/nixfiles/commit/a81ebd2a8f77f5279c574a9ac483ea6d373de1ea))
+* update flake ([810cf7b](https://gitlab.com/simonoscr/nixfiles/commit/810cf7be4d601f5660c959c60d92efb400c6dda3))
+* update flake input ([b923aa4](https://gitlab.com/simonoscr/nixfiles/commit/b923aa470e8b309b97d043ab30db2ea1109f043a))
+* **server:** cleanup and reinstall and update ([47564e0](https://gitlab.com/simonoscr/nixfiles/commit/47564e07e526400a718a3b50fcd233ae18dd7e56))
+* **server:** cleanup and reinstall and update ([e715062](https://gitlab.com/simonoscr/nixfiles/commit/e715062a45086dd4d7b44e4b36d6526277cef9e4))
+
+### 🚀 Features
+
+* switch to nixos scheduler module instead of chaotic nyx ([74332a0](https://gitlab.com/simonoscr/nixfiles/commit/74332a0f8581c1929cf76f918615d9830aa644ba))
+* **hyprland:** update to uwsm, adjust binds and settings ([4b671d3](https://gitlab.com/simonoscr/nixfiles/commit/4b671d3fa07f8bcdc25de6407cbe04f6368f38f4))
+
+### 🛠 Fixes
+
+* add extraGroups for user simon ([1badb1e](https://gitlab.com/simonoscr/nixfiles/commit/1badb1e825ef225a0ff28c271efd3043da6f0d36))
+* add ingress to initial argocd ([3ad9b02](https://gitlab.com/simonoscr/nixfiles/commit/3ad9b029253f61cec7636ccdaa2b8389f0ab1c21))
+* add ingress to initial argocd ([8553aac](https://gitlab.com/simonoscr/nixfiles/commit/8553aac3ec077982fb1fa82b86118235a2ab6f2d))
+* add ingress to initial argocd ([a30fd81](https://gitlab.com/simonoscr/nixfiles/commit/a30fd81e58eef91c5077dc1e6609bceca720ccdb))
+* add lact ([8c27a29](https://gitlab.com/simonoscr/nixfiles/commit/8c27a29b99269ce72ccfa88c438a488742060731))
+* add nh option hm ([c656972](https://gitlab.com/simonoscr/nixfiles/commit/c6569724d07d1cfb1cc94da6cb6d163d528ef61e))
+* add systemd service for kdeconnect ([0d8eebd](https://gitlab.com/simonoscr/nixfiles/commit/0d8eebdc08952def51b006c683db100029e4371d))
+* add systemd services for diff services ([6de8212](https://gitlab.com/simonoscr/nixfiles/commit/6de8212d09656c56fee7f6a8c02584b543ea37e5))
+* enable all firmware ([41e5120](https://gitlab.com/simonoscr/nixfiles/commit/41e51207c1f7a0e52b8ea818ce96c8ecd7ce5ea6))
+* remove further docs to reduce size ([fbee36d](https://gitlab.com/simonoscr/nixfiles/commit/fbee36d4b42f1c58adc9709d36dc103b19782d2d))
+* switch nh to hm module ([3f16187](https://gitlab.com/simonoscr/nixfiles/commit/3f161873dbe3ed788ebf2e611e3091af0b4ad12d))
+* update audio lowlatency settings ([df5b2e8](https://gitlab.com/simonoscr/nixfiles/commit/df5b2e8cbcbcf418ed5d5de8a0fea60db53c773e))
+* update fwupd ([9d81b40](https://gitlab.com/simonoscr/nixfiles/commit/9d81b40470dae7f0ea0652b9510137d9b854d06a))
+* update gtk and qt themes and cursor ([3d5152b](https://gitlab.com/simonoscr/nixfiles/commit/3d5152b8a3d4225978e78db04126d866e8ac5fde))
+* update locale ([f7edcab](https://gitlab.com/simonoscr/nixfiles/commit/f7edcab2b779454ed6fedb18e53ac9ead7dfb55f))
+* update lsp and config ([a19c68a](https://gitlab.com/simonoscr/nixfiles/commit/a19c68a1d34c1b234dca7c488d36a44715012daa))
+* **amd:** update REDV_PERFTEST vars ([27015a6](https://gitlab.com/simonoscr/nixfiles/commit/27015a688eeeea4636328a68b98befe7d8ddd5d3))
+* **audio:** update lowlatency configs ([16675db](https://gitlab.com/simonoscr/nixfiles/commit/16675db501b4de48a449875ac2d8ee0393447af3))
+* **boot:** adjust supported fs ([1e1e50d](https://gitlab.com/simonoscr/nixfiles/commit/1e1e50dc472bd9914165c2d19143e12baa7cc3ea))
+* **corectrl:** disable ([109c366](https://gitlab.com/simonoscr/nixfiles/commit/109c366bd5d6610f67327ede91ff6ea2740be42b))
+* **fonts:** update nerdfonts ns ([82326ab](https://gitlab.com/simonoscr/nixfiles/commit/82326ab7d5b6f738839b94d6767ef67f0e59b719))
+* **gmaing:** remove extraPkgs, setup gamescope and add tweaks ([9ca4736](https://gitlab.com/simonoscr/nixfiles/commit/9ca4736eb6150a2d342e3ad2677ba38639725485))
+* **gnome-services:** remove settings daemon ([00759e4](https://gitlab.com/simonoscr/nixfiles/commit/00759e44e10664b7213d416a997fb7a3aaa628a6))
+* **greetd:** enable autologin and start hyprland-uwsm setup ([eebfa16](https://gitlab.com/simonoscr/nixfiles/commit/eebfa16850afd2445427ff44b9afb0457b3f221c))
+* **hayprland:** enable withUWSM key ([29a3ef7](https://gitlab.com/simonoscr/nixfiles/commit/29a3ef7cc3335f99806f05116ce26799b6a3771a))
+* **hyprpanel:** add systemd services with uwsm ([2a5ea42](https://gitlab.com/simonoscr/nixfiles/commit/2a5ea42f011a5742059612c8b376762bb143d32c))
+* **k8s:** update ([de2ef7a](https://gitlab.com/simonoscr/nixfiles/commit/de2ef7a8e25756c8a6f90440d6dc14e4ff64ccc3))
+* **network:** random mac address ([4001b77](https://gitlab.com/simonoscr/nixfiles/commit/4001b7785fbc518a64b79d5c39d68dbff10caf0f))
+* **pkgs:** cleasnup unsued pkgs ([a7d2a8c](https://gitlab.com/simonoscr/nixfiles/commit/a7d2a8c0c43db1413350f62c865f38c97c04f5ae))
+* **power:** set cpuFreq to performance ([35d5385](https://gitlab.com/simonoscr/nixfiles/commit/35d53857ede3e84ebb8295da76e68bceb93967e9))
+* **xdg:** set common default portal to * ([624baac](https://gitlab.com/simonoscr/nixfiles/commit/624baacfa9e0bb65a72f00574bcdb57361de4cdc))
+
 ## [13.1.0](https://gitlab.com/simonoscr/nixfiles/compare/13.0.0...13.1.0) (2024-11-26)
 
 ### 📔 Docs
