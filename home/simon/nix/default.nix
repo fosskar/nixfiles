@@ -1,4 +1,6 @@
 _: {
-  imports = [ ./nix-index.nix ];
-
+  imports = [
+    ./nh.nix
+    ./nix-index.nix
+  ];
 }

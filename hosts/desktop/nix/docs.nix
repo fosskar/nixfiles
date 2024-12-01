@@ -1,5 +1,6 @@
 _: {
   documentation = {
+    enable = false;
     # whether to enable the `doc` output of packages
     # generally in ${pkg}/share/ as plaintext or html
     # can shave off a few megabytes
@@ -8,9 +9,10 @@ _: {
     # output of packages
     info.enable = false;
 
-    nixos = {
-      enable = false;
-    };
+    nixos.enable = false;
+
+    dev.enable = false;
+
     man = {
       # Whether to install manual pages
       # this means packages that provide a `man` output will have said output

@@ -13,11 +13,11 @@ in
 
   config = mkIf cfg.enable {
 
-    home.sessionVariables.FLAKE = "${config.users.users.simon.home}/code/nixfiles";
+    home.sessionVariables.FLAKE = "${config.home.homeDirectory}/code/nixfiles";
 
     programs.nh = {
       enable = true;
-      flake = "${config.users.users.simon.home}/code/nixfiles";
+      flake = "${config.home.homeDirectory}/code/nixfiles";
       clean = {
         enable = true;
         dates = "weekly";
