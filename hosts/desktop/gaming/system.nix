@@ -18,6 +18,8 @@ _: {
       "vm.zone_reclaim_mode" = 0;
       # Reduce the maximum page lock acquisition latency while retaining adequate throughput [13][14][15]:
       "vm.page_lock_unfairness" = 1;
+      # In some cases, split lock mitigate can slow down performance in some applications and games.
+      "kernel.split_lock_mitigate" = 0;
     };
   };
 }
