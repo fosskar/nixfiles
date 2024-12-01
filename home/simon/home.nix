@@ -36,7 +36,7 @@
           hypridle.enable = true;
           hyprlock.enable = true;
           hyprmode.enable = true;
-          plugins.enable = true;
+          plugins.enable = false;
         };
         bar = "hyprpanel";
         applauncher = "anyrun";
@@ -54,6 +54,7 @@
       vkbasalt.enable = true;
     };
     nix = {
+      nh.enable = true;
       nix-index.enable = true;
     };
     programs = {
