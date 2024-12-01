@@ -1,5 +1,10 @@
-_: {
+{ pkgs, ... }:
+{
   services = {
+
+    dbus.packages = with pkgs; [
+      gcr
+    ];
 
     gnome.gnome-keyring.enable = true;
 
