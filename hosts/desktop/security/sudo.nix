@@ -1,7 +1,6 @@
-{ lib, ... }:
-{
+_: {
   security = {
-    sudo-rs.enable = lib.mkForce false;
+    sudo-rs.enable = false;
     sudo = {
       enable = true;
       wheelNeedsPassword = false;
