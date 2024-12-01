@@ -59,6 +59,10 @@
           html.enable = false;
           json.enable = false;
         };
+        programs = {
+          man.enable = false;
+          man.package = null;
+        };
       }
     ];
   };
