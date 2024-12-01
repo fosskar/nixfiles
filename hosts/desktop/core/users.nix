@@ -22,6 +22,7 @@
         "git"
         "libvirtd"
         "qemu-libvirtd"
+        "kvm"
         "nix"
         "network"
       ];
