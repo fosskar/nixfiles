@@ -1,3 +1,14 @@
+## [13.2.1](https://gitlab.com/simonoscr/nixfiles/compare/13.2.0...13.2.1) (2024-12-02)
+
+### 📦 Other
+
+* update flake ([eaa1e10](https://gitlab.com/simonoscr/nixfiles/commit/eaa1e1085051c0b7300016ce51be165280f619a7))
+* update flake ([5642e89](https://gitlab.com/simonoscr/nixfiles/commit/5642e8957742fc9653425b9f1ba60c23a4291c1c))
+
+### 🛠 Fixes
+
+* **hyprland:** enable plugins and update rules ([011a5f2](https://gitlab.com/simonoscr/nixfiles/commit/011a5f29bb1160683e84740c6a15d589924b99f2))
+
 ## [13.2.0](https://gitlab.com/simonoscr/nixfiles/compare/13.1.0...13.2.0) (2024-12-01)
 
 ### 📦 Other
