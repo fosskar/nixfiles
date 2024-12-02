@@ -31,7 +31,7 @@ in
             res_w = 1440;
             res_h = 1080;
             class = "cs2";
-            #fix_mouse = true;
+            fix_mouse = true;
           };
 
           hyprbars = {

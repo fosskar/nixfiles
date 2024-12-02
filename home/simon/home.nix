@@ -36,7 +36,7 @@
           hypridle.enable = true;
           hyprlock.enable = true;
           hyprmode.enable = true;
-          plugins.enable = false;
+          plugins.enable = true;
         };
         bar = "hyprpanel";
         applauncher = "anyrun";

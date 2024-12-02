@@ -12,15 +12,19 @@ _: {
         "workspace 2 silent, title:^(TeamSpeak 3)$"
 
         # suppress notification events when gaming
-        "suppressevent maximize,class:.*"
-        "noinitialfocus, title:^(notificationtoasts.*)$, floating:1"
+        "suppressevent maximize, class:.*"
+        "suppressevent maximize fullscreen, class:^(cs2)$"
+        "noinitialfocus, class:^(steam)$, title:^(notificationtoasts.*)$, floating:1"
 
         # idle inhibit on any class that is fullscreen
         "idleinhibit fullscreen, class:.*"
 
         # immediate
+        #"immediate, fullscreen:1" # immediate for all fullscreen applcations
         "immediate, class:^(cs2)$"
         "immediate, class:^(deadlock)$"
+        "immediate, class:^(gamescope)$" # Apply fullscreen to gamescope
+        "immediate, class:^(steam_app_.*),title:(.*)" # Apply fullscreen to Steam games
 
         # make Firefox PiP window floating and sticky
         "float, title:^(Picture-in-Picture)$"
