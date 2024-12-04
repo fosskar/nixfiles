@@ -1,3 +1,14 @@
+## [13.2.4](https://gitlab.com/simonoscr/nixfiles/compare/13.2.3...13.2.4) (2024-12-04)
+
+### 📦 Other
+
+* flake update ([8bb0337](https://gitlab.com/simonoscr/nixfiles/commit/8bb0337939cd1741f8225202dc624f3a132bf88a))
+
+### 🛠 Fixes
+
+* **gaming:** update gamemode config and hyrmode script ([5ddd1cc](https://gitlab.com/simonoscr/nixfiles/commit/5ddd1cc72d49e3142c0daf50cbb87b3d9db94e7b))
+* **security:** switch to sudo-rs ([45fc451](https://gitlab.com/simonoscr/nixfiles/commit/45fc4515dbff5d33f4867259f2d29a3a560260e2))
+
 ## [13.2.3](https://gitlab.com/simonoscr/nixfiles/compare/13.2.2...13.2.3) (2024-12-04)
 
 ### 📦 Other
