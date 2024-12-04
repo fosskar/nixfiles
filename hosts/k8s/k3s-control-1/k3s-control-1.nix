@@ -39,13 +39,13 @@
           spec = {
             repo = "https://argoproj.github.io/argo-helm";
             chart = "argo-cd";
-            version = "7.7.5";
+            version = "7.7.7";
             targetNamespace = "argocd";
             createNamespace = true;
             bootstrap = true;
             valuesContent = ''
               global:
-                domain: argocd.simonoscar.space
+                domain: argocd.simonoscar.me
               configs:
                 cm:
                   statusbadge.enabled: true
@@ -62,8 +62,11 @@
               server:
                 ingress:
                   enabled: true
+                  annotations:
+                    cert-manager.io/cluster-issuer: tls-issuer
                   ingressClassName: traefik
-                  hostname: argocd.simonoscar.space
+                  hostname: argocd.simonoscar.me
+                  tls: true
               notifications:
                 enabled: false
             '';

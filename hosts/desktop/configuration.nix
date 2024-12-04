@@ -36,7 +36,7 @@
     ./services/greetd.nix
     ./services/lact.nix
     ./services/libinput.nix
-    ./services/llm
+    #./services/llm
     ./services/power.nix
     ./services/printing.nix
     ./services/systemd.nix
