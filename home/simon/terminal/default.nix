@@ -10,6 +10,7 @@ _: {
     ./programs/dircolors.nix
     ./programs/direnv.nix
     ./programs/fzf.nix
+    ./programs/k9s.nix
     ./shell
   ];
 }

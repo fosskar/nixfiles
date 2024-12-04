@@ -34,5 +34,7 @@
     # needed for graphene installer
     #android-udev-rules
     #android-tools
+
+    kubectl
   ];
 }

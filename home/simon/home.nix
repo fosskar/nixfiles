@@ -86,6 +86,7 @@
         dircolors.enable = true;
         direnv.enable = true;
         fzf.enable = true;
+        k9s.enable = true;
       };
       shell = {
         zsh.enable = true;
