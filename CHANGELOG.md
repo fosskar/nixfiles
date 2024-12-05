@@ -1,3 +1,9 @@
+## [13.3.0](https://gitlab.com/simonoscr/nixfiles/compare/13.2.4...13.3.0) (2024-12-05)
+
+### 🚀 Features
+
+* performance tweaks and generell system settings for gaming performance with cachyos kernel ([3b6d5f7](https://gitlab.com/simonoscr/nixfiles/commit/3b6d5f7212132a1bb777c5eae26feb6809e16cb2))
+
 ## [13.2.4](https://gitlab.com/simonoscr/nixfiles/compare/13.2.3...13.2.4) (2024-12-04)
 
 ### 📦 Other
