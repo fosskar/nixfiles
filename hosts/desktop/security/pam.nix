@@ -8,3 +8,4 @@ _: {
     };
   };
 }
+# NOTE: GNOME keyring does not enable a ssh agent/GPG agent in NixOS

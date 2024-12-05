@@ -6,6 +6,7 @@
 
     kernelModules = [
       "kvm-amd"
+      "tcp_bbr"
     ];
 
     supportedFilesystems = [
@@ -65,29 +66,5 @@
         strip = true;
       };
     };
-
-    kernelParams = [
-      # https://en.wikipedia.org/wiki/Kernel_page-table_isolation
-      # auto means kernel will automatically decide the pti state
-      "pti=auto" # on | off
-
-      # CPU idle behaviour only Intel CPU
-      #  poll: slightly improve performance at cost of a hotter system (not recommended)
-      #  halt: halt is forced to be used for CPU idle
-      #  nomwait: Disable mwait for CPU C-states
-      #"idle=nomwait" # poll | halt | nomwait
-
-      # disable usb autosuspend
-      "usbcore.autosuspend=-1"
-
-      # disable displaying of the built-in Linux logo
-      "logo.nologo"
-
-      # disable watchdog timer
-      "nowatchdog"
-      "modprobe.blacklist=iTCO_wdt"
-
-      ''acpi_osi="Windows 2020"''
-    ];
   };
 }

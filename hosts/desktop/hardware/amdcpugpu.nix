@@ -8,10 +8,6 @@ _: {
 
   boot = {
     kernelParams = [ "amd_pstate=active" ];
-    blacklistedKernelModules = [
-      "ath3k"
-    ];
-    extraModulePackages = [ ];
   };
 
   hardware = {
@@ -40,6 +36,14 @@ _: {
       #  vaapiVdpau
       #  libvdpau-va-gl
       #];
+    };
+  };
+  systemd.services.set-amd-x3d-mode = {
+    description = "Set AMD X3D vcache mode to cache";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = "/bin/sh -c 'echo cache > /sys/bus/platform/drivers/amd_x3d_vcache/AMDI0101:00/amd_x3d_mode'";
+      Type = "oneshot";
     };
   };
 }

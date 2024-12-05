@@ -5,7 +5,8 @@ _: {
     ./dbus.nix
     #./impermanence.nix
     ./locale.nix
-    ./users.nix
     ./scheduler.nix
+    ./systemd.nix
+    ./users.nix
   ];
 }

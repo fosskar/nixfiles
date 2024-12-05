@@ -22,9 +22,12 @@ let
         keyword general:border_size 1;\
         keyword decoration:rounding 0;\
         keyword monitor "DP-1,2560x1440@165,0x0,1" 2> /dev/null"
+      powerprofilesctl set performance
+      echo cache | sudo tee /sys/bus/platform/drivers/amd_x3d_vcache/AMDI0101:00/amd_x3d_mode
       exit
     fi
     hyprctl reload
+    powerprofilesctl set balanced
   '';
 in
 {

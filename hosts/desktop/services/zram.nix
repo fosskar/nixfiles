@@ -25,7 +25,7 @@ _: {
     #  over memory. higher values mean that we'll utilize swap more often
     #  which preserves memory, but will cause performance issues as well
     #  as wear on the drive
-    "vm.swappiness" = 180; # 0-200
+    "vm.swappiness" = 100; # 0-200
     # level of reclaim when memory is being fragmented
     "vm.watermark_boost_factor" = 0; # 0 to disable
     # aggressiveness of kswapd

@@ -21,49 +21,66 @@
   };
 
   boot = {
-    kernel = {
-      # https://docs.kernel.org/admin-guide/sysctl/vm.html
-      sysctl = {
-        ### SECURITY
-        # The Magic SysRq key is a key combo that allows users connected to the
-        # system console of a Linux kernel to perform some low-level commands.
-        # Disable it, since we don't need it, and is a potential security concern.
-        "kernel.sysrq" = lib.mkForce 0;
-        # Hide kptrs even for processes with CAP_SYSLOG
-        # also prevents printing kernel pointers
-        "kernel.kptr_restrict" = 2;
-        # Disable ftrace debugging
-        "kernel.ftrace_enabled" = false;
-        # Avoid kernel memory address exposures via dmesg (this value can also be set by CONFIG_SECURITY_DMESG_RESTRICT).
-        "kernel.dmesg_restrict" = 1;
-        # Prevent creating files in potentially attacker-controlled environments such
-        # as world-writable directories to make data spoofing attacks more difficult
-        "fs.protected_fifos" = 2;
-        # Prevent unintended writes to already-created files
-        "fs.protected_regular" = 2;
-        # Disable SUID binary dump
-        "fs.suid_dumpable" = 0;
-        # Prevent unprivileged users from creating hard or symbolic links to files
-        "fs.protected_symlinks" = 1;
-        "fs.protected_hardlinks" = 1;
-        # Prevent boot console kernel log information leaks
-        "kernel.printk" = "3 3 3 3";
-        # Restrict loading TTY line disciplines to the CAP_SYS_MODULE capability to
-        # prevent unprivileged attackers from loading vulnerable line disciplines with
-        # the TIOCSETD ioctl
-        "dev.tty.ldisc_autoload" = 0;
-        # Kexec allows replacing the current running kernel. There may be an edge case where
-        # you wish to boot into a different kernel, but I do not require kexec. Disabling it
-        # patches a potential security hole in our system.
-        "kernel.kexec_load_disabled" = true;
-        # Borrowed by NixOS/nixpkgs. Since the security module does not explain what those
-        # options do, it is up you to educate yourself dear reader.
-        # See:
-        #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-rnd-bits>
-        #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-min-addr>
-        "vm.mmap_rnd_bits" = 32;
-        "vm.mmap_min_addr" = 65536;
-      };
+    kernel.sysctl = {
+      ### SECURITY
+      # The Magic SysRq key is a key combo that allows users connected to the
+      # system console of a Linux kernel to perform some low-level commands.
+      # Disable it, since we don't need it, and is a potential security concern.
+      "kernel.sysrq" = lib.mkForce 0;
+      # Hide kptrs even for processes with CAP_SYSLOG
+      # also prevents printing kernel pointers
+      "kernel.kptr_restrict" = 2;
+      # Disable ftrace debugging
+      "kernel.ftrace_enabled" = false;
+      # Avoid kernel memory address exposures via dmesg (this value can also be set by CONFIG_SECURITY_DMESG_RESTRICT).
+      "kernel.dmesg_restrict" = 1;
+      # This action will speed up your boot and shutdown, because one less module is loaded. Additionally disabling watchdog timers increases performance and lowers power consumption
+      # Disable NMI watchdog
+      "kernel.nmi_watchdog" = 0;
+      # Enable the sysctl setting kernel.unprivileged_userns_clone to allow normal users to run unprivileged containers.
+      "kernel.unprivileged_userns_clone" = 1;
+      # Prevent creating files in potentially attacker-controlled environments such
+      # as world-writable directories to make data spoofing attacks more difficult
+      "fs.protected_fifos" = 2;
+      # Prevent unintended writes to already-created files
+      "fs.protected_regular" = 2;
+      # Disable SUID binary dump
+      "fs.suid_dumpable" = 0;
+      # Prevent unprivileged users from creating hard or symbolic links to files
+      "fs.protected_symlinks" = 1;
+      "fs.protected_hardlinks" = 1;
+      # Prevent boot console kernel log information leaks
+      "kernel.printk" = "3 3 3 3";
+      # Restrict loading TTY line disciplines to the CAP_SYS_MODULE capability to
+      # prevent unprivileged attackers from loading vulnerable line disciplines with
+      # the TIOCSETD ioctl
+      "dev.tty.ldisc_autoload" = 0;
+      # Kexec allows replacing the current running kernel. There may be an edge case where
+      # you wish to boot into a different kernel, but I do not require kexec. Disabling it
+      # patches a potential security hole in our system.
+      "kernel.kexec_load_disabled" = true;
+      # Borrowed by NixOS/nixpkgs. Since the security module does not explain what those
+      # options do, it is up you to educate yourself dear reader.
+      # See:
+      #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-rnd-bits>
+      #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-min-addr>
+      "vm.mmap_rnd_bits" = 32;
+      "vm.mmap_min_addr" = 65536;
+      # The value controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects (VFS cache).
+      # Lowering it from the default value of 100 makes the kernel less inclined to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
+      "vm.vfs_cache_pressure" = 50;
+      # Contains, as a bytes of total available memory that contains free pages and reclaimable
+      # pages, the number of pages at which a process which is generating disk writes will itself start
+      # writing out dirty data.
+      "vm.dirty_bytes" = 268435456;
+      # Contains, as a bytes of total available memory that contains free pages and reclaimable
+      # pages, the number of pages at which the background kernel flusher threads will start writing out
+      # dirty data.
+      "vm.dirty_background_bytes" = 134217728;
+      # The kernel flusher threads will periodically wake up and write old data out to disk.  This
+      # tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
+      "vm.dirty_writeback_centisecs" = 1500;
+      "dev.hpet.max-user-freq" = 3072;
     };
     kernelParams = [
       # I'm sure we break hibernation in at least 5 other sections of this config, so
@@ -133,6 +150,27 @@
       #  0 (default): basic integrity auditing messages
       #  1: additional integrity auditing messages
       "integrity_audit=1"
+
+      # https://en.wikipedia.org/wiki/Kernel_page-table_isolation
+      # auto means kernel will automatically decide the pti state
+      "pti=auto" # on | off
+
+      # CPU idle behaviour only Intel CPU
+      #  poll: slightly improve performance at cost of a hotter system (not recommended)
+      #  halt: halt is forced to be used for CPU idle
+      #  nomwait: Disable mwait for CPU C-states
+      #"idle=nomwait" # poll | halt | nomwait
+
+      # disable usb autosuspend
+      "usbcore.autosuspend=-1"
+
+      # disable displaying of the built-in Linux logo
+      "logo.nologo"
+
+      # disable watchdog timer
+      "nowatchdog"
+
+      ''acpi_osi="Windows 2020"''
     ];
     blacklistedKernelModules = [
       # Obscure network protocols
@@ -155,6 +193,12 @@
       "p8023" # Novell raw IEEE 802.3
       "can" # Controller Area Network
       "atm" # ATM
+
+      "ath3k"
+      # Blacklist the AMD SP5100 TCO Watchdog/Timer module (Required for Ryzen cpus)
+      "sp5100_tco"
+      # Blacklist the Intel TCO Watchdog/Timer module
+      "iTCO_wdt"
     ];
   };
 }

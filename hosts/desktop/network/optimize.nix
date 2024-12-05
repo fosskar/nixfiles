@@ -1,6 +1,5 @@
 _: {
   boot = {
-    kernelModules = [ "tcp_bbr" ];
     kernel.sysctl = {
       # TCP hardening
       # Prevent bogus ICMP errors from filling up logs.
@@ -35,14 +34,19 @@ _: {
       "net.ipv4.tcp_timestamps" = 0;
 
       # TCP optimization
-      # TCP Fast Open is a TCP extension that reduces network latency by packing
-      # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
-      # both incoming and outgoing connections:
+      # Enable TCP Fast Open
+      # TCP Fast Open is an extension to the transmission control protocol (TCP) that helps reduce network latency
+      # by enabling data to be exchanged during the sender’s initial TCP SYN [3].
+      # Using the value 3 instead of the default 1 allows TCP Fast Open for both incoming and outgoing connections:
       "net.ipv4.tcp_fastopen" = 3;
+      # TCP Enable ECN Negotiation for both outgoing and incoming connections
+      "net.ipv4.tcp_ecn" = 1;
       # Bufferbloat mitigations + slight improvement in throughput & latency
       "net.ipv4.tcp_congestion_control" = "bbr";
       "net.core.default_qdisc" = "cake";
-
+      # Increase netdev receive queue
+      # May help prevent losing packets
+      "net.core.netdev_max_backlog" = 16384;
       # Other stuff that I am too lazy to document
       "net.core.optmem_max" = 65536;
       "net.core.rmem_default" = 1048576;
