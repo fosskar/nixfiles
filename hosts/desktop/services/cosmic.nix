@@ -1,3 +1,3 @@
 _: {
-  services.desktopManager.cosmic.enable = true;
+  services.desktopManager.cosmic.enable = false;
 }

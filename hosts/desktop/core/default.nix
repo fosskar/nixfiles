@@ -6,7 +6,6 @@ _: {
     #./impermanence.nix
     ./locale.nix
     ./scheduler.nix
-    ./systemd.nix
     ./users.nix
   ];
 }
