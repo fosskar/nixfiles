@@ -4,7 +4,9 @@ _: {
       login = {
         enableGnomeKeyring = true;
       };
-      hyprlock = { };
+      hyprlock = {
+        enableGnomeKeyring = true;
+      };
     };
   };
 }
