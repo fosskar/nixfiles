@@ -54,19 +54,19 @@
         indent_size = 15;
         auto_fold_dirs = false;
       };
-      assistant = {
-        version = "2";
-        default_model = {
-          provider = "ollama";
-          model = "deepseek-coder-v2:16b";
-        };
-      };
-      language_models = {
-        ollama = {
-          api_url = "http://localhost:11434";
-          low_speed_timeout_in_seconds = 900;
-        };
-      };
+      #assistant = {
+      #  version = "2";
+      #  default_model = {
+      #    provider = "ollama";
+      #    model = "deepseek-coder-v2:16b";
+      #  };
+      #};
+      #language_models = {
+      #  ollama = {
+      #    api_url = "http://localhost:11434";
+      #    low_speed_timeout_in_seconds = 900;
+      #  };
+      #};
       autosave = {
         after_delay = {
           milliseconds = 2000;
