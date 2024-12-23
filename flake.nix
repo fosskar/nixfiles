@@ -71,6 +71,9 @@
       url = "github:anyrun-org/anyrun";
     };
 
+    # cosmic
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+
     # secrets
     agenix = {
       url = "github:ryantm/agenix";
