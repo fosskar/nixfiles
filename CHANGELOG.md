@@ -1,3 +1,22 @@
+## [13.4.0](https://gitlab.com/simonoscr/nixfiles/compare/13.3.0...13.4.0) (2024-12-23)
+
+### 📦 Other
+
+* flake update ([c257d39](https://gitlab.com/simonoscr/nixfiles/commit/c257d391fb99a0ae0ace33aec9dc886e235c9a23))
+
+### 🚀 Features
+
+* WIP add cosmic DE ([9537f27](https://gitlab.com/simonoscr/nixfiles/commit/9537f27dc88438d73b7095a00943fc01136f9a47))
+
+### 🛠 Fixes
+
+* add nixos-cosmic subs ([f106521](https://gitlab.com/simonoscr/nixfiles/commit/f1065214c0692035ac53182144510b84fa48d52e))
+* cleanup and add pkgs and configuration ([ec6141a](https://gitlab.com/simonoscr/nixfiles/commit/ec6141a11f02b7a7111ea86defbad7dd89584482))
+* update hyprland config and binds ([99b1901](https://gitlab.com/simonoscr/nixfiles/commit/99b190107bb62eada6eded9770e3192da431985e))
+* update k8s deployment ([8aafe79](https://gitlab.com/simonoscr/nixfiles/commit/8aafe794e1254caa5cd8ebde3cd9fdac884159bc))
+* update pam and polkit settings ([9a1bce0](https://gitlab.com/simonoscr/nixfiles/commit/9a1bce0df91674780cef620be024cf7936ded256))
+* update zed settings ([3c2d368](https://gitlab.com/simonoscr/nixfiles/commit/3c2d36806380b568418d2a9031cf8494c0c82bfd))
+
 ## [13.3.0](https://gitlab.com/simonoscr/nixfiles/compare/13.2.4...13.3.0) (2024-12-05)
 
 ### 🚀 Features
