@@ -61,7 +61,8 @@ _: {
 
       render = {
         direct_scanout = true;
-        explicit_sync = 2;
+        explicit_sync = 0;
+        explicit_sync_kms = 0;
       };
 
       debug = {
@@ -74,6 +75,9 @@ _: {
       dwindle = {
         pseudotile = true;
         preserve_split = true;
+      };
+      cursor = {
+        no_hardware_cursors = false;
       };
     };
   };

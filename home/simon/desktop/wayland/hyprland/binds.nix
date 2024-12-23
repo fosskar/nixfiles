@@ -35,13 +35,13 @@
           "SUPER, H, exec, ${config.xdg.configHome}/shortcut_info.sh"
 
           # start programs
-          "SUPER, W, exec, uwsm-app zen"
+          "SUPER, W, exec, uwsm app zen"
           "SUPER, B, exec, uwsm-app firefox"
           "SUPER, T, exec, uwsm-app wezterm"
           "SUPER, E, exec, uwsm-app wezterm -e yazi"
           "SUPER, C, exec, uwsm-app codium"
           "SUPER, O, exec, uwsm-app ts3client"
-          "SUPER, Z, exec, uwsm-app zeditor"
+          "SUPER, Z, exec, uwsm app zeditor"
           "SUPER, D, exec, uwsm-app webcord"
 
           # compositor commands
