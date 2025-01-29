@@ -6,14 +6,11 @@
 
 let
   overlaysPath = "${self}/overlays/nixpkgs";
+  modules = builtins.filter lib.pathIsDirectory (
+    map (module: "${overlaysPath}/${module}") (builtins.attrNames (builtins.readDir overlaysPath))
+  );
 in
 {
-  # Read all directories from systemModules
-  imports =
-    [
-      ./hyprpanel.nix
-    ]
-    ++ builtins.filter (module: lib.pathIsDirectory module) (
-      map (module: "${overlaysPath}/${module}") (builtins.attrNames (builtins.readDir overlaysPath))
-    );
+  # Read all directories from overlaysPath
+  imports = modules;
 }
