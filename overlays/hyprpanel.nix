@@ -1,4 +1,0 @@
-{ inputs }:
-[
-  inputs.hyprpanel.overlay
-]
