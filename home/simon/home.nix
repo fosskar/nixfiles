@@ -38,6 +38,7 @@
           hyprmode.enable = true;
           plugins.enable = true;
         };
+        cosmic.enable = true;
         bar = "hyprpanel";
         applauncher = "anyrun";
       };
@@ -49,6 +50,7 @@
       vscodium.enable = true;
     };
     gaming = {
+      awakened-poe.enable = true;
       mangohud.enable = true;
       star-citizen.enable = true;
       vkbasalt.enable = true;
@@ -66,7 +68,7 @@
     };
     services = {
       audio.enable = true;
-      dconf.enable = true;
+      dconf.enable = false;
       kde-connect.enable = true;
       polkit.enable = true;
       tailray.enable = true;
@@ -75,8 +77,9 @@
     terminal = {
       emulators = {
         alacritty.enable = false;
-        kitty.enable = true;
+        kitty.enable = false;
         wezterm.enable = true;
+        ghostty.enable = true;
       };
       programs = {
         git.enable = true;

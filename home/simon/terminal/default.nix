@@ -3,6 +3,7 @@ _: {
     ./emulators/alacritty.nix
     ./emulators/kitty.nix
     ./emulators/wezterm.nix
+    ./emulators/ghostty.nix
     ./programs/git
     ./programs/yazi
     ./programs/bat.nix

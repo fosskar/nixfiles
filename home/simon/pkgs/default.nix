@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
 
     # desktop apps
-    webcord-vencord
+    #webcord-vencord
     protonmail-desktop
     (lowPrio proton-pass) # FIXME package collision between proton-mail and proton-pass app.asar
     protonvpn-gui
@@ -15,7 +15,7 @@
 
     # audio
     teamspeak3
-    #teamspeak5_client
+    teamspeak5_client
 
     # gaming
     #r2modman
@@ -23,7 +23,7 @@
     #wineWowPackages.stable
     #wineWowPackages.waylandFull
     #winetricks
-    #bottles
+    bottles
     path-of-building
 
     # archives
