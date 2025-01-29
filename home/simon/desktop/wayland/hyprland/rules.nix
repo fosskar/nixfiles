@@ -33,6 +33,15 @@ _: {
         # dim around specific applications
         "dimaround, class:^(xdg-desktop-portal-gtk)$"
         "dimaround, class:^(polkit-pantheon-authentication-agent-1)$"
+
+        "tag +apt, title:(Awakened PoE Trade)"
+        "float, tag:apt"
+        "noblur, tag:apt"
+        "nofocus, tag:apt" # Disable auto-focus
+        "noshadow, tag:apt"
+        "noborder, tag:apt"
+        #"size 100% 100%, tag:apt"
+        "center, tag:apt"
       ];
     };
   };
