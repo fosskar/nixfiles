@@ -1,3 +1,27 @@
+## [13.5.0](https://gitlab.com/simonoscr/nixfiles/compare/13.4.0...13.5.0) (2025-01-29)
+
+### 📦 Other
+
+* flake update ([2f6f16b](https://gitlab.com/simonoscr/nixfiles/commit/2f6f16b59db6ba10f276ad891c799ff0a9647415))
+* flake update ([453d3ec](https://gitlab.com/simonoscr/nixfiles/commit/453d3eca9b69645f07f3831e89d6602fd74013cf))
+
+### 🚀 Features
+
+* add appimage packages ([8e86d8d](https://gitlab.com/simonoscr/nixfiles/commit/8e86d8d8a55ef72f95ca6df006fd29a29704ba67))
+* add ghostty ([eb0db5c](https://gitlab.com/simonoscr/nixfiles/commit/eb0db5c21ae97ef95ce3fc11f6e850277465a61d))
+
+### 🛠 Fixes
+
+* desktop services like audio and cosmic setup ([fe14989](https://gitlab.com/simonoscr/nixfiles/commit/fe14989236b3911db65353ce7a6c5f9f2cbce4c3))
+* hyprland nixos module ([f977d3d](https://gitlab.com/simonoscr/nixfiles/commit/f977d3dfd626312bbdb1c214a73ca85881d15a85))
+* update configs of hyprland, cosmic, gaming, terminal and pkgs ([cdebd8a](https://gitlab.com/simonoscr/nixfiles/commit/cdebd8a059a2b1320aae4cd68613eb9508653f0d))
+* update core system components like nm, cpu+gpu ([d087e1a](https://gitlab.com/simonoscr/nixfiles/commit/d087e1a24c2d4094beab9e153892bb2afce14d4e))
+* update gaming ([a28310d](https://gitlab.com/simonoscr/nixfiles/commit/a28310d8f3386b20fb89a60aea134a71b51ec632))
+* update hyprland settings ([14695c4](https://gitlab.com/simonoscr/nixfiles/commit/14695c47f5abe9d294ac816d57133b7d253977c4))
+* update hyprpanel settings ([e2b398f](https://gitlab.com/simonoscr/nixfiles/commit/e2b398fd94df86bff79403857e65a234427c47f7))
+* update overlays ([83949dd](https://gitlab.com/simonoscr/nixfiles/commit/83949dd2ab9b50a6bb2b2f926ed2c721231c4d40))
+* update zen ([e252dc6](https://gitlab.com/simonoscr/nixfiles/commit/e252dc6433fc6aedbde61a9d6886b00413c55df4))
+
 ## [13.4.0](https://gitlab.com/simonoscr/nixfiles/compare/13.3.0...13.4.0) (2024-12-23)
 
 ### 📦 Other
