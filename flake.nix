@@ -33,6 +33,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # gaming
     nix-gaming = {
       url = "github:fufexan/nix-gaming";
@@ -48,6 +53,7 @@
     hyprlock = {
       url = "github:hyprwm/hyprlock";
       inputs = {
+        hyprgraphics.follows = "hyprland/hyprgraphics";
         hyprlang.follows = "hyprland/hyprlang";
         hyprutils.follows = "hyprland/hyprutils";
         nixpkgs.follows = "hyprland/nixpkgs";
@@ -72,7 +78,11 @@
     };
 
     # cosmic
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    nixos-cosmic = {
+      url = "github:lilyinstarlight/nixos-cosmic";
+      #inputs.nixpkgs.follows = "nixos-cosmic/nixpkgs";
+    };
+    home-manager-cosmic.url = "github:tristanbeedell/hm-cosmic";
 
     # secrets
     agenix = {
@@ -101,10 +111,6 @@
     };
     tailray = {
       url = "github:NotAShelf/tailray";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    zen-browser = {
-      url = "gitlab:simonoscr/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
