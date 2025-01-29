@@ -4,7 +4,8 @@ _: {
       exec-once = [
         # uwsm finalize startup
         "uwsm finalize"
-        "hyprlock"
+        "uwsm-app -- hyprlock"
+        "uwsm app -- hyprpanel"
       ];
       env = [
         #"SDL_VIDEODRIVER,wayland"
@@ -22,6 +23,7 @@ _: {
 
       decoration = {
         rounding = 8;
+        rounding_power = 3;
         shadow = {
           enabled = false;
         };
@@ -78,6 +80,12 @@ _: {
       };
       cursor = {
         no_hardware_cursors = false;
+      };
+      ecosystem = {
+        no_donation_nag = true;
+      };
+      experimental = {
+        wide_color_gamut = true;
       };
     };
   };

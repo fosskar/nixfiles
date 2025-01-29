@@ -26,23 +26,21 @@
         in
         [
           # screenshots
-          ", Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m region -o ~/Pictures/Screenshots -- imv"
-          "CTRL, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m output -o ~/Pictures/Screenshots -- imv"
-          "SUPER, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m window -o ~/Pictures/Screenshots -- imv"
+          ", Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m region -o ~/pictures/screenshots -- imv"
+          "CTRL, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m output -o ~/pictures/screenshots -- imv"
+          "SUPER, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m window -o ~/pictures/screenshots -- imv"
 
           # gaming script
           "SUPER, Next, exec, ${config.xdg.configHome}/hypr/hypr-gamemode.sh"
           "SUPER, H, exec, ${config.xdg.configHome}/shortcut_info.sh"
 
           # start programs
-          "SUPER, W, exec, uwsm app zen"
-          "SUPER, B, exec, uwsm-app firefox"
-          "SUPER, T, exec, uwsm-app wezterm"
-          "SUPER, E, exec, uwsm-app wezterm -e yazi"
-          "SUPER, C, exec, uwsm-app codium"
-          "SUPER, O, exec, uwsm-app ts3client"
-          "SUPER, Z, exec, uwsm app zeditor"
-          "SUPER, D, exec, uwsm-app webcord"
+          "SUPER, W, exec, uwsm app -- zen"
+          "SUPER, T, exec, uwsm app -- ghostty"
+          "SUPER, E, exec, uwsm app -- ghostty -e yazi"
+          "SUPER, O, exec, uwsm app -- ts3client"
+          "SUPER, Z, exec, uwsm app -- zeditor"
+          "SUPER, D, exec, uwsm app -- webcord"
 
           # compositor commands
           "SUPER, G, togglegroup,"
@@ -76,6 +74,10 @@
           # global shortcuts/keybinds/hotkeys
           ",F9,pass,title:^(TeamSpeak 3)$"
           ",F10,pass,title:^(TeamSpeak 3)$"
+
+          "SHIFT,Space,pass,^(awakened-poe-trade)$"
+          "CTRL,D,pass,^(awakened-poe-trade)$"
+          "CTRL ALT,D,pass,^(awakened-poe-trade)$"
         ]
         ++ (map (i: ws (toString i) (toString i)) arr)
         ++ (map (i: mvtows (toString i) (toString i)) arr);
