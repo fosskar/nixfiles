@@ -1,3 +1,17 @@
+## [13.6.0](https://gitlab.com/simonoscr/nixfiles/compare/13.5.0...13.6.0) (2025-01-30)
+
+### 📦 Other
+
+* flake update ([3ef5e1f](https://gitlab.com/simonoscr/nixfiles/commit/3ef5e1f5f8708a2283ad458a5ce72127c07932fe))
+
+### 🚀 Features
+
+* add jujutsu vcs ([61b38de](https://gitlab.com/simonoscr/nixfiles/commit/61b38def1d7a6ff854ecb5984ade3c9b588f2d02))
+
+### 🛠 Fixes
+
+* hyprland hdr set 10bit for monitor ([b6dc251](https://gitlab.com/simonoscr/nixfiles/commit/b6dc251492e809ba1bfabecdfb231528dbceb6d2))
+
 ## [13.5.0](https://gitlab.com/simonoscr/nixfiles/compare/13.4.0...13.5.0) (2025-01-29)
 
 ### 📦 Other
