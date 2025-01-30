@@ -1,14 +1,11 @@
 _: {
   imports = [
     ./firewall.nix
-    ./networkmanager.nix
+    ./network.nix
     ./openssh.nix
     ./optimize.nix
     ./resolved.nix
     ./tailscale.nix
+    ./wireless.nix
   ];
-
-  networking = {
-    hostName = "nixos";
-  };
 }

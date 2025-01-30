@@ -5,7 +5,8 @@ _: {
       openFirewall = true;
       startWhenNeeded = true;
       settings = {
-        UseDns = true;
+        X11Forwarding = false;
+        UseDns = false;
         AllowUsers = null;
       };
     };

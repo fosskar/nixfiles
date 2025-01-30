@@ -1,20 +1,9 @@
 { pkgs, ... }:
 {
   networking = {
-    wireless = {
-      enable = false;
-      iwd = {
-        enable = false;
-        settings = {
-          IPv6 = {
-            Enabled = false;
-          };
-          Settings = {
-            AutoConnect = false;
-          };
-        };
-      };
-    };
+    hostName = "nixos";
+    useNetworkd = true;
+    useDHCP = true;
     networkmanager = {
       enable = true;
       wifi = {
@@ -40,8 +29,12 @@
     ];
   };
   # prevent nm-wait-online timeout after nm upgrades
-  systemd.services.NetworkManager-wait-online.serviceConfig.ExecStart = [
-    ""
-    "${pkgs.networkmanager}/bin/nm-online -q"
-  ];
+  systemd.services = {
+    systemd-networkd.stopIfChanged = false;
+    systemd-resolved.stopIfChanged = false;
+    NetworkManager-wait-online.serviceConfig.ExecStart = [
+      ""
+      "${pkgs.networkmanager}/bin/nm-online -q"
+    ];
+  };
 }
