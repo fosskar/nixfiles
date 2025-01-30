@@ -83,6 +83,7 @@
       };
       programs = {
         git.enable = true;
+        jujutsu.enable = true;
         yazi.enable = true;
         bat.enable = true;
         btop.enable = true;

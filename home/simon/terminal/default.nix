@@ -5,6 +5,7 @@ _: {
     ./emulators/wezterm.nix
     ./emulators/ghostty.nix
     ./programs/git
+    ./programs/jujutsu
     ./programs/yazi
     ./programs/bat.nix
     ./programs/btop.nix

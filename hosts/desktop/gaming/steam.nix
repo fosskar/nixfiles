@@ -2,7 +2,7 @@
 {
   programs.steam = {
     enable = true;
-    extraCompatPackages = [ pkgs.proton-ge-bin ];
+    extraCompatPackages = [ pkgs.proton-ge-custom ];
     #package = pkgs.steam.override {
     #  extraPkgs =
     #    pkgs: with pkgs; [
