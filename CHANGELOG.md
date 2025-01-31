@@ -1,3 +1,19 @@
+## [13.6.1](https://gitlab.com/simonoscr/nixfiles/compare/13.6.0...13.6.1) (2025-01-31)
+
+### 📦 Other
+
+* flake update ([780ea2d](https://gitlab.com/simonoscr/nixfiles/commit/780ea2d7e60e09509a73796f2dfca4a2b5047ddb))
+* **hm:** disable unused modules ([085b837](https://gitlab.com/simonoscr/nixfiles/commit/085b83749e4f843e99eaf31882137cd4fcc71dd5))
+
+### 🛠 Fixes
+
+* network settings ([6965c14](https://gitlab.com/simonoscr/nixfiles/commit/6965c14082b1e209019c7014723d46c8999a7a4f))
+* **audio:** make wireplumber low-latency confif work ([0f81ee2](https://gitlab.com/simonoscr/nixfiles/commit/0f81ee278a8c862cac8a3e7f2abaa662491710da))
+* **core:** update kernel ([8ddaa2a](https://gitlab.com/simonoscr/nixfiles/commit/8ddaa2a6f740336a001ea659803148f69c26d0bc))
+* **hyprland:** disable HDR again ([86f4ead](https://gitlab.com/simonoscr/nixfiles/commit/86f4ead4683680ff489b7507ceda50973f24f22b))
+* **hyprland:** nixos module pkgs ([9aad088](https://gitlab.com/simonoscr/nixfiles/commit/9aad0885fbab9abc9f4028d755342a2d09cf8da2))
+* **network:** update online network check ([19374d2](https://gitlab.com/simonoscr/nixfiles/commit/19374d2a09bee12777d81fed0040a1ee4e2a2d13))
+
 ## [13.6.0](https://gitlab.com/simonoscr/nixfiles/compare/13.5.0...13.6.0) (2025-01-30)
 
 ### 📦 Other
