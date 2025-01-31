@@ -33,26 +33,26 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 ## system components
 
-|                 |     |                                                         |
-| --------------- | --- | ------------------------------------------------------- |
-| display manager |     | [greetd/tuigreet](https://github.com/apognu/tuigreet)   |
-| window manager  |     | [hyprland](https://github.com/hyprwm/Hyprland)          |
-| bar             |     | [ags](https://github.com/Aylur/ags)                     |
-| terminal        |     | [wezterm](https://github.com/wez/wezterm)               |
-| shell           |     | fish + [starship](https://github.com/starship/starship) |
-| text editor     |     | [(neovim)](https://github.com/neovim/neovim)            |
-| code editor     |     | [zed-editor](https://github.com/zed-industries/zed)     |
+|                 |     |                                                                                   |
+| --------------- | --- | --------------------------------------------------------------------------------- |
+| display manager |     | [greetd/tuigreet](https://github.com/apognu/tuigreet)                             |
+| window manager  |     | [hyprland](https://hyprland.org/)                                                 |
+| bar             |     | [hyprpanel](https://hyprpanel.com/)                                               |
+| terminal        |     | [ghostty](https://ghostty.org/)                                                   |
+| shell           |     | [fish](https://fishshell.com/) + [starship](https://github.com/starship/starship) |
+| text editor     |     | [(neovim)](https://github.com/neovim/neovim)                                      |
+| code editor     |     | [zed-editor](https://github.com/zed-industries/zed)                               |
 
 ## systems
 
 |           | desktop               | server                            |
 | --------- | --------------------- | --------------------------------- |
-| Name      | desktop               | server                            |
-| CPU       | amd ryzen 7 7800x3d   | intel® processor alder lake-n100 |
-| GPU       | amd radeon rx 7800xt  | intel uhd graphics                |
-| RAM       | 32gb ddr5-6000        | 16gb ddr4-3200                    |
-| Mainboard | msi mag b650 tomahawk | shit                              |
-| SSD       | 2tb nvme              | 500gb nvme                        |
+| name      | desktop               | server                            |
+| cpu       | amd ryzen 7 7800x3d   | intel® processor alder lake-n100 |
+| gpu       | amd radeon rx 7800xt  | intel uhd graphics                |
+| ram       | 32gb ddr5-6000        | 16gb ddr4-3200                    |
+| mainboard | msi mag b650 tomahawk | shit                              |
+| ssd       | 2tb nvme              | 500gb nvme                        |
 
 </div>
 
@@ -76,6 +76,8 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 </div>
 
+- [**checks**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/checks?ref_type=heads): configuratrion for checks like pre-commit-hook
+
 - [**home**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/home): this folder contains configurations for home-manager. In the profiles subfolder are the differenct home-manager profiles. here i have everything user related in it
 
 - [**hosts**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/hosts?ref_type=heads): the hosts/ folder helps me organize my different hosts
@@ -83,6 +85,12 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 - [**images**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/images?ref_type=heads): .nix files for defining different configs for building iso images
 
 - [**modules**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/modules?ref_type=heads): own, custom nixos or home-manager modules
+
+- [**overlays**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/overlays?ref_type=heads): overlays
+
+- [**packages**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/modules?ref_type=heads): self-packaged pkgs for quick pkgs like packaged appimages etc .
+
+- [**templates**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/templates?ref_type=heads): templates for example for custom modules, shells or languages
 
 <div align="center">
 
@@ -131,4 +139,4 @@ my repository is inspired by a diverse range of dotfiles and nix-configurations 
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
   - helped me a lot for server related configurations
 - [Aylur dotfiles](https://github.com/Aylur/dotfiles)
-  - thank you very much for ags config
+  - thank you very much for ags
