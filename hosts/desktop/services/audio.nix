@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 let
-  q = 64;
+  q = 32;
   r = 48000;
   qr = "64/48000";
 in
@@ -14,63 +14,109 @@ in
       };
       pulse.enable = true;
       jack.enable = false;
-      wireplumber.enable = true;
-
-      extraConfig.pipewire = {
-        "99-low-latency" = {
-          context = {
-            properties.default.clock = {
-              rate = r;
-              allowed-rates = [
-                44100
-                48000
-              ];
-              quantum = q;
-              min-quantum = q;
-              max-quantum = q;
-            };
-            modules = [
+      wireplumber = {
+        enable = true;
+        extraConfig = {
+          "98-alsa-low-latency" = {
+            "monitor.alsa.rules" = [
               {
-                name = "libpipewire-module-rtkit";
-                flags = [
-                  "ifexists"
-                  "nofail"
+                matches = [
+                  { "node.name" = "~alsa_output.*"; }
                 ];
-                args = {
-                  nice.level = -15;
-                  rt = {
-                    prio = 88;
-                    time = {
-                      soft = 200000;
-                      hard = 200000;
-                    };
-                  };
-                };
-              }
-              {
-                name = "libpipewire-module-protocol-pulse";
-                args = {
-                  server.address = [ "unix:native" ];
-                  pulse = {
-                    default.req = qr;
-                    min = {
-                      req = qr;
-                      quantum = qr;
-                      frag = qr;
-                    };
-                    max = {
-                      req = qr;
-                      quantum = qr;
-                      frag = qr;
-                    };
+                actions = {
+                  update-props = {
+                    "audio.format" = "S24_3LE"; # S16_LE, S24_3LE, S32LE
+                    "audio.rate" = r;
+                    "api.alsa.period-size" = 512;
+                    "api.alsa.period-num" = 3;
                   };
                 };
               }
             ];
-            stream.properties = {
-              node.latency = qr;
-              resample.quality = 1;
+          };
+        };
+      };
+      extraConfig = {
+        pipewire = {
+          "99-low-latency" = {
+            context = {
+              properties.default.clock = {
+                rate = r;
+                allowed-rates = [
+                  44100
+                  48000
+                ];
+                quantum = q;
+                min-quantum = q;
+                max-quantum = q;
+              };
+              modules = [
+                {
+                  name = "libpipewire-module-rtkit";
+                  flags = [
+                    "ifexists"
+                    "nofail"
+                  ];
+                  args = {
+                    nice.level = -15;
+                    rt = {
+                      prio = 88;
+                      time = {
+                        soft = 200000;
+                        hard = 200000;
+                      };
+                    };
+                  };
+                }
+                {
+                  name = "libpipewire-module-protocol-pulse";
+                  args = {
+                    server.address = [ "unix:native" ];
+                    pulse = {
+                      default.req = qr;
+                      min = {
+                        req = qr;
+                        quantum = qr;
+                        frag = qr;
+                      };
+                      max = {
+                        req = qr;
+                        quantum = qr;
+                        frag = qr;
+                      };
+                    };
+                  };
+                }
+              ];
+              stream.properties = {
+                node.latency = qr;
+                resample.quality = 1;
+              };
             };
+          };
+        };
+        pipewire-pulse."92-pulse-low-latency" = {
+          context.modules = [
+            {
+              name = "libpipewire-module-protocol-pulse";
+              args = {
+                pulse = {
+                  min = {
+                    req = "32/48000";
+                    quantum = "32/48000";
+                  };
+                  default.req = "32/48000";
+                  max = {
+                    req = "32/48000";
+                    quantum = "32/48000";
+                  };
+                };
+              };
+            }
+          ];
+          stream.properties = {
+            node.latency = "32/48000";
+            resample.quality = 1;
           };
         };
       };
