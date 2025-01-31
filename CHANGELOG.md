@@ -1,3 +1,9 @@
+## [13.6.2](https://gitlab.com/simonoscr/nixfiles/compare/13.6.1...13.6.2) (2025-01-31)
+
+### 🛠 Fixes
+
+* **zeditor:** update zed settings and config ([33aacc3](https://gitlab.com/simonoscr/nixfiles/commit/33aacc30733ebf2d1f68f6a2aa4907dad57e52ca))
+
 ## [13.6.1](https://gitlab.com/simonoscr/nixfiles/compare/13.6.0...13.6.1) (2025-01-31)
 
 ### 📦 Other
