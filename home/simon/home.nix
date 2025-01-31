@@ -38,7 +38,7 @@
           hyprmode.enable = true;
           plugins.enable = true;
         };
-        cosmic.enable = true;
+        cosmic.enable = false;
         bar = "hyprpanel";
         applauncher = "anyrun";
       };
@@ -67,8 +67,8 @@
       zathura.enable = true;
     };
     services = {
-      audio.enable = true;
-      dconf.enable = false;
+      audio.enable = false;
+      dconf.enable = true;
       kde-connect.enable = true;
       polkit.enable = true;
       tailray.enable = true;
