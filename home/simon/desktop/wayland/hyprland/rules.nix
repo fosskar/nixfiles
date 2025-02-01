@@ -3,18 +3,18 @@ _: {
     settings = {
       windowrulev2 = [
         # webcord
-        "workspace 2 silent, class:^(WebCord)$"
+        "workspace 3 silent, class:^(WebCord)$"
 
         # steam
-        "workspace 2 silent, class:^(steam)$"
+        "workspace 3 silent, class:^(steam)$"
 
         # ts3
-        "workspace 2 silent, title:^(TeamSpeak 3)$"
+        "workspace 3 silent, title:^(TeamSpeak 3)$"
 
         # suppress notification events when gaming
         "suppressevent maximize, class:.*"
         "suppressevent maximize fullscreen, class:^(cs2)$"
-        "noinitialfocus, class:^(steam)$, title:^(notificationtoasts.*)$, floating:1"
+        "workspace 3, noinitialfocus, class:^(steam)$, title:^(notificationtoasts.*)$, floating:1"
 
         # idle inhibit on any class that is fullscreen
         "idleinhibit fullscreen, class:.*"
@@ -42,6 +42,9 @@ _: {
         "noborder, tag:apt"
         #"size 100% 100%, tag:apt"
         "center, tag:apt"
+      ];
+      workspace = [
+        "3, monitor:HDMI-A-2, persistent:true"
       ];
     };
   };

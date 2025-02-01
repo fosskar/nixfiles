@@ -98,7 +98,7 @@
       ];
 
       bindr = [
-        "SUPER, Space, exec, pkill anyrun || uwsm-app -- anyrun" # anyrun launcher
+        "SUPER, Space, exec, pkill anyrun || anyrun" # anyrun launcher
       ];
     };
   };

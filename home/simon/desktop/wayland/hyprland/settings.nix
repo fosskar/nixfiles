@@ -10,7 +10,6 @@ _: {
       env = [
         #"SDL_VIDEODRIVER,wayland"
       ];
-
       general = {
         border_size = 1;
         allow_tearing = true;
@@ -20,7 +19,6 @@ _: {
         "col.inactive_border" = "rgba(333333ff)";
         resize_on_border = true;
       };
-
       decoration = {
         rounding = 8;
         rounding_power = 3;
@@ -31,11 +29,9 @@ _: {
           enabled = false;
         };
       };
-
       animations = {
         enabled = true;
       };
-
       input = {
         kb_layout = "de";
         sensitivity = 1;
@@ -43,7 +39,6 @@ _: {
         follow_mouse = 2;
         float_switch_override_focus = 1;
       };
-
       misc = {
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
@@ -55,25 +50,23 @@ _: {
         disable_autoreload = true;
         focus_on_activate = true;
       };
-
       xwayland = {
         use_nearest_neighbor = false;
         force_zero_scaling = true;
       };
-
       render = {
         direct_scanout = true;
         explicit_sync = 0;
         explicit_sync_kms = 0;
       };
-
       debug = {
         disable_logs = true;
         error_position = 1;
       };
-
-      monitor = [ "DP-1,3440x1440@165,0x0,1" ];
-
+      monitor = [
+        "DP-1, 3440x1440@164.9, 0x0, 1"
+        "HDMI-A-2, 1920x1080@239.76, auto-right, 1, transform, 3"
+      ];
       dwindle = {
         pseudotile = true;
         preserve_split = true;
