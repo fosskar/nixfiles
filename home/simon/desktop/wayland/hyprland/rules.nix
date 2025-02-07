@@ -14,13 +14,14 @@ _: {
         # suppress notification events when gaming
         "suppressevent maximize, class:.*"
         "suppressevent maximize fullscreen, class:^(cs2)$"
-        "workspace 3, noinitialfocus, class:^(steam)$, title:^(notificationtoasts.*)$, floating:1"
+        "noinitialfocus, class:^(steam)$, title:^(.*)$"
+        "noinitialfocus, class:^(steam)$, title:^(notificationtoasts.*)$, floating:1"
 
         # idle inhibit on any class that is fullscreen
         "idleinhibit fullscreen, class:.*"
 
         # immediate
-        #"immediate, fullscreen:1" # immediate for all fullscreen applcations
+        "immediate, fullscreen:1" # immediate for all fullscreen applcations
         "immediate, class:^(cs2)$"
         "immediate, class:^(deadlock)$"
         "immediate, class:^(gamescope)$" # Apply fullscreen to gamescope
@@ -44,7 +45,8 @@ _: {
         "center, tag:apt"
       ];
       workspace = [
-        "3, monitor:HDMI-A-2, persistent:true"
+        "3, monitor:HDMI-A-2, default:true persistent:true"
+        "1, monitor:DP-1, default:true persistent:true"
       ];
     };
   };

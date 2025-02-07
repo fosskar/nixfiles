@@ -6,6 +6,7 @@ _: {
         "uwsm finalize"
         "uwsm-app -- hyprlock"
         "uwsm app -- hyprpanel"
+        "[workspace 3 silent] steam -console"
       ];
       env = [
         #"SDL_VIDEODRIVER,wayland"

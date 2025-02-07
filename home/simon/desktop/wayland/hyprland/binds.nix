@@ -76,7 +76,6 @@
           ",F10,pass,title:^(TeamSpeak 3)$"
 
           "SHIFT,Space,pass,^(awakened-poe-trade)$"
-          "CTRL,D,pass,^(awakened-poe-trade)$"
           "CTRL ALT,D,pass,^(awakened-poe-trade)$"
         ]
         ++ (map (i: ws (toString i) (toString i)) arr)

@@ -326,6 +326,7 @@ in
               active = "";
               available = "";
               occupied = "";
+
             };
             ignored = "";
             monitorSpecific = true;
@@ -337,7 +338,7 @@ in
             showWsIcons = false;
             show_icons = false;
             show_numbered = false;
-            spacing = 1;
+            spacing = 1.0;
             workspaceMask = false;
             workspaces = 0;
           };

@@ -14,7 +14,9 @@
         # i care about those applications
         appsToAvoid = lib.concatStringsSep "|" [
           "Hyprland" # avoid killing the graphical session
+          "uwsm" # avoid killing uwsm
           "wezterm" # terminal, might have unsaved files
+          "ghostty" # also terminal
           "dbus-.*" # avoid killing the dbus daemon & the dbus broker
           "Xwayland" # avoid killing the X11 server
           "gpg-agent" # avoid killing the gpg agent
@@ -34,8 +36,8 @@
       in
       [
         "-g" # kill all processes within a process group
-        "--avoid '^(${appsToAvoid})$'" # things we want to not kill
-        "--prefer '^(${appsToPrefer})$'" # things we want to kill as soon as possible
+        "--avoid='^(${appsToAvoid})$'" # things we want to not kill
+        "--prefer='^(${appsToPrefer})$'" # things we want to kill as soon as possible
       ];
 
     # we should ideally write the logs into a designated log file; or even better, to the journal

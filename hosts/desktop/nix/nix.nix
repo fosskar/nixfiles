@@ -11,7 +11,7 @@
       flakeInputs = lib.filterAttrs (_: v: lib.isType "flake" v) inputs;
     in
     {
-      package = pkgs.lix; # nixVersions.latest, lix
+      #package = pkgs.lix; # nixVersions.latest, lix
       # pin the registry to avoid downloading and evaling a new nixpkgs version every time
       # flakeInputs filters out non-flake inputs from system flake registry
       registry = lib.mapAttrs (_: v: { flake = v; }) flakeInputs;
