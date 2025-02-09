@@ -27,7 +27,7 @@
       "--kube-scheduler-arg bind-address=0.0.0.0"
       "--kube-controller-manager-arg bind-address=0.0.0.0"
       #"--disable metrics-server"
-      #"--disable local-storage"
+      "--disable local-storage"
       #"--disable-cloud-controller"
     ];
 
