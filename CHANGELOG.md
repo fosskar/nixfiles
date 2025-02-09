@@ -1,3 +1,13 @@
+## [13.7.2](https://gitlab.com/simonoscr/nixfiles/compare/13.7.1...13.7.2) (2025-02-09)
+
+### 📦 Other
+
+* flake update ([e13653d](https://gitlab.com/simonoscr/nixfiles/commit/e13653df9e177cb1c4c61e896e5981b4553f252f))
+
+### 🛠 Fixes
+
+* **k8s:** make open-iscsi possible with longhorn ([827c26e](https://gitlab.com/simonoscr/nixfiles/commit/827c26ed4304bc3a6f900b922b46f302995ffe72))
+
 ## [13.7.1](https://gitlab.com/simonoscr/nixfiles/compare/13.7.0...13.7.1) (2025-02-09)
 
 ### 🛠 Fixes
