@@ -1,3 +1,9 @@
+## [13.7.1](https://gitlab.com/simonoscr/nixfiles/compare/13.7.0...13.7.1) (2025-02-09)
+
+### 🛠 Fixes
+
+* update desktop hyprland bar etc ([4a04346](https://gitlab.com/simonoscr/nixfiles/commit/4a0434633f29a6c37d00f580336301264e1501e7))
+
 ## [13.7.0](https://gitlab.com/simonoscr/nixfiles/compare/13.6.2...13.7.0) (2025-02-01)
 
 ### 📔 Docs
