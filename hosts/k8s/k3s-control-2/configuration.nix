@@ -12,9 +12,11 @@
     ../common/network
     ../common/nix
     ../common/pkgs
+    ../common/programs/xdg.nix
     ../common/programs/zsh.nix
     ../common/secrets
     ../common/security
+    ../common/services/open-iscsi.nix
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

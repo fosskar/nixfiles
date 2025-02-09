@@ -26,6 +26,7 @@
 
     supportedFilesystems = [
       "ext4"
+      "xfs"
     ];
 
     initrd = {

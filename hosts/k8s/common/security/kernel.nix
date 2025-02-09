@@ -62,6 +62,8 @@
         #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-rnd-bits>
         #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-min-addr>
         "vm.mmap_min_addr" = 65536;
+        # for mayastor
+        "vm.nr_hugepages" = 1024;
       };
     };
     kernelParams = [
