@@ -1,28 +1,34 @@
-{ config, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 {
   services.k3s = {
     enable = true;
     role = "server";
+    clusterInit = true;
     tokenFile = config.sops.secrets."k8s/k3s-nixos".path;
     extraFlags = [
       "--node-name=k3s-control-1"
       "--data-dir=/var/lib/rancher/k3s"
       "--node-ip=10.0.0.2"
+      "--tls-san=10.0.0.2"
+      "--tls-san=k3s.simonoscar.me"
       "--write-kubeconfig=/root/.kube/config"
-      "--write-kubeconfig-mode 0644"
-      "--cluster-cidr 10.42.0.0/16"
-      "--service-cidr 10.43.0.0/16"
+      "--disable=traefik"
+      "--disable-network-policy"
+      "--disable=servicelb"
+      "--flannel-backend=none"
+      "--etcd-expose-metrics"
+      "--secrets-encryption"
+      "--disable-kube-proxy"
+      "--egress-selector-mode=cluster"
       "--kube-scheduler-arg bind-address=0.0.0.0"
       "--kube-controller-manager-arg bind-address=0.0.0.0"
-      #"--disable traefik"
-      #"--disable servicelb"
-      #"--flannel-backend=none"
-      #"--disable-network-policy"
       #"--disable metrics-server"
       #"--disable local-storage"
-      #"--disable-kube-proxy"
       #"--disable-cloud-controller"
-      #"--kubelet-arg=register-with-taints=node.cilium.io/agent-not-ready:NoExecute"
     ];
 
     manifests = {
@@ -39,7 +45,7 @@
           spec = {
             repo = "https://argoproj.github.io/argo-helm";
             chart = "argo-cd";
-            version = "7.7.7";
+            version = "7.8.2";
             targetNamespace = "argocd";
             createNamespace = true;
             bootstrap = true;
@@ -49,8 +55,24 @@
               configs:
                 cm:
                   statusbadge.enabled: true
+                  dex.config: |
+                    connectors:
+                      - config:
+                          issuer: https://auth.simonoscar.me/application/o/argocd/
+                          clientID: argocd
+                          clientSecret: "nCvUbTh7Jl3FMmRzKLcq6EHgRlRh8poqPp1NXTntmig9akmrTLRMvuaDObQEA2ygVHXFpppZotzN1biXrBdFuDv0bLWJt9N5tNl3JEKHluwAkUGcF55v01cRoeN5USTm"
+                          insecureEnableGroups: true
+                          scopes:
+                            - openid
+                            - profile
+                            - email
+                        name: authentik
+                        type: oidc
+                        id: authentik
+                rbac:
+                  policy.csv: |
+                    g, authentik Admins, role:admin
                 params:
-                  server.insecure: true
                   applicationsetcontroller.enable.progressive.syncs: true
                 repositories:
                   gitops-repo:
@@ -64,7 +86,9 @@
                   enabled: true
                   annotations:
                     cert-manager.io/cluster-issuer: tls-issuer
-                  ingressClassName: traefik
+                    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+                    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+                  ingressClassName: nginx
                   hostname: argocd.simonoscar.me
                   tls: true
               notifications:
@@ -88,6 +112,7 @@
             chart = "argocd-apps";
             version = "2.0.2";
             targetNamespace = "argocd";
+            bootstrap = true;
             valuesContent = ''
               applications:
                 bootstrap:
@@ -110,7 +135,6 @@
                   info:
                   - name: gitops
                     value: https://gitlab.com/simonoscr/gitops.git
-
               projects:
                 argocd:
                   namespace: argocd
@@ -128,47 +152,94 @@
           };
         };
       };
+
+      cilium = {
+        enable = true;
+        target = "cilium.yaml";
+        content = {
+          apiVersion = "helm.cattle.io/v1";
+          kind = "HelmChart";
+          metadata = {
+            name = "cilium";
+            namespace = "kube-system";
+          };
+          spec = {
+            bootstrap = true;
+            chart = "https://127.0.0.1:6443/static/charts/cilium.tgz";
+            version = "1.17.0";
+            targetNamespace = "kube-system";
+            valuesContent = ''
+              upgradeCompatibility: "1.17"
+              kubeProxyReplacement: "true"
+              k8sServiceHost: "127.0.0.1"
+              k8sServicePort: 6443
+              routingMode: "tunnel"
+              tunnelProtocol: "geneve"
+              ipam:
+                operator:
+                  clusterPoolIPv4PodCIDRList: ["10.42.0.0/16"]
+              encryption:
+                enabled: true
+                type: wireguard
+                nodeEncryption: true
+              #ingressController:
+              #  enabled: true
+              #  default: true
+              #  enforceHttps: true
+              #  loadbalancerMode: dedicated
+              #  service:
+              #    type: ClusterIP
+              #    externalTrafficPolicy: "~"
+              #  hostNetwork:
+              #    enabled: true
+              #    sharedListenerPort: 443
+              #nodeIPAM:
+              #  enabled: true
+              #defaultLBServiceIPAM: nodeipam
+              #socketLB:
+              #  enabled: true
+              #  hostNamespaceOnly: true
+              #externalIPs:
+              #  enabled: true
+              #envoy:
+              #  enabled: true
+              #  securityContext:
+              #    capabilities:
+              #      keepCapNetBindService: true
+              #      envoy:
+              #        - NET_ADMIN
+              #        - NET_BIND_SERVICE
+              #        - SYS_ADMIN
+              #hostPort:
+              #  enabled: true
+              #nodePort:
+              #  enabled: true
+              debug:
+                enabled: true
+                verbose: enovy
+            '';
+          };
+        };
+      };
     };
 
-    #manifests = {
-    #  cilium = {
-    #    enable = true;
-    #    target = "cilium.yaml";
-    #    content = {
-    #      apiVersion = "helm.cattle.io/v1";
-    #      kind = "HelmChart";
-    #      metadata = {
-    #        name = "cilium";
-    #        namespace = "kube-system";
-    #      };
-    #      spec = {
-    #        repo = "https://helm.cilium.io";
-    #        chart = "cilium";
-    #        version = "1.16.3";
-    #        targetNamespace = "kube-system";
-    #        valuesContent = ''
-    #          operator:
-    #            replicas: 1
-    #          ipam:
-    #            mode: "kubernetes"
-    #            operator:
-    #              clusterPoolIPv4PodCIDRList: ["10.42.0.0/16"]
-    #          k8sServiceHost: "10.0.0.2"
-    #          k8sServicePort: 6443
-    #          cni:
-    #            binPath: "/var/lib/rancher/k3s/agent/opt/cni/bin"
-    #            confPath: "/var/lib/rancher/k3s/agent/etc/cni/net.d"
-    #        '';
-    #      };
-    #    };
-    #  };
-    #};
+    # Install Cilium before K3s starts
+    charts = {
+      cilium = pkgs.fetchurl {
+        url = "https://helm.cilium.io/cilium-1.17.0.tgz"; # Fetch Helm chart
+        sha256 = "sha256-cqggvwG7PgLAGFaJKgUI2pLfyUF0+HBce8tduxXiKP4="; # lib.fakeSha256; # Replace with actual sha256 from Helm repo
+      };
+    };
   };
-  #networking.firewall = {
-  #  enable = true;
-  #  # NOTE: `loose` required for cilium when using without kube-proxy replacement to get working livenes probe for pods. With this settings the cluster is mostly usable with exception of
-  #  # Cilium DNS Filtering: msg="Timeout waiting for response to forwarded proxied DNS lookup" dnsName=vpn-gateway-pod-gateway.vpn-gateway.svc.cluster.local. error="read udp 10.42.0.183:43844->10.42.0.176:53: i/o timeout" ipAddr="10.42.0.183:43844" subsys=fqdn/dnsproxy
-  #  # => Therefore we have to use `checkReversePath=false` to get our vpn-gateway CiliumNetworkPolicy with DNS Filter working (when installing without cilium kube-proxy replacement).
-  #  checkReversePath = false;
-  #};
+
+  # create symlinks to link k3s's cni directory to the one used by almost all CNI plugins
+  # such as multus, calico, etc.
+  # https://www.freedesktop.org/software/systemd/man/latest/tmpfiles.d.html#Type
+  systemd.tmpfiles.rules = [
+    "L+ /opt/cni/bin - - - - /var/lib/rancher/k3s/data/current/bin"
+    # If you have disabled flannel, you will have to create the directory via a tmpfiles rule
+    "d /var/lib/rancher/k3s/agent/etc/cni/net.d 0751 root root - -"
+    # Link the CNI config directory
+    "L+ /etc/cni/net.d - - - - /var/lib/rancher/k3s/agent/etc/cni/net.d"
+  ];
 }

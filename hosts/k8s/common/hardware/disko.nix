@@ -11,51 +11,17 @@
           type = "gpt";
           partitions = {
             esp = {
-              priority = 1;
-              name = "ESP";
-              type = "EF00";
-              start = "1M";
-              end = "512M";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
-              };
+              priority = 0;
+              name = "BIOS Boot";
+              type = "EF02";
+              size = "1M";
             };
             root = {
               size = "100%";
               content = {
-                type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
-                # Subvolumes must set a mountpoint in order to be mounted,
-                # unless their parent is mounted
-                subvolumes = {
-                  "@root" = {
-                    mountpoint = "/";
-                  };
-                  "@nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [
-                      "compress-force=zstd:1"
-                      "noatime"
-                      "noacl"
-                    ];
-                  };
-                  "@persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [
-                      "compress-force=zstd:1"
-                      "noatime"
-                    ];
-                  };
-                  "@tmp" = {
-                    mountpoint = "/tmp";
-                    mountOptions = [
-                      "noatime"
-                    ];
-                  };
-                };
+                type = "filesystem";
+                format = "ext4";
+                mountpoint = "/";
               };
             };
           };

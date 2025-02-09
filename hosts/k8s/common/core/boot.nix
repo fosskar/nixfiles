@@ -13,18 +13,19 @@
     loader = {
       timeout = lib.mkDefault 0;
       generationsDir.copyKernels = true;
-      efi.canTouchEfiVariables = true;
 
       systemd-boot = {
+        enable = false;
+      };
+
+      grub = {
         enable = true;
-        configurationLimit = 5;
-        consoleMode = lib.mkDefault "max";
-        editor = false;
+
       };
     };
 
     supportedFilesystems = [
-      "btrfs"
+      "ext4"
     ];
 
     initrd = {

@@ -17,12 +17,12 @@
     ../common/security
   ];
 
-  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   networking = {
     hostName = "k3s-control-1";
   };
 
   ### DON'T TOUCH!
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }

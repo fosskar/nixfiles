@@ -5,7 +5,7 @@
 { lib, ... }:
 {
   imports = [
-    ./k3s-worker-2.nix
+    ./k3s-control-2.nix
     ./hardware-configuration.nix
     ../common/core
     ../common/hardware
@@ -17,12 +17,12 @@
     ../common/security
   ];
 
-  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   networking = {
-    hostName = "k3s-worker-2";
+    hostName = "k3s-control-2";
   };
 
   ### DON'T TOUCH!
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }

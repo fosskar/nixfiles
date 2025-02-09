@@ -11,8 +11,11 @@
   boot = {
     initrd = {
       availableKernelModules = [
+        "ahci"
         "xhci_pci"
+        "virtio_pci"
         "virtio_scsi"
+        "sd_mod"
         "sr_mod"
       ];
       kernelModules = [ ];
@@ -29,5 +32,5 @@
   # networking.interfaces.enp1s0.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp7s0.useDHCP = lib.mkDefault true;
 
-  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
