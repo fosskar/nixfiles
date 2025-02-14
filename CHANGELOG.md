@@ -1,3 +1,9 @@
+## [13.10.0](https://gitlab.com/simonoscr/nixfiles/compare/13.9.0...13.10.0) (2025-02-14)
+
+### 🚀 Features
+
+* update shell integration to manage globally§ ([a5baaa6](https://gitlab.com/simonoscr/nixfiles/commit/a5baaa6bebea6ae74edb1eff9d8799e35bde1fcd))
+
 ## [13.9.0](https://gitlab.com/simonoscr/nixfiles/compare/13.8.0...13.9.0) (2025-02-14)
 
 ### 🚀 Features
