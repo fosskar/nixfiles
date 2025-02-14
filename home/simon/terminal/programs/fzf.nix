@@ -16,9 +16,6 @@ in
   config = mkIf cfg.enable {
     programs.fzf = {
       enable = true;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
     };
   };
 }

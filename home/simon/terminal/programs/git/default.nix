@@ -34,11 +34,6 @@ in
         github.user = name;
         push.autoSetupRemote = true;
         diff.colorMoved = "default";
-        gpg = {
-          format = "ssh";
-          #ssh.allowedSignersFile = config.home.homeDirectory + "/" + config.xdg.configFile."git/allowed_signers".target;
-        };
-        commit.gpgsign = true;
         pull.rebase = true;
         init.defaultBranch = "main";
         fetch.auto = true;
@@ -48,6 +43,7 @@ in
 
       signing = {
         key = "${config.home.homeDirectory}/.ssh/id_ed25519";
+        format = "ssh";
         signByDefault = true;
       };
     };

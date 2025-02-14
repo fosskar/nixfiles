@@ -20,9 +20,6 @@ in
   config = mkIf cfg.enable {
     programs.nix-index = {
       enable = true;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
     };
   };
 }

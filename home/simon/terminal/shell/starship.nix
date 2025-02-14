@@ -15,9 +15,6 @@ in
 
     programs.starship = {
       enable = true;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
 
       settings = {
         format = lib.concatStrings [

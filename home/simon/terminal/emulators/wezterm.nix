@@ -16,8 +16,6 @@ in
   config = mkIf cfg.enable {
     programs.wezterm = {
       enable = true;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
 
       colorSchemes.ownTheme = {
         ansi = [

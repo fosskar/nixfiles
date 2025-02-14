@@ -19,9 +19,6 @@ in
       enable = true;
       package = pkgs.ghostty; # the stable version
       # package = ghostty.packages.${pkgs.system}.default;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableZshIntegration = true;
       settings = {
         theme = "Adwaita Dark";
         font-family = "JetBrainsMono Nerd Font";

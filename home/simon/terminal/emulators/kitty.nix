@@ -17,11 +17,6 @@ in
   config = mkIf cfg.enable {
     programs.kitty = {
       enable = true;
-      shellIntegration = {
-        enableZshIntegration = true;
-        enableBashIntegration = true;
-        enableFishIntegration = true;
-      };
       font = {
         size = 10;
         name = "JetBrainsMono Nerd Font";
