@@ -37,7 +37,8 @@ in
 
     home = {
       #file.".mozilla/firefox/${config.programs.firefox.profiles.simon.path}/chrome".source = "${ffultima}/theme";
-      file.".mozilla/firefox/${config.programs.firefox.profiles.simon.path}/chrome".source = "${shyfox}/chrome";
+      file.".mozilla/firefox/${config.programs.firefox.profiles.simon.path}/chrome".source =
+        "${shyfox}/chrome";
     };
 
     programs.firefox = {

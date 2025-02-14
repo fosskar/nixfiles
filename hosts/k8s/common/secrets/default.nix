@@ -17,9 +17,7 @@ in
         path = "etc/nixos/ssh/authorized_keys";
       };
 
-      "user/root/hashed_password" =
-        {
-        };
+      "user/root/hashed_password" = { };
 
       "k8s/k3s-nixos" = { };
     };

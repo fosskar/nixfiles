@@ -1,13 +1,18 @@
 { lib, pkgs, ... }:
 {
   environment = {
+    defaultPackages = lib.mkForce [ ]; # no extra default packages are installed
     systemPackages = with pkgs; [
+      tcpdump
       neovim
+      vim
       btop
       bat
+      btop
+      iproute2
+      jq
       curl
       dig
-
       k9s
       argo
       dive
@@ -17,14 +22,5 @@
       clusterctl
       skopeo
     ];
-    defaultPackages = lib.mkForce [ ]; # no extra default packages are installed
   };
-  xdg = {
-    icons.enable = lib.mkForce false;
-    mime.enable = lib.mkForce false;
-    sounds.enable = lib.mkForce false;
-    menus.enable = lib.mkForce false;
-    autostart.enable = lib.mkForce false;
-  };
-  fonts.fontconfig.enable = false;
 }

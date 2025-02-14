@@ -13,8 +13,5 @@ in
     enable = mkEnableOption "Enable module";
   };
 
-  config =
-    mkIf cfg.enable
-      {
-      };
+  config = mkIf cfg.enable { };
 }

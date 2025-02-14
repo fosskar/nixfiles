@@ -14,6 +14,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.sessionVariables.KUBE_EDITOR = "nvim";
+
     programs.k9s = {
       enable = true;
       settings.k9s = {
