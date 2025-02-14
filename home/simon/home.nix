@@ -93,6 +93,7 @@
         k9s.enable = true;
       };
       shell = {
+        aliases.enable = true;
         zsh.enable = true;
         bash.enable = true;
         fish.enable = true;
