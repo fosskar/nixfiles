@@ -36,5 +36,6 @@
     #android-tools
 
     kubectl
+    kubernetes-helm
   ];
 }

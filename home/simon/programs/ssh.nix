@@ -17,6 +17,10 @@ in
     programs.ssh = {
       enable = true;
       addKeysToAgent = "no";
+      extraConfig = ''
+        StrictHostKeyChecking no
+        UpdateHostKeys yes
+      '';
     };
   };
 }
