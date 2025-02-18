@@ -4,7 +4,6 @@
 ############################################################################################
 _: {
   imports = [
-    ./hardware/hardware-configuration.nix
     ./core
     ./hardware
     ./network

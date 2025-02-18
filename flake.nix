@@ -181,11 +181,11 @@
           ];
         };
 
-        server = nixpkgs.lib.nixosSystem {
+        proxmox-server = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
           };
-          modules = [ ./hosts/server/configuration.nix ];
+          modules = [ ./hosts/proxmox-server/configuration.nix ];
         };
 
         k3s-control-1 = nixpkgs.lib.nixosSystem {
