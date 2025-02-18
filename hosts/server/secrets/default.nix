@@ -1,6 +1,6 @@
 { inputs, ... }:
 let
-  secretsFile = "${inputs.nixsecrets}/sops-nix/server/secrets.yaml";
+  secretsFile = "${inputs.nixsecrets}/sops-nix/k8s/secrets.yaml";
 in
 {
   imports = [ inputs.sops-nix.nixosModules.sops ];
@@ -17,13 +17,7 @@ in
         path = "etc/nixos/ssh/authorized_keys";
       };
 
-      "internet/wlan" = {
-        path = "/etc/wpa_supplicant.conf";
-      };
-
-      "user/root/hashed_password" = {
-        neededForUsers = true;
-      };
+      "user/root/hashed_password" = { };
     };
   };
 }

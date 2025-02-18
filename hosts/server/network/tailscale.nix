@@ -2,6 +2,7 @@ _: {
   services.tailscale = {
     enable = true;
     openFirewall = true;
-    useRoutingFeatures = "both";
+    useRoutingFeatures = "server";
+    disableTaildrop = true;
   };
 }

@@ -5,18 +5,23 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # default
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
     #nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # better not
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11"; # current stable
+    #nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11"; # current stable
 
     systems.url = "github:nix-systems/default-linux";
 
     # nix-community
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager"; # 45c07fcf7d28b5fb3ee189c260dee0a2e4d14317"; # https://github.com/nix-community/home-manager/pull/6172
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-small";
+    };
+
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     disko = {
@@ -32,6 +37,8 @@
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    proxmox-nixos.url = "github:SaumonNet/proxmox-nixos";
 
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
@@ -146,6 +153,10 @@
 
       #overlays = import "${self}/overlays" { inherit self; }; # no
 
+      #packages = forAllSystems (system: {
+      #  # nix build .#proxmox-image
+      #  proxmox-base-image = self.nixosConfigurations.proxmox-base.config.system.build.VMA;
+      #});
       #packages = forAllSystems (
       #  system:
       #  let

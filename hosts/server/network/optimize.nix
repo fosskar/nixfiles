@@ -2,6 +2,8 @@ _: {
   boot = {
     kernelModules = [ "tcp_bbr" ];
     kernel.sysctl = {
+      "net.ipv4.ip_forward" = 1;
+      "net.ipv6.conf.all.forwarding" = 1;
       # TCP hardening
       # Prevent bogus ICMP errors from filling up logs.
       "net.ipv4.icmp_ignore_bogus_error_responses" = 1;

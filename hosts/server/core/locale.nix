@@ -1,5 +1,6 @@
-_: {
-  time.timeZone = "Europe/Berlin";
+{ lib, ... }:
+{
+  time.timeZone = lib.mkDefault "UTC";
 
   i18n = {
     defaultLocale = "en_US.UTF-8";

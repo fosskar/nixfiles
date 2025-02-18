@@ -1,6 +1,7 @@
 _: {
   imports = [
-    ./fwupd.nix
+    ./disko.nix
     ./hardware-configuration.nix
+    ./zfs.nix
   ];
 }

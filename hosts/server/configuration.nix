@@ -2,29 +2,29 @@
 ## this is the systems configuration file                                                 ##
 ## use this to configure the system environment, it replaces /etc/nixos/configuration.nix ##
 ############################################################################################
-{ lib, ... }:
-{
+_: {
   imports = [
+    ./hardware/hardware-configuration.nix
     ./core
     ./hardware
     ./network
     ./nix
     ./pkgs
-    ./programs/gnupg.nix
-    ./programs/zsh.nix
+    ./programs
     ./secrets
     ./security
-    # ./services/kubernetes/helm.nix
-    ./services/kubernetes/k3s.nix
-    ./services/podman.nix
-    ./services/power.nix
-    ./services/ssh.nix
-    ./services/udev.nix
-    ./services/zram.nix
+    ./proxmox.nix
   ];
 
-  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+  nixpkgs = {
+    hostPlatform = "x86_64-linux";
+  };
+
+  networking = {
+    hostName = "proxmox-nixos";
+    hostId = "01c7a6ca";
+  };
 
   ### DON'T TOUCH!
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }
