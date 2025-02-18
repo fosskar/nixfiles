@@ -11,7 +11,7 @@
       flakeInputs = lib.filterAttrs (_: v: lib.isType "flake" v) inputs;
     in
     {
-      #package = pkgs.lix; # nixVersions.latest, lix
+      package = pkgs.nixVersions.latest; # nixVersions.latest, lix
       # pin the registry to avoid downloading and evaling a new nixpkgs version every time
       # flakeInputs filters out non-flake inputs from system flake registry
       registry = lib.mapAttrs (_: v: { flake = v; }) flakeInputs;
@@ -37,11 +37,8 @@
         # without displaying a Y/N prompt. For those obtuse
         # enough to keep this true, I wish the best of luck.
         accept-flake-config = false;
-        cores = 0;
-        max-jobs = "auto";
-        connect-timeout = 5;
-        http-connections = 50;
-        log-lines = 50;
+        cores = 8;
+        max-jobs = 2;
         sandbox = true;
         auto-optimise-store = true;
         builders-use-substitutes = true;
@@ -66,7 +63,6 @@
         fallback = true;
         # Don't warn me that my git tree is dirty, I know.
         warn-dirty = false;
-        nix-path = [ "nixpkgs=${pkgs.path}" ]; # FIXME https://discourse.nixos.org/t/24-05-add-flake-to-nix-path/46310/9
       };
       gc = {
         automatic = false; # because i am using nh.clean
