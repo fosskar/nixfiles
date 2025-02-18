@@ -1,3 +1,9 @@
+## [13.11.1](https://gitlab.com/simonoscr/nixfiles/compare/13.11.0...13.11.1) (2025-02-18)
+
+### :scissors: Refactor
+
+* rename server to proxmox-server to refelct the server in name ([0c9c57c](https://gitlab.com/simonoscr/nixfiles/commit/0c9c57ccc74cb0260c982ec09ef8ca1b9e4b4f41))
+
 ## [13.11.0](https://gitlab.com/simonoscr/nixfiles/compare/13.10.0...13.11.0) (2025-02-18)
 
 ### 📦 Other
