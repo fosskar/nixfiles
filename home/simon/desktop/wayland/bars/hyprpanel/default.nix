@@ -26,7 +26,7 @@ in
     programs.hyprpanel = {
       enable = true;
       config.enable = true;
-      overlay.enable = true;
+      overlay.enable = false;
       hyprland.enable = false;
       overwrite.enable = true;
       theme = "";
