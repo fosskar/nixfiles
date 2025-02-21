@@ -1,3 +1,9 @@
+## [14.0.0](https://gitlab.com/simonoscr/nixfiles/compare/13.11.1...14.0.0) (2025-02-21)
+
+### 🧨 Breaking changes!
+
+* moved infra setup to own repository and cleanup repo ([94aac10](https://gitlab.com/simonoscr/nixfiles/commit/94aac1065b896ed646291f7e28290dce3a794480))
+
 ## [13.11.1](https://gitlab.com/simonoscr/nixfiles/compare/13.11.0...13.11.1) (2025-02-18)
 
 ### :scissors: Refactor
