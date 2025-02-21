@@ -72,11 +72,11 @@
           (mvactive "left" "-20 0")
 
           # global shortcuts/keybinds/hotkeys
-          ",F9,pass,title:^(TeamSpeak 3)$"
-          ",F10,pass,title:^(TeamSpeak 3)$"
+          ", F9, pass, class:^(TeamSpeak 3)$"
+          ", F10, pass, class:^(TeamSpeak 3)$"
 
-          "SHIFT,Space,pass,^(awakened-poe-trade)$"
-          "CTRL ALT,D,pass,^(awakened-poe-trade)$"
+          "SHIFT, Space, pass, ^(awakened-poe-trade)$"
+          "CTRL ALT, D, pass, ^(awakened-poe-trade)$"
         ]
         ++ (map (i: ws (toString i) (toString i)) arr)
         ++ (map (i: mvtows (toString i) (toString i)) arr);

@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  inputs,
   pkgs,
   ...
 }:
@@ -30,28 +29,31 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      #xwaylandvideobridge #for screensharing xwayland application
+      #xwaylandvideobridge # for screensharing xwayland application
       hyprshot # screenshot
       wl-clipboard # wayland clipboard
       hyprpicker # color picker
     ];
 
     home.sessionVariables = {
-      QT_QPA_PLATFORM = "wayland";
+      QT_QPA_PLATFORM = "wayland;xcb";
       QT_AUTO_SCREEN_SCALE_FACTOR = 1;
       QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
-      SDL_VIDEODRIVER = "wayland";
-      GDK_BACKEND = "wayland";
+      #SDL_VIDEODRIVER = "wayland";
+      GDK_BACKEND = "wayland,x11,*";
       CLUTTER_BACKEND = "wayland";
       OZONE_PLATFORM = "wayland";
       NIXOS_OZONE_WL = 1;
+      XDG_CURRENT_DESKTOP = "Hyprland";
+      XDG_SESSION_TYPE = "wayland";
+      XDG_SESSION_DESKTOP = "Hyprland";
+      GTK_USE_PORTAL = "1";
     };
 
     wayland.windowManager.hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      portalPackage =
-        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+      package = null;
+      portalPackage = null;
       systemd = {
         enable = false;
         variables = [ "--all" ];

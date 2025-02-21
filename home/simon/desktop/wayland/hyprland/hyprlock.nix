@@ -27,7 +27,11 @@ in
           hide_cursor = true;
           immediate_render = true;
         };
-
+        authentication = {
+          pam = {
+            enabled = true;
+          };
+        };
         background = [
           {
             monitor = "";

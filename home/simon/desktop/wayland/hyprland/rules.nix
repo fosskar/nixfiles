@@ -32,17 +32,17 @@ _: {
         "pin, title:^(Picture-in-Picture)$"
 
         # dim around specific applications
-        "dimaround, class:^(xdg-desktop-portal-gtk)$"
-        "dimaround, class:^(polkit-pantheon-authentication-agent-1)$"
+        #"dimaround, class:^(xdg-desktop-portal-gtk)$"
+        #"dimaround, class:^(polkit-pantheon-authentication-agent-1)$"
 
-        "tag +apt, title:(Awakened PoE Trade)"
-        "float, tag:apt"
-        "noblur, tag:apt"
-        "nofocus, tag:apt" # Disable auto-focus
-        "noshadow, tag:apt"
-        "noborder, tag:apt"
+        #"tag +apt, title:(Awakened PoE Trade)"
+        #"float, tag:apt"
+        #"noblur, tag:apt"
+        #"nofocus, tag:apt" # Disable auto-focus
+        #"noshadow, tag:apt"
+        #"noborder, tag:apt"
         #"size 100% 100%, tag:apt"
-        "center, tag:apt"
+        #"center, tag:apt"
       ];
       workspace = [
         "3, monitor:HDMI-A-2, default:true persistent:true"
