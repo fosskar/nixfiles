@@ -14,13 +14,12 @@ in
       "html"
       "nix"
       "toml"
-      "git-firefly"
       "xml"
+      "scss"
       "vscode-dark-modern"
-      "java"
       "helm"
       "ansible"
-      "material-icon-theme"
+      "bearded-icon-theme"
     ];
     userSettings = {
       theme = {
@@ -28,7 +27,7 @@ in
         light = "VSCode Dark Modern";
         dark = "VSCode Dark Modern";
       };
-      icon_theme = "Material Icon Theme";
+      icon_theme = "Bearded Icon Theme";
       base_keymap = "VSCode";
       features = {
         edit_prediction_provider = "zed";
@@ -192,7 +191,7 @@ in
           remove_trailing_whitespace_on_save = false; # If you rely on invisible trailing whitespace being converted to <br />
         };
         YAML = {
-          # this fixes worng error for multiple manifest documents in a single .yaml file. docker-compose extensions fault
+          # this fixes wrong error for multiple manifest documents in a single .yaml file. docker-compose extensions fault
           language_servers = [
             "yaml-language-server"
             "!docker-compose"
