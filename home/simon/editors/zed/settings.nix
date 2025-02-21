@@ -1,13 +1,5 @@
 { pkgs, ... }:
-let
-  inherit (pkgs.zed-editor) version remote_server;
-  binary_name = "zed-remote-server-stable-${version}";
-in
 {
-  #  you may want to consider using the nixpkgs provided server instead if you have custom patches to apply or mistrust whatever binary upstream Zed is downloading to your server
-  # use this magic to only symlink the binary and not the directory, so Zed will successfully fall back to its own binary upload if the remote package version does not match
-  home.file.".zed_server/${binary_name}".source = "${remote_server}/bin/${binary_name}";
-
   programs.zed-editor = {
     extensions = [
       "dockerfile"
@@ -20,6 +12,7 @@ in
       "helm"
       "ansible"
       "bearded-icon-theme"
+      "jsonnet"
     ];
     userSettings = {
       theme = {
