@@ -1,3 +1,9 @@
+## [14.1.1](https://gitlab.com/simonoscr/nixfiles/compare/14.1.0...14.1.1) (2025-02-21)
+
+### 🛠 Fixes
+
+* zed config ([579adca](https://gitlab.com/simonoscr/nixfiles/commit/579adca2844db88e6b64c0e9a67f305271109fc9))
+
 ## [14.1.0](https://gitlab.com/simonoscr/nixfiles/compare/14.0.0...14.1.0) (2025-02-21)
 
 ### 📦 Other
