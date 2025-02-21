@@ -1,3 +1,18 @@
+## [14.1.0](https://gitlab.com/simonoscr/nixfiles/compare/14.0.0...14.1.0) (2025-02-21)
+
+### 📦 Other
+
+* update flake ([52e0061](https://gitlab.com/simonoscr/nixfiles/commit/52e0061f799218738767f32e2622bb30f4da8b1b))
+
+### 🚀 Features
+
+* update hyprland and hyprlock configuration ([55a1856](https://gitlab.com/simonoscr/nixfiles/commit/55a1856f3ecc86c74904618618420a5817dcecaf))
+
+### 🛠 Fixes
+
+* XDG portals fixing not doing xdg-open ([acef413](https://gitlab.com/simonoscr/nixfiles/commit/acef413544d5256392d33de34a21e042ea371cb0))
+* **zed-editor:** update settings ([8d3a711](https://gitlab.com/simonoscr/nixfiles/commit/8d3a711dfed2ad1c4df2dfb34df0875c0e6f6fad))
+
 ## [14.0.0](https://gitlab.com/simonoscr/nixfiles/compare/13.11.1...14.0.0) (2025-02-21)
 
 ### 🧨 Breaking changes!
