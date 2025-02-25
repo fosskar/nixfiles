@@ -24,6 +24,7 @@ in
     programs.git = {
       enable = true;
       lfs.enable = true;
+      #riff.enable = true; # maybe?
       delta = {
         enable = true;
         options.dark = true;
