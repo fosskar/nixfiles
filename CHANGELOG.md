@@ -1,3 +1,9 @@
+## [14.1.2](https://gitlab.com/simonoscr/nixfiles/compare/14.1.1...14.1.2) (2025-02-25)
+
+### 🛠 Fixes
+
+* update flake ([8c49fec](https://gitlab.com/simonoscr/nixfiles/commit/8c49fec41f3d0b8599ede70b8d32cd4688a56de5))
+
 ## [14.1.1](https://gitlab.com/simonoscr/nixfiles/compare/14.1.0...14.1.1) (2025-02-21)
 
 ### 🛠 Fixes
