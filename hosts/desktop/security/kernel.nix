@@ -12,12 +12,16 @@
 
     # Force-enable the Page Table Isolation (PTI) Linux kernel feature
     # helps mitigate Meltdown and prevent some KASLR bypasses.
-    forcePageTableIsolation = true;
+    # maybe more pferoamnce when set to false
+    forcePageTableIsolation = false;
 
     # User namespaces are required for sandboxing. Better than nothing imo.
     allowUserNamespaces = true;
 
     allowSimultaneousMultithreading = true;
+
+    # This is required by podman to run containers in rootless mode.
+    unprivilegedUsernsClone = true;
   };
 
   boot = {
@@ -37,8 +41,6 @@
       # This action will speed up your boot and shutdown, because one less module is loaded. Additionally disabling watchdog timers increases performance and lowers power consumption
       # Disable NMI watchdog
       "kernel.nmi_watchdog" = 0;
-      # Enable the sysctl setting kernel.unprivileged_userns_clone to allow normal users to run unprivileged containers.
-      "kernel.unprivileged_userns_clone" = 1;
       # Prevent creating files in potentially attacker-controlled environments such
       # as world-writable directories to make data spoofing attacks more difficult
       "fs.protected_fifos" = 2;
@@ -76,11 +78,16 @@
       # Contains, as a bytes of total available memory that contains free pages and reclaimable
       # pages, the number of pages at which the background kernel flusher threads will start writing out
       # dirty data.
-      "vm.dirty_background_bytes" = 134217728;
+      "vm.dirty_background_bytes" = 67108864;
       # The kernel flusher threads will periodically wake up and write old data out to disk.  This
       # tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
       "vm.dirty_writeback_centisecs" = 1500;
       "dev.hpet.max-user-freq" = 3072;
+
+      # bpf
+      #"kernel.unprivileged_bpf_disabled" = 0; # # allow user-space apps to use bpf
+      "net.core.bpf_jit_enable" = 1;
+      "net.core.bpf_jit_harden" = 0;
     };
     kernelParams = [
       # I'm sure we break hibernation in at least 5 other sections of this config, so
@@ -101,8 +108,8 @@
       # reduce most of the exposure of a heap attack to a single cache
       # Disable slab merging which significantly increases the difficulty of heap
       # exploitation by preventing overwriting objects from merged caches and by
-      # making it harder to influence slab cache layout
-      "slab_nomerge"
+      # making it harder to influence slab cache layout but costs performance
+      #"slab_nomerge"
       # Disable debugfs which exposes a lot of sensitive information about the
       # kernel. Some programs, such as powertop, use this interface to gather
       # information about the system, but it is not necessary for the system to
@@ -128,7 +135,7 @@
       # running kernel (by the virtue of using NixOS and locking module hot-loading) the
       # confidentiality mode is a better solution.
       # FYI: integrity is better solution when using sched-ext scheduler with BPF functionality.
-      "lockdown=integrity"
+      "lockdown=none"
       # enable buddy allocator free poisoning
       #  on: memory will befilled with a specific byte pattern
       #      that is unlikely to occur in normal operation.
@@ -142,8 +149,9 @@
       # ignore access time (atime) updates on files
       # except when they coincide with updates to the ctime or mtime
       "rootflags=noatime"
-      # linux security modules
-      #"lsm=landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,bpf,tomoyo,selinux"
+      # linux security modules. default for cachyos_latest: capability,landlock,lockdown,yama,bpf
+      # possible values: landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,bpf,tomoyo,selinux
+      #"lsm=capability,landlock,lockdown,yama"
       # prevent the kernel from blanking plymouth out of the fb
       #"fbcon=nodefer"
       # the format that will be used for integrity audit logs
@@ -153,7 +161,7 @@
 
       # https://en.wikipedia.org/wiki/Kernel_page-table_isolation
       # auto means kernel will automatically decide the pti state
-      "pti=auto" # on | off
+      "pti=off" # on | off | auto
 
       # CPU idle behaviour only Intel CPU
       #  poll: slightly improve performance at cost of a hotter system (not recommended)
