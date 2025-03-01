@@ -47,7 +47,7 @@
       zed-editor.enable = true;
       editorconfig.enable = true;
       neovim.enable = true;
-      vscodium.enable = true;
+      vscodium.enable = false;
     };
     gaming = {
       awakened-poe.enable = true;
@@ -69,7 +69,7 @@
     services = {
       audio.enable = false;
       dconf.enable = true;
-      kde-connect.enable = true;
+      kde-connect.enable = false;
       polkit.enable = false; # use hyprpolkitagent
       tailray.enable = true;
       udiskie.enable = true;
