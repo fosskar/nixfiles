@@ -15,11 +15,21 @@
   };
   systemd = {
     packages = [ pkgs.lact ];
-    services.lactd = {
-      enable = true;
-      description = "AMDGPU Control Daemon";
-      after = [ "multi-user.target" ];
-      wantedBy = [ "multi-user.target" ];
+    services = {
+      lactd = {
+        enable = true;
+        description = "AMDGPU Control Daemon";
+        after = [ "multi-user.target" ];
+        wantedBy = [ "multi-user.target" ];
+      };
+      power-profiles-daemon = {
+        serviceConfig = {
+          ExecStart = [
+            ""
+            "${pkgs.power-profiles-daemon}/libexec/power-profiles-daemon --block-action=amdgpu_dpm"
+          ];
+        };
+      };
     };
   };
 }
