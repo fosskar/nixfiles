@@ -6,13 +6,11 @@
       createHome = true;
       home = "/home/simon";
       initialPassword = "123";
-      useDefaultShell = false;
       shell = pkgs.fish;
       extraGroups = [
         "audio"
         "disk"
-        "corectrl"
-        "gamemode" # https://nixos.wiki/wiki/Gamemode#Known_Errors
+        "gamemode"
         "input"
         "networkmanager"
         "video"
@@ -27,6 +25,5 @@
         "network"
       ];
     };
-    defaultUserShell = pkgs.zsh; # set default shell for ALL users
   };
 }
