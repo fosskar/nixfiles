@@ -2,10 +2,8 @@
 {
   environment.systemPackages = with pkgs; [
     toybox
-
-    brave
+    usbutils
     libarchive
-
     colmena
   ];
 }
