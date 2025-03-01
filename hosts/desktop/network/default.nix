@@ -6,6 +6,5 @@ _: {
     ./optimize.nix
     ./resolved.nix
     ./tailscale.nix
-    ./wireless.nix
   ];
 }

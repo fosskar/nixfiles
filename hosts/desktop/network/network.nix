@@ -3,7 +3,7 @@
   networking = {
     hostName = "nixos";
     useNetworkd = true;
-    useDHCP = lib.mkDefault true;
+    useDHCP = lib.mkForce true;
     networkmanager = {
       enable = true;
       wifi = {
