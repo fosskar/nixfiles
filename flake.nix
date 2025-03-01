@@ -3,7 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # default
-    nixpkgs-private.url = "github:simonoscr/nixpkgs/nixos-unstable"; # testing private
+    #nixpkgs.url = "github:NixOS/nixpkgs/0196c0175e9191c474c26ab5548db27ef5d34b05"; # default
+    #nixpkgs-private.url = "github:simonoscr/nixpkgs/nixos-unstable"; # testing private
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
     #nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # better not
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11"; # current stable
