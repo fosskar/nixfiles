@@ -4,7 +4,7 @@ _: {
       exec-once = [
         # uwsm finalize startup
         "uwsm finalize"
-        "uwsm-app -- hyprlock"
+        "uwsm app -- hyprlock"
         "uwsm app -- hyprpanel"
         "[workspace 3 silent] steam -console"
       ];
@@ -35,8 +35,12 @@ _: {
       };
       input = {
         kb_layout = "de";
-        sensitivity = 1;
+        kb_model = "pc105";
+        kb_variant = "";
+        kb_options = "";
+        sensitivity = 0;
         accel_profile = "flat";
+        #force_no_accel = true;
         follow_mouse = 2;
         float_switch_override_focus = 1;
       };

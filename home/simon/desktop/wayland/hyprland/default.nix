@@ -19,7 +19,6 @@ in
     ./rules.nix
     ./hyprlock.nix
     ./hypridle.nix
-    ./shortcuts_info.nix
     ./plugins.nix
   ];
 

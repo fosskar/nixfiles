@@ -26,13 +26,12 @@
         in
         [
           # screenshots
-          ", Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m region -o ~/pictures/screenshots -- imv"
-          "CTRL, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m output -o ~/pictures/screenshots -- imv"
-          "SUPER, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m window -o ~/pictures/screenshots -- imv"
+          ", Print, exec, pgrep hyprshot || uwsm app -- hyprshot -m region -o ~/pictures/screenshots -- imv"
+          "CTRL, Print, exec, pgrep hyprshot || uwsm app -- hyprshot -m output -o ~/pictures/screenshots -- imv"
+          "SUPER, Print, exec, pgrep hyprshot || uwsm app -- hyprshot -m window -o ~/pictures/screenshots -- imv"
 
           # gaming script
           "SUPER, Next, exec, ${config.xdg.configHome}/hypr/hypr-gamemode.sh"
-          "SUPER, H, exec, ${config.xdg.configHome}/shortcut_info.sh"
 
           # start programs
           "SUPER, W, exec, uwsm app -- zen"
@@ -48,7 +47,7 @@
           "SUPER, F, fullscreen,"
           "SUPER, J, togglesplit,"
           "SUPER, P, pseudo,"
-          "SUPER, L, exec, pgrep hyprlock || uwsm-app -- hyprlock"
+          "SUPER, L, exec, pgrep hyprlock || uwsm app -- hyprlock"
           "SUPER, M, movetoworkspace, special"
           "SUPER SHIFT, E, exit,"
           "SUPER SHIFT, Q, killactive,"
@@ -74,9 +73,6 @@
           # global shortcuts/keybinds/hotkeys
           ", F9, pass, class:^(TeamSpeak 3)$"
           ", F10, pass, class:^(TeamSpeak 3)$"
-
-          "SHIFT, Space, pass, ^(awakened-poe-trade)$"
-          "CTRL ALT, D, pass, ^(awakened-poe-trade)$"
         ]
         ++ (map (i: ws (toString i) (toString i)) arr)
         ++ (map (i: mvtows (toString i) (toString i)) arr);
