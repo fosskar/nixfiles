@@ -1,3 +1,19 @@
+## [14.2.1](https://gitlab.com/simonoscr/nixfiles/compare/14.2.0...14.2.1) (2025-03-02)
+
+### 📦 Other
+
+* update flake ([009f47a](https://gitlab.com/simonoscr/nixfiles/commit/009f47a185fc5ab4286700c734f0e1cd18e83f86))
+
+### 🛠 Fixes
+
+* cleanup ([f983626](https://gitlab.com/simonoscr/nixfiles/commit/f98362620159e03f125b9d08bb66fdfba1548bbe))
+* update system pkgs, nix and config ([efd6c4b](https://gitlab.com/simonoscr/nixfiles/commit/efd6c4b2c48ac1637dc26a7de60ed597da1d1023))
+* **hm:** enable brave as chromium fallback browser ([4cf157e](https://gitlab.com/simonoscr/nixfiles/commit/4cf157e0f3414e7f2e148252bbce3c7ea27661d6))
+* **hm/gaming:** updatre sc gamescope args ([4de2798](https://gitlab.com/simonoscr/nixfiles/commit/4de2798dbf6bf6073ca36be99294e413e491932c))
+* **hm/hyprland:** update shortcuts, settings etc ([7c2eeaa](https://gitlab.com/simonoscr/nixfiles/commit/7c2eeaafb911497a0fd4153d1777d63de0c9ac58))
+* **hm/zed:** add log extension ([d544a3e](https://gitlab.com/simonoscr/nixfiles/commit/d544a3ee07df9b39baafe8dcf1d8f62568e31a58))
+* **llm:** update configs ([04e3e0c](https://gitlab.com/simonoscr/nixfiles/commit/04e3e0c187b5c729274186e5100dc8c0e9916c10))
+
 ## [14.2.0](https://gitlab.com/simonoscr/nixfiles/compare/14.1.2...14.2.0) (2025-03-01)
 
 ### 📦 Other
