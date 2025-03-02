@@ -28,4 +28,10 @@ _: {
         "de_DE.UTF-8/UTF-8"
       ];
     };
+  services.xserver.xkb = {
+    layout = "de";
+    model = "pc105";
+    variant = "";
+    options = "";
+  };
 }
