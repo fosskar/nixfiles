@@ -13,6 +13,7 @@
       "ansible"
       "bearded-icon-theme"
       "jsonnet"
+      "log"
     ];
     userSettings = {
       theme = {
@@ -67,7 +68,7 @@
       assistant = {
         enabled = true;
         default_model = {
-          provider = "copilot_chat";
+          provider = "zed.dev";
           model = "claude-3-5-sonnet";
         };
         version = "2";
