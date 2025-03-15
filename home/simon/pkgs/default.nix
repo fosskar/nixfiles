@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
 
     # desktop apps
-    #webcord-vencord
+    webcord-vencord
     protonmail-desktop
     (lowPrio proton-pass) # FIXME package collision between proton-mail and proton-pass app.asar
     protonvpn-gui
@@ -25,11 +25,7 @@
     #winetricks
     bottles
     path-of-building
-
-    # archives
-    zip
-    unzip
-    unrar
+    gfn-electron
 
     # needed for graphene installer
     #android-udev-rules
