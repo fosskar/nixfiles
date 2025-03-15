@@ -1,3 +1,13 @@
+## [14.3.1](https://gitlab.com/simonoscr/nixfiles/compare/14.3.0...14.3.1) (2025-03-15)
+
+### 📦 Other
+
+* update flake ([7b7d1cf](https://gitlab.com/simonoscr/nixfiles/commit/7b7d1cff5f47e7af5da3690e469867fa184af2ea))
+
+### 🛠 Fixes
+
+* **zed-editor:** move all panels to right side ([242f6d4](https://gitlab.com/simonoscr/nixfiles/commit/242f6d4cd2152979cbc51084b70d1c9923373608))
+
 ## [14.3.0](https://gitlab.com/simonoscr/nixfiles/compare/14.2.1...14.3.0) (2025-03-15)
 
 ### 📦 Other
