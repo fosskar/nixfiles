@@ -54,16 +54,16 @@ _: {
         mouse_move_enables_dpms = true;
         key_press_enables_dpms = true;
         disable_autoreload = true;
-        focus_on_activate = true;
+        focus_on_activate = false;
       };
       xwayland = {
         use_nearest_neighbor = false;
         force_zero_scaling = true;
       };
       render = {
-        direct_scanout = true;
-        explicit_sync = 0;
-        explicit_sync_kms = 0;
+        direct_scanout = 1;
+        explicit_sync = 1;
+        explicit_sync_kms = 1;
       };
       debug = {
         disable_logs = true;
