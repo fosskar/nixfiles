@@ -52,17 +52,21 @@
         right_padding = 0.15;
       };
       project_panel = {
+        dock = "right";
         indent_size = 15;
         auto_fold_dirs = false;
       };
       outline_panel = {
+        dock = "right";
         indent_size = 15;
         auto_fold_dirs = false;
       };
       collaboration_panel = {
+        dock = "right";
         button = false;
       };
       git_panel = {
+        dock = "right";
         button = true;
       };
       assistant = {
@@ -131,6 +135,13 @@
         "**/report"
         "**/node_modules"
       ];
+      git = {
+        git_gutter = "tracked_files";
+        inline_blame = {
+          enabled = true;
+          show_commit_summary = true;
+        };
+      };
       journal = {
         hour_format = "hour24";
       };
