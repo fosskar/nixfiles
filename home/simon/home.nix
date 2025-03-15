@@ -27,7 +27,7 @@
     browser = {
       firefox.enable = false;
       zen-browser.enable = true;
-      brave.enable = true;
+      brave.enable = false;
     };
     desktop = {
       wayland = {
