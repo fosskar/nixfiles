@@ -1,3 +1,20 @@
+## [14.3.0](https://gitlab.com/simonoscr/nixfiles/compare/14.2.1...14.3.0) (2025-03-15)
+
+### 📦 Other
+
+* update flake ([b6a4615](https://gitlab.com/simonoscr/nixfiles/commit/b6a46158dd5495e4c8b1302adbbb511650ab3af4))
+
+### 🚀 Features
+
+* **gaming:** add lutris ([c178932](https://gitlab.com/simonoscr/nixfiles/commit/c178932455b74bec421b735f5a8c369247a11b3f))
+* **hyprland:** enable explicit_sync ([0388626](https://gitlab.com/simonoscr/nixfiles/commit/0388626562cda660fad14b1c23f742ad5dbbc397))
+
+### 🛠 Fixes
+
+* **hm:** disable brave ([8261024](https://gitlab.com/simonoscr/nixfiles/commit/8261024cba29d9f4db96f2c0914161cedd43ab90))
+* **pkgs:** add gfn and webcord-vencord ([95d7e0c](https://gitlab.com/simonoscr/nixfiles/commit/95d7e0c96e5f30212f400da38ea78eb837ad02b6))
+* **tailray:** add systemd service after graphical ([ae01ec5](https://gitlab.com/simonoscr/nixfiles/commit/ae01ec5f06a145b6e5d2f9c282f132d9437e4649))
+
 ## [14.2.1](https://gitlab.com/simonoscr/nixfiles/compare/14.2.0...14.2.1) (2025-03-02)
 
 ### 📦 Other
