@@ -13,6 +13,8 @@
     # media
     spotify
 
+    obsidian
+
     # audio
     teamspeak3
     teamspeak5_client

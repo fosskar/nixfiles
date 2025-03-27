@@ -38,6 +38,7 @@
     ./services/greetd.nix
     ./services/lact.nix
     ./services/libinput.nix
+    ./services/n8n.nix
     #./services/llm
     ./services/power.nix
     ./services/printing.nix
