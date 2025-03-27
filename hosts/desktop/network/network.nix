@@ -1,9 +1,8 @@
-{ lib, ... }:
-{
+_: {
   networking = {
     hostName = "nixos";
     useNetworkd = false;
-    useDHCP = lib.mkForce true;
+    useDHCP = false;
     networkmanager = {
       enable = true;
       wifi = {
@@ -16,12 +15,17 @@
     };
 
     nameservers = [
-      # mullevad also best
+      # mullevad svenska also best
       "194.242.2.2"
       "2a07:e340::2"
 
-      # quad9, said to be the best
-      # shares *less* data
+      # dns.sb germany
+      "45.11.45.11"
+      "185.222.222.222"
+      "2a11::"
+      "2a09::"
+
+      # quad9, schwiz. at leats not usa
       "9.9.9.9"
       "149.112.112.112"
       "2620:fe::fe"
