@@ -47,7 +47,7 @@
           "SUPER, F, fullscreen,"
           "SUPER, J, togglesplit,"
           "SUPER, P, pseudo,"
-          "SUPER, L, exec, pgrep hyprlock || uwsm app -- hyprlock"
+          "SUPER, L, exec, loginctl lock-session"
           "SUPER, M, movetoworkspace, special"
           "SUPER SHIFT, E, exit,"
           "SUPER SHIFT, Q, killactive,"
