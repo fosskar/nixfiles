@@ -70,6 +70,8 @@ in
           }
         ];
 
+        animation = "inputFieldDots, 1, 2, linear";
+
         label = [
           {
             monitor = "";

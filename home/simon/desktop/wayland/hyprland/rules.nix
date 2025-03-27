@@ -1,7 +1,7 @@
 _: {
   wayland.windowManager.hyprland = {
     settings = {
-      windowrulev2 = [
+      windowrule = [
         # webcord
         "workspace 9 silent, class:^(WebCord)$"
 
@@ -24,10 +24,10 @@ _: {
 
         # immediate
         #"immediate, fullscreen:1" # immediate for all fullscreen applcations
-        "immediate, class:^(cs2)$"
-        "immediate, class:^(deadlock)$"
-        #"immediate, class:^(gamescope)$" # Apply fullscreen to gamescope
-        "immediate, class:^(steam_app).*, title:(.*)" # Apply fullscreen to Steam games
+        "immediate, content game, class:^(cs2)$"
+        "immediate, content game, class:^(deadlock)$"
+        #"immediate, content:game, class:^(gamescope)$" # Apply fullscreen to gamescope
+        "immediate, content:game, class:^(steam_app).*, title:(.*)" # Apply fullscreen to Steam games
 
         # make Firefox PiP window floating and sticky
         "float, title:^(Picture-in-Picture)$"
@@ -35,8 +35,8 @@ _: {
 
         # float generic windows
         "float, title:^(Open Files)$"
-        "float,title:^(File Upload)$"
-        "float,title:^(File Operation Progress)$"
+        "float, title:^(File Upload)$"
+        "float, title:^(File Operation Progress)$"
         "float, class:^(xdg-desktop-portal-gtk)$"
         "float, title:^(MainPicker)$"
         "float, title:^(.*Bitwarden Password Manager.*)$"
@@ -46,14 +46,14 @@ _: {
         "dimaround, class:^(hyprpolkitagent)$"
         "dimaround, class:^(anyrun)$"
 
-        "tag +apt, title:(Awakened PoE Trade)"
-        "float, tag:apt"
-        "noblur, tag:apt"
-        "nofocus, tag:apt" # Disable auto-focus
-        "noshadow, tag:apt"
-        "noborder, tag:apt"
-        "size 100% 100%, tag:apt"
-        "center, tag:apt"
+        #"tag +apt, title:(Awakened PoE Trade)"
+        #"float, tag:apt"
+        #"noblur, tag:apt"
+        #"nofocus, tag:apt" # Disable auto-focus
+        #"noshadow, tag:apt"
+        #"noborder, tag:apt"
+        #"size 100% 100%, tag:apt"
+        #"center, tag:apt"
 
         # xwaylandvideobridge?!
         #"opacity 0.0 override,class:^(xwaylandvideobridge)$"

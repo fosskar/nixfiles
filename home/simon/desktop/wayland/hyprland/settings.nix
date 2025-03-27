@@ -61,9 +61,7 @@ _: {
         force_zero_scaling = true;
       };
       render = {
-        direct_scanout = 1;
-        explicit_sync = 1;
-        explicit_sync_kms = 1;
+        direct_scanout = true;
       };
       debug = {
         disable_logs = true;

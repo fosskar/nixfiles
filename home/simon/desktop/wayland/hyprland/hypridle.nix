@@ -39,7 +39,7 @@ in
       package = inputs.hypridle.packages.${pkgs.system}.hypridle;
       settings = {
         general = {
-          before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+          before_sleep_cmd = "loginctl lock-session";
           lock_cmd = lib.getExe config.programs.hyprlock.package;
           after_sleep_cmd = "hyprctl dispatch dpms on"; # for faster wakeup after sleep
           ignore_dbus_inhibit = false; # whether to ignore dbus-sent idle-inhibit requests (used by e.g. firefox or steam)
