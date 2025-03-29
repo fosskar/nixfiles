@@ -1,452 +1,473 @@
-_: {
+_:
+let
+  white = "#eeeeee";
+  black = "#171717";
+  black2 = "#1e1e1e";
+  blackgrey = "#ffffff";
+  grey = "#282828";
+  lightgrey = "#999999";
+  springgreen = "#33d17a";
+  red = "#ed333b";
+  red2 = "#c01c28";
+  blue = "#3584e4";
+  yellow = "#e5a50a";
+  orange = "#ff7800";
+  purple = "#9141ac";
+in
+{
 
   programs.hyprpanel = {
     override = {
       theme = {
         notification = {
-          background = "#171717";
+          background = black;
           actions = {
-            background = "#33d17a";
-            text = "#171717";
+            background = springgreen;
+            text = black;
           };
-          label = "#33d17a";
-          border = "#282828";
-          time = "#eeeeee";
-          text = "#eeeeee";
-          labelicon = "#33d17a";
+          label = springgreen;
+          border = grey;
+          time = white;
+          text = white;
+          labelicon = springgreen;
           close_button = {
-            background = "#f66151";
-            label = "#171717";
+            background = red;
+            label = black;
           };
         };
         osd = {
-          bar_container = "#171717";
-          icon_container = "#33d17a";
-          bar_color = "#33d17a";
-          bar_empty_color = "#171717";
-          bar_overflow_color = "#ed333b";
-          icon = "#171717";
-          label = "#eeeeee";
+          bar_container = black;
+          icon_container = springgreen;
+          bar_color = springgreen;
+          bar_empty_color = black;
+          bar_overflow_color = red;
+          icon = black;
+          label = white;
         };
         bar = {
-          background = "#171717";
+          background = black;
           buttons = {
-            background = "#171717";
-            text = "#eeeeee";
-            icon = "#eeeeee";
+            background = black;
+            text = white;
+            icon = white;
             dashboard = {
-              background = "#171717";
-              icon = "#62a0ea";
+              background = black;
+              icon = blue;
             };
             workspaces = {
-              background = "#171717";
-              border = "#ffffff";
-              available = "#eeeeee";
-              occupied = "#eeeeee";
-              active = "#33d17a";
-              hover = "#33d17a";
-              numbered_active_highlighted_text_color = "#1e1e1e";
-              numbered_active_underline_color = "#ffffff";
+              background = black;
+              border = blackgrey;
+              available = white;
+              occupied = white;
+              active = springgreen;
+              hover = springgreen;
+              numbered_active_highlighted_text_color = black2;
+              numbered_active_underline_color = blackgrey;
             };
             windowtitle = {
-              background = "#171717";
-              border = "#171717";
-              text = "#eeeeee";
-              icon = "#eeeeee";
+              background = black;
+              border = black;
+              text = white;
+              icon = white;
             };
             media = {
-              background = "#171717";
-              text = "#eeeeee";
-              icon = "#eeeeee";
+              background = black;
+              text = white;
+              icon = white;
             };
             volume = {
-              background = "#171717";
-              text = "#eeeeee";
-              icon = "#eeeeee";
+              background = black;
+              text = white;
+              icon = white;
             };
             network = {
-              background = "#171717";
-              text = "#eeeeee";
-              icon = "#eeeeee";
+              background = black;
+              text = white;
+              icon = white;
             };
             bluetooth = {
-              background = "#171717";
-              text = "#eeeeee";
-              icon = "#3584e4";
+              background = black;
+              text = white;
+              icon = blue;
             };
             systray = {
-              background = "#171717";
+              background = black;
             };
             clock = {
-              background = "#171717";
-              text = "#eeeeee";
-              icon = "#eeeeee";
+              background = black;
+              text = white;
+              icon = white;
             };
             notifications = {
-              background = "#171717";
-              icon = "#eeeeee";
-              total = "#eeeeee";
+              background = black;
+              icon = white;
+              total = white;
             };
             modules = {
               ram = {
-                background = "#171717";
-                text = "#eeeeee";
-                icon = "#f5c211";
+                background = black;
+                text = white;
+                icon = yellow;
               };
               cpu = {
-                background = "#171717";
-                text = "#eeeeee";
-                icon = "#e66100";
+                background = black;
+                text = white;
+                icon = orange;
               };
               cpuTemp = {
-                background = "#171717";
-                text = "#eeeeee";
-                icon = "#c01c28";
+                background = black;
+                text = white;
+                icon = red2;
               };
               storage = {
-                background = "#171717";
-                text = "#eeeeee";
-                icon = "#813d9c";
+                background = black;
+                text = white;
+                icon = purple;
               };
               power = {
-                background = "#171717";
-                icon = "#ed333b";
+                background = black;
+                icon = red;
               };
               hypridle = {
-                background = "#171717";
-                icon = "#e5a50a";
+                background = black;
+                icon = yellow;
+              };
+              microphone = {
+                background = black;
+                text = white;
+                icon = white;
               };
             };
           };
           menus = {
-            background = "#171717";
-            cards = "#1e1e1e";
-            border.color = "#272727";
-            text = "#eeeeee";
-            dimtext = "#c0bfbc";
-            feinttext = "#5e5c64";
-            label = "#eeeeee";
+            background = black;
+            cards = black2;
+            border.color = grey;
+            text = white;
+            dimtext = lightgrey;
+            feinttext = lightgrey;
+            label = white;
             popover = {
-              text = "#eeeeee";
-              background = "#1e1e1e";
+              text = white;
+              background = black2;
             };
             listitems = {
-              passive = "#eeeeee";
-              active = "#33d17a";
+              passive = white;
+              active = springgreen;
             };
             icons = {
-              passive = "#eeeeee";
-              active = "#33d17a";
+              passive = white;
+              active = springgreen;
             };
             switch = {
-              enabled = "#33d17a";
-              disabled = "#5e5c64";
-              puck = "#1e1e1e";
+              enabled = springgreen;
+              disabled = lightgrey;
+              puck = black2;
             };
             check_radio_button = {
-              background = "#171717";
-              active = "#33d17a";
+              background = black;
+              active = springgreen;
             };
             buttons = {
-              default = "#33d17a";
-              active = "#33d17a";
-              disabled = "#77767b";
-              text = "#141414";
+              default = springgreen;
+              active = springgreen;
+              disabled = lightgrey;
+              text = black;
             };
             iconbuttons = {
-              passive = "#33d17a";
-              active = "#33d17a";
+              passive = springgreen;
+              active = springgreen;
             };
             progressbar = {
-              foreground = "#33d17a";
-              background = "#1e1e1e";
+              foreground = springgreen;
+              background = black2;
             };
             slider = {
-              primary = "#33d17a";
-              background = "#77767b";
-              backgroundhover = "#77767b";
-              puck = "#1e1e1e";
+              primary = springgreen;
+              background = lightgrey;
+              backgroundhover = lightgrey;
+              puck = black2;
             };
             dropdownmenu = {
-              background = "#171717";
-              text = "#eeeeee";
-              divider = "#eeeeee";
+              background = black;
+              text = white;
+              divider = white;
             };
             tooltip = {
-              background = "#171717";
-              text = "#eeeeee";
+              background = black;
+              text = white;
             };
             menu = {
               media = {
-                song = "#eeeeee";
-                artist = "#eeeeee";
-                album = "#eeeeee";
-                background.color = "#171717";
-                card.color = "#1e1e1e";
-                border.color = "#1e1e1e";
+                song = white;
+                artist = white;
+                album = white;
+                background.color = black;
+                card.color = black2;
+                border.color = black2;
                 buttons = {
-                  inactive = "#7b7b7b";
-                  enabled = "#33d17a";
-                  background = "#33d17a";
-                  text = "#171717";
+                  inactive = lightgrey;
+                  enabled = springgreen;
+                  background = springgreen;
+                  text = black2;
                 };
                 slider = {
-                  primary = "#33d17a";
-                  background = "#7b7b7b";
-                  backgroundhover = "#1e1e1e";
-                  puck = "#141414";
+                  primary = springgreen;
+                  background = lightgrey;
+                  backgroundhover = black2;
+                  puck = black2;
                 };
               };
               volume = {
-                card.color = "#1e1e1e";
-                background.color = "#171717";
-                border.color = "#1e1e1e";
-                label.color = "#eeeeee";
-                text = "#eeeeee";
+                card.color = black2;
+                background.color = black;
+                border.color = black2;
+                label.color = white;
+                text = white;
                 listitems = {
-                  passive = "#999999";
-                  active = "#33d17a";
+                  passive = lightgrey;
+                  active = springgreen;
                 };
                 iconbutton = {
-                  passive = "#999999";
-                  active = "#33d17a";
+                  passive = lightgrey;
+                  active = springgreen;
                 };
                 icons = {
-                  passive = "#999999";
-                  active = "#2ec27e";
+                  passive = lightgrey;
+                  active = springgreen;
                 };
                 audio_slider = {
-                  primary = "#33d17a";
-                  background = "#999999";
-                  backgroundhover = "#999999";
-                  puck = "#4f4f4f";
+                  primary = springgreen;
+                  background = lightgrey;
+                  backgroundhover = lightgrey;
+                  puck = black2;
                 };
                 input_slider = {
-                  primary = "#33d17a";
-                  background = "#999999";
-                  backgroundhover = "#999999";
-                  puck = "#4f4f4f";
+                  primary = springgreen;
+                  background = lightgrey;
+                  backgroundhover = lightgrey;
+                  puck = black2;
                 };
               };
               network = {
-                card.color = "#1e1e1e";
-                background.color = "#171717";
-                border.color = "#1e1e1e";
-                label.color = "#eeeeee";
-                text = "#eeeeee";
-                status.color = "#33d17a";
+                card.color = black2;
+                background.color = black;
+                border.color = black2;
+                label.color = white;
+                text = white;
+                status.color = springgreen;
                 listitems = {
-                  passive = "#565656";
-                  active = "#33d17a";
+                  passive = lightgrey;
+                  active = springgreen;
                 };
                 icons = {
-                  passive = "#565656";
-                  active = "#33d17a";
+                  passive = lightgrey;
+                  active = springgreen;
                 };
                 iconbuttons = {
-                  passive = "#565656";
-                  active = "#33d17a";
+                  passive = lightgrey;
+                  active = springgreen;
                 };
                 switch = {
-                  enabled = "#33d17a";
-                  disabled = "#565656";
-                  puck = "#171717";
+                  enabled = springgreen;
+                  disabled = lightgrey;
+                  puck = black2;
                 };
               };
               bluetooth = {
-                card.color = "#1e1e1e";
-                background.color = "#171717";
-                border.color = "#1e1e1e";
-                label.color = "#3584e4";
-                text = "#eeeeee";
-                status = "#eeeeee";
-                switch_divider = "#171717";
+                card.color = black2;
+                background.color = black;
+                border.color = black2;
+                label.color = blue;
+                text = white;
+                status = white;
+                switch_divider = black;
                 switch = {
-                  enabled = "#3584e4";
-                  disabled = "#555555";
-                  puck = "#1e1e1e";
+                  enabled = blue;
+                  disabled = lightgrey;
+                  puck = black2;
                 };
                 listitems = {
-                  passive = "#999999";
-                  active = "#3584e4";
+                  passive = lightgrey;
+                  active = blue;
                 };
                 icons = {
-                  passive = "#999999";
-                  active = "#3584e4";
+                  passive = lightgrey;
+                  active = blue;
                 };
                 iconbutton = {
-                  passive = "#999999";
-                  active = "#3584e4";
+                  passive = lightgrey;
+                  active = blue;
                 };
               };
               systray = {
-                dropdownmenu.background = "#171717";
+                dropdownmenu.background = black;
               };
               clock = {
-                card.color = "#1e1e1e";
-                background.color = "#171717";
-                border.color = "#1e1e1e";
-                text = "#eeeeee";
+                card.color = black2;
+                background.color = black;
+                border.color = black2;
+                text = white;
                 time = {
-                  time = "#eeeeee";
-                  timeperiod = "#eeeeee";
+                  time = white;
+                  timeperiod = white;
                 };
                 calendar = {
-                  yearmonth = "#eeeeee";
-                  weekdays = "#26a269";
-                  paginator = "#eeeeee";
-                  currentday = "#33d17a";
-                  days = "#eeeeee";
-                  contextdays = "#292929";
+                  yearmonth = white;
+                  weekdays = springgreen;
+                  paginator = white;
+                  currentday = springgreen;
+                  days = white;
+                  contextdays = grey;
                 };
                 weather = {
-                  icon = "#eeeeee";
-                  temperature = "#eeeeee";
-                  status = "#eeeeee";
-                  stats = "#eeeeee";
+                  icon = white;
+                  temperature = white;
+                  status = white;
+                  stats = white;
                   thermometer = {
-                    extremelyhot = "#e01b24";
-                    hot = "#ff7800";
-                    moderate = "#f6d32d";
-                    cold = "#3584e4";
-                    extremelycold = "#9141ac";
+                    extremelyhot = red;
+                    hot = orange;
+                    moderate = yellow;
+                    cold = blue;
+                    extremelycold = purple;
                   };
                   hourly = {
-                    time = "#eeeeee";
-                    icon = "#eeeeee";
-                    temperature = "#eeeeee";
+                    time = white;
+                    icon = white;
+                    temperature = white;
                   };
                 };
               };
               dashboard = {
-                card.color = "#1e1e1e";
-                background.color = "#171717";
-                border.color = "#1e1e1e";
-                profile.name = "#eeeeee";
+                card.color = black2;
+                background.color = black;
+                border.color = black2;
+                profile.name = white;
                 powermenu = {
-                  shutdown = "#e01b24";
-                  restart = "#ff7800";
-                  logout = "#33d17a";
-                  sleep = "#3584e4";
+                  shutdown = red2;
+                  restart = orange;
+                  logout = springgreen;
+                  sleep = blue;
                   confirmation = {
-                    card = "#1e1e1e";
-                    background = "#171717";
-                    border = "#1e1e1e";
-                    label = "#eeeeee";
-                    body = "#eeeeee";
-                    confirm = "#33d17a";
-                    deny = "#ed333b";
-                    button_text = "#171717";
+                    card = black2;
+                    background = black;
+                    border = black2;
+                    label = white;
+                    body = white;
+                    confirm = springgreen;
+                    deny = red;
+                    button_text = black;
                   };
                 };
                 shortcuts = {
-                  background = "#33d17a";
-                  shortcuts.text = "#171717";
-                  recording = "#ed333b";
+                  background = springgreen;
+                  shortcuts.text = black;
+                  recording = red;
                 };
                 controls = {
-                  disabled = "#595959";
+                  disabled = lightgrey;
                   wifi = {
-                    background = "#33d17a";
-                    text = "#171717";
+                    background = springgreen;
+                    text = black;
                   };
                   bluetooth = {
-                    background = "#33d17a";
-                    text = "#171717";
+                    background = springgreen;
+                    text = black;
                   };
                   notifications = {
-                    background = "#33d17a";
-                    text = "#171717";
+                    background = springgreen;
+                    text = black;
                   };
                   volume = {
-                    background = "#33d17a";
-                    text = "#171717";
+                    background = springgreen;
+                    text = black;
                   };
                   input = {
-                    background = "#33d17a";
-                    text = "#171717";
+                    background = springgreen;
+                    text = black;
                   };
                 };
                 directories = {
                   left = {
-                    top.color = "#eeeeee";
-                    middle.color = "#eeeeee";
-                    bottom.color = "#eeeeee";
+                    top.color = white;
+                    middle.color = white;
+                    bottom.color = white;
                   };
                   right = {
-                    top.color = "#eeeeee";
-                    middle.color = "#eeeeee";
-                    bottom.color = "#eeeeee";
+                    top.color = white;
+                    middle.color = white;
+                    bottom.color = white;
                   };
                 };
                 monitors = {
-                  bar_background = "#999999";
+                  bar_background = lightgrey;
                   cpu = {
-                    icon = "#ff7800";
-                    bar = "#ff7800";
-                    label = "#ff7800";
+                    icon = orange;
+                    bar = orange;
+                    label = orange;
                   };
                   ram = {
-                    icon = "#f6d32d";
-                    bar = "#f6d32d";
-                    label = "#f6d32d";
+                    icon = yellow;
+                    bar = yellow;
+                    label = yellow;
                   };
                   disk = {
-                    icon = "#9141ac";
-                    bar = "#9141ac";
-                    label = "#9141ac";
+                    icon = purple;
+                    bar = purple;
+                    label = purple;
                   };
                 };
               };
               power = {
-                background.color = "#171717";
-                border.color = "#282828";
+                background.color = black;
+                border.color = grey;
                 buttons = {
                   shutdown = {
-                    background = "#282828";
-                    icon_background = "#ed333b";
-                    text = "#ed333b";
-                    icon = "#171717";
+                    background = grey;
+                    icon_background = red;
+                    text = red;
+                    icon = black;
                   };
                   restart = {
-                    background = "#292929";
-                    icon_background = "#ff7800";
-                    text = "#ff7800";
-                    icon = "#171717";
+                    background = grey;
+                    icon_background = orange;
+                    text = orange;
+                    icon = black;
                   };
                   logout = {
-                    background = "#292929";
-                    icon_background = "#33d17a";
-                    text = "#33d17a";
-                    icom = "#171717";
+                    background = grey;
+                    icon_background = springgreen;
+                    text = springgreen;
+                    icom = black;
                   };
                   sleep = {
-                    background = "#292929";
-                    icon_background = "#62a0ea";
-                    text = "#62a0ea";
-                    icon = "#171717";
+                    background = grey;
+                    icon_background = blue;
+                    text = blue;
+                    icon = black;
                   };
                 };
               };
               notifications = {
-                label = "#eeeeee";
-                no_notifications_label = "#535353";
-                background = "#171717";
-                card = "#1e1e1e";
-                border = "#1e1e1e";
-                switch_divider = "#eeeeee";
-                clear = "#33d17a";
+                label = white;
+                no_notifications_label = lightgrey;
+                background = black;
+                card = black2;
+                border = black2;
+                switch_divider = white;
+                clear = springgreen;
                 switch = {
-                  enabled = "#33d17a";
-                  disabled = "#535353";
-                  puck = "#1e1e1e";
+                  enabled = springgreen;
+                  disabled = lightgrey;
+                  puck = black2;
                 };
                 pager = {
-                  background = "#171717";
-                  button = "#33d17a";
-                  label = "#eeeeee";
+                  background = black;
+                  button = springgreen;
+                  label = white;
                 };
-                scrollbar.color = "#33d17a";
+                scrollbar.color = springgreen;
               };
             };
           };

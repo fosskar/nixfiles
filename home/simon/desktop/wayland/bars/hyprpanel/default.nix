@@ -49,9 +49,10 @@ in
             ];
             right = [
               "systray"
+              "microphone"
               "volume"
-              "network"
               "bluetooth"
+              "network"
               "notifications"
               "hypridle"
               "power"
@@ -177,6 +178,16 @@ in
               rightClick = "";
               scrollDown = "";
               scrollUp = "";
+            };
+            microphone = {
+              label = false;
+              leftClick = "menu:audio";
+              middleClick = "";
+              mutedIcon = "󰍭";
+              rightClick = "";
+              scrollDown = "";
+              scrollUp = "";
+              unmutedIcon = "󰍬";
             };
             netstat = {
               dynamicIcon = false;
@@ -483,7 +494,7 @@ in
           showActionsOnHover = false;
           timeout = 7000;
         };
-        scalingPriority = "gdk";
+        scalingPriority = "both";
         tear = true;
         terminal = "${terminal}";
         theme = {
@@ -537,6 +548,10 @@ in
                   spacing = "0.45em";
                 };
                 kbLayout = {
+                  enableBorder = false;
+                  spacing = "0.45em";
+                };
+                microphone = {
                   enableBorder = false;
                   spacing = "0.45em";
                 };
@@ -614,7 +629,7 @@ in
               y_margins = "0.2em";
             };
             dropdownGap = "2.2em";
-            floating = false;
+            floating = true;
             label_spacing = "0.5em";
             layer = "top";
             location = "top";
