@@ -103,7 +103,7 @@
       };
     };
     nixsecrets = {
-      url = "git+ssh://git@gitlab.com/simonoscr/nixsecrets";
+      url = "git+ssh://git@codeberg.org/simonoscar/nixsecrets.git";
     };
 
     # misc
