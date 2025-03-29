@@ -9,6 +9,8 @@ with lib;
 
 let
   cfg = config.module.desktop.wayland.bar;
+
+  terminal = "ghostty";
 in
 {
 
@@ -300,7 +302,7 @@ in
           scrollSpeed = 5;
           volume = {
             label = true;
-            middleClick = "pavucontrol";
+            middleClick = "pwvucontrol";
             rightClick = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
             scrollDown = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ --limit 1.0";
             scrollUp = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- --limit 0.0";
@@ -367,29 +369,29 @@ in
               enabled = true;
               left = {
                 directory1 = {
-                  command = "wezterm -e yazi ~";
+                  command = "${terminal} -e yazi ~";
                   label = "󱂵  home";
                 };
                 directory2 = {
-                  command = "wezterm -e yazi ~/screenshots";
+                  command = "${terminal} -e yazi ~/screenshots";
                   label = "󰉏  screenshots";
                 };
                 directory3 = {
-                  command = "wezterm -e yazi ~/.config";
+                  command = "${terminal} -e yazi ~/.config";
                   label = "󱋣  config";
                 };
               };
               right = {
                 directory1 = {
-                  command = "wezterm -e yazi ~/downloads";
+                  command = "${terminal} -e yazi ~/downloads";
                   label = "󰉍  downloads";
                 };
                 directory2 = {
-                  command = "wezterm -e yazi ~/code";
+                  command = "${terminal} -e yazi ~/code";
                   label = "󰉌  code";
                 };
                 directory3 = {
-                  command = "wezterm -e yazi /";
+                  command = "${terminal} -e yazi /";
                   label = "󰷌  /";
                 };
               };
@@ -483,7 +485,7 @@ in
         };
         scalingPriority = "gdk";
         tear = true;
-        terminal = "wezterm";
+        terminal = "${terminal}";
         theme = {
           bar = {
             border = {
