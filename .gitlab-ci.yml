@@ -1,3 +1,0 @@
-include:
-  - project: simonoscr/pipeline-templates
-    file: release/semantic-release.gitlab-ci.yml

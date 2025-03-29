@@ -7,7 +7,7 @@ with lib;
 let
   cfg = config.module.terminal.programs.git;
 
-  email = "13078509-simonoscr@users.noreply.gitlab.com";
+  email = "simonoscar@noreply.codeberg.org";
   name = "simonoscr";
 in
 {
