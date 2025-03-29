@@ -16,8 +16,8 @@ _: {
         allow_tearing = true;
         gaps_in = 4;
         gaps_out = 6;
-        "col.active_border" = "rgba(00D787ff)";
-        "col.inactive_border" = "rgba(333333ff)";
+        "col.active_border" = "rgba(33d17aff)";
+        "col.inactive_border" = "rgba(282828ff)";
         resize_on_border = true;
       };
       decoration = {
