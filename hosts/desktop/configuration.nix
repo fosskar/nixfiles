@@ -6,7 +6,6 @@
 {
   imports = [
     inputs.chaotic.nixosModules.default
-    inputs.nixos-cosmic.nixosModules.default
     { nixpkgs.overlays = [ inputs.hyprpanel.overlay ]; }
     ./core
     ./gaming
@@ -31,7 +30,6 @@
     #./secrets/agenix.nix
     ./security
     ./services/audio.nix
-    #./services/cosmic.nix
     ./services/earlyoom.nix
     ./services/fs.nix
     ./services/gnome-services.nix
