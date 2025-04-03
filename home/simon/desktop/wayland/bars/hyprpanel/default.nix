@@ -31,36 +31,36 @@ in
       overlay.enable = false;
       hyprland.enable = false;
       overwrite.enable = true;
-      theme = "";
-      layout = {
-        "bar.layouts" = {
-          "*" = {
-            left = [
-              "dashboard"
-              "workspaces"
-              "storage"
-              "ram"
-              "cpu"
-              "cputemp"
-            ];
-            middle = [
-              "clock"
-              "media"
-            ];
-            right = [
-              "systray"
-              "microphone"
-              "volume"
-              "bluetooth"
-              "network"
-              "notifications"
-              "hypridle"
-              "power"
-            ];
+      #override = builtins.fromJSON (builtins.readFile ./path/to/your/hyprpanel-config.json); # to get rid of this annoying tredious single entries in settings.....rly wtf i am so angry
+      settings = {
+        layout = {
+          "bar.layouts" = {
+            "*" = {
+              left = [
+                "dashboard"
+                "workspaces"
+                "storage"
+                "ram"
+                "cpu"
+                "cputemp"
+              ];
+              middle = [
+                "clock"
+                "media"
+              ];
+              right = [
+                "systray"
+                "microphone"
+                "volume"
+                "bluetooth"
+                "network"
+                "notifications"
+                "hypridle"
+                "power"
+              ];
+            };
           };
         };
-      };
-      settings = {
         bar = {
           autoHide = "never";
           battery = {
@@ -498,6 +498,7 @@ in
         tear = true;
         terminal = "${terminal}";
         theme = {
+          #name = "";
           bar = {
             border = {
               location = "none";
