@@ -79,13 +79,6 @@
       url = "github:anyrun-org/anyrun";
     };
 
-    # cosmic
-    nixos-cosmic = {
-      url = "github:lilyinstarlight/nixos-cosmic";
-      #inputs.nixpkgs.follows = "nixos-cosmic/nixpkgs";
-    };
-    home-manager-cosmic.url = "github:tristanbeedell/hm-cosmic";
-
     # secrets
     agenix = {
       url = "github:ryantm/agenix";

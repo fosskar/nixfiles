@@ -27,6 +27,7 @@
     browser = {
       zen-browser.enable = true;
       brave.enable = true;
+      ladybird.enable = true;
     };
     desktop = {
       wayland = {
@@ -37,7 +38,6 @@
           hyprmode.enable = true;
           plugins.enable = true;
         };
-        cosmic.enable = false;
         bar = "hyprpanel";
         applauncher = "anyrun";
       };
