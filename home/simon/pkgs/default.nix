@@ -4,9 +4,9 @@
 
     # desktop apps
     webcord-vencord
-    #(lowPrio proton-pass) # FIXME package collision between proton-mail and proton-pass app.asar
-    protonvpn-gui
-    protonvpn-cli
+    #protonvpn-gui
+    #protonvpn-cli
+    filen-desktop
     #bitwarden-desktop
     #element-desktop-wayland
 
@@ -18,6 +18,9 @@
     # audio
     teamspeak3
     teamspeak5_client
+
+    #testing
+    code-cursor
 
     # gaming
     #r2modman
