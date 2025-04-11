@@ -19,7 +19,7 @@ let
 
   star-citizen = inputs.nix-gaming.packages.${pkgs.system}.star-citizen.override (_prev: {
     useUmu = true;
-    gameScopeEnable = true;
+    gameScopeEnable = false;
     gameScopeArgs = [
       "-f"
       "--expose-wayland"
