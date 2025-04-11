@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -51,16 +52,9 @@ in
 
     wayland.windowManager.hyprland = {
       enable = true;
-      package = null;
-      portalPackage = null;
-      systemd = {
-        enable = false;
-        variables = [ "--all" ];
-        extraCommands = [
-          "systemctl --user stop graphical-session.target"
-          "systemctl --user start hyprland-session.target"
-        ];
-      };
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
   };
 }
