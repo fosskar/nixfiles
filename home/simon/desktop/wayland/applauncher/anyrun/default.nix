@@ -11,9 +11,6 @@ let
   cfg = config.module.desktop.wayland.applauncher;
 in
 {
-  imports = [
-    inputs.anyrun.homeManagerModules.default
-  ];
   config = mkIf (cfg == "anyrun") {
     programs.anyrun = {
       enable = true;
@@ -25,8 +22,6 @@ in
           shell
           #symbols
           websearch
-
-          #inputs.anyrun-nixos-options.packages.${pkgs.system}.default
         ];
 
         width.fraction = 0.18;
@@ -37,7 +32,55 @@ in
         hideIcons = false;
       };
 
-      extraCss = builtins.readFile (./. + "/style.css");
+      #extraCss = builtins.readFile (./. + "/style.css");
+      extraCss = ''
+        * {
+          all: unset;
+          font-size: 1.2rem;
+          font-family: Inter;
+        }
+
+        #window,
+        #match,
+        #entry,
+        #plugin,
+        #main {
+          background: transparent;
+        }
+
+        #match.activatable {
+          border-radius: 6px;
+          margin: 4px 0;
+          padding: 4px;
+        }
+        #match.activatable:first-child {
+          margin-top: 12px;
+        }
+        #match.activatable:last-child {
+          margin-bottom: 0;
+        }
+
+        #match:hover {
+          background: #282828;
+        }
+        #match:selected {
+          background: #33d17a;
+        }
+
+        #entry {
+          background: #1e1e1e;
+          color: #eeeeee;
+          border: 1px solid #33d17a;
+          border-radius: 6px;
+          padding: 4px 8px;
+        }
+
+        box#main {
+          background: #171717;
+          border-radius: 6px;
+          padding: 12px;
+        }
+      '';
 
       extraConfigFiles = {
         "applications.ron".text = ''
@@ -64,7 +107,7 @@ in
         "websearch.ron".text = ''
           Config(
             prefix: "?",
-            engines: [DuckDuckGo]
+            engines: [StartPage]
           )
         '';
 
