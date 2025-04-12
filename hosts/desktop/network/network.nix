@@ -15,21 +15,21 @@ _: {
     };
 
     nameservers = [
-      # mullevad svenska also best
-      "194.242.2.2"
-      "2a07:e340::2"
+      ## mullevad svenska also best
+      #"194.242.2.2"
+      #"2a07:e340::2"
 
-      # dns.sb germany
-      "45.11.45.11"
-      "185.222.222.222"
-      "2a11::"
-      "2a09::"
+      ## dns.sb germany
+      #"45.11.45.11"
+      #"185.222.222.222"
+      #"2a11::"
+      #"2a09::"
 
-      # quad9, schwiz. at leats not usa
-      "9.9.9.9"
-      "149.112.112.112"
-      "2620:fe::fe"
-      "2620:fe::9"
+      ## quad9, schwiz. at leats not usa
+      #"9.9.9.9"
+      #"149.112.112.112"
+      #"2620:fe::fe"
+      #"2620:fe::9"
     ];
   };
   # prevent nm-wait-online timeout after nm upgrades
