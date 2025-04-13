@@ -96,7 +96,7 @@
       };
     };
     nixsecrets = {
-      url = "git+ssh://git@codeberg.org/simonoscar/nixsecrets.git";
+      url = "git+ssh://git@codeberg.org/smonoscr/nixsecrets.git";
     };
 
     tailray = {
@@ -114,6 +114,8 @@
     }@inputs:
     let
       inherit (self) outputs;
+      inherit (inputs.nixpkgs) lib;
+      mylib = import "${self}/lib" { inherit lib; };
       forAllSystems = nixpkgs.lib.genAttrs (import systems);
     in
     {
@@ -158,7 +160,7 @@
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
           specialArgs = {
-            inherit inputs outputs;
+            inherit inputs outputs mylib;
           };
           modules = [
             ./hosts/desktop/configuration.nix
