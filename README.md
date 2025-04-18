@@ -33,28 +33,28 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 ## system components
 
-|                    |     |                                                                                          |
-| ------------------ | --- | ---------------------------------------------------------------------------------------- |
-| display manager    |     | [greetd/tuigreet](https://github.com/apognu/tuigreet)                                    |
-| window manager     |     | [hyprland](https://hyprland.org/)                                                        |
-| status bar         |     | [hyprpanel](https://github.com/Jas-SinghFSU/HyprPanel)                                   |
-| app launcher       |     | [anyrun](https://github.com/anyrun-org/anyrun)                                           |
-| terminal emulators |     | [ghostty](https://ghostty.org/), [wezterm](https://wezfurlong.org/wezterm/)              |
-| shell              |     | [fish](https://fishshell.com/) + [starship](https://github.com/starship/starship)        |
-| file manager       |     | [yazi](https://github.com/sxyazi/yazi)                                                   |
-| text editors       |     | [neovim](https://github.com/neovim/neovim), [zed](https://github.com/zed-industries/zed) |
-| browsers           |     | zen browser, [brave](https://brave.com/), [ladybird](https://ladybird.dev/)              |
+|                    |     |                                                                                                         |
+| ------------------ | --- | ------------------------------------------------------------------------------------------------------- |
+| display manager    |     | [greetd/tuigreet](https://github.com/apognu/tuigreet)                                                   |
+| window manager     |     | [hyprland](https://hyprland.org/)                                                                       |
+| status bar         |     | [hyprpanel](https://hyprpanel.com/)                                                                     |
+| app launcher       |     | [anyrun](https://github.com/anyrun-org/anyrun)                                                          |
+| terminal emulators |     | [ghostty](https://ghostty.org/), [wezterm](https://wezfurlong.org/wezterm/)                             |
+| shell              |     | [fish](https://fishshell.com/) + [starship](https://starship.rs/)                                       |
+| file manager       |     | [yazi](https://yazi-rs.github.io/)                                                                      |
+| text editors       |     | [zed](https://zed.dev/), [neovim](https://github.com/neovim/neovim)                                     |
+| browsers           |     | [zen browser](https://zen-browser.app/), [brave](https://brave.com/), [ladybird](https://ladybird.dev/) |
 
 ## systems
 
-|           | desktop               | server                            |
-| --------- | --------------------- | --------------------------------- |
-| name      | desktop               | server                            |
-| cpu       | amd ryzen 7 7800x3d   | intel® processor alder lake-n100 |
-| gpu       | amd radeon rx 7800xt  | intel uhd graphics                |
-| ram       | 32gb ddr5-6000        | 16gb ddr4-3200                    |
-| mainboard | msi mag b650 tomahawk | shit                              |
-| ssd       | 2tb nvme              | 500gb nvme                        |
+|           | desktop               |
+| --------- | --------------------- |
+| name      | desktop               |
+| cpu       | amd ryzen 7 7800x3d   |
+| gpu       | amd radeon rx 7800xt  |
+| ram       | 32gb ddr5-6000        |
+| mainboard | msi mag b650 tomahawk |
+| ssd       | 2tb nvme              |
 
 </div>
 
