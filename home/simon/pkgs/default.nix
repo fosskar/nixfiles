@@ -1,7 +1,6 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-
     # desktop apps
     webcord-vencord
     #protonvpn-gui
@@ -19,9 +18,6 @@
     teamspeak3
     teamspeak5_client
 
-    #testing
-    code-cursor
-
     # gaming
     #r2modman
     #lutris
@@ -38,5 +34,8 @@
 
     kubectl
     kubernetes-helm
+
+    # drone
+    betaflight-configurator
   ];
 }
