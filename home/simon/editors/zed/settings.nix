@@ -11,7 +11,7 @@
       "vscode-dark-modern"
       "helm"
       "ansible"
-      "bearded-icon-theme"
+      "material-icon-theme"
       "jsonnet"
       "log"
     ];
@@ -21,16 +21,16 @@
         light = "VSCode Dark Modern";
         dark = "VSCode Dark Modern";
       };
-      icon_theme = "Bearded Icon Theme";
+      icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
       features = {
         edit_prediction_provider = "zed";
       };
       buffer_font_family = "JetBrainsMono Nerd Font";
-      buffer_font_size = 16;
+      buffer_font_size = 15;
       buffer_line_height = "standard";
       ui_font_family = "Inter";
-      ui_font_size = 17;
+      ui_font_size = 16;
       confirm_quit = true;
       show_whitespaces = "boundary";
       calls = {
@@ -44,46 +44,24 @@
       inlay_hints = {
         enabled = true;
       };
-      file_finder = {
-        modal_max_width = "medium";
-      };
-      centered_layout = {
-        left_padding = 0.15;
-        right_padding = 0.15;
-      };
-      project_panel = {
-        dock = "right";
-        indent_size = 15;
-        auto_fold_dirs = false;
-      };
-      outline_panel = {
-        dock = "right";
-        indent_size = 15;
-        auto_fold_dirs = false;
-      };
       collaboration_panel = {
         dock = "right";
         button = false;
       };
-      git_panel = {
-        dock = "right";
-        button = true;
-      };
       assistant = {
+        version = "2";
         enabled = true;
         default_model = {
           provider = "zed.dev";
-          model = "claude-3-7-sonnet-latest";
+          model = "claude-3-5-sonnet-latest";
         };
-        version = "2";
-        button = true;
+        editor_model = {
+          provider = "zed.dev";
+          model = "claude-3-5-sonnet-latest";
+        };
+        always_allow_tool_actions = false;
+        default_profile = "write";
       };
-      #language_models = {
-      #  ollama = {
-      #    api_url = "http://localhost:11434";
-      #    low_speed_timeout_in_seconds = 900;
-      #  };
-      #};
       autosave = {
         after_delay = {
           milliseconds = 2000;
@@ -92,8 +70,6 @@
       tabs = {
         git_status = true;
         file_icons = true;
-        always_show_close_button = true;
-        activate_on_close = "neighbour";
         show_diagnostics = "all";
       };
       tab_bar = {
@@ -136,9 +112,7 @@
         "**/node_modules"
       ];
       git = {
-        git_gutter = "tracked_files";
         inline_blame = {
-          enabled = true;
           show_commit_summary = true;
         };
       };
