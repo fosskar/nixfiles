@@ -2,7 +2,7 @@
 let
   q = 32;
   r = 48000;
-  qr = "64/48000";
+  qr = "32/48000";
 in
 {
   services = {
@@ -27,6 +27,7 @@ in
                   update-props = {
                     "audio.format" = "S24_3LE"; # S16_LE, S24_3LE, S32LE
                     "audio.rate" = r;
+                    "audio.channels" = "2";
                     "api.alsa.period-size" = 512;
                     "api.alsa.period-num" = 3;
                   };
@@ -102,21 +103,21 @@ in
               args = {
                 pulse = {
                   min = {
-                    req = "32/48000";
-                    quantum = "32/48000";
+                    req = qr;
+                    quantum = qr;
                   };
-                  default.req = "32/48000";
+                  default.req = qr;
                   max = {
-                    req = "32/48000";
-                    quantum = "32/48000";
+                    req = qr;
+                    quantum = qr;
                   };
                 };
               };
             }
           ];
           stream.properties = {
-            node.latency = "32/48000";
-            resample.quality = 1;
+            node.latency = qr;
+            resample.quality = 3;
           };
         };
       };
