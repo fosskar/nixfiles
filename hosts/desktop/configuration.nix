@@ -10,7 +10,6 @@
     ./core
     ./gaming
     ./hardware
-    #./kernel # <- this is custom xanmod kernel need too long to build annoying
     ./network
     ./nix
     ./pkgs
@@ -32,6 +31,7 @@
     ./services/audio.nix
     ./services/earlyoom.nix
     ./services/fs.nix
+    ./services/flatpak.nix
     ./services/gnome-services.nix
     ./services/greetd.nix
     ./services/lact.nix
