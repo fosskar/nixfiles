@@ -7,7 +7,7 @@
       dnsutils
       usbutils
       libarchive
-      colmena
+      trash-cli
 
       zip
       unzip

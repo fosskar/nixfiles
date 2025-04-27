@@ -43,6 +43,11 @@ in
       "nix/access-tokens/github" = {
         mode = "0444";
       };
+
+      "api/openrouter" = {
+        owner = "simon";
+        mode = "0600";
+      };
     };
   };
 }

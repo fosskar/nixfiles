@@ -30,7 +30,6 @@
       daemonIOSchedPriority = 3;
 
       settings = {
-        max-jobs = 1;
         experimental-features = [
           "nix-command"
           "flakes"
