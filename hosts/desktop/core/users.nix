@@ -23,6 +23,8 @@
         "kvm"
         "nix"
         "network"
+        "dialout"
+        "plugdev"
       ];
     };
   };
