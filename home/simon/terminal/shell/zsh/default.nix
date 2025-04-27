@@ -49,7 +49,7 @@ in
         nix = "$HOME/code/nixfiles";
       };
 
-      initExtra = ''
+      initContent = ''
         zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
         zstyle ':completion:*' menu select
         zstyle ':completion:*' verbose true
