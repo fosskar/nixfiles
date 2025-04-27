@@ -12,7 +12,7 @@ let
 in
 {
   imports = [
-    ./settings.nix
+    #./settings.nix
   ];
 
   options = {
