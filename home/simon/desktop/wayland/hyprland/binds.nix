@@ -26,20 +26,20 @@
         in
         [
           # screenshots
-          ", Print, exec, pgrep hyprshot || uwsm app -- hyprshot -m region -o ~/pictures/screenshots -- imv"
-          "CTRL, Print, exec, pgrep hyprshot || uwsm app -- hyprshot -m output -o ~/pictures/screenshots -- imv"
-          "SUPER, Print, exec, pgrep hyprshot || uwsm app -- hyprshot -m window -o ~/pictures/screenshots -- imv"
+          ", Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m region -o ~/pictures/screenshots -- imv"
+          "CTRL, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m output -o ~/pictures/screenshots -- imv"
+          "SUPER, Print, exec, pgrep hyprshot || uwsm-app -- hyprshot -m window -o ~/pictures/screenshots -- imv"
 
           # gaming script
           "SUPER, Next, exec, ${config.xdg.configHome}/hypr/hypr-gamemode.sh"
 
           # start programs
-          "SUPER, W, exec, uwsm app -- zen"
-          "SUPER, T, exec, uwsm app -- ghostty"
-          "SUPER, E, exec, uwsm app -- ghostty -e yazi"
-          "SUPER, O, exec, uwsm app -- ts3client"
-          "SUPER, Z, exec, uwsm app -- zeditor"
-          "SUPER, D, exec, uwsm app -- webcord"
+          "SUPER, W, exec, uwsm-app -- zen"
+          "SUPER, T, exec, uwsm-app -- ghostty"
+          "SUPER, E, exec, uwsm-app -- ghostty -e yazi"
+          "SUPER, O, exec, uwsm-app -- ts3client"
+          "SUPER, Z, exec, uwsm-app -- zeditor"
+          "SUPER, D, exec, uwsm-app -- webcord"
 
           # compositor commands
           "SUPER, G, togglegroup,"
