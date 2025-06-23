@@ -5,7 +5,6 @@ _: {
         # uwsm finalize startup
         "uwsm finalize"
         "uwsm app -- hyprlock"
-        "uwsm app -- hyprpanel"
         "[workspace 3 silent] steam -console"
       ];
       env = [

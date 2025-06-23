@@ -31,6 +31,7 @@ in
       overlay.enable = false;
       hyprland.enable = false;
       overwrite.enable = true;
+      systemd.enable = true;
       #override = builtins.fromJSON (builtins.readFile ./path/to/your/hyprpanel-config.json); # to get rid of this annoying tredious single entries in settings.....rly wtf i am so angry
       settings = {
         layout = {
