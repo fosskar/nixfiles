@@ -5,7 +5,8 @@
       isNormalUser = true;
       createHome = true;
       home = "/home/simon";
-      initialPassword = "123";
+      #initialPassword = "123";
+      hashedPassword = "$2b$05$Gz0lb/fbwzgwqVr6EFsDhecdsZ8FVYBZIuqJJNXX2TM4fSAB0lqSu";
       shell = pkgs.fish;
       extraGroups = [
         "audio"
