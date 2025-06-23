@@ -9,7 +9,7 @@
     #nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # better not
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11"; # current stable
 
-    systems.url = "github:nix-systems/default-linux";
+    systems.url = "github:nix-systems/x86_64-linux"; # or default-linux
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -74,6 +74,7 @@
     };
     anyrun = {
       url = "github:anyrun-org/anyrun";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     sherlock.url = "github:Skxxtz/sherlock";
 
