@@ -30,14 +30,43 @@ in
         options.dark = true;
       };
       extraConfig = {
+        branch = {
+          autosetuprebase = "always";
+          sort = "-committerdate";
+        };
+        column.ui = "auto";
+        commit.verbose = true;
         color.ui = true;
         core.editor = "nvim";
+        diff = {
+          algorithm = "histogram";
+          colorMoved = "plain";
+          mnemonicPrefix = true;
+          renames = true;
+        };
+        fetch = {
+          all = true;
+          prune = true;
+          pruneTags = true;
+          auto = true;
+          parallel = 10;
+        };
         github.user = name;
-        push.autoSetupRemote = true;
-        diff.colorMoved = "default";
-        pull.rebase = true;
+        help.autoCorrect = "prompt";
         init.defaultBranch = "main";
-        fetch.auto = true;
+        merge.conflictstyle = "zdiff3";
+        push = {
+          autoSetupRemote = true;
+          default = "simple";
+          followTags = true;
+        };
+        pull.rebase = true;
+        rebase = {
+          autoSquash = true;
+          autoStash = true;
+          updateRefs = true;
+        };
+        tag.sort = "version:refname";
       };
       userEmail = email;
       userName = name;
