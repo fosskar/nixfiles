@@ -19,6 +19,8 @@ in
       enable = true;
       package = pkgs.ghostty; # the stable version
       # package = ghostty.packages.${pkgs.system}.default;
+      installBatSyntax = false;
+      installVimSyntax = false;
       settings = {
         theme = "Adwaita Dark";
         font-family = "JetBrainsMono Nerd Font";

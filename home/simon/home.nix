@@ -90,6 +90,7 @@
         direnv.enable = true;
         fzf.enable = true;
         k9s.enable = true;
+        zellij.enable = false;
       };
       shell = {
         aliases.enable = true;

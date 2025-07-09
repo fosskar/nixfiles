@@ -13,6 +13,7 @@ _: {
     ./programs/direnv.nix
     ./programs/fzf.nix
     ./programs/k9s.nix
+    ./programs/zellij.nix
     ./shell
   ];
 }
