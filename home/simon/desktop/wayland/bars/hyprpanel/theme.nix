@@ -18,7 +18,7 @@ in
 {
 
   programs.hyprpanel = {
-    override = {
+    settings = {
       theme = {
         notification = {
           background = black;

@@ -1,8 +1,6 @@
 {
   lib,
   config,
-  inputs,
-  pkgs,
   ...
 }:
 with lib;
@@ -15,27 +13,18 @@ in
 {
 
   imports = [
-    inputs.hyprpanel.homeManagerModules.hyprpanel
     ./theme.nix
   ];
 
   config = mkIf (cfg == "hyprpanel") {
 
-    home.packages = with pkgs; [
-      hyprpanel
-    ];
-
     programs.hyprpanel = {
       enable = true;
-      config.enable = true;
-      overlay.enable = false;
-      hyprland.enable = false;
-      overwrite.enable = true;
+      dontAssertNotificationDaemons = true;
       systemd.enable = true;
-      #override = builtins.fromJSON (builtins.readFile ./path/to/your/hyprpanel-config.json); # to get rid of this annoying tredious single entries in settings.....rly wtf i am so angry
       settings = {
-        layout = {
-          "bar.layouts" = {
+        bar = {
+          layouts = {
             "*" = {
               left = [
                 "dashboard"
@@ -61,8 +50,6 @@ in
               ];
             };
           };
-        };
-        bar = {
           autoHide = "never";
           battery = {
             hideLabelWhenFull = false;
