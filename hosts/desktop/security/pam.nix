@@ -10,6 +10,9 @@ _: {
       greetd = {
         enableGnomeKeyring = true;
       };
+      greetd-password = {
+        enableGnomeKeyring = true;
+      };
     };
   };
 }

@@ -27,14 +27,16 @@
       channel.enable = false;
 
       daemonCPUSchedPolicy = "idle";
-      daemonIOSchedPriority = 3;
+      daemonIOSchedClass = "idle";
+      daemonIOSchedPriority = 7;
 
       settings = {
-        experimental-features = [
-          "nix-command"
-          "flakes"
-          #"repl-flake" # onyl when usi9ng lix
-        ];
+        experimental-features =
+          [
+            "nix-command"
+            "flakes"
+          ]
+          ++ lib.optional (lib.versionOlder (lib.versions.majorMinor config.nix.package.version) "2.22") "repl-flake";
         # Whether to accept nix configuration from a flake
         # without displaying a Y/N prompt. For those obtuse
         # enough to keep this true, I wish the best of luck.
@@ -54,6 +56,7 @@
           "big-parallel"
         ];
         flake-registry = "/etc/nix/registry.json";
+        log-lines = 25;
         # Continue building derivations even if one fails
         keep-going = true;
         # for direnv garbage-collection roots
@@ -70,10 +73,13 @@
       };
       optimise = {
         automatic = true;
-        dates = [ "04:00" ];
       };
       extraOptions = ''
         !include ${config.sops.secrets."nix/access-tokens/github".path}
       '';
     };
+  # Make builds to be more likely killed than important services.
+  # 100 is the default for user slices and 500 is systemd-coredumpd@
+  # We rather want a build to be killed than our precious user sessions as builds can be easily restarted.
+  systemd.services.nix-daemon.serviceConfig.OOMScoreAdjust = lib.mkDefault 250;
 }

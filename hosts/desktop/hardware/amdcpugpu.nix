@@ -14,30 +14,16 @@ _: {
 
   hardware = {
     amdgpu = {
-      legacySupport.enable = false;
+      overdrive.enable = true;
       initrd.enable = true;
-      opencl.enable = false; # ROCM maybe for LLM
+      opencl.enable = true; # ROCM maybe for LLM
       amdvlk = {
         enable = false; # I am using RADV
-        #package = "";
-        #settings = "";
-        #support32Bit.enable = true;
-        #support32Bit.package = [];
-        #supportExperimental.enable = false;
       };
     };
     graphics = {
       enable = true;
       enable32Bit = true;
-      #extraPackages = with pkgs; [
-      #  libva
-      #  vaapiVdpau
-      #  libvdpau-va-gl
-      #];
-      #extraPackages32 = with pkgs; [
-      #  vaapiVdpau
-      #  libvdpau-va-gl
-      #];
     };
   };
   systemd.services.set-amd-x3d-mode = {

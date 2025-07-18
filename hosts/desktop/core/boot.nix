@@ -1,5 +1,12 @@
-{ pkgs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  environment.ldso32 = null;
+
   boot = {
     kernelPackages = pkgs.linuxPackages_cachyos; # pkgs.linuxPackages_cachyos, pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
 
@@ -60,7 +67,7 @@
       verbose = false;
       systemd = {
         # enable systemd in initrd
-        enable = true;
+        enable = lib.mkDefault (!config.boot.swraid.enable && !config.boot.isContainer);
       };
     };
   };
