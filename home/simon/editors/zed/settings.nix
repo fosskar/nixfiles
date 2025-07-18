@@ -24,6 +24,30 @@ _: {
         light = "VSCode Dark Modern";
         dark = "VSCode Dark Modern";
       };
+      "experimental.theme_overrides" = {
+        "background.appearance" = "blurred";
+        "background" = "#111111D7";
+        "status_bar.background" = "#111111d7";
+        "title_bar.background" = "#111111d7";
+        "title_bar.inactive_background" = "#111111d7";
+        "elevated_surface.background" = "#1E1E1EF2";
+        "surface.background" = "#111111d7";
+        "editor.background" = "#00000000";
+        "editor.gutter.background" = "#00000000";
+        "tab_bar.background" = "#00000000";
+        "terminal.background" = "#00000000";
+        "toolbar.background" = "#00000000";
+        "tab.active_background" = "#00000055";
+        "tab.inactive_background" = "#00000000";
+        "panel.indent_guide" = "#111111d7";
+        "panel.background" = "#00000000";
+        "panel.focused_border" = "00000000";
+        "element.active" = "#00000000";
+        "border.variant" = "#00000000";
+        "scrollbar.track.border" = "#00000000";
+        "editor.active_line.background" = "#00000042";
+        "scrollbar.track.background" = "#00000000";
+      };
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
       buffer_font_family = "JetBrainsMono Nerd Font";
@@ -34,6 +58,41 @@ _: {
       calls = {
         mute_on_join = true;
         share_on_join = false;
+      };
+      context_servers = {
+        mcp-server-nixos = {
+          source = "custom";
+          enabled = true;
+          command = "nix";
+          args = [
+            "run"
+            "github:utensils/mcp-nixos"
+            "--"
+          ];
+          env = { };
+        };
+        mcp-server-git = {
+          source = "custom";
+          enabled = true;
+          command = "nix";
+          args = [
+            "run"
+            "github:natsukium/mcp-servers-nix#mcp-server-git"
+            "--"
+          ];
+          env = { };
+        };
+        mcp-server-memory = {
+          source = "custom";
+          enabled = true;
+          command = "nix";
+          args = [
+            "run"
+            "github:natsukium/mcp-servers-nix#mcp-server-memory"
+            "--"
+          ];
+          env = { };
+        };
       };
       toolbar = {
         code_actions = true;
@@ -110,7 +169,7 @@ _: {
       };
       terminal = {
         env = {
-          EDITOR = "zed --wait";
+          EDITOR = "zeditor";
         };
         line_height = "standard";
         font_size = 14;
@@ -219,11 +278,11 @@ _: {
         };
       };
       lsp = {
-        #ansible-language-server = {
-        #  binary = {
-        #    path_lookup = true;
-        #  };
-        #};
+        ansible-language-server = {
+          binary = {
+            path_lookup = true;
+          };
+        };
         json-language-server = {
           settings = {
             json = {
@@ -263,6 +322,11 @@ _: {
           };
           binary = {
             path_lookup = true;
+          };
+        };
+        package-version-server = {
+          binary = {
+            path = "package-version-server";
           };
         };
         terraform-ls = {

@@ -28,8 +28,10 @@ in
         nil
         nixd
         nixfmt-rfc-style
+        package-version-server
         shellcheck
         shfmt
+        yaml-language-server
       ];
     };
   };
