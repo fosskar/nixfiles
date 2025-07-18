@@ -26,17 +26,18 @@ in
           disable_loading_bar = true;
           hide_cursor = true;
           immediate_render = true;
+          ignore_empty_input = true;
+          fail_timeout = 1000;
         };
-        authentication = {
-          pam = {
-            enabled = true;
-          };
-        };
+        animation = [
+          "inputFieldDots, 1, 2, linear"
+          "fadeIn, 0"
+        ];
         background = [
           {
             monitor = "";
             path = "";
-            color = "rgba(20, 20, 20, 1)";
+            color = "rgba(12,12,12,1.0)"; # #333333 matte black old: "rgba(20, 20, 20, 1)"
 
             blur_passes = 0;
             blur_size = 10;
@@ -70,8 +71,6 @@ in
           }
         ];
 
-        animation = "inputFieldDots, 1, 2, linear";
-
         label = [
           {
             monitor = "";
@@ -79,7 +78,7 @@ in
             color = "rgb(255, 255, 255)";
             font_family = "Inter";
             font_size = 94;
-            position = "0, -40";
+            position = "0, -80";
             halign = "center";
             valign = "top";
           }
@@ -89,7 +88,7 @@ in
             color = "rgb(255, 255, 255)";
             font_family = "Inter";
             font_size = 24;
-            position = "0, -170";
+            position = "0, -210";
             halign = "center";
             valign = "top";
           }
@@ -99,7 +98,7 @@ in
             color = "rgb(255, 255, 255)";
             font_family = "Inter";
             font_size = 32;
-            position = "0, 200";
+            position = "0, 240";
             halign = "center";
             valign = "center";
           }

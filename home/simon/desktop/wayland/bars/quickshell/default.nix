@@ -12,15 +12,20 @@ let
 in
 {
   config = mkIf (cfg == "quickshell") {
-    home.packages = [
-      inputs.quickshell.packages.${pkgs.system}.default
-    ];
+    home = {
+      packages = [
+        inputs.quickshell.packages.${pkgs.system}.default
+      ];
 
-    # Place Quickshell config files in ~/.config/quickshell
-    xdg.configFile = {
-      "quickshell/config.qml".source = ./config.qml;
-      "quickshell/style.qml".source = ./style.qml;
-      "quickshell/modules".source = ./modules;
+      sessionVariables.QML2_IMPORT_PATH = lib.concatStringsSep ":" [
+        "${inputs.quickshell.packages.${pkgs.system}.default}/lib/qt-6/qml"
+        "${pkgs.kdePackages.qtdeclarative}/lib/qt-6/qml"
+        "${pkgs.kdePackages.kirigami.unwrapped}/lib/qt-6/qml"
+      ];
     };
+    ## Place Quickshell config files in ~/.config/quickshell/qml
+    #xdg.configFile = {
+    #  "quickshell".source = ./qml;
+    #};
   };
 }

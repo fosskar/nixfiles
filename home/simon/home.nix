@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   imports = [
     ./browser
@@ -17,8 +17,11 @@
     username = "simon";
     homeDirectory = "/home/simon";
     sessionVariables = {
-      SHELL = "${pkgs.fish}/bin/fish";
+      SHELL = "${lib.getExe pkgs.fish}";
+      TERMINAL = "${lib.getExe pkgs.ghostty}";
       BROWSER = "zen";
+      EDITOR = "${lib.getExe pkgs.zed-editor}";
+      KUBE_EDITOR = "${lib.getExe pkgs.neovim}";
     };
     stateVersion = "23.11";
   };
@@ -27,7 +30,7 @@
     browser = {
       zen-browser.enable = true;
       brave.enable = true;
-      ladybird.enable = true;
+      ladybird.enable = false;
     };
     desktop = {
       wayland = {
@@ -35,6 +38,7 @@
           enable = true;
           hypridle.enable = true;
           hyprlock.enable = true;
+          hyprpaper.enable = true;
           hyprmode.enable = true;
           plugins.enable = true;
         };
@@ -56,7 +60,6 @@
     };
     nix = {
       nh.enable = true;
-      nix-index.enable = true;
     };
     programs = {
       gpg.enable = true;

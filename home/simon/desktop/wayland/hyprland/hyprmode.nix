@@ -16,11 +16,15 @@ let
       hyprctl --batch "\
         keyword animations:enabled 0;\
         keyword decoration:shadow:enabled 0;\
+        keyword decoration:blur:xray 1;\
         keyword decoration:blur:enabled 0;\
         keyword general:gaps_in 0;\
         keyword general:gaps_out 0;\
         keyword general:border_size 1;\
         keyword decoration:rounding 0;\
+        keyword decoration:active_opacity 1 ;\
+        keyword decoration:inactive_opacity 1 ;\
+        keyword decoration:fullscreen_opacity 1 ;\
         keyword monitor "DP-1,2560x1440@164.9,0x0,1" 2> /dev/null"
       powerprofilesctl set performance
       echo cache | sudo tee /sys/bus/platform/drivers/amd_x3d_vcache/AMDI0101:00/amd_x3d_mode

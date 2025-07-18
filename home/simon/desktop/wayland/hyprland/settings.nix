@@ -26,7 +26,7 @@ _: {
           enabled = false;
         };
         blur = {
-          enabled = false;
+          enabled = true;
         };
       };
       animations = {
@@ -48,7 +48,7 @@ _: {
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
         force_default_wallpaper = 0;
-        background_color = "0x393939";
+        #background_color = "0x393939";
         vfr = true;
         vrr = 0;
         mouse_move_enables_dpms = true;

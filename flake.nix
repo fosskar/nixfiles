@@ -1,5 +1,5 @@
 {
-  description = "smonoscr's flake for nixos and home-manager";
+  description = "smonoscr's flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # default
@@ -7,17 +7,13 @@
     #nixpkgs-private.url = "github:smonoscr/nixpkgs/nixos-unstable"; # testing private
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
     #nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # better not
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11"; # current stable
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05"; # current stable
 
     systems.url = "github:nix-systems/x86_64-linux"; # or default-linux
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs-small";
     };
 
     disko = {
@@ -62,6 +58,16 @@
     hypridle = {
       url = "github:hyprwm/hypridle";
       inputs = {
+        hyprlang.follows = "hyprland/hyprlang";
+        hyprutils.follows = "hyprland/hyprutils";
+        nixpkgs.follows = "hyprland/nixpkgs";
+        systems.follows = "hyprland/systems";
+      };
+    };
+    hyprpaper = {
+      url = "github:hyprwm/hyprpaper";
+      inputs = {
+        hyprgraphics.follows = "hyprland/hyprgraphics";
         hyprlang.follows = "hyprland/hyprlang";
         hyprutils.follows = "hyprland/hyprutils";
         nixpkgs.follows = "hyprland/nixpkgs";

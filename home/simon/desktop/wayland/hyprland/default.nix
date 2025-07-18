@@ -15,11 +15,12 @@ in
 {
   imports = [
     ./binds.nix
-    ./hyprmode.nix
     ./settings.nix
     ./rules.nix
     ./hyprlock.nix
     ./hypridle.nix
+    ./hyprmode.nix
+    ./hyprpaper.nix
     ./plugins.nix
   ];
 
