@@ -56,6 +56,8 @@ _: {
       "net.ipv4.udp_wmem_min" = 8192;
       # enables TCP to detect the path MTU reducing fragmentation
       "net.ipv4.tcp_mtu_probing" = 1;
+      # basic syn flood protection
+      "net.ipv4.tcp_syncookies" = 1;
     };
   };
 }

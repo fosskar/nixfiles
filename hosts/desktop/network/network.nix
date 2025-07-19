@@ -5,7 +5,7 @@ _: {
     networkmanager = {
       enable = true;
       wifi = {
-        #backend = "iwd";
+        backend = "iwd";
         macAddress = "random";
         powersave = true;
         scanRandMacAddress = true;

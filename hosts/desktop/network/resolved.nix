@@ -3,6 +3,7 @@ _: {
     resolved = {
       # enable systemd DNS resolver daemon
       enable = true;
+      # Let router handle DNS securit
 
       #dnssec = "allow-downgrade";
 
