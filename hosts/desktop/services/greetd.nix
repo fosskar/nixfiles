@@ -1,25 +1,24 @@
 {
-  config,
-  lib,
+  pkgs,
   ...
 }:
 {
   # greetd DM with tuigreet
+  #programs.regreet = {
+  #  enable = true;
+  #};
   services = {
-    greetd =
-      let
-        session = {
-          command = "${lib.getExe config.programs.uwsm.package} start hyprland-uwsm.desktop";
+    greetd = {
+      enable = true;
+      settings = {
+        terminal.vt = 1;
+        default_session = {
+          #command = "${lib.getExe config.programs.uwsm.package} start hyprland-uwsm.desktop";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --greeting 'NixOS: unstable' --time --asterisks --remember --remember-user-session  --theme 'border=cyan;button=yellow'";
           user = "simon";
         };
-      in
-      {
-        enable = true;
-        settings = {
-          terminal.vt = 1;
-          initial_session = session;
-          default_session = session;
-        };
+        #initial_session = default_session;
       };
+    };
   };
 }
