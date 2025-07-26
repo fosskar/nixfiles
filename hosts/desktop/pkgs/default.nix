@@ -8,6 +8,8 @@
       usbutils
       libarchive
       trash-cli
+      mesa-demos
+      vulkan-tools
 
       zip
       unzip
