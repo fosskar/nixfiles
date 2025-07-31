@@ -37,15 +37,10 @@ in
           {
             monitor = "";
             path = "";
-            color = "rgba(12,12,12,1.0)"; # #333333 matte black old: "rgba(20, 20, 20, 1)"
+            color = "rgba(12,12,12,0.8)"; # #333333 matte black old: "rgba(20, 20, 20, 1)"
 
-            blur_passes = 0;
-            blur_size = 10;
-            noise = 1.17e-2;
-            contrast = 0.8916;
-            brightness = 0.8172;
-            vibrancy = 0.1696;
-            vibrancy_darkness = 0.0;
+            blur_passes = 4;
+            blur_size = 7;
           }
         ];
 

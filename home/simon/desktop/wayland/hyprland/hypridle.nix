@@ -25,7 +25,7 @@ in
         general = {
           after_sleep_cmd = "hyprctl dispatch dpms on";
           before_sleep_cmd = "loginctl lock-session";
-          lock_cmd = "pidof hyprlock || ${lib.getExe config.programs.hyprlock.package}";
+          lock_cmd = "pgrep hyprlock || ${lib.getExe config.programs.hyprlock.package}";
         };
         listener = [
           {

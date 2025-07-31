@@ -12,6 +12,7 @@
 
     kernelModules = [
       "kvm-amd"
+      "ntsync"
     ];
 
     supportedFilesystems = [

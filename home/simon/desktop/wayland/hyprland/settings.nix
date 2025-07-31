@@ -54,6 +54,7 @@ _: {
         key_press_enables_dpms = true;
         disable_autoreload = true;
         focus_on_activate = false;
+        allow_session_lock_restore = 1;
       };
       xwayland = {
         use_nearest_neighbor = false;

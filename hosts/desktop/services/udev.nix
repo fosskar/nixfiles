@@ -1,10 +1,10 @@
 { pkgs, ... }:
 {
   services.udev = {
-    packages = with pkgs; [
-      platformio-core
-      openocd
-    ];
+    #packages = with pkgs; [
+    #  platformio-core
+    #  openocd
+    #];
     extraRules = ''
       ## rules below set the scheduler to bfq for rotational drives, bfq for SSD/eMMC drives and none for NVMe drives
       # HDD
@@ -35,10 +35,10 @@
       ENV{ID_VENDOR}=="Yubico",\
       RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
 
+      ## Betaflight fpv rules
       # DFU (Internal bootloader for STM32 and AT32 MCUs)
       ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="2e3c", ATTRS{idProduct}=="df11", MODE="0664", GROUP="plugdev"
       ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0664", GROUP="plugdev"
     '';
-
   };
 }
