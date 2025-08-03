@@ -10,9 +10,11 @@
       '';
     in
     {
+      #settings = {
+      #  Manager = timeoutConfig;
+      #};
       # Set the default timeout for starting, stopping, and aborting services to
       # avoid hanging the system for too long on boot or shutdown.
-      extraConfig = timeoutConfig;
       user.extraConfig = timeoutConfig;
 
       # Disable (not) all virtual terminals. I usually don't need to switch between
