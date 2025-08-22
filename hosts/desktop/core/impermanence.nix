@@ -9,19 +9,16 @@
     directories = [
       # System directories
       "/etc/nixos"
-      "/var/lib/nixos"
-      "/var/lib/systemd/coredump"
+      "/etc/nix"
       "/etc/NetworkManager/system-connections"
-
-      # SSH and security
-      {
-        directory = "/etc/ssh";
-        mode = "0755";
-      }
+      "/etc/secureboot"
       "/var/db/sudo"
-
-      # Optional: Add more as needed
       "/var/lib/bluetooth"
+      "/var/lib/nixos"
+      "/var/lib/pipewire"
+      "/var/lib/systemd/coredump"
+      "/var/cache/tailscale"
+      "/var/lib/tailscale"
     ];
     files = [
       # Essential system files
@@ -33,24 +30,5 @@
       "/etc/ssh/ssh_host_rsa_key"
       "/etc/ssh/ssh_host_rsa_key.pub"
     ];
-    users.simon = {
-      directories = [
-        "Downloads"
-        "Documents"
-        "Pictures"
-        "Videos"
-        "Music"
-        {
-          directory = ".ssh";
-          mode = "0700";
-        }
-        {
-          directory = ".gnupg";
-          mode = "0700";
-        }
-      ];
-      files = [
-      ];
-    };
   };
 }

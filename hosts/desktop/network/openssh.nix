@@ -7,7 +7,7 @@ _: {
       settings = {
         X11Forwarding = false;
         KbdInteractiveAuthentication = false;
-        PasswordAuthentication = false;
+        PasswordAuthentication = true;
         UseDns = false;
         StreamLocalBindUnlink = true;
         KexAlgorithms = [
