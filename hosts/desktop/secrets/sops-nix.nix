@@ -15,12 +15,12 @@ in
 
     # age
     age = {
-      sshKeyPaths = [ "${config.users.users.simon.home}/.ssh/id_ed25519" ];
-
-      # i use ssh key ed25519 so i can generate age key directly from it. so i neither need to reference an age key nor do i need to backup my age key.
-      # this is very convinient
-      keyFile = "${config.users.users.simon.home}/.config/sops/age/keys.txt";
-      generateKey = false;
+      sshKeyPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+      #
+      #  # i use ssh key ed25519 so i can generate age key directly from it. so i neither need to reference an age key nor do i need to backup my age key.
+      #  # this is very convinient
+      #  #keyFile = "${config.users.users.simon.home}/.config/sops/age/keys.txt";
+      #  #generateKey = false;
     };
 
     # disable importing host ssh keys

@@ -56,10 +56,11 @@ in
             #  "Bash(git push:*)"
             #];
 
-            #allow = [
-            #  "Bash(git diff:*)"
-            #  "Edit"
-            #];
+            allow = [
+              "mcp__sequential-thinking__sequentialthinking"
+              "WebFetch(domain:github.com)"
+              "WebFetch(domain:githubusercontent.com)"
+            ];
 
             #deny = [
             #  "WebFetch"
