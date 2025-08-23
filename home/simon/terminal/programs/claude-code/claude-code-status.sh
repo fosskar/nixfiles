@@ -23,16 +23,11 @@ vcs_symbol=""
 current_dir=$(echo "$input" | jq -r '.workspace.current_dir')
 if [ -d "$current_dir/.jj" ]; then
   cd "$current_dir" || exit 1
-  # get jj bookmark
-  jj_bookmark=$(jj log -r@ --no-graph --ignore-working-copy --limit 1 -T 'if(bookmarks, bookmarks.join(","), "")' 2>/dev/null || echo "")
+  # get repo name and parent bookmark/current state
   repo=$(basename "$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//')" 2>/dev/null || echo "unknown")
-  
-  # build vcs_info with asterisk for unbookmarked changes
-  if [ -n "$jj_bookmark" ]; then
-    vcs_info="$repo:$jj_bookmark"
-  else
-    vcs_info="$repo:*"
-  fi
+  parent_bookmark=$(jj log -r@- --no-graph --ignore-working-copy --limit 1 -T 'if(bookmarks, bookmarks.join(","), "*")' 2>/dev/null || echo "*")
+  current_state=$(jj log -r@ --no-graph --ignore-working-copy --limit 1 -T 'if(empty, "empty", "changes")' 2>/dev/null || echo "unknown")
+  vcs_info="$repo:$parent_bookmark/$current_state"
   vcs_symbol="󰘬"
 elif [ -d "$current_dir/.git" ]; then
   cd "$current_dir" || exit 1

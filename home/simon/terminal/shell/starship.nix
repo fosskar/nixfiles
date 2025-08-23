@@ -39,6 +39,7 @@ in
 
         cmd_duration = {
           format = "[\\[$duration\\]]($style) ";
+          style = "yellow";
         };
 
         directory = {
@@ -73,19 +74,7 @@ in
             description = "jujutsu vcs status";
             when = "jj --ignore-working-copy root";
             symbol = "󰘬 ";
-            command = ''
-              jj log --revisions @ --no-graph --ignore-working-copy --color never --limit 1 --template '
-                separate(" ",
-                  if(bookmarks, bookmarks.join(","), "*"),
-                  concat(
-                    if(conflict, " "),
-                    if(divergent, "󰘯 "),
-                    if(hidden, " "),
-                    if(immutable, " "),
-                  ),
-                )
-              '
-            '';
+            command = "jj log -r@ --no-graph --ignore-working-copy --color=never -T 'if(empty, \"·\", \"●\")'";
             format = "[\\[$symbol$output\\]]($style) ";
             style = "bold purple";
           };
@@ -113,6 +102,10 @@ in
         };
 
         git_status = {
+          disabled = true;
+        };
+
+        git_commit = {
           disabled = true;
         };
 
