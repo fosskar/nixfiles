@@ -48,4 +48,4 @@ MAGENTA='\033[35m'
 RESET='\033[0m'
 
 # output formatted status with colors
-echo -e "${ORANGE}󰧑 [${model}]${RESET} | ${GREEN} ${dir}${RESET} | ${BLUE}󱃾 ${k8s_context}${RESET} | ${MAGENTA}${vcs_symbol} ${vcs_info}${RESET}"
+echo -e "${ORANGE}󰧑 [${model}]${RESET} | ${GREEN} ${dir}${RESET} | ${MAGENTA}${vcs_symbol} ${vcs_info}${RESET} | ${BLUE}󱃾 ${k8s_context}${RESET}"
