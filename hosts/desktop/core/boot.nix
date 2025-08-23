@@ -8,7 +8,7 @@
   environment.ldso32 = null;
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest; # pkgs.linuxPackages_cachyos, pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
+    kernelPackages = pkgs.linuxPackages_cachyos; # pkgs.linuxPackages_cachyos, pkgs.linuxPackages_xanmod_latest, pkgs.linuxPackages_zen, pkgs.linuxPackages_lqx, linuxPackages_latest
 
     supportedFilesystems = [
       "ext4"
