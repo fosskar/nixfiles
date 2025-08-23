@@ -158,7 +158,7 @@ _: {
         hour_format = "hour24";
       };
       terminal = {
-        dock = "bottom";
+        dock = "right";
         env = {
           EDITOR = "zeditor";
         };
