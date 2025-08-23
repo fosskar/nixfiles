@@ -67,8 +67,53 @@ in
           disabled = false;
         };
 
+        # jj and git integration
+        custom = {
+          jj = {
+            description = "jujutsu vcs status";
+            when = "jj --ignore-working-copy root";
+            symbol = "󰘬 ";
+            command = ''
+              jj log --revisions @ --no-graph --ignore-working-copy --color never --limit 1 --template '
+                separate(" ",
+                  if(bookmarks, bookmarks.join(","), "*"),
+                  concat(
+                    if(conflict, " "),
+                    if(divergent, "󰘯 "),
+                    if(hidden, " "),
+                    if(immutable, " "),
+                  ),
+                )
+              '
+            '';
+            format = "[\\[$symbol$output\\]]($style) ";
+            style = "bold purple";
+          };
+
+          git_branch = {
+            when = "! jj --ignore-working-copy root";
+            command = "starship module git_branch";
+            format = "$output";
+            style = "";
+            description = "only show git_branch if we're not in a jj repo";
+          };
+
+          git_status = {
+            when = "! jj --ignore-working-copy root";
+            command = "starship module git_status";
+            format = "$output";
+            style = "";
+            description = "only show git_status if we're not in a jj repo";
+          };
+        };
+
+        # disable original git modules
         git_branch = {
-          format = "[\\[$symbol$branch\\]]($style) ";
+          disabled = true;
+        };
+
+        git_status = {
+          disabled = true;
         };
 
         helm = {
