@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
   home.packages = with pkgs; [
+    # custom packages from your flake
+    inputs.self.packages.${pkgs.system}.claudia
     # desktop apps
     webcord-vencord
     signal-desktop

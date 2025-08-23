@@ -142,24 +142,16 @@
 
       #overlays = import "${self}/overlays" { inherit self; }; # no
 
-      #packages = forAllSystems (
-      #  system:
-      #  let
-      #    pkgs = import nixpkgs { inherit system; };
-      #  in
-      #  {
-      #    offline-iso = nixos-generators.nixosGenerate {
-      #      system = system;
-      #      specialArgs = {
-      #        pkgs = pkgs;
-      #      };
-      #      modules = [
-      #        ./images/offline-iso.nix
-      #      ];
-      #      format = "iso";
-      #    };
-      #  }
-      #);
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = import nixpkgs { 
+            inherit system; 
+            config.allowUnfree = true;
+          };
+        in
+        import ./packages { inherit pkgs; }
+      );
 
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
