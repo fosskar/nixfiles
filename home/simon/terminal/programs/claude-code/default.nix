@@ -33,6 +33,7 @@ in
           autoUpdates = false;
           outputStyle = "Learning";
           env = {
+            CLAUDE_CODE_ENABLE_TELEMETRY = "0";
             CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
             DISABLE_ERROR_REPORTING = "1";
             DISABLE_TELEMETRY = "1";
