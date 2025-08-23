@@ -26,9 +26,10 @@ in
           inherit email name;
         };
         ui = {
-          default-command = "status"; # or ls?
+          default-command = "log"; # or status. log is more verboses
           diff-editor = ":builtin";
           diff-formatter = ":git";
+          #merge-editor = "meld";
           editor = "nvim";
           graph = {
             style = "curved";
