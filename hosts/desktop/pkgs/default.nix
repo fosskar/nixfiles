@@ -11,7 +11,8 @@
       mesa-demos
       vulkan-tools
       jq
-      yq
+      yq-go
+      nmap
 
       zip
       unzip
