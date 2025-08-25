@@ -99,8 +99,13 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
     nixsecrets = {
       url = "git+ssh://git@codeberg.org/smonoscr/nixsecrets.git";
+    };
+    wallpaper = {
+      url = "git+ssh://git@codeberg.org/smonoscr/wallpaper.git";
+      flake = false;
     };
 
     tailray = {

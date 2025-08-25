@@ -45,7 +45,7 @@ _: {
         "float, title:^(File Operation Progress)$"
         "float, class:^(xdg-desktop-portal-gtk)$"
         "float, title:^(MainPicker)$"
-        "float, title:^(.*Bitwarden Password Manager.*)$"
+        "float, title:^(.*Bitwarden.*)$"
 
         # dim around specific applications
         "dimaround, class:^(xdg-desktop-portal-gtk)$"

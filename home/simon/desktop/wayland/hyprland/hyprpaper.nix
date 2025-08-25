@@ -8,6 +8,9 @@
 with lib;
 
 let
+  wallpaper1 = "${inputs.wallpaper}/astronaut-high.jpg";
+  wallpaper2 = "${inputs.wallpaper}/astronaut-high.jpg";
+
   cfg = config.module.desktop.wayland.hyprland.hyprpaper;
 in
 {
@@ -26,15 +29,13 @@ in
         #splash_offset = 2.0;
 
         preload = [
-          "/home/simon/pictures/wallpapers/a_mountain_with_snow_and_clouds.jpg"
-          "/home/simon/pictures/wallpapers/a_drawing_of_an_astronaut_in_space.png"
-          "/home/simon/pictures/wallpapers/a_snowy_mountain_tops.jpg"
-          "/home/simon/pictures/wallpapers/an_astronaut_in_space_with_a_glowing_planet.png"
+          wallpaper1
+          wallpaper2
         ];
 
         wallpaper = [
-          "DP-1,/home/simon/pictures/wallpapers/an_astronaut_in_space_with_a_glowing_planet.png"
-          "HDMI-A-2,/home/simon/pictures/wallpapers/a_drawing_of_an_astronaut_in_space.png"
+          "DP-1,${wallpaper1}"
+          "HDMI-A-2,${wallpaper2}"
         ];
       };
     };
