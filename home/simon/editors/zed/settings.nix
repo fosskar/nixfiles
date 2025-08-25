@@ -6,7 +6,7 @@ _: {
       "docker-compose"
       "dockerfile"
       "fish"
-      "helm"
+      #"helm"
       "html"
       "jj-lsp"
       "jsonnet"
@@ -197,6 +197,8 @@ _: {
           "**/templates/**/*.yml"
           "**/helmfile.d/**/*.yaml"
           "**/helmfile.d/**/*.yml"
+          "**/values*.yaml"
+          "**/Chart.yaml"
         ];
         JSON = [
           "flake.lock"
@@ -308,6 +310,23 @@ _: {
           initialization_options = {
             experimentalFeatures = {
               prefillRequiredFields = true;
+            };
+          };
+        };
+        helm-ls = {
+          settings = {
+            "helm-ls" = {
+              valuesFiles = {
+                mainValuesFile = "values.yaml";
+                additionalValuesFilesGlobPattern = "*.values.yaml";
+              };
+              helmLint = {
+                enabled = true;
+                ignoredMessages = { };
+              };
+              yamlls = {
+                enabled = false; # cant be enabled breaks when using non standard kubernetes yaml schemas and i dont want to add on every file a customcrd schema mal abgesehen davon that not every crd has its own schema
+              };
             };
           };
         };
