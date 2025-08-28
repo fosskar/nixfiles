@@ -16,10 +16,15 @@ in
   config = mkIf cfg.enable {
     programs.ssh = {
       enable = true;
-      addKeysToAgent = "no";
-      extraConfig = ''
-        UpdateHostKeys yes
-      '';
+      enableDefaultConfig = false;
+      matchBlocks = {
+        "*" = {
+          addKeysToAgent = "no";
+          extraOptions = {
+            UpdateHostKeys = "yes";
+          };
+        };
+      };
     };
   };
 }

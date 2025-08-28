@@ -73,7 +73,6 @@
       dconf.enable = true;
       kde-connect.enable = false;
       profile-sync-daemon.enable = false;
-      tailray.enable = true;
       udiskie.enable = true;
     };
     terminal = {

@@ -4,7 +4,6 @@ _: {
     ./dconf.nix
     ./kdeconnect.nix
     ./psd.nix
-    ./tailray.nix
     ./udiskie.nix
   ];
 }

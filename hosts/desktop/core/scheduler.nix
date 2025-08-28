@@ -2,7 +2,7 @@
 {
   services.scx = {
     enable = true;
-    package = pkgs.scx_git.rustscheds;
+    package = pkgs.scx.rustscheds;
     scheduler = "scx_lavd";
     extraArgs = [
       #"--performance"

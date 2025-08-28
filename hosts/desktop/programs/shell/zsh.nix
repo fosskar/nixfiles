@@ -4,10 +4,6 @@ _: {
 
   programs.zsh = {
     enable = true;
-    shellInit = ''
-      # Make sure we always use the correct zsh dotdir.
-      export ZDOTDIR=$HOME/.zsh
-    '';
 
     # We actually like zsh completion, but its setup belongs in home-manager
     # configuration to better support standalone home-manager installations. We

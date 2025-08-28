@@ -1,8 +1,8 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 {
   home.packages = with pkgs; [
     # custom packages from your flake
-    inputs.self.packages.${pkgs.system}.claudia
+    #inputs.self.packages.${pkgs.system}.claudia
     # desktop apps
     webcord-vencord
     signal-desktop
@@ -18,7 +18,7 @@
     obsidian
 
     # audio
-    teamspeak3
+    #teamspeak3
     teamspeak5_client
 
     keepassxc
@@ -45,15 +45,16 @@
 
     # drone
     # Override betaflight-configurator to use an older nwjs version
-    (betaflight-configurator.override {
-      nwjs = pkgs.nwjs.overrideAttrs rec {
-        version = "0.84.0";
-        src = pkgs.fetchurl {
-          url = "https://dl.nwjs.io/v${version}/nwjs-v${version}-linux-x64.tar.gz";
-          hash = "sha256-VIygMzCPTKzLr47bG1DYy/zj0OxsjGcms0G1BkI/TEI=";
-        };
-      };
-    })
+    # commented out due to qtwebengine-5.15.19 insecurity issues
+    #(betaflight-configurator.override {
+    #  nwjs = pkgs.nwjs.overrideAttrs rec {
+    #    version = "0.84.0";
+    #    src = pkgs.fetchurl {
+    #      url = "https://dl.nwjs.io/v${version}/nwjs-v${version}-linux-x64.tar.gz";
+    #      hash = "sha256-VIygMzCPTKzLr47bG1DYy/zj0OxsjGcms0G1BkI/TEI=";
+    #    };
+    #  };
+    #})
     libatomic_ops
   ];
 }
