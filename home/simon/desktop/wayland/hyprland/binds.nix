@@ -37,7 +37,7 @@
           "SUPER, W, exec, uwsm-app -- zen"
           "SUPER, T, exec, uwsm-app -- ghostty"
           "SUPER, E, exec, uwsm-app -- ghostty -e yazi"
-          "SUPER, O, exec, uwsm-app -- ts3client"
+          "SUPER, O, exec, uwsm-app -- TeamSpeak"
           "SUPER, Z, exec, uwsm-app -- zeditor"
           "SUPER, D, exec, uwsm-app -- webcord"
 
@@ -71,8 +71,8 @@
           (mvactive "left" "-20 0")
 
           # global shortcuts/keybinds/hotkeys
-          ", F9, pass, class:^(TeamSpeak 3)$"
-          ", F10, pass, class:^(TeamSpeak 3)$"
+          ", F9, pass, class:^(TeamSpeak)$"
+          ", F10, pass, class:^(TeamSpeak)$"
         ]
         ++ (map (i: ws (toString i) (toString i)) arr)
         ++ (map (i: mvtows (toString i) (toString i)) arr);
