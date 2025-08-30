@@ -4,6 +4,7 @@ _: {
     ./emulators/kitty.nix
     ./emulators/wezterm.nix
     ./emulators/ghostty.nix
+    ./programs/gemini-cli
     ./programs/claude-code
     ./programs/git
     ./programs/jujutsu

@@ -88,6 +88,7 @@
         yazi.enable = true;
         bat.enable = true;
         btop.enable = true;
+        gemini-cli.enable = true;
         claude-code.enable = true;
         dircolors.enable = true;
         direnv.enable = true;
