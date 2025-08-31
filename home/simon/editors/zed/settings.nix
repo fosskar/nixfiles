@@ -6,9 +6,9 @@ _: {
       "docker-compose"
       "dockerfile"
       "fish"
-      #"helm"
+      #"helm" #i use too much crds manifests
       "html"
-      "jj-lsp"
+      #"jj-lsp" #no pkgs in nixpkgs
       "jsonnet"
       "log"
       "material-icon-theme"
@@ -84,13 +84,13 @@ _: {
           env = { };
         };
       };
-      toolbar = {
-        code_actions = true;
-      };
+      soft_wrap = "editor_width";
       title_bar = {
         show_branch_icon = true;
       };
       indent_guides = {
+        line_width = 1;
+        active_line_width = 2;
         coloring = "indent_aware";
       };
       inlay_hints = {
@@ -109,19 +109,12 @@ _: {
         file_icons = true;
         show_diagnostics = "all";
       };
-      tab_bar = {
-        show = true;
-      };
-      extend_comment_on_newline = false;
       tab_size = 2;
       telemetry = {
         diagnostics = false;
         metrics = false;
       };
       auto_update = false;
-      diagnostics = {
-        include_warnings = true;
-      };
       file_scan_exclusions = [
         "**/.direnv"
         "**/.pre-commit-config.yaml"
@@ -129,6 +122,7 @@ _: {
         "**/.svn"
         "**/.hg"
         "**/.jj"
+        "**/.repo"
         "**/CVS"
         "**/.DS_Store"
         "**/Thumbs.db"
@@ -225,13 +219,6 @@ _: {
         ];
       };
       languages = {
-        HTML = {
-          formatter = "language_server";
-        };
-        Markdown = {
-          format_on_save = "on";
-          remove_trailing_whitespace_on_save = false; # If you rely on invisible trailing whitespace being converted to <br />
-        };
         Nix = {
           formatter = {
             external = {

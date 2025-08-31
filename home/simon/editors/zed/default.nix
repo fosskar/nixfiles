@@ -23,7 +23,7 @@ in
 
     programs.zed-editor = {
       enable = true;
-      #package = pkgs.zed-editor-fhs;
+      #package = pkgs.zed-editor_git;
       installRemoteServer = true;
       extraPackages = with pkgs; [
         ansible-language-server
