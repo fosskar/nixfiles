@@ -40,6 +40,7 @@ in
         verify-options = "show-uid-validity";
         with-fingerprint = true;
         require-cross-certification = true;
+        require-secmem = true;
         no-symkey-cache = true;
         armor = true;
         use-agent = true;
