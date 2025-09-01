@@ -71,8 +71,12 @@
           (mvactive "left" "-20 0")
 
           # global shortcuts/keybinds/hotkeys
-          ", F9, pass, class:^(TeamSpeak)$"
-          ", F10, pass, class:^(TeamSpeak)$"
+          # old pass approach (doesn't work with electron apps)
+          #", F9, pass, class:^(TeamSpeak)$"
+          #", F10, pass, class:^(TeamSpeak)$"
+          # new script-based approach
+          ", F9, exec, ${config.xdg.configHome}/hypr/global-electron-sc.sh \", F9\" class TeamSpeak"
+          ", F10, exec, ${config.xdg.configHome}/hypr/global-electron-sc.sh \", F10\" class TeamSpeak"
         ]
         ++ (map (i: ws (toString i) (toString i)) arr)
         ++ (map (i: mvtows (toString i) (toString i)) arr);

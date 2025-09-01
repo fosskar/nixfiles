@@ -8,7 +8,7 @@
 with lib;
 
 let
-  cfg = config.module.desktop.wayland.hyprland.hyprlock;
+  cfg = config.module.desktop.wayland.hyprland.hyprmode;
 
   hypr_gamemode = pkgs.writeShellScriptBin "hypr-gamemode" ''
     HYPRGAMEMODE=$(hyprctl getoption animations:enabled | awk 'NR==1{print $2}')

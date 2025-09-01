@@ -15,6 +15,7 @@ in
 {
   imports = [
     ./binds.nix
+    ./global-sc.nix
     ./settings.nix
     ./rules.nix
     ./hyprlock.nix

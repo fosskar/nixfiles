@@ -12,8 +12,8 @@ _: {
       general = {
         border_size = 2;
         allow_tearing = true;
-        gaps_in = 4;
-        gaps_out = 8;
+        gaps_in = 5;
+        gaps_out = 10;
         "col.active_border" = "0xFF2BBF6E";
         "col.inactive_border" = "0xFF114D2C";
         resize_on_border = true;
@@ -36,7 +36,7 @@ _: {
         kb_model = "pc105";
         kb_variant = "";
         kb_options = "";
-        sensitivity = 0;
+        #sensitivity = 0;
         accel_profile = "flat";
         #force_no_accel = true;
         follow_mouse = 2;
