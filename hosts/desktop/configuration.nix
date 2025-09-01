@@ -33,7 +33,8 @@
     ./services/fs.nix
     ./services/flatpak.nix
     ./services/gnome-services.nix
-    ./services/greetd.nix
+    #./services/greetd.nix
+    ./services/cosmic-greeter.nix
     ./services/lact.nix
     ./services/libinput.nix
     #./services/llm
