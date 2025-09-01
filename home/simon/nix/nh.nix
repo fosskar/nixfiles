@@ -13,15 +13,12 @@ in
 
   config = mkIf cfg.enable {
 
-    home.sessionVariables.FLAKE = "${config.home.homeDirectory}/code/nixfiles";
-
     programs.nh = {
       enable = true;
       flake = "${config.home.homeDirectory}/code/nixfiles";
       clean = {
         enable = true;
-        dates = "weekly";
-        extraArgs = "--keep 3";
+        extraArgs = "--keep 5 --keep-since 3d";
       };
     };
   };
