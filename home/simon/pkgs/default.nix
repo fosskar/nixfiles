@@ -19,7 +19,7 @@
 
     # audio
     #teamspeak3
-    teamspeak5_client
+    teamspeak6-client
 
     keepassxc
     # gaming
@@ -56,5 +56,6 @@
     #  };
     #})
     libatomic_ops
+    solaar
   ];
 }

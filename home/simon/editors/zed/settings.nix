@@ -84,6 +84,19 @@ _: {
           env = { };
         };
       };
+      agent_servers = {
+        claude-code-acp = {
+          command = "nix";
+          args = [
+            "shell"
+            "nixpkgs#nodejs"
+            "--command"
+            "npx"
+            "-y"
+            "@zed-industries/claude-code-acp"
+          ];
+        };
+      };
       soft_wrap = "editor_width";
       title_bar = {
         show_branch_icon = true;
