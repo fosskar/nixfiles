@@ -10,6 +10,7 @@ let
     if [ "$HYPRGAMEMODE" = 1 ] ; then
       hyprctl --batch "\
         keyword animations:enabled 0;\
+        keyword animation borderangle,0; \
         keyword decoration:shadow:enabled 0;\
         keyword decoration:blur:xray 1;\
         keyword decoration:blur:enabled 0;\
