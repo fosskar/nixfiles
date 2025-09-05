@@ -2,10 +2,7 @@
 
 <div align="center">
 
-[![nixos unstable](https://img.shields.io/badge/NixOS-unstable-informational.svg?style=flat&logo=nixos&logoColor=CAD3F5&colorA=24273A&colorB=8AADF4)](https://github.com/nixos/nixpkgs) [![built with nix-flake](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=built%20with%20nix%20flakes&color=41439a)](https://builtwithnix.org)
-
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) [![pipeline status](https://gitlab.com/simonoscr/nixfiles/badges/main/pipeline.svg)](https://gitlab.com/simonoscr/nixfiles/-/commits/main)
-[![latest release](https://gitlab.com/simonoscr/nixfiles/-/badges/release.svg)](https://gitlab.com/simonoscr/nixfiles/-/releases)
+[![nixos unstable](https://img.shields.io/badge/NixOS-unstable-informational.svg?style=flat&logo=nixos&logoColor=CAD3F5&colorA=24273A&colorB=8AADF4)](https://github.com/nixos/nixpkgs) [![built with nix flake](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
 ---
 
@@ -37,7 +34,7 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 | ------------------ | --- | ------------------------------------------------------------------------------------------------------- |
 | display manager    |     | [greetd/tuigreet](https://github.com/apognu/tuigreet)                                                   |
 | window manager     |     | [hyprland](https://hyprland.org/)                                                                       |
-| status bar         |     | [hyprpanel](https://hyprpanel.com/)                                                                     |
+| status bar         |     | [hyprpanel](https://hyprpanel.com/), [quickshell](https://git.outfoxxed.me/quickshell/quickshell)       |
 | app launcher       |     | [anyrun](https://github.com/anyrun-org/anyrun)                                                          |
 | terminal emulators |     | [ghostty](https://ghostty.org/), [wezterm](https://wezfurlong.org/wezterm/)                             |
 | shell              |     | [fish](https://fishshell.com/) + [starship](https://starship.rs/)                                       |
@@ -66,9 +63,17 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 - [**nix-flake**](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake.html): manage nixos and home-manager configurations with reproducible dependency management.
 
+- [**flake-parts**](https://github.com/hercules-ci/flake-parts): modular flake framework for better organization and reusability.
+
 - [**nix-systems**](https://github.com/nix-systems/nix-systems): easy way to manage multiple systems in a flake.
 
 - [**home-manager**](https://github.com/nix-community/home-manager): manage dotfiles, home environment, and user-specific configurations with home-manager.
+
+- [**secrets management**](https://github.com/ryantm/agenix): secure secrets management with agenix (age encryption) and sops-nix.
+
+- [**disko**](https://github.com/nix-community/disko): declarative disk partitioning and formatting for reproducible system installations.
+
+- [**impermanence**](https://github.com/nix-community/impermanence): opt-in state persistence for improved system reproducibility.
 
 - [**nh**](https://github.com/viperML/nh): "yet-another-nix-helper". `nh` reimplements some basic nix commands. adding functionality on top of the existing solutions, like nixos-rebuild, home-manager cli or nix itself.
 
@@ -80,17 +85,17 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 - [**checks**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/checks?ref_type=heads): configuration for checks like pre-commit-hook
 
-- [**home**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/home): this folder contains configurations for home-manager. In the profiles subfolder are the differenct home-manager profiles. here i have everything user related in it
+- [**home**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/home): this folder contains configurations for home-manager. user-specific configurations like dotfiles, applications, and desktop environment settings
 
 - [**hosts**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/hosts?ref_type=heads): system-specific configurations
 
+- [**lib**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/lib?ref_type=heads): custom library functions and utilities (like scanPaths for automatic module discovery)
+
+- [**overlays**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/overlays?ref_type=heads): nixpkgs overlays for package modifications
+
+- [**packages**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/packages?ref_type=heads): self-packaged pkgs for quick pkgs like packaged appimages etc .
+
 - [**templates**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/templates?ref_type=heads): templates for custom modules, shells or languages
-
-- [**modules**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/modules?ref_type=heads): own, custom nixos or home-manager modules
-
-- [**overlays**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/overlays?ref_type=heads): overlays
-
-- [**packages**](https://gitlab.com/simonoscr/nixfiles/-/tree/main/modules?ref_type=heads): self-packaged pkgs for quick pkgs like packaged appimages etc .
 
 - **customized theming**: coordinated visual appearance across gui and tui applications with consistent colors and styling.
 
