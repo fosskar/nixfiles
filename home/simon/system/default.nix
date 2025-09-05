@@ -1,6 +1,10 @@
-{ pkgs, mylib, ... }:
+{ mylib, pkgs, ... }:
 {
-  imports = mylib.scanPaths ./. { };
+  imports = mylib.scanPaths ./. {
+    exclude = [
+      "kdeconnect.nix"
+    ];
+  };
 
   home = {
     pointerCursor = {

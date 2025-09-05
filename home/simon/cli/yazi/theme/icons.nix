@@ -7,16 +7,16 @@ _: {
     # Home
     ".config/" = "";
     ".ssh/" = "󰢬";
-    "Desktop/" = "";
-    "Development/" = "";
-    "Documents/" = "";
-    "Downloads/" = "󰉍";
-    "Library/" = "";
-    "Movies/" = "";
-    "Music/" = "󱍙";
-    "Pictures/" = "󰉏";
-    "Videos/" = "";
-    "Public/" = "";
+    "desktop/" = "";
+    "development/" = "";
+    "documents/" = "";
+    "downloads/" = "󰉍";
+    "library/" = "";
+    "movies/" = "";
+    "music/" = "󱍙";
+    "pictures/" = "󰉏";
+    "videos/" = "";
+    "public/" = "";
 
     # Git
     ".git/" = "";

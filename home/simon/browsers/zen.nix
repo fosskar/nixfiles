@@ -8,8 +8,7 @@
   imports = [
     #inputs.zen-browser.homeModules.beta
     inputs.zen-browser.homeModules.twilight
-  ]
-  ++ mylib.scanPaths ./. { };
+  ];
 
   programs.zen-browser = {
     enable = true;

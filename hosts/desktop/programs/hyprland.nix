@@ -3,7 +3,6 @@
   imports = [ inputs.hyprland.nixosModules.default ];
 
   environment = {
-    variables.NIXOS_OZONE_WL = "1";
     systemPackages = with pkgs; [ hyprpolkitagent ];
   };
 
@@ -12,6 +11,6 @@
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     portalPackage =
       inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-    withUWSM = true;
+    #withUWSM = true; # not reccomended anymore
   };
 }

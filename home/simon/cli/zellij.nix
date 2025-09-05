@@ -1,6 +1,6 @@
 _: {
   programs.zellij = {
-    enable = true;
+    enable = false;
     enableFishIntegration = true;
     enableZshIntegration = true;
     themes = {

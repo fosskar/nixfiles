@@ -2,11 +2,21 @@ _: {
   wayland.windowManager.hyprland = {
     settings = {
       exec-once = [
-        # uwsm finalize startup
-        "uwsm finalize"
         "[workspace 3 silent] steam -console"
       ];
       env = [
+        "QT_QPA_PLATFORM,wayland;xcb"
+        "QT_AUTO_SCREEN_SCALE_FACTOR,1"
+        "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+        "QT_QPA_PLATFORMTHEME,qt6ct"
+        "GDK_BACKEND,wayland,x11,*"
+        "CLUTTER_BACKEND,wayland"
+        "OZONE_PLATFORM,wayland"
+        "NIXOS_OZONE_WL,1"
+        "XDG_CURRENT_DESKTOP = Hyprland"
+        "XDG_SESSION_TYPE = wayland"
+        "XDG_SESSION_DESKTOP = Hyprland"
+        #"GTK_USE_PORTAL = 1"
         #"SDL_VIDEODRIVER,wayland"
       ];
       general = {

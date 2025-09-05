@@ -14,7 +14,6 @@
         # i care about those applications
         appsToAvoid = lib.concatStringsSep "|" [
           "Hyprland" # avoid killing the graphical session
-          "uwsm" # avoid killing uwsm
           "wezterm" # terminal, might have unsaved files
           "ghostty" # also terminal
           "dbus-.*" # avoid killing the dbus daemon & the dbus broker
