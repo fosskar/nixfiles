@@ -1,15 +1,10 @@
 {
-  config,
   lib,
   inputs,
   pkgs,
   ...
 }:
-
-with lib;
-
 let
-  cfg = config.module.gaming.star-citizen;
 
   #fixes gamemode when using omu-launcher. See https://github.com/FeralInteractive/gamemode/issues/254#issuecomment-643648779
   gamemodeSharedObjects = lib.concatMapStringsSep ":" (v: "${lib.getLib pkgs.gamemode}/lib/${v}") [
@@ -46,14 +41,7 @@ let
   });
 in
 {
-  options.module.gaming.star-citizen = {
-    enable = mkEnableOption "Enable star-citizen";
-  };
-
-  config = mkIf cfg.enable {
-
-    home.packages = [
-      star-citizen
-    ];
-  };
+  home.packages = [
+    star-citizen
+  ];
 }

@@ -2,7 +2,7 @@
 {
   imports = mylib.scanPaths ./. {
     exclude = [
-      "vscodium.nix"
+      "zellij.nix" # disabled in home.nix
     ];
   };
 }

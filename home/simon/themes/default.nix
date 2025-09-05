@@ -1,9 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, mylib, ... }:
 {
-  imports = [
-    ./gtk.nix
-    ./qt.nix
-  ];
+  imports = mylib.scanPaths ./. { };
 
   home = {
     pointerCursor = {

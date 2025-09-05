@@ -1,7 +1,4 @@
-_: {
-  imports = [
-    ./applauncher
-    ./bars
-    ./hyprland
-  ];
+{ mylib, ... }:
+{
+  imports = mylib.scanPaths ./. { };
 }

@@ -1,14 +1,5 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-
-with lib;
-
+{ pkgs, ... }:
 let
-  cfg = config.module.gaming.vkbasalt;
 
   xdg.configHome =
     let
@@ -17,18 +8,12 @@ let
     if x != "" then x else "${builtins.getEnv "HOME"}/.config";
 in
 {
-  options.module.gaming.vkbasalt = {
-    enable = mkEnableOption "Enable vkbasalt";
-  };
+  home.packages = [ pkgs.vkbasalt ];
 
-  config = mkIf cfg.enable {
-    home.packages = [ pkgs.vkbasalt ];
-
-    home.file."${xdg.configHome}/vkBasalt/vkBasalt.conf".text = ''
-      effects = cas
-      toggleKey = F5
-      enableOnLaunch = True
-      casSharpness = 0.5
-    '';
-  };
+  home.file."${xdg.configHome}/vkBasalt/vkBasalt.conf".text = ''
+    effects = cas
+    toggleKey = F5
+    enableOnLaunch = True
+    casSharpness = 0.5
+  '';
 }

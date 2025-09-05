@@ -2,7 +2,8 @@
 {
   imports = mylib.scanPaths ./. {
     exclude = [
-      "vscodium.nix"
+      "alacritty.nix"
+      "kitty.nix"
     ];
   };
 }

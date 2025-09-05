@@ -1,9 +1,8 @@
-_: {
-  imports = [
-    ./audio.nix
-    ./dconf.nix
-    ./kdeconnect.nix
-    ./psd.nix
-    ./udiskie.nix
-  ];
+{ mylib, ... }:
+{
+  imports = mylib.scanPaths ./. {
+    exclude = [
+      "kdeconnect.nix" # disabled in home.nix
+    ];
+  };
 }
