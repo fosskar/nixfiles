@@ -30,7 +30,7 @@
     browser = {
       zen-browser.enable = true;
       brave.enable = true;
-      ladybird.enable = false;
+      ladybird.enable = true;
     };
     desktop = {
       wayland = {
