@@ -5,7 +5,11 @@
   ...
 }:
 {
-  imports = mylib.scanPaths ./. { };
+  imports = mylib.scanPaths ./. {
+    exclude = [
+      "plugins.nix"
+    ];
+  };
 
   home.packages = with pkgs; [
     kdePackages.xwaylandvideobridge # for screensharing xwayland application

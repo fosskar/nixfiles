@@ -7,6 +7,7 @@
   wayland.windowManager.hyprland = {
     plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
       csgo-vulkan-fix
+      #hyprscrolling
     ];
 
     settings = {
@@ -17,6 +18,9 @@
           class = "cs2";
           #fix_mouse = true;
         };
+        #hyprscrolling = {
+        #  fullscreen_on_one_column = true;
+        #};
       };
     };
   };

@@ -54,6 +54,14 @@
           "SUPER SHIFT, Q, killactive,"
           "ALT, Tab, focuscurrentorlast,"
 
+          #"SUPER, Space, exec, pkill anyrun || anyrun" # anyrun launcher
+          #"SUPER, Space, exec, pkill sherlock || sherlock"
+
+          #noctalia
+          "SUPER,  Space, exec, noctalia-shell ipc call launcher toggle"
+          ", F9, exec, noctalia-shell ipc call volume muteInput"
+          ", F10, exec, noctalia-shell ipc call volume muteOutput"
+
           (mvfocus "up" "u")
           (mvfocus "down" "d")
           (mvfocus "right" "r")
@@ -91,12 +99,6 @@
       bindm = [
         "SUPER, mouse:273, resizewindow"
         "SUPER, mouse:272, movewindow"
-      ];
-
-      bindr = [
-        #"SUPER, Space, exec, pkill anyrun || anyrun" # anyrun launcher
-        "SUPER, Space, exec, pkill sherlock || sherlock"
-        "SUPER SHIFT, Space, exec, noctalia-shell ipc call launcher toggle"
       ];
     };
   };

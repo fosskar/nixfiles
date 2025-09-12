@@ -20,6 +20,7 @@ _: {
         #"SDL_VIDEODRIVER,wayland"
       ];
       general = {
+        #layout = "scrolling";
         border_size = 2;
         allow_tearing = true;
         gaps_in = 5;
