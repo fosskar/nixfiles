@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
 }:
 let
@@ -10,7 +11,7 @@ in
 {
   services.hyprpaper = {
     enable = true;
-    package = inputs.hyprpaper.packages.${pkgs.system}.default;
+    package = pkgs.hyprpaper;
 
     settings = {
       #ipc = "on";
@@ -26,6 +27,16 @@ in
         "DP-1,${wallpaper1}"
         "HDMI-A-2,${wallpaper2}"
       ];
+    };
+  };
+  systemd.user.services = {
+    hyprpaper = {
+      Unit = {
+        ConditionEnvironment = lib.mkForce [
+          "WAYLAND_DISPLAY"
+          "XDG_CURRENT_DESKTOP=Hyprland"
+        ];
+      };
     };
   };
 }

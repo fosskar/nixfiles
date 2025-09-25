@@ -2,13 +2,12 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 {
   services.hypridle = {
     enable = true;
-    package = inputs.hypridle.packages.${pkgs.system}.hypridle;
+    #package = inputs.hypridle.packages.${pkgs.system}.hypridle;
     settings = {
       general = {
         after_sleep_cmd = "hyprctl dispatch dpms on";
@@ -30,6 +29,17 @@
           on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
         }
       ];
+    };
+  };
+
+  systemd.user.services = {
+    hypridle = {
+      Unit = {
+        ConditionEnvironment = lib.mkForce [
+          "WAYLAND_DISPLAY"
+          "XDG_CURRENT_DESKTOP=Hyprland"
+        ];
+      };
     };
   };
 }

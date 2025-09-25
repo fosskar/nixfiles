@@ -7,10 +7,8 @@ let
 
   #browser = [ "firefox.desktop" ];
   browser = [ "zen-twilight.desktop" ];
-  chromeBrowser = [ "brave" ];
   zathura = [ "zathura" ];
   fileManager = [ "yazi" ];
-  mailer = [ "proton-mail" ];
   editor = [ "zeditor" ];
 
   associations = {
@@ -31,11 +29,12 @@ let
     "application/x-extension-xhtml" = browser;
     "application/x-wine-extension-ini" = editor;
     "x-scheme-handler/about" = browser; # open `about:` url with `browser`
-    "x-scheme-handler/chrome" = chromeBrowser;
+    "x-scheme-handler/chrome" = browser;
     "x-scheme-handler/ftp" = browser; # open `ftp:` url with `browser`
     "x-scheme-handler/http" = browser;
     "x-scheme-handler/https" = browser;
-    #"x-scheme-handler/unknown" = browser;
+    "x-scheme-handler/mailto" = browser;
+    "x-scheme-handler/unknown" = browser;
 
     "inode/directory" = fileManager;
 
@@ -49,7 +48,6 @@ let
 
     "x-scheme-handler/spotify" = [ "spotify.desktop" ];
     "x-scheme-handler/discord" = [ "WebCord.desktop" ];
-    "x-scheme-handler/mailto" = mailer;
   };
 in
 {
@@ -92,6 +90,7 @@ in
         common = {
           default = [
             "gtk"
+            "gnome"
           ];
         };
         hyprland = {
@@ -103,8 +102,17 @@ in
             "gnome-keyring"
           ];
         };
+        niri = {
+          default = [
+            "gtk"
+            "gnome"
+          ];
+        };
       };
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+      ];
     };
   };
 }

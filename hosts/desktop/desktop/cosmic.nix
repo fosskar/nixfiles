@@ -1,11 +1,7 @@
-{ inputs, ... }:
-{
-  # cosmic-greeter display manager
-  # wayland-native greeter for cosmic desktop environment
+_: {
   services = {
     displayManager.cosmic-greeter = {
-      enable = true;
-      # package = pkgs.cosmic-greeter; # use default package
+      enable = true; # yeah its ugly
     };
     desktopManager.cosmic = {
       enable = true;

@@ -21,7 +21,7 @@ _: {
       ];
       general = {
         #layout = "scrolling";
-        border_size = 2;
+        border_size = 0;
         allow_tearing = true;
         gaps_in = 5;
         gaps_out = 10;
@@ -30,10 +30,10 @@ _: {
         resize_on_border = true;
       };
       decoration = {
-        rounding = 8;
-        rounding_power = 4.0;
+        rounding = 12;
+        rounding_power = 2.0;
         shadow = {
-          enabled = false;
+          enabled = true;
         };
         blur = {
           enabled = true;

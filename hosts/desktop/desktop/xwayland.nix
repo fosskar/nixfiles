@@ -1,3 +1,8 @@
-_: {
-  programs.xwayland.enable = true;
+{ pkgs, ... }:
+{
+
+  # needed for niri
+  environment.systemPackages = [
+    pkgs.xwayland-satellite
+  ];
 }
