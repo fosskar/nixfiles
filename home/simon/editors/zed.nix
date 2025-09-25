@@ -119,6 +119,9 @@
       inlay_hints = {
         enabled = true;
       };
+      project_panel = {
+        sticky_scroll = false;
+      };
       collaboration_panel = {
         button = false;
       };

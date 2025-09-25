@@ -10,11 +10,14 @@
       background-opacity = 0.80; # default: 1.0
       background-blur = true; # default: false
 
+      selection-foreground = "cell-background";
+      selection-background = "cell-foreground";
+
       copy-on-select = false; # default: true
       confirm-close-surface = false; # default: true
 
       gtk-titlebar = false; # default: true
-      adw-toolbar-style = "flat"; # default: "raised"
+      gtk-toolbar-style = "flat"; # default: "raised"
 
       window-padding-x = 4; # default: 2
       window-padding-y = 4; # default: 2
