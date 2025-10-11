@@ -35,6 +35,8 @@ in
       };
       "yubikey/u2f_keys" = { };
 
+      "samba" = { };
+
       "nix/access-tokens/github" = {
         mode = "0444";
       };
