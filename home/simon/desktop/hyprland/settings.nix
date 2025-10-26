@@ -3,6 +3,8 @@ _: {
     settings = {
       exec-once = [
         "[workspace 3 silent] steam -console"
+        "lm-studio"
+        "lms load --yes"
       ];
       env = [
         "QT_QPA_PLATFORM,wayland;xcb"
