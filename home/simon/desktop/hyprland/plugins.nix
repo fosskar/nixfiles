@@ -1,10 +1,11 @@
 {
   pkgs,
+  inputs,
   ...
 }:
 {
   wayland.windowManager.hyprland = {
-    plugins = with pkgs.hyprlandPlugins; [
+    plugins = with inputs.hyprland-plugins.packages.${pkgs.system}; [
       csgo-vulkan-fix
       #hyprscrolling
     ];

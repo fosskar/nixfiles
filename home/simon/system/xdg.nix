@@ -76,6 +76,7 @@ in
         XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/screenshots";
       };
     };
+    #configFile."gtk.css".force = true;
 
     mimeApps = {
       enable = true;
