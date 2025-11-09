@@ -9,7 +9,7 @@
 
   programs.quickshell = {
     enable = true;
-    package = inputs.quickshell.packages.${pkgs.system}.default;
+    package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
 
   programs.noctalia-shell = {
@@ -256,7 +256,9 @@
     };
 
     Service = {
-      ExecStart = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
+      ExecStart = "${
+        inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+      }/bin/noctalia-shell";
       Restart = "on-failure";
       RestartSec = 3;
       TimeoutStartSec = 10;

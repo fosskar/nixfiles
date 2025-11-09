@@ -14,13 +14,13 @@
 
   programs.dankMaterialShell = {
     enable = true;
-    enableSystemd = true;
+    systemd.enable = true;
     enableBrightnessControl = false;
     enableCalendarEvents = false;
     #niri = {
     #  enableKeybinds = false;
     #  enableSpawn = false;
     #};
-    quickshell.package = inputs.quickshell.packages.${pkgs.system}.default;
+    quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
 }
