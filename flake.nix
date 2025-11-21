@@ -68,14 +68,9 @@
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell";
     };
     dgop = {
       url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    dms-cli = {
-      url = "github:AvengeMedia/danklinux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dms = {
@@ -83,7 +78,6 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         dgop.follows = "dgop";
-        dms-cli.follows = "dms-cli";
       };
     };
 

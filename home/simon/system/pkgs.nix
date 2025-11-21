@@ -18,7 +18,7 @@
     obsidian
 
     # audio
-    teamspeak3
+    #teamspeak3
     teamspeak6-client
 
     #keepassxc
@@ -62,6 +62,6 @@
 
     lmstudio
 
-    winboat
+    #winboat
   ];
 }

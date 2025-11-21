@@ -14,9 +14,25 @@
 
   programs.dankMaterialShell = {
     enable = true;
-    systemd.enable = true;
+    systemd = {
+      enable = true;
+      restartIfChanged = true;
+    };
+    enableSystemMonitoring = true;
     enableBrightnessControl = false;
     enableCalendarEvents = false;
+    enableClipboard = true;
+    enableVPN = true;
+    enableColorPicker = false;
+    enableDynamicTheming = true;
+    enableAudioWavelength = true;
+    enableSystemSound = true;
+
+    default.settings = {
+      theme = "dark";
+      dynamicTheming = true;
+    };
+
     #niri = {
     #  enableKeybinds = false;
     #  enableSpawn = false;

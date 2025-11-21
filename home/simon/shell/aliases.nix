@@ -39,6 +39,9 @@ _: {
     # kubectl
     kcs = "kubectl config use-context $(kubectl config get-contexts --output=name | fzf)";
 
+    # deploy-rs
+    deploy = "deploy --skip-checks";
+
     # nav
     ".." = "cd ..";
     "..." = "cd ../../";
