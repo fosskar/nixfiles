@@ -198,58 +198,6 @@ tofu apply
 
 <div align="center">
 
-## clan inventory structure
-
-</div>
-
-the infrastructure is managed through clan's inventory system defined in `machines/flake-module.nix`:
-
-### machines
-
-machines are organized with tags for flexible targeting:
-
-- **desktop**: `simon-desktop`
-- **px-prd1 + lxc**: proxmox lxc containers
-- **hetzner + vm**: cloud vps instances
-
-### instances (roles)
-
-- **admin**: ssh key management for user simon
-- **simon-user**: user configuration with groups and permissions
-- **packages**: shared packages across all machines
-- **clan-cache**: trusted nix caches configuration
-- **internet**: ip address mapping for all machines
-
-roles are assigned to machines via tags, enabling dry configuration where common settings apply to all tagged machines.
-
-<div align="center">
-
-## secrets management
-
-</div>
-
-clan-core integrates sops-nix with age encryption for secure secrets management:
-
-```
-sops/
-├── secrets/           # encrypted secrets
-│   ├── *-age.key/    # machine-specific age keys
-│   └── u2f_keys/     # u2f authentication keys
-├── users/            # per-user encryption keys
-│   └── simon/
-└── machines/         # per-machine encryption keys
-    └── {machine}/
-
-vars/
-└── per-machine/      # clan vars per machine
-    └── {machine}/
-        ├── openssh/
-        ├── root-password/
-        └── user-password-*/
-```
-
-<div align="center">
-
 ## search & documentation
 
 </div>
