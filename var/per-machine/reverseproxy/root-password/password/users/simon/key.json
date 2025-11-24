@@ -1,0 +1,14 @@
+[
+  {
+    "publickey": "age1s9pfuegt34nfru7wckjh9mzqmn2y8nprslmnwfmhmcg4j0ptlvqs4erywp",
+    "type": "age"
+  },
+  {
+    "publickey": "age1yubikey1qtgk0ghpnqrhnxhcygujgstvllw7pl6xcux4pamv6j8020mtawrhx7vlnpf",
+    "type": "age"
+  },
+  {
+    "publickey": "age1yubikey1qwvr063py556a7ta2l5gyqdp9n08qaynpparygplmz3awumxq3hlzwz2r3t",
+    "type": "age"
+  }
+]

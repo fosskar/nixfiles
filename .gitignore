@@ -1,0 +1,14 @@
+.direnv
+.pre-commit-config.yaml
+.vscodium/
+result
+
+# terraform
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/config.tf.json
+
+# tooling caches
+.cache/

@@ -1,0 +1,112 @@
+#!/usr/bin/env fish
+
+# check if at least one ip was provided
+if test (count $argv) -eq 0
+    echo "usage: ./get-host-ssh-key <ip1> [hostname1] <ip2> [hostname2] ..."
+    echo "retrieves ssh ed25519 host public keys and saves to hosts/<hostname>/host.pub"
+    echo ""
+    echo "examples:"
+    echo "  ./get-host-ssh-key 10.10.10.20              # fetch hostname from remote"
+    echo "  ./get-host-ssh-key 10.10.10.20 desktop-vm  # use 'desktop-vm' as hostname"
+    exit 1
+end
+
+# get the directory where this script is located
+set script_dir (dirname (status --current-filename))
+set hosts_dir (realpath "$script_dir/../hosts")
+
+# parse arguments into ip/hostname pairs
+set i 1
+while test $i -le (count $argv)
+    set host_ip $argv[$i]
+    set override_hostname ""
+
+    # check if next arg exists and doesn't look like an ip address
+    set next_idx (math $i + 1)
+    if test $next_idx -le (count $argv)
+        set next_arg $argv[$next_idx]
+        # if next arg doesn't contain dots or colons (ipv4/ipv6), treat as hostname
+        if not string match -qr '[.:]' -- $next_arg
+            set override_hostname $next_arg
+            set i (math $i + 1)  # skip the hostname in next iteration
+        end
+    end
+
+    set i (math $i + 1)
+    # remove host from known_hosts to avoid conflicts
+    ssh-keygen -R $host_ip &>/dev/null
+
+    echo "connecting to $host_ip..."
+
+    # determine hostname: use override if provided, otherwise fetch from remote
+    if test -n "$override_hostname"
+        set remote_hostname $override_hostname
+        echo "  using hostname: $remote_hostname (override)"
+    else
+        # fetch the hostname from the remote host
+        set remote_hostname (ssh -o StrictHostKeyChecking=accept-new root@$host_ip "hostname" 2>/dev/null | string trim)
+
+        if test -z "$remote_hostname"
+            echo "  ✗ failed to retrieve hostname from $host_ip" >&2
+            continue
+        end
+
+        echo "  found hostname: $remote_hostname"
+    end
+
+    # fetch the ed25519 public key from the remote host
+    set pubkey (ssh -o StrictHostKeyChecking=accept-new root@$host_ip "cat /etc/ssh/ssh_host_ed25519_key.pub" 2>/dev/null)
+
+    if test -z "$pubkey"
+        echo "  ✗ failed to retrieve ssh key from $host_ip ($remote_hostname)" >&2
+        continue
+    end
+
+    # check if host directory exists - try direct path first, then nested guest paths
+    set host_dir "$hosts_dir/$remote_hostname"
+    if not test -d "$host_dir"
+        # try finding as nested guest under any parent host
+        set nested_matches (find "$hosts_dir" -type d -path "*/guests/$remote_hostname" 2>/dev/null)
+        if test (count $nested_matches) -eq 1
+            set host_dir $nested_matches[1]
+            echo "  found nested guest at: "(string replace "$hosts_dir/" "" "$host_dir")
+        else if test (count $nested_matches) -gt 1
+            echo "  ✗ multiple matches found for $remote_hostname:" >&2
+            for match in $nested_matches
+                echo "    - "(string replace "$hosts_dir/" "" "$match") >&2
+            end
+            continue
+        else
+            echo "  ✗ host directory not found: $host_dir" >&2
+            echo "    available hosts: "(ls "$hosts_dir" | grep -v default.nix | string join ", ")
+            continue
+        end
+    end
+
+    # strip comment (user@hostname) from the key - keep only algorithm and key
+    set pubkey_stripped (echo "$pubkey" | string split ' ' | head -n 2 | string join ' ')
+
+    # write the public key to host.pub
+    set pub_file "$host_dir/host.pub"
+    echo "$pubkey_stripped" >"$pub_file"
+
+    # calculate relative path from repo root for display and git
+    set relative_path (string replace "$hosts_dir/" "hosts/" "$pub_file")
+    echo "  ✓ saved to $relative_path"
+
+    # git add the file
+    git -C "$hosts_dir/.." add "$relative_path" 2>/dev/null
+    if test $status -eq 0
+        echo "  ✓ added to git"
+    end
+end
+
+# rekey agenix secrets with new host keys
+echo ""
+echo "rekeying agenix secrets..."
+agenix rekey -a
+if test $status -eq 0
+    echo "  ✓ secrets rekeyed successfully"
+else
+    echo "  ✗ failed to rekey secrets" >&2
+end

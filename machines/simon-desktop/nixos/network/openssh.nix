@@ -1,0 +1,35 @@
+{ lib, ... }:
+{
+  services = {
+    openssh = {
+      enable = true;
+      openFirewall = true;
+      startWhenNeeded = true;
+      hostKeys = [
+        {
+          path = "/persist/etc/ssh/ssh_host_ed25519_key";
+          type = "ed25519";
+        }
+        {
+          path = "/persist/etc/ssh/ssh_host_rsa_key";
+          type = "rsa";
+          bits = 4096;
+        }
+      ];
+      settings = {
+        X11Forwarding = false;
+        KbdInteractiveAuthentication = false;
+        PasswordAuthentication = lib.mkForce true;
+        UseDns = false;
+        StreamLocalBindUnlink = true;
+        KexAlgorithms = [
+          "curve25519-sha256"
+          "curve25519-sha256@libssh.org"
+          "diffie-hellman-group16-sha512"
+          "diffie-hellman-group18-sha512"
+          "sntrup761x25519-sha512@openssh.com"
+        ];
+      };
+    };
+  };
+}
