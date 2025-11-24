@@ -1,9 +1,5 @@
-{ inputs, ... }:
+{ ... }:
 {
-  imports = [
-    inputs.disko.nixosModules.disko
-  ];
-
   disko.devices = {
     disk.main = {
       type = "disk";
