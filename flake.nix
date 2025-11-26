@@ -103,16 +103,7 @@
       };
     };
 
-    # secrets
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    agenix-rekey = {
-      url = "github:oddlama/agenix-rekey";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
+    # priv repos
     nixsecrets = {
       url = "git+ssh://git@codeberg.org/smonoscr/nixsecrets.git";
       flake = false;
@@ -141,7 +132,6 @@
 
       imports = [
         inputs.clan-core.flakeModules.default
-        inputs.agenix-rekey.flakeModule
 
         ./checks
       ]
