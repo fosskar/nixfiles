@@ -1,6 +1,6 @@
 { ... }:
 {
   sops.secrets = {
-    "homepage-envs" = { };
+    "homepage.env" = { };
   };
 }

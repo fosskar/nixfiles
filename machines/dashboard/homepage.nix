@@ -9,7 +9,7 @@
     allowedHosts = "home.osscar.me";
 
     # environment file for secrets (proxmox api tokens, etc.)
-    environmentFile = config.sops.secrets.homepage-envs.path;
+    environmentFile = config.sops.secrets."homepage.env".path;
 
     # basic settings
     settings = {
