@@ -1,27 +1,24 @@
-{ inputs, ... }:
+{ ... }:
 {
-  imports = [
-    ../../modules/secrets
-  ];
+  sops.secrets = {
+    "admin-password" = {
+      owner = "grafana";
+      group = "grafana";
+    };
 
-  age.secrets = {
-    pve-exporter-env = {
-      rekeyFile = "${inputs.nixsecrets}/agenix/nixinfra/monitoring/envs.age";
-    };
-    grafana-admin-password = {
-      rekeyFile = "${inputs.nixsecrets}/agenix/nixinfra/grafana/admin-password.age";
+    "grafana-oauth-client-id" = {
       owner = "grafana";
       group = "grafana";
     };
-    grafana-oauth-client-id = {
-      rekeyFile = "${inputs.nixsecrets}/agenix/nixinfra/grafana/oauth-client-id.age";
+
+    "grafana-oauth-client-secret" = {
       owner = "grafana";
       group = "grafana";
     };
-    grafana-oauth-client-secret = {
-      rekeyFile = "${inputs.nixsecrets}/agenix/nixinfra/grafana/oauth-client-secret.age";
-      owner = "grafana";
-      group = "grafana";
+
+    "pve-exporter-envs" = {
+      owner = "pve-exporter";
+      group = "pve-exporter";
     };
   };
 }

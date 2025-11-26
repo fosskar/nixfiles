@@ -18,6 +18,6 @@
     };
 
     # use environment file for credentials (safer than config file)
-    environmentFile = config.age.secrets.pve-exporter-env.path;
+    environmentFile = config.sops.secrets.pve-exporter-envs.path;
   };
 }

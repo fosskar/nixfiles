@@ -30,7 +30,7 @@
       security = {
         admin_user = "admin";
         cookie_secure = true;
-        admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
+        admin_password = "$__file{${config.sops.secrets.admin-password.path}}";
       };
 
       users = {
@@ -52,8 +52,8 @@
         auto_login = false;
         name = "Pocket-ID";
         icon = "signin";
-        client_id = "$__file{${config.age.secrets.grafana-oauth-client-id.path}}";
-        client_secret = "$__file{${config.age.secrets.grafana-oauth-client-secret.path}}";
+        client_id = "$__file{${config.sops.secrets.grafana-oauth-client-id.path}}";
+        client_secret = "$__file{${config.sops.secrets.grafana-oauth-client-secret.path}}";
         scopes = [
           "openid"
           "email"

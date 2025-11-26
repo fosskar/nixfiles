@@ -10,7 +10,7 @@ let
     tar -xzf ${
       pkgs.fetchurl {
         url = "https://github.com/GitSquared/node-geolite2-redist/raw/refs/heads/master/redist/GeoLite2-Country.tar.gz";
-        hash = "sha256-xa7d6CzF6QAhNulXhYFpRMmeX4M23Ec6vPu71Auo6OI=";
+        hash = "sha256-W2dnMqkdS1AGaSbxwEmLlZlktXYqslyFNvkBntqEthA=";
       }
     } -C $out --strip-components=1
   '';
@@ -21,7 +21,7 @@ in
 
     baseDomain = "osscar.me";
     dashboardDomain = "rproxy.osscar.me";
-    environmentFile = config.age.secrets.pangolin-envs.path;
+    environmentFile = config.sops.secrets.pangolin-envs.path;
 
     # configure dns provider for dns-01 challenge
     # see: https://doc.traefik.io/traefik/https/acme/#providers
@@ -64,5 +64,5 @@ in
   };
 
   # ensure traefik service gets dns provider credentials
-  services.traefik.environmentFiles = [ config.age.secrets.pangolin-envs.path ];
+  services.traefik.environmentFiles = [ config.sops.secrets.pangolin-envs.path ];
 }
