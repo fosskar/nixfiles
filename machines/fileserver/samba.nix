@@ -150,7 +150,7 @@ in
 
           # add or update samba user ${user.name} (UID ${toString user.uid})
           password=$(${pkgs.gnugrep}/bin/grep "^${user.name}:" ${
-            config.age.secrets."fileserver-passwords".path
+            config.sops.secrets."samba-user-passwords".path
           } | ${pkgs.coreutils}/bin/cut -d: -f2)
           if [ -z "$password" ]; then
             echo "ERROR: No password found for user ${user.name}" >&2
