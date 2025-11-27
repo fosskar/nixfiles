@@ -7,8 +7,17 @@ result
 **/.terraform/
 **/.terraform.lock.hcl
 **/terraform.tfstate
+**/terraform.tfstate.*
 **/terraform.tfstate.backup
+**/terraform.tfvars
+**/*.auto.tfvars
 **/config.tf.json
+**/crash.log
+**/crash.*.log
+**/override.tf
+**/override.tf.json
+**/*_override.tf
+**/*_override.tf.json
 
 # tooling caches
 .cache/

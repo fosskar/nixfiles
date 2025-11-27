@@ -1,0 +1,20 @@
+# copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored for security
+
+# proxmox api connection
+proxmox_api_url          = "https://your-proxmox.example.com:8006/api2/json"
+proxmox_api_token_id     = "terraform@pam!terraform"
+proxmox_api_token_secret = "your-api-token-secret-here"
+proxmox_tls_insecure     = true # set to false if using valid tls certificate
+
+# infrastructure settings
+proxmox_node     = "px-prd1"
+network_bridge   = "vmbr1"
+network_gateway  = "10.0.0.1"
+template_storage = "local:vztmpl/nixos-25.05.tar.xz"
+
+# container defaults (optional overrides)
+# default_cores     = 1
+# default_memory    = 512
+# default_disk_size = "8G"
+# start_on_boot     = true
