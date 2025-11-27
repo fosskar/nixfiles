@@ -65,13 +65,7 @@ this directory contains the ci/cd pipelines for the nixfiles repository, running
 
 ### secrets
 
-add this secret in your codeberg repository settings (settings → secrets):
-
-1. **FORGEJO_TOKEN** (required)
-   - personal access token for git operations and creating releases
-   - create at: codeberg.org → settings → applications → generate new token
-   - required scopes: `write:repository`
-   - used for semantic-release commits, tags, and releases
+no manual secrets required! forgejo actions automatically provides an authentication token (`${{ github.token }}`) for each workflow run with write permissions to the repository.
 
 ### permissions
 

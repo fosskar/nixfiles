@@ -7,7 +7,7 @@ on:
 
 jobs:
   formatting-check:
-    runs-on: nixos-latest
+    runs-on: codeberg-small
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
           nix fmt -- --fail-on-change
 
   linting:
-    runs-on: nixos-latest
+    runs-on: codeberg-small
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
           nix develop --command pre-commit run detect-private-keys --all-files
 
   flake-check:
-    runs-on: nixos-latest
+    runs-on: codeberg-small
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
