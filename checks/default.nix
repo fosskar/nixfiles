@@ -8,11 +8,13 @@
   perSystem = {
     treefmt = {
       projectRootFile = "flake.nix";
-      settings.global.excludes = [
-        "machines/fileserver/user-list.nix" # encrypted with git-agecrypt
-      ];
       programs = {
-        nixfmt.enable = true;
+        nixfmt = {
+          enable = true;
+          excludes = [
+            "machines/fileserver/user-list.nix" # encrypted with git-agecrypt
+          ];
+        };
         prettier = {
           enable = true;
           excludes = [

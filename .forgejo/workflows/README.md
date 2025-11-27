@@ -9,12 +9,10 @@ this directory contains the ci/cd pipelines for the nixfiles repository, running
 **triggers:** pushes to main branch only
 
 **what it does:**
-- formatting check with treefmt (nixfmt-rfc-style)
+- formatting check with treefmt (nixfmt-rfc-style, excludes encrypted files)
 - linting with deadnix (find unused nix code)
-- detect private keys in commits
-- validate flake structure with `nix flake check`
 
-**parallelization:** runs formatting, linting, and flake-check jobs in parallel for faster feedback
+**parallelization:** runs formatting and linting jobs in parallel for faster feedback
 
 **runtime:** ~2-5 minutes
 

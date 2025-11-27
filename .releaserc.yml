@@ -8,41 +8,40 @@ tagFormat: "${version}"
 verifyConditions:
   - "@semantic-release/changelog"
   - "@semantic-release/git"
-  - "@semantic-release/gitlab"
 
 analyzeCommits:
   - path: "@semantic-release/commit-analyzer"
     preset: "conventionalcommits"
     releaseRules:
-      - type: milestone # A milestone release marking a huge step forward in development
+      - type: milestone # a milestone release marking a huge step forward in development
         release: major
-      - type: breaking # Changes that break something makes something incompatible to earlier version
+      - type: breaking # changes that break something makes something incompatible to earlier version
         release: major
-      - type: build # Changes that affect the build system or external dependencies
+      - type: build # changes that affect the build system or external dependencies
         release: patch
-      - type: chore # Other changes that don't modify src or test files
+      - type: chore # other changes that don't modify src or test files
         release: false
-      - type: ci # Changes to our CI configuration files and scripts
+      - type: ci # changes to our ci configuration files and scripts
         release: false
-      - type: docs # Documentation only changes
+      - type: docs # documentation only changes
         release: false
-      - type: feat # A new feature
+      - type: feat # a new feature
         release: minor
-      - type: fix # A bug fix
+      - type: fix # a bug fix
         release: patch
-      - type: perf # A code change that improves performance
+      - type: perf # a code change that improves performance
         release: patch
-      - type: refactor # A code change that neither fixes a bug nor adds a feature
+      - type: refactor # a code change that neither fixes a bug nor adds a feature
         release: patch
-      - type: revert # Reverts a previous commit
+      - type: revert # reverts a previous commit
         release: patch
-      - type: style # Changes that do not affect the meaning of the code
+      - type: style # changes that do not affect the meaning of the code
         release: false
-      - type: test # Adding missing tests or correcting existing tests
+      - type: test # adding missing tests or correcting existing tests
         release: false
-      - type: improv # A change which improves an already existing feature or aspect
+      - type: improv # a change which improves an already existing feature or aspect
         release: patch
-      - type: deps # Dependency changes/updates/downgrades
+      - type: deps # dependency changes/updates/downgrades
         release: false
 
 generateNotes:
@@ -57,49 +56,49 @@ generateNotes:
     presetConfig:
       types:
         - type: "milestone"
-          section: "✨ Milestone"
+          section: "✨ milestone"
           hidden: false
         - type: "breaking"
-          section: "🧨 Breaking changes!"
+          section: "🧨 breaking changes!"
           hidden: false
         - type: "build"
-          section: "🦊 CI/CD"
+          section: "🦊 ci/cd"
           hidden: false
         - type: "chore"
-          section: "📦 Other"
+          section: "📦 other"
           hidden: false
         - type: "ci"
-          section: "🦊 CI/CD"
+          section: "🦊 ci/cd"
           hidden: false
         - type: "docs"
-          section: "📔 Docs"
+          section: "📔 docs"
           hidden: false
         - type: "feat"
-          section: "🚀 Features"
+          section: "🚀 features"
           hidden: false
         - type: "fix"
-          section: "🛠 Fixes"
+          section: "🛠 fixes"
           hidden: false
         - type: "perf"
-          section: "⏩ Performance"
+          section: "⏩ performance"
           hidden: false
         - type: "refactor"
-          section: ":scissors: Refactor"
+          section: "✂️ refactor"
           hidden: false
         - type: "revert"
-          section: "👀 Reverts"
+          section: "👀 reverts"
           hidden: false
         - type: "style"
-          section: "💈 Style"
+          section: "💈 style"
           hidden: false
         - type: "test"
-          section: "🧪 Tests"
+          section: "🧪 tests"
           hidden: false
         - type: "improv"
-          section: "💎 Improvements"
+          section: "💎 improvements"
           hidden: false
         - type: "deps"
-          section: "🔩 Dependencies"
+          section: "🔩 dependencies"
           hidden: false
 
 prepare:
@@ -109,7 +108,22 @@ prepare:
     assets: ["CHANGELOG.md"]
 
 publish:
-  - path: "@semantic-release/gitlab"
+  - path: "@semantic-release/exec"
+    cmd: |
+      # create release via forgejo api (if FORGEJO_TOKEN is set)
+      if [ -n "$FORGEJO_TOKEN" ]; then
+        curl -X POST \
+          -H "Authorization: token $FORGEJO_TOKEN" \
+          -H "Content-Type: application/json" \
+          "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
+          -d "{
+            \"tag_name\": \"${nextRelease.version}\",
+            \"name\": \"${nextRelease.version}\",
+            \"body\": $(echo "${nextRelease.notes}" | jq -Rs .),
+            \"draft\": false,
+            \"prerelease\": false
+          }"
+      fi
 
 ci: true
 success: false
