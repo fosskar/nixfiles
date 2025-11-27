@@ -1,12 +1,11 @@
 {
   lib,
-  inputs,
   ...
 }:
 let
   # read user list from private nixsecrets repo
   # list of { name = "username"; uid = 3000; }
-  fileserverUsers = import "${inputs.nixsecrets}/agenix/nixinfra/fileserver/users.nix";
+  fileserverUsers = import ./user-list.nix;
 
   mkFileServerUser =
     user:
