@@ -72,6 +72,15 @@ no manual secrets required! forgejo actions automatically provides an authentica
 ensure the forgejo actions runner has write permissions:
 - settings → actions → general → workflow permissions → read and write permissions
 
+### available runners
+
+codeberg provides shared runners with these labels:
+- `codeberg-tiny` - smallest runner (validation jobs)
+- `codeberg-small` - small runner (used for validation and release jobs)
+- `codeberg-medium` - medium runner (used for build jobs)
+
+nix is installed on-demand using the install-nix-action since codeberg runners don't come with nix pre-installed.
+
 ## conventional commits
 
 all commits must follow this format:
