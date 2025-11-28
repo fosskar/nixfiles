@@ -3,7 +3,7 @@
   ...
 }:
 let
-  email = "osscar@noreply.codeberg.org";
+  email = "osscar.unheard025@passmail.net";
   name = "osscar";
 in
 {
