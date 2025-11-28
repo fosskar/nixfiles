@@ -19,7 +19,10 @@ in
       description = "personal nix infrastructure";
     };
 
-    secrets.age.plugins = [ "age-plugin-yubikey" ];
+    secrets.age.plugins = [
+      "age-plugin-yubikey"
+      "age-plugin-tpm"
+    ];
 
     inventory = {
       machines = {

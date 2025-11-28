@@ -10,7 +10,7 @@
     #protonvpn-cli
     filen-desktop
     #bitwarden-desktop
-    #element-desktop
+    element-desktop
 
     # media
     spotify
