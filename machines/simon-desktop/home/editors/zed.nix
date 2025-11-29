@@ -84,7 +84,6 @@
       };
       context_servers = {
         mcp-server-nixos = {
-          source = "custom";
           enabled = true;
           command = "nix";
           args = [
@@ -95,7 +94,6 @@
           env = { };
         };
         mcp-server-git = {
-          source = "custom";
           enabled = true;
           command = "nix";
           args = [

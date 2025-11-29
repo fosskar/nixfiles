@@ -30,9 +30,10 @@ in
         sign-on-push = true;
       };
       signing = {
-        backend = "gpg";
+        backend = "ssh";
         behavior = "drop";
-        key = "1394DCC0EC169ED4";
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
+        #key = "1394DCC0EC169ED4";
       };
       snapshot = {
         max-new-file-size = 16000000; # ~16mb
