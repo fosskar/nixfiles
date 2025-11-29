@@ -46,6 +46,11 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
+    tangled = {
+      url = "git+https://tangled.org/tangled.org/core";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # format and lint
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
