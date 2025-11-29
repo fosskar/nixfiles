@@ -11,9 +11,7 @@
       programs = {
         nixfmt = {
           enable = true;
-          excludes = [
-            "machines/fileserver/user-list.nix" # encrypted with git-agecrypt
-          ];
+          excludes = [ ];
         };
         prettier = {
           enable = true;

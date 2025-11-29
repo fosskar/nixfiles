@@ -30,7 +30,6 @@
           '';
           packages = [
             #inputs'.clan-core.packages.clan-cli
-            pkgs.git-agecrypt
           ]
           ++ scripts;
         };

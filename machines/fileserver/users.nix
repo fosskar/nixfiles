@@ -5,7 +5,16 @@
 let
   # read user list from private nixsecrets repo
   # list of { name = "username"; uid = 3000; }
-  fileserverUsers = import ./user-list.nix;
+  fileserverUsers = [
+    {
+      name = "simon";
+      uid = 3000;
+    }
+    {
+      name = "ina";
+      uid = 3001;
+    }
+  ];
 
   mkFileServerUser =
     user:
