@@ -38,7 +38,7 @@
 
     sessionVariables = {
       # tell sops to use yubikey plugin for age decryption
-      #SOPS_AGE_KEY_CMD = "age-plugin-yubikey --identity";
+      SOPS_AGE_KEY_CMD = "age-plugin-yubikey --identity";
     };
   };
 }
