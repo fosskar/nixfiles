@@ -15,6 +15,24 @@ in
         user = {
           inherit email name;
         };
+        aliases = {
+          cm = [
+            "commit"
+            "-m"
+          ];
+          bs = [
+            "bookmark"
+            "set"
+          ];
+          fetch = [
+            "git"
+            "fetch"
+          ];
+          push = [
+            "git"
+            "push"
+          ];
+        };
         ui = {
           default-command = "log"; # or status. log is more verboses
           diff-editor = ":builtin";

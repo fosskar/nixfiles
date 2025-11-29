@@ -8,17 +8,20 @@
   perSystem = {
     treefmt = {
       projectRootFile = "flake.nix";
+      settings.global.excludes = [
+        "*.gitignore"
+        "*.pub"
+        "*.priv"
+        "*.age"
+        "*/sops/secrets/*"
+        "vars/*"
+        "*.md"
+      ];
       programs = {
-        nixfmt = {
-          enable = true;
-          excludes = [ ];
-        };
-        prettier = {
-          enable = true;
-          excludes = [
-            "*.md"
-          ];
-        };
+        nixfmt.enable = true;
+        prettier.enable = true;
+        deadnix.enable = true;
+        shellcheck.enable = true;
       };
     };
 
@@ -30,20 +33,9 @@
           "LICENSE"
         ];
         hooks = {
-          treefmt = {
-            enable = true;
-            settings = {
-              formatters = [ ];
-              "fail-on-change" = false;
-            };
-          };
+          treefmt.enable = true;
           flake-checker.enable = true;
           nil.enable = true;
-          deadnix = {
-            enable = true;
-            settings.edit = true;
-          };
-          statix.enable = false;
           detect-private-keys.enable = true;
         };
       };

@@ -21,7 +21,7 @@
     };
 
     # system
-    systems.url = "github:nix-systems/default-linux";
+    systems.url = "github:nix-systems/default";
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -146,8 +146,10 @@
       };
 
       perSystem =
-        { config, ... }:
+        { config, inputs', ... }:
         {
+          clan.pkgs = inputs'.nixpkgs.legacyPackages;
+
           formatter = config.treefmt.build.wrapper;
         };
     };
