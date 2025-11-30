@@ -16,6 +16,10 @@ in
           inherit email name;
         };
         aliases = {
+          dm = [
+            "describe"
+            "-m"
+          ];
           cm = [
             "commit"
             "-m"
