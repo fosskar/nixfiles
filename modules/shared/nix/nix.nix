@@ -1,12 +1,25 @@
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 {
   nix = {
+    package = pkgs.nixVersions.latest; # nixVersions.latest, lix
+
+    nixPath = [ "nixpkgs=flake:nixpkgs" ];
+
     channel.enable = lib.mkDefault false;
 
     settings = {
       connect-timeout = lib.mkDefault 5;
       download-buffer-size = lib.mkDefault (256 * 1024 * 1024); # 256 MB to handle large deployments
       fallback = true;
+
+      # for direnv garbage-collection roots
+      keep-derivations = true;
+      keep-outputs = true;
 
       experimental-features = [
         "nix-command"
@@ -20,7 +33,13 @@
 
       builders-use-substitutes = true;
 
-      trusted-users = [ "@wheel" ];
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
+
+      # dont warn me that my git tree is dirty
+      warn-dirty = false;
     };
     optimise.automatic = lib.mkDefault (!config.boot.isContainer);
   };
