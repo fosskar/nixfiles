@@ -1,7 +1,11 @@
+{ mylib, ... }:
 {
   imports = [
+    ../../modules/lxc
+    ../../modules/monitoring
+    ../../modules/shared
+  ]
+  ++ (mylib.scanPaths ./. { });
 
-  ];
-
-  # New machine!
+  nixpkgs.hostPlatform = "x86_64-linux";
 }

@@ -87,6 +87,14 @@ in
           deploy.targetHost = "root@10.0.0.102";
           tags = [
             "px-prd1"
+            "lxc"
+          ];
+        };
+        n8n = {
+          deploy.targetHost = "root@10.0.0.113";
+          tags = [
+            "px-prd1"
+            "lxc"
           ];
         };
         nextcloud = {
