@@ -7,7 +7,7 @@
 {
 
   boot = {
-    kernelPackages = pkgs.linuxPackages;
+    #kernelPackages = pkgs.linuxPackages;
 
     # This pulls in nixos-containers which depends on Perl.
     enableContainers = false;
@@ -24,10 +24,11 @@
       };
 
       grub = {
-        enable = false;
+        enable = lib.mkDefault false;
         configurationLimit = lib.mkDefault 5;
         efiSupport = true;
         efiInstallAsRemovable = true;
+        copyKernels = true;
         # Being headless, we don't need a GRUB splash image.
         splashImage = null;
         memtest86.enable = lib.mkForce false;

@@ -149,6 +149,14 @@ in
             "desktop"
           ];
         };
+
+        # bare-metal server (replaces proxmox + lxc containers)
+        hm-nixbox = {
+          deploy.targetHost = "root@192.168.10.80";
+          tags = [
+            "server"
+          ];
+        };
       };
 
       instances = {

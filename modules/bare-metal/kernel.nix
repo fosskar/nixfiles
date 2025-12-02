@@ -113,7 +113,8 @@
       # ArchWiki recommends opting in for "integrity", however since we avoid modifying
       # running kernel (by the virtue of using NixOS and locking module hot-loading) the
       # confidentiality mode is a better solution.
-      "lockdown=confidentiality"
+      # #confidentiality
+      "lockdown=integrity"
       # enable buddy allocator free poisoning
       #  on: memory will befilled with a specific byte pattern
       #      that is unlikely to occur in normal operation.
@@ -129,8 +130,6 @@
       "rootflags=noatime"
       # linux security modules
       "lsm=landlock,lockdown,yama,integrity,apparmor,bpf,tomoyo,selinux"
-      # prevent the kernel from blanking plymouth out of the fb
-      "fbcon=nodefer"
       # the format that will be used for integrity audit logs
       #  0 (default): basic integrity auditing messages
       #  1: additional integrity auditing messages

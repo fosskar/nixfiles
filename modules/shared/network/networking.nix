@@ -1,8 +1,8 @@
 { lib, ... }:
 {
   networking = {
-    useNetworkd = lib.mkDefault true;
-    enableIPv6 = false;
+    useNetworkd = lib.mkForce true;
+    enableIPv6 = lib.mkForce false;
   };
 
   systemd = {
