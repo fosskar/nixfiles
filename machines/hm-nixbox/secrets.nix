@@ -17,5 +17,7 @@
       owner = "grafana";
       group = "grafana";
     };
+
+    "pocket-id.env" = { };
   };
 }
