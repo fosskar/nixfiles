@@ -1,8 +1,8 @@
 { lib, ... }:
 {
   networking.firewall = {
-    enable = true;
-    allowPing = true;
+    enable = lib.mkDefault true;
+    allowPing = lib.mkDefault true;
     logRefusedConnections = lib.mkDefault false;
   };
 }

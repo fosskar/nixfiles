@@ -1,13 +1,14 @@
-_: {
+{ lib, ... }:
+{
   security = {
     sudo-rs = {
-      enable = true;
-      wheelNeedsPassword = false;
-      execWheelOnly = true;
+      enable = lib.mkForce true;
+      wheelNeedsPassword = lib.mkForce false;
+      execWheelOnly = lib.mkForce true;
     };
 
     sudo = {
-      enable = false;
+      enable = lib.mkForce false;
     };
   };
 }

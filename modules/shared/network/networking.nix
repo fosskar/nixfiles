@@ -3,16 +3,19 @@
   networking = {
     useNetworkd = lib.mkForce true;
     enableIPv6 = lib.mkForce false;
+    dhcpcd.enable = false;
   };
 
   systemd = {
-    services = {
-      NetworkManager-wait-online.enable = false;
-      systemd-networkd.stopIfChanged = false;
-      systemd-resolved.stopIfChanged = false;
+    network = {
+      enable = lib.mkForce true;
+      wait-online.enable = lib.mkDefault false;
     };
-    network.wait-online.enable = false;
+    services = {
+      NetworkManager-wait-online.enable = lib.mkDefault false;
+      systemd-networkd.stopIfChanged = lib.mkDefault false;
+      systemd-resolved.stopIfChanged = lib.mkDefault false;
+    };
   };
-
   services.resolved.llmnr = lib.mkDefault "false";
 }
