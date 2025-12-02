@@ -1,12 +1,105 @@
 { config, pkgs, ... }:
 {
-  networking.firewall.allowedTCPPorts = [
-    3000 # grafana web ui
-  ];
+  services = {
+    victorialogs.enable = true;
+
+    victoriametrics = {
+      enable = true;
+      listenAddress = "127.0.0.1:8428";
+      retentionPeriod = "3"; # 3 months
+
+      # extra options
+      extraOptions = [
+        "-promscrape.dropOriginalLabels=false" # show discovered target labels
+        "-selfScrapeInterval=10s"
+      ];
+
+      # prometheus-compatible scrape configuration
+      prometheusConfig = {
+        scrape_configs = [
+          # node exporter - system metrics
+          {
+            job_name = "node-exporter";
+            static_configs = [
+              {
+                targets = [
+                  "localhost:9100"
+                  "192.168.10.1:9100" # router
+                  "192.168.10.2:9100" # ap
+                ];
+                labels.type = "node-exporter";
+              }
+            ];
+          }
+
+          # victoriametrics self-monitoring
+          {
+            job_name = "victoriametrics";
+            static_configs = [
+              {
+                targets = [ "localhost:8428" ];
+              }
+            ];
+          }
+
+          # nut exporter
+          {
+            job_name = "nut-exporter";
+            static_configs = [
+              {
+                targets = [ "localhost:9199" ];
+                labels = {
+                  ups = "eaton-ellipse";
+                  type = "nut-exporter";
+                };
+              }
+            ];
+            metrics_path = "/ups_metrics";
+            params = {
+              ups = [ "eaton-ellipse" ];
+            };
+          }
+
+          ## zfs exporter
+          #{
+          #  job_name = "zfs-exporter";
+          #  static_configs = [
+          #    {
+          #      targets = [ "localhost:9199" ];
+          #      labels = {
+          #        ups = "eaton-ellipse";
+          #        type = "nut-exporter";
+          #      };
+          #    }
+          #  ];
+          #  metrics_path = "/ups_metrics";
+          #  params = {
+          #    ups = [ "eaton-ellipse" ];
+          #  };
+          #}
+        ];
+      };
+    };
+  };
+
+  # install nut client tools for testing
+  environment.systemPackages = [ pkgs.nut ];
+
+  services.prometheus.exporters = {
+    nut = {
+      enable = true;
+      port = 9199;
+      listenAddress = "127.0.0.1";
+      openFirewall = false;
+      nutServer = "127.0.0.1";
+    };
+  };
 
   services.grafana = {
     enable = true;
     package = pkgs.grafana;
+
+    openFirewall = false;
 
     # install victoriametrics datasource plugin (for advanced features)
     declarativePlugins = with pkgs.grafanaPlugins; [
@@ -16,7 +109,7 @@
 
     settings = {
       server = {
-        http_addr = "10.0.0.102";
+        http_addr = "127.0.0.1";
         http_port = 3000;
         domain = "grafana.osscar.me";
         root_url = "https://grafana.osscar.me";
