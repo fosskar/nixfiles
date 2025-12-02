@@ -7,7 +7,7 @@
     ../../modules/shared
     ../../modules/zfs
   ]
-  ++ (mylib.scanPaths ./. { });
+  ++ (mylib.scanPaths ./. { exclude = [ ]; });
 
   nixpkgs.hostPlatform = "x86_64-linux";
 

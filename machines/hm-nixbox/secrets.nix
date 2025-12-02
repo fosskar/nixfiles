@@ -3,21 +3,15 @@
   sops.secrets = {
     "newt.env" = { };
 
+    "pangolin.env" = { };
+
     "admin-password" = {
       owner = "grafana";
       group = "grafana";
     };
 
-    "grafana-oidc-client-id" = {
-      owner = "grafana";
-      group = "grafana";
-    };
+    "homepage.env" = { };
 
-    "grafana-oidc-client-secret" = {
-      owner = "grafana";
-      group = "grafana";
-    };
-
-    "pocket-id.env" = { };
+    "immich.env" = { };
   };
 }

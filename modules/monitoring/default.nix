@@ -33,6 +33,18 @@ in
       default = false;
       description = "enable restic exporter if restic backups are configured";
     };
+
+    enableNutExporter = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "enable nut exporter for ups monitoring";
+    };
+
+    nutServer = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1";
+      description = "nut server address";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -40,7 +52,7 @@ in
     services.prometheus.exporters.node = lib.mkIf cfg.enableNodeExporter {
       enable = true;
       port = 9100;
-      openFirewall = true;
+      openFirewall = false;
       enabledCollectors = [
         "systemd" # systemd service metrics
         "processes"
@@ -51,7 +63,7 @@ in
     services.prometheus.exporters.nginx = lib.mkIf cfg.enableNginxExporter {
       enable = true;
       port = 9113;
-      openFirewall = true;
+      openFirewall = false;
       scrapeUri = "http://localhost:80/nginx_status";
     };
 
@@ -59,7 +71,7 @@ in
     services.prometheus.exporters.postgres = lib.mkIf cfg.enablePostgresExporter {
       enable = true;
       port = 9187;
-      openFirewall = true;
+      openFirewall = false;
       runAsLocalSuperUser = true;
     };
 
@@ -67,8 +79,17 @@ in
     services.prometheus.exporters.restic = lib.mkIf cfg.enableResticExporter {
       enable = true;
       port = 9753;
-      openFirewall = true;
+      openFirewall = false;
       refreshInterval = 3600; # 1 hour - restic operations are expensive
+    };
+
+    # nut exporter
+    services.prometheus.exporters.nut = lib.mkIf cfg.enableNutExporter {
+      enable = true;
+      port = 9199;
+      listenAddress = "127.0.0.1";
+      openFirewall = false;
+      nutServer = cfg.nutServer;
     };
   };
 }

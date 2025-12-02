@@ -1,5 +1,16 @@
 { config, pkgs, ... }:
 {
+  imports = [
+    ../../modules/monitoring
+  ];
+
+  monitoring = {
+    enable = true;
+    enableNodeExporter = true;
+    enableNutExporter = false;
+    enableResticExporter = false;
+  };
+
   services = {
     victorialogs.enable = true;
 
@@ -85,16 +96,6 @@
   # install nut client tools for testing
   environment.systemPackages = [ pkgs.nut ];
 
-  services.prometheus.exporters = {
-    nut = {
-      enable = true;
-      port = 9199;
-      listenAddress = "127.0.0.1";
-      openFirewall = false;
-      nutServer = "127.0.0.1";
-    };
-  };
-
   services.grafana = {
     enable = true;
     package = pkgs.grafana;
@@ -110,7 +111,7 @@
     settings = {
       server = {
         http_addr = "127.0.0.1";
-        http_port = 3000;
+        http_port = 3100;
         domain = "grafana.osscar.me";
         root_url = "https://grafana.osscar.me";
       };
@@ -136,34 +137,34 @@
 
       "auth.anonymous" = {
         enabled = true;
-        org_name = "main";
-        org_role = "Viewer";
+        org_id = 1;
+        org_role = "Admin";
         hide_version = true;
       };
-      "auth.generic_oauth" = {
-        enabled = true;
-        auto_login = false;
-        name = "Pocket-ID";
-        icon = "signin";
-        client_id = "$__file{${config.sops.secrets."grafana-oidc-client-id".path}}";
-        client_secret = "$__file{${config.sops.secrets."grafana-oidc-client-secret".path}}";
-        scopes = [
-          "openid"
-          "email"
-          "profile"
-        ];
-        auth_url = "https://auth.simonoscar.me/authorize";
-        token_url = "https://auth.simonoscar.me/api/oidc/token";
-        api_url = "https://auth.simonoscar.me/api/oidc/userinfo";
-        email_attribute_name = "email:primary";
-        allow_sign_up = false;
-        skip_org_role_sync = true;
-        allow_assign_grafana_admin = true;
-        name_attribute_path = "name";
-        email_attribute_path = "email";
-        login_attribute_path = "preferred_username";
-        use_pkce = true;
-      };
+      #"auth.generic_oauth" = {
+      #  enabled = true;
+      #  auto_login = false;
+      #  name = "Pocket-ID";
+      #  icon = "signin";
+      #  client_id = "$__file{${config.sops.secrets."grafana-oidc-client-id".path}}";
+      #  client_secret = "$__file{${config.sops.secrets."grafana-oidc-client-secret".path}}";
+      #  scopes = [
+      #    "openid"
+      #    "email"
+      #    "profile"
+      #  ];
+      #  auth_url = "https://auth.simonoscar.me/authorize";
+      #  token_url = "https://auth.simonoscar.me/api/oidc/token";
+      #  api_url = "https://auth.simonoscar.me/api/oidc/userinfo";
+      #  email_attribute_name = "email:primary";
+      #  allow_sign_up = false;
+      #  skip_org_role_sync = true;
+      #  allow_assign_grafana_admin = true;
+      #  name_attribute_path = "name";
+      #  email_attribute_path = "email";
+      #  login_attribute_path = "preferred_username";
+      #  use_pkce = true;
+      #};
     };
 
     # note: datasource must be added manually via grafana ui after startup
@@ -173,20 +174,23 @@
       enable = true;
 
       datasources.settings = {
+        #deleteDatasources = [
+        #  { name = "victoriametrics"; orgId = 1; }
+        #];
         datasources = [
-          #{
-          #  name = "victoriametrics";
-          #  type = "prometheus";
-          #  access = "proxy";
-          #  url = "http://localhost:8428";
-          #  isDefault = true;
-          #}
           {
-            name = "victoriametrics";
-            type = "victoriametrics-metrics-datasource";
+            name = "VictoriaMetrics";
+            type = "prometheus";
             access = "proxy";
             url = "http://localhost:8428";
             isDefault = true;
+          }
+          {
+            name = "VictoriaMetrics (native)";
+            type = "victoriametrics-metrics-datasource";
+            access = "proxy";
+            url = "http://localhost:8428";
+            isDefault = false;
           }
           {
             name = "VictoriaLogs";

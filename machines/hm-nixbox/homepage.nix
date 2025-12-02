@@ -3,7 +3,8 @@
   services.glances.enable = true;
   services.homepage-dashboard = {
     enable = true;
-    openFirewall = true;
+    listenPort = 8082;
+    openFirewall = false;
 
     # allow access from network (not just localhost)
     allowedHosts = "home.osscar.me";
@@ -126,20 +127,6 @@
       }
       {
         "Infrastructure" = [
-          {
-            "Proxmox" = {
-              href = "https://192.168.10.80:8006";
-              icon = "proxmox.svg";
-              siteMonitor = "https://192.168.10.80:8006";
-            };
-          }
-          {
-            "Proxmox Backup Server" = {
-              href = "https://10.0.0.99:8007";
-              icon = "proxmox.svg";
-              siteMonitor = "https://10.0.0.99:8007";
-            };
-          }
           {
             "JetKVM HA" = {
               href = "http://jetkvm-ha.lan";
@@ -354,13 +341,6 @@
       }
       {
         "Monitoring" = [
-          {
-            "Pulse" = {
-              href = "https://pulse.osscar.me";
-              icon = "pulse.png";
-              siteMonitor = "http://10.0.0.97:7655";
-            };
-          }
           {
             "VictoriaMetrics" = {
               href = "https://vm.osscar.me";

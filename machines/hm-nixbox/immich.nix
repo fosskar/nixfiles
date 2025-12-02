@@ -7,12 +7,12 @@
 {
   services.immich = {
     enable = true;
-    host = "10.0.0.107";
+    host = "127.0.0.1";
     port = 2283;
-    mediaLocation = "/mnt/immich";
+    mediaLocation = "/tank/apps/immich";
     secretsFile = config.sops.secrets."immich.env".path;
 
-    openFirewall = true;
+    openFirewall = false;
 
     accelerationDevices = [
       "/dev/dri/renderD128"
@@ -46,25 +46,25 @@
 
     settings = {
       server = {
-        externalDomain = "https://photos.simonoscar.me";
+        externalDomain = "https://immich.simonoscar.me";
         loginPageMessage = "henlo";
       };
       newVersionCheck.enabled = false;
 
-      passwordLogin.enabled = false;
+      passwordLogin.enabled = true;
 
-      oauth = {
-        enabled = true;
-        issuerUrl = "https://auth.simonoscar.me";
-        scope = "openid email profile";
-        buttonText = "login with passkey";
-        clientId._secret = config.sops.secrets."immich-oidc-client-id".path;
-        clientSecret._secret = config.sops.secrets."immich-oidc-client-secret".path;
-        autoRegister = true;
-        autoLaunch = false;
-
-        defaultStorageQuota = 100; # 100 GiB for users without the claim
-      };
+      #oauth = {
+      #  enabled = true;
+      #  issuerUrl = "https://auth.simonoscar.me";
+      #  scope = "openid email profile";
+      #  buttonText = "login with passkey";
+      #  clientId._secret = config.sops.secrets."immich-oidc-client-id".path;
+      #  clientSecret._secret = config.sops.secrets."immich-oidc-client-secret".path;
+      #  autoRegister = true;
+      #  autoLaunch = false;
+      #
+      #  defaultStorageQuota = 100; # 100 GiB for users without the claim
+      #};
 
       ffmpeg.accel = "qsv";
 
@@ -78,27 +78,11 @@
     };
   };
 
-  # for shared bind-mounts
-  users = {
-    groups = {
-      immich = {
-        gid = 10000; # maps to host 110000 (storage_shared)
-      };
-      # shared group from fileserver (for correct display name)
-      shared = {
-        gid = 5000;
-      };
-    };
-    users.immich = {
-      isSystemUser = true;
-      uid = 1107; # container 107 -> uid 1107 -> host 101107
-      group = "immich";
-      extraGroups = [
-        "render"
-        "video"
-      ];
-    };
-  };
+  users.users.immich.extraGroups = [
+    "render"
+    "video"
+  ];
+
   systemd = {
     services = {
       # For video transcoding (QSV)

@@ -29,7 +29,16 @@
     };
   };
 
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "iHD";
+  environment = {
+    systemPackages = with pkgs; [
+      #  clinfo
+      #  vulkan-tools # vulkaninfo, vkcube for testing
+      openvino
+    ];
+    sessionVariables = {
+      LIBVA_DRIVER_NAME = "iHD";
+      # fix opencl icd path for nixos
+      OCL_ICD_VENDORS = "/run/opengl-driver/etc/OpenCL/vendors";
+    };
   };
 }

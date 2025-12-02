@@ -16,11 +16,15 @@ let
   '';
 in
 {
+  imports = [
+    ../../modules/pangolin
+  ];
+
   services.pangolin = {
-    #package = pkgs.callPackage ../../../../pkgs/fosrl-pangolin { };
+    package = pkgs.callPackage ../../packages/fosrl-pangolin { };
 
     baseDomain = "osscar.me";
-    dashboardDomain = "rproxy.osscar.me";
+    dashboardDomain = "pango.osscar.me";
     environmentFile = config.sops.secrets."pangolin.env".path;
 
     # configure dns provider for dns-01 challenge
@@ -32,8 +36,8 @@ in
         maxmind_db_path = "${geolite2-country-db}/GeoLite2-Country.mmdb";
       };
       flags = {
-        enable_integration_api = false;
         disable_signup_without_invite = true;
+        enable_integration_api = true;
       };
       # enable wildcard certificates for automatic subdomain coverage
       domains.domain1 = {

@@ -5,6 +5,11 @@
     # zfs hostId - required, unique per machine
     hostId = "25e85037";
     useDHCP = false;
+
+    firewall.allowedTCPPorts = [
+      80
+      443
+    ];
   };
 
   # native systemd-networkd for static ip
