@@ -20,6 +20,7 @@
     directories = [
       "/var/log"
       "/var/lib"
+      "/var/cache"
       #"/var/lib/nixos" # nixos state (user/group ids)
       #"/var/lib/systemd" # systemd state (timers, etc)
       #"/var/lib/sops-nix" # sops secrets

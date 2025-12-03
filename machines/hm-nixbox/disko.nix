@@ -2,7 +2,7 @@
 {
   disko.devices = {
     disk = {
-      # optane drive 1 (16gb) - primary boot
+      # optane drive 1 (16gb) - primary boot + slog
       optane1 = {
         type = "disk";
         device = "/dev/disk/by-id/nvme-INTEL_MEMPEK1J016GA_PHBT83620341016N";
@@ -22,11 +22,20 @@
                 ];
               };
             };
+            slog = {
+              size = "100%";
+              type = "BF01";
+              # slog for tank pool (added manually, documented here)
+              content = {
+                type = "zfs";
+                pool = "tank";
+              };
+            };
           };
         };
       };
 
-      # optane drive 2 (16gb) - fallback boot
+      # optane drive 2 (16gb) - fallback boot + slog mirror
       optane2 = {
         type = "disk";
         device = "/dev/disk/by-id/nvme-INTEL_MEMPEK1J016GA_PHBT836304CV016N";
@@ -44,6 +53,15 @@
                   "defaults"
                   "umask=0077"
                 ];
+              };
+            };
+            slog = {
+              size = "100%";
+              type = "BF01";
+              # slog mirror for tank pool (added manually, documented here)
+              content = {
+                type = "zfs";
+                pool = "tank";
               };
             };
           };
