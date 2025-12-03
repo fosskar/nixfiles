@@ -113,7 +113,7 @@
           }
           {
             "Pangolin local" = {
-              href = "https://rproxy.osscar.me";
+              href = "https://pango.osscar.me";
               icon = "pangolin.png";
             };
           }
@@ -140,52 +140,23 @@
         "Media" = [
           {
             "Immich" = {
-              href = "https://photos.osscar.me";
+              href = "https://immich.osscar.me";
               icon = "immich.png";
-              siteMonitor = "http://10.0.0.107:2283";
-              widget = {
-                type = "immich";
-                url = "http://10.0.0.107:2283";
-                key = "{{HOMEPAGE_VAR_IMMICH_KEY}}";
-                version = 2;
-                fields = [
-                  "photos"
-                  "videos"
-                ];
-              };
+              siteMonitor = "https://immich.osscar.me";
             };
           }
           {
             "Jellyfin" = {
               href = "https://jellyfin.osscar.me";
               icon = "jellyfin.png";
-              siteMonitor = "http://10.0.0.111:8096";
-              widget = {
-                type = "jellyfin";
-                url = "http://10.0.0.111:8096";
-                key = "{{HOMEPAGE_VAR_JELLYFIN_KEY}}";
-                enableBlocks = true;
-                fields = [
-                  "movies"
-                  "episodes"
-                ];
-                enableNowPlaying = true;
-                enableUser = true;
-                showEpisodeNumber = true;
-                expandOneStreamToTwoRows = false;
-              };
+              siteMonitor = "https://jellyfin.osscar.me";
             };
           }
           {
             "Audiobookshelf" = {
               href = "https://audiobookshelf.osscar.me";
               icon = "audiobookshelf.svg";
-              siteMonitor = "http://10.0.0.111:13378";
-              widget = {
-                type = "audiobookshelf";
-                url = "http://10.0.0.111:13378";
-                key = "{{HOMEPAGE_VAR_AUDIOBOOKSHELF_KEY}}";
-              };
+              siteMonitor = "https://audiobookshelf.osscar.me";
             };
           }
         ];
@@ -345,14 +316,14 @@
             "VictoriaMetrics" = {
               href = "https://vm.osscar.me";
               icon = "victoriametrics.svg";
-              siteMonitor = "http://10.0.0.102:8428";
+              siteMonitor = "https://vm.osscar.me";
             };
           }
           {
             "Grafana" = {
               href = "https://grafana.osscar.me";
               icon = "grafana.svg";
-              siteMonitor = "http://10.0.0.102:3000";
+              siteMonitor = "https://grafana.osscar.me";
             };
           }
         ];
@@ -364,13 +335,6 @@
               href = "http://192.168.10.1:8080";
               icon = "adguard-home.svg";
               siteMonitor = "http://192.168.10.1:8080";
-            };
-          }
-          {
-            "Pocket-ID" = {
-              href = "https://auth.simonoscar.me";
-              icon = "mdi-shield-account";
-              siteMonitor = "http://10.0.0.105:1411";
             };
           }
           {

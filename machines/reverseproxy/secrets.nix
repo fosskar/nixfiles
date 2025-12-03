@@ -1,6 +1,0 @@
-{ ... }:
-{
-  sops.secrets = {
-    "pangolin.env" = { };
-  };
-}

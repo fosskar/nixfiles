@@ -1,6 +1,3 @@
-# disko configuration for hm-nixbox
-# - 2x intel optane 16gb: mirrored ESP (/boot, /boot-fallback)
-# - 2x kingston ssd 1tb: zfs mirror "znixos" (/)
 { ... }:
 {
   disko.devices = {

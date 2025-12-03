@@ -1,8 +1,4 @@
 {
-  lib,
-  inputs,
-  config,
-  mylib,
   ...
 }:
 {

@@ -18,16 +18,13 @@
       "/dev/dri/renderD128"
     ];
 
-    # enable local postgresql database
     database = {
       enable = true;
       createDB = true;
     };
 
-    # enable redis (required for immich)
     redis.enable = true;
 
-    # enable machine learning features
     machine-learning = {
       enable = true;
       environment = {
@@ -53,19 +50,6 @@
 
       passwordLogin.enabled = true;
 
-      #oauth = {
-      #  enabled = true;
-      #  issuerUrl = "https://auth.simonoscar.me";
-      #  scope = "openid email profile";
-      #  buttonText = "login with passkey";
-      #  clientId._secret = config.sops.secrets."immich-oidc-client-id".path;
-      #  clientSecret._secret = config.sops.secrets."immich-oidc-client-secret".path;
-      #  autoRegister = true;
-      #  autoLaunch = false;
-      #
-      #  defaultStorageQuota = 100; # 100 GiB for users without the claim
-      #};
-
       ffmpeg.accel = "qsv";
 
       library = {
@@ -85,7 +69,6 @@
 
   systemd = {
     services = {
-      # For video transcoding (QSV)
       immich-server = {
         serviceConfig = {
           PrivateDevices = lib.mkForce false; # disable sandboxing
@@ -95,7 +78,6 @@
           ];
         };
       };
-      # For ML inference (OpenVINO)
       immich-machine-learning = {
         serviceConfig = {
           PrivateDevices = lib.mkForce false; # disable sandboxing

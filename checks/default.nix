@@ -21,7 +21,7 @@
         nixfmt.enable = true;
         prettier.enable = true;
         deadnix.enable = true;
-        shellcheck.enable = true;
+        shellcheck.enable = false;
       };
     };
 

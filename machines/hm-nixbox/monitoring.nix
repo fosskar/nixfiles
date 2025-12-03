@@ -25,10 +25,8 @@
         "-selfScrapeInterval=10s"
       ];
 
-      # prometheus-compatible scrape configuration
       prometheusConfig = {
         scrape_configs = [
-          # node exporter - system metrics
           {
             job_name = "node-exporter";
             static_configs = [
@@ -43,7 +41,6 @@
             ];
           }
 
-          # victoriametrics self-monitoring
           {
             job_name = "victoriametrics";
             static_configs = [
@@ -53,7 +50,6 @@
             ];
           }
 
-          # nut exporter
           {
             job_name = "nut-exporter";
             static_configs = [
@@ -93,7 +89,7 @@
     };
   };
 
-  # install nut client tools for testing
+  # install nut client tools
   environment.systemPackages = [ pkgs.nut ];
 
   services.grafana = {
@@ -101,8 +97,6 @@
     package = pkgs.grafana;
 
     openFirewall = false;
-
-    # install victoriametrics datasource plugin (for advanced features)
     declarativePlugins = with pkgs.grafanaPlugins; [
       victoriametrics-metrics-datasource
       victoriametrics-logs-datasource
@@ -141,35 +135,8 @@
         org_role = "Admin";
         hide_version = true;
       };
-      #"auth.generic_oauth" = {
-      #  enabled = true;
-      #  auto_login = false;
-      #  name = "Pocket-ID";
-      #  icon = "signin";
-      #  client_id = "$__file{${config.sops.secrets."grafana-oidc-client-id".path}}";
-      #  client_secret = "$__file{${config.sops.secrets."grafana-oidc-client-secret".path}}";
-      #  scopes = [
-      #    "openid"
-      #    "email"
-      #    "profile"
-      #  ];
-      #  auth_url = "https://auth.simonoscar.me/authorize";
-      #  token_url = "https://auth.simonoscar.me/api/oidc/token";
-      #  api_url = "https://auth.simonoscar.me/api/oidc/userinfo";
-      #  email_attribute_name = "email:primary";
-      #  allow_sign_up = false;
-      #  skip_org_role_sync = true;
-      #  allow_assign_grafana_admin = true;
-      #  name_attribute_path = "name";
-      #  email_attribute_path = "email";
-      #  login_attribute_path = "preferred_username";
-      #  use_pkce = true;
-      #};
     };
 
-    # note: datasource must be added manually via grafana ui after startup
-    # declarative provisioning of external plugin types fails because
-    # plugins load after provisioning runs
     provision = {
       enable = true;
 
@@ -200,7 +167,7 @@
           }
         ];
       };
-      # provision default dashboards
+
       dashboards.settings = {
         apiVersion = 1;
         providers = [
