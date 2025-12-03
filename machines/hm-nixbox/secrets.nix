@@ -5,6 +5,8 @@
 
     "pangolin.env" = { };
 
+    "samba-user-passwords" = { };
+
     "admin-password" = {
       owner = "grafana";
       group = "grafana";
