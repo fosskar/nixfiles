@@ -33,4 +33,10 @@
       "/etc/ssh/ssh_host_rsa_key.pub"
     ];
   };
+
+  fileSystems = {
+    "/nix".neededForBoot = true;
+    "/persist".neededForBoot = true;
+    "/var/lib/sops-nix".neededForBoot = true;
+  };
 }

@@ -150,10 +150,4 @@
       };
     };
   };
-
-  fileSystems = {
-    "/".neededForBoot = true;
-    "/nix".neededForBoot = true;
-    "/persist".neededForBoot = true;
-  };
 }

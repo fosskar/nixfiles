@@ -25,7 +25,13 @@
           Gateway = "192.168.10.1";
         }
       ];
-      networkConfig.DNS = [ "192.168.10.1" ];
+      networkConfig = {
+        DNS = [ "192.168.10.1" ];
+        # disable ipv6 completely on this interface
+        IPv6AcceptRA = false;
+        LinkLocalAddressing = "no";
+        IPv6LinkLocalAddressGenerationMode = "none";
+      };
       linkConfig.RequiredForOnline = "routable";
     };
   };
