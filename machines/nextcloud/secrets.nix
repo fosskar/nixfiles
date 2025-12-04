@@ -1,6 +1,0 @@
-{ ... }:
-{
-  sops.secrets = {
-    "admin-password" = { };
-  };
-}

@@ -142,21 +142,21 @@
             "Immich" = {
               href = "https://immich.osscar.me";
               icon = "immich.png";
-              siteMonitor = "https://immich.osscar.me";
+              siteMonitor = "http://127.0.0.1:2283";
             };
           }
           {
             "Jellyfin" = {
               href = "https://jellyfin.osscar.me";
               icon = "jellyfin.png";
-              siteMonitor = "https://jellyfin.osscar.me";
+              siteMonitor = "http://127.0.0.1:8096";
             };
           }
           {
             "Audiobookshelf" = {
               href = "https://audiobookshelf.osscar.me";
               icon = "audiobookshelf.svg";
-              siteMonitor = "https://audiobookshelf.osscar.me";
+              siteMonitor = "http://127.0.0.1:13378";
             };
           }
         ];
@@ -167,10 +167,10 @@
             "Prowlarr" = {
               href = "https://prowlarr.osscar.me";
               icon = "prowlarr.svg";
-              siteMonitor = "http://10.0.0.110:9696";
+              siteMonitor = "http://127.0.0.1:9696";
               widget = {
                 type = "prowlarr";
-                url = "http://10.0.0.110:9696";
+                url = "http://127.0.0.1:9696";
                 key = "{{HOMEPAGE_VAR_PROWLARR_KEY}}";
               };
             };
@@ -179,10 +179,10 @@
             "Sonarr" = {
               href = "https://sonarr.osscar.me";
               icon = "sonarr.svg";
-              siteMonitor = "http://10.0.0.110:8989";
+              siteMonitor = "http://127.0.0.1:8989";
               widget = {
                 type = "sonarr";
-                url = "http://10.0.0.110:8989";
+                url = "http://127.0.0.1:8989";
                 key = "{{HOMEPAGE_VAR_SONARR_KEY}}";
               };
             };
@@ -191,10 +191,10 @@
             "Radarr" = {
               href = "https://radarr.osscar.me";
               icon = "radarr.svg";
-              siteMonitor = "http://10.0.0.110:7878";
+              siteMonitor = "http://127.0.0.1:7878";
               widget = {
                 type = "radarr";
-                url = "http://10.0.0.110:7878";
+                url = "http://127.0.0.1:7878";
                 key = "{{HOMEPAGE_VAR_RADARR_KEY}}";
               };
             };
@@ -203,10 +203,10 @@
             "Lidarr" = {
               href = "https://lidarr.osscar.me";
               icon = "lidarr.svg";
-              siteMonitor = "http://10.0.0.110:8686";
+              siteMonitor = "http://127.0.0.1:8686";
               widget = {
                 type = "lidarr";
-                url = "http://10.0.0.110:8686";
+                url = "http://127.0.0.1:8686";
                 key = "{{HOMEPAGE_VAR_LIDARR_KEY}}";
               };
             };
@@ -215,10 +215,10 @@
             "Readarr" = {
               href = "https://readarr.osscar.me";
               icon = "readarr.svg";
-              siteMonitor = "http://10.0.0.110:8787";
+              siteMonitor = "http://127.0.0.1:8787";
               widget = {
                 type = "readarr";
-                url = "http://10.0.0.110:8787";
+                url = "http://127.0.0.1:8787";
                 key = "{{HOMEPAGE_VAR_READARR_KEY}}";
               };
             };
@@ -227,10 +227,10 @@
             "Jellyseerr" = {
               href = "https://jellyseerr.osscar.me";
               icon = "jellyseerr.svg";
-              siteMonitor = "http://10.0.0.110:5055";
+              siteMonitor = "http://127.0.0.1:5055";
               widget = {
                 type = "jellyseerr";
-                url = "http://10.0.0.110:5055";
+                url = "http://127.0.0.1:5055";
                 key = "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}";
                 fields = [
                   "pending"
@@ -244,10 +244,10 @@
             "sabnzbd" = {
               href = "https://usenet.osscar.me";
               icon = "sabnzbd.svg";
-              siteMonitor = "http://10.0.0.110:8080";
+              siteMonitor = "http://127.0.0.1:8080";
               widget = {
                 type = "sabnzbd";
-                url = "http://10.0.0.110:8080";
+                url = "http://127.0.0.1:8080";
                 key = "{{HOMEPAGE_VAR_SABNZBD_KEY}}";
               };
             };
@@ -257,18 +257,11 @@
       {
         "AI / LLM" = [
           {
-            "Open WebUI" = {
-              href = "https://llm.osscar.me";
-              icon = "openwebui.svg";
-              siteMonitor = "http://10.0.0.106:11111";
-            };
-          }
-          {
             "Ollama" = {
               description = "local llm inference engine";
-              href = "http://10.0.0.106:11434";
+              href = "http://127.0.0.1:11434";
               icon = "ollama.png";
-              siteMonitor = "http://10.0.0.106:11434";
+              siteMonitor = "http://127.0.0.1:11434";
             };
           }
         ];
@@ -279,33 +272,19 @@
             "Paperless" = {
               href = "https://docs.osscar.me";
               icon = "paperless.png";
-              siteMonitor = "http://10.0.0.108:28981";
+              siteMonitor = "http://127.0.0.1:28981";
               widget = {
                 type = "paperlessngx";
-                url = "http://10.0.0.108:28981";
+                url = "http://127.0.0.1:28981";
                 key = "{{HOMEPAGE_VAR_PAPERLESS_KEY}}";
               };
-            };
-          }
-          {
-            "Paperless-GPT" = {
-              href = "https://docs-gpt.osscar.me";
-              icon = "paperless.png";
-              siteMonitor = "http://10.0.0.108:8080";
-            };
-          }
-          {
-            "Paperless-AI" = {
-              href = "https://docs-ai.osscar.me";
-              icon = "paperless.png";
-              siteMonitor = "http://10.0.0.108:5005";
             };
           }
           {
             "Nextcloud" = {
               href = "https://cloud.osscar.me";
               icon = "nextcloud.svg";
-              siteMonitor = "http://10.0.0.112:8009";
+              siteMonitor = "http://127.0.0.1:8009";
             };
           }
         ];
@@ -341,7 +320,7 @@
             "Vaultwarden" = {
               href = "https://vault.osscar.me";
               icon = "vaultwarden.svg";
-              siteMonitor = "http://10.0.0.109:8222";
+              siteMonitor = "http://127.0.0.1:8222";
             };
           }
         ];

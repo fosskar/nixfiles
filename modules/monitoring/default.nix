@@ -40,6 +40,12 @@ in
       description = "enable nut exporter for ups monitoring";
     };
 
+    enableZfsExporter = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "enable zfs exporter for pool metrics";
+    };
+
     nutServer = lib.mkOption {
       type = lib.types.str;
       default = "127.0.0.1";
@@ -90,6 +96,13 @@ in
       listenAddress = "127.0.0.1";
       openFirewall = false;
       nutServer = cfg.nutServer;
+    };
+
+    # zfs exporter
+    services.prometheus.exporters.zfs = lib.mkIf cfg.enableZfsExporter {
+      enable = true;
+      port = 9134;
+      openFirewall = false;
     };
   };
 }

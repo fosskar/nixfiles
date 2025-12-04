@@ -8,12 +8,13 @@
     "samba-user-passwords" = { };
 
     "admin-password" = {
-      owner = "grafana";
-      group = "grafana";
+      mode = "0444";
     };
 
     "homepage.env" = { };
 
     "immich.env" = { };
+
+    "paperless.env" = { };
   };
 }

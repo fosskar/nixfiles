@@ -1,4 +1,4 @@
-{ mylib, ... }:
+{ mylib, pkgs, ... }:
 {
   imports = [
     ../../modules/bare-metal
@@ -32,4 +32,8 @@
     zfs.extraPools = [ "tank" ];
   };
   console.keyMap = "de";
+
+  environment.systemPackages = with pkgs; [
+    fontconfig
+  ];
 }

@@ -19,13 +19,14 @@
         vpl-gpu-rt
       ];
     };
+
+    intel-gpu-tools.enable = true;
   };
 
   environment = {
     systemPackages = with pkgs; [
-      #  clinfo
-      #  vulkan-tools # vulkaninfo, vkcube for testing
-      openvino
+      clinfo
+      vulkan-tools # vulkaninfo, vkcube for testing
     ];
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";

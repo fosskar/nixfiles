@@ -9,6 +9,7 @@
     enableNodeExporter = true;
     enableNutExporter = false;
     enableResticExporter = false;
+    enableZfsExporter = true;
   };
 
   services = {
@@ -67,23 +68,18 @@
             };
           }
 
-          ## zfs exporter
-          #{
-          #  job_name = "zfs-exporter";
-          #  static_configs = [
-          #    {
-          #      targets = [ "localhost:9199" ];
-          #      labels = {
-          #        ups = "eaton-ellipse";
-          #        type = "nut-exporter";
-          #      };
-          #    }
-          #  ];
-          #  metrics_path = "/ups_metrics";
-          #  params = {
-          #    ups = [ "eaton-ellipse" ];
-          #  };
-          #}
+          # zfs exporter
+          {
+            job_name = "zfs-exporter";
+            static_configs = [
+              {
+                targets = [ "localhost:9134" ];
+                labels = {
+                  type = "zfs-exporter";
+                };
+              }
+            ];
+          }
         ];
       };
     };
