@@ -46,29 +46,27 @@
     directories = [
       "/var/lib/nixos"
       "/var/lib/systemd"
-      {
-        directory = "/var/lib/sops-nix";
-        mode = "0755";
-      }
-      {
-        directory = "/var/lib/pangolin";
-        user = "pangolin";
-        group = "fossorial";
-        mode = "0755";
-      }
+      "/var/lib/sops-nix"
+      "/var/lib/pangolin"
+      #{
+      #  directory = "/var/lib/sops-nix";
+      #  mode = "0755";
+      #}
+      #{
+      #  directory = "/var/lib/pangolin";
+      #  user = "pangolin";
+      #  group = "fossorial";
+      #  mode = "0755";
+      #}
     ];
     files = [
       "/etc/machine-id"
-      "/etc/ssh/ssh_host_ed25519_key"
-      "/etc/ssh/ssh_host_ed25519_key.pub"
-      "/etc/ssh/ssh_host_rsa_key"
-      "/etc/ssh/ssh_host_rsa_key.pub"
     ];
   };
 
   fileSystems = {
-    "/persist".neededForBoot = true;
     "/nix".neededForBoot = true;
+    "/persist".neededForBoot = true;
     "/var/lib/sops-nix".neededForBoot = true;
   };
 }
