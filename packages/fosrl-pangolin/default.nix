@@ -133,7 +133,9 @@ buildNpmPackage (finalAttrs: {
            (lib.concatMapStringsSep " && "
              (
                dir:
-               "test -f ${dir}/.nix_skip_setup || { rm -${lib.optionalString (dir == ".next") "r"}f ${dir} && ${
+               "test -f ${dir}/.nix_skip_setup || { ${
+                 lib.optionalString (dir == ".next") "chmod -R u+w ${dir} 2>/dev/null; "
+               }rm -${lib.optionalString (dir == ".next") "r"}f ${dir} && ${
                  if (dir == ".next") then "cp -r" else "ln -s"
                } ${placeholder "out"}/share/pangolin/${dir} .${
                  lib.optionalString (dir == ".next") " && chmod -R u+w .next"

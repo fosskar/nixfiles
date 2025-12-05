@@ -17,7 +17,7 @@
 
     victoriametrics = {
       enable = true;
-      listenAddress = "127.0.0.1:8428";
+      listenAddress = "0.0.0.0:8428"; # accessible from local network and pangolin tunnel
       retentionPeriod = "3"; # 3 months
 
       # extra options
@@ -137,9 +137,10 @@
       enable = true;
 
       datasources.settings = {
-        #deleteDatasources = [
-        #  { name = "victoriametrics"; orgId = 1; }
-        #];
+        deleteDatasources = [
+          { name = "VictoriaLogs"; orgId = 1; }
+          { name = "VictoriaMetrics (native)"; orgId = 1; }
+        ];
         datasources = [
           {
             name = "VictoriaMetrics";
@@ -148,19 +149,13 @@
             url = "http://localhost:8428";
             isDefault = true;
           }
-          {
-            name = "VictoriaMetrics (native)";
-            type = "victoriametrics-metrics-datasource";
-            access = "proxy";
-            url = "http://localhost:8428";
-            isDefault = false;
-          }
-          {
-            name = "VictoriaLogs";
-            type = "victoriametrics-logs-datasource";
-            access = "proxy";
-            url = "http://localhost:9428";
-          }
+          # temporarily disabled - causing browser slowdown
+          #{
+          #  name = "VictoriaLogs";
+          #  type = "victoriametrics-logs-datasource";
+          #  access = "proxy";
+          #  url = "http://localhost:9428";
+          #}
         ];
       };
 

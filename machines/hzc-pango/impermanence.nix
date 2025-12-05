@@ -48,16 +48,8 @@
       "/var/lib/systemd"
       "/var/lib/sops-nix"
       "/var/lib/pangolin"
-      #{
-      #  directory = "/var/lib/sops-nix";
-      #  mode = "0755";
-      #}
-      #{
-      #  directory = "/var/lib/pangolin";
-      #  user = "pangolin";
-      #  group = "fossorial";
-      #  mode = "0755";
-      #}
+      "/var/lib/private/vector" # vector logs and state (DynamicUser)
+      "/var/lib/reaction" # reaction ban state
     ];
     files = [
       "/etc/machine-id"
@@ -69,4 +61,15 @@
     "/persist".neededForBoot = true;
     "/var/lib/sops-nix".neededForBoot = true;
   };
+
+  # fix /var/lib/private permissions for DynamicUser services
+  # see: https://github.com/nix-community/impermanence/issues/254
+  system.activationScripts."var-lib-private-permissions" = {
+    deps = [ "specialfs" ];
+    text = ''
+      mkdir -p /persist/var/lib/private
+      chmod 0700 /persist/var/lib/private
+    '';
+  };
+  system.activationScripts."createPersistentStorageDirs".deps = [ "var-lib-private-permissions" "users" "groups" ];
 }
