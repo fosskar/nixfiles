@@ -138,8 +138,14 @@
 
       datasources.settings = {
         deleteDatasources = [
-          { name = "VictoriaLogs"; orgId = 1; }
-          { name = "VictoriaMetrics (native)"; orgId = 1; }
+          {
+            name = "VictoriaLogs";
+            orgId = 1;
+          }
+          {
+            name = "VictoriaMetrics (native)";
+            orgId = 1;
+          }
         ];
         datasources = [
           {

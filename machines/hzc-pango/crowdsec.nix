@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   # create traefik log directory
   systemd.tmpfiles.rules = [

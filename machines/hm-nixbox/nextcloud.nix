@@ -2,7 +2,12 @@
 {
   # listen on localhost:8009 instead of port 80
   services.nginx.virtualHosts."localhost" = {
-    listen = [{ addr = "127.0.0.1"; port = 8009; }];
+    listen = [
+      {
+        addr = "127.0.0.1";
+        port = 8009;
+      }
+    ];
   };
 
   services.nextcloud = {
