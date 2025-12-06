@@ -10,7 +10,7 @@
     allowedHosts = "home.osscar.me";
 
     # environment file for secrets (proxmox api tokens, etc.)
-    environmentFile = config.sops.secrets."homepage.env".path;
+    #environmentFile = config.sops.secrets."homepage.env".path;
 
     # basic settings
     settings = {
@@ -168,11 +168,6 @@
               href = "https://prowlarr.osscar.me";
               icon = "prowlarr.svg";
               siteMonitor = "http://127.0.0.1:9696";
-              widget = {
-                type = "prowlarr";
-                url = "http://127.0.0.1:9696";
-                key = "{{HOMEPAGE_VAR_PROWLARR_KEY}}";
-              };
             };
           }
           {
@@ -180,11 +175,6 @@
               href = "https://sonarr.osscar.me";
               icon = "sonarr.svg";
               siteMonitor = "http://127.0.0.1:8989";
-              widget = {
-                type = "sonarr";
-                url = "http://127.0.0.1:8989";
-                key = "{{HOMEPAGE_VAR_SONARR_KEY}}";
-              };
             };
           }
           {
@@ -192,11 +182,6 @@
               href = "https://radarr.osscar.me";
               icon = "radarr.svg";
               siteMonitor = "http://127.0.0.1:7878";
-              widget = {
-                type = "radarr";
-                url = "http://127.0.0.1:7878";
-                key = "{{HOMEPAGE_VAR_RADARR_KEY}}";
-              };
             };
           }
           {
@@ -204,11 +189,6 @@
               href = "https://lidarr.osscar.me";
               icon = "lidarr.svg";
               siteMonitor = "http://127.0.0.1:8686";
-              widget = {
-                type = "lidarr";
-                url = "http://127.0.0.1:8686";
-                key = "{{HOMEPAGE_VAR_LIDARR_KEY}}";
-              };
             };
           }
           {
@@ -216,11 +196,6 @@
               href = "https://readarr.osscar.me";
               icon = "readarr.svg";
               siteMonitor = "http://127.0.0.1:8787";
-              widget = {
-                type = "readarr";
-                url = "http://127.0.0.1:8787";
-                key = "{{HOMEPAGE_VAR_READARR_KEY}}";
-              };
             };
           }
           {
@@ -228,28 +203,13 @@
               href = "https://jellyseerr.osscar.me";
               icon = "jellyseerr.svg";
               siteMonitor = "http://127.0.0.1:5055";
-              widget = {
-                type = "jellyseerr";
-                url = "http://127.0.0.1:5055";
-                key = "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}";
-                fields = [
-                  "pending"
-                  "approved"
-                  "available"
-                ];
-              };
             };
           }
           {
-            "sabnzbd" = {
-              href = "https://usenet.osscar.me";
+            "SABnzbd" = {
+              href = "https://sabnzbd.osscar.me";
               icon = "sabnzbd.svg";
               siteMonitor = "http://127.0.0.1:8080";
-              widget = {
-                type = "sabnzbd";
-                url = "http://127.0.0.1:8080";
-                key = "{{HOMEPAGE_VAR_SABNZBD_KEY}}";
-              };
             };
           }
         ];
@@ -273,18 +233,13 @@
               href = "https://docs.osscar.me";
               icon = "paperless.png";
               siteMonitor = "http://127.0.0.1:28981";
-              widget = {
-                type = "paperlessngx";
-                url = "http://127.0.0.1:28981";
-                key = "{{HOMEPAGE_VAR_PAPERLESS_KEY}}";
-              };
             };
           }
           {
             "Nextcloud" = {
               href = "https://cloud.osscar.me";
               icon = "nextcloud.svg";
-              siteMonitor = "http://127.0.0.1:8009";
+              siteMonitor = "http://127.0.0.1:8009/status.php";
             };
           }
         ];

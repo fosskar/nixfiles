@@ -113,6 +113,7 @@
       url = "git+ssh://git@codeberg.org/osscar/wallpaper.git";
       flake = false;
     };
+
   };
 
   outputs =

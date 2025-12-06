@@ -4,11 +4,20 @@
     ../../modules/monitoring
   ];
 
-  monitoring = {
+  monitoring.telegraf = {
     enable = true;
-    enableNodeExporter = true;
-    enableNutExporter = false;
-    enableResticExporter = false;
+    plugins = [
+      "system"
+      "systemd"
+      "zfs"
+      "upsd"
+      "sensors"
+      "smart"
+    ];
+  };
+
+  monitoring.exporter = {
+    enable = true;
     enableZfsExporter = true;
   };
 
@@ -33,11 +42,29 @@
             static_configs = [
               {
                 targets = [
-                  "localhost:9100"
                   "192.168.10.1:9100" # router
                   "192.168.10.2:9100" # ap
                 ];
                 labels.type = "node-exporter";
+              }
+            ];
+          }
+
+          {
+            job_name = "telegraf";
+            static_configs = [
+              {
+                targets = [ "localhost:9273" ];
+                labels.type = "telegraf";
+              }
+            ];
+          }
+
+          {
+            job_name = "zfs-exporter";
+            static_configs = [
+              {
+                targets = [ "localhost:9134" ];
               }
             ];
           }
@@ -51,31 +78,14 @@
             ];
           }
 
+          # openwrt telegraf (unbound + adguard home)
           {
-            job_name = "nut-exporter";
+            job_name = "openwrt-telegraf";
             static_configs = [
               {
-                targets = [ "localhost:9199" ];
+                targets = [ "192.168.10.1:9273" ];
                 labels = {
-                  ups = "eaton-ellipse";
-                  type = "nut-exporter";
-                };
-              }
-            ];
-            metrics_path = "/ups_metrics";
-            params = {
-              ups = [ "eaton-ellipse" ];
-            };
-          }
-
-          # zfs exporter
-          {
-            job_name = "zfs-exporter";
-            static_configs = [
-              {
-                targets = [ "localhost:9134" ];
-                labels = {
-                  type = "zfs-exporter";
+                  type = "telegraf";
                 };
               }
             ];
@@ -88,9 +98,13 @@
   # install nut client tools
   environment.systemPackages = [ pkgs.nut ];
 
+  # provision grafana dashboards via /etc
+  environment.etc."grafana-dashboards/unbound_adguardhome.json".source =
+    ./dashboards/unbound_adguardhome.json;
+
   services.grafana = {
     enable = true;
-    package = pkgs.grafana;
+    #package = pkgs.grafana;
 
     openFirewall = false;
     declarativePlugins = with pkgs.grafanaPlugins; [
@@ -104,6 +118,7 @@
         http_port = 3100;
         domain = "grafana.osscar.me";
         root_url = "https://grafana.osscar.me";
+        enable_gzip = true;
       };
 
       analytics = {
@@ -131,22 +146,18 @@
         org_role = "Admin";
         hide_version = true;
       };
+
+      # experimental: try new layout system to avoid react-grid-layout freeze bugs
+      "feature_toggles" = {
+        #dashboardNewLayouts = true;
+      };
     };
 
     provision = {
       enable = true;
 
       datasources.settings = {
-        deleteDatasources = [
-          {
-            name = "VictoriaLogs";
-            orgId = 1;
-          }
-          {
-            name = "VictoriaMetrics (native)";
-            orgId = 1;
-          }
-        ];
+        #deleteDatasources = [ ];
         datasources = [
           {
             name = "VictoriaMetrics";
@@ -169,14 +180,14 @@
         apiVersion = 1;
         providers = [
           {
-            name = "default";
+            name = "nixos";
             orgId = 1;
-            folder = "";
+            #folder = "NixOS";
             type = "file";
-            disableDeletion = false;
+            disableDeletion = true;
             editable = true;
             options = {
-              path = "/var/lib/grafana/dashboards";
+              path = "/etc/grafana-dashboards";
             };
           }
         ];

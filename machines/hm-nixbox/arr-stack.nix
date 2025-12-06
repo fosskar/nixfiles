@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, lib, ... }:
 {
   users = {
 
@@ -83,12 +83,51 @@
       openFirewall = false;
       group = "media";
     };
+
+    # auto-sync trash guides to sonarr/radarr
+    recyclarr = {
+      enable = true;
+      schedule = "weekly";
+      configuration = {
+        sonarr.series = {
+          base_url = "http://127.0.0.1:${toString config.services.sonarr.settings.server.port}";
+          api_key = "!env_var SONARR_API_KEY";
+          quality_definition = {
+            type = "series";
+          };
+          delete_old_custom_formats = true;
+          include = [
+            { template = "sonarr-quality-definition-series"; }
+            { template = "sonarr-v4-quality-profile-web-1080p"; }
+            { template = "sonarr-v4-custom-formats-web-1080p"; }
+          ];
+        };
+        radarr.movies = {
+          base_url = "http://127.0.0.1:${toString config.services.radarr.settings.server.port}";
+          api_key = "!env_var RADARR_API_KEY";
+          quality_definition = {
+            type = "movie";
+          };
+          delete_old_custom_formats = true;
+          include = [
+            { template = "radarr-quality-definition-movie"; }
+            { template = "radarr-quality-profile-remux-web-1080p"; }
+            { template = "radarr-custom-formats-remux-web-1080p"; }
+          ];
+        };
+      };
+    };
   };
 
   # umask for proper file permissions (0027 = 640/750)
   systemd = {
     services = {
-      sabnzbd.serviceConfig.UMask = "0027";
+      sabnzbd = {
+        serviceConfig.UMask = "0027";
+        preStart = lib.mkAfter ''
+          ${pkgs.gnused}/bin/sed -i 's/^host_whitelist = .*/host_whitelist = hm-nixbox, sabnzbd.osscar.me/' /var/lib/sabnzbd/sabnzbd.ini
+        '';
+      };
       prowlarr.serviceConfig.UMask = "0027";
       sonarr.serviceConfig.UMask = "0027";
       radarr.serviceConfig.UMask = "0027";
@@ -98,6 +137,16 @@
       jellyseerr.serviceConfig.UMask = "0027";
 
       jellyfin.environment.LIBVA_DRIVER_NAME = "iHD";
+
+      recyclarr = {
+        serviceConfig.EnvironmentFile = config.sops.secrets."arr-stack.env".path;
+        preStart = ''
+          ${pkgs.yq-go}/bin/yq -o yaml \
+            'with((.. | select(kind == "scalar") | select(tag == "!!str") | select(test("^!env_var .*"))); . = sub("!env_var ", "") | . tag = "!env_var")' \
+            /var/lib/recyclarr/config.json > /var/lib/recyclarr/recyclarr.yml
+        '';
+        serviceConfig.ExecStart = lib.mkForce "${pkgs.recyclarr}/bin/recyclarr sync --config /var/lib/recyclarr/recyclarr.yml";
+      };
     };
 
     # media directories on zfs pool
