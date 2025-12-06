@@ -50,8 +50,12 @@ in
           paginate = "auto";
         };
         git = {
-          auto-local-bookmark = true;
           sign-on-push = true;
+        };
+        remotes = {
+          origin = {
+            auto-track-bookmarks = "glob:*";
+          };
         };
         signing = {
           backend = "ssh";
