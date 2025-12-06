@@ -48,8 +48,7 @@
       "/var/lib/systemd"
       "/var/lib/sops-nix"
       "/var/lib/pangolin"
-      "/var/lib/private/vector" # vector logs and state (DynamicUser)
-      "/var/lib/reaction" # reaction ban state
+      "/var/lib/crowdsec"
     ];
     files = [
       "/etc/machine-id"
@@ -71,5 +70,9 @@
       chmod 0700 /persist/var/lib/private
     '';
   };
-  system.activationScripts."createPersistentStorageDirs".deps = [ "var-lib-private-permissions" "users" "groups" ];
+  system.activationScripts."createPersistentStorageDirs".deps = [
+    "var-lib-private-permissions"
+    "users"
+    "groups"
+  ];
 }

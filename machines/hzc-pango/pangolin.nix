@@ -13,8 +13,18 @@
       dashboardDomain = "pangolin.simonoscar.me";
       environmentFile = config.sops.secrets."hzc-pango.env".path;
     };
-    traefik.staticConfigOptions.accessLog = {
-      format = "json";
+    traefik = {
+      staticConfigOptions = {
+        accessLog = {
+          format = "json";
+          filePath = "/var/log/traefik/access.log";
+        };
+        log.level = "WARN";
+        api = {
+          dashboard = true;
+          insecure = false;
+        };
+      };
     };
   };
 }
