@@ -116,7 +116,7 @@
       },
       "gridPos": {
         "h": 1,
-        "w": 5,
+        "w": 6,
         "x": 0,
         "y": 0
       },
@@ -2757,10 +2757,10 @@
       "type": "stat"
     }
   ],
-  "preload": true,
-  "refresh": "5m",
+  "preload": false,
+  "refresh": "auto",
   "schemaVersion": 42,
-  "tags": ["unbound", "adguard", "telegraf", "prometheus", "openwrt"],
+  "tags": ["unbound", "adguard", "telegraf", "openwrt"],
   "templating": {
     "list": []
   },
@@ -2774,6 +2774,6 @@
   "timezone": "",
   "title": "Unbound + AdGuard",
   "uid": "unbound-adguard-telegraf",
-  "version": 9,
+  "version": 11,
   "weekStart": "monday"
 }

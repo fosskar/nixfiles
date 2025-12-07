@@ -1653,7 +1653,7 @@
     }
   ],
   "preload": false,
-  "refresh": "",
+  "refresh": "auto",
   "schemaVersion": 42,
   "tags": ["ups", "telegraf", "eaton"],
   "templating": {
@@ -1706,5 +1706,5 @@
   "timezone": "",
   "title": "UPS",
   "uid": "eaton-ups",
-  "version": 7
+  "version": 8
 }

@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 0,
+  "id": 34,
   "links": [],
   "panels": [
     {
@@ -81,8 +81,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
+        "h": 3,
+        "w": 5,
         "x": 0,
         "y": 0
       },
@@ -121,9 +121,80 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
+            "fixedColor": "semi-dark-blue",
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 50
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 5,
+        "y": 0
+      },
+      "id": 108,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": false
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": "VictoriaMetrics",
+          "editorMode": "code",
+          "expr": "zfs_pool_fragmentation_ratio{pool=~\"$pool\"} * 100",
+          "legendFormat": "fragmentation",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "type": "stat"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
             "mode": "fixed"
           },
+          "decimals": 2,
           "fieldMinMax": false,
           "mappings": [],
           "thresholds": {
@@ -135,17 +206,17 @@
               }
             ]
           },
-          "unit": "decbytes"
+          "unit": "none"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 6,
+        "h": 3,
+        "w": 2,
+        "x": 7,
         "y": 0
       },
-      "id": 103,
+      "id": 107,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -167,10 +238,10 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "exemplar": false,
-          "expr": "zfs_pool_size_bytes{pool=\"tank\"}",
+          "expr": "zfs_pool_deduplication_ratio{pool=~\"$pool\"}",
           "format": "time_series",
           "instant": false,
-          "legendFormat": "size",
+          "legendFormat": "dedup",
           "range": true,
           "refId": "A"
         }
@@ -182,31 +253,34 @@
       "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#0a3a52",
+                "color": "green",
                 "value": 0
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
               }
             ]
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 3,
+        "h": 10,
+        "w": 2,
         "x": 9,
         "y": 0
       },
-      "id": 102,
+      "id": 203,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -219,74 +293,16 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": false
+        "textMode": "name",
+        "wideLayout": true
       },
       "pluginVersion": "",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "zfs_pool_free_bytes{pool=~\"$pool\"}",
-          "legendFormat": "free",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "#0a3a52",
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 12,
-        "y": 0
-      },
-      "id": 101,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": false
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "editorMode": "code",
-          "expr": "zfs_pool_allocated_bytes{pool=~\"$pool\"}",
-          "legendFormat": "alloc",
+          "expr": "smart_device_health_ok",
+          "legendFormat": "{{device}}",
           "range": true,
           "refId": "A"
         }
@@ -383,9 +399,9 @@
         ]
       },
       "gridPos": {
-        "h": 7,
-        "w": 9,
-        "x": 15,
+        "h": 10,
+        "w": 13,
+        "x": 11,
         "y": 0
       },
       "id": 104,
@@ -448,42 +464,31 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "semi-dark-blue",
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
+          "fieldMinMax": false,
           "mappings": [],
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#0a3a52",
                 "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 50
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 90
               }
             ]
           },
-          "unit": "percent"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 3,
+        "h": 3,
+        "w": 2,
         "x": 0,
-        "y": 5
+        "y": 3
       },
-      "id": 108,
+      "id": 103,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -504,8 +509,69 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "zfs_pool_fragmentation_ratio{pool=~\"$pool\"} * 100",
-          "legendFormat": "fragmentation",
+          "exemplar": false,
+          "expr": "zfs_pool_size_bytes{pool=\"$pool\"}",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "size",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "type": "stat"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#0a3a52",
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 2,
+        "y": 3
+      },
+      "id": 101,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": false
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": "VictoriaMetrics",
+          "editorMode": "code",
+          "expr": "zfs_pool_allocated_bytes{pool=~\"$pool\"}",
+          "legendFormat": "alloc",
           "range": true,
           "refId": "A"
         }
@@ -531,15 +597,138 @@
               }
             ]
           },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 4,
+        "y": 3
+      },
+      "id": 102,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": false
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": "VictoriaMetrics",
+          "editorMode": "code",
+          "expr": "zfs_pool_free_bytes{pool=~\"$pool\"}",
+          "legendFormat": "free",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "type": "stat"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 6,
+        "y": 3
+      },
+      "id": 109,
+      "options": {
+        "minVizHeight": 202,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": "VictoriaMetrics",
+          "editorMode": "code",
+          "expr": "100 * zfs_arcstats_hits / (zfs_arcstats_hits + zfs_arcstats_misses)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "arc hit %",
+      "type": "gauge"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#0a3a52",
+                "value": 0
+              }
+            ]
+          },
           "unit": "none"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 3,
-        "y": 5
+        "h": 3,
+        "w": 1,
+        "x": 0,
+        "y": 6
       },
       "id": 106,
       "options": {
@@ -594,10 +783,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 6,
-        "y": 5
+        "h": 3,
+        "w": 1,
+        "x": 1,
+        "y": 6
       },
       "id": 105,
       "options": {
@@ -622,240 +811,6 @@
           "editorMode": "code",
           "expr": "zfs_pool_leaked_bytes{pool=~\"$pool\"}",
           "legendFormat": "leaked",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "purple",
-            "mode": "fixed"
-          },
-          "decimals": 2,
-          "fieldMinMax": false,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#0a3a52",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 9,
-        "y": 5
-      },
-      "id": 107,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": false
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "editorMode": "code",
-          "expr": "zfs_pool_deduplication_ratio{pool=~\"$pool\"}",
-          "legendFormat": "dedup",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": 0
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "green",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 12,
-        "y": 5
-      },
-      "id": 109,
-      "options": {
-        "minVizHeight": 202,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "editorMode": "code",
-          "expr": "100 * zfs_arcstats_hits / (zfs_arcstats_hits + zfs_arcstats_misses)",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "arc hit %",
-      "type": "gauge"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "#1f78c1",
-            "mode": "thresholds"
-          },
-          "fieldMinMax": false,
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "color": "green",
-                  "index": 0,
-                  "text": "healthy"
-                },
-                "1": {
-                  "color": "orange",
-                  "index": 1,
-                  "text": "Command line did not parse"
-                },
-                "2": {
-                  "color": "orange",
-                  "index": 2,
-                  "text": "Device open failed, or device did not return an IDENTIFY DEVICE structure."
-                },
-                "4": {
-                  "color": "text",
-                  "index": 3,
-                  "text": "SMART command failed"
-                },
-                "8": {
-                  "color": "red",
-                  "index": 4,
-                  "text": "DISK FAILING"
-                },
-                "16": {
-                  "color": "orange",
-                  "index": 5,
-                  "text": "prefail attribute below threshold"
-                },
-                "32": {
-                  "color": "orange",
-                  "index": 6,
-                  "text": "DISK OK but attribute was below threshold before"
-                },
-                "64": {
-                  "color": "orange",
-                  "index": 7,
-                  "text": "error log has errors"
-                },
-                "128": {
-                  "color": "orange",
-                  "index": 8,
-                  "text": "self-test log has errors"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 11,
-        "w": 24,
-        "x": 0,
-        "y": 9
-      },
-      "id": 203,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": false
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "editorMode": "code",
-          "expr": "smart_device_exit_status",
-          "legendFormat": "{{device}}",
           "range": true,
           "refId": "A"
         }
@@ -922,7 +877,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 20
+        "y": 10
       },
       "id": 110,
       "options": {
@@ -1029,7 +984,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 20
+        "y": 10
       },
       "id": 111,
       "options": {
@@ -1067,19 +1022,6 @@
       ],
       "title": "i/o pending queues ($pool)",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 27
-      },
-      "id": 201,
-      "panels": [],
-      "title": "pool i/o",
-      "type": "row"
     },
     {
       "datasource": "VictoriaMetrics",
@@ -1140,7 +1082,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 28
+        "y": 17
       },
       "id": 8,
       "options": {
@@ -1195,7 +1137,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 20,
+            "fillOpacity": 10,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1230,7 +1172,7 @@
               }
             ]
           },
-          "unit": "iops"
+          "unit": "Bps"
         },
         "overrides": []
       },
@@ -1238,12 +1180,12 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 28
+        "y": 17
       },
-      "id": 9,
+      "id": 10,
       "options": {
         "legend": {
-          "calcs": ["mean", "max", "lastNotNull"],
+          "calcs": ["mean", "lastNotNull"],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -1251,7 +1193,7 @@
         "tooltip": {
           "hideZeros": false,
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "",
@@ -1259,22 +1201,22 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "sum(rate(zfs_pool_reads{pool=~\"$pool\"}[$__rate_interval]))",
-          "legendFormat": "reads",
+          "expr": "rate(zfs_pool_nread{pool=~\"$pool\"}[$__rate_interval])",
+          "legendFormat": "{{dataset}} read",
           "range": true,
           "refId": "A"
         },
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "sum(rate(zfs_pool_writes{pool=~\"$pool\"}[$__rate_interval]))",
+          "expr": "rate(zfs_pool_nwritten{pool=~\"$pool\"}[$__rate_interval])",
           "hide": false,
-          "legendFormat": "writes",
+          "legendFormat": "{{dataset}} write",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "pool iops ($pool)",
+      "title": "dataset throughput ($pool)",
       "type": "timeseries"
     },
     {
@@ -1336,7 +1278,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 36
+        "y": 25
       },
       "id": 15,
       "options": {
@@ -1391,7 +1333,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 20,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1426,7 +1368,7 @@
               }
             ]
           },
-          "unit": "Bps"
+          "unit": "iops"
         },
         "overrides": []
       },
@@ -1434,12 +1376,12 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 36
+        "y": 25
       },
-      "id": 10,
+      "id": 9,
       "options": {
         "legend": {
-          "calcs": ["mean", "lastNotNull"],
+          "calcs": ["mean", "max", "lastNotNull"],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -1447,7 +1389,7 @@
         "tooltip": {
           "hideZeros": false,
           "mode": "multi",
-          "sort": "desc"
+          "sort": "none"
         }
       },
       "pluginVersion": "",
@@ -1455,22 +1397,22 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "rate(zfs_pool_nread{pool=~\"$pool\"}[$__rate_interval])",
-          "legendFormat": "{{dataset}} read",
+          "expr": "sum(rate(zfs_pool_reads{pool=~\"$pool\"}[$__rate_interval]))",
+          "legendFormat": "reads",
           "range": true,
           "refId": "A"
         },
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "rate(zfs_pool_nwritten{pool=~\"$pool\"}[$__rate_interval])",
+          "expr": "sum(rate(zfs_pool_writes{pool=~\"$pool\"}[$__rate_interval]))",
           "hide": false,
-          "legendFormat": "{{dataset}} write",
+          "legendFormat": "writes",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "dataset throughput ($pool)",
+      "title": "pool iops ($pool)",
       "type": "timeseries"
     },
     {
@@ -1479,7 +1421,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 33
       },
       "id": 200,
       "panels": [
@@ -1542,7 +1484,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 51
+            "y": 36
           },
           "id": 1,
           "options": {
@@ -1649,7 +1591,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 51
+            "y": 36
           },
           "id": 12,
           "options": {
@@ -1756,7 +1698,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 59
+            "y": 44
           },
           "id": 13,
           "options": {
@@ -1872,7 +1814,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 59
+            "y": 44
           },
           "id": 14,
           "options": {
@@ -1917,7 +1859,7 @@
     }
   ],
   "preload": false,
-  "refresh": "",
+  "refresh": "auto",
   "schemaVersion": 42,
   "tags": ["zfs", "telegraf", "exporter"],
   "templating": {
@@ -1952,5 +1894,5 @@
   "timezone": "",
   "title": "ZFS",
   "uid": "zfs",
-  "version": 21
+  "version": 23
 }
