@@ -26,7 +26,7 @@
 
     victoriametrics = {
       enable = true;
-      listenAddress = "0.0.0.0:8428"; # accessible from local network and pangolin tunnel
+      listenAddress = "127.0.0.1:8428"; # accessible from local network  and pangolin tunnel
       retentionPeriod = "3"; # 3 months
 
       # extra options
@@ -99,8 +99,12 @@
   environment.systemPackages = [ pkgs.nut ];
 
   # provision grafana dashboards via /etc
-  environment.etc."grafana-dashboards/unbound_adguardhome.json".source =
-    ./dashboards/unbound_adguardhome.json;
+  environment.etc = builtins.listToAttrs (
+    map (file: {
+      name = "grafana-dashboards/${file}";
+      value.source = ./dashboards/${file};
+    }) (builtins.attrNames (builtins.readDir ./dashboards))
+  );
 
   services.grafana = {
     enable = true;
