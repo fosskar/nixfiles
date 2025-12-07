@@ -50,7 +50,11 @@ in
     trim.enable = lib.mkDefault true;
     autoSnapshot = {
       enable = lib.mkDefault true;
-      monthly = lib.mkDefault 1;
+      frequent = 0;
+      hourly = 24;
+      daily = 7;
+      weekly = 4;
+      monthly = 3;
     };
   };
 }

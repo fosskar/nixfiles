@@ -58,7 +58,9 @@ let
     smart = {
       smart = [
         {
+          use_sudo = true;
           attributes = true;
+          nocheck = "standby"; # skip disks in standby (default, won't wake sleeping disks)
         }
       ];
     };
@@ -142,6 +144,7 @@ in
     systemd.services.telegraf.path = lib.mkMerge [
       (lib.mkIf (builtins.elem "sensors" cfg.plugins) [ pkgs.lm_sensors ])
       (lib.mkIf (builtins.elem "smart" cfg.plugins) [
+        "/run/wrappers" # for sudo
         pkgs.smartmontools
         pkgs.nvme-cli
       ])
@@ -149,7 +152,7 @@ in
 
     # telegraf user group memberships
     users.users.telegraf.extraGroups = lib.mkMerge [
-      (lib.mkIf (builtins.elem "smart" cfg.plugins) [ "disk" ])
+      (lib.mkIf (builtins.elem "smart" cfg.plugins) [ "disk" "wheel" ]) # wheel needed to execute sudo
       (lib.mkIf (builtins.elem "docker" cfg.plugins) [ "docker" ])
     ];
 
@@ -177,6 +180,23 @@ in
     services.udev.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) ''
       KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
     '';
+
+    # sudo rules for telegraf to run smartctl/nvme without password
+    security.sudo-rs.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) [
+      {
+        users = [ "telegraf" ];
+        commands = [
+          {
+            command = "${pkgs.smartmontools}/bin/smartctl";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "${pkgs.nvme-cli}/bin/nvme";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
 
     services.telegraf.extraConfig = {
       agent = {
