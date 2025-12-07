@@ -37,4 +37,6 @@
   environment.systemPackages = with pkgs; [
     fontconfig
   ];
+
+  services.tuned.enable = true;
 }
