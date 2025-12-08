@@ -1,12 +1,11 @@
 {
   mylib,
-  pkgs,
   inputs,
   ...
 }:
 {
   imports = [
-    #inputs.dms.homeModules.dankMaterialShell.niri
+    inputs.dms.homeModules.dankMaterialShell.niri
     inputs.dms.homeModules.dankMaterialShell.default
   ]
   ++ mylib.scanPaths ./. { };
@@ -33,10 +32,11 @@
       dynamicTheming = true;
     };
 
-    #niri = {
-    #  enableKeybinds = false;
-    #  enableSpawn = false;
-    #};
-    quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    niri = {
+      #  enableKeybinds = false;
+      enableSpawn = false;
+    };
+
+    #quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
 }

@@ -21,6 +21,7 @@
       "/var/lib/systemd/coredump"
       "/var/cache/tailscale"
       "/var/lib/tailscale"
+      "/var/lib/dmsgreeter" # dms greeter session state (remember user/session)
     ];
     files = [
       # Essential system files

@@ -3,8 +3,23 @@
   ...
 }:
 let
-  email = "osscar.unheard025@passmail.net";
-  name = "osscar";
+  # default identity (used when no conditional match)
+  defaultEmail = "osscar.unheard025@passmail.net";
+  defaultName = "osscar";
+
+  # forge-specific identities
+  github = {
+    name = "smonoscr";
+    email = "117449098+smonoscr@users.noreply.github.com";
+  };
+  codeberg = {
+    name = "osscar";
+    email = "osscar@noreply.codeberg.org";
+  };
+  tangled = {
+    name = "osscar";
+    email = "osscar.unheard025@passmail.net";
+  };
 in
 {
   imports = mylib.scanPaths ./. { };
@@ -41,7 +56,7 @@ in
         auto = true;
         parallel = 10;
       };
-      github.user = name;
+      github.user = defaultName;
       help.autoCorrect = "prompt";
       init.defaultBranch = "main";
       merge.conflictstyle = "zdiff3";
@@ -58,14 +73,59 @@ in
       };
       tag.sort = "version:refname";
       user = {
-        inherit email name;
+        email = defaultEmail;
+        name = defaultName;
       };
     };
 
     signing = {
-      key = "1394DCC0EC169ED4";
-      format = "openpgp";
+      key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
+      format = "ssh";
       signByDefault = true;
     };
+
+    # conditional includes based on remote URL
+    includes = [
+      # github (ssh)
+      {
+        condition = "hasconfig:remote.*.url:git@github.com:*/**";
+        contents.user = github;
+      }
+      # github (https)
+      {
+        condition = "hasconfig:remote.*.url:https://github.com/**";
+        contents.user = github;
+      }
+      # gitlab (ssh)
+      # {
+      #   condition = "hasconfig:remote.*.url:git@gitlab.com:*/**";
+      #   contents.user = gitlab;
+      # }
+      # gitlab (https)
+      # {
+      #   condition = "hasconfig:remote.*.url:https://gitlab.com/**";
+      #   contents.user = gitlab;
+      # }
+      # codeberg (ssh)
+      {
+        condition = "hasconfig:remote.*.url:git@codeberg.org:*/**";
+        contents.user = codeberg;
+      }
+      # codeberg (https)
+      {
+        condition = "hasconfig:remote.*.url:https://codeberg.org/**";
+        contents.user = codeberg;
+      }
+      # tangled (ssh)
+      {
+        condition = "hasconfig:remote.*.url:git@tangled.sh:*/**";
+        contents.user = tangled;
+      }
+      # tangled (https)
+      {
+        condition = "hasconfig:remote.*.url:https://tangled.sh/**";
+        contents.user = tangled;
+      }
+    ];
   };
 }

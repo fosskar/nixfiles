@@ -1,12 +1,34 @@
-{ config, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 {
   #xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
   programs.niri.settings = {
     # workspace configuration
-    workspaces.steam = {
-      name = "steam";
-      open-on-output = "HDMI-A-2";
+    workspaces = {
+      primary = {
+        name = "primary";
+        open-on-output = "DP-1";
+      };
+      secondary = {
+        name = "secondary";
+        open-on-output = "HDMI-A-2";
+      };
+      gaming = {
+        name = "gaming";
+        open-on-output = "DP-1";
+        # per-workspace layout overrides - uncomment after niri-flake supports it
+        # layout = {
+        #   gaps = 0;
+        #   border.enable = false;
+        #   focus-ring.enable = false;
+        #   shadow.enable = false;
+        # };
+      };
     };
 
     # input configuration
@@ -14,7 +36,9 @@
       mod-key = "Super";
       mod-key-nested = "Alt";
 
-      focus-follows-mouse.max-scroll-amount = "95%";
+      focus-follows-mouse.enable = true;
+      warp-mouse-to-focus.enable = true;
+      workspace-auto-back-and-forth = true;
 
       keyboard.xkb = {
         layout = "de";
@@ -102,7 +126,10 @@
         { proportion = 1.0; }
       ];
 
-      default-column-width = { };
+      # windows open at 33% width by default
+      default-column-width = {
+        proportion = 0.33333;
+      };
 
       focus-ring = {
         enable = false;
@@ -113,14 +140,9 @@
 
       border = {
         enable = true;
-        width = 2;
+        width = 1;
         urgent.color = "#9b0000";
-        inactive.gradient = {
-          from = "#505050";
-          to = "#808080";
-          angle = 0;
-          relative-to = "workspace-view";
-        };
+        inactive.color = "transparent";
         active.gradient = {
           from = "#76D493";
           to = "#5B957B";
@@ -132,9 +154,15 @@
       shadow.enable = true;
     };
 
+    # animations
+    animations = {
+      slowdown = 2.0; # 2x slower, adjust to taste
+    };
+
     # startup commands
     spawn-at-startup = [
       { sh = "steam -silent"; }
+      { command = [ "element-desktop" ]; }
     ];
 
     # hotkey overlay
@@ -150,6 +178,26 @@
 
     # window rules
     window-rules = [
+      # browsers/editors at 50% width
+      {
+        matches = [
+          { app-id = "^zen"; }
+          { app-id = "^firefox"; }
+          { app-id = "^chromium"; }
+          { app-id = "^dev\\.zed\\.Zed$"; }
+          { app-id = "^zeditor$"; }
+        ];
+        default-column-width = {
+          proportion = 0.5;
+        };
+      }
+      # element to secondary workspace
+      {
+        matches = [
+          { app-id = "^Element$"; }
+        ];
+        open-on-workspace = "secondary";
+      }
       {
         matches = [
           {
@@ -166,7 +214,7 @@
             app-id = "^steam$";
           }
         ];
-        open-on-workspace = "steam";
+        open-on-workspace = "secondary";
       }
       {
         matches = [
@@ -187,17 +235,28 @@
           relative-to = "bottom-right";
         };
       }
+      # float common dialogs (from hyprland config)
       {
         matches = [
           { app-id = "^Pinentry-gtk$"; }
+          { app-id = "^xdg-desktop-portal-gtk"; }
+          { app-id = "^hyprpolkitagent$"; }
+          { title = "^Open Files$"; }
+          { title = "^File Upload$"; }
+          { title = "^File Operation Progress$"; }
+          { title = "^MainPicker$"; }
+          { title = ".*Bitwarden.*"; }
         ];
         open-floating = true;
       }
+      # webcord/ts3 to steam workspace (secondary monitor)
       {
         matches = [
-          { app-id = "^xdg-desktop-portal-gtk"; }
+          { app-id = "^WebCord$"; }
+          { app-id = "^webcord$"; }
+          { title = "^TeamSpeak 3$"; }
         ];
-        open-floating = true;
+        open-on-workspace = "secondary";
       }
       {
         matches = [
@@ -206,8 +265,24 @@
         ];
         block-out-from = "screen-capture";
       }
+      # gaming workspace window rule - uncomment after niri-flake supports on-workspace matcher
+      # {
+      #   matches = [
+      #     { on-workspace = "gaming"; }
+      #   ];
+      #   geometry-corner-radius = {
+      #     top-left = 0.0;
+      #     top-right = 0.0;
+      #     bottom-left = 0.0;
+      #     bottom-right = 0.0;
+      #   };
+      #   animations.window-open.enable = false;
+      #   animations.window-close.enable = false;
+      #   animations.window-resize.enable = false;
+      # }
       {
         matches = [ { } ]; # match all windows
+        opacity = 1.0; # for toggle-window-rule-opacity
         draw-border-with-background = false;
         geometry-corner-radius = {
           top-left = 10.0;
@@ -223,7 +298,8 @@
     binds =
       with config.lib.niri.actions;
       let
-        dms-ipc = spawn "dms" "ipc";
+        dms-pkg = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        dms-ipc = spawn "qs" "ipc" "--any-display" "-p" "${dms-pkg}/share/quickshell/dms" "call";
       in
       {
         # help overlay
@@ -450,31 +526,20 @@
           move-column-to-last = [ ];
         };
 
-        # monitor focus
-        #"Mod+Shift+Left".action = {
-        #  focus-monitor-left = [ ];
-        #};
-        #"Mod+Shift+Down".action = {
-        #  focus-monitor-down = [ ];
-        #};
-        #"Mod+Shift+Up".action = {
-        #  focus-monitor-up = [ ];
-        #};
-        #"Mod+Shift+Right".action = {
-        #  focus-monitor-right = [ ];
-        #};
-        #"Mod+Shift+H".action = {
-        #  focus-monitor-left = [ ];
-        #};
-        #"Mod+Shift+J".action = {
-        #  focus-monitor-down = [ ];
-        #};
-        #"Mod+Shift+K".action = {
-        #  focus-monitor-up = [ ];
-        #};
-        #"Mod+Shift+L".action = {
-        #  focus-monitor-right = [ ];
-        #};
+        # monitor focus (left/right)
+        "Mod+Shift+Left".action = {
+          focus-monitor-left = [ ];
+        };
+        "Mod+Shift+Right".action = {
+          focus-monitor-right = [ ];
+        };
+        # workspace switching (up/down)
+        "Mod+Shift+Up".action = {
+          focus-workspace-up = [ ];
+        };
+        "Mod+Shift+Down".action = {
+          focus-workspace-down = [ ];
+        };
 
         # move to monitor
         "Mod+Shift+Ctrl+Left".action = {
@@ -711,6 +776,11 @@
         };
         "Mod+Shift+V".action = {
           switch-focus-between-floating-and-tiling = [ ];
+        };
+
+        # transparency toggle
+        "Mod+A".action = {
+          toggle-window-rule-opacity = [ ];
         };
 
         # screenshots

@@ -1,12 +1,12 @@
-{ inputs, pkgs, ... }:
+{ inputs, ... }:
 {
   imports = [
     inputs.dms.nixosModules.greeter
   ];
   programs.dankMaterialShell.greeter = {
     enable = true;
-    compositor.name = "hyprland"; # or set to hyprland
+    compositor.name = "niri"; # or set to hyprland
     configHome = "/home/simon";
-    quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    #quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
 }

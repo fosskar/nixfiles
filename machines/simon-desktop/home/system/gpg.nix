@@ -37,8 +37,10 @@
     enableSshSupport = true;
     pinentry.package = pkgs.pinentry-qt;
     # https://github.com/drduh/config/blob/master/gpg-agent.conf
-    defaultCacheTtl = 86400; # 1 hour (86400 seconds)
-    maxCacheTtl = 604800; # 24 hours max (604800 seconds)
+    defaultCacheTtl = 86400; # 24 hours
+    maxCacheTtl = 604800; # 7 days
+    defaultCacheTtlSsh = 86400; # 24 hours for ssh
+    maxCacheTtlSsh = 604800; # 7 days max for ssh
     extraConfig = ''
       ttyname $GPG_TTY
       allow-loopback-pinentry
