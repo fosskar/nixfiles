@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   services.glances.enable = true;
   services.homepage-dashboard = {

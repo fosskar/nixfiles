@@ -11,7 +11,10 @@
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)
   boot = {
-    kernelParams = [ "zfs.zfs_arc_max=12884901888" ]; # increase zfs arc size to 12gb
+    #kernelParams = [ "zfs.zfs_arc_max=12884901888" ]; # increase zfs arc size to 12gb
+    kernelParams = [ "zfs.zfs_arc_max=17179869184" ]; # 16GB
+    #kernelParams = [ "zfs.zfs_arc_max=34359738368" ];  # 32GB
+    #kernelParams = [ "zfs.zfs_arc_max=42949672960" ];  # 40GB
     kernelModules = [ "nct6775" ];
     loader = {
       systemd-boot.enable = false;

@@ -152,7 +152,10 @@ in
 
     # telegraf user group memberships
     users.users.telegraf.extraGroups = lib.mkMerge [
-      (lib.mkIf (builtins.elem "smart" cfg.plugins) [ "disk" "wheel" ]) # wheel needed to execute sudo
+      (lib.mkIf (builtins.elem "smart" cfg.plugins) [
+        "disk"
+        "wheel"
+      ]) # wheel needed to execute sudo
       (lib.mkIf (builtins.elem "docker" cfg.plugins) [ "docker" ])
     ];
 
