@@ -1,16 +1,10 @@
 { lib, ... }:
 {
-  networking = {
-    useNetworkd = lib.mkForce true;
-    enableIPv6 = lib.mkForce false;
-    dhcpcd.enable = false;
-  };
+  # desktop uses networkmanager - don't force systemd-networkd
+  networking.dhcpcd.enable = lib.mkDefault false;
 
   systemd = {
-    network = {
-      enable = lib.mkForce true;
-      wait-online.enable = lib.mkDefault false;
-    };
+    network.wait-online.enable = lib.mkDefault false;
     services = {
       NetworkManager-wait-online.enable = lib.mkDefault false;
       systemd-networkd.stopIfChanged = lib.mkDefault false;

@@ -1,0 +1,22 @@
+{ lib, config, ... }:
+let
+  cfg = config.nixfiles.tailscale;
+in
+{
+  options.nixfiles.tailscale = {
+    enable = lib.mkEnableOption "tailscale vpn";
+    trustInterface = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "add tailscale0 to firewall trusted interfaces";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    services.tailscale = {
+      enable = true;
+      openFirewall = true;
+    };
+    networking.firewall.trustedInterfaces = lib.mkIf cfg.trustInterface [ "tailscale0" ];
+  };
+}

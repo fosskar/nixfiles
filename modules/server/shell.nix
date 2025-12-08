@@ -1,5 +1,5 @@
 _: {
-  # enable zsh autocompletion for system packages (systemd, etc)
+  # servers use system zsh with full completion (no home-manager)
   environment.pathsToLink = [ "/share/zsh" ];
 
   programs = {

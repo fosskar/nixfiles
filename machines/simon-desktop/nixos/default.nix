@@ -2,13 +2,14 @@
 {
   imports = [
     inputs.chaotic.nixosModules.default
+    ../../../modules/base
+    ../../../modules/desktop
+    ../../../modules/tailscale
   ]
-  ++ mylib.scanPaths ./. {
-    exclude = [
-    ];
-  };
+  ++ mylib.scanPaths ./. { };
 
-  # Essential system configuration
+  nixfiles.tailscale.enable = true;
+
   nixpkgs.hostPlatform = "x86_64-linux";
 
   ### DON'T TOUCH!

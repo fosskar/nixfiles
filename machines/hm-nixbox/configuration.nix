@@ -1,11 +1,15 @@
 { mylib, pkgs, ... }:
 {
   imports = [
+    ../../modules/base
+    ../../modules/server
     ../../modules/bare-metal
-    ../../modules/shared
     ../../modules/zfs
+    ../../modules/tailscale
   ]
   ++ (mylib.scanPaths ./. { exclude = [ "dashboards" ]; });
+
+  nixfiles.tailscale.enable = true;
 
   nixpkgs.hostPlatform = "x86_64-linux";
 

@@ -1,5 +1,7 @@
 _: {
   imports = [
+    ../modules/base
+    ../modules/server
     ../modules/lxc
   ];
 

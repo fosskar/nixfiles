@@ -1,8 +1,9 @@
 { mylib, ... }:
 {
   imports = [
+    ../../modules/base
+    ../../modules/server
     ../../modules/vm
-    ../../modules/shared
   ]
   ++ (mylib.scanPaths ./. { });
 

@@ -6,6 +6,6 @@
       allowPing = lib.mkDefault true;
       logRefusedConnections = lib.mkDefault false;
     };
-    nftables.enable = true;
+    nftables.enable = lib.mkDefault true;
   };
 }

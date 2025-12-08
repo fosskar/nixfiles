@@ -6,9 +6,9 @@
   ...
 }:
 {
+  # vm-specific settings - base/server imported by machine config
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ../shared
   ]
   ++ (mylib.scanPaths ./. { exclude = [ ]; });
 

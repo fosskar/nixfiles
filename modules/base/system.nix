@@ -27,7 +27,6 @@
       BROWSER = "echo";
       EDITOR = "nvim --clean";
     };
-    stub-ld.enable = lib.mkDefault false;
     ldso32 = null;
   };
 
