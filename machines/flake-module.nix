@@ -94,17 +94,6 @@ in
         #  roles.default.tags."all" = { };
         #};
 
-        packages = {
-          roles.default.tags.all = { };
-          roles.default.settings = {
-            packages = [
-              "curl"
-              "dnsutils"
-              "gitMinimal"
-            ];
-          };
-        };
-
         # trusted nix caches
         clan-cache = {
           roles.default.tags.all = { };

@@ -31,6 +31,8 @@ in
   boot = {
     kernelPackages = lib.mkIf (lib.meta.availableOn pkgs.stdenv.hostPlatform pkgs.zfs) latestKernelPackage;
 
+    #networking.hostId = lib.mkDefault "8425e349";
+
     supportedFilesystems = [ "zfs" ];
 
     initrd.supportedFilesystems = [ "zfs" ];
