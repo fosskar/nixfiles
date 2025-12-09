@@ -14,9 +14,13 @@
       };
     };
     supportedFilesystems = [ "btrfs" ];
-
-    initrd.supportedFilesystems = [ "btrfs" ];
+    initrd = {
+      supportedFilesystems = [ "btrfs" ];
+      # no console access - emergency mode would just hang
+      systemd.suppressedUnits = [
+        "emergency.service"
+        "emergency.target"
+      ];
+    };
   };
-
-  console.keyMap = "de";
 }

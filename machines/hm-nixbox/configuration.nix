@@ -22,7 +22,6 @@
       grub = {
         enable = true;
         device = "nodev";
-        copyKernels = true; # required when /boot is on separate partition from /
         mirroredBoots = [
           {
             devices = [ "nodev" ];
@@ -37,7 +36,6 @@
     };
     zfs.extraPools = [ "tank" ];
   };
-  console.keyMap = "de";
 
   environment.systemPackages = with pkgs; [
     fontconfig

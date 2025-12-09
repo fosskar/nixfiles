@@ -1,77 +1,39 @@
-{ lib, ... }:
-{
-  security = {
-    protectKernelImage = true;
-    lockKernelModules = false;
-    forcePageTableIsolation = true;
-    allowUserNamespaces = true;
-    allowSimultaneousMultithreading = true;
-  };
-
+_: {
   boot = {
     kernelModules = [ "nf_conntrack" ];
 
-    kernel.sysctl = {
-      # inotify limits
-      "fs.inotify.max_user_watches" = 1048576;
-      "fs.inotify.max_user_instances" = 1024;
-      "fs.inotify.max_queued_events" = 32768;
-
-      # security
-      "kernel.sysrq" = lib.mkForce 0;
-      "kernel.kptr_restrict" = 2;
-      "kernel.ftrace_enabled" = false;
-      "kernel.dmesg_restrict" = 1;
-      "fs.protected_fifos" = 2;
-      "fs.protected_regular" = 2;
-      "fs.suid_dumpable" = 0;
-      "fs.protected_symlinks" = 1;
-      "fs.protected_hardlinks" = 1;
-      "kernel.printk" = "3 3 3 3";
-      "dev.tty.ldisc_autoload" = 0;
-      "kernel.kexec_load_disabled" = true;
-      "vm.mmap_min_addr" = 65536;
-    };
-
     kernelParams = [
-      "nohibernate"
-      "randomize_kstack_offset=on"
-      "vsyscall=none"
+      # auto-reboot on kernel panic (headless servers)
+      "panic=1"
+      "boot.panic_on_fail"
+
+      # Disable slab merging which significantly increases the difficulty of heap
+      # exploitation by preventing overwriting objects from merged caches and by
+      # making it harder to influence slab cache layout (costs some performance)
       "slab_nomerge"
+
+      # Disable debugfs which exposes sensitive information about the kernel
       "debugfs=off"
-      "oops=panic"
-      "page_poison=on"
-      "page_alloc.shuffle=1"
+
+      # for debugging kernel-level slab issues
       "slub_debug=FZP"
+
+      # ignore access time (atime) updates on files
       "rootflags=noatime"
+
+      # linux security modules
       "lsm=landlock,lockdown,yama,integrity,apparmor,bpf,tomoyo,selinux"
+
+      # additional integrity auditing messages
       "integrity_audit=1"
+
+      # disable swap for servers
       "vm.swappiness=0"
+
       # note: module.sig_enforce and lockdown skipped (breaks VMs)
     ];
 
     blacklistedKernelModules = [
-      # obscure network protocols
-      "dccp"
-      "sctp"
-      "rds"
-      "tipc"
-      "n-hdlc"
-      "netrom"
-      "x25"
-      "ax25"
-      "rose"
-      "decnet"
-      "econet"
-      "af_802154"
-      "ipx"
-      "appletalk"
-      "psnap"
-      "p8022"
-      "p8023"
-      "can"
-      "atm"
-
       # audio (not needed on servers)
       "snd_hda_intel"
       "snd_hda_codec"

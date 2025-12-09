@@ -1,14 +1,14 @@
-{ lib, ... }:
+{ ... }:
 {
   # common openssh settings for all machines
   services.openssh = {
-    enable = lib.mkDefault true;
-    openFirewall = lib.mkDefault true;
+    enable = true;
+    openFirewall = true;
     settings = {
-      X11Forwarding = lib.mkDefault false;
-      KbdInteractiveAuthentication = lib.mkDefault false;
-      UseDns = lib.mkDefault false;
-      StreamLocalBindUnlink = lib.mkDefault true;
+      X11Forwarding = false;
+      KbdInteractiveAuthentication = false;
+      UseDns = false;
+      StreamLocalBindUnlink = true;
       KexAlgorithms = [
         "sntrup761x25519-sha512@openssh.com"
         "curve25519-sha256"

@@ -1,7 +1,9 @@
 { lib, ... }:
 {
-  # common network settings for all machines
-  networking.dhcpcd.enable = lib.mkDefault false;
+  networking = {
+    dhcpcd.enable = lib.mkDefault false;
+    useNetworkd = true;
+  };
 
   systemd = {
     network.wait-online.enable = lib.mkDefault false;

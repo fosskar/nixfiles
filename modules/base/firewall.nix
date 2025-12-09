@@ -2,7 +2,7 @@
 {
   networking = {
     firewall = {
-      enable = lib.mkDefault true;
+      enable = true;
       allowPing = lib.mkDefault true;
       logRefusedConnections = lib.mkDefault false;
     };

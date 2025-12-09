@@ -36,8 +36,7 @@
           command = "${config.home.homeDirectory}/.claude/claude-code-status.sh";
         };
         allowedDirectories = [
-          "${config.home.homeDirectory}/code"
-          "${config.xdg.configHome}"
+          "${config.home.homeDirectory}"
         ];
         permissions = {
 
@@ -65,6 +64,7 @@
             "mcp__sequential-thinking__sequentialthinking"
             "mcp__context7__get-library-docs"
             "mcp__context7__resolve-library-id"
+            "mcp__nixos__nixos_info"
             "WebFetch(domain:docs.anthropic.com)"
             "WebFetch(domain:github.com)"
           ];

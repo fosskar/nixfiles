@@ -5,21 +5,30 @@
   ...
 }:
 {
-  # clan sets: experimental-features, connect-timeout, log-lines, min-free, max-free, builders-use-substitutes
+  # clan also sets: experimental-features, connect-timeout, log-lines, min-free, max-free, builders-use-substitutes
   nix = {
-    package = pkgs.nixVersions.latest;
+    package = lib.mkDefault pkgs.nixVersions.latest;
 
     nixPath = [ "nixpkgs=flake:nixpkgs" ];
 
     channel.enable = lib.mkDefault false;
 
+    # lower priority for builds
+    daemonCPUSchedPolicy = lib.mkDefault "batch";
+    daemonIOSchedClass = lib.mkDefault "idle";
+    daemonIOSchedPriority = lib.mkDefault 7;
+
     settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+
       download-buffer-size = lib.mkDefault (256 * 1024 * 1024); # 256 MB for large deployments
-      fallback = true;
 
       # for direnv garbage-collection roots
-      keep-derivations = true;
-      keep-outputs = true;
+      keep-derivations = lib.mkDefault true;
+      keep-outputs = lib.mkDefault true;
 
       trusted-users = [
         "root"
@@ -27,9 +36,24 @@
       ];
 
       # dont warn me that my git tree is dirty
-      warn-dirty = false;
+      warn-dirty = lib.mkDefault false;
+
+      auto-optimise-store = lib.mkDefault true;
+
+      log-lines = lib.mkDefault 25;
+
+      # avoid disk full
+      max-free = lib.mkDefault (3000 * 1024 * 1024);
+      min-free = lib.mkDefault (512 * 1024 * 1024);
+
+      builders-use-substitutes = lib.mkDefault true;
     };
+
+    gc.automatic = lib.mkDefault true;
 
     optimise.automatic = lib.mkDefault (!config.boot.isContainer);
   };
+
+  # prefer killing builds over user sessions on OOM
+  systemd.services.nix-daemon.serviceConfig.OOMScoreAdjust = lib.mkDefault 250;
 }

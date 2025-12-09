@@ -7,5 +7,7 @@
     info.enable = lib.mkDefault false;
     nixos.enable = lib.mkDefault false;
     man.mandoc.enable = lib.mkDefault false;
+    # low priority so fish.nix can override if needed
+    man.generateCaches = lib.mkOverride 1500 false;
   };
 }
