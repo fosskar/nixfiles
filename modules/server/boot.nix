@@ -7,8 +7,6 @@
     # auto-expand partition (useful for VMs, harmless on bare-metal)
     growPartition = true;
 
-    tmp.cleanOnBoot = lib.mkDefault true;
-
     loader = {
       timeout = lib.mkDefault 0;
       efi.canTouchEfiVariables = lib.mkDefault false;
@@ -24,7 +22,7 @@
         configurationLimit = lib.mkDefault 5;
         efiSupport = lib.mkDefault true;
         efiInstallAsRemovable = lib.mkDefault true;
-        splashImage = lib.mkDefault null;
+        splashImage = lib.mkForce null; # no splash on servers
         memtest86.enable = lib.mkDefault false;
       };
     };

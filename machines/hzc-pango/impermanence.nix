@@ -49,6 +49,10 @@
       "/var/lib/sops-nix"
       "/var/lib/pangolin"
       "/var/lib/crowdsec"
+      {
+        directory = "/var/lib/private";
+        mode = "0700";
+      }
     ];
     files = [
       "/etc/machine-id"

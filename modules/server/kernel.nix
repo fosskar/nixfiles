@@ -72,6 +72,15 @@
       "can"
       "atm"
 
+      # audio (not needed on servers)
+      "snd_hda_intel"
+      "snd_hda_codec"
+      "snd_hwdep"
+      "snd_pcm"
+      "snd_timer"
+      "snd"
+      "soundcore"
+
       # rare filesystems
       "adfs"
       "affs"

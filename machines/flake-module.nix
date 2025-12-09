@@ -97,12 +97,6 @@ in
           };
         };
 
-        base-module = {
-          module.name = "importer";
-          roles.default.tags.all = { };
-          roles.default.extraModules = [ "${self}/modules/base" ];
-        };
-
         server-module = {
           module.name = "importer";
           roles.default.tags.server = { };

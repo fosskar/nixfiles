@@ -4,7 +4,7 @@
   boot = {
     kernelModules = [ "xe" ];
 
-    # intel arc b50 pro needs pci=realloc for BAR allocation
+    # intel arc needs pci=realloc for resizable BAR allocation
     kernelParams = [ "pci=realloc" ];
   };
 

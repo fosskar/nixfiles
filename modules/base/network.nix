@@ -1,6 +1,6 @@
 { lib, ... }:
 {
-  # desktop uses networkmanager - don't force systemd-networkd
+  # common network settings for all machines
   networking.dhcpcd.enable = lib.mkDefault false;
 
   systemd = {
@@ -11,5 +11,6 @@
       systemd-resolved.stopIfChanged = lib.mkDefault false;
     };
   };
+
   services.resolved.llmnr = lib.mkDefault "false";
 }

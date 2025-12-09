@@ -301,9 +301,11 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
+          "exemplar": false,
           "expr": "smart_device_health_ok",
+          "instant": true,
           "legendFormat": "{{device}}",
-          "range": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1894,5 +1896,5 @@
   "timezone": "",
   "title": "ZFS",
   "uid": "zfs",
-  "version": 23
+  "version": 24
 }
