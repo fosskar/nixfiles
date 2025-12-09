@@ -26,28 +26,27 @@ in
 
     inventory = {
       machines = {
-        # vps on hetzner cloud
         hzc-pango = {
           deploy.targetHost = "root@138.201.155.21";
           tags = [
+            "server"
             "hetzner"
-            "vm"
           ];
         };
 
-        # desktop deployments
         simon-desktop = {
           deploy.targetHost = "root@192.168.10.200";
           tags = [
             "desktop"
+            "home"
           ];
         };
 
-        # bare-metal server (replaces proxmox + lxc containers)
         hm-nixbox = {
           deploy.targetHost = "root@192.168.10.80";
           tags = [
             "server"
+            "home"
           ];
         };
       };
@@ -90,17 +89,30 @@ in
           };
         };
 
-        #emergency-access = {
-        #  roles.default.tags."all" = { };
-        #};
-
-        # trusted nix caches
         clan-cache = {
           roles.default.tags.all = { };
           module = {
             name = "trusted-nix-caches";
             input = "clan-core";
           };
+        };
+
+        base-module = {
+          module.name = "importer";
+          roles.default.tags.all = { };
+          roles.default.extraModules = [ "${self}/modules/base" ];
+        };
+
+        server-module = {
+          module.name = "importer";
+          roles.default.tags.server = { };
+          roles.default.extraModules = [ "${self}/modules/server" ];
+        };
+
+        desktop-module = {
+          module.name = "importer";
+          roles.default.tags.desktop = { };
+          roles.default.extraModules = [ "${self}/modules/desktop" ];
         };
       };
     };

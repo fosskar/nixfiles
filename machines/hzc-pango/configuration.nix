@@ -1,11 +1,6 @@
 { mylib, ... }:
 {
-  imports = [
-    ../../modules/base
-    ../../modules/server
-    ../../modules/vm
-  ]
-  ++ (mylib.scanPaths ./. { });
+  imports = mylib.scanPaths ./. { };
 
   nixpkgs.hostPlatform = "x86_64-linux";
 

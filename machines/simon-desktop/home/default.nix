@@ -54,10 +54,7 @@
           html.enable = false;
           json.enable = false;
         };
-        programs = {
-          man.enable = false;
-          man.package = null;
-        };
+        programs.man.enable = true; # required for fish completions
       }
     ];
   };

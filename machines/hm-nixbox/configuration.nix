@@ -1,9 +1,6 @@
 { mylib, pkgs, ... }:
 {
   imports = [
-    ../../modules/base
-    ../../modules/server
-    ../../modules/bare-metal
     ../../modules/zfs
     ../../modules/tailscale
   ]
@@ -25,6 +22,7 @@
       grub = {
         enable = true;
         device = "nodev";
+        copyKernels = true; # required when /boot is on separate partition from /
         mirroredBoots = [
           {
             devices = [ "nodev" ];

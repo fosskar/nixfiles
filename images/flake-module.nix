@@ -14,12 +14,6 @@ in
           specialArgs = { inherit inputs mylib; };
           format = "iso";
         };
-        lxc-base = inputs.nixos-generators.nixosGenerate {
-          inherit system;
-          modules = [ ./lxc-base.nix ];
-          specialArgs = { inherit inputs mylib; };
-          format = "proxmox-lxc";
-        };
       };
     };
 }
