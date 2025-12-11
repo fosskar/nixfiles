@@ -1,5 +1,30 @@
-_: {
+{
+  lib,
+  ...
+}:
+let
+  mylib = import ../../lib { inherit lib; };
+
+  customPackagesOverlay =
+    final: _prev:
+    let
+      packageDirs = mylib.scanPaths ../../packages {
+        exclude = [
+          "onnxruntime-openvino" # python package, needs special handling
+        ];
+      };
+    in
+    lib.listToAttrs (
+      map (path: {
+        name = "custom-${baseNameOf path}";
+        value = final.callPackage path { };
+      }) packageDirs
+    );
+in
+{
   nixpkgs = {
+    overlays = [ customPackagesOverlay ];
+
     config = {
       # Allow broken packages to be built. Setting this to false means packages
       # will refuse to evaluate sometimes, but only if they have been marked as

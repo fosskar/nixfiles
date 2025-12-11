@@ -51,6 +51,24 @@
 - **prefer jj over git** (colocated mode for compatibility)
 - `jj status`, `jj diff`, `jj describe -m "msg"`, `jj new`, `jj log`
 
+### CRITICAL: never destroy uncommitted work
+
+- **NEVER run destructive git commands** without explicit user approval:
+  - `git checkout -- .`
+  - `git clean -fd`
+  - `git reset --hard`
+  - `git stash drop`
+- **NEVER run destructive jj commands** without explicit user approval:
+  - `jj abandon`
+  - `jj restore`
+  - `jj backout`
+  - `jj squash` (can lose intermediate changes)
+  - `jj edit` + modifications to older commits
+- **before any reset/revert**: always `jj status` or `git status` first, warn user about uncommitted changes
+- **if something breaks**: ask user how to proceed, don't assume reverting is safe
+- **uncommitted changes are unrecoverable** - treat them as precious
+- when debugging flake issues: use `git add -A` to stage files for nix to see them, don't revert
+
 ## devops
 
 - everything as code, declarative over imperative

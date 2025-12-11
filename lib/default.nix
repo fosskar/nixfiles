@@ -10,7 +10,7 @@
         lib.attrsets.filterAttrs (
           filename: _type:
           (!lib.any (excluded: filename == excluded) exclude) # exclude files/directories in exclude list
-          && (filename != "flake-module.nix") # always ignore flake-module.nix
+          && (filename != "flake-part.nix") # always ignore flake-part.nix
           && (filename != "configuration.nix") # always ignore configuration.nix
           && (filename != "disko.nix") # always ignore configuration.nix
           && (filename != "home.nix") # always ignore configuration.nix
@@ -27,19 +27,19 @@
     in
     builtins.map (f: (path + "/${f}")) allFiles;
 
-  # auto-discover flake-module.nix files in subdirectories
-  scanFlakeModules =
+  # auto-discover flake-part.nix files in subdirectories
+  scanFlakeParts =
     basePath:
     let
       dirs = builtins.readDir basePath;
-      flakeModules = lib.filter (
+      flakeParts = lib.filter (
         name:
         let
           type = dirs.${name};
-          hasFlakeModule = builtins.pathExists (basePath + "/${name}/flake-module.nix");
+          hasFlakePart = builtins.pathExists (basePath + "/${name}/flake-part.nix");
         in
-        type == "directory" && hasFlakeModule
+        type == "directory" && hasFlakePart
       ) (builtins.attrNames dirs);
     in
-    builtins.map (dir: basePath + "/${dir}/flake-module.nix") flakeModules;
+    builtins.map (dir: basePath + "/${dir}/flake-part.nix") flakeParts;
 }

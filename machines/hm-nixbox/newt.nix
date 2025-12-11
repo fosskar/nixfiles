@@ -6,7 +6,7 @@
 {
   services.newt = {
     enable = true;
-    package = pkgs.callPackage ../../packages/fosrl-newt { };
+    package = pkgs.custom-fosrl-newt;
     environmentFile = config.sops.secrets."newt.env".path;
   };
 }

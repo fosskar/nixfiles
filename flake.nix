@@ -119,7 +119,7 @@
       inherit (inputs.nixpkgs) lib;
       mylib = import ./lib { inherit lib self; };
 
-      flakeModules = mylib.scanFlakeModules ./.;
+      flakeParts = mylib.scanFlakeParts ./.;
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
@@ -127,17 +127,8 @@
 
       imports = [
         inputs.clan-core.flakeModules.default
-
-        ./checks
       ]
-      ++ flakeModules;
-
-      flake = {
-
-        overlays = import ./overlays { inherit inputs; };
-
-        templates = import ./templates { inherit inputs; };
-      };
+      ++ flakeParts;
 
       perSystem =
         { config, inputs', ... }:

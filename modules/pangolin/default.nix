@@ -52,7 +52,7 @@ in
     services.pangolin = {
       enable = lib.mkDefault true;
 
-      package = pkgs.callPackage ../../packages/fosrl-pangolin { };
+      package = lib.mkDefault pkgs.custom-fosrl-pangolin;
 
       openFirewall = lib.mkDefault true;
       letsEncryptEmail = lib.mkDefault "letsencrypt.unpleased904@passmail.net";
