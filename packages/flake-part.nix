@@ -12,9 +12,7 @@ in
           pkgs = import inputs.nixpkgs { inherit system; };
           # auto-discover all package directories
           packageDirs = mylib.scanPaths ./. {
-            exclude = [
-              "onnxruntime-openvino" # Python package, needs python3Packages.callPackage
-            ];
+            exclude = [ ];
           };
           # convert to attrset of callPackage calls
           packagesAttrset = lib.listToAttrs (

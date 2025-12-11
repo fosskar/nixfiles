@@ -1,56 +1,34 @@
-{
-  lib,
-  ...
-}:
-let
-  mylib = import ../../lib { inherit lib; };
-
-  customPackagesOverlay =
-    final: _prev:
-    let
-      packageDirs = mylib.scanPaths ../../packages {
-        exclude = [
-          "onnxruntime-openvino" # python package, needs special handling
-        ];
-      };
-    in
-    lib.listToAttrs (
-      map (path: {
-        name = "custom-${baseNameOf path}";
-        value = final.callPackage path { };
-      }) packageDirs
-    );
-in
+{ self, ... }:
 {
   nixpkgs = {
-    overlays = [ customPackagesOverlay ];
+    overlays = [ self.overlays.default ];
 
     config = {
-      # Allow broken packages to be built. Setting this to false means packages
+      # allow broken packages to be built. setting this to false means packages
       # will refuse to evaluate sometimes, but only if they have been marked as
-      # broken for a specific reason. At that point we can either try to solve
+      # broken for a specific reason. at that point we can either try to solve
       # the breakage, or get rid of the package entirely.
       allowBroken = false;
       allowUnsupportedSystem = true;
-      # Really a pain in the ass to deal with when disabled. True means
+      # really a pain in the ass to deal with when disabled. true means
       # we are able to build unfree packages without explicitly allowing
       # each unfree package.
       allowUnfree = true;
-      # Default to none, add more as necessary. This is usually where
+      # default to none, add more as necessary. this is usually where
       # electron packages go when they reach EOL.
       permittedInsecurePackages = [ ];
-      # Nixpkgs sets internal package aliases to ease migration from other
-      # distributions easier, or for convenience's sake. Even though the manual
-      # and the description for this option recommends this to be true, I prefer
+      # nixpkgs sets internal package aliases to ease migration from other
+      # distributions easier, or for convenience's sake. even though the manual
+      # and the description for this option recommends this to be true, i prefer
       # explicit naming conventions, i.e., no aliases.
       allowAliases = true;
-      # Enable parallel building by default. This, in theory, should speed up building
-      # derivations, especially rust ones. However setting this to true causes a mass rebuild
+      # enable parallel building by default. this, in theory, should speed up building
+      # derivations, especially rust ones. however setting this to true causes a mass rebuild
       # of the *entire* system closure, so it must be handled with proper care.
       enableParallelBuildingByDefault = false;
-      # List of derivation warnings to display while rebuilding.
-      #  See: <https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/check-meta.nix>
-      # NOTE: "maintainerless" can be added to emit warnings
+      # list of derivation warnings to display while rebuilding.
+      #  see: <https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/check-meta.nix>
+      # note: "maintainerless" can be added to emit warnings
       # about packages without maintainers but it seems to me
       # like there are more packages without maintainers than
       # with maintainers, so it's disabled for the time being.

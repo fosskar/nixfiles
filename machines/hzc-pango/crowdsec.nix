@@ -25,10 +25,8 @@
         "crowdsecurity/linux" # sshd, syslog
         "crowdsecurity/traefik" # traefik access logs
         "crowdsecurity/iptables" # port scans
-        "crowdsecurity/http-cve" # known CVE exploits
-      ];
-      postOverflows = [
-        "crowdsecurity/cdn-whitelist" # don't ban cloudflare/fastly IPs
+        "crowdsecurity/base-http-scenarios"
+        "crowdsecurity/sshd-impossible-travel"
       ];
     };
 

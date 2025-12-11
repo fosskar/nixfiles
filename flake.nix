@@ -3,11 +3,11 @@
 
   inputs = {
     # nixpkgs
-    #nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05"; # default - stable for infra
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-git.url = "github:NixOS/nixpkgs/master";
     #nixpkgs-private.url = "github:simonoscr/nixpkgs/nixos-unstable"; # testing private
     #nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
-    #nixpkgs-git.url = "github:NixOS/nixpkgs/master"; # better not
 
     home-manager = {
       url = "github:nix-community/home-manager";
