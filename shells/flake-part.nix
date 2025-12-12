@@ -7,20 +7,20 @@
       pkgs,
       ...
     }:
-    let
-      mkScript = name: text: pkgs.writeShellScriptBin name text;
-
-      # until it not only a cli flag https://git.clan.lol/clan/clan-core/issues/4624
-      scripts = [
-        (mkScript "clan" ''
-          if [ "$1" = "machines" ] && [ "$2" = "update" ]; then
-            ${inputs'.clan-core.packages.clan-cli}/bin/clan machines update --build-host localhost "''${@:3}"
-          else
-            ${inputs'.clan-core.packages.clan-cli}/bin/clan "$@"
-          fi
-        '')
-      ];
-    in
+    #let
+    #  mkScript = name: text: pkgs.writeShellScriptBin name text;
+    #
+    #  # until it not only a cli flag https://git.clan.lol/clan/clan-core/issues/4624
+    #  scripts = [
+    #    (mkScript "clan" ''
+    #      if [ "$1" = "machines" ] && [ "$2" = "update" ]; then
+    #        ${inputs'.clan-core.packages.clan-cli}/bin/clan machines update --build-host localhost "''${@:3}"
+    #      else
+    #        ${inputs'.clan-core.packages.clan-cli}/bin/clan "$@"
+    #      fi
+    #    '')
+    #  ];
+    #in
     {
       devShells = {
         default = pkgs.mkShellNoCC {
@@ -29,9 +29,9 @@
             ${config.pre-commit.installationScript}
           '';
           packages = [
-            #inputs'.clan-core.packages.clan-cli
-          ]
-          ++ scripts;
+            inputs'.clan-core.packages.clan-cli
+          ];
+          #++ scripts;
         };
 
         terraform = pkgs.mkShellNoCC {
