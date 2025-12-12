@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   sops.secrets = {
     "newt.env" = { };
 

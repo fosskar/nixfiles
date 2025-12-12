@@ -44,7 +44,7 @@ in
     };
   };
 
-  services.zfs = lib.mkIf (config.boot.zfs.enabled) {
+  services.zfs = lib.mkIf config.boot.zfs.enabled {
     autoScrub = {
       enable = lib.mkDefault true;
       interval = lib.mkDefault "monthly";

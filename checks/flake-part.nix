@@ -13,15 +13,29 @@
         "*.pub"
         "*.priv"
         "*.age"
-        "*/sops/secrets/*"
+        "*.svg"
+        "*.patch"
+        ".envrc"
+        "**/.envrc"
+        "LICENSE"
+        "**/LICENSE"
+        "flake.lock"
+        "**/flake.lock"
+        "result"
+        "**/result"
+        "sops/secrets/*"
+        "**/sops/secrets/*"
         "vars/*"
-        "*.md"
+        "**/vars/*"
       ];
       programs = {
         nixfmt.enable = true;
         prettier.enable = true;
         deadnix.enable = true;
-        shellcheck.enable = false;
+        statix.enable = true;
+        shfmt.enable = true;
+        shellcheck.enable = true;
+        yamlfmt.enable = true;
       };
     };
 

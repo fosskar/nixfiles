@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   flake.templates = {
     devshell = {
       description = "Flake devshell template";

@@ -36,15 +36,15 @@ henlo and welcome to my nixos infrastructure. this repository manages my persona
 
 </div>
 
-|                  |                                                                                                                                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **desktop**      | simon-desktop (amd ryzen 7 7800x3d, rx 7800xt, 32gb ddr5)                                                                                                                                              |
-| **proxmox lxc**  | arr, backup, dashboard, fileserver, gateway, immich, llm, media, monitoring, nextcloud, oidc, paperless, reverseproxy, vaultwarden                                                                     |
-| **cloud vps**    | hzc-pango (hetzner cloud cx22: 2 cpu, 4gb ram, 40gb disk)                                                                                                                                              |
-| **config mgmt**  | [clan-core](https://docs.clan.lol/) (includes sops-nix for secrets, disko for disk config)                                                                                                             |
-| **persistence**  | [impermanence](https://github.com/nix-community/impermanence) for opt-in state                                                                                                                         |
-| **home config**  | [home-manager](https://github.com/nix-community/home-manager)                                                                                                                                          |
-| **desktop env**  | [hyprland](https://hyprland.org/) + [hyprpanel](https://hyprpanel.com/) + [ghostty](https://ghostty.org/) + [zed](https://zed.dev/) + [fish](https://fishshell.com/) + [yazi](https://yazi-rs.github.io/) |
+|                 |                                                                                                                                                                                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **desktop**     | simon-desktop (amd ryzen 7 7800x3d, rx 7800xt, 32gb ddr5)                                                                                                                                                 |
+| **proxmox lxc** | arr, backup, dashboard, fileserver, gateway, immich, llm, media, monitoring, nextcloud, oidc, paperless, reverseproxy, vaultwarden                                                                        |
+| **cloud vps**   | hzc-pango (hetzner cloud cx22: 2 cpu, 4gb ram, 40gb disk)                                                                                                                                                 |
+| **config mgmt** | [clan-core](https://docs.clan.lol/) (includes sops-nix for secrets, disko for disk config)                                                                                                                |
+| **persistence** | [impermanence](https://github.com/nix-community/impermanence) for opt-in state                                                                                                                            |
+| **home config** | [home-manager](https://github.com/nix-community/home-manager)                                                                                                                                             |
+| **desktop env** | [hyprland](https://hyprland.org/) + [hyprpanel](https://hyprpanel.com/) + [ghostty](https://ghostty.org/) + [zed](https://zed.dev/) + [fish](https://fishshell.com/) + [yazi](https://yazi-rs.github.io/) |
 
 <div align="center">
 
@@ -83,28 +83,28 @@ henlo and welcome to my nixos infrastructure. this repository manages my persona
 
 ### lxc containers (proxmox px-prd1)
 
-| machine       | purpose                 | ip          |
-| ------------- | ----------------------- | ----------- |
-| arr           | media automation        | 10.0.0.110  |
-| backup        | backup services         | 10.0.0.98   |
-| dashboard     | monitoring dashboard    | 10.0.0.103  |
-| fileserver    | samba shares            | 10.0.0.104  |
-| gateway       | network gateway         | 10.0.0.100  |
-| immich        | photo management        | 10.0.0.107  |
-| llm           | llm services            | 10.0.0.106  |
-| media         | media server            | 10.0.0.111  |
-| monitoring    | prometheus/grafana      | 10.0.0.102  |
-| nextcloud     | cloud storage           | 10.0.0.112  |
-| oidc          | authentication          | 10.0.0.105  |
-| paperless     | document management     | 10.0.0.108  |
-| reverseproxy  | nginx reverse proxy     | 10.0.0.101  |
-| vaultwarden   | password manager        | 10.0.0.109  |
+| machine      | purpose              | ip         |
+| ------------ | -------------------- | ---------- |
+| arr          | media automation     | 10.0.0.110 |
+| backup       | backup services      | 10.0.0.98  |
+| dashboard    | monitoring dashboard | 10.0.0.103 |
+| fileserver   | samba shares         | 10.0.0.104 |
+| gateway      | network gateway      | 10.0.0.100 |
+| immich       | photo management     | 10.0.0.107 |
+| llm          | llm services         | 10.0.0.106 |
+| media        | media server         | 10.0.0.111 |
+| monitoring   | prometheus/grafana   | 10.0.0.102 |
+| nextcloud    | cloud storage        | 10.0.0.112 |
+| oidc         | authentication       | 10.0.0.105 |
+| paperless    | document management  | 10.0.0.108 |
+| reverseproxy | nginx reverse proxy  | 10.0.0.101 |
+| vaultwarden  | password manager     | 10.0.0.109 |
 
 ### cloud vps
 
-| machine   | provider              | type  | specs                          | purpose              | ip             |
-| --------- | --------------------- | ----- | ------------------------------ | -------------------- | -------------- |
-| hzc-pango | hetzner cloud (cx22)  | vps   | 2 cpu, 4gb ram, 40gb disk      | public services      | 138.201.155.21 |
+| machine   | provider             | type | specs                     | purpose         | ip             |
+| --------- | -------------------- | ---- | ------------------------- | --------------- | -------------- |
+| hzc-pango | hetzner cloud (cx22) | vps  | 2 cpu, 4gb ram, 40gb disk | public services | 138.201.155.21 |
 
 <div align="center">
 

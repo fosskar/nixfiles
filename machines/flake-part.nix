@@ -53,39 +53,46 @@ in
 
       instances = {
         admin = {
-          roles.default.tags.all = { };
-          roles.default.settings.allowedKeys = {
-            simon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE";
+          roles.default = {
+            tags.all = { };
+            settings.allowedKeys = {
+              simon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE";
+            };
           };
         };
 
         simon-user = {
-          module.name = "users";
-          module.input = "clan-core";
+          module = {
+            name = "users";
+            input = "clan-core";
+          };
 
-          roles.default.tags.desktop = { };
-          roles.default.machines.simon-desktop = { };
+          roles.default = {
+            tags.desktop = { };
 
-          roles.default.settings = {
-            user = "simon";
-            groups = [
-              "audio"
-              "disk"
-              "docker"
-              "gamemode"
-              "input"
-              "networkmanager"
-              "video"
-              "wheel"
-              "power"
-              "podman"
-              "git"
-              "qemu-libvirtd"
-              "kvm"
-              "network"
-              "dialout"
-              "plugdev"
-            ];
+            machines.simon-desktop = { };
+
+            settings = {
+              user = "simon";
+              groups = [
+                "audio"
+                "disk"
+                "docker"
+                "gamemode"
+                "input"
+                "networkmanager"
+                "video"
+                "wheel"
+                "power"
+                "podman"
+                "git"
+                "qemu-libvirtd"
+                "kvm"
+                "network"
+                "dialout"
+                "plugdev"
+              ];
+            };
           };
         };
 
@@ -99,15 +106,35 @@ in
 
         server-module = {
           module.name = "importer";
-          roles.default.tags.server = { };
-          roles.default.extraModules = [ "${self}/modules/server" ];
+          roles.default = {
+            tags.server = { };
+            extraModules = [ "${self}/modules/server" ];
+          };
         };
 
         desktop-module = {
           module.name = "importer";
-          roles.default.tags.desktop = { };
-          roles.default.extraModules = [ "${self}/modules/desktop" ];
+          roles.default = {
+            tags.desktop = { };
+            extraModules = [ "${self}/modules/desktop" ];
+          };
         };
+
+        #matrix-synapse = {
+        #  roles.default.machines."hm-nixbox".settings = {
+        #    acmeEmail = "admin@osscar.me";
+        #    server_tld = "osscar.me";
+        #    app_domain = "matrix.osscar.me";
+        #    users = {
+        #      admin = {
+        #        admin = true;
+        #      };
+        #      simon = {
+        #        admin = true;
+        #      };
+        #    };
+        #  };
+        #};
       };
     };
   };

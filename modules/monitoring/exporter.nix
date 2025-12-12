@@ -91,7 +91,7 @@ in
       port = 9199;
       listenAddress = "127.0.0.1";
       openFirewall = false;
-      nutServer = cfg.nutServer;
+      inherit (cfg) nutServer;
     };
 
     # zfs exporter

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   # common openssh settings for all machines
   services.openssh = {
     enable = true;

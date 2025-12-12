@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   networking = {
     hostName = "hm-nixbox";
     hostId = "25e85037"; # zfs requires unique hostId

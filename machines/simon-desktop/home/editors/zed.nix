@@ -5,7 +5,6 @@
 {
   programs.zed-editor = {
     enable = true;
-    #package = pkgs.zed-editor_git;
     installRemoteServer = true;
     extraPackages = with pkgs; [
       nil

@@ -1,17 +1,14 @@
 name: validate
-
 on:
   push:
     branches:
       - main
-
 jobs:
   formatting-check:
     runs-on: codeberg-small
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
-
       - name: install nix
         uses: https://github.com/cachix/install-nix-action@v26
         with:
@@ -19,17 +16,14 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
             accept-flake-config = true
-
       - name: check formatting with treefmt
         run: |
           nix fmt -- --fail-on-change
-
   linting:
     runs-on: codeberg-small
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
-
       - name: install nix
         uses: https://github.com/cachix/install-nix-action@v26
         with:
@@ -37,7 +31,6 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
             accept-flake-config = true
-
       - name: check for unused nix code with deadnix
         run: |
           nix run nixpkgs#deadnix -- --fail .

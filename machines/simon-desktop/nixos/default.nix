@@ -1,7 +1,6 @@
-{ inputs, mylib, ... }:
+{ mylib, ... }:
 {
   imports = [
-    inputs.chaotic.nixosModules.default
     ../../../modules/tailscale
   ]
   ++ mylib.scanPaths ./. { };

@@ -1,15 +1,11 @@
 branches:
   - main
-
 preset: "conventionalcommits"
-
 tagFormat: "${version}"
-
 verifyConditions:
   - "@semantic-release/changelog"
   - "@semantic-release/git"
   - "@semantic-release/gitlab"
-
 analyzeCommits:
   - path: "@semantic-release/commit-analyzer"
     preset: "conventionalcommits"
@@ -44,7 +40,6 @@ analyzeCommits:
         release: patch
       - type: deps # Dependency changes/updates/downgrades
         release: false
-
 generateNotes:
   - path: "@semantic-release/release-notes-generator"
     preset: "conventionalcommits"
@@ -101,16 +96,13 @@ generateNotes:
         - type: "deps"
           section: "🔩 Dependencies"
           hidden: false
-
 prepare:
   - path: "@semantic-release/changelog"
   - path: "@semantic-release/git"
     message: "chore(release): ${nextRelease.version} [skip ci]"
     assets: ["CHANGELOG.md"]
-
 publish:
   - path: "@semantic-release/gitlab"
-
 ci: true
 success: false
 fail: false

@@ -1,14 +1,11 @@
 when:
   - event: ["push", "pull_request"]
     branch: main
-
 # this is nix and very nice
 engine: nixery
-
 dependencies:
   nixpkgs:
     - go
-
 steps:
   - name: format
     command: |

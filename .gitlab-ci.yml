@@ -1,8 +1,3 @@
-# note: codeberg actions (.forgejo/workflows/) is now the primary ci/cd platform
-# this gitlab ci configuration is kept as a backup/mirror
-# see .forgejo/workflows/validate.yml and .forgejo/workflows/release.yml for active pipelines
-# uses .releaserc.gitlab.yml for semantic-release configuration
-
 include:
   - project: simonoscr/pipeline-templates
     file: release/semantic-release.gitlab-ci.yml

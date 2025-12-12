@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   systemd =
     let
       timeoutConfig = ''

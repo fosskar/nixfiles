@@ -44,14 +44,14 @@ feel free to borrow ideas from my configurations, but keep in mind that they mig
 
 ## systems
 
-|           | desktop               |
+| | desktop |
 <| --------- | --------------------- |
-| name      | desktop               |
-| cpu       | amd ryzen 7 7800x3d   |
-| gpu       | amd radeon rx 7800xt  |
-| ram       | 32gb ddr5-6000        |>
+| name | desktop |
+| cpu | amd ryzen 7 7800x3d |
+| gpu | amd radeon rx 7800xt |
+| ram | 32gb ddr5-6000 |>
 | mainboard | msi mag b650 tomahawk |
-| ssd       | 2tb nvme              |
+| ssd | 2tb nvme |
 
 </div>
 

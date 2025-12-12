@@ -3,9 +3,9 @@
 
   inputs = {
     # nixpkgs
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nixpkgs-git.url = "github:NixOS/nixpkgs/master";
+    nixpkgs.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=nixos-unstable";
+    nixpkgs-stable.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=nixos-25.11";
+    nixpkgs-git.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=master";
     #nixpkgs-private.url = "github:simonoscr/nixpkgs/nixos-unstable"; # testing private
     #nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
 
@@ -18,6 +18,10 @@
       url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
+      inputs.sops-nix.follows = "sops-nix";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.disko.follows = "disko";
+      inputs.systems.follows = "systems";
     };
 
     # system
@@ -28,9 +32,12 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    srvos.url = "github:nix-community/srvos";
+    srvos = {
+      url = "github:nix-community/srvos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
 
     disko = {
       url = "github:nix-community/disko";
@@ -42,14 +49,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    proxmox-nixos.url = "github:SaumonNet/proxmox-nixos";
-
     impermanence.url = "github:nix-community/impermanence";
 
     #tangled = {
     #  url = "git+https://tangled.org/tangled.org/core";
     #  inputs.nixpkgs.follows = "nixpkgs";
     #};
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # format and lint
     git-hooks = {
@@ -133,6 +143,11 @@
       perSystem =
         { config, inputs', ... }:
         {
+
+          # make pkgs available in perSystem
+          _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+
+          # fallback if clan and my own nixpkgs input are ever different
           clan.pkgs = inputs'.nixpkgs.legacyPackages;
 
           formatter = config.treefmt.build.wrapper;

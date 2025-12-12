@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   disko.devices = {
     disk = {
       # optane drive 1 (16gb) - primary boot + slog

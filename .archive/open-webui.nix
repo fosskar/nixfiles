@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   services.open-webui = {
     enable = false;
     port = 11111;

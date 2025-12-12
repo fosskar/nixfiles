@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   sops.secrets = {
     "restic-encryption-password" = { };
 

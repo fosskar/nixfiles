@@ -1,13 +1,10 @@
 name: semantic release
-
 on:
   push:
     branches:
       - main
-
 permissions:
   contents: read
-
 jobs:
   release:
     runs-on: codeberg-small

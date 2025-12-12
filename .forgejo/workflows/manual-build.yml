@@ -1,5 +1,4 @@
 name: manual build
-
 on:
   workflow_dispatch:
     inputs:
@@ -25,14 +24,12 @@ on:
           - reverseproxy
           - simon-desktop
           - vaultwarden
-
 jobs:
   build:
     runs-on: codeberg-medium
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
-
       - name: install nix
         uses: https://github.com/cachix/install-nix-action@v26
         with:
@@ -40,7 +37,6 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
             accept-flake-config = true
-
       - name: build machine configuration
         run: |
           if [ "${{ github.event.inputs.machine }}" = "all" ]; then
@@ -55,7 +51,6 @@ jobs:
             echo "building ${{ github.event.inputs.machine }}..."
             nix build ".#nixosConfigurations.${{ github.event.inputs.machine }}.config.system.build.toplevel" --print-build-logs
           fi
-
       - name: show build results
         run: |
           ls -lah result*
