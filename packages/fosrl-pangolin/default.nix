@@ -32,16 +32,16 @@ in
 
 buildNpmPackage (finalAttrs: {
   pname = "pangolin";
-  version = "1.12.3";
+  version = "1.13.0";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "pangolin";
     tag = finalAttrs.version;
-    hash = "sha256-2hVd/mZZosekJGO/4sodItFi9t7KpKnbW1BVD5wxx7o=";
+    hash = "sha256-1ld6Qk+zYV7wWJaI1XNptoDWQ3ZSXXjhWxKrNFV1Lpk=";
   };
 
-  npmDepsHash = "sha256-vYrcpA4jRqJXFVNBmIkwWM7wKXLzkEL60N4SbkbOoGA=";
+  npmDepsHash = "sha256-MB9BVirnSF27aQjKdW/G1Okl3FhGgaeZrjNLtMsBqdc=";
 
   nativeBuildInputs = [
     esbuild
@@ -51,18 +51,8 @@ buildNpmPackage (finalAttrs: {
   # set the build to OSS
   env = {
     BUILD = "oss";
+    NEXT_TELEMETRY_DISABLED = "1";
   };
-
-  prePatch = ''
-    cat > server/db/index.ts << EOF
-    export * from "./${db false}";
-    EOF
-
-    # OSS-iffy
-    echo "export const build = \"$BUILD\" as any;" > server/build.ts
-    cp tsconfig.oss.json tsconfig.json
-    rm -rf server/private
-  '';
 
   # Replace the googleapis.com Inter font with a local copy from Nixpkgs.
   # Based on pkgs.nextjs-ollama-llm-ui.
@@ -78,14 +68,18 @@ buildNpmPackage (finalAttrs: {
     cp "${inter}/share/fonts/truetype/InterVariable.ttf" src/app/Inter.ttf
   '';
 
-  preBuild = "npx drizzle-kit generate --dialect ${db true} --schema ./server/db/${db false}/schema/ --out init";
+  preBuild = ''
+    npm run set:oss
+    npm run set:${db true}
+    npx drizzle-kit generate --dialect ${db true} --schema ./server/db/${db false}/schema/ --name migration --out init
+  '';
 
   npmBuildScript = "next:build";
 
   postBuild = ''
-    npm run build:cli
     node esbuild.mjs -e server/index.ts -o dist/server.mjs -b $BUILD
     node esbuild.mjs -e server/setup/migrations${capitalize (db false)}.ts -o dist/migrations.mjs
+    npm run build:cli
   '';
 
   preInstall = "mkdir -p $out/{bin,share/pangolin}";
@@ -133,13 +127,9 @@ buildNpmPackage (finalAttrs: {
            (lib.concatMapStringsSep " && "
              (
                dir:
-               "test -f ${dir}/.nix_skip_setup || { ${
-                 lib.optionalString (dir == ".next") "chmod -R u+w ${dir} 2>/dev/null; "
-               }rm -${lib.optionalString (dir == ".next") "r"}f ${dir} && ${
-                 if (dir == ".next") then "cp -r" else "ln -s"
-               } ${placeholder "out"}/share/pangolin/${dir} .${
-                 lib.optionalString (dir == ".next") " && chmod -R u+w .next"
-               }; }"
+               "test -f ${dir}/.nix_skip_setup || { rm -${lib.optionalString (dir == ".next") "r"}f ${dir} && ${
+                 if (dir == ".next") then "cp -rd" else "ln -s"
+               } ${placeholder "out"}/share/pangolin/${dir} .; }"
              )
              [
                ".next"
@@ -149,13 +139,13 @@ buildNpmPackage (finalAttrs: {
            )
            # Also deploy a small config (if none exists) and run the
            # database migrations before running the server.
-         } && test -f config/config.yml || { install -Dm600 ${defaultConfig} config/config.yml && { test -z $EDITOR && { echo \"Please edit $(pwd)/config/config.yml\" and run the server again. && exit 255; } || $EDITOR config/config.yml; }; }'";
+         } && test -f config/config.yml || { install -Dm600 ${defaultConfig} config/config.yml && { test -z $EDITOR && { echo \"Please edit $(pwd)/config/config.yml\" and run the server again. && exit 255; } || $EDITOR config/config.yml; }; } && command ${placeholder "out"}/bin/migrate-pangolin-database'";
     in
     lib.concatMapStrings
       (
         attr:
         "makeWrapper $out/share/pangolin/dist/${attr.mjs}.mjs $out/bin/${attr.command} ${
-          variablesMapped (attr.mjs == "server" || attr.mjs == "migrations")
+          variablesMapped (attr.mjs == "server")
         }\n"
       )
       [
@@ -164,12 +154,12 @@ buildNpmPackage (finalAttrs: {
           command = "pangctl";
         }
         {
-          mjs = "server";
-          command = "pangolin";
+          mjs = "migrations";
+          command = "migrate-pangolin-database";
         }
         {
-          mjs = "migrations";
-          command = "pangolin-migrate";
+          mjs = "server";
+          command = "pangolin";
         }
       ];
 
