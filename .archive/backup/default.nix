@@ -24,7 +24,7 @@ in
 
     extraOptions = [
       "sftp.command='ssh -p ${storageBoxPort} -i ${
-        config.sops.secrets."restic-ssh-key".path
+        config.sops.secrets."storagebox-ssh-key".path
       } -o IdentitiesOnly=yes -o ServerAliveInterval=60 -o ServerAliveCountMax=3 ${storageBoxUser}@${storageBoxHost} -s sftp'"
     ];
 

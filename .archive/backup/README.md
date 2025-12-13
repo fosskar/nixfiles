@@ -37,7 +37,7 @@ automated daily backups to hetzner storage box with encryption.
 8. add the key to storage box:
 
    ```bash
-   echo "SSH_PUB_HERE" | ssh SUBUSER@SUBUSER.your-storagebox.de -p 23 install-ssh-key
+   echo "SSH_PUB_HERE" | ssh SUBUSER@USER.your-storagebox.de -p 23 install-ssh-key
    ```
 
 ## manual backup
