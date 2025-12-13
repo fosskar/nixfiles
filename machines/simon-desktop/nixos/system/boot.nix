@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   boot = {
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
+    kernelPackages = pkgs.linuxPackages_latest; # pkgs.cachyosKernels.linuxPackages-cachyos-latest
 
     supportedFilesystems = [
       "ext4"
