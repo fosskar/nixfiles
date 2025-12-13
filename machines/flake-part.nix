@@ -104,6 +104,17 @@ in
           };
         };
 
+        yggdrasil = {
+          roles.default.tags.all = { };
+        };
+
+        # export VPS public IP so yggdrasil peers via explicit connection (no multicast)
+        internet = {
+          roles.default.machines.hzc-pango = {
+            settings.host = "138.201.155.21";
+          };
+        };
+
         server-module = {
           module.name = "importer";
           roles.default = {
@@ -117,6 +128,36 @@ in
           roles.default = {
             tags.desktop = { };
             extraModules = [ "${self}/modules/desktop" ];
+          };
+        };
+
+        borgbackup = {
+          module = {
+            name = "borgbackup";
+            input = "clan-core";
+          };
+          roles = {
+            client.machines = {
+              "hzc-pango".settings = {
+                startAt = "*-*-* 04:00:00";
+                destinations = {
+                  "storagebox" = {
+                    repo = "u499127-sub1@u499127.your-storagebox.de:/./hzc-pango";
+                    rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
+                  };
+                };
+              };
+              "hm-nixbox".settings = {
+                startAt = "*-*-* 03:00:00";
+                destinations = {
+                  "storagebox" = {
+                    repo = "u499127-sub1@u499127.your-storagebox.de:/./hm-nixbox";
+                    rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
+                  };
+                };
+              };
+            };
+            server.machines = { };
           };
         };
 
