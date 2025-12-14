@@ -108,10 +108,12 @@ in
           roles.default.tags.all = { };
         };
 
-        # export VPS public IP so yggdrasil peers via explicit connection (no multicast)
+        # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
-          roles.default.machines.hzc-pango = {
-            settings.host = "138.201.155.21";
+          roles.default.machines = {
+            hzc-pango.settings.host = "138.201.155.21";
+            simon-desktop.settings.host = "192.168.10.200";
+            hm-nixbox.settings.host = "192.168.10.80";
           };
         };
 
