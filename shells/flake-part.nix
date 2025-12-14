@@ -27,10 +27,7 @@ _: {
           shellHook = ''
             ${config.pre-commit.installationScript}
           '';
-          packages = [
-            #inputs'.clan-core.packages.clan-cli
-          ]
-          ++ scripts;
+          packages = scripts;
         };
 
         terraform = pkgs.mkShellNoCC {
