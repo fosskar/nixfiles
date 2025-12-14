@@ -52,6 +52,14 @@ in
       };
 
       instances = {
+        #emergency-access = {
+        #  module = {
+        #    name = "emergency-access";
+        #    input = "clan-core";
+        #  };
+        #  roles.default.tags.nixos = { };
+        #};
+
         admin = {
           roles.default = {
             tags.all = { };
@@ -68,10 +76,7 @@ in
           };
 
           roles.default = {
-            tags.desktop = { };
-
             machines.simon-desktop = { };
-
             settings = {
               user = "simon";
               groups = [
@@ -142,6 +147,14 @@ in
             client.machines = {
               "hzc-pango".settings = {
                 startAt = "*-*-* 04:00:00";
+                exclude = [
+                  "/var/cache"
+                  "/var/log"
+                  "/var/tmp"
+                  "*.pyc"
+                  "*.o"
+                  "*/node_modules/*"
+                ];
                 destinations = {
                   "storagebox" = {
                     repo = "u499127-sub1@u499127.your-storagebox.de:/./hzc-pango";
@@ -151,6 +164,14 @@ in
               };
               "hm-nixbox".settings = {
                 startAt = "*-*-* 03:00:00";
+                exclude = [
+                  "/var/cache"
+                  "/var/log"
+                  "/var/tmp"
+                  "*.pyc"
+                  "*.o"
+                  "*/node_modules/*"
+                ];
                 destinations = {
                   "storagebox" = {
                     repo = "u499127-sub1@u499127.your-storagebox.de:/./hm-nixbox";
