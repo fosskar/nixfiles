@@ -14,7 +14,8 @@ in
   # create recursive snapshots before backup
   preBackupScript = ''
     for folder in ${lib.escapeShellArgs cfg.folders}; do
-      dataset=$(${pkgs.zfs}/bin/zfs list -H -o name,mountpoint | ${pkgs.gawk}/bin/awk -v path="$folder" '$2 == path {print $1}')
+      # use findmnt to get dataset name (works with legacy mounts)
+      dataset=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE "$folder" | grep -v '^/dev')
       if [ -n "$dataset" ]; then
         echo "creating zfs snapshot: $dataset@${snapshotName}"
         ${pkgs.zfs}/bin/zfs snapshot -r "$dataset@${snapshotName}"
@@ -27,7 +28,8 @@ in
   # destroy snapshots after backup
   postBackupScript = ''
     for folder in ${lib.escapeShellArgs cfg.folders}; do
-      dataset=$(${pkgs.zfs}/bin/zfs list -H -o name,mountpoint | ${pkgs.gawk}/bin/awk -v path="$folder" '$2 == path {print $1}')
+      # use findmnt to get dataset name (works with legacy mounts)
+      dataset=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE "$folder" | grep -v '^/dev')
       if [ -n "$dataset" ]; then
         echo "destroying zfs snapshot: $dataset@${snapshotName}"
         ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${snapshotName}" || true
