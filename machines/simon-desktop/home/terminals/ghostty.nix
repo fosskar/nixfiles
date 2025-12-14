@@ -23,14 +23,7 @@
       window-padding-y = 4; # default: 2
       window-padding-balance = true; # default: false
 
-      keybind = [
-        # TODO(human): replace this with only non-default keybindings
-        # main differences from defaults:
-        # - split navigation: ctrl+arrows vs ctrl+alt+arrows
-        # - close action: close_surface vs close_tab
-        # - scrollback: write_scrollback_file vs write_screen_file
-        # - missing: super+ctrl+shift+plus vs super+ctrl+shift+equal
-      ];
+      # keybind = [ ];  # add custom keybindings here if needed
     };
   };
 }

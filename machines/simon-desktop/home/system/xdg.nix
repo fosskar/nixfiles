@@ -1,9 +1,13 @@
 {
   config,
+  lib,
+  osConfig ? null,
   pkgs,
   ...
 }:
 let
+  # only enable portal in home-manager if not already managed by nixos
+  nixosManagesPortal = osConfig != null && osConfig.xdg.portal.enable or false;
 
   #browser = [ "firefox.desktop" ];
   browser = [ "zen-twilight.desktop" ];
@@ -83,8 +87,8 @@ in
       #associations.added = associations;
       defaultApplications = associations;
     };
-    ## already set in nixos
-    portal = {
+    # fallback portal config for standalone home-manager (without nixos)
+    portal = lib.mkIf (!nixosManagesPortal) {
       enable = true;
       xdgOpenUsePortal = true;
       config = {

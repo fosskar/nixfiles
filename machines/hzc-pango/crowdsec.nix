@@ -47,4 +47,10 @@ _: {
     enable = true;
     settings.mode = "nftables";
   };
+
+  # ensure bouncer waits for crowdsec API to be ready
+  systemd.services.crowdsec-firewall-bouncer = {
+    after = [ "crowdsec.service" ];
+    requires = [ "crowdsec.service" ];
+  };
 }

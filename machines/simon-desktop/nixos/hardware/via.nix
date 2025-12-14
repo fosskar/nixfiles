@@ -17,7 +17,6 @@
     ];
     extraRules = ''
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="0a11", MODE="0666", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
-      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="0a11", OWNER="simon", GROUP="users", MODE="0666"
     '';
   };
 }

@@ -1,7 +1,5 @@
 _: {
   home.shellAliases = {
-    #sudo = "sudo env PATH=$PATH"; # FIXME this is insane because PATH is different when executing commands with sudo so PATH is not preserved holyhist
-
     # nix
     cleanup = "sudo nix-collect-garbage --delete-older-than 3d && nix-collect-garbage -d";
 

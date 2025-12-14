@@ -67,23 +67,6 @@ _: {
                       "noatime"
                     ];
                   };
-                  # Sops-nix age key subvolume (separate from impermanence)
-                  # See: https://git.clan.lol/clan/clan-core/issues/3590
-                  "@sops-nix" = {
-                    mountpoint = "/var/lib/sops-nix";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                    ];
-                  };
-                  # Log subvolume
-                  "@log" = {
-                    mountpoint = "/var/log";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                    ];
-                  };
                   "@swap" = {
                     mountpoint = "/swap";
                     swap.swapfile.size = "16G";
@@ -95,11 +78,5 @@ _: {
         };
       };
     };
-  };
-  fileSystems = {
-    "/persist".neededForBoot = true;
-    "/nix".neededForBoot = true;
-    "/home".neededForBoot = true;
-    "/var/lib/sops-nix".neededForBoot = true;
   };
 }

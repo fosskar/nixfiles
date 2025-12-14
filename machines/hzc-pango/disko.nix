@@ -56,13 +56,6 @@ _: {
                     "discard"
                   ];
                 };
-                "@log" = {
-                  mountpoint = "/var/log";
-                  mountOptions = [
-                    "compress=zstd"
-                    "noatime"
-                  ];
-                };
               };
             };
           };
