@@ -3,7 +3,10 @@ _: {
 
   nixfiles.impermanence = {
     enable = true;
-    rollbackType = "btrfs";
+    rollback = {
+      type = "btrfs";
+      deviceLabel = "root";
+    };
     manageSopsMount = true;
     directories = [
       "/var/lib/crowdsec"

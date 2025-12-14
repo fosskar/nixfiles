@@ -50,7 +50,18 @@ _: {
 
   # ensure bouncer waits for crowdsec API to be ready
   systemd.services.crowdsec-firewall-bouncer = {
-    after = [ "crowdsec.service" ];
+    after = [
+      "crowdsec.service"
+      "local-fs.target"
+    ];
     requires = [ "crowdsec.service" ];
+    serviceConfig = {
+      # retry on failure since crowdsec API may not be ready immediately
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
   };
+
+  # faster shutdown for crowdsec
+  systemd.services.crowdsec.serviceConfig.TimeoutStopSec = "10s";
 }

@@ -3,8 +3,10 @@ _: {
 
   nixfiles.impermanence = {
     enable = true;
-    rollbackType = "btrfs";
-    btrfs.rootDeviceLabel = "nixos";
+    rollback = {
+      type = "btrfs";
+      deviceLabel = "nixos";
+    };
     manageSopsMount = true;
     directories = [
       "/var/cache/tailscale"

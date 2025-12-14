@@ -8,10 +8,10 @@ let
   cfg = config.nixfiles.impermanence;
   zfs = import ./zfs.nix { inherit cfg; };
   btrfs = import ./btrfs.nix { inherit cfg; };
-  rollback =
-    if cfg.rollbackType == "zfs" then
+  rollbackService =
+    if cfg.rollback.type == "zfs" then
       zfs
-    else if cfg.rollbackType == "btrfs" then
+    else if cfg.rollback.type == "btrfs" then
       btrfs
     else
       null;
@@ -33,49 +33,49 @@ in
   options.nixfiles.impermanence = {
     enable = lib.mkEnableOption "impermanence with rollback support";
 
-    rollbackType = lib.mkOption {
-      type = lib.types.enum [
-        "zfs"
-        "btrfs"
-        "none"
-      ];
-      default = "none";
-      description = "filesystem type for rollback (zfs, btrfs, or none)";
-    };
+    rollback = {
+      type = lib.mkOption {
+        type = lib.types.enum [
+          "zfs"
+          "btrfs"
+          "none"
+        ];
+        default = "none";
+        description = "filesystem type for rollback (zfs, btrfs, or none)";
+      };
 
-    zfs = {
+      # zfs options (required when type = "zfs")
       dataset = lib.mkOption {
-        type = lib.types.str;
-        default = "znixos/root";
-        description = "zfs dataset to rollback";
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "zfs dataset to rollback (required for zfs)";
       };
       snapshot = lib.mkOption {
         type = lib.types.str;
         default = "blank";
-        description = "snapshot name to rollback to";
+        description = "zfs snapshot name to rollback to";
       };
-      importService = lib.mkOption {
-        type = lib.types.str;
-        default = "zfs-import-znixos.service";
-        description = "zfs import service to wait for";
+      poolImportService = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "zfs import service to wait for (required for zfs)";
       };
-    };
 
-    btrfs = {
-      rootDeviceLabel = lib.mkOption {
-        type = lib.types.str;
-        default = "root";
-        description = "label of the btrfs root device (used as /dev/disk/by-label/<label>)";
+      # btrfs options (required when type = "btrfs")
+      deviceLabel = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "label of the btrfs root device (required for btrfs)";
       };
-      rootSubvolume = lib.mkOption {
+      subvolume = lib.mkOption {
         type = lib.types.str;
         default = "@root";
-        description = "name of root subvolume";
+        description = "name of btrfs root subvolume";
       };
       retentionDays = lib.mkOption {
         type = lib.types.int;
         default = 30;
-        description = "days to keep old root backups";
+        description = "days to keep old btrfs root backups";
       };
     };
 
@@ -105,8 +105,24 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # assertions for required rollback options
+    assertions = [
+      {
+        assertion = cfg.rollback.type != "zfs" || cfg.rollback.dataset != null;
+        message = "nixfiles.impermanence.rollback.dataset must be set when type is 'zfs'";
+      }
+      {
+        assertion = cfg.rollback.type != "zfs" || cfg.rollback.poolImportService != null;
+        message = "nixfiles.impermanence.rollback.poolImportService must be set when type is 'zfs'";
+      }
+      {
+        assertion = cfg.rollback.type != "btrfs" || cfg.rollback.deviceLabel != null;
+        message = "nixfiles.impermanence.rollback.deviceLabel must be set when type is 'btrfs'";
+      }
+    ];
+
     # rollback service (from zfs.nix or btrfs.nix)
-    boot.initrd.systemd.services = lib.mkIf (rollback != null) rollback.service;
+    boot.initrd.systemd.services = lib.mkIf (rollbackService != null) rollbackService.service;
 
     # common persistence config
     environment.persistence.${cfg.persistPath} = {

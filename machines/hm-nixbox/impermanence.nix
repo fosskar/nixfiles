@@ -3,8 +3,11 @@ _: {
 
   nixfiles.impermanence = {
     enable = true;
-    rollbackType = "zfs";
-    zfs.dataset = "znixos/root";
+    rollback = {
+      type = "zfs";
+      dataset = "znixos/root";
+      poolImportService = "zfs-import-znixos.service";
+    };
     directories = [
       "/var/log"
       "/var/cache"
