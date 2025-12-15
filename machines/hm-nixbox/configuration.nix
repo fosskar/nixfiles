@@ -44,9 +44,4 @@
     };
     zfs.extraPools = [ "tank" ];
   };
-
-  environment.systemPackages = with pkgs; [
-    fontconfig
-  ];
-
 }

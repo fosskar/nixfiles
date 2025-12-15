@@ -1,4 +1,8 @@
-{ mylib, config, ... }:
+{
+  mylib,
+  config,
+  ...
+}:
 {
 
   imports = [
@@ -16,6 +20,8 @@
   networking.hostName = "simon-desktop";
 
   programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
+
+  #kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
   nixfiles = {
     audio.lowLatency.enable = true;

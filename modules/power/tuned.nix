@@ -24,11 +24,15 @@ in
     systemd.services.tuned-set-profile = lib.mkIf isMultiProfile {
       description = "Set tuned profile";
       after = [ "tuned.service" ];
+      requires = [ "tuned.service" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
+        ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
         ExecStart = "${pkgs.tuned}/bin/tuned-adm profile ${profileString}";
         RemainAfterExit = true;
+        Restart = "on-failure";
+        RestartSec = "5s";
       };
     };
   };
