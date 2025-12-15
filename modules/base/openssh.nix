@@ -1,8 +1,11 @@
-_: {
+{ lib, ... }:
+{
   # common openssh settings for all machines
   services.openssh = {
     enable = true;
     openFirewall = true;
+    # socket activation - start on-demand instead of at boot
+    startWhenNeeded = lib.mkDefault true;
     settings = {
       X11Forwarding = false;
       KbdInteractiveAuthentication = false;

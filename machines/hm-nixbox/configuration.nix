@@ -2,10 +2,17 @@
 {
   imports = [
     ../../modules/zfs
+    ../../modules/gpu
+    ../../modules/cpu
   ]
   ++ (mylib.scanPaths ./. { exclude = [ "dashboards" ]; });
 
   nixpkgs.hostPlatform = "x86_64-linux";
+
+  nixfiles = {
+    gpu.intel.enable = true;
+    cpu.amd.enable = true;
+  };
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)
   boot = {

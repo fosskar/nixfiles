@@ -1,5 +1,10 @@
-_: {
+{ pkgs, ... }:
+{
   boot = {
+    # FIXME wait to cache for cachyos kernel
+    # pkgs.cachyosKernels.linuxPackages-cachyos-latest
+    kernelPackages = pkgs.linuxPackages_latest;
+
     kernelParams = [
       # Kernel lockdown disabled for sched-ext scheduler with BPF functionality
       "lockdown=none"

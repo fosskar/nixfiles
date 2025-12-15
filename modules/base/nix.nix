@@ -24,6 +24,15 @@
         "flakes"
       ];
 
+      accept-flake-config = lib.mkDefault false;
+
+      allowed-users = lib.mkDefault [
+        "root"
+        "@wheel"
+      ];
+
+      flake-registry = lib.mkDefault "/etc/nix/registry.json";
+
       download-buffer-size = lib.mkDefault (256 * 1024 * 1024); # 256 MB for large deployments
 
       # for direnv garbage-collection roots
@@ -49,7 +58,8 @@
       builders-use-substitutes = lib.mkDefault true;
     };
 
-    gc.automatic = lib.mkDefault true;
+    # disable if nh.clean is enabled (it handles gc instead)
+    gc.automatic = lib.mkDefault (!(config.programs.nh.clean.enable or false));
 
     optimise.automatic = lib.mkDefault (!config.boot.isContainer);
   };

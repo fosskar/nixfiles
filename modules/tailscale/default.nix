@@ -4,7 +4,11 @@ let
 in
 {
   options.nixfiles.tailscale = {
-    enable = lib.mkEnableOption "tailscale vpn";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "tailscale vpn";
+    };
     trustInterface = lib.mkOption {
       type = lib.types.bool;
       default = true;

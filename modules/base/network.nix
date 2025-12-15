@@ -14,5 +14,9 @@
     };
   };
 
-  services.resolved.llmnr = lib.mkDefault "false";
+  services.resolved = {
+    enable = lib.mkDefault true;
+    # disable link-local multicast name resolution
+    llmnr = lib.mkDefault "false";
+  };
 }

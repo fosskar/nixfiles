@@ -80,22 +80,9 @@ in
             settings = {
               user = "simon";
               groups = [
-                "audio"
-                "disk"
-                "docker"
-                "gamemode"
-                "input"
-                "networkmanager"
-                "video"
                 "wheel"
-                "power"
-                "podman"
-                "git"
-                "qemu-libvirtd"
-                "kvm"
-                "network"
-                "dialout"
-                "plugdev"
+                "video"
+                "input"
               ];
             };
           };

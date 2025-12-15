@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
+  # add wheel users to plugdev group for Betaflight DFU
+  users.groups.plugdev.members = config.users.groups.wheel.members;
+
   services.udev = {
     #packages = with pkgs; [
     #  platformio-core
