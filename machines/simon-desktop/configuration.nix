@@ -21,12 +21,6 @@
     audio.lowLatency.enable = true;
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
 
-    scx = {
-      enable = true;
-      scheduler = "scx_lavd";
-      performance = true;
-    };
-
     gpu.amd.enable = true;
     cpu.amd.enable = true;
   };

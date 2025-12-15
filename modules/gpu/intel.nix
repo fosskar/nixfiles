@@ -21,8 +21,12 @@ in
         intel-compute-runtime
         vpl-gpu-rt
       ];
-      intel-gpu-tools.enable = lib.mkDefault true;
+      # intel-gpu-tools only works with i915, not xe driver
+      # intel-gpu-tools.enable = lib.mkDefault true;
     };
+
+    # nvtop supports xe driver for intel arc
+    environment.systemPackages = [ pkgs.nvtopPackages.intel ];
 
     environment.sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";

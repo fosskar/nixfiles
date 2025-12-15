@@ -1,39 +1,29 @@
 {
   lib,
-  config,
-  pkgs,
+  mylib,
   ...
 }:
-let
-  cfg = config.nixfiles.power;
-in
 {
+  imports = mylib.scanPaths ./. { };
+
   options.nixfiles.power = {
-    enable = lib.mkOption {
+    ppd.enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
-      description = "enable power management";
+      default = false;
+      description = "enable power-profiles-daemon (for desktop/laptop)";
     };
 
-    backend = lib.mkOption {
-      type = lib.types.enum [
-        "power-profiles-daemon"
-        "tuned"
-        "none"
-      ];
-      default = "power-profiles-daemon";
-      description = "power management backend";
+    tuned = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "enable tuned (for servers)";
+      };
+      profile = lib.mkOption {
+        type = lib.types.either lib.types.str (lib.types.listOf lib.types.str);
+        default = "balanced";
+        description = "tuned profile(s) to use (string or list, last wins conflicts)";
+      };
     };
-  };
-
-  config = lib.mkIf cfg.enable {
-    services.power-profiles-daemon.enable = lib.mkIf (cfg.backend == "power-profiles-daemon") true;
-
-    # tuned support (future)
-    # services.tuned.enable = lib.mkIf (cfg.backend == "tuned") true;
-
-    environment.systemPackages = lib.mkIf (cfg.backend == "power-profiles-daemon") [
-      pkgs.power-profiles-daemon
-    ];
   };
 }

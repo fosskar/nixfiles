@@ -31,6 +31,15 @@ in
   boot = {
     kernelPackages = lib.mkIf (lib.meta.availableOn pkgs.stdenv.hostPlatform pkgs.zfs) latestKernelPackage;
 
+    kernelParams = [
+      #"zfs.zfs_arc_max=12884901888" # 12GB
+      "zfs.zfs_arc_max=17179869184" # 16GB
+      #"zfs.zfs_arc_max=34359738368" # 32GB
+      #"zfs.zfs_arc_max=42949672960" # 40GB
+      "zfs.zfs_txg_timeout=120"
+    ];
+
+    ### DO NOT CHANGE #### i already fd up
     #networking.hostId = lib.mkDefault "8425e349";
 
     supportedFilesystems = [ "zfs" ];

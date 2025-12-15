@@ -11,7 +11,7 @@ in
   options.nixfiles.scx = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = true;
       description = "enable sched_ext scheduler";
     };
 
@@ -25,12 +25,6 @@ in
       default = "scx_lavd";
       description = "sched_ext scheduler to use";
     };
-
-    performance = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "enable performance mode";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -38,7 +32,6 @@ in
       enable = true;
       package = pkgs.scx.rustscheds;
       inherit (cfg) scheduler;
-      extraArgs = lib.mkIf cfg.performance [ "--performance" ];
     };
   };
 }
