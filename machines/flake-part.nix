@@ -154,6 +154,7 @@ in
                 exclude = [
                   "/var/cache"
                   "/var/log"
+                  "/var/lib/postgresql"
                   "/var/tmp"
                   "*.pyc"
                   "*.o"

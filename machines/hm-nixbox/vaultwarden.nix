@@ -2,8 +2,8 @@
 {
   services.vaultwarden = {
     enable = true;
-    dbBackend = "sqlite";
-    backupDir = "/tank/apps/vaultwarden";
+    dbBackend = "postgresql";
+    configurePostgres = true;
 
     environmentFile = config.sops.secrets."vaultwarden.env".path;
 
