@@ -81,8 +81,6 @@ in
               user = "simon";
               groups = [
                 "wheel"
-                "video"
-                "input"
               ];
             };
           };
@@ -95,6 +93,10 @@ in
             input = "clan-core";
           };
         };
+
+        #mycelium = {
+        #  roles.peer.tags.all = { };
+        #};
 
         yggdrasil = {
           roles.default.tags.all = { };

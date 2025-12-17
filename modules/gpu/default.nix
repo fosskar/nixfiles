@@ -2,6 +2,7 @@
   lib,
   mylib,
   pkgs,
+  config,
   ...
 }:
 {
@@ -19,6 +20,8 @@
       mesa-demos # glxinfo, glxgears
       libva-utils # vainfo for video acceleration
     ];
+
+    users.groups.video.members = config.users.groups.wheel.members;
   };
 
   options.nixfiles.gpu = {

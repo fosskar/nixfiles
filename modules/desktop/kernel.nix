@@ -15,14 +15,12 @@
       # Disable USB autosuspend - prevents peripheral wake-up issues
       "usbcore.autosuspend=-1"
 
-      # Quiet boot - cleaner boot screen
-      "quiet"
-      "splash"
+      # verbose boot - show systemd status
       "boot.shell_on_fail"
-      "loglevel=3"
-      "rd.systemd.show_status=false"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
+      "loglevel=4"
+
+      # disable legacy serial port probing - no real serial ports on modern desktops
+      "8250.nr_uarts=0"
     ];
 
     # Watchdog modules not needed on desktop
