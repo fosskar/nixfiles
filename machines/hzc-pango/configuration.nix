@@ -16,6 +16,8 @@
       ];
     };
   };
+  
+  clan.core.settings.machine-id.enable = true;
 
   services.qemuGuest.enable = true;
 

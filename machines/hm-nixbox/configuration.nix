@@ -10,6 +10,8 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
+  clan.core.settings.machine-id.enable = true;
+
   nixfiles = {
     gpu.intel.enable = true;
     cpu.amd.enable = true;
