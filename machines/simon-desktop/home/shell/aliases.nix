@@ -27,6 +27,9 @@ _: {
     p = "podman";
     z = "zeditor";
 
+    # jj: commit, bookmark set main, push
+    jjcbp = ''f() { jj commit -m "$1" && jj bookmark set main -r @- && jj git push; }; f'';
+
     # ai
     claude = "claude --dangerously-skip-permissions";
 

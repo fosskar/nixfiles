@@ -11,7 +11,8 @@
     };
 
     "nix-access-tokens" = {
-      mode = "0600";
+      mode = "0440";
+      group = "users";
     };
   };
 }

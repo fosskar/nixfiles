@@ -17,6 +17,7 @@ dependencies:
     - cmake
     - perl
     - dbus
+    - libgit2
 steps:
   - name: setup
     command: |
@@ -26,6 +27,11 @@ steps:
     command: |
       git clone https://tangled.org/vitorpy.com/tangled-cli /tmp/tangled-cli
       cd /tmp/tangled-cli
+      # find openssl in nix profile and set paths
+      export PKG_CONFIG_PATH="/nix/var/nix/profiles/default/lib/pkgconfig:$PKG_CONFIG_PATH"
+      export OPENSSL_DIR="/nix/var/nix/profiles/default"
+      export OPENSSL_LIB_DIR="/nix/var/nix/profiles/default/lib"
+      export OPENSSL_INCLUDE_DIR="/nix/var/nix/profiles/default/include"
       cargo build --release
       cp target/release/tangled /tangled/workspace/tangled
       chmod +x /tangled/workspace/tangled

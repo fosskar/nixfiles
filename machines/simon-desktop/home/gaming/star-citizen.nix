@@ -15,7 +15,7 @@ let
   star-citizen =
     inputs.nix-gaming.packages.${pkgs.stdenv.hostPlatform.system}.star-citizen.override
       (_prev: {
-        useUmu = true; # Disabled temporarily - version check broken
+        useUmu = true;
         gameScopeEnable = false;
         gameScopeArgs = [
           "-f"
@@ -29,21 +29,17 @@ let
           "-r 165"
           "--adaptive-sync"
           "--backend=wayland"
-          "--mangoapp"
           # HDR
           #"--hdr-enabled"
         ];
         preCommands = ''
           export LD_PRELOAD="${gamemodeSharedObjects}"
-          export dual_color_blend_by_location="true"
-          # mesa shader cache
-          export MESA_SHADER_CACHE_DIR="$WINEPREFIX"
-          export MESA_SHADER_CACHE_MAX_SIZE=10G
         '';
       });
 in
 {
   home.packages = [
     star-citizen
+    pkgs.umu-launcher
   ];
 }
