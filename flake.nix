@@ -25,7 +25,7 @@
     };
 
     # system
-    systems.url = "github:nix-systems/default";
+    systems.url = "github:nix-systems/default-linux";
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -37,7 +37,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.flake-compat.follows = "";
+    };
 
     disko = {
       url = "github:nix-community/disko";
@@ -81,18 +86,22 @@
 
     # gaming
     nix-gaming = {
-      url = "github:fufexan/nix-gaming/8b636f0470cb263aa1472160457f4b2fba420425";
+      url = "github:fufexan/nix-gaming";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     # wm
     niri-flake = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs-stable";
     };
     hyprland = {
       url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+      inputs.pre-commit-hooks.follows = "";
     };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
@@ -117,6 +126,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         dgop.follows = "dgop";
+        quickshell.follows = "quickshell";
       };
     };
   };
