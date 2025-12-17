@@ -133,10 +133,7 @@ in
       ]
       ++ lib.optional cfg.manageSopsMount "/var/lib/sops-nix"
       ++ cfg.directories;
-      files = [
-        "/etc/machine-id"
-      ]
-      ++ cfg.files;
+      files = [ ] ++ cfg.files;
     };
 
     # early mounts required for bind mounts and sops secrets

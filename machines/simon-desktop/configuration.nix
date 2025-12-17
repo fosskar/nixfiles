@@ -23,6 +23,8 @@
 
   #kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
+  clan.core.settings.machine-id.enable = true;
+
   nixfiles = {
     audio.lowLatency.enable = true;
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
