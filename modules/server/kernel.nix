@@ -43,6 +43,9 @@ _: {
       "snd"
       "soundcore"
 
+      # bluetooth (not needed on servers)
+      "ath3k"
+
       # rare filesystems
       "adfs"
       "affs"

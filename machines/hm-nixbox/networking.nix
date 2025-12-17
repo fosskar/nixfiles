@@ -22,4 +22,15 @@ _: {
       443
     ];
   };
+
+  # disable WoL on all ethernet interfaces
+  systemd.network.links."10-disable-wol" = {
+    matchConfig.OriginalName = "en*";
+    linkConfig.WakeOnLan = "off";
+  };
+
+  # enable runtime power management for ethernet devices
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="net", KERNEL=="en*", RUN+="/bin/sh -c 'echo auto > /sys/class/net/%k/device/power/control'"
+  '';
 }

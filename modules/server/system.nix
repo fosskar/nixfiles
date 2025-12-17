@@ -4,10 +4,12 @@
 
   systemd = {
     enableEmergencyMode = false;
-    sleep.extraConfig = ''
-      AllowSuspend=no
-      AllowHibernation=no
-    '';
+    targets = {
+      sleep.enable = false;
+      suspend.enable = false;
+      hibernate.enable = false;
+      hybrid-sleep.enable = false;
+    };
     settings.Manager = {
       RuntimeWatchdogSec = lib.mkDefault "15s";
       RebootWatchdogSec = lib.mkDefault "30s";
