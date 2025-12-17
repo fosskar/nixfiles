@@ -1,0 +1,105 @@
+# auto-update flake inputs with tangled-cli PR creation
+when:
+  - event: ["manual"]
+engine: nixery
+clone:
+  depth: 0
+dependencies:
+  nixpkgs:
+    - git
+    - cargo
+    - rustc
+    - pkg-config
+    - openssl
+steps:
+  - name: setup
+    command: |
+      git config user.name "spindle ci"
+      git config user.email "ci@tangled.sh"
+  - name: build tangled-cli
+    command: |
+      git clone https://tangled.org/vitorpy.com/tangled-cli /tmp/tangled-cli
+      cd /tmp/tangled-cli
+      cargo build --release
+      cp target/release/tangled /tangled/workspace/tangled
+      chmod +x /tangled/workspace/tangled
+  - name: authenticate
+    command: |
+      # TANGLED_HANDLE and TANGLED_PASSWORD must be set as secrets
+      echo "$TANGLED_PASSWORD" | ./tangled auth login --handle "$TANGLED_HANDLE"
+  - name: update inputs and create PRs
+    command: |
+      set -euo pipefail
+
+      INPUTS=(
+        nixpkgs nixpkgs-stable nixpkgs-git home-manager clan-core systems
+        flake-parts srvos nix-cachyos-kernel disko nixos-generators
+        impermanence sops-nix git-hooks treefmt-nix zen-browser nix-gaming
+        niri-flake hyprland hyprland-plugins quickshell noctalia dgop dms
+      )
+
+      git fetch origin
+      updated=0 skipped=0 unchanged=0 failed=0
+
+      for input in "${INPUTS[@]}"; do
+        echo ""
+        echo "=== $input ==="
+
+        BRANCH="update/$input"
+
+        # skip if branch already exists
+        if git ls-remote --heads origin "$BRANCH" | grep -q .; then
+          echo "branch exists, skipping"
+          ((skipped++))
+          continue
+        fi
+
+        # reset to main
+        git checkout main
+        git reset --hard origin/main
+
+        # update input
+        if ! nix flake update "$input" 2>&1; then
+          echo "update failed"
+          ((failed++))
+          continue
+        fi
+
+        # check for changes
+        if git diff --quiet flake.lock; then
+          echo "no changes"
+          ((unchanged++))
+          continue
+        fi
+
+        # commit and push
+        git checkout -b "$BRANCH"
+        git add flake.lock
+        git commit -m "flake: update $input"
+
+        if ! git push -u origin "$BRANCH"; then
+          echo "push failed"
+          ((failed++))
+          git checkout main
+          continue
+        fi
+
+        # create PR using tangled-cli
+        if ./tangled pr create \
+          --repo "$TANGLED_REPO" \
+          --base main \
+          --head "$BRANCH" \
+          --title "flake: update $input"; then
+          echo "created PR for $input"
+          ((updated++))
+        else
+          echo "PR creation failed"
+          ((failed++))
+        fi
+
+        git checkout main
+      done
+
+      echo ""
+      echo "=== summary ==="
+      echo "created: $updated | skipped: $skipped | unchanged: $unchanged | failed: $failed"
