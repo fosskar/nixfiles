@@ -1,6 +1,7 @@
 # auto-update flake inputs with tangled-cli PR creation
 when:
-  - event: ["manual"]
+  - event: ["push"]
+    branch: main
 engine: nixery
 clone:
   depth: 0
