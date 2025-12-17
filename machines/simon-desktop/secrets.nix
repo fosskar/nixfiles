@@ -14,5 +14,7 @@
       mode = "0440";
       group = "users";
     };
+
+    "samba-password" = { };
   };
 }

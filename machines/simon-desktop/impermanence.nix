@@ -1,5 +1,5 @@
 _: {
-  imports = [ ../../../../modules/impermanence ];
+  imports = [ ../../modules/impermanence ];
 
   nixfiles.impermanence = {
     enable = true;

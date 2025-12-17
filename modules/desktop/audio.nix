@@ -33,6 +33,13 @@ in
     # add wheel users to audio group
     users.groups.audio.members = config.users.groups.wheel.members;
 
+    # low-latency audio udev rules (rtc, hpet, cpu_dma_latency access for audio group)
+    services.udev.extraRules = lib.mkIf cfg.lowLatency.enable ''
+      KERNEL=="rtc0", GROUP="audio"
+      KERNEL=="hpet", GROUP="audio"
+      DEVPATH=="/devices/virtual/misc/cpu_dma_latency", OWNER="root", GROUP="audio", MODE="0660"
+    '';
+
     services.pipewire = {
       enable = lib.mkDefault true;
       alsa = {

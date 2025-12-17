@@ -4,7 +4,6 @@
   ...
 }:
 {
-
   imports = [
     ../../modules/tailscale
     ../../modules/gaming
@@ -12,6 +11,7 @@
     ../../modules/power
     ../../modules/gpu
     ../../modules/cpu
+    ../../modules/virtualization
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -26,10 +26,17 @@
   clan.core.settings.machine-id.enable = true;
 
   nixfiles = {
+
     audio.lowLatency.enable = true;
+
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
 
     gpu.amd.enable = true;
     cpu.amd.enable = true;
+
+    virtualization = {
+      docker.enable = true;
+      podman.enable = true;
+    };
   };
 }

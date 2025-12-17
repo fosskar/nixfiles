@@ -9,6 +9,12 @@
       description = "yubikey support";
     };
 
+    lockOnRemove = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "lock screen when yubikey is unplugged";
+    };
+
     u2f = {
       enable = lib.mkOption {
         type = lib.types.bool;
