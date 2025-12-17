@@ -12,6 +12,11 @@ dependencies:
     - rustc
     - pkg-config
     - openssl
+    - gcc
+    - gnumake
+    - cmake
+    - perl
+    - dbus
 steps:
   - name: setup
     command: |
