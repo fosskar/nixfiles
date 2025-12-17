@@ -1,4 +1,4 @@
-{ mylib, pkgs, ... }:
+{ mylib, ... }:
 {
   imports = [
     ../../modules/zfs
@@ -15,10 +15,7 @@
     cpu.amd.enable = true;
     power.tuned = {
       enable = true;
-      profile = [
-        "server-powersave"
-        "spindown-disk"
-      ];
+      profile = "server-powersave";
     };
   };
 

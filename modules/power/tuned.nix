@@ -14,6 +14,9 @@ in
   config = lib.mkIf cfg.enable {
     services.tuned.enable = true;
 
+    # hdparm is required for disk spindown settings
+    environment.systemPackages = [ pkgs.hdparm ];
+
     # single profile: use etc file
     environment.etc = lib.mkIf (!isMultiProfile) {
       "tuned/active_profile".text = profileString;

@@ -33,5 +33,10 @@ in
       # fix opencl icd path for nixos
       OCL_ICD_VENDORS = "/run/opengl-driver/etc/OpenCL/vendors";
     };
+
+    # enable runtime power management for intel gpu
+    services.udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{class}=="0x030000", ATTR{power/control}="auto"
+    '';
   };
 }
