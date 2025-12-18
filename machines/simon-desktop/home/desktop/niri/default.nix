@@ -606,28 +606,29 @@
           move-workspace-up = [ ];
         };
 
-        # mouse wheel workspace scrolling
+        # mouse wheel column scrolling (horizontal)
         "Mod+WheelScrollDown" = {
           action = {
-            focus-workspace-down = [ ];
+            focus-column-right = [ ];
           };
           cooldown-ms = 150;
         };
         "Mod+WheelScrollUp" = {
           action = {
-            focus-workspace-up = [ ];
+            focus-column-left = [ ];
           };
           cooldown-ms = 150;
         };
+        # mouse wheel workspace switching
         "Mod+Ctrl+WheelScrollDown" = {
           action = {
-            move-column-to-workspace-down = [ ];
+            focus-workspace-down = [ ];
           };
           cooldown-ms = 150;
         };
         "Mod+Ctrl+WheelScrollUp" = {
           action = {
-            move-column-to-workspace-up = [ ];
+            focus-workspace-up = [ ];
           };
           cooldown-ms = 150;
         };

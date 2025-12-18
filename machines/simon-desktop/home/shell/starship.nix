@@ -4,14 +4,13 @@
 
   programs.starship = {
     enable = true;
-
-    enableFishIntegration = false;
+    enableFishIntegration = false; # using tide instead
 
     settings = {
       format = lib.concatStrings [
         "$all"
+        "$fill"
         "$cmd_duration"
-        "$fill "
         "$kubernetes"
         "$terraform"
         "$package"
@@ -21,42 +20,28 @@
         "$jobs"
         "$character"
       ];
+      right_format = lib.concatStrings [
+
+      ];
       add_newline = true;
-      character = {
-        success_symbol = "[󱞪](bold green)";
-        error_symbol = "[󱞪](bold red)";
-        vicmd_symbol = "[](bold yellow)";
-      };
 
       cmd_duration = {
-        format = "[\\[$duration\\]]($style) ";
+        format = "[$duration]($style) ";
         style = "yellow";
       };
 
       directory = {
-        truncation_length = 3;
-        truncate_to_repo = true;
-        format = "[  $path]($style) ";
         style = "bold green";
-        disabled = false;
-        truncation_symbol = "";
-      };
-
-      direnv = {
-        disabled = true;
       };
 
       docker_context = {
-        format = "[\\[$symbol$context\\]]($style) ";
+        format = "[$symbol$context]($style) ";
         only_with_files = true;
         detect_files = [
           "docker-compose.yml"
           "docker-compose.yaml"
           "Dockerfile"
         ];
-        detect_folders = [ "docker-build-env" ];
-        style = "blue bold";
-        disabled = false;
       };
 
       # jj and git integration
@@ -87,22 +72,13 @@
         };
       };
 
-      # disable original git modules
-      git_branch = {
-        disabled = true;
-      };
-
-      git_status = {
-        disabled = true;
-      };
-
-      git_commit = {
-        disabled = true;
-      };
+      # disable original git modules and use custom module with jj support
+      git_branch.disabled = true;
+      git_status.disabled = true;
+      git_commit.disabled = true;
 
       helm = {
-        format = "[\\[$symbol($version)\\]]($style) ";
-        version_format = "v$raw";
+        format = "[$symbol($version)]($style) ";
         detect_files = [
           "helmfile.yaml"
           "helmfile.yml"
@@ -111,29 +87,21 @@
           "values.yaml"
           "values.yml"
         ];
-        detect_folders = [ "charts" ];
-        disabled = false;
-      };
-
-      hostname = {
-        ssh_only = true;
       };
 
       kubernetes = {
         disabled = false;
         symbol = "󱃾 ";
-        format = "[\\[$symbol$context\\]]($style) ";
+        format = "[$symbol$context]($style) ";
       };
 
       nix_shell = {
         symbol = " ";
-        format = "[\\[$symbol(\($name\))\\]]($style) ";
-        heuristic = false;
-        disabled = false;
+        format = "[$symbol(\($name\))]($style) ";
       };
 
       fill = {
-        symbol = "-";
+        symbol = " ";
       };
     };
   };

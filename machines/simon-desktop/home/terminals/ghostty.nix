@@ -4,7 +4,7 @@
     enable = true;
     package = pkgs.ghostty;
     settings = {
-      theme = "Midnight In Mojave";
+      theme = "Adwaita Dark"; # Midnight In Mojave
       font-family = "JetBrainsMono Nerd Font";
       font-size = 10; # default: 12
       #background-opacity = 1.0; # default: 1.0
