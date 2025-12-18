@@ -20,10 +20,20 @@ in
     # traefik-level geoblock
     geoblock = {
       enable = lib.mkEnableOption "traefik geoblock middleware (blocks traffic by country at reverse proxy level)";
+      blacklistMode = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "if true, use blockedCountries; if false, use allowedCountries";
+      };
       allowedCountries = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [ "DE" ];
         description = "ISO 3166-1 alpha-2 country codes to allow (whitelist mode)";
+      };
+      blockedCountries = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = "ISO 3166-1 alpha-2 country codes to block (blacklist mode)";
       };
     };
   };
@@ -92,8 +102,9 @@ in
           cacheSize = 25;
           forceMonthlyUpdate = true;
           allowUnknownCountries = false;
-          blackListMode = false;
-          countries = cfg.geoblock.allowedCountries;
+          blackListMode = cfg.geoblock.blacklistMode;
+          countries =
+            if cfg.geoblock.blacklistMode then cfg.geoblock.blockedCountries else cfg.geoblock.allowedCountries;
         };
       };
     };

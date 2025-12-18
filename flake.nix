@@ -56,10 +56,10 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
-    #tangled = {
-    #  url = "git+https://tangled.org/tangled.org/core";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
+    tangled = {
+      url = "git+https://tangled.org/@tangled.org/core";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
