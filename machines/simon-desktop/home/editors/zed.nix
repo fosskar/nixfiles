@@ -46,30 +46,31 @@
         light = "VSCode Dark Modern";
         dark = "VSCode Dark Modern";
       };
-      "experimental.theme_overrides" = {
-        "background.appearance" = "blurred";
-        "background" = "#111111D7";
-        "status_bar.background" = "#111111d7";
-        "title_bar.background" = "#111111d7";
-        "title_bar.inactive_background" = "#111111d7";
-        "elevated_surface.background" = "#1E1E1EF2";
-        "surface.background" = "#111111d7";
-        "editor.background" = "#00000000";
-        "editor.gutter.background" = "#00000000";
-        "tab_bar.background" = "#00000000";
-        "terminal.background" = "#00000000";
-        "toolbar.background" = "#00000000";
-        "tab.active_background" = "#00000055";
-        "tab.inactive_background" = "#00000000";
-        "panel.indent_guide" = "#111111d7";
-        "panel.background" = "#00000000";
-        "panel.focused_border" = "00000000";
-        "element.active" = "#00000000";
-        "border.variant" = "#00000000";
-        "scrollbar.track.border" = "#00000000";
-        "editor.active_line.background" = "#00000042";
-        "scrollbar.track.background" = "#00000000";
-      };
+      ## this makes vscode dark modern transparent
+      #"experimental.theme_overrides" = {
+      #  "background.appearance" = "blurred";
+      #  "background" = "#111111D7";
+      #  "status_bar.background" = "#111111d7";
+      #  "title_bar.background" = "#111111d7";
+      #  "title_bar.inactive_background" = "#111111d7";
+      #  "elevated_surface.background" = "#1E1E1EF2";
+      #  "surface.background" = "#111111d7";
+      #  "editor.background" = "#00000000";
+      #  "editor.gutter.background" = "#00000000";
+      #  "tab_bar.background" = "#00000000";
+      #  "terminal.background" = "#00000000";
+      #  "toolbar.background" = "#00000000";
+      #  "tab.active_background" = "#00000055";
+      #  "tab.inactive_background" = "#00000000";
+      #  "panel.indent_guide" = "#111111d7";
+      #  "panel.background" = "#00000000";
+      #  "panel.focused_border" = "00000000";
+      #  "element.active" = "#00000000";
+      #  "border.variant" = "#00000000";
+      #  "scrollbar.track.border" = "#00000000";
+      #  "editor.active_line.background" = "#00000042";
+      #  "scrollbar.track.background" = "#00000000";
+      #};
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
       buffer_font_family = "JetBrainsMono Nerd Font";
@@ -92,21 +93,8 @@
           ];
           env = { };
         };
-        mcp-server-git = {
-          enabled = true;
-          command = "nix";
-          args = [
-            "run"
-            "github:natsukium/mcp-servers-nix#mcp-server-git"
-            "--"
-          ];
-          env = { };
-        };
       };
       soft_wrap = "editor_width";
-      title_bar = {
-        show_branch_icon = true;
-      };
       indent_guides = {
         line_width = 1;
         active_line_width = 2;
@@ -114,9 +102,6 @@
       };
       inlay_hints = {
         enabled = true;
-      };
-      project_panel = {
-        sticky_scroll = false;
       };
       collaboration_panel = {
         button = false;
@@ -164,20 +149,14 @@
         "**/report"
         "**/node_modules"
       ];
-      git = {
-        inline_blame = {
-          show_commit_summary = true;
-        };
-      };
       load_direnv = "shell_hook";
       journal = {
         hour_format = "hour24";
       };
       terminal = {
-        env = {
-          EDITOR = "zeditor";
-        };
-        line_height = "standard";
+        #env = {
+        #  EDITOR = "zeditor";
+        #};
         font_size = 14;
       };
       file_types = {

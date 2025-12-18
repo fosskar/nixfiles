@@ -5,6 +5,8 @@
   programs.starship = {
     enable = true;
 
+    enableFishIntegration = false;
+
     settings = {
       format = lib.concatStrings [
         "$all"

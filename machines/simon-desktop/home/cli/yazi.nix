@@ -6,7 +6,6 @@
   ...
 }:
 {
-  imports = mylib.scanPaths ./. { };
   # general file info
   home.packages = [ pkgs.exiftool ];
 

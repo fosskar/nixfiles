@@ -4,7 +4,7 @@
     # custom packages from your flake
     #inputs.self.packages.${pkgs.system}.claudia
     # desktop apps
-    #webcord-vencord
+    webcord-vencord
     signal-desktop
     #protonvpn-gui
     #protonvpn-cli

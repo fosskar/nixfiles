@@ -1,7 +1,7 @@
 { config, ... }:
 {
   home.shell = {
-    enableShellIntegration = false;
+    enableShellIntegration = true;
     enableZshIntegration = config.programs.zsh.enable;
     enableNushellIntegration = config.programs.nushell.enable;
     enableIonIntegration = config.programs.ion.enable;
