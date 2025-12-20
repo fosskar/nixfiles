@@ -47,7 +47,7 @@
 
       _tide_item_jj = ''
         if jj root --quiet &>/dev/null
-          set info (jj log -r@ -n1 --ignore-working-copy --no-graph --color never -T 'separate(" ", bookmarks.join(","), change_id.shortest(), if(empty, "", "*"))')
+          set info (jj log -r@ -n1 --no-graph --color never -T 'separate(" ", bookmarks.join(","), change_id.shortest(), if(empty, "", "*"))')
           _tide_print_item jj $info
         else if git rev-parse --git-dir &>/dev/null
           set branch (git branch --show-current 2>/dev/null; or git rev-parse --short HEAD)
