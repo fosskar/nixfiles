@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [
     ../../modules/monitoring
@@ -21,9 +26,46 @@
     enableZfsExporter = true;
   };
 
-  services = {
-    victorialogs.enable = true;
+  # grant beszel-agent disk access for SMART monitoring
+  systemd.services.beszel-agent = {
+    unitConfig.RequiresMountsFor = [ "/tank" ];
+    serviceConfig = {
+      # smart data
+      AmbientCapabilities = "CAP_SYS_RAWIO CAP_SYS_ADMIN";
+      CapabilityBoundingSet = "CAP_SYS_RAWIO CAP_SYS_ADMIN";
+      SupplementaryGroups = [ "disk" ];
+      PrivateUsers = lib.mkForce false;
+      NoNewPrivileges = lib.mkForce false;
+    };
+  };
 
+  services = {
+    beszel = {
+      hub = {
+        enable = true;
+        #package = pkgs.custom.beszel;
+        host = "127.0.0.1";
+        port = 8090;
+      };
+      agent = {
+        enable = true;
+        environment = {
+          LISTEN = "45876";
+          SENSORS = "-nct6798_cputin,-nct6798_auxtin0,-nct6798_auxtin2,-nct6798_auxtin4"; # exclude broken phantom sensor
+          FILESYSTEM = "/persist";
+          EXTRA_FILESYSTEMS = "/nix__Nix,/tank/apps__Apps,/tank/media__Media,/tank/shares__Shares,/tank/backup__Backup";
+          #SERVICE_PATTERNS = "pangolin*,traefik*,jellyfin*,immich*,grafana*,ollama*,*arr*,beszel*,newt*";
+          #INTEL_GPU_DEVICE = "drm:/dev/dri/card1";
+        };
+        environmentFile = config.sops.secrets."beszel.env".path;
+        extraPath = [
+          pkgs.intel-gpu-tools
+          pkgs.smartmontools # for SMART disk health data
+        ];
+      };
+    };
+
+    victorialogs.enable = true;
     victoriametrics = {
       enable = true;
       listenAddress = "127.0.0.1:8428"; # accessible from local network  and pangolin tunnel

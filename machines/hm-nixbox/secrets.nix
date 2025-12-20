@@ -15,5 +15,7 @@ _: {
     "immich.env" = { };
 
     "paperless.env" = { };
+
+    "beszel.env" = { };
   };
 }

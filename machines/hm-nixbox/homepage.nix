@@ -1,5 +1,6 @@
 _: {
   services.glances.enable = true;
+
   services.homepage-dashboard = {
     enable = true;
     listenPort = 8082;
@@ -14,10 +15,11 @@ _: {
     # basic settings
     settings = {
       title = "home-lab dashboard";
-      headerStyle = "clean"; # "boxedWidgets"
+      headerStyle = "underlined";
       useEqualheights = true;
       hideVersion = true;
       disableUpdateCheck = true;
+      disableIndexing = true;
       description = "a description of my  homepage";
       cardBlur = "xl"; # xs, sm, md, lg, xl, 2xl, 3xl - see https://tailwindcss.com/docs/backdrop-blur
 
@@ -29,22 +31,28 @@ _: {
           Glances = {
             header = false;
             style = "row";
+            columns = 4;
           };
         }
         {
           Network = {
             header = true;
+            columns = 2;
+          };
+        }
+        {
+          Monitoring = {
+            header = true;
+            style = "column";
           };
         }
         {
           Infrastructure = {
             header = true;
-            style = "row";
-            columns = 3;
           };
         }
         {
-          Monitoring = {
+          Automation = {
             header = true;
           };
         }
@@ -69,23 +77,13 @@ _: {
           };
         }
         {
-          Automation = {
-            header = true;
-          };
-        }
-        {
           "Arr Stack" = {
             header = true;
-            style = "row";
-            columns = 3;
+            columns = 2;
             initiallyCollapsed = true;
           };
         }
       ];
-
-      #  title = "home dashboard";
-      #  favicon = "https://gethomepage.dev/img/favicon.ico";
-      #  headerStyle = "boxed";
     };
 
     # https://gethomepage.dev/latest/configs/custom-css-js/
@@ -111,6 +109,13 @@ _: {
             };
           }
           {
+            "AdGuard Home" = {
+              href = "http://192.168.10.1:8080";
+              icon = "adguard-home.svg";
+              siteMonitor = "http://192.168.10.1:8080";
+            };
+          }
+          {
             "Pangolin local" = {
               href = "https://pango.osscar.me";
               icon = "pangolin.png";
@@ -120,6 +125,31 @@ _: {
             "Pangolin public" = {
               href = "https://pangolin.simonoscar.me";
               icon = "pangolin.png";
+            };
+          }
+        ];
+      }
+      {
+        "Monitoring" = [
+          {
+            "Beszel" = {
+              href = "https://beszel.osscar.me";
+              icon = "beszel.svg";
+              siteMonitor = "http://127.0.0.1:8090";
+            };
+          }
+          {
+            "VictoriaMetrics" = {
+              href = "https://vm.osscar.me";
+              icon = "victoriametrics.svg";
+              siteMonitor = "https://vm.osscar.me";
+            };
+          }
+          {
+            "Grafana" = {
+              href = "https://grafana.osscar.me";
+              icon = "grafana.svg";
+              siteMonitor = "https://grafana.osscar.me";
             };
           }
         ];
@@ -149,6 +179,13 @@ _: {
               href = "https://jellyfin.osscar.me";
               icon = "jellyfin.png";
               siteMonitor = "http://127.0.0.1:8096";
+            };
+          }
+          {
+            "Jellyseerr" = {
+              href = "https://jellyseerr.osscar.me";
+              icon = "jellyseerr.svg";
+              siteMonitor = "http://127.0.0.1:5055";
             };
           }
           {
@@ -198,13 +235,6 @@ _: {
             };
           }
           {
-            "Jellyseerr" = {
-              href = "https://jellyseerr.osscar.me";
-              icon = "jellyseerr.svg";
-              siteMonitor = "http://127.0.0.1:5055";
-            };
-          }
-          {
             "SABnzbd" = {
               href = "https://sabnzbd.osscar.me";
               icon = "sabnzbd.svg";
@@ -244,32 +274,7 @@ _: {
         ];
       }
       {
-        "Monitoring" = [
-          {
-            "VictoriaMetrics" = {
-              href = "https://vm.osscar.me";
-              icon = "victoriametrics.svg";
-              siteMonitor = "https://vm.osscar.me";
-            };
-          }
-          {
-            "Grafana" = {
-              href = "https://grafana.osscar.me";
-              icon = "grafana.svg";
-              siteMonitor = "https://grafana.osscar.me";
-            };
-          }
-        ];
-      }
-      {
         Security = [
-          {
-            "AdGuard Home" = {
-              href = "http://192.168.10.1:8080";
-              icon = "adguard-home.svg";
-              siteMonitor = "http://192.168.10.1:8080";
-            };
-          }
           {
             "Vaultwarden" = {
               href = "https://vault.osscar.me";
@@ -290,20 +295,112 @@ _: {
           }
         ];
       }
-      #{
-      #  "Files" = [
-      #    {
-      #      "samba" = {
-      #        description = "network file sharing";
-      #        href = "smb://192.168.10.104";
-      #        icon = "samba.svg";
-      #      };
-      #    }
-      #  ];
-      #}
+      {
+        "Glances" = [
+          {
+            "Info" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "info";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "CPU" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "cpu";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "CPU Temp" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "sensor:Tctl";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "Memory" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "memory";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "Processes" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "process";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "Disk /" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "fs:/";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "Disk /tank" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "fs:/tank";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "Network" = {
+              widget = {
+                type = "glances";
+                url = "http://127.0.0.1:61208";
+                metric = "network:enp36s0f0np0";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+        ];
+      }
     ];
+
     # https://gethomepage.dev/latest/configs/service-widgets/
     widgets = [
+      {
+        datetime = {
+          locale = "de";
+          format = {
+            dateStyle = "short";
+            timeStyle = "short";
+            hour12 = false;
+          };
+        };
+      }
     ];
   };
 }
