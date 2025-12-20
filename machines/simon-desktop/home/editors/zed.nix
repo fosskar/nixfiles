@@ -7,19 +7,9 @@
     enable = true;
     installRemoteServer = true;
     extraPackages = with pkgs; [
-      nil
+      #nil
       nixd
-      nixfmt-rfc-style
-      package-version-server
-      shellcheck
-      shfmt
-      jsonnet-language-server
-      yaml-language-server
-      go
-      gopls
-      terraform-ls
-      helm-ls
-      taplo
+      nixfmt
     ];
     extensions = [
       "ansible"
@@ -27,18 +17,16 @@
       "docker-compose"
       "dockerfile"
       "fish"
-      #"helm" #i use too much crds manifests
+      "helm"
       "html"
-      #"jj-lsp" #no pkgs in nixpkgs
+      "jj-lsp"
       "jsonnet"
       "log"
       "material-icon-theme"
       "nix"
-      "scss"
       "terraform"
       "toml"
       "vscode-dark-modern"
-      "xml"
     ];
     userSettings = {
       theme = {
@@ -231,8 +219,8 @@
             };
           };
           language_servers = [
-            "!nixd"
-            "nil"
+            "nixd"
+            "!nil"
           ];
         };
         "Shell Script" = {

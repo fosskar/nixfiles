@@ -22,6 +22,9 @@ in
     !include ${config.sops.secrets."nix-access-tokens".path}
   '';
 
+  # allow running unpatched binaries (editor LSPs, etc.)
+  programs.nix-ld.enable = true;
+
   # nh - nix helper for desktop users
   # flake path set per-machine via programs.nh.flake or NH_FLAKE env var
   programs.nh = {

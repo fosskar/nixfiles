@@ -115,7 +115,7 @@ in
       pangolin = {
         serviceConfig = {
           TimeoutStopSec = lib.mkDefault 10;
-          KillMode = lib.mkDefault "mixed"; # send SIGTERM to main process, then SIGKILL to all
+          KillMode = lib.mkDefault "control-group"; # kill all processes in cgroup (node + gunicorn)
         };
         # run database migrations before starting pangolin
         preStart = lib.mkAfter ''

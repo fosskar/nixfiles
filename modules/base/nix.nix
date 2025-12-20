@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }:
 {
@@ -9,7 +10,7 @@
   nix = {
     package = lib.mkDefault pkgs.nixVersions.latest;
 
-    nixPath = [ "nixpkgs=flake:nixpkgs" ];
+    nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
     channel.enable = lib.mkDefault false;
 
