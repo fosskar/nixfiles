@@ -90,9 +90,6 @@
     "net.ipv4.conf.default.log_martians" = true;
     # prevents responding to broadcast pings
     "net.ipv4.icmp_echo_ignore_broadcasts" = true;
-    # yeah i am still no router do not advertise
-    "net.ipv6.conf.default.accept_ra" = 0;
-    "net.ipv6.conf.all.accept_ra" = 0;
     # basic syn flood protection
     "net.ipv4.tcp_syncookies" = 1;
 
