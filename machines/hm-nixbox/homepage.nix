@@ -31,7 +31,7 @@ _: {
           Glances = {
             header = false;
             style = "row";
-            columns = 4;
+            columns = 3;
           };
         }
         {
@@ -88,7 +88,13 @@ _: {
 
     # https://gethomepage.dev/latest/configs/custom-css-js/
     customJS = "";
-    customCSS = "";
+    customCSS = ''
+      #bookmarks {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1rem;
+        margin-top: 1rem;
+      }
+    '';
 
     # services to display on dashboard
     services = [
@@ -119,12 +125,14 @@ _: {
             "Pangolin local" = {
               href = "https://pango.osscar.me";
               icon = "pangolin.png";
+              siteMonitor = "https://pango.osscar.me";
             };
           }
           {
             "Pangolin public" = {
               href = "https://pangolin.simonoscar.me";
               icon = "pangolin.png";
+              siteMonitor = "https://pangolin.simonoscar.me";
             };
           }
         ];
@@ -342,17 +350,6 @@ _: {
             };
           }
           {
-            "Processes" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "process";
-                chart = false;
-                version = 4;
-              };
-            };
-          }
-          {
             "Disk /" = {
               widget = {
                 type = "glances";
@@ -374,16 +371,76 @@ _: {
               };
             };
           }
+        ];
+      }
+    ];
+
+    bookmarks = [
+      {
+        "NixOS" = [
           {
-            "Network" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "network:enp36s0f0np0";
-                chart = false;
-                version = 4;
-              };
-            };
+            "NixOS Search" = [
+              {
+                icon = "nixos.svg";
+                href = "https://search.nixos.org";
+              }
+            ];
+          }
+          {
+            "Nixpkgs Repo" = [
+              {
+                icon = "github.svg";
+                href = "https://github.com/NixOS/nixpkgs";
+              }
+            ];
+          }
+        ];
+      }
+      {
+        "Home Manager" = [
+          {
+            "Home Manager Search" = [
+              {
+                icon = "nixos.svg";
+                href = "https://home-manager-options.extranix.com";
+              }
+            ];
+          }
+          {
+            "Home Manager Repo" = [
+              {
+                icon = "github.svg";
+                href = "https://github.com/nix-community/home-manager";
+              }
+            ];
+          }
+        ];
+      }
+      {
+        "Clan" = [
+          {
+            "Clan Docs" = [
+              {
+                icon = "mdi-book-open-variant";
+                href = "https://docs.clan.lol/";
+              }
+            ];
+          }
+          {
+            "Clan Search" = [
+              {
+                icon = "mdi-magnify";
+                href = "https://docs.clan.lol/option-search/";
+              }
+            ];
+          }
+          {
+            "Clan Repo" = [
+              {
+                icon = "gitea.svg";
+                href = "https://git.clan.lol/clan/clan-core/";
+              }
+            ];
           }
         ];
       }
