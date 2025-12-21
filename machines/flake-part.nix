@@ -81,6 +81,7 @@ in
               user = "simon";
               groups = [
                 "wheel"
+                "input"
               ];
             };
           };
