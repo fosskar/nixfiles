@@ -20,6 +20,8 @@ _: {
     #myip = "${dig} @resolver4.opendns.com myip.opendns.com +short";
 
     # cli
+    c = "claude";
+    j = "jj";
     g = "git";
     k = "kubectl";
     h = "helm";
@@ -27,14 +29,8 @@ _: {
     p = "podman";
     z = "zeditor";
 
-    # ai
-    claude = "claude --dangerously-skip-permissions";
-
     # kubectl
     kcs = "kubectl config use-context $(kubectl config get-contexts --output=name | fzf)";
-
-    # deploy-rs
-    deploy = "deploy --skip-checks";
 
     # nav
     ".." = "cd ..";
