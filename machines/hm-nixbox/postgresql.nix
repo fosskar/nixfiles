@@ -36,6 +36,7 @@
         "redis-nextcloud.service"
       ];
     };
+
   };
 
   # set postgresql version (immich etc will add their extensions)

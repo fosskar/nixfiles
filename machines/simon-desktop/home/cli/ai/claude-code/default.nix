@@ -22,6 +22,7 @@
         theme = "dark";
         includeCoAuthoredBy = false;
         autoUpdates = false;
+        alwaysThinkingEnabled = true;
         env = {
           CLAUDE_CODE_ENABLE_TELEMETRY = "0";
           CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
@@ -77,6 +78,34 @@
           #];
 
           #defaultMode = "acceptEdits";
+        };
+
+        extraKnownMarketplaces = {
+          superpowers-marketplace = {
+            source = {
+              source = "github";
+              repo = "obra/superpowers-marketplace";
+            };
+          };
+          claude-code-workflows = {
+            source = {
+              source = "github";
+              repo = "wshobson/agents";
+            };
+          };
+        };
+
+        enabledPlugins = {
+          "superpowers@superpowers-marketplace" = true;
+          "cloud-infrastructure@claude-code-workflows" = true;
+          "cicd-automation@claude-code-workflows" = true;
+          "code-documentation@claude-code-workflows" = true;
+          "code-refactoring@claude-code-workflows" = true;
+          "comprehensive-review@claude-code-workflows" = true;
+          "error-diagnostics@claude-code-workflows" = true;
+          "kubernetes-operations@claude-code-workflows" = true;
+          "observability-monitoring@claude-code-workflows" = true;
+          "security-scanning@claude-code-workflows" = true;
         };
       };
     };

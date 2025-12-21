@@ -25,9 +25,6 @@ let
       "postgresql"
     else
       "pg";
-  capitalize =
-    s: lib.toUpper (builtins.substring 0 1 s) + builtins.substring 1 (lib.stringLength s) s;
-
 in
 
 buildNpmPackage (finalAttrs: {
@@ -47,12 +44,6 @@ buildNpmPackage (finalAttrs: {
     esbuild
     makeWrapper
   ];
-
-  # set the build to OSS
-  env = {
-    BUILD = "oss";
-    NEXT_TELEMETRY_DISABLED = "1";
-  };
 
   # Replace the googleapis.com Inter font with a local copy from Nixpkgs.
   # Based on pkgs.nextjs-ollama-llm-ui.
@@ -74,12 +65,13 @@ buildNpmPackage (finalAttrs: {
     npx drizzle-kit generate --dialect ${db true} --schema ./server/db/${db false}/schema/ --name migration --out init
   '';
 
-  npmBuildScript = "next:build";
+  buildPhase = ''
+    runHook preBuild
 
-  postBuild = ''
-    node esbuild.mjs -e server/index.ts -o dist/server.mjs -b $BUILD
-    node esbuild.mjs -e server/setup/migrations${capitalize (db false)}.ts -o dist/migrations.mjs
+    npm run build:${db false}
     npm run build:cli
+
+    runHook postBuild
   '';
 
   preInstall = "mkdir -p $out/{bin,share/pangolin}";

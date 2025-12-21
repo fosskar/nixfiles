@@ -26,6 +26,8 @@
         domains.domain1 = {
           prefer_wildcard_cert = true;
         };
+        # avoid port conflict with immich-machine-learning (also uses 3003)
+        server.integration_port = 3004;
         traefik = {
           site_types = [ "local" ];
         };
