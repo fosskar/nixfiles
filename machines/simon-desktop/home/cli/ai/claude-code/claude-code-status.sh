@@ -9,12 +9,10 @@ model=$(echo "$input" | jq -r '.model.display_name')
 # get current directory name
 dir=$(basename "$(echo "$input" | jq -r '.workspace.current_dir')")
 
-# get kubernetes context (handle errors gracefully)
+# k8s context (skip if CLAUDE_STATUS_NO_K8S is set)
 k8s_context=""
-if command -v kubectl >/dev/null 2>&1; then
-  k8s_context=$(kubectl config current-context 2>/dev/null || echo "none")
-else
-  k8s_context="none"
+if [ -z "${CLAUDE_STATUS_NO_K8S:-}" ] && command -v kubectl >/dev/null 2>&1; then
+  k8s_context=$(timeout 0.5 kubectl config current-context 2>/dev/null || echo "")
 fi
 
 # get vcs info (jj preferred, fall back to git)
@@ -47,5 +45,7 @@ BLUE='\033[34m'
 MAGENTA='\033[35m'
 RESET='\033[0m'
 
-# output formatted status with colors
-echo -e "${ORANGE}󰧑 [${model}]${RESET} | ${GREEN} ${dir}${RESET} | ${MAGENTA}${vcs_symbol} ${vcs_info}${RESET} | ${BLUE}󱃾 ${k8s_context}${RESET}"
+# build output
+output="${ORANGE}󰧑 [${model}]${RESET} | ${GREEN} ${dir}${RESET} | ${MAGENTA}${vcs_symbol} ${vcs_info}${RESET}"
+[ -n "$k8s_context" ] && output+=" | ${BLUE}󱃾 ${k8s_context}${RESET}"
+echo -e "$output"

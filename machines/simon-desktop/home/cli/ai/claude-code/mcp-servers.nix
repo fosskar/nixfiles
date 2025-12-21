@@ -10,7 +10,7 @@ _: {
           ];
           command = "nix";
         };
-        context7 = {
+        "plugin:context7:context7" = {
           args = [
             "shell"
             "nixpkgs#nodejs"
@@ -22,17 +22,20 @@ _: {
           command = "nix";
           type = "stdio";
         };
-        sequential-thinking = {
-          command = "nix";
-          args = [
-            "shell"
-            "nixpkgs#nodejs"
-            "-c"
-            "npx"
-            "-y"
-            "@modelcontextprotocol/server-sequential-thinking"
-          ];
-        };
+        #kagimcp = {
+        #  args = [
+        #    "shell"
+        #    "nixpkgs#uv"
+        #    "-c"
+        #    "uvx"
+        #    "kagimcp"
+        #  ];
+        #  command = "nix";
+        #  env = {
+        #    KAGI_API_KEY = "your-api-key-here";
+        #  };
+        #  type = "stdio";
+        #};
       };
     };
   };

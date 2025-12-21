@@ -1,5 +1,7 @@
 # AGENTS.md
 
+In all interactions and commit messages, be extremely concise and sacrifice on grammar for the sake of concision.
+
 ## ai guidance
 
 - stop when stuck, avoid sycophantic language
@@ -10,68 +12,25 @@
 - never create docs/readme files unless explicitly requested
 - when testing/debugging, comment out code instead of deleting it
 
-## conventions
+## vcs
 
+- **prefer jj over git** (colocated repos)
+- **atomic commits always** - one logical change per commit. never bundle unrelated changes. no exceptions
 - **lowercase everything** (text, comments, commits) except product names (NixOS, GitHub, etc.)
-- **atomic commits** - one logical change per commit
 - **newline at end of files**
 
-### linting & formatting
+## plans
 
-- **formatter** = fixes code style (indentation, spacing, etc.)
-- **linter** = finds bugs, issues, bad practices
-- nix: `nix fmt` (nixfmt-rfc-style)
-- always use language-native tools (via `nix shell nixpkgs#<tool>` if not installed):
-  - yaml: `yamlfmt` + `yamllint`
-  - go: `gofmt`
-  - json: `prettier` or `jq .`
-  - shell: `shfmt` + `shellcheck`
-  - etc.
+- at the end of each plan, give me a list of unresolved questions to answer, if any. make the questions extremely concise. sacrifice grammar for the sake of concision
 
-## stack
-
-- NixOS with flakes, `nh` wrapper for rebuilds
-- secrets: sops-nix
-- check existing configs to understand current setup before making changes
-
-## workflows
-
-### nix
+## nix
 
 - prefer flake-native commands (`nix build`, `nix shell`, `nix develop`) over legacy (`nix-build`, `nix-shell`)
-- `nh os switch` / `nh home switch` - rebuild system/home
-- `nix develop` / `direnv allow` - dev shells
 - use `nix shell nixpkgs#<pkg>` to temporarily get missing tools
-- `nix fmt` - format nix files (nixfmt-rfc-style)
-- `deadnix`, `statix` - code quality
+- `nix fmt` - format nix files
 - always check **unstable** channel for modules/packages
-
-### version control
-
-- **prefer jj over git** (colocated mode for compatibility)
-- `jj status`, `jj diff`, `jj describe -m "msg"`, `jj new`, `jj log`
-
-### CRITICAL: never destroy uncommitted work
-
-- **NEVER run destructive git commands** without explicit user approval:
-  - `git checkout -- .`
-  - `git clean -fd`
-  - `git reset --hard`
-  - `git stash drop`
-- **NEVER run destructive jj commands** without explicit user approval:
-  - `jj abandon`
-  - `jj restore`
-  - `jj backout`
-  - `jj squash` (can lose intermediate changes)
-  - `jj edit` + modifications to older commits
-- **before any reset/revert**: always `jj status` or `git status` first, warn user about uncommitted changes
-- **if something breaks**: ask user how to proceed, don't assume reverting is safe
-- **uncommitted changes are unrecoverable** - treat them as precious
-- when debugging flake issues: use `git add -A` to stage files for nix to see them, don't revert
 
 ## devops
 
 - everything as code, declarative over imperative
 - immutable infrastructure, reproducible environments
-- gitops with argocd/kargo, helm for k8s deployments
-- secrets via sops/agenix, least privilege, proper observability
