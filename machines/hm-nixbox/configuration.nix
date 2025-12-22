@@ -6,7 +6,12 @@
     ../../modules/cpu
     ../../modules/power
   ]
-  ++ (mylib.scanPaths ./. { exclude = [ "dashboards" ]; });
+  ++ (mylib.scanPaths ./. {
+    exclude = [
+      "dashboards"
+      "radicle.nix"
+    ];
+  });
 
   nixpkgs.hostPlatform = "x86_64-linux";
 

@@ -23,7 +23,7 @@
 
     #keepassxc
     # gaming
-    gamescope
+    #gamescope
     #r2modman
     #lutris
     #wineWowPackages.stable
@@ -57,11 +57,6 @@
     #})
     libatomic_ops
 
-    colmena
-    deploy-rs
-
     lmstudio
-
-    #winboat
   ];
 }
