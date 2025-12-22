@@ -8,24 +8,26 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 
 ## features
 
-- [clan-core](https://docs.clan.lol/) - configuration management, secrets (sops-nix), disk partitioning (disko)
+- [clan-core](https://docs.clan.lol/) - machine management, secrets (sops-nix), disk partitioning (disko)
 - [flake-parts](https://github.com/hercules-ci/flake-parts) - modular flake framework
 - [impermanence](https://github.com/nix-community/impermanence) - opt-in state persistence
-- [home-manager](https://github.com/nix-community/home-manager) - user configuration
+- [home-manager](https://github.com/nix-community/home-manager) - user environment
+- [srvos](https://github.com/nix-community/srvos) - server presets
 
 ## machines
 
-| machine       | type        | description                              | specs                                 |
-| ------------- | ----------- | ---------------------------------------- | ------------------------------------- |
-| simon-desktop | desktop     | daily driver workstation                 | ryzen 7 7800x3d, rx 7800xt, 32gb ddr5 |
-| hm-nixbox     | home server | self-hosted services (nextcloud, immich) | amd cpu, intel igpu, 2x1tb ssd (zfs)  |
-| hzc-pango     | vps         | reverse proxy / tunnel (pangolin)        | hetzner cx22                          |
+| machine       | type        | description              | specs                                                              |
+| ------------- | ----------- | ------------------------ | ------------------------------------------------------------------ |
+| simon-desktop | desktop     | daily driver workstation | ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                              |
+| hm-nixbox     | home server | self-hosted services     | ryzen 7 5700x, 64gb, arc b50 pro, 4x6tb + 2x960gb ssd, 2x16gb optane |
+| hzc-pango     | vps         | reverse proxy (pangolin) | hetzner cx22                                                       |
 
 ## documentation
 
 - [nixos manual](https://nixos.org/manual/nixos/stable/)
 - [clan-core docs](https://docs.clan.lol/)
 - [home-manager options](https://nix-community.github.io/home-manager/options.xhtml)
+- [flake-parts docs](https://flake.parts/)
 
 ## credits
 
@@ -33,3 +35,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 - [NotAShelf nyx](https://github.com/notashelf/nyx)
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
 - [clan-core](https://git.clan.lol/clan/clan-core)
+
+## license
+
+[MIT](LICENSE)
