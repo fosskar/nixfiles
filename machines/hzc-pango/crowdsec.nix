@@ -9,8 +9,8 @@ _: {
     autoUpdateService = true;
 
     settings = {
-      general.api.server = {
-        enable = true;
+      general = {
+        api.server.enable = true;
       };
 
       # lapi credentials (auto-generated on first run)
