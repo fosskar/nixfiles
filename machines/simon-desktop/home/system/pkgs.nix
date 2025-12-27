@@ -10,7 +10,16 @@
     #protonvpn-cli
     filen-desktop
     #bitwarden-desktop
-    element-desktop
+    #(symlinkJoin {
+    #  name = "element-desktop";
+    #  paths = [ element-desktop ];
+    #  buildInputs = [ makeWrapper ];
+    #  postBuild = ''
+    #    wrapProgram $out/bin/element-desktop \
+    #      --add-flags "--password-store=gnome-libsecret"
+    #  '';
+    #})
+    fluffychat
 
     # media
     spotify
