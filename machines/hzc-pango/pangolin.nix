@@ -22,6 +22,7 @@
         blockedCountries = [
           "RU" # Russia
           "CN" # China
+          "HK" # Hong Kong
           "IR" # Iran
           "KP" # North Korea
           "BY" # Belarus
