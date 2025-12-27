@@ -47,6 +47,21 @@
           insecure = false;
         };
         entryPoints.tcp-2222.address = ":2222/tcp";
+        entryPoints.tcp-8428.address = ":8428/tcp"; # victoriametrics
+        entryPoints.tcp-9428.address = ":9428/tcp"; # victoriamlogs
+        entryPoints.metrics.address = ":8082";
+        metrics.prometheus = {
+          entryPoint = "metrics";
+          buckets = [
+            0.1
+            0.3
+            1.2
+            5.0
+          ];
+          addEntryPointsLabels = true;
+          addRoutersLabels = true;
+          addServicesLabels = true;
+        };
       };
     };
   };
