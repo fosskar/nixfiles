@@ -29,16 +29,16 @@ in
 
 buildNpmPackage (finalAttrs: {
   pname = "pangolin";
-  version = "1.13.1";
+  version = "1.14.1";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "pangolin";
     tag = finalAttrs.version;
-    hash = "sha256-rDysze915lmgbl/nz2NaPrFgNHAVOYRY4sVMnoYB3xE=";
+    hash = "sha256-Lblxkldmg8MQsaP8ACnXjMUtJhEx7McWOqOegyAFi9Q=";
   };
 
-  npmDepsHash = "sha256-mSSzrkGZ0ZPYINRahzrbrO6oLDhmu8HWHfHzZKMroCg=";
+  npmDepsHash = "sha256-8H2LRVXSUvxt5H4FA9tf9AnJQJXQOSd43Z1/K1P6g9M=";
 
   nativeBuildInputs = [
     esbuild
@@ -48,15 +48,17 @@ buildNpmPackage (finalAttrs: {
   # Replace the googleapis.com Inter font with a local copy from Nixpkgs.
   # Based on pkgs.nextjs-ollama-llm-ui.
   postPatch = ''
-    substituteInPlace src/app/layout.tsx --replace-fail \
-      "{ Inter } from \"next/font/google\"" \
-      "localFont from \"next/font/local\""
+        substituteInPlace src/app/layout.tsx --replace-fail \
+          "{ Geist, Inter, Manrope, Open_Sans } from \"next/font/google\"" \
+          "localFont from \"next/font/local\""
 
-    substituteInPlace src/app/layout.tsx --replace-fail \
-      "Inter({ subsets: [\"latin\"] })" \
-      "localFont({ src: './Inter.ttf' })"
+        substituteInPlace src/app/layout.tsx --replace-fail \
+          'const font = Inter({
+        subsets: ["latin"]
+    });' \
+          'const font = localFont({ src: "./Inter.ttf" });'
 
-    cp "${inter}/share/fonts/truetype/InterVariable.ttf" src/app/Inter.ttf
+        cp "${inter}/share/fonts/truetype/InterVariable.ttf" src/app/Inter.ttf
   '';
 
   preBuild = ''
