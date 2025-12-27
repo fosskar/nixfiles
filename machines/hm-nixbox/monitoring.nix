@@ -66,6 +66,7 @@
     };
 
     victorialogs.enable = true;
+
     victoriametrics = {
       enable = true;
       listenAddress = "127.0.0.1:8428"; # accessible from local network  and pangolin tunnel
@@ -212,13 +213,12 @@
             url = "http://localhost:8428";
             isDefault = true;
           }
-          # temporarily disabled - causing browser slowdown
-          #{
-          #  name = "VictoriaLogs";
-          #  type = "victoriametrics-logs-datasource";
-          #  access = "proxy";
-          #  url = "http://localhost:9428";
-          #}
+          {
+            name = "VictoriaLogs";
+            type = "victoriametrics-logs-datasource";
+            access = "proxy";
+            url = "http://localhost:9428";
+          }
         ];
       };
 

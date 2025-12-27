@@ -10,6 +10,7 @@
     exclude = [
       "dashboards"
       "radicle.nix"
+      "matrix-synapse.nix"
     ];
   });
 
