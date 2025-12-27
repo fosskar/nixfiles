@@ -10,5 +10,5 @@ _: {
     enableMcpIntegration = true;
   };
 
-  xdg.configFile."opencode/AGENTS.md".source = ./AGENTS.md;
+  xdg.configFile."opencode/AGENTS.md".source = ../AGENTS.md;
 }
