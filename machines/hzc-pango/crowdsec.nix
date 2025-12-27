@@ -37,6 +37,7 @@ _: {
         labels.type = "syslog";
       }
       {
+        source = "file";
         filenames = [ "/var/log/traefik/access.log" ];
         labels.type = "traefik";
       }
