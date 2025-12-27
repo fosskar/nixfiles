@@ -107,11 +107,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766829955,
-        "narHash": "sha256-jKfsZ71BVb2ErZhVgN7rkHReFNp1ys4CNDUqGGTmfio=",
-        "rev": "92ead11db7ff4286d399f41933fe25991b8bc12f",
+        "lastModified": 1766898471,
+        "narHash": "sha256-/M1saiwszHw41z+L03u/LK5UyLa6UeyltNfoTkwhuJ8=",
+        "rev": "ef044a87eec5ed0ba69ec12584ceacbbc8aadc23",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/92ead11db7ff4286d399f41933fe25991b8bc12f.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/ef044a87eec5ed0ba69ec12584ceacbbc8aadc23.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -351,11 +351,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766682973,
-        "narHash": "sha256-GKO35onS711ThCxwWcfuvbIBKXwriahGqs+WZuJ3v9E=",
+        "lastModified": 1766881808,
+        "narHash": "sha256-JR7A2xS3EBPWFeONzhqez5vp7nKEsp7eLj2Ks210Srk=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "91cdb0e2d574c64fae80d221f4bf09d5592e9ec2",
+        "rev": "d2e0458d6531885600b346e161c38790dc356fa8",
         "type": "github"
       },
       "original": {
@@ -467,11 +467,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1766835825,
-        "narHash": "sha256-ecv/KG2vtAiQY2awx6dr+Fe6BCfmjpVa7QwJQifvbf4=",
+        "lastModified": 1766870612,
+        "narHash": "sha256-k0JGpkHZb5s/msskYKcYLwGuPklJW8qWN1vIhBZARyI=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "42447a50d6840c5e28bd58db1225bae2fd7d5ed0",
+        "rev": "a8452705d6512da36f66e4a7d6e7799afbc7ffdd",
         "type": "github"
       },
       "original": {
@@ -884,11 +884,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766823890,
-        "narHash": "sha256-0BB5XsT6t64QJ1hLHUkI/hH00adXYSbP0YtEWQveaQI=",
+        "lastModified": 1766857558,
+        "narHash": "sha256-jgfhQ8P7BG88XPAkAK14eZ0hT0Ko3WyB88UoIGvcj3k=",
         "owner": "xddxdd",
         "repo": "nix-cachyos-kernel",
-        "rev": "c55e3bfd5f0919a6a6882383a23f25a994d14177",
+        "rev": "5124c5937b41506581d9a5f0b93e9404e62f802b",
         "type": "github"
       },
       "original": {
@@ -928,11 +928,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766800877,
-        "narHash": "sha256-uttWzlZdQxd7surfe4zeMjTnwIgWUjBygVDdrA1Ssag=",
+        "lastModified": 1766887720,
+        "narHash": "sha256-h0rnexpjILYVpOcE76FQ7ieyqevTQhjah6y/bM9A4kE=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "4108f21b00b10e185ab3d28f9e89e6359c159793",
+        "rev": "c308874a31ba27dbf83a66418268079cdb7e320f",
         "type": "github"
       },
       "original": {
@@ -1024,10 +1024,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1766842912,
-        "narHash": "sha256-SzsTB2TwGJdUhftnhzbOSl7E9zCA+arDf2UekBosEwo=",
+        "lastModified": 1766915030,
+        "narHash": "sha256-YocK8C6zknd5Hfru34b/rzGj1aJKp3EsNKnmjiayGnk=",
         "ref": "master",
-        "rev": "e84c4549c32ee83f156e0f402b1bb9a7fbeff42e",
+        "rev": "97feed386b75a207ad56d67744c6ddbe8ac6191c",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1063,11 +1063,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766838183,
-        "narHash": "sha256-juDBuEZglXP8U8c52QJxS62N61xMF8SyJcKoxX55ch0=",
+        "lastModified": 1766905125,
+        "narHash": "sha256-5B4+MzGXZdintHChwp/7hXbD38QVY7JeBKuUyIQqpn0=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "d3ad7f84b717b407114b26148653072ef5efa9fe",
+        "rev": "78e0c78358c73505f7c63a01fbb53f46e923a0b5",
         "type": "github"
       },
       "original": {
@@ -1132,11 +1132,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766289575,
-        "narHash": "sha256-BOKCwOQQIP4p9z8DasT5r+qjri3x7sPCOq+FTjY8Z+o=",
+        "lastModified": 1766894905,
+        "narHash": "sha256-pn8AxxfajqyR/Dmr1wnZYdUXHgM3u6z9x0Z1Ijmz2UQ=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "9836912e37aef546029e48c8749834735a6b9dad",
+        "rev": "61b39c7b657081c2adc91b75dd3ad8a91d6f07a7",
         "type": "github"
       },
       "original": {
