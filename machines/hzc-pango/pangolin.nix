@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }:
 {
@@ -62,6 +63,27 @@
           addRoutersLabels = true;
           addServicesLabels = true;
         };
+        # crowdsec bouncer plugin
+        experimental.plugins.crowdsec-bouncer = {
+          moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
+          version = "v1.3.5";
+        };
+        # apply crowdsec bouncer to all https traffic (mkForce to override module default)
+        entryPoints.websecure.http.middlewares = lib.mkForce [
+          "crowdsec@file"
+          "geoblock@file"
+        ];
+      };
+      dynamicConfigOptions.http.middlewares.crowdsec.plugin.crowdsec-bouncer = {
+        crowdsecLapiKeyFile = "/var/lib/crowdsec/traefik-bouncer-api-key.cred";
+        crowdsecLapiHost = "localhost:8080";
+        crowdsecMode = "live";
+        forwardedHeadersTrustedIPs = [
+          "127.0.0.1/32"
+          "10.0.0.0/8"
+          "172.16.0.0/12"
+          "192.168.0.0/16"
+        ];
       };
     };
   };
