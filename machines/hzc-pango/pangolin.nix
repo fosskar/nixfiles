@@ -41,13 +41,17 @@
         accessLog = {
           format = "json";
           filePath = "/var/log/traefik/access.log";
+          # capture geoblock country header
+          fields.headers = {
+            defaultMode = "drop";
+            names.X-IPCountry = "keep";
+          };
         };
         log.level = "WARN";
         api = {
           dashboard = true;
           insecure = false;
         };
-        entryPoints.tcp-2222.address = ":2222/tcp";
         entryPoints.tcp-8428.address = ":8428/tcp"; # victoriametrics
         entryPoints.tcp-9428.address = ":9428/tcp"; # victoriamlogs
         entryPoints.metrics.address = ":8082";
@@ -87,6 +91,4 @@
       };
     };
   };
-
-  networking.firewall.allowedTCPPorts = [ 2222 ];
 }

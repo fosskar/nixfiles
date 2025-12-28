@@ -87,7 +87,7 @@ in
       staticConfigOptions = {
         experimental.plugins.geoblock = {
           moduleName = "github.com/PascalMinder/geoblock";
-          version = "v0.3.2";
+          version = "v0.3.3";
         };
         entryPoints.websecure.http.middlewares = [ "geoblock@file" ];
       };
@@ -105,6 +105,8 @@ in
           blackListMode = cfg.geoblock.blacklistMode;
           countries =
             if cfg.geoblock.blacklistMode then cfg.geoblock.blockedCountries else cfg.geoblock.allowedCountries;
+          # add X-IPCountry header for logging/analytics
+          addCountryHeader = true;
         };
       };
     };
