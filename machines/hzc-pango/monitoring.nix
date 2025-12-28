@@ -1,4 +1,10 @@
 _: {
+  # restart vector when traefik restarts (tunnel connections drop)
+  systemd.services.vector = {
+    after = [ "traefik.service" ];
+    partOf = [ "traefik.service" ];
+  };
+
   # push metrics + logs via pangolin tcp tunnels
   services.vector = {
     enable = true;
