@@ -781,6 +781,128 @@
       "type": "piechart"
     },
     {
+      "datasource": "VictoriaLogs",
+      "description": "requests by country from geoblock header",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 7,
+        "y": 31
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": ["percent"]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": true,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": "VictoriaLogs",
+          "editorMode": "code",
+          "expr": "request_X-Ipcountry:* | stats by (request_X-Ipcountry) count() as requests",
+          "legendFormat": "{{request_X-Ipcountry}}",
+          "queryType": "statsRange",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests by Country",
+      "type": "piechart"
+    },
+    {
+      "datasource": "VictoriaLogs",
+      "description": "blocked requests (403) by country - geoblock/crowdsec",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 17,
+        "y": 31
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": ["percent"]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": true,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": "VictoriaLogs",
+          "editorMode": "code",
+          "expr": "DownstreamStatus:403 | stats by (request_X-Ipcountry) count() as blocked",
+          "legendFormat": "{{request_X-Ipcountry}}",
+          "queryType": "statsRange",
+          "refId": "A"
+        }
+      ],
+      "title": "Blocked by Country",
+      "type": "piechart"
+    },
+    {
       "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
@@ -1182,7 +1304,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 39
       },
       "id": 14,
       "options": {
@@ -1218,7 +1340,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 49
       },
       "id": 15,
       "options": {
