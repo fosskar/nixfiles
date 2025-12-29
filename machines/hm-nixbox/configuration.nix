@@ -1,6 +1,8 @@
 { mylib, ... }:
 {
   imports = [
+    ../../modules/acme
+    ../../modules/nginx
     ../../modules/zfs
     ../../modules/gpu
     ../../modules/cpu
@@ -10,9 +12,6 @@
     exclude = [
       "dashboards"
       "radicle.nix"
-      "matrix-synapse.nix"
-      "lldap.nix"
-      "authelia.nix"
       "kanidm.nix"
     ];
   });
@@ -22,6 +21,7 @@
   clan.core.settings.machine-id.enable = true;
 
   nixfiles = {
+    acme.enable = true;
     gpu.intel.enable = true;
     cpu.amd.enable = true;
     power.tuned = {
