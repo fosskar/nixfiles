@@ -14,10 +14,6 @@
       secret = true;
       owner = "kanidm";
     };
-    files."pangolin-client-secret" = {
-      secret = true;
-      owner = "kanidm";
-    };
     files."tls-key" = {
       secret = true;
       owner = "kanidm";
@@ -35,7 +31,6 @@
     script = ''
       pwgen -s 32 1 | tr -d '\n' > "$out/admin-password"
       pwgen -s 32 1 | tr -d '\n' > "$out/idm-admin-password"
-      pwgen -s 64 1 | tr -d '\n' > "$out/pangolin-client-secret"
 
       # generate self-signed cert for internal tls (traefik -> kanidm)
       openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
@@ -84,38 +79,6 @@
           displayName = "Ina";
           mailAddresses = [ ];
           groups = [ "user" ];
-        };
-      };
-
-      systems.oauth2.pangolin = {
-        displayName = "Pangolin";
-        originUrl = "https://pango.osscar.me/auth/idp/1/oidc/callback";
-        originLanding = "https://pango.osscar.me";
-        basicSecretFile = config.clan.core.vars.generators.kanidm.files."pangolin-client-secret".path;
-        preferShortUsername = true;
-
-        # scope maps: which groups get which scopes
-        scopeMaps = {
-          user = [
-            "openid"
-            "profile"
-            "email"
-          ];
-          admin = [
-            "openid"
-            "profile"
-            "email"
-            "groups"
-          ];
-        };
-
-        # claim maps for pangolin organization/role mapping
-        claimMaps.groups = {
-          joinType = "array";
-          valuesByGroup = {
-            admin = [ "admin" ];
-            user = [ "user" ];
-          };
         };
       };
     };
