@@ -5,6 +5,18 @@
   ...
 }:
 {
+  nixfiles.nginx.vhosts = {
+    jellyfin.port = 8096; # no port option
+    jellyseerr.port = config.services.jellyseerr.port;
+    audiobookshelf.port = config.services.audiobookshelf.port;
+    prowlarr.port = config.services.prowlarr.settings.server.port;
+    sonarr.port = config.services.sonarr.settings.server.port;
+    radarr.port = config.services.radarr.settings.server.port;
+    lidarr.port = config.services.lidarr.settings.server.port;
+    readarr.port = config.services.readarr.settings.server.port;
+    sabnzbd.port = 8080; # no port option
+  };
+
   users = {
 
     groups.media = { };

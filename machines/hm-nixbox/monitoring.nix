@@ -9,6 +9,12 @@
     ../../modules/monitoring
   ];
 
+  nixfiles.nginx.vhosts = {
+    vm.port = 8428; # victoriametrics has no separate port option
+    grafana.port = config.services.grafana.settings.server.http_port;
+    beszel.port = config.services.beszel.hub.port;
+  };
+
   monitoring.telegraf = {
     enable = true;
     plugins = [

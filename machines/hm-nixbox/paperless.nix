@@ -1,5 +1,7 @@
 { config, ... }:
 {
+  nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
+
   services.paperless = {
     enable = true;
     address = "127.0.0.1";

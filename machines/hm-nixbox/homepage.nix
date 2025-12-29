@@ -1,4 +1,7 @@
-_: {
+{ config, ... }:
+{
+  nixfiles.nginx.vhosts.home.port = config.services.homepage-dashboard.listenPort;
+
   services.glances.enable = true;
 
   services.homepage-dashboard = {
@@ -119,13 +122,6 @@ _: {
               href = "http://192.168.10.1:8080";
               icon = "adguard-home.svg";
               siteMonitor = "http://192.168.10.1:8080";
-            };
-          }
-          {
-            "Pangolin local" = {
-              href = "https://pango.osscar.me";
-              icon = "pangolin.png";
-              siteMonitor = "https://pango.osscar.me";
             };
           }
           {
@@ -270,13 +266,6 @@ _: {
               href = "https://docs.osscar.me";
               icon = "paperless.png";
               siteMonitor = "http://127.0.0.1:28981";
-            };
-          }
-          {
-            "Nextcloud" = {
-              href = "https://cloud.osscar.me";
-              icon = "nextcloud.svg";
-              siteMonitor = "http://127.0.0.1:8009/status.php";
             };
           }
         ];

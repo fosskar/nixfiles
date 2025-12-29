@@ -1,5 +1,7 @@
 { config, ... }:
 {
+  nixfiles.nginx.vhosts.vault.port = config.services.vaultwarden.config.ROCKET_PORT;
+
   services.vaultwarden = {
     enable = true;
     dbBackend = "postgresql";

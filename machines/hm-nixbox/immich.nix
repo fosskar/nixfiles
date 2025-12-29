@@ -5,6 +5,11 @@
   ...
 }:
 {
+  nixfiles.nginx.vhosts.immich = {
+    inherit (config.services.immich) port;
+    extraConfig = "client_max_body_size 50G;";
+  };
+
   services.immich = {
     enable = true;
     host = "127.0.0.1";
