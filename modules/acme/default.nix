@@ -8,7 +8,11 @@ let
 in
 {
   options.nixfiles.acme = {
-    enable = lib.mkEnableOption "acme wildcard certs";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "acme wildcard certs";
+    };
     domain = lib.mkOption {
       type = lib.types.str;
       default = "osscar.me";
