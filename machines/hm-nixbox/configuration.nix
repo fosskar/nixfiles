@@ -11,6 +11,9 @@
       "dashboards"
       "radicle.nix"
       "matrix-synapse.nix"
+      "lldap.nix"
+      "authelia.nix"
+      "kanidm.nix"
     ];
   });
 
