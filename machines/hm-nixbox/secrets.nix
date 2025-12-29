@@ -2,8 +2,6 @@ _: {
   sops.secrets = {
     "newt.env" = { };
 
-    "pangolin.env" = { };
-
     "arr-stack.env" = { };
 
     "samba-user-passwords" = { };
