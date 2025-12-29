@@ -279,6 +279,20 @@
               siteMonitor = "http://127.0.0.1:8222";
             };
           }
+          {
+            "Authelia" = {
+              href = "https://auth.osscar.me";
+              icon = "authelia.svg";
+              siteMonitor = "http://127.0.0.1:9091";
+            };
+          }
+          {
+            "LLDAP" = {
+              href = "https://ldap.osscar.me";
+              icon = "lldap.png";
+              siteMonitor = "http://127.0.0.1:17170";
+            };
+          }
         ];
       }
       {
