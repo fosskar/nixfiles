@@ -47,7 +47,7 @@ in
     initrd.supportedFilesystems = [ "zfs" ];
 
     zfs = {
-      package = lib.mkDefault pkgs.zfs;
+      package = lib.mkDefault pkgs.zfs_unstable;
       forceImportRoot = lib.mkDefault false;
       devNodes = lib.mkDefault "/dev/disk/by-id"; # this is the default anways
     };
@@ -68,4 +68,7 @@ in
       monthly = 3;
     };
   };
+  environment.systemPackages = [
+    pkgs.zfs-prune-snapshots
+  ];
 }
