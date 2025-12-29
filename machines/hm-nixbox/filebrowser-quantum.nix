@@ -1,7 +1,10 @@
 {
   imports = [ ../../modules/filebrowser-quantum ];
 
-  users.users.filebrowser-quantum.extraGroups = [ "shared" "media" ];
+  users.users.filebrowser-quantum.extraGroups = [
+    "shared"
+    "media"
+  ];
 
   services.filebrowser-quantum = {
     enable = true;
