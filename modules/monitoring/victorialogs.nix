@@ -20,5 +20,15 @@ in
       enable = true;
       listenAddress = "127.0.0.1:9428";
     };
+
+    # grafana datasource
+    services.grafana.provision.datasources.settings.datasources = [
+      {
+        name = "VictoriaLogs";
+        type = "victoriametrics-logs-datasource";
+        access = "proxy";
+        url = "http://${config.services.victorialogs.listenAddress}";
+      }
+    ];
   };
 }

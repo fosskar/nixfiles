@@ -1,5 +1,7 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
+  environment.systemPackages = [ pkgs.nut ];
+
   power.ups = {
     enable = true;
     mode = "standalone";

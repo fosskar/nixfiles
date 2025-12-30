@@ -99,8 +99,6 @@
     enableZfsExporter = true;
   };
 
-  environment.systemPackages = [ pkgs.nut ];
-
   # provision grafana dashboards via /etc
   environment.etc = builtins.listToAttrs (
     map (file: {
@@ -109,38 +107,18 @@
     }) (builtins.attrNames (builtins.readDir ./dashboards))
   );
 
-  # machine-specific grafana provisioning
-  services.grafana.provision = {
-    enable = true;
-
-    datasources.settings.datasources = [
+  # machine-specific grafana dashboard provisioning
+  services.grafana.provision.dashboards.settings = {
+    apiVersion = 1;
+    providers = [
       {
-        name = "VictoriaMetrics";
-        type = "prometheus";
-        access = "proxy";
-        url = "http://localhost:8428";
-        isDefault = true;
-      }
-      {
-        name = "VictoriaLogs";
-        type = "victoriametrics-logs-datasource";
-        access = "proxy";
-        url = "http://localhost:9428";
+        name = "nixos";
+        orgId = 1;
+        type = "file";
+        disableDeletion = true;
+        editable = true;
+        options.path = "/etc/grafana-dashboards";
       }
     ];
-
-    dashboards.settings = {
-      apiVersion = 1;
-      providers = [
-        {
-          name = "nixos";
-          orgId = 1;
-          type = "file";
-          disableDeletion = true;
-          editable = true;
-          options.path = "/etc/grafana-dashboards";
-        }
-      ];
-    };
   };
 }

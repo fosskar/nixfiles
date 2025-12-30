@@ -43,5 +43,16 @@ in
 
       prometheusConfig.scrape_configs = cfg.scrapeConfigs;
     };
+
+    # grafana datasource
+    services.grafana.provision.datasources.settings.datasources = [
+      {
+        name = "VictoriaMetrics";
+        type = "prometheus";
+        access = "proxy";
+        url = "http://${config.services.victoriametrics.listenAddress}";
+        isDefault = true;
+      }
+    ];
   };
 }
