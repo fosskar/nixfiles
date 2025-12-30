@@ -142,6 +142,7 @@ in
         oauth = {
           enabled = true;
           autoRegister = true;
+          autoLaunch = true;
           buttonText = "Login with Authelia";
           clientId = "immich";
           clientSecret._secret = config.clan.core.vars.generators.immich.files."oauth-client-secret".path;
