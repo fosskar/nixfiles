@@ -34,7 +34,17 @@ in
   };
 
   config = lib.mkIf (cfg.vhosts != { }) {
-    services.nginx.virtualHosts = lib.mapAttrs' (name: vhost: {
+    services.nginx.virtualHosts =
+      {
+        # reject requests to unknown subdomains
+        "_" = {
+          default = true;
+          useACMEHost = acmeDomain;
+          forceSSL = true;
+          locations."/".return = "444";
+        };
+      }
+      // lib.mapAttrs' (name: vhost: {
       name = "${name}.${acmeDomain}";
       value = {
         useACMEHost = acmeDomain;
