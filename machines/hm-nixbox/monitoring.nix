@@ -36,68 +36,65 @@
     ];
   };
 
-  # machine-specific scrape targets
-  nixfiles.monitoring.victoriametrics.scrapeConfigs = [
-    {
-      job_name = "node-exporter";
-      static_configs = [
-        {
-          targets = [
-            "192.168.10.1:9100"
-            "192.168.10.2:9100"
-          ];
-          labels.type = "node-exporter";
-        }
-      ];
-    }
-    {
-      job_name = "telegraf";
-      static_configs = [
-        {
-          targets = [ "localhost:9273" ];
-          labels.type = "telegraf";
-        }
-      ];
-    }
-    {
-      job_name = "zfs-exporter";
-      static_configs = [
-        { targets = [ "localhost:9134" ]; }
-      ];
-    }
-    {
-      job_name = "victoriametrics";
-      static_configs = [
-        { targets = [ "localhost:8428" ]; }
-      ];
-    }
-    {
-      job_name = "openwrt-telegraf";
-      static_configs = [
-        {
-          targets = [ "192.168.10.1:9273" ];
-          labels.type = "telegraf";
-        }
-      ];
-    }
-  ];
+  nixfiles.monitoring = {
+    grafana.dashboardsDir = ./dashboards;
 
-  nixfiles.monitoring.telegraf = {
-    enable = true;
-    plugins = [
-      "system"
-      "systemd"
-      "zfs"
-      "upsd"
-      "sensors"
-      "smart"
+    telegraf = {
+      enable = true;
+      plugins = [
+        "system"
+        "systemd"
+        "zfs"
+        "upsd"
+        "sensors"
+        "smart"
+      ];
+    };
+
+    exporter = {
+      enable = true;
+      enableZfsExporter = true;
+    };
+
+    victoriametrics.scrapeConfigs = [
+      {
+        job_name = "node-exporter";
+        static_configs = [
+          {
+            targets = [
+              "192.168.10.1:9100"
+              "192.168.10.2:9100"
+            ];
+            labels.type = "node-exporter";
+          }
+        ];
+      }
+      {
+        job_name = "telegraf";
+        static_configs = [
+          {
+            targets = [ "localhost:9273" ];
+            labels.type = "telegraf";
+          }
+        ];
+      }
+      {
+        job_name = "zfs-exporter";
+        static_configs = [ { targets = [ "localhost:9134" ]; } ];
+      }
+      {
+        job_name = "victoriametrics";
+        static_configs = [ { targets = [ "localhost:8428" ]; } ];
+      }
+      {
+        job_name = "openwrt-telegraf";
+        static_configs = [
+          {
+            targets = [ "192.168.10.1:9273" ];
+            labels.type = "telegraf";
+          }
+        ];
+      }
     ];
   };
-
-  nixfiles.monitoring.exporter = {
-    enable = true;
-    enableZfsExporter = true;
-  };
-
-  nixfiles.monitoring.grafana.dashboardsDir = ./dashboards;
 }
