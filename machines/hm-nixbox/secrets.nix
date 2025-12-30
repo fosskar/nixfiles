@@ -10,8 +10,6 @@ _: {
       mode = "0444";
     };
 
-    "paperless.env" = { };
-
     "beszel.env" = { };
   };
 }
