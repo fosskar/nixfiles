@@ -6,6 +6,7 @@
     ../../modules/lldap
     ../../modules/authelia
     ../../modules/immich
+    ../../modules/paperless
     ../../modules/zfs
     ../../modules/gpu
     ../../modules/cpu
