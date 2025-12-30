@@ -7,6 +7,7 @@
 let
   cfg = config.nixfiles.immich;
   acmeDomain = config.nixfiles.acme.domain;
+  inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "immich.${acmeDomain}";
 in
 {
@@ -146,7 +147,7 @@ in
           buttonText = "Login with Authelia";
           clientId = "immich";
           clientSecret._secret = config.clan.core.vars.generators.immich.files."oauth-client-secret".path;
-          issuerUrl = "https://auth.${acmeDomain}/.well-known/openid-configuration";
+          issuerUrl = "https://auth.${publicDomain}/.well-known/openid-configuration";
           scope = "openid profile email";
         };
       };

@@ -7,6 +7,7 @@
 let
   cfg = config.nixfiles.paperless;
   acmeDomain = config.nixfiles.acme.domain;
+  inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "docs.${acmeDomain}";
 in
 {
@@ -62,7 +63,7 @@ in
                 "client_id": "paperless",
                 "secret": $secret,
                 "settings": {
-                  "server_url": "https://auth.osscar.me",
+                  "server_url": "https://auth.${publicDomain}",
                   "token_auth_method": "client_secret_basic"
                 }
               }]

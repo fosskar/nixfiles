@@ -30,7 +30,7 @@
       enable = true;
       profile = "server-powersave";
     };
-    authelia.publicDomain = "simonoscar.me";
+    authelia.publicDomain = "fosskar.eu";
   };
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)

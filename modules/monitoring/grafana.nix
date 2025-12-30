@@ -7,6 +7,7 @@
 let
   cfg = config.nixfiles.monitoring.grafana;
   acmeDomain = config.nixfiles.acme.domain;
+  inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "grafana.${acmeDomain}";
 in
 {
@@ -148,9 +149,9 @@ in
             config.clan.core.vars.generators.grafana.files."oauth-client-secret".path
           }}";
           scopes = "openid profile email groups";
-          auth_url = "https://auth.${acmeDomain}/api/oidc/authorization";
-          token_url = "https://auth.${acmeDomain}/api/oidc/token";
-          api_url = "https://auth.${acmeDomain}/api/oidc/userinfo";
+          auth_url = "https://auth.${publicDomain}/api/oidc/authorization";
+          token_url = "https://auth.${publicDomain}/api/oidc/token";
+          api_url = "https://auth.${publicDomain}/api/oidc/userinfo";
           use_pkce = true;
           login_attribute_path = "preferred_username";
           name_attribute_path = "name";
