@@ -5,6 +5,7 @@
     ../../modules/nginx
     ../../modules/lldap
     ../../modules/authelia
+    ../../modules/immich
     ../../modules/zfs
     ../../modules/gpu
     ../../modules/cpu

@@ -78,9 +78,8 @@ in
         sessionSecretFile = config.clan.core.vars.generators.authelia.files."session-secret".path;
         storageEncryptionKeyFile =
           config.clan.core.vars.generators.authelia.files."storage-encryption-key".path;
-        # oidc secrets - uncomment when adding oidc clients
-        # oidcHmacSecretFile = config.clan.core.vars.generators.authelia.files."hmac-secret".path;
-        # oidcIssuerPrivateKeyFile = config.clan.core.vars.generators.authelia.files."jwks-private-key".path;
+        oidcHmacSecretFile = config.clan.core.vars.generators.authelia.files."hmac-secret".path;
+        oidcIssuerPrivateKeyFile = config.clan.core.vars.generators.authelia.files."jwks-private-key".path;
       };
 
       environmentVariables = {
@@ -142,8 +141,6 @@ in
         storage.local.path = "/var/lib/authelia-main/db.sqlite3";
 
         notifier.filesystem.filename = "/var/lib/authelia-main/notifications.txt";
-
-        # identity_providers.oidc - add clients per-service when needed
       };
     };
 
