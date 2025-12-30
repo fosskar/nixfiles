@@ -106,7 +106,7 @@ in
 
         totp = {
           disable = false;
-          issuer = acmeDomain;
+          issuer = if cfg.publicDomain != null then cfg.publicDomain else acmeDomain;
           algorithm = "sha1";
           digits = 6;
           period = 30;
@@ -127,18 +127,21 @@ in
           expiration = "1h";
           inactivity = "5m";
           remember_me = "1M";
-          cookies = [
-            {
-              domain = acmeDomain;
-              authelia_url = "https://${serviceDomain}";
-            }
-          ]
-          ++ lib.optionals (cfg.publicDomain != null) [
-            {
-              domain = cfg.publicDomain;
-              authelia_url = "https://auth.${cfg.publicDomain}";
-            }
-          ];
+          cookies =
+            if cfg.publicDomain != null then
+              [
+                {
+                  domain = cfg.publicDomain;
+                  authelia_url = "https://auth.${cfg.publicDomain}";
+                }
+              ]
+            else
+              [
+                {
+                  domain = acmeDomain;
+                  authelia_url = "https://${serviceDomain}";
+                }
+              ];
         };
 
         regulation = {
@@ -157,8 +160,8 @@ in
       };
     };
 
-    # nginx reverse proxy
-    nixfiles.nginx.vhosts.auth = {
+    # nginx reverse proxy (only when not using public domain via pangolin)
+    nixfiles.nginx.vhosts.auth = lib.mkIf (cfg.publicDomain == null) {
       port = listenPort;
     };
   };
