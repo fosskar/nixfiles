@@ -3,7 +3,7 @@
   imports = [
     inputs.dms.nixosModules.greeter
   ];
-  programs.dankMaterialShell.greeter = {
+  programs.dank-material-shell.greeter = {
     enable = true;
     compositor.name = "niri"; # or set to hyprland
     configHome = "/home/simon";

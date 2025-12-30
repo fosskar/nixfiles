@@ -5,27 +5,23 @@
 }:
 {
   imports = [
-    inputs.dms.homeModules.dankMaterialShell.niri
-    inputs.dms.homeModules.dankMaterialShell.default
+    inputs.dms.homeModules.niri
+    inputs.dms.homeModules.default
   ]
   ++ mylib.scanPaths ./. { };
   #xdg.configFile."DankMaterialShell/colors.json".source = ./colors.json;
 
-  programs.dankMaterialShell = {
+  programs.dank-material-shell = {
     enable = true;
     systemd = {
       enable = true;
       restartIfChanged = true;
     };
     enableSystemMonitoring = true;
-    enableBrightnessControl = false;
     enableCalendarEvents = false;
-    enableClipboard = true;
     enableVPN = true;
-    enableColorPicker = false;
     enableDynamicTheming = true;
     enableAudioWavelength = true;
-    enableSystemSound = true;
 
     default.settings = {
       theme = "dark";

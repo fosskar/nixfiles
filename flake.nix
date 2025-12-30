@@ -117,15 +117,10 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     dms = {
-      url = "github:smonoscr/DankMaterialShell";
+      url = "github:AvengeMedia/DankMaterialShell";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        dgop.follows = "dgop";
         quickshell.follows = "quickshell";
       };
     };
