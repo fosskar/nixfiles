@@ -1,6 +1,6 @@
-# AGENTS.md
+# instructions
 
-In all interactions and commit messages, be extremely concise and sacrifice on grammar for the sake of concision.
+**IMPORTANT**: In all interactions and commit messages, be extremely concise and sacrifice on grammar for the sake of concision.
 
 ## ai guidance
 
@@ -15,7 +15,7 @@ In all interactions and commit messages, be extremely concise and sacrifice on g
 ## vcs
 
 - **prefer jj over git** (colocated repos)
-- **atomic commits always** - one logical change per commit. never bundle unrelated changes. no exceptions
+- **atomic commits always** - one logical change per commit. use jj split. never bundle unrelated changes. no exceptions
 - **lowercase everything** (text, comments, commits) except product names (NixOS, GitHub, etc.)
 - **newline at end of files**
 
