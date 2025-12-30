@@ -9,8 +9,8 @@ let
 
   # forge-specific identities
   github = {
-    name = "smonoscr";
-    email = "117449098+smonoscr@users.noreply.github.com";
+    name = "fosskar";
+    email = "117449098+fosskar@users.noreply.github.com";
   };
   codeberg = {
     name = "osscar";
