@@ -4,10 +4,10 @@
   ...
 }:
 let
-  cfg = config.monitoring.exporter;
+  cfg = config.nixfiles.monitoring.exporter;
 in
 {
-  options.monitoring.exporter = {
+  options.nixfiles.monitoring.exporter = {
     enable = lib.mkEnableOption "prometheus exporters";
 
     enableNodeExporter = lib.mkEnableOption "node exporter for system metrics (includes systemd)";

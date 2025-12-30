@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.monitoring.telegraf;
+  cfg = config.nixfiles.monitoring.telegraf;
 
   # available input plugins
   inputConfigs = {
@@ -106,7 +106,7 @@ let
   };
 in
 {
-  options.monitoring.telegraf = {
+  options.nixfiles.monitoring.telegraf = {
     enable = lib.mkEnableOption "telegraf monitoring agent";
 
     listenPort = lib.mkOption {

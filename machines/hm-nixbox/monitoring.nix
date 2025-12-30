@@ -82,7 +82,7 @@
     }
   ];
 
-  monitoring.telegraf = {
+  nixfiles.monitoring.telegraf = {
     enable = true;
     plugins = [
       "system"
@@ -94,7 +94,7 @@
     ];
   };
 
-  monitoring.exporter = {
+  nixfiles.monitoring.exporter = {
     enable = true;
     enableZfsExporter = true;
   };
