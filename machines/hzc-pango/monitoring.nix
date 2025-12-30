@@ -1,9 +1,14 @@
-_: {
+{ pkgs, ... }:
+{
   # restart vector when traefik restarts (tunnel connections drop)
   systemd.services.vector = {
     after = [ "traefik.service" ];
     partOf = [ "traefik.service" ];
   };
+
+  # restart vector after traefik starts (for nixos-rebuild)
+  systemd.services.traefik.serviceConfig.ExecStartPost =
+    "${pkgs.bash}/bin/bash -c 'sleep 5 && ${pkgs.systemd}/bin/systemctl restart vector.service || true'";
 
   # push metrics + logs via pangolin tcp tunnels
   services.vector = {
@@ -13,12 +18,12 @@ _: {
       sources = {
         crowdsec_metrics = {
           type = "prometheus_scrape";
-          endpoints = [ "http://localhost:6060/metrics" ];
+          endpoints = [ "http://127.0.0.1:6060/metrics" ];
           scrape_interval_secs = 15;
         };
         traefik_metrics = {
           type = "prometheus_scrape";
-          endpoints = [ "http://localhost:8082/metrics" ];
+          endpoints = [ "http://127.0.0.1:8082/metrics" ];
           scrape_interval_secs = 15;
         };
         # log source
@@ -55,12 +60,12 @@ _: {
         victoriametrics = {
           type = "prometheus_remote_write";
           inputs = [ "labeled_metrics" ];
-          endpoint = "http://localhost:8428/api/v1/write";
+          endpoint = "http://127.0.0.1:8428/api/v1/write";
         };
         victorialogs = {
           type = "http";
           inputs = [ "parsed_logs" ];
-          uri = "http://localhost:9428/insert/jsonline?_stream_fields=instance&_msg_field=RequestPath&_time_field=StartUTC";
+          uri = "http://127.0.0.1:9428/insert/jsonline?_stream_fields=instance&_msg_field=RequestPath&_time_field=StartUTC";
           encoding = {
             codec = "json";
           };
