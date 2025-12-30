@@ -16,9 +16,25 @@ in
       default = true;
       description = "grafana with authelia oidc";
     };
+
+    dashboardsDir = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = "directory containing grafana dashboard json files";
+    };
   };
 
   config = lib.mkIf cfg.enable {
+    # provision dashboards via /etc
+    environment.etc = lib.mkIf (cfg.dashboardsDir != null) (
+      builtins.listToAttrs (
+        map (file: {
+          name = "grafana-dashboards/${file}";
+          value.source = "${cfg.dashboardsDir}/${file}";
+        }) (builtins.attrNames (builtins.readDir cfg.dashboardsDir))
+      )
+    );
+
     # generate grafana oauth secret
     clan.core.vars.generators.grafana = {
       files."oauth-client-secret-hash" = { };
@@ -75,6 +91,20 @@ in
         victoriametrics-metrics-datasource
         victoriametrics-logs-datasource
       ];
+
+      provision.dashboards.settings = {
+        apiVersion = 1;
+        providers = [
+          {
+            name = "nixos";
+            orgId = 1;
+            type = "file";
+            disableDeletion = true;
+            editable = true;
+            options.path = "/etc/grafana-dashboards";
+          }
+        ];
+      };
 
       settings = {
         server = {

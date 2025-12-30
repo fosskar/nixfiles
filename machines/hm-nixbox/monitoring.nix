@@ -99,26 +99,5 @@
     enableZfsExporter = true;
   };
 
-  # provision grafana dashboards via /etc
-  environment.etc = builtins.listToAttrs (
-    map (file: {
-      name = "grafana-dashboards/${file}";
-      value.source = ./dashboards/${file};
-    }) (builtins.attrNames (builtins.readDir ./dashboards))
-  );
-
-  # machine-specific grafana dashboard provisioning
-  services.grafana.provision.dashboards.settings = {
-    apiVersion = 1;
-    providers = [
-      {
-        name = "nixos";
-        orgId = 1;
-        type = "file";
-        disableDeletion = true;
-        editable = true;
-        options.path = "/etc/grafana-dashboards";
-      }
-    ];
-  };
+  nixfiles.monitoring.grafana.dashboardsDir = ./dashboards;
 }
