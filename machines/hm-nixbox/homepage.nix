@@ -281,7 +281,7 @@
           }
           {
             "Authelia" = {
-              href = "https://auth.osscar.me";
+              href = "https://auth.fosskar.eu";
               icon = "authelia.svg";
               siteMonitor = "http://127.0.0.1:9091";
             };
