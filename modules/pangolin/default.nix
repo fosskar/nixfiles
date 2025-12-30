@@ -140,7 +140,7 @@ in
           (lib.mkIf cfg.crowdsec.enable {
             crowdsec-bouncer = {
               moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
-              version = "v1.3.5";
+              version = "v1.4.6";
             };
           })
         ];
@@ -169,6 +169,7 @@ in
         })
         (lib.mkIf cfg.crowdsec.enable {
           crowdsec.plugin.crowdsec-bouncer = {
+            enabled = true;
             crowdsecLapiKeyFile = cfg.crowdsec.lapiKeyFile;
             crowdsecLapiHost = cfg.crowdsec.lapiHost;
             crowdsecMode = "live";
