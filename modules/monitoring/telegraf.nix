@@ -168,7 +168,7 @@ in
     ];
 
     # nginx: enable stub_status endpoint for metrics
-    services.nginx.virtualHosts."localhost".locations."/nginx_status" =
+    services.nginx.virtualHosts."127.0.0.1".locations."/nginx_status" =
       lib.mkIf (builtins.elem "nginx" cfg.plugins)
         {
           extraConfig = ''

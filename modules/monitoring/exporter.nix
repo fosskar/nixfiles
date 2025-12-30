@@ -66,7 +66,7 @@ in
       enable = true;
       port = 9113;
       openFirewall = false;
-      scrapeUri = "http://localhost:80/nginx_status";
+      scrapeUri = "http://127.0.0.1:80/nginx_status";
     };
 
     # postgres exporter

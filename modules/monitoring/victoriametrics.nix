@@ -59,7 +59,7 @@ in
             job_name = "telegraf";
             static_configs = [
               {
-                targets = [ "localhost:${toString telegrafCfg.listenPort}" ];
+                targets = [ "127.0.0.1:${toString telegrafCfg.listenPort}" ];
                 labels.type = "telegraf";
               }
             ];
@@ -70,7 +70,7 @@ in
           {
             job_name = "zfs-exporter";
             static_configs = [
-              { targets = [ "localhost:${toString config.services.prometheus.exporters.zfs.port}" ]; }
+              { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}" ]; }
             ];
           }
         ]
@@ -79,7 +79,7 @@ in
           {
             job_name = "node-exporter";
             static_configs = [
-              { targets = [ "localhost:${toString config.services.prometheus.exporters.node.port}" ]; }
+              { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ]; }
             ];
           }
         ]
