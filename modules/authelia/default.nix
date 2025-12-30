@@ -23,6 +23,13 @@ in
       default = true;
       description = "authelia sso portal with oidc and auth proxy";
     };
+
+    publicDomain = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "simonoscar.me";
+      description = "additional public domain for remote access (e.g. via pangolin tunnel)";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -124,6 +131,11 @@ in
             {
               domain = acmeDomain;
               authelia_url = "https://${serviceDomain}";
+            }
+          ] ++ lib.optionals (cfg.publicDomain != null) [
+            {
+              domain = cfg.publicDomain;
+              authelia_url = "https://auth.${cfg.publicDomain}";
             }
           ];
         };
