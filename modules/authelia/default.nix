@@ -132,7 +132,8 @@ in
               domain = acmeDomain;
               authelia_url = "https://${serviceDomain}";
             }
-          ] ++ lib.optionals (cfg.publicDomain != null) [
+          ]
+          ++ lib.optionals (cfg.publicDomain != null) [
             {
               domain = cfg.publicDomain;
               authelia_url = "https://auth.${cfg.publicDomain}";
