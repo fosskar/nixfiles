@@ -41,7 +41,50 @@ in
         "-selfScrapeInterval=10s"
       ];
 
-      prometheusConfig.scrape_configs = cfg.scrapeConfigs;
+      prometheusConfig.scrape_configs =
+        let
+          telegrafCfg = config.nixfiles.monitoring.telegraf;
+          exporterCfg = config.nixfiles.monitoring.exporter;
+        in
+        # self-scrape
+        [
+          {
+            job_name = "victoriametrics";
+            static_configs = [ { targets = [ config.services.victoriametrics.listenAddress ]; } ];
+          }
+        ]
+        # telegraf
+        ++ lib.optionals telegrafCfg.enable [
+          {
+            job_name = "telegraf";
+            static_configs = [
+              {
+                targets = [ "localhost:${toString telegrafCfg.listenPort}" ];
+                labels.type = "telegraf";
+              }
+            ];
+          }
+        ]
+        # zfs exporter
+        ++ lib.optionals exporterCfg.enableZfsExporter [
+          {
+            job_name = "zfs-exporter";
+            static_configs = [
+              { targets = [ "localhost:${toString config.services.prometheus.exporters.zfs.port}" ]; }
+            ];
+          }
+        ]
+        # node exporter
+        ++ lib.optionals exporterCfg.enableNodeExporter [
+          {
+            job_name = "node-exporter";
+            static_configs = [
+              { targets = [ "localhost:${toString config.services.prometheus.exporters.node.port}" ]; }
+            ];
+          }
+        ]
+        # extra configs
+        ++ cfg.scrapeConfigs;
     };
 
     # grafana datasource

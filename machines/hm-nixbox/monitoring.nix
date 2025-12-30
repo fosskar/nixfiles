@@ -56,9 +56,10 @@
       enableZfsExporter = true;
     };
 
+    # machine-specific remote scrape targets
     victoriametrics.scrapeConfigs = [
       {
-        job_name = "node-exporter";
+        job_name = "openwrt-node-exporter";
         static_configs = [
           {
             targets = [
@@ -68,23 +69,6 @@
             labels.type = "node-exporter";
           }
         ];
-      }
-      {
-        job_name = "telegraf";
-        static_configs = [
-          {
-            targets = [ "localhost:9273" ];
-            labels.type = "telegraf";
-          }
-        ];
-      }
-      {
-        job_name = "zfs-exporter";
-        static_configs = [ { targets = [ "localhost:9134" ]; } ];
-      }
-      {
-        job_name = "victoriametrics";
-        static_configs = [ { targets = [ "localhost:8428" ]; } ];
       }
       {
         job_name = "openwrt-telegraf";
