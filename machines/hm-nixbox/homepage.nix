@@ -126,9 +126,9 @@
           }
           {
             "Pangolin public" = {
-              href = "https://pangolin.simonoscar.me";
+              href = "https://pangolin.fosskar.eu";
               icon = "pangolin.png";
-              siteMonitor = "https://pangolin.simonoscar.me";
+              siteMonitor = "https://pangolin.fosskar.eu";
             };
           }
         ];
@@ -299,7 +299,7 @@
         "Automation" = [
           {
             "Home Assistant" = {
-              href = "https://ha.simonoscar.me";
+              href = "https://ha.fosskar.eu";
               icon = "home-assistant.svg";
               siteMonitor = "http://192.168.10.30";
             };
@@ -414,6 +414,26 @@
               {
                 icon = "github.svg";
                 href = "https://github.com/nix-community/home-manager";
+              }
+            ];
+          }
+        ];
+      }
+      {
+        "DNS Management" = [
+          {
+            "deSEC" = [
+              {
+                icon = "mdi-dns";
+                href = "https://desec.io/domains";
+              }
+            ];
+          }
+          {
+            "inwx" = [
+              {
+                icon = "mdi-domain";
+                href = "https://www.inwx.de/en/";
               }
             ];
           }
