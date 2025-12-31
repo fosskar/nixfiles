@@ -30,6 +30,8 @@ in
   };
 
   config = {
+    # srvos.desktop sets: pipewire.enable, alsa.enable, pulse.enable, rtkit.enable
+
     # add wheel users to audio group
     users.groups.audio.members = config.users.groups.wheel.members;
 
@@ -41,12 +43,8 @@ in
     '';
 
     services.pipewire = {
-      enable = lib.mkDefault true;
-      alsa = {
-        enable = lib.mkDefault true;
-        support32Bit = lib.mkDefault true;
-      };
-      pulse.enable = lib.mkDefault true;
+      # srvos enables these, we add extras
+      alsa.support32Bit = lib.mkDefault true;
       jack.enable = lib.mkDefault false;
       wireplumber = {
         enable = lib.mkDefault true;
@@ -161,8 +159,6 @@ in
     };
 
     services.pulseaudio.enable = lib.mkForce false;
-
-    security.rtkit.enable = lib.mkDefault true;
 
     environment.systemPackages = with pkgs; [
       pwvucontrol

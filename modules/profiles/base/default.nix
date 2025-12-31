@@ -1,8 +1,13 @@
-{ lib, mylib, ... }:
 {
-  imports = mylib.scanPaths ./. { } ++ [
-    ../borgbackup
-  ];
+  lib,
+  mylib,
+  inputs,
+  ...
+}:
+{
+  imports = [
+    inputs.srvos.nixosModules.mixins-terminfo
+  ] ++ mylib.scanPaths ./. { };
 
   # disable yggdrasil multicast - use explicit peers only (security)
   services.yggdrasil.settings.MulticastInterfaces = lib.mkForce [ ];

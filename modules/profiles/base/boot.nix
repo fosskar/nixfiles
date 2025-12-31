@@ -1,15 +1,14 @@
-{ config, lib, ... }:
+{ lib, ... }:
 {
+  # srvos sets: initrd.systemd.enable, tmp.cleanOnBoot
+
   boot = {
-    initrd = {
-      systemd.enable = lib.mkDefault (!config.boot.swraid.enable && !config.boot.isContainer);
-      availableKernelModules = [
-        "ahci"
-        "xhci_pci"
-        "sd_mod"
-        "sr_mod"
-      ];
-    };
+    initrd.availableKernelModules = [
+      "ahci"
+      "xhci_pci"
+      "sd_mod"
+      "sr_mod"
+    ];
 
     kernelParams = [ "logo.nologo" ];
 
@@ -18,10 +17,10 @@
       generationsDir.copyKernels = true;
       grub = {
         enable = lib.mkDefault false;
-        copyKernels = lib.mkDefault true; # required when /boot is on separate partition from /
+        copyKernels = lib.mkDefault true;
         efiSupport = lib.mkDefault true;
         efiInstallAsRemovable = lib.mkDefault true;
-        splashImage = null; # disable splash
+        splashImage = null;
         memtest86.enable = lib.mkDefault false;
       };
       systemd-boot = {
@@ -30,7 +29,5 @@
         configurationLimit = lib.mkDefault 15;
       };
     };
-
-    tmp.cleanOnBoot = lib.mkDefault true;
   };
 }
