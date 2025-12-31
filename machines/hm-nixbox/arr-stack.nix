@@ -95,6 +95,7 @@
 
     audiobookshelf = {
       enable = true;
+      package = pkgs.stable.audiobookshelf; # FIXME
       host = "127.0.0.1";
       port = 13378;
       openFirewall = false;
