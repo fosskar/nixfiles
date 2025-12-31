@@ -56,6 +56,13 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+
     tangled = {
       url = "git+https://tangled.org/@tangled.org/core";
       inputs.nixpkgs.follows = "nixpkgs";
