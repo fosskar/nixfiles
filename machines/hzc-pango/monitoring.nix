@@ -13,6 +13,7 @@
   # push metrics + logs via pangolin tcp tunnels
   services.vector = {
     enable = true;
+    package = pkgs.stable.vector; # FIXME
     settings = {
       # metrics sources
       sources = {
