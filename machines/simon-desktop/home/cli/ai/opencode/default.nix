@@ -1,4 +1,4 @@
-_:
+{ lib, pkgs, ... }:
 let
   ohMyOpencodeConfig = {
     "$schema" =
@@ -19,6 +19,47 @@ in
       autoupdate = false;
       plugin = [ "oh-my-opencode" ];
       provider.anthropic.options.setCacheKey = true;
+
+      formatter = {
+        nixfmt = {
+          command = [
+            (lib.getExe pkgs.nixfmt)
+            "$FILE"
+          ];
+          extensions = [ ".nix" ];
+        };
+      };
+
+      lsp = {
+        nixd = {
+          command = [ (lib.getExe pkgs.nixd) ];
+          extensions = [ ".nix" ];
+          initialization = {
+            formatting = {
+              command = [ (lib.getExe pkgs.nixfmt) ];
+            };
+            options = {
+              nixos = {
+                expr = "(builtins.getFlake \"/home/simon/code/nixfiles\").nixosConfigurations.nixfiles.options";
+              };
+              home-manager = {
+                expr = "(builtins.getFlake \"/home/simon/code/nixfiles\").homeConfigurations.simon.options";
+              };
+            };
+          };
+        };
+        yamlls = {
+          command = [
+            (lib.getExe pkgs.yaml-language-server)
+            "--stdio"
+          ];
+          extensions = [
+            ".yaml"
+            ".yml"
+          ];
+        };
+      };
+
       mcp = {
         nixos = {
           type = "local";
