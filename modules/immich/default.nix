@@ -107,7 +107,7 @@ in
       redis.enable = true;
 
       machine-learning = {
-        enable = true;
+        enable = false; # FIXME
         environment = {
           OCL_ICD_VENDORS = "/run/opengl-driver/etc/OpenCL/vendors";
 
