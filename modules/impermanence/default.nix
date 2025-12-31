@@ -22,9 +22,9 @@ let
   needsPrivateFix = builtins.any (
     d:
     let
-      path = getDirPath d;
+      dirPath = getDirPath d;
     in
-    path == "/var/lib/private" || path == "/var/lib"
+    dirPath == "/var/lib/private" || dirPath == "/var/lib"
   ) allDirs;
 in
 {

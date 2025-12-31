@@ -3,5 +3,6 @@
   imports = [
     inputs.srvos.nixosModules.desktop
     ../base
-  ] ++ mylib.scanPaths ./. { };
+  ]
+  ++ mylib.scanPaths ./. { };
 }

@@ -12,6 +12,8 @@
     ../../modules/gpu
     ../../modules/cpu
     ../../modules/virtualization
+    ../../modules/dms
+    ../../modules/niri
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -21,16 +23,11 @@
 
   programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
 
-  #kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
-
   clan.core.settings.machine-id.enable = true;
 
   nixfiles = {
-
     audio.lowLatency.enable = true;
-
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
-
     gpu.amd.enable = true;
     cpu.amd.enable = true;
 

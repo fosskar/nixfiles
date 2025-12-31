@@ -12,6 +12,9 @@
     ../../modules/power
     ../../modules/gpu
     ../../modules/cpu
+    ../../modules/fingerprint
+    ../../modules/dms
+    ../../modules/niri
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -24,11 +27,8 @@
   clan.core.settings.machine-id.enable = true;
 
   nixfiles = {
-
     audio.lowLatency.enable = true;
-
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
-
     gpu.amd.enable = true;
     cpu.amd.enable = true;
   };

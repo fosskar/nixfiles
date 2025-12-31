@@ -8,11 +8,6 @@ _: {
       deviceLabel = "nixos";
     };
     manageSopsMount = true;
-    directories = [
-      "/var/cache/tailscale"
-      "/var/lib/tailscale"
-      "/var/lib/dmsgreeter"
-    ];
   };
 
   # fix home directory ownership issues

@@ -59,6 +59,7 @@
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pre-commit.follows = "";
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";

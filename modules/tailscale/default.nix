@@ -22,5 +22,11 @@ in
       openFirewall = true;
     };
     networking.firewall.trustedInterfaces = lib.mkIf cfg.trustInterface [ "tailscale0" ];
+
+    # persist tailscale state (if impermanence is used)
+    environment.persistence."/persist".directories = [
+      "/var/cache/tailscale"
+      "/var/lib/tailscale"
+    ];
   };
 }

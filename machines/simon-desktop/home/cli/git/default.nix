@@ -4,8 +4,8 @@
 }:
 let
   # default identity (used when no conditional match)
-  defaultEmail = "osscar.unheard025@passmail.net";
-  defaultName = "osscar";
+  defaultEmail = "fsskar.unheard025@passmail.net";
+  defaultName = "fosskar";
 
   # forge-specific identities
   github = {
@@ -13,12 +13,12 @@ let
     email = "117449098+fosskar@users.noreply.github.com";
   };
   codeberg = {
-    name = "osscar";
-    email = "osscar@noreply.codeberg.org";
+    name = "fosskar";
+    email = "fosskar@noreply.codeberg.org";
   };
   tangled = {
-    name = "osscar";
-    email = "osscar.unheard025@passmail.net";
+    name = "fosskar";
+    email = "fosskar.unheard025@passmail.net";
   };
 in
 {

@@ -54,6 +54,13 @@ _: {
                         "noatime"
                       ];
                     };
+                    "/persist" = {
+                      mountpoint = "/persist";
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
+                    };
                     "/swap" = {
                       mountpoint = "/.swapvol";
                       swap.swapfile.size = "20M";

@@ -1,7 +1,7 @@
 _:
 let
-  email = "osscar.unheard025@passmail.net";
-  name = "osscar";
+  email = "fosskar.unheard025@passmail.net";
+  name = "fosskar";
 in
 {
   imports = [
