@@ -27,7 +27,7 @@ _: {
           shellHook = ''
             ${config.pre-commit.installationScript}
           '';
-          packages = scripts;
+          packages = [ pkgs.hcloud ] ++ scripts;
         };
 
         terraform = pkgs.mkShellNoCC {
