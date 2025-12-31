@@ -4,22 +4,21 @@
     # custom packages from flake
     #inputs.self.packages.${pkgs.system}.voquill
     # desktop apps
-    webcord-vencord
+    #webcord-vencord
     signal-desktop
     #protonvpn-gui
     #protonvpn-cli
     filen-desktop
     #bitwarden-desktop
-    #(symlinkJoin {
-    #  name = "element-desktop";
-    #  paths = [ element-desktop ];
-    #  buildInputs = [ makeWrapper ];
-    #  postBuild = ''
-    #    wrapProgram $out/bin/element-desktop \
-    #      --add-flags "--password-store=gnome-libsecret"
-    #  '';
-    #})
-    fluffychat
+    (symlinkJoin {
+      name = "element-desktop";
+      paths = [ element-desktop ];
+      buildInputs = [ makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/element-desktop \
+          --add-flags "--password-store=gnome-libsecret"
+      '';
+    })
 
     # media
     spotify
