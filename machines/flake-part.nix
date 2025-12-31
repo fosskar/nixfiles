@@ -34,6 +34,14 @@ in
           ];
         };
 
+        hm-nixbox = {
+          deploy.targetHost = "root@192.168.10.80";
+          tags = [
+            "server"
+            "home"
+          ];
+        };
+
         simon-desktop = {
           deploy.targetHost = "root@192.168.10.200";
           tags = [
@@ -42,13 +50,14 @@ in
           ];
         };
 
-        hm-nixbox = {
-          deploy.targetHost = "root@192.168.10.80";
+        lpt-titan = {
+          deploy.targetHost = "root@192.168.10.201";
           tags = [
-            "server"
+            "laptop"
             "home"
           ];
         };
+
       };
 
       instances = {
@@ -77,6 +86,7 @@ in
 
           roles.default = {
             machines.simon-desktop = { };
+            machines.lpt-titan = { };
             settings = {
               user = "simon";
               groups = [
@@ -107,8 +117,9 @@ in
         internet = {
           roles.default.machines = {
             hzc-pango.settings.host = "138.201.155.21";
-            simon-desktop.settings.host = "192.168.10.200";
             hm-nixbox.settings.host = "192.168.10.80";
+            simon-desktop.settings.host = "192.168.10.200";
+            lpt-titan.settings.host = "192.168.10.201";
           };
         };
 
@@ -116,15 +127,16 @@ in
           module.name = "importer";
           roles.default = {
             tags.server = { };
-            extraModules = [ "${self}/modules/server" ];
+            extraModules = [ "${self}/modules/profiles/server" ];
           };
         };
 
-        desktop-module = {
+        workstation-module = {
           module.name = "importer";
           roles.default = {
             tags.desktop = { };
-            extraModules = [ "${self}/modules/desktop" ];
+            tags.laptop = { };
+            extraModules = [ "${self}/modules/profiles/workstation" ];
           };
         };
 
@@ -174,22 +186,6 @@ in
             server.machines = { };
           };
         };
-
-        #matrix-synapse = {
-        #  roles.default.machines."hm-nixbox".settings = {
-        #    acmeEmail = "admin@osscar.me";
-        #    server_tld = "osscar.me";
-        #    app_domain = "matrix.osscar.me";
-        #    users = {
-        #      admin = {
-        #        admin = true;
-        #      };
-        #      simon = {
-        #        admin = true;
-        #      };
-        #    };
-        #  };
-        #};
       };
     };
   };
