@@ -1,49 +1,35 @@
-{ mylib, lib, ... }:
+{ mylib, inputs, ... }:
 {
   imports = [
+    inputs.srvos.nixosModules.hardware-hetzner-cloud
     ../../modules/power
   ]
   ++ (mylib.scanPaths ./. { exclude = [ ]; });
 
+  # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
+  # srvos.server sets: emergency mode suppression
+
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  nixfiles = {
-    power.tuned = {
-      enable = true;
-      profile = [
-        "virtual-guest"
-        "network-latency"
-      ];
-    };
+  nixfiles.power.tuned = {
+    enable = true;
+    profile = [
+      "virtual-guest"
+      "network-latency"
+    ];
   };
 
   clan.core.settings.machine-id.enable = true;
 
-  services.qemuGuest.enable = true;
-
-  # vm specific
-  hardware = {
-    firmware = lib.mkForce [ ];
-    enableRedistributableFirmware = lib.mkForce false;
-  };
-
-  # hetzner cloud uses legacy BIOS - use GRUB for hybrid boot
   boot = {
     loader = {
+      # override base profile defaults for hetzner cloud (legacy BIOS)
       systemd-boot.enable = false;
-      grub = {
-        enable = true;
-        device = "/dev/sda";
-      };
+      grub.enable = true;
+      # srvos sets grub.devices = ["/dev/sda"]
     };
+    # btrfs support (disko handles actual fs config)
     supportedFilesystems = [ "btrfs" ];
-    initrd = {
-      supportedFilesystems = [ "btrfs" ];
-      # no console access - emergency mode would just hang
-      systemd.suppressedUnits = [
-        "emergency.service"
-        "emergency.target"
-      ];
-    };
+    initrd.supportedFilesystems = [ "btrfs" ];
   };
 }
