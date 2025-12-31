@@ -43,10 +43,15 @@ in
 
       services.nginx = {
         enable = true;
-        recommendedTlsSettings = true;
-        recommendedOptimisation = true;
-        recommendedGzipSettings = true;
-        recommendedProxySettings = true;
+        statusPage = lib.mkDefault true;
+        recommendedBrotliSettings = lib.mkDefault true;
+        recommendedGzipSettings = lib.mkDefault true;
+        recommendedOptimisation = lib.mkDefault true;
+        recommendedProxySettings = lib.mkDefault true;
+        recommendedTlsSettings = lib.mkDefault true;
+
+        # centralized journald login
+        commonHttpConfig = "access_log syslog:server=unix:/dev/log;";
       };
     })
 
