@@ -1963,7 +1963,7 @@
           "[13]",
           "[14]"
         ],
-        "bogo": 3992.36,
+        "bogo": 3992.57,
         "cache": 1024,
         "units": 12,
         "physical_id": 0,
@@ -2238,7 +2238,7 @@
           },
           {
             "type": "irq",
-            "base": 136,
+            "base": 134,
             "triggered": 0,
             "enabled": true
           },
@@ -2272,7 +2272,7 @@
           "command": 1031,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 136,
+          "irq": 134,
           "prog_if": 0
         },
         "driver": "amdgpu",
@@ -2966,7 +2966,7 @@
           {
             "type": "mem",
             "base": 0,
-            "range": 32903634944,
+            "range": 32903626752,
             "enabled": true,
             "access": "read_write",
             "prefetch": "unknown"
@@ -3178,7 +3178,7 @@
           },
           {
             "type": "irq",
-            "base": 139,
+            "base": 135,
             "triggered": 0,
             "enabled": true
           },
@@ -3291,7 +3291,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 139,
+          "irq": 135,
           "prog_if": 0
         },
         "driver": "mt7925e",
@@ -3630,7 +3630,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 136,
+            "base": 134,
             "triggered": 0,
             "enabled": true
           },
@@ -3656,7 +3656,7 @@
           "command": 6,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 136,
+          "irq": 134,
           "prog_if": 0
         },
         "driver": "snd_acp_pci",
@@ -3906,7 +3906,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 138,
+            "base": 139,
             "triggered": 0,
             "enabled": true
           },
@@ -3924,7 +3924,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 138,
+          "irq": 139,
           "prog_if": 0
         },
         "driver": "snd_hda_intel",
@@ -3986,7 +3986,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 137,
+            "base": 138,
             "triggered": 0,
             "enabled": true
           },
@@ -4004,7 +4004,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 137,
+          "irq": 138,
           "prog_if": 0
         },
         "driver": "snd_hda_intel",
@@ -4601,7 +4601,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 41,
+            "base": 42,
             "triggered": 0,
             "enabled": true
           },
@@ -4619,7 +4619,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 41,
+          "irq": 42,
           "prog_if": 48
         },
         "driver": "xhci_hcd",
