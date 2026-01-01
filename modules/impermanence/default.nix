@@ -8,11 +8,14 @@ let
   cfg = config.nixfiles.impermanence;
   zfs = import ./zfs.nix { inherit cfg; };
   btrfs = import ./btrfs.nix { inherit cfg; };
+  bcachefs = import ./bcachefs.nix { inherit cfg; };
   rollbackService =
     if cfg.rollback.type == "zfs" then
       zfs
     else if cfg.rollback.type == "btrfs" then
       btrfs
+    else if cfg.rollback.type == "bcachefs" then
+      bcachefs
     else
       null;
 
@@ -38,10 +41,11 @@ in
         type = lib.types.enum [
           "zfs"
           "btrfs"
+          "bcachefs"
           "none"
         ];
         default = "none";
-        description = "filesystem type for rollback (zfs, btrfs, or none)";
+        description = "filesystem type for rollback (zfs, btrfs, bcachefs, or none)";
       };
 
       # zfs options (required when type = "zfs")
@@ -67,15 +71,24 @@ in
         default = null;
         description = "label of the btrfs root device (required for btrfs)";
       };
+
+      # bcachefs options (required when type = "bcachefs")
+      partLabel = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "GPT partition label of bcachefs device (required for bcachefs)";
+      };
+
+      # shared options for btrfs and bcachefs
       subvolume = lib.mkOption {
         type = lib.types.str;
         default = "@root";
-        description = "name of btrfs root subvolume";
+        description = "name of root subvolume";
       };
       retentionDays = lib.mkOption {
         type = lib.types.int;
         default = 30;
-        description = "days to keep old btrfs root backups";
+        description = "days to keep old root backups";
       };
     };
 
@@ -119,9 +132,13 @@ in
         assertion = cfg.rollback.type != "btrfs" || cfg.rollback.deviceLabel != null;
         message = "nixfiles.impermanence.rollback.deviceLabel must be set when type is 'btrfs'";
       }
+      {
+        assertion = cfg.rollback.type != "bcachefs" || cfg.rollback.partLabel != null;
+        message = "nixfiles.impermanence.rollback.partLabel must be set when type is 'bcachefs'";
+      }
     ];
 
-    # rollback service (from zfs.nix or btrfs.nix)
+    # rollback service (from zfs.nix, btrfs.nix, or bcachefs.nix)
     boot.initrd.systemd.services = lib.mkIf (rollbackService != null) rollbackService.service;
 
     # common persistence config
