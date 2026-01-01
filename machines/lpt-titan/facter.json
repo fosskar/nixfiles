@@ -1963,7 +1963,7 @@
           "[13]",
           "[14]"
         ],
-        "bogo": 3992.25,
+        "bogo": 3992.57,
         "cache": 1024,
         "units": 12,
         "physical_id": 0,
@@ -2966,7 +2966,7 @@
           {
             "type": "mem",
             "base": 0,
-            "range": 32903630848,
+            "range": 32903634944,
             "enabled": true,
             "access": "read_write",
             "prefetch": "unknown"
@@ -3474,7 +3474,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 95,
+            "base": 98,
             "triggered": 0,
             "enabled": true
           },
@@ -3500,7 +3500,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 95,
+          "irq": 98,
           "prog_if": 0
         },
         "driver": "ccp",
@@ -4516,7 +4516,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 44,
+            "base": 56,
             "triggered": 0,
             "enabled": true
           },
@@ -4534,7 +4534,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 44,
+          "irq": 56,
           "prog_if": 48
         },
         "driver": "xhci_hcd",
@@ -4601,7 +4601,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 41,
+            "base": 54,
             "triggered": 0,
             "enabled": true
           },
@@ -4619,7 +4619,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 41,
+          "irq": 54,
           "prog_if": 48
         },
         "driver": "xhci_hcd",
@@ -4686,7 +4686,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 62,
+            "base": 65,
             "triggered": 0,
             "enabled": true
           },
@@ -4704,7 +4704,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 62,
+          "irq": 65,
           "prog_if": 64
         },
         "driver": "thunderbolt",
@@ -4771,7 +4771,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 46,
+            "base": 58,
             "triggered": 0,
             "enabled": true
           },
@@ -4789,7 +4789,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 46,
+          "irq": 58,
           "prog_if": 48
         },
         "driver": "xhci_hcd",
@@ -4856,7 +4856,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 44,
+            "base": 56,
             "triggered": 0,
             "enabled": true
           },
@@ -4874,7 +4874,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 44,
+          "irq": 56,
           "prog_if": 64
         },
         "driver": "thunderbolt",
@@ -4941,7 +4941,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 48,
+            "base": 60,
             "triggered": 0,
             "enabled": true
           },
@@ -4959,7 +4959,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 48,
+          "irq": 60,
           "prog_if": 48
         },
         "driver": "xhci_hcd",
