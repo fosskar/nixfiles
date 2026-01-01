@@ -89,11 +89,13 @@ in
             machines.lpt-titan = { };
             settings = {
               user = "simon";
+              share = true;
               groups = [
                 "wheel"
                 "input"
               ];
             };
+            extraModules = [ "${self}/users/simon" ];
           };
         };
 
