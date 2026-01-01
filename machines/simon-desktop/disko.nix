@@ -35,41 +35,37 @@ _: {
                   "-f"
                 ];
                 subvolumes = {
-                  # Root subvolume (will be rolled back on each boot)
                   "@root" = {
                     mountpoint = "/";
                     mountOptions = [
                       "compress=zstd"
                       "noatime"
+                      "discard=async"
                     ];
                   };
-                  # Home subvolume
                   "@home" = {
                     mountpoint = "/home";
                     mountOptions = [
                       "compress=zstd"
                       "noatime"
+                      "discard=async"
                     ];
                   };
-                  # Nix store subvolume
                   "@nix" = {
                     mountpoint = "/nix";
                     mountOptions = [
                       "compress=zstd"
                       "noatime"
+                      "discard=async"
                     ];
                   };
-                  # Persistent data subvolume
                   "@persist" = {
                     mountpoint = "/persist";
                     mountOptions = [
                       "compress=zstd"
                       "noatime"
+                      "discard=async"
                     ];
-                  };
-                  "@swap" = {
-                    mountpoint = "/swap";
-                    swap.swapfile.size = "16G";
                   };
                 };
               };
