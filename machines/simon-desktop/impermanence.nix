@@ -7,7 +7,7 @@ _: {
       type = "btrfs";
       deviceLabel = "nixos";
     };
-    manageSopsMount = true;
+    manageSopsMount = true; # this adds /var/lib/sops-nix to persist and marks it for neededForBoot
   };
 
   # fix home directory ownership issues
