@@ -1,4 +1,16 @@
-_: {
+{ config, ... }:
+{
+  # bcachefs disk encryption password
+  # prompts during `clan vars generate`, deploys to /run/partitioning-secrets/ during install
+  clan.core.vars.generators.disk-encryption-password = {
+    prompts.password = {
+      type = "hidden";
+      description = "bcachefs disk encryption password";
+      persist = true;
+    };
+    files.password.neededFor = "partitioning";
+  };
+
   disko.devices = {
     disk = {
       main = {
@@ -8,67 +20,55 @@ _: {
           type = "gpt";
           partitions = {
             ESP = {
-              size = "512M";
+              size = "1G";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "defaults" ];
+                mountOptions = [
+                  "defaults"
+                  "umask=0077"
+                ];
               };
             };
-            luks = {
+            root = {
               size = "100%";
               content = {
-                type = "luks";
-                name = "crypted";
-                # disable settings.keyFile if you want to use interactive password entry
-                #passwordFile = "/tmp/secret.key"; # Interactive
-                settings = {
-                  allowDiscards = true;
-                  keyFile = "/tmp/secret.key";
-                };
-                additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
-                content = {
-                  type = "btrfs";
-                  extraArgs = [ "-f" ];
-                  subvolumes = {
-                    "/root" = {
-                      mountpoint = "/";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/home" = {
-                      mountpoint = "/home";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/nix" = {
-                      mountpoint = "/nix";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/persist" = {
-                      mountpoint = "/persist";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/swap" = {
-                      mountpoint = "/.swapvol";
-                      swap.swapfile.size = "20M";
-                    };
-                  };
-                };
+                type = "bcachefs";
+                filesystem = "main";
+                label = "root";
+                extraFormatArgs = [ "--discard" ];
               };
             };
+          };
+        };
+      };
+    };
+    bcachefs_filesystems = {
+      main = {
+        type = "bcachefs_filesystem";
+        passwordFile = config.clan.core.vars.generators.disk-encryption-password.files.password.path;
+        extraFormatArgs = [
+          "--compression=lz4"
+          "--background_compression=lz4"
+        ];
+        subvolumes = {
+          "@root" = {
+            mountpoint = "/";
+            mountOptions = [ "noatime" ];
+          };
+          "@home" = {
+            mountpoint = "/home";
+            mountOptions = [ "noatime" ];
+          };
+          "@nix" = {
+            mountpoint = "/nix";
+            mountOptions = [ "noatime" ];
+          };
+          "@persist" = {
+            mountpoint = "/persist";
+            mountOptions = [ "noatime" ];
           };
         };
       };

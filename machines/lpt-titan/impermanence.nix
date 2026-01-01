@@ -4,8 +4,9 @@ _: {
   nixfiles.impermanence = {
     enable = true;
     rollback = {
-      type = "btrfs";
-      deviceLabel = "nixos";
+      type = "bcachefs";
+      partLabel = "bcachefs"; # matches disko partition label
+      subvolume = "@root";
     };
     manageSopsMount = true;
   };
