@@ -1,6 +1,12 @@
-_: {
+{ lib, config, ... }:
+{
   # wireless regulatory database - helps with channel selection
   hardware.wirelessRegulatoryDatabase = true;
+
+  # persist iwd network profiles with impermanence
+  nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
+    "/var/lib/iwd"
+  ];
 
   # iwd settings (iwd enabled via networkmanager.nix)
   networking.wireless.iwd.settings = {

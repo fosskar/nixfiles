@@ -3,6 +3,11 @@
   # add wheel users to networkmanager group
   users.groups.networkmanager.members = config.users.groups.wheel.members;
 
+  # persist networkmanager connections with impermanence
+  nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
+    "/var/lib/NetworkManager"
+  ];
+
   networking = {
     networkmanager = {
       enable = lib.mkDefault true;
