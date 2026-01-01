@@ -1963,7 +1963,7 @@
           "[13]",
           "[14]"
         ],
-        "bogo": 3992.57,
+        "bogo": 3992.25,
         "cache": 1024,
         "units": 12,
         "physical_id": 0,
@@ -2966,7 +2966,7 @@
           {
             "type": "mem",
             "base": 0,
-            "range": 32903626752,
+            "range": 32903630848,
             "enabled": true,
             "access": "read_write",
             "prefetch": "unknown"
@@ -3178,7 +3178,7 @@
           },
           {
             "type": "irq",
-            "base": 135,
+            "base": 137,
             "triggered": 0,
             "enabled": true
           },
@@ -3291,7 +3291,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 135,
+          "irq": 137,
           "prog_if": 0
         },
         "driver": "mt7925e",
@@ -3474,7 +3474,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 98,
+            "base": 95,
             "triggered": 0,
             "enabled": true
           },
@@ -3500,7 +3500,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 98,
+          "irq": 95,
           "prog_if": 0
         },
         "driver": "ccp",
@@ -4601,7 +4601,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 42,
+            "base": 41,
             "triggered": 0,
             "enabled": true
           },
@@ -4619,7 +4619,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 42,
+          "irq": 41,
           "prog_if": 48
         },
         "driver": "xhci_hcd",
@@ -4686,7 +4686,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 65,
+            "base": 62,
             "triggered": 0,
             "enabled": true
           },
@@ -4704,7 +4704,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 65,
+          "irq": 62,
           "prog_if": 64
         },
         "driver": "thunderbolt",
