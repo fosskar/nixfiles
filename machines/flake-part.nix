@@ -51,7 +51,7 @@ in
         };
 
         lpt-titan = {
-          deploy.targetHost = "root@192.168.10.201";
+          deploy.targetHost = "root@192.168.10.216";
           tags = [
             "laptop"
             "home"
@@ -121,7 +121,7 @@ in
             hzc-pango.settings.host = "138.201.155.21";
             hm-nixbox.settings.host = "192.168.10.80";
             simon-desktop.settings.host = "192.168.10.200";
-            lpt-titan.settings.host = "192.168.10.201";
+            lpt-titan.settings.host = "192.168.10.216";
           };
         };
 
