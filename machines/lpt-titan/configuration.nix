@@ -12,6 +12,7 @@
     ../../modules/power
     ../../modules/gpu
     ../../modules/cpu
+    ../../modules/lanzaboote
     ../../modules/fingerprint
     ../../modules/dms
     ../../modules/niri
@@ -29,7 +30,13 @@
   nixfiles = {
     audio.lowLatency.enable = true;
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
-    gpu.amd.enable = true;
     cpu.amd.enable = true;
+    gpu.amd = {
+      enable = true;
+      # not needed for iGPU
+      lact.enable = false;
+      opencl.enable = false;
+    };
+
   };
 }
