@@ -1,4 +1,9 @@
-{ inputs, ... }:
+{
+  inputs,
+  config,
+  lib,
+  ...
+}:
 {
   imports = [
     inputs.dms.nixosModules.greeter
@@ -11,7 +16,7 @@
   };
 
   # persist greeter state (if impermanence is used)
-  environment.persistence."/persist".directories = [
+  nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
     "/var/lib/dmsgreeter"
   ];
 }
