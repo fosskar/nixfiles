@@ -10,7 +10,7 @@ let
   nixosManagesPortal = osConfig != null && osConfig.xdg.portal.enable or false;
 
   #browser = [ "firefox.desktop" ];
-  browser = [ "zen-twilight.desktop" ];
+  browser = [ "zen-beta.desktop" ];
   zathura = [ "zathura" ];
   fileManager = [ "yazi" ];
   editor = [ "zeditor" ];
