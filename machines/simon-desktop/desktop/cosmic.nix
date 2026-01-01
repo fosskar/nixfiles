@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   services = {
     displayManager.cosmic-greeter = {
       enable = false; # yeah its ugly
@@ -7,4 +8,7 @@ _: {
       enable = true;
     };
   };
+
+  # nm-applet not needed - cosmic has its own network indicator
+  environment.cosmic.excludePackages = [ pkgs.networkmanagerapplet ];
 }
