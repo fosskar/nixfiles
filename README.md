@@ -19,6 +19,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 | machine       | type        | description              | specs                                                                |
 | ------------- | ----------- | ------------------------ | -------------------------------------------------------------------- |
 | simon-desktop | desktop     | daily driver workstation | ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                |
+| lpt-titan     | laptop      | framework 13             | ryzen ai 5 340, radeon 840m, 32gb ddr5                               |
 | hm-nixbox     | home server | self-hosted services     | ryzen 7 5700x, 64gb, arc b50 pro, 4x6tb + 2x960gb ssd, 2x16gb optane |
 | hzc-pango     | vps         | reverse proxy (pangolin) | hetzner cx22                                                         |
 
@@ -34,7 +35,8 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 - [fufexan dotfiles](https://github.com/fufexan/dotfiles)
 - [NotAShelf nyx](https://github.com/notashelf/nyx)
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
-- [clan-core](https://git.clan.lol/clan/clan-core)
+- [mic92 dotfiles](https://github.com/Mic92/dotfiles)
+- [badele nix-homelab](https://github.com/badele/nix-homelab)
 
 ## license
 
