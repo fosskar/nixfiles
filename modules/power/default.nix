@@ -27,6 +27,8 @@
 
     logind.enable = lib.mkEnableOption "laptop logind settings (lid/power key)";
 
+    powertop.enable = lib.mkEnableOption "powertop auto-tuning on startup";
+
     tuned = {
       enable = lib.mkEnableOption "tuned";
 
