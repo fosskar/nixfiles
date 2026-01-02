@@ -51,7 +51,7 @@ in
         };
 
         lpt-titan = {
-          deploy.targetHost = "root@192.168.10.216";
+          deploy.targetHost = "root@192.168.10.202";
           tags = [
             "laptop"
             "home"
@@ -121,7 +121,31 @@ in
             hzc-pango.settings.host = "138.201.155.21";
             hm-nixbox.settings.host = "192.168.10.80";
             simon-desktop.settings.host = "192.168.10.200";
-            lpt-titan.settings.host = "192.168.10.216";
+            lpt-titan.settings.host = "192.168.10.202";
+          };
+        };
+
+        syncthing = {
+          module = {
+            name = "syncthing";
+            input = "clan-core";
+          };
+          roles.peer = {
+            machines.simon-desktop = { };
+            machines.lpt-titan = { };
+            settings = {
+              folders = {
+                # add folders here, e.g.:
+                # documents = {
+                #   path = "/home/simon/documents";
+                #   type = "sendreceive";
+                # };
+                zen-browser = {
+                  path = "/home/simon/.zen";
+                  type = "sendreceive";
+                };
+              };
+            };
           };
         };
 
