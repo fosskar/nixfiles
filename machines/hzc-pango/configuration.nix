@@ -13,10 +13,7 @@
 
   nixfiles.power.tuned = {
     enable = true;
-    profile = [
-      "virtual-guest"
-      "network-latency"
-    ];
+    profile = "virtual-guest";
   };
 
   clan.core.settings.machine-id.enable = true;
