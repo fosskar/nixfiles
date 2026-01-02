@@ -39,6 +39,11 @@ clan ssh <machine>              # via clan CLI
 - `lib/` - mylib helpers
 - `vars/` - clan-generated secrets/config per machine
 
+## principles
+
+- **declarative first** - avoid manual changes, everything should be in nix config
+- if something needs manual intervention, find a way to declare it instead
+
 ## patterns
 
 - `mylib.scanPaths ./. { }` - auto-import all .nix files in directory
