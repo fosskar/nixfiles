@@ -136,14 +136,14 @@ in
             settings = {
               folders = {
                 # add folders here, e.g.:
-                # documents = {
-                #   path = "/home/simon/documents";
-                #   type = "sendreceive";
-                # };
-                zen-browser = {
-                  path = "/home/simon/.zen";
+                documents = {
+                  path = "/home/simon/documents";
                   type = "sendreceive";
                 };
+                #zen-browser = {
+                #  path = "/home/simon/.zen";
+                #  type = "sendreceive";
+                #};
               };
             };
           };
