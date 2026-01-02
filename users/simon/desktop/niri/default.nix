@@ -111,7 +111,7 @@ in
         matches = [
           {
             app-id = "^zen-beta$|^firefox$|^brave$";
-            title = "^Picture-in-Picture$|^Extension:";
+            title = "^Picture-in-Picture$";
           }
           { app-id = "^Pinentry-gtk$"; }
           { app-id = "^xdg-desktop-portal-gtk"; }
@@ -120,7 +120,6 @@ in
           { title = "^File Upload$"; }
           { title = "^File Operation Progress$"; }
           { title = "^MainPicker$"; }
-          { title = ".*Bitwarden.*"; }
         ];
         open-floating = true;
       }
