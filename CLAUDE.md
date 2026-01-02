@@ -141,10 +141,15 @@ some machines use impermanence (opt-in state). root filesystem is ephemeral, onl
 
 ## vcs
 
-jj (jujutsu) colocated with git:
+jj (jujutsu) colocated with git. jj calls commits "changes".
 
 ```bash
-jj split -m "msg" -- <files>    # atomic commits
-jj bookmark set main -r @       # move main
+jj commit -m "msg"              # describe current change + create new change
+jj describe -m "msg"            # only describe, stays on same change
+jj new                          # create new change on top
+jj split -m "msg" -- <files>    # extract files into separate change
+jj bookmark set main -r @       # move main bookmark (only when ready to push)
 jj git push                     # push
 ```
+
+workflow: commit working changes, continue on new change. bookmark + push only when ready.
