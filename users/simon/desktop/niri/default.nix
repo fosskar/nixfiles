@@ -371,6 +371,16 @@
           action = dms-ipc "audio" "micmute";
         };
 
+        # brightness controls
+        "XF86MonBrightnessUp" = {
+          allow-when-locked = true;
+          action = dms-ipc "brightness" "increment" "10" "backlight:amdgpu_bl1";
+        };
+        "XF86MonBrightnessDown" = {
+          allow-when-locked = true;
+          action = dms-ipc "brightness" "decrement" "10" "backlight:amdgpu_bl1";
+        };
+
         # audio controls
         #"XF86AudioRaiseVolume" = {
         #  action = {
@@ -417,56 +427,6 @@
         "XF86AudioNext" = {
           action = {
             spawn-sh = "playerctl next";
-          };
-          allow-when-locked = true;
-        };
-
-        # brightness controls
-        "XF86MonBrightnessUp" = {
-          action = {
-            spawn = [
-              "brightnessctl"
-              "--class=backlight"
-              "set"
-              "+10%"
-            ];
-          };
-          allow-when-locked = true;
-        };
-        "XF86MonBrightnessDown" = {
-          action = {
-            spawn = [
-              "brightnessctl"
-              "--class=backlight"
-              "set"
-              "10%-"
-            ];
-          };
-          allow-when-locked = true;
-        };
-
-        # keyboard backlight (framework laptop)
-        "XF86KbdBrightnessUp" = {
-          action = {
-            spawn = [
-              "brightnessctl"
-              "-d"
-              "framework_laptop::kbd_backlight"
-              "set"
-              "+10%"
-            ];
-          };
-          allow-when-locked = true;
-        };
-        "XF86KbdBrightnessDown" = {
-          action = {
-            spawn = [
-              "brightnessctl"
-              "-d"
-              "framework_laptop::kbd_backlight"
-              "set"
-              "10%-"
-            ];
           };
           allow-when-locked = true;
         };
