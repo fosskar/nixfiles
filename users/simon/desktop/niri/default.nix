@@ -445,6 +445,32 @@
           allow-when-locked = true;
         };
 
+        # keyboard backlight (framework laptop)
+        "XF86KbdBrightnessUp" = {
+          action = {
+            spawn = [
+              "brightnessctl"
+              "-d"
+              "framework_laptop::kbd_backlight"
+              "set"
+              "+10%"
+            ];
+          };
+          allow-when-locked = true;
+        };
+        "XF86KbdBrightnessDown" = {
+          action = {
+            spawn = [
+              "brightnessctl"
+              "-d"
+              "framework_laptop::kbd_backlight"
+              "set"
+              "10%-"
+            ];
+          };
+          allow-when-locked = true;
+        };
+
         # window management
         "Mod+O" = {
           action = {
