@@ -6,37 +6,41 @@
 }:
 let
   cfg = config.nixfiles.power.tuned;
-  profiles = if builtins.isList cfg.profile then cfg.profile else [ cfg.profile ];
-  profileString = lib.concatStringsSep " " profiles;
-  isMultiProfile = builtins.length profiles > 1;
+  ppdSettingsFormat = pkgs.formats.ini { };
 in
 {
   config = lib.mkIf cfg.enable {
-    services.tuned.enable = true;
-
-    # hdparm is required for disk spindown settings
-    environment.systemPackages = [ pkgs.hdparm ];
-
-    # single profile: use etc file
-    environment.etc = lib.mkIf (!isMultiProfile) {
-      "tuned/active_profile".text = profileString;
-      "tuned/profile_mode".text = "manual";
-    };
-
-    # multi profile: use tuned-adm after tuned starts
-    systemd.services.tuned-set-profile = lib.mkIf isMultiProfile {
-      description = "Set tuned profile";
-      after = [ "tuned.service" ];
-      requires = [ "tuned.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
-        ExecStart = "${pkgs.tuned}/bin/tuned-adm profile ${profileString}";
-        RemainAfterExit = true;
-        Restart = "on-failure";
-        RestartSec = "5s";
+    services.tuned = {
+      enable = true;
+      ppdSupport = lib.mkForce cfg.ppdSupport;
+      settings.dynamic_tuning = cfg.ppdSupport;
+      # profiles: map PPD API names to tuned profiles
+      # battery: override tuned profile when on battery (key = PPD profile name)
+      ppdSettings = lib.mkIf cfg.ppdSupport {
+        battery = {
+          # when on battery + PPD "balanced" selected -> use batteryProfile
+          balanced = cfg.batteryProfile;
+        };
       };
     };
+
+    # restart tuned when profile changes
+    systemd.services.tuned.restartTriggers = [
+      cfg.profile
+      cfg.ppdSupport
+    ];
+
+    # tuned conflicts with tlp
+    services.tlp.enable = lib.mkForce false;
+
+    environment.etc = lib.mkMerge [
+      # workaround: upstream bug - ppd.conf entry exists but source undefined when ppdSupport=false
+      # TODO: remove after nixpkgs#463443 is merged
+      (lib.mkIf (!cfg.ppdSupport) {
+        "tuned/ppd.conf".source = ppdSettingsFormat.generate "ppd.conf" { };
+        "tuned/active_profile".text = cfg.profile;
+        "tuned/profile_mode".text = "manual";
+      })
+    ];
   };
 }
