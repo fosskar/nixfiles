@@ -3,23 +3,16 @@
   # add wheel users to networkmanager group
   users.groups.networkmanager.members = config.users.groups.wheel.members;
 
-  # persist networkmanager connections with impermanence
-  nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
-    "/var/lib/NetworkManager"
-  ];
+  # persist networkmanager connections
+  nixfiles.persistence.directories = [ "/var/lib/NetworkManager" ];
 
   networking = {
     networkmanager = {
       enable = lib.mkDefault true;
       # use systemd-resolved for DNS (enabled in base/network.nix)
       dns = lib.mkDefault "systemd-resolved";
-      # wifi privacy/security defaults (harmless if no wifi hardware)
-      wifi = {
-        backend = lib.mkDefault "iwd";
-        macAddress = lib.mkDefault "random";
-        powersave = lib.mkDefault true;
-        scanRandMacAddress = lib.mkDefault true;
-      };
+      # use iwd instead of wpa_supplicant (configured in modules/wifi for machines that need it)
+      wifi.backend = lib.mkDefault "iwd";
     };
 
     # fallback dns servers (privacy-focused, non-us)
