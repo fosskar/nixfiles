@@ -6,8 +6,6 @@
 }:
 let
   inherit (lib)
-    attrNames
-    filter
     hasPrefix
     mkEnableOption
     mkIf
@@ -15,8 +13,8 @@ let
     types
     ;
   cfg = config.nixfiles.bcachefs;
-  unlockServices = filter (hasPrefix "unlock-bcachefs-") (
-    attrNames config.boot.initrd.systemd.services
+  unlockServices = lib.filter (hasPrefix "unlock-bcachefs-") (
+    lib.attrNames config.boot.initrd.systemd.services
   );
 in
 {
