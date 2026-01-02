@@ -44,7 +44,6 @@
         layout = "de";
       };
 
-      touchpad.enable = false;
       trackpoint.enable = false;
       trackball.enable = false;
       tablet.enable = false;
