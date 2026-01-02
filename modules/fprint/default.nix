@@ -9,7 +9,11 @@ let
 in
 {
   options.nixfiles.fprint = {
-    enable = lib.mkEnableOption "fingerprint reader support";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "fingerprint reader support";
+    };
 
     pamServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -24,15 +28,13 @@ in
   config = lib.mkIf cfg.enable {
     services.fprintd.enable = true;
 
-    # persist enrolled fingerprints (impermanence)
-    nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
-      "/var/lib/fprint"
-    ];
+    # persist enrolled fingerprints
+    nixfiles.persistence.directories = [ "/var/lib/fprint" ];
 
     # fprint AFTER password (order 13000 > unix at 12900)
     # flow: yubikey → password → fprint
     security.pam.services = lib.genAttrs cfg.pamServices (_service: {
-      fprintAuth = false;
+      fprintAuth = true;
       rules.auth.fprintd = {
         order = 13000;
         control = "sufficient";

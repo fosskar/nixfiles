@@ -1,13 +1,14 @@
 _: {
-  imports = [ ../../modules/impermanence ];
+  imports = [ ../../modules/persistence ];
 
-  nixfiles.impermanence = {
+  nixfiles.persistence = {
     enable = true;
+    backend = "preservation";
     rollback = {
-      type = "btrfs";
-      deviceLabel = "nixos";
+      type = "bcachefs";
+      subvolume = "@root";
     };
-    manageSopsMount = true; # this adds /var/lib/sops-nix to persist and marks it for neededForBoot
+    manageSopsMount = true;
   };
 
   # fix home directory ownership issues

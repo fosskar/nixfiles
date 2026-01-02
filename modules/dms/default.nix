@@ -1,7 +1,5 @@
 {
   inputs,
-  config,
-  lib,
   ...
 }:
 {
@@ -15,8 +13,6 @@
     configHome = "/home/simon";
   };
 
-  # persist greeter state (if impermanence is used)
-  nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
-    "/var/lib/dms-greeter"
-  ];
+  # persist greeter state
+  nixfiles.persistence.directories = [ "/var/lib/dms-greeter" ];
 }

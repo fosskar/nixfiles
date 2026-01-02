@@ -69,10 +69,11 @@ in
       };
     };
 
-    # persist pangolin data if impermanence is enabled
-    environment.persistence."/persist".directories = lib.mkIf (
-      config.environment.persistence ? "/persist"
-    ) ([ "/var/lib/pangolin" ] ++ lib.optional cfg.maxmindGeoip.enable "/var/lib/GeoIP");
+    # persist pangolin data
+    nixfiles.persistence.directories = [
+      "/var/lib/pangolin"
+    ]
+    ++ lib.optional cfg.maxmindGeoip.enable "/var/lib/GeoIP";
 
     services.pangolin = {
       enable = lib.mkDefault true;

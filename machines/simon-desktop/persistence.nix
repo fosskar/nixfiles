@@ -1,11 +1,12 @@
 _: {
-  imports = [ ../../modules/impermanence ];
+  imports = [ ../../modules/persistence ];
 
-  nixfiles.impermanence = {
+  nixfiles.persistence = {
     enable = true;
+    backend = "impermanence";
     rollback = {
-      type = "bcachefs";
-      subvolume = "@root";
+      type = "btrfs";
+      deviceLabel = "nixos";
     };
     manageSopsMount = true;
   };

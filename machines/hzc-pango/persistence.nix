@@ -1,8 +1,9 @@
 _: {
-  imports = [ ../../modules/impermanence ];
+  imports = [ ../../modules/persistence ];
 
-  nixfiles.impermanence = {
+  nixfiles.persistence = {
     enable = true;
+    backend = "impermanence";
     rollback = {
       type = "btrfs";
       deviceLabel = "root";

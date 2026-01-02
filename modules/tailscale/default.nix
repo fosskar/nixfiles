@@ -23,8 +23,8 @@ in
     };
     networking.firewall.trustedInterfaces = lib.mkIf cfg.trustInterface [ "tailscale0" ];
 
-    # persist tailscale state (if impermanence is used)
-    environment.persistence."/persist".directories = [
+    # persist tailscale state
+    nixfiles.persistence.directories = [
       "/var/cache/tailscale"
       "/var/lib/tailscale"
     ];

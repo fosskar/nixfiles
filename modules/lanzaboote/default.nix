@@ -29,9 +29,7 @@ in
 
     environment.systemPackages = [ pkgs.sbctl ];
 
-    # persist secure boot keys with impermanence
-    nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
-      cfg.pkiBundle
-    ];
+    # persist secure boot keys
+    nixfiles.persistence.directories = [ cfg.pkiBundle ];
   };
 }
