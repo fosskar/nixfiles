@@ -8,5 +8,9 @@
       accelProfile = lib.mkDefault "flat";
       accelSpeed = lib.mkDefault "0";
     };
+    touchpad = {
+      naturalScrolling = lib.mkDefault true;
+      disableWhileTyping = lib.mkDefault true;
+    };
   };
 }
