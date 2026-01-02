@@ -21,6 +21,7 @@ in
         cue = true;
         interactive = true;
         timeout = 10;
+        nouserok = true; # skip u2f if no device present, fall through to password/fingerprint
       }
       // lib.optionalAttrs (cfg.u2f.authfile != null) {
         inherit (cfg.u2f) authfile;
