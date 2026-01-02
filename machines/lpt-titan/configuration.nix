@@ -38,6 +38,15 @@
       lact.enable = false;
       opencl.enable = false;
     };
-
+    power = {
+      logind.enable = true;
+      tuned = {
+        enable = true;
+        ppdSupport = true;
+      };
+    };
   };
+
+  # skip nix-gc when on battery
+  systemd.services.nix-gc.unitConfig.ConditionACPower = true;
 }
