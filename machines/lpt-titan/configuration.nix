@@ -17,6 +17,7 @@
     ../../modules/bcachefs
     ../../modules/dms
     ../../modules/niri
+    ../../modules/wifi
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -31,6 +32,10 @@
   nixfiles = {
     audio.lowLatency.enable = true;
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
+    wifi.credentials = {
+      enable = true;
+      ssid = "OWRT";
+    };
     cpu.amd.enable = true;
     gpu.amd = {
       enable = true;
@@ -40,6 +45,7 @@
     };
     power = {
       logind.enable = true;
+      powertop.enable = true;
       tuned = {
         enable = true;
         ppdSupport = true;
@@ -49,8 +55,4 @@
 
   # skip nix-gc when on battery
   systemd.services.nix-gc.unitConfig.ConditionACPower = true;
-
-  # disable fprintd from PAM (breaks password fallback when no fingerprints enrolled)
-  security.pam.services.login.fprintAuth = false;
-  security.pam.services.greetd.fprintAuth = false;
 }
