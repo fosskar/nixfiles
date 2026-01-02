@@ -37,7 +37,7 @@
               content = {
                 type = "bcachefs";
                 filesystem = "main";
-                label = "root";
+                label = "nixos";
                 extraFormatArgs = [ "--discard" ];
               };
             };

@@ -1,51 +1,49 @@
 { cfg }:
 let
   devicePath = "/dev/disk/by-partlabel/${cfg.rollback.partLabel}";
-  deviceUnit = "dev-disk-by\\x2dpartlabel-${cfg.rollback.partLabel}.device";
+  # systemd escaping: "-" becomes "\x2d" in unit names
+  escapedLabel = builtins.replaceStrings [ "-" ] [ "\\x2d" ] cfg.rollback.partLabel;
+  deviceUnit = "dev-disk-by\\x2dpartlabel-${escapedLabel}.device";
 in
 {
   service = {
     bcachefs-rollback = {
-      description = "rollback bcachefs root subvolume to a pristine state";
+      description = "rollback bcachefs root subvolume";
       wantedBy = [ "initrd.target" ];
       requires = [ deviceUnit ];
-      after = [ deviceUnit ];
-      before = [
-        "-.mount"
-        "sysroot.mount"
+      after = [
+        deviceUnit
+        "unlock-bcachefs--.service"
       ];
-      unitConfig.DefaultDependencies = "no";
-      serviceConfig.Type = "oneshot";
+      before = [ "sysroot.mount" ];
+      unitConfig.DefaultDependencies = false;
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        KeyringMode = "shared";
+      };
       script = ''
+        set -euo pipefail
         mkdir -p /tmp
         MNTPOINT=$(mktemp -d)
-        (
-          # unlock and mount bcachefs
-          bcachefs unlock ${devicePath} || true
-          mount -t bcachefs ${devicePath} "$MNTPOINT"
-          trap 'umount "$MNTPOINT"' EXIT
+        mount -t bcachefs ${devicePath} "$MNTPOINT"
+        trap 'umount "$MNTPOINT"; rmdir "$MNTPOINT"' EXIT
+        cd "$MNTPOINT"
 
-          cd "$MNTPOINT"
+        # archive existing @root if present
+        if [[ -d "${cfg.rollback.subvolume}" ]]; then
+          mkdir -p old_roots
+          timestamp=$(date --date="@$(stat -c %Y "${cfg.rollback.subvolume}")" "+%Y-%m-%d_%H:%M:%S")
+          mv "${cfg.rollback.subvolume}" "old_roots/$timestamp"
+        fi
 
-          if [[ -d "${cfg.rollback.subvolume}" ]]; then
-            echo "backing up current root subvolume"
-            mkdir -p old_roots
-            timestamp=$(date --date="@$(stat -c %Y "${cfg.rollback.subvolume}")" "+%Y-%m-%d_%H:%M:%S")
-            bcachefs subvolume snapshot "${cfg.rollback.subvolume}" "old_roots/$timestamp"
+        # cleanup old roots > retention days
+        find old_roots -maxdepth 1 -mtime +${toString cfg.rollback.retentionDays} -type d 2>/dev/null | while read -r old; do
+          bcachefs subvolume delete "$old" || true
+        done
 
-            echo "deleting current root subvolume"
-            bcachefs subvolume delete "${cfg.rollback.subvolume}"
-          fi
-
-          echo "cleaning old backups (>${toString cfg.rollback.retentionDays} days)"
-          find old_roots -maxdepth 1 -mtime +${toString cfg.rollback.retentionDays} -type d 2>/dev/null | while read -r old_root; do
-            echo "deleting old backup: $old_root"
-            bcachefs subvolume delete "$old_root" || true
-          done
-
-          echo "creating fresh root subvolume"
-          bcachefs subvolume create "${cfg.rollback.subvolume}"
-        )
+        # create fresh root subvolume
+        bcachefs subvolume create "${cfg.rollback.subvolume}"
       '';
     };
   };

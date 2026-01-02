@@ -5,7 +5,6 @@ _: {
     enable = true;
     rollback = {
       type = "bcachefs";
-      partLabel = "bcachefs"; # matches disko partition label
       subvolume = "@root";
     };
     manageSopsMount = true;

@@ -6,9 +6,41 @@
 }:
 let
   cfg = config.nixfiles.impermanence;
-  zfs = import ./zfs.nix { inherit cfg; };
-  btrfs = import ./btrfs.nix { inherit cfg; };
-  bcachefs = import ./bcachefs.nix { inherit cfg; };
+
+  # find bcachefs partition from disko config
+  findBcachefsPartition = lib.pipe (config.disko.devices.disk or { }) [
+    (lib.mapAttrsToList (
+      diskName: disk:
+      lib.mapAttrsToList (partName: part: {
+        inherit diskName partName;
+        type = part.content.type or "";
+      }) (disk.content.partitions or { })
+    ))
+    lib.flatten
+    (lib.findFirst (p: p.type == "bcachefs") null)
+  ];
+
+  # auto-derive partLabel from disko if available
+  derivedPartLabel =
+    if findBcachefsPartition != null then
+      "disk-${findBcachefsPartition.diskName}-${findBcachefsPartition.partName}"
+    else
+      null;
+
+  # use explicit partLabel if set, otherwise derive from disko
+  effectivePartLabel =
+    if cfg.rollback.partLabel != null then cfg.rollback.partLabel else derivedPartLabel;
+
+  # pass effective partLabel to bcachefs module
+  effectiveCfg = cfg // {
+    rollback = cfg.rollback // {
+      partLabel = effectivePartLabel;
+    };
+  };
+
+  zfs = import ./zfs.nix { cfg = effectiveCfg; };
+  btrfs = import ./btrfs.nix { cfg = effectiveCfg; };
+  bcachefs = import ./bcachefs.nix { cfg = effectiveCfg; };
   rollbackService =
     if cfg.rollback.type == "zfs" then
       zfs
@@ -72,11 +104,11 @@ in
         description = "label of the btrfs root device (required for btrfs)";
       };
 
-      # bcachefs options (required when type = "bcachefs")
+      # bcachefs options (auto-derived from disko if not set)
       partLabel = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
-        description = "GPT partition label of bcachefs device (required for bcachefs)";
+        description = "GPT partition label of bcachefs device. Auto-derived from disko if not set.";
       };
 
       # shared options for btrfs and bcachefs
@@ -133,8 +165,8 @@ in
         message = "nixfiles.impermanence.rollback.deviceLabel must be set when type is 'btrfs'";
       }
       {
-        assertion = cfg.rollback.type != "bcachefs" || cfg.rollback.partLabel != null;
-        message = "nixfiles.impermanence.rollback.partLabel must be set when type is 'bcachefs'";
+        assertion = cfg.rollback.type != "bcachefs" || effectivePartLabel != null;
+        message = "nixfiles.impermanence.rollback.partLabel must be set (or disko must have a bcachefs partition)";
       }
     ];
 

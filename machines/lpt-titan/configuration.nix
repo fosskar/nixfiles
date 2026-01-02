@@ -14,6 +14,7 @@
     ../../modules/cpu
     # ../../modules/lanzaboote  # TODO: enable after first boot + sbctl create-keys
     ../../modules/fingerprint
+    ../../modules/bcachefs
     ../../modules/dms
     ../../modules/niri
   ]
