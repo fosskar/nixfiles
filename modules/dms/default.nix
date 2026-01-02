@@ -17,6 +17,6 @@
 
   # persist greeter state (if impermanence is used)
   nixfiles.impermanence.directories = lib.mkIf config.nixfiles.impermanence.enable [
-    "/var/lib/dmsgreeter"
+    "/var/lib/dms-greeter"
   ];
 }

@@ -44,6 +44,7 @@ clan ssh <machine>              # via clan CLI
 - **declarative first** - avoid manual changes, everything should be in nix config
 - if something needs manual intervention, find a way to declare it instead
 - **troubleshoot remotely** - don't ask user to check machines, ssh in and debug yourself
+- **no deploy without permission** - never run `clan machines update` or deploy to machines without explicit user instruction
 
 ## patterns
 

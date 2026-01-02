@@ -20,14 +20,15 @@ in
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        KeyringMode = "shared";
+        KeyringMode = "inherit";
       };
       script = ''
         set -euo pipefail
+        keyctl link @u @s || true
         mkdir -p /tmp
         MNTPOINT=$(mktemp -d)
         mount -t bcachefs ${devicePath} "$MNTPOINT"
-        trap 'umount "$MNTPOINT"; rmdir "$MNTPOINT"' EXIT
+        trap 'cd /; umount "$MNTPOINT"; rmdir "$MNTPOINT"' EXIT
         cd "$MNTPOINT"
 
         # archive existing @root if present

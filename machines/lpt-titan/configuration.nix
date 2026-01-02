@@ -13,7 +13,7 @@
     ../../modules/gpu
     ../../modules/cpu
     # ../../modules/lanzaboote  # TODO: enable after first boot + sbctl create-keys
-    ../../modules/fingerprint
+    ../../modules/fprint
     ../../modules/bcachefs
     ../../modules/dms
     ../../modules/niri
@@ -49,4 +49,8 @@
 
   # skip nix-gc when on battery
   systemd.services.nix-gc.unitConfig.ConditionACPower = true;
+
+  # disable fprintd from PAM (breaks password fallback when no fingerprints enrolled)
+  security.pam.services.login.fprintAuth = false;
+  security.pam.services.greetd.fprintAuth = false;
 }

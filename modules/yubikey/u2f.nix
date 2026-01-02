@@ -19,9 +19,9 @@ in
       settings = {
         origin = "pam://yubikey";
         cue = true;
-        interactive = true;
+        # interactive removed - conflicts with DMS password input handling
         timeout = 10;
-        nouserok = true; # skip u2f if no device present, fall through to password/fingerprint
+        nouserok = true; # skip u2f if no device present, fall through to password/fprint
       }
       // lib.optionalAttrs (cfg.u2f.authfile != null) {
         inherit (cfg.u2f) authfile;

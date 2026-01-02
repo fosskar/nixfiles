@@ -2,61 +2,66 @@
   lib,
   pkgs,
   config,
+  utils,
   ...
 }:
 let
-  inherit (lib)
-    hasPrefix
-    mkEnableOption
-    mkIf
-    mkOption
-    types
-    ;
   cfg = config.nixfiles.bcachefs;
-  unlockServices = lib.filter (hasPrefix "unlock-bcachefs-") (
-    lib.attrNames config.boot.initrd.systemd.services
+
+  # bcachefs boot filesystems
+  bcachefsBootFs = lib.filterAttrs (
+    _: fs: fs.fsType == "bcachefs" && utils.fsNeededForBoot fs
+  ) config.fileSystems;
+
+  # unlock service names (sorted)
+  unlockServices = lib.sort (a: b: a < b) (
+    lib.mapAttrsToList (mp: _: "unlock-bcachefs-${utils.escapeSystemdPath mp}") bcachefsBootFs
   );
+
+  firstUnlock = lib.head unlockServices;
+  restUnlocks = lib.tail unlockServices;
 in
 {
-  options = {
-    nixfiles.bcachefs.enable = mkEnableOption "bcachefs filesystem support" // {
-      default = true;
-    };
-
-    # submodule pattern: auto-apply KeyringMode=shared to all unlock-bcachefs-* services
-    boot.initrd.systemd.services = mkOption {
-      type = types.attrsOf (
-        types.submodule (
-          { name, ... }:
-          {
-            config = mkIf (hasPrefix "unlock-bcachefs-" name) {
-              serviceConfig.KeyringMode = "shared";
-            };
-          }
-        )
-      );
-    };
+  options.nixfiles.bcachefs.enable = lib.mkEnableOption "bcachefs support" // {
+    default = true;
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && unlockServices != [ ]) {
     boot.supportedFilesystems = [ "bcachefs" ];
     boot.initrd.systemd.enable = true;
     environment.systemPackages = [ pkgs.bcachefs-tools ];
+    boot.initrd.systemd.initrdBin = [ pkgs.keyutils ];
 
-    boot.initrd.systemd = {
-      initrdBin = [ pkgs.keyutils ];
-      services.link-user-keyring = {
-        description = "link user keyring to session keyring";
-        wantedBy = [ "initrd.target" ];
-        before = map (s: "${s}.service") unlockServices ++ [ "sysroot.mount" ];
-        unitConfig.DefaultDependencies = false;
+    boot.initrd.systemd.services =
+      # first unlock: real unlock + keyctl link
+      {
+        ${firstUnlock}.serviceConfig = {
+          KeyringMode = "inherit";
+          ExecStartPost = "${pkgs.keyutils}/bin/keyctl link @u @s";
+        };
+      }
+      # rest: no-ops waiting for first
+      // lib.genAttrs restUnlocks (_: {
+        after = [ "${firstUnlock}.service" ];
+        requires = [ "${firstUnlock}.service" ];
         serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-          KeyringMode = "shared";
-          ExecStart = "${pkgs.keyutils}/bin/keyctl link @u @s";
+          KeyringMode = "inherit";
+          ExecCondition = lib.mkForce [ "" ];
+          ExecStart = lib.mkForce [
+            ""
+            "${pkgs.coreutils}/bin/true"
+          ];
+        };
+      })
+      # create-needed-for-boot-dirs: wait for unlock + rollback
+      // {
+        create-needed-for-boot-dirs = {
+          serviceConfig.KeyringMode = "inherit";
+          after = [
+            "${firstUnlock}.service"
+            "bcachefs-rollback.service"
+          ];
         };
       };
-    };
   };
 }
