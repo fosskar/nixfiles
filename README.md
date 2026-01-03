@@ -10,7 +10,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 
 - [clan-core](https://docs.clan.lol/) - machine management, secrets (sops-nix), disk partitioning (disko)
 - [flake-parts](https://github.com/hercules-ci/flake-parts) - modular flake framework
-- [impermanence](https://github.com/nix-community/impermanence) - opt-in state persistence
+- [preservation](https://github.com/nix-community/preservation) - opt-in state persistence
 - [home-manager](https://github.com/nix-community/home-manager) - user environment
 - [srvos](https://github.com/nix-community/srvos) - server presets
 

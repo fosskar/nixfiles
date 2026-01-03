@@ -2,7 +2,6 @@
 {
   config,
   lib,
-  inputs,
   ...
 }:
 let
@@ -54,48 +53,11 @@ let
       null;
 
   # check if /var/lib/private or /var/lib is persisted
-  getDirPath = d: if builtins.isString d then d else d.directory or "";
-  needsPrivateFix = builtins.any (
-    d:
-    let
-      dirPath = getDirPath d;
-    in
-    dirPath == "/var/lib/private" || dirPath == "/var/lib"
-  ) cfg.directories;
-
-  # all directories including base ones
-  allDirectories = [
-    "/var/lib/nixos"
-    "/var/lib/systemd"
-  ]
-  ++ lib.optional cfg.manageSopsMount "/var/lib/sops-nix"
-  ++ cfg.directories;
-
-  # convert to preservation format
-  toPreservationDir =
-    d:
-    if builtins.isString d then
-      {
-        directory = d;
-        how = "bindmount";
-      }
-    else
-      { how = "bindmount"; } // d;
-
-  toPreservationFile =
-    f:
-    if builtins.isString f then
-      {
-        file = f;
-        how = "bindmount";
-      }
-    else
-      { how = "bindmount"; } // f;
 in
 {
   imports = [
-    inputs.impermanence.nixosModules.impermanence
-    inputs.preservation.nixosModules.preservation
+    ./impermanence.nix
+    ./preservation.nix
   ];
 
   options.nixfiles.persistence = {
@@ -189,80 +151,41 @@ in
       default = [ ];
       description = "files to persist";
     };
+
+    homeOwnershipFix = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "users to fix home directory ownership for (impermanence bug workaround)";
+    };
   };
 
-  config = lib.mkIf cfg.enable (
-    lib.mkMerge [
-      # shared config (both backends)
+  config = lib.mkIf cfg.enable {
+    # assertions for required rollback options
+    assertions = [
       {
-        # assertions for required rollback options
-        assertions = [
-          {
-            assertion = cfg.rollback.type != "zfs" || cfg.rollback.dataset != null;
-            message = "nixfiles.persistence.rollback.dataset must be set when type is 'zfs'";
-          }
-          {
-            assertion = cfg.rollback.type != "zfs" || cfg.rollback.poolImportService != null;
-            message = "nixfiles.persistence.rollback.poolImportService must be set when type is 'zfs'";
-          }
-          {
-            assertion = cfg.rollback.type != "btrfs" || cfg.rollback.deviceLabel != null;
-            message = "nixfiles.persistence.rollback.deviceLabel must be set when type is 'btrfs'";
-          }
-          {
-            assertion = cfg.rollback.type != "bcachefs" || effectivePartLabel != null;
-            message = "nixfiles.persistence.rollback.partLabel must be set (or disko must have a bcachefs partition)";
-          }
-        ];
-
-        # rollback service (shared by both backends)
-        boot.initrd.systemd.services = lib.mkIf (rollbackService != null) rollbackService.service;
-
-        # early mounts
-        fileSystems = {
-          "/nix".neededForBoot = true;
-          ${cfg.persistPath}.neededForBoot = true;
-        };
-
-        # fix /var/lib/private permissions
-        systemd.tmpfiles.rules = lib.mkIf needsPrivateFix [
-          "d ${cfg.persistPath}/var/lib/private 0700 root root -"
-        ];
+        assertion = cfg.rollback.type != "zfs" || cfg.rollback.dataset != null;
+        message = "nixfiles.persistence.rollback.dataset must be set when type is 'zfs'";
       }
+      {
+        assertion = cfg.rollback.type != "zfs" || cfg.rollback.poolImportService != null;
+        message = "nixfiles.persistence.rollback.poolImportService must be set when type is 'zfs'";
+      }
+      {
+        assertion = cfg.rollback.type != "btrfs" || cfg.rollback.deviceLabel != null;
+        message = "nixfiles.persistence.rollback.deviceLabel must be set when type is 'btrfs'";
+      }
+      {
+        assertion = cfg.rollback.type != "bcachefs" || effectivePartLabel != null;
+        message = "nixfiles.persistence.rollback.partLabel must be set (or disko must have a bcachefs partition)";
+      }
+    ];
 
-      # impermanence backend
-      (lib.mkIf (cfg.backend == "impermanence") {
-        environment.persistence.${cfg.persistPath} = {
-          hideMounts = lib.mkDefault true;
-          directories = allDirectories;
-          inherit (cfg) files;
-        };
+    # rollback service (shared by both backends)
+    boot.initrd.systemd.services = lib.mkIf (rollbackService != null) rollbackService.service;
 
-        fileSystems = lib.optionalAttrs cfg.manageSopsMount {
-          "/var/lib/sops-nix".neededForBoot = true;
-        };
-      })
-
-      # preservation backend
-      (lib.mkIf (cfg.backend == "preservation") {
-        preservation.enable = true;
-        preservation.preserveAt.${cfg.persistPath} = {
-          directories =
-            map toPreservationDir (
-              [
-                "/var/lib/nixos"
-                "/var/lib/systemd"
-              ]
-              ++ cfg.directories
-            )
-            ++ lib.optional cfg.manageSopsMount {
-              directory = "/var/lib/sops-nix";
-              how = "bindmount";
-              inInitrd = true;
-            };
-          files = map toPreservationFile cfg.files;
-        };
-      })
-    ]
-  );
+    # early mounts
+    fileSystems = {
+      ${cfg.persistPath}.neededForBoot = true;
+    };
+  };
 }

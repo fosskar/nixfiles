@@ -167,6 +167,13 @@
               siteMonitor = "http://192.168.10.30";
             };
           }
+          {
+            "ASRock Rack BMC" = {
+              href = "https://192.168.10.114";
+              icon = "mdi-server-network";
+              siteMonitor = "https://192.168.10.114";
+            };
+          }
         ];
       }
       {

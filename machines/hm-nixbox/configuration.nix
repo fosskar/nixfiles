@@ -11,6 +11,7 @@
     ../../modules/gpu
     ../../modules/cpu
     ../../modules/power
+    ../../modules/persistence
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
@@ -24,6 +25,20 @@
   clan.core.settings.machine-id.enable = true;
 
   nixfiles = {
+    persistence = {
+      enable = true;
+      backend = "preservation";
+      rollback = {
+        type = "zfs";
+        dataset = "znixos/root";
+        poolImportService = "zfs-import-znixos.service";
+      };
+      directories = [
+        "/var/log"
+        "/var/cache"
+        "/var/lib"
+      ];
+    };
     gpu.intel.enable = true;
     cpu.amd.enable = true;
     power.tuned = {

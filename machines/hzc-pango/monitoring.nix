@@ -6,14 +6,10 @@
     partOf = [ "traefik.service" ];
   };
 
-  # restart vector after traefik starts (for nixos-rebuild)
-  systemd.services.traefik.serviceConfig.ExecStartPost =
-    "${pkgs.bash}/bin/bash -c 'sleep 5 && ${pkgs.systemd}/bin/systemctl restart vector.service || true'";
-
   # push metrics + logs via pangolin tcp tunnels
   services.vector = {
     enable = true;
-    package = pkgs.stable.vector; # FIXME
+    package = pkgs.vector;
     settings = {
       # metrics sources
       sources = {

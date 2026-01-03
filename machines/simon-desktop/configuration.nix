@@ -14,6 +14,7 @@
     ../../modules/virtualization
     ../../modules/dms
     ../../modules/niri
+    ../../modules/persistence
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -26,6 +27,15 @@
   clan.core.settings.machine-id.enable = true;
 
   nixfiles = {
+    persistence = {
+      enable = true;
+      backend = "preservation";
+      rollback = {
+        type = "btrfs";
+        deviceLabel = "nixos";
+      };
+    };
+
     audio.lowLatency.enable = true;
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
     gpu.amd.enable = true;

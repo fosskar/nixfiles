@@ -3,6 +3,7 @@
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     ../../modules/power
+    ../../modules/persistence
   ]
   ++ (mylib.scanPaths ./. { exclude = [ ]; });
 
@@ -11,9 +12,24 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  nixfiles.power.tuned = {
-    enable = true;
-    profile = "virtual-guest";
+  nixfiles = {
+    persistence = {
+      enable = true;
+      backend = "preservation";
+      rollback = {
+        type = "btrfs";
+        deviceLabel = "root";
+      };
+      directories = [
+        "/var/lib/crowdsec"
+        "/var/log"
+        "/var/lib/private"
+      ];
+    };
+    power.tuned = {
+      enable = true;
+      profile = "virtual-guest";
+    };
   };
 
   clan.core.settings.machine-id.enable = true;

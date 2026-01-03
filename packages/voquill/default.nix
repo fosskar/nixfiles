@@ -36,7 +36,7 @@
 }:
 let
   pname = "voquill";
-  version = "0.0.203";
+  version = "0.0.269";
 
   runtimeDeps = [
     # tauri/webkit runtime deps
@@ -81,7 +81,7 @@ stdenv.mkDerivation {
   # use pre-built binary from github releases
   src = fetchurl {
     url = "https://github.com/josiahsrc/voquill/releases/download/desktop-v${version}/Voquill_${version}_amd64.deb";
-    hash = "sha256-Wx46SqlBsY9QLoMNRCQ+EJ1FmvKSvxk4GbraQUdIruw=";
+    hash = "sha256-u3xYcvarVjnflunXOd1z9NeOuE9KFq3jkJyOyanYXa0=";
   };
 
   nativeBuildInputs = [
@@ -126,13 +126,11 @@ stdenv.mkDerivation {
   '';
 
   # runtime library path
+  # GDK_BACKEND=x11 needed for global hotkeys (wayland blocks them)
   postFixup = ''
     wrapProgram $out/bin/voquill \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeDeps}" \
-      --set GDK_BACKEND x11 \
-      --set RUST_BACKTRACE full \
-      --set RUST_LOG debug \
-      ${lib.optionalString enableGpu ''--set VK_ICD_FILENAMES "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"''}
+      --set GDK_BACKEND x11
   '';
 
   meta = {

@@ -71,7 +71,11 @@ in
 
     # persist pangolin data
     nixfiles.persistence.directories = [
-      "/var/lib/pangolin"
+      {
+        directory = "/var/lib/pangolin";
+        user = config.systemd.services.pangolin.serviceConfig.User;
+        group = config.systemd.services.pangolin.serviceConfig.Group;
+      }
     ]
     ++ lib.optional cfg.maxmindGeoip.enable "/var/lib/GeoIP";
 
