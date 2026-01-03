@@ -140,6 +140,13 @@ metrics are stored in VictoriaMetrics on hm-nixbox. when looking for metrics, qu
 
 some machines use impermanence (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. check if machine has impermanence before assuming state persists.
 
+## desktop shell
+
+- `nixfiles.quickshell` - "dms", "noctalia", or "none"
+- `nixfiles.machineType` - "desktop" or "laptop"
+- dms: use `settings.json` directly, not nix attrset (simpler to maintain)
+- way-displays: always takes control of scaling, no passthrough to niri
+
 ## vcs
 
 jj (jujutsu) colocated with git. jj calls commits "changes".
