@@ -7,7 +7,12 @@
 {
   imports = [ inputs.noctalia.homeModules.default ];
 
-  config = lib.mkIf (config.nixfiles.desktop.shell == "noctalia") {
+  config = lib.mkIf (config.nixfiles.quickshell == "noctalia") {
+    xdg.configFile."noctalia/pam/password.conf".text = ''
+      auth sufficient pam_fprintd.so max-tries=1
+      auth required pam_unix.so
+    '';
+
     programs.noctalia-shell = {
       enable = true;
       systemd.enable = true;
@@ -66,6 +71,12 @@
                 displayMode = "alwaysShow";
               }
               {
+                id = "Battery";
+                displayMode = "alwaysShow";
+                hideIfNotDetected = true;
+                warningThreshold = 20;
+              }
+              {
                 id = "VPN";
                 displayMode = "onhover";
               }
@@ -110,6 +121,7 @@
         osd.location = "right";
 
         sessionMenu = {
+          countdownDuration = 1000;
           largeButtonsStyle = true;
           largeButtonsLayout = "grid";
         };

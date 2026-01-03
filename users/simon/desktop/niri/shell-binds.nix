@@ -6,9 +6,9 @@
   ...
 }:
 let
-  inherit (config.nixfiles.desktop) shell;
-  isDms = shell == "dms";
-  isNoctalia = shell == "noctalia";
+  inherit (config.nixfiles) quickshell;
+  isDms = quickshell == "dms";
+  isNoctalia = quickshell == "noctalia";
 
   # DMS IPC helper
   dms-pkg = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -41,7 +41,7 @@ let
         spawn = [ "true" ];
       }; # no-op for "none"
 in
-lib.mkIf (shell != "none") {
+lib.mkIf (quickshell != "none") {
   programs.niri.settings.binds = {
     # shell widget toggles
     "Mod+Space" = {

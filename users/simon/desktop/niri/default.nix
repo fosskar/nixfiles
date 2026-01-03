@@ -9,27 +9,11 @@
   #xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
   programs.niri.settings = {
-    # workspace configuration
+    # workspace configuration (output assignments are per-machine)
     workspaces = {
-      primary = {
-        name = "primary";
-        open-on-output = "DP-1";
-      };
-      secondary = {
-        name = "secondary";
-        open-on-output = "HDMI-A-2";
-      };
-      gaming = {
-        name = "gaming";
-        open-on-output = "DP-1";
-        # per-workspace layout overrides - uncomment after niri-flake supports it
-        # layout = {
-        #   gaps = 0;
-        #   border.enable = false;
-        #   focus-ring.enable = false;
-        #   shadow.enable = false;
-        # };
-      };
+      primary.name = "primary";
+      secondary.name = "secondary";
+      gaming.name = "gaming";
     };
 
     # input configuration
@@ -72,41 +56,9 @@
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       QT_QPA_PLATFORM = "wayland;xcb";
       QT_QPA_PLATFORMTHEME = "qt6ct";
-      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     };
 
-    # output configuration
-    outputs = {
-      "DP-1" = {
-        focus-at-startup = true;
-        mode = {
-          width = 3440;
-          height = 1440;
-          refresh = 164.900;
-        };
-        scale = 1.0;
-        transform.rotation = 0;
-        position = {
-          x = 0;
-          y = 0;
-        };
-      };
-
-      "HDMI-A-2" = {
-        variable-refresh-rate = true;
-        mode = {
-          width = 1920;
-          height = 1080;
-          refresh = 239.761;
-        };
-        scale = 1.0;
-        transform.rotation = 270;
-        position = {
-          x = 3440;
-          y = -450;
-        };
-      };
-    };
+    # output configuration is per-machine (see machines/<name>/home/niri.nix)
 
     # layout configuration
     layout = {
@@ -160,9 +112,8 @@
       slowdown = 2.0; # 2x slower, adjust to taste
     };
 
-    # startup commands
+    # startup commands (steam is desktop-only, see machines/simon-desktop/home/niri.nix)
     spawn-at-startup = [
-      { sh = "steam -silent"; }
       { command = [ "element-desktop" ]; }
     ];
 
@@ -191,13 +142,6 @@
         default-column-width = {
           proportion = 0.5;
         };
-      }
-      # element to secondary workspace
-      {
-        matches = [
-          { app-id = "^Element$"; }
-        ];
-        open-on-workspace = "secondary";
       }
       {
         matches = [

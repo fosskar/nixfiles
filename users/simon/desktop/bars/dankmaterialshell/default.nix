@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  mylib,
   inputs,
   ...
 }:
@@ -9,11 +8,15 @@
   imports = [
     inputs.dms.homeModules.niri
     inputs.dms.homeModules.default
-  ]
-  ++ mylib.scanPaths ./. { };
+  ];
 
-  config = lib.mkIf (config.nixfiles.desktop.shell == "dms") {
-    #xdg.configFile."DankMaterialShell/colors.json".source = ./colors.json;
+  config = lib.mkIf (config.nixfiles.quickshell == "dms") {
+    # symlink settings.json directly - force overwrites on each rebuild
+    # (GUI changes won't persist - see github.com/AvengeMedia/DankMaterialShell/issues/1180)
+    xdg.configFile."DankMaterialShell/settings.json" = {
+      source = ./settings.json;
+      force = true;
+    };
 
     programs.dank-material-shell = {
       enable = true;
@@ -27,21 +30,17 @@
       enableDynamicTheming = true;
       enableAudioWavelength = true;
 
-      default.settings = {
-        theme = "dark";
-        dynamicTheming = true;
-      };
-
       niri = {
-        #  enableKeybinds = false;
         enableSpawn = false;
         includes = {
           override = false;
-          filesToInclude = [ ];
+          filesToInclude = [
+            "alttab"
+            "layout"
+            "wpblur"
+          ];
         };
       };
-
-      #quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
     };
   };
 }
