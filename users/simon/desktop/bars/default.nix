@@ -1,9 +1,6 @@
 { mylib, ... }:
 {
-  imports = mylib.scanPaths ./. {
-    exclude = [
-      "noctalia"
-      #"dankmaterialshell"
-    ];
-  };
+  # both shell modules are imported; each uses mkIf internally
+  # based on config.nixfiles.desktop.shell
+  imports = mylib.scanPaths ./. { };
 }

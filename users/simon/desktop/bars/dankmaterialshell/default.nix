@@ -1,4 +1,6 @@
 {
+  config,
+  lib,
   mylib,
   inputs,
   ...
@@ -9,30 +11,37 @@
     inputs.dms.homeModules.default
   ]
   ++ mylib.scanPaths ./. { };
-  #xdg.configFile."DankMaterialShell/colors.json".source = ./colors.json;
 
-  programs.dank-material-shell = {
-    enable = true;
-    systemd = {
+  config = lib.mkIf (config.nixfiles.desktop.shell == "dms") {
+    #xdg.configFile."DankMaterialShell/colors.json".source = ./colors.json;
+
+    programs.dank-material-shell = {
       enable = true;
-      restartIfChanged = true;
-    };
-    enableSystemMonitoring = true;
-    enableCalendarEvents = false;
-    enableVPN = true;
-    enableDynamicTheming = true;
-    enableAudioWavelength = true;
+      systemd = {
+        enable = true;
+        restartIfChanged = true;
+      };
+      enableSystemMonitoring = true;
+      enableCalendarEvents = false;
+      enableVPN = true;
+      enableDynamicTheming = true;
+      enableAudioWavelength = true;
 
-    default.settings = {
-      theme = "dark";
-      dynamicTheming = true;
-    };
+      default.settings = {
+        theme = "dark";
+        dynamicTheming = true;
+      };
 
-    niri = {
-      #  enableKeybinds = false;
-      enableSpawn = false;
-    };
+      niri = {
+        #  enableKeybinds = false;
+        enableSpawn = false;
+        includes = {
+          override = false;
+          filesToInclude = [ ];
+        };
+      };
 
-    #quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      #quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    };
   };
 }

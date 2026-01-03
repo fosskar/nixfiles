@@ -47,6 +47,7 @@ in
           tags = [
             "desktop"
             "home"
+            "workstation"
           ];
         };
 
@@ -55,6 +56,7 @@ in
           tags = [
             "laptop"
             "home"
+            "workstation"
           ];
         };
 
