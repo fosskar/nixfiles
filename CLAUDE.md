@@ -45,6 +45,10 @@ clan ssh <machine>              # via clan CLI
 - if something needs manual intervention, find a way to declare it instead
 - **troubleshoot remotely** - don't ask user to check machines, ssh in and debug yourself
 - **no deploy without permission** - never run `clan machines update` or deploy to machines without explicit user instruction
+- **ATOMIC COMMITS** - one logical change per commit. NEVER bundle unrelated changes. use `jj split` to separate changes before committing. examples of separate commits:
+  - refactor module → one commit
+  - update docs for that refactor → separate commit
+  - unrelated config change → separate commit
 
 ## patterns
 
@@ -136,9 +140,9 @@ nix shell nixpkgs#<pkg>         # temporary tool outside devshell
 
 metrics are stored in VictoriaMetrics on hm-nixbox. when looking for metrics, query there.
 
-## impermanence
+## persistence
 
-some machines use impermanence (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. check if machine has impermanence before assuming state persists.
+some machines use preservation/impermanence (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. check `nixfiles.persistence.backend` - either "preservation" (preferred) or "impermanence". see `docs/preservation.md` for why we switched.
 
 ## desktop shell
 
