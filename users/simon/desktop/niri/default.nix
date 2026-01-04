@@ -115,6 +115,7 @@
     # startup commands (steam is desktop-only, see machines/simon-desktop/home/niri.nix)
     spawn-at-startup = [
       { command = [ "element-desktop" ]; }
+      { command = [ "handy" ]; }
     ];
 
     # hotkey overlay
@@ -265,6 +266,11 @@
       };
       "Mod+D".action = {
         spawn = "webcord";
+      };
+
+      # voice dictation (handy)
+      "Mod+G".action = {
+        spawn-sh = "pkill -USR2 -n handy || handy &";
       };
 
       # media controls (not shell-specific)

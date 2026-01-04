@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
   home.packages = with pkgs; [
     # custom packages from flake
-    #inputs.self.packages.${pkgs.system}.voquill
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.handy
     # desktop apps
     #webcord-vencord
     signal-desktop
