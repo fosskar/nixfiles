@@ -7,6 +7,8 @@ clone:
 dependencies:
   nixpkgs:
     - git
+environment:
+  GIT_USER: "fosskar"
 steps:
   - name: unshallow
     command: |
@@ -14,6 +16,6 @@ steps:
       git fetch --tags origin
   - name: mirror
     command: |
-      git push --force --tags "https://fosskar:${GITHUB_PAT}@github.com/fosskar/nixfiles.git" HEAD:main
-      git push --force --tags "https://fosskar:${GITLAB_PAT}@gitlab.com/fosskar/nixfiles.git" HEAD:main
-      git push --force --tags "https://fosskar:${CODEBERG_TOKEN}@codeberg.org/fosskar/nixfiles.git" HEAD:main
+      git push --force --tags "https://${GIT_USER}:${GITHUB_PAT}@github.com/fosskar/nixfiles.git" HEAD:main
+      git push --force --tags "https://${GIT_USER}:${GITLAB_PAT}@gitlab.com/fosskar/nixfiles.git" HEAD:main
+      git push --force --tags "https://${GIT_USER}:${CODEBERG_TOKEN}@codeberg.org/fosskar/nixfiles.git" HEAD:main
