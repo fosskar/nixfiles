@@ -102,6 +102,19 @@ defined in `machines/flake-module.nix` - machines, services, deploy targets. sel
 - auto-generated: syncthing keys, borgbackup keys, passwords, ssh keys, etc
 - encrypted with sops (age + yubikey/tpm)
 
+generator pattern:
+
+```nix
+clan.core.vars.generators.myvar = {
+  share = true;                        # shared across machines (vs per-machine)
+  files."filename.ext".secret = false; # public file (not encrypted)
+  files."secret.key" = { };            # encrypted by default
+  script = "true";                     # no-op, manually populate files
+};
+```
+
+access in modules: `config.clan.core.vars.generators.<name>.files."<file>".path`
+
 ## secrets
 
 - clan vars handles most secrets automatically
@@ -128,6 +141,20 @@ metrics are stored in VictoriaMetrics on hm-nixbox. when looking for metrics, qu
 
 all machines use preservation (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. see `docs/preservation.md` for details.
 
+## home-manager
+
+home-manager configs in `users/<user>/`. access nixos config via `osConfig`:
+
+```nix
+{ osConfig ? null, ... }:
+let
+  varPath = osConfig.clan.core.vars.generators.myvar.files."file".path or null;
+in
+{
+  # use varPath...
+}
+```
+
 ## desktop shell
 
 - `nixfiles.quickshell` - "dms", "noctalia", or "none"
@@ -137,14 +164,16 @@ all machines use preservation (opt-in state). root filesystem is ephemeral, only
 
 ## vcs
 
-jj (jujutsu) colocated with git. jj calls commits "changes".
+jj (jujutsu) colocated with git. **ignore git internals** - jj handles everything, don't analyze git state.
 
 ```bash
-jj commit -m "msg"              # describe current change + create new change
-jj describe -m "msg"            # only describe, stays on same change
+jj status                       # current changes
+jj log                          # history
+jj commit -m "msg"              # describe + create new change
+jj describe -m "msg"            # describe only, stay on same change
 jj new                          # create new change on top
 jj split -m "msg" -- <files>    # extract files into separate change
-jj bookmark set main -r @       # move main bookmark (only when ready to push)
+jj bookmark set main -r @       # move main bookmark
 jj git push                     # push
 ```
 
