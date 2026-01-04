@@ -8,6 +8,10 @@ dependencies:
   nixpkgs:
     - git
 steps:
+  - name: unshallow
+    command: |
+      git fetch --unshallow origin
+      git fetch --tags origin
   - name: mirror
     command: |
       git push --force --tags "https://fosskar:${GITHUB_PAT}@github.com/fosskar/nixfiles.git" HEAD:main
