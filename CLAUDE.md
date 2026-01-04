@@ -17,7 +17,7 @@ this repo is built on [clan-core](https://docs.clan.lol/) - a framework for mana
 | hm-nixbox     | server  | home server, self-hosted services |
 | hzc-pango     | vps     | hetzner, reverse proxy (pangolin) |
 
-IPs in `machines/flake-part.nix` under `inventory.machines` and `instances.internet`.
+IPs in `machines/flake-module.nix` under `inventory.machines` and `instances.internet`.
 
 ### ssh access
 
@@ -32,7 +32,7 @@ clan ssh <machine>              # via clan CLI
 ## repo structure
 
 - `machines/` - per-host nixos configs
-- `machines/flake-part.nix` - clan inventory, services, deploy targets
+- `machines/flake-module.nix` - clan inventory, services, deploy targets
 - `modules/` - reusable nixos modules under `nixfiles.*` namespace
 - `modules/profiles/` - base profiles (server, workstation) applied via tags
 - `users/` - home-manager configs per user
@@ -70,7 +70,7 @@ clan vars generate              # generate missing vars
 ssh root@<machine>.clan         # .clan is default tld from clan-core
 ```
 
-### inventory (`machines/flake-part.nix`)
+### inventory (`machines/flake-module.nix`)
 
 ```nix
 flake.clan.inventory = {
