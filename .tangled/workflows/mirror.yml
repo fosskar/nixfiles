@@ -10,6 +10,6 @@ dependencies:
 steps:
   - name: mirror
     command: |
-      git push --force --tags "https://fosskar:${GITHUB_PAT}@github.com/fosskar/nixfiles.git" main
-      git push --force --tags "https://fosskar:${GITLAB_PAT}@gitlab.com/fosskar/nixfiles.git" main
-      git push --force --tags "https://fosskar:${CODEBERG_TOKEN}@codeberg.org/fosskar/nixfiles.git" main
+      git push --force --tags "https://fosskar:${GITHUB_PAT}@github.com/fosskar/nixfiles.git" HEAD:main
+      git push --force --tags "https://fosskar:${GITLAB_PAT}@gitlab.com/fosskar/nixfiles.git" HEAD:main
+      git push --force --tags "https://fosskar:${CODEBERG_TOKEN}@codeberg.org/fosskar/nixfiles.git" HEAD:main
