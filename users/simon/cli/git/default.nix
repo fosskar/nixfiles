@@ -4,7 +4,7 @@
 }:
 let
   # default identity (used when no conditional match)
-  defaultEmail = "fsskar.unheard025@passmail.net";
+  defaultEmail = "fosskar.educated493@passmail.net";
   defaultName = "fosskar";
 
   # forge-specific identities
@@ -18,7 +18,7 @@ let
   };
   tangled = {
     name = "fosskar";
-    email = "fosskar.unheard025@passmail.net";
+    email = "fosskar.educated493@passmail.net";
   };
 in
 {

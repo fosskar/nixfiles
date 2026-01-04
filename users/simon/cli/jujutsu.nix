@@ -1,6 +1,6 @@
 _:
 let
-  email = "fosskar.unheard025@passmail.net";
+  email = "fosskar.educated493@passmail.net";
   name = "fosskar";
 in
 {
