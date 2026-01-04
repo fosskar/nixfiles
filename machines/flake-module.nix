@@ -63,13 +63,13 @@ in
       };
 
       instances = {
-        #emergency-access = {
-        #  module = {
-        #    name = "emergency-access";
-        #    input = "clan-core";
-        #  };
-        #  roles.default.tags.nixos = { };
-        #};
+        emergency-access = {
+          module = {
+            name = "emergency-access";
+            input = "clan-core";
+          };
+          roles.default.tags.nixos = { };
+        };
 
         admin = {
           roles.default = {
@@ -162,8 +162,7 @@ in
         workstation-module = {
           module.name = "importer";
           roles.default = {
-            tags.desktop = { };
-            tags.laptop = { };
+            tags.workstation = { };
             extraModules = [ "${self}/modules/profiles/workstation" ];
           };
         };
