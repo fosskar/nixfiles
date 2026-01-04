@@ -1,7 +1,32 @@
-{ pkgs, ... }:
 {
+  pkgs,
+  lib,
+  osConfig ? null,
+  ...
+}:
+let
+  gpgPubkeyPath =
+    if osConfig != null then
+      osConfig.clan.core.vars.generators.yubikey.files."gpg-pubkey.asc".path or null
+    else
+      null;
+  sshPubkeyPath =
+    if osConfig != null then
+      osConfig.clan.core.vars.generators.yubikey.files."id_yubikey.pub".path or null
+    else
+      null;
+in
+{
+  # place ssh public key in ~/.ssh/
+  home.file.".ssh/id_yubikey.pub" = lib.mkIf (sshPubkeyPath != null) {
+    source = sshPubkeyPath;
+  };
+
   programs.gpg = {
     enable = true;
+    publicKeys = lib.mkIf (gpgPubkeyPath != null) [
+      { source = gpgPubkeyPath; }
+    ];
     scdaemonSettings = {
       disable-ccid = true;
     };

@@ -15,6 +15,14 @@
       description = "lock screen when yubikey is unplugged";
     };
 
+    gpgSsh = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "gpg-agent with ssh support via yubikey";
+      };
+    };
+
     u2f = {
       enable = lib.mkOption {
         type = lib.types.bool;

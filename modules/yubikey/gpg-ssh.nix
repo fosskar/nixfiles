@@ -8,7 +8,16 @@ let
   cfg = config.nixfiles.yubikey;
 in
 {
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && cfg.gpgSsh.enable) {
+    # shared gpg public key for yubikey-based authentication
+    clan.core.vars.generators.yubikey = {
+      share = true;
+      files = {
+        "gpg-pubkey.asc".secret = false;
+        "id_yubikey.pub".secret = false;
+      };
+      script = "true";
+    };
     # GPG agent with SSH support (overrides base gpg.nix)
     programs.gnupg.agent.enableSSHSupport = true;
 
