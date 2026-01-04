@@ -21,12 +21,10 @@ IPs in `machines/flake-module.nix` under `inventory.machines` and `instances.int
 
 ### ssh access
 
-ssh config has `User root` set, so:
-
 ```bash
 ssh <machine>.clan              # .clan tld (clan-core)
 ssh <machine>.lan               # .lan tld (local network)
-clan ssh <machine>              # via clan CLI
+ssh root@<ip>                   # direct IP (from deploy output)
 ```
 
 ## repo structure
@@ -38,6 +36,7 @@ clan ssh <machine>              # via clan CLI
 - `users/` - home-manager configs per user
 - `lib/` - mylib helpers
 - `vars/` - clan-generated secrets/config per machine
+- `docs/` - guides and rationale (why things are the way they are)
 
 ## principles
 
@@ -55,6 +54,7 @@ clan ssh <machine>              # via clan CLI
 - `mylib.scanPaths ./. { }` - auto-import all .nix files in directory
 - `nixfiles.<category>.<feature>.enable` - module option convention
 - **importing a module enables it** - no extra `nixfiles.*.enable = true` needed
+- some modules have prerequisites (e.g., lanzaboote needs `sbctl create-keys` on target before deploy)
 - `lib.mkDefault` for overridable defaults in profiles
 - `lib.mkForce` to override conflicting services
 
@@ -70,25 +70,9 @@ clan vars generate              # generate missing vars
 ssh root@<machine>.clan         # .clan is default tld from clan-core
 ```
 
-### inventory (`machines/flake-module.nix`)
+### inventory
 
-```nix
-flake.clan.inventory = {
-  machines.<name> = {
-    deploy.targetHost = "root@<ip>";
-    tags = [ "server" "home" ];
-  };
-  instances.<service> = {
-    module = { name = "<module>"; input = "clan-core"; };
-    roles.<role> = {
-      machines.<name> = { };    # specific machines
-      tags.<tag> = { };         # or apply by tag
-      settings = { ... };
-      extraModules = [ ... ];
-    };
-  };
-};
-```
+defined in `machines/flake-module.nix` - machines, services, deploy targets. self-documenting, just read the file.
 
 ### tags
 
@@ -142,7 +126,7 @@ metrics are stored in VictoriaMetrics on hm-nixbox. when looking for metrics, qu
 
 ## persistence
 
-some machines use preservation/impermanence (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. check `nixfiles.persistence.backend` - either "preservation" (preferred) or "impermanence". see `docs/preservation.md` for why we switched.
+all machines use preservation (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. see `docs/preservation.md` for details.
 
 ## desktop shell
 
