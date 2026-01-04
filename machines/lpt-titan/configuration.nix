@@ -12,7 +12,7 @@
     ../../modules/power
     ../../modules/gpu
     ../../modules/cpu
-    # ../../modules/lanzaboote  # TODO: enable after first boot + sbctl create-keys
+    ../../modules/lanzaboote
     ../../modules/fprint
     ../../modules/bcachefs
     ../../modules/dms

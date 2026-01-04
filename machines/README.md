@@ -1,5 +1,9 @@
 # machines
 
+all machines use [preservation](../docs/preservation.md) (ephemeral root, opt-in state persistence).
+
+---
+
 ## simon-desktop
 
 daily driver workstation (ryzen 7 7800x3d, rx 7800xt, 32gb ddr5)
@@ -38,6 +42,7 @@ framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 
 - nixos-hardware framework-amd-ai-300-series
 - bcachefs root filesystem
+- secure boot via lanzaboote
 - amd igpu (no lact/opencl needed)
 - tuned with power-profiles-daemon integration
 - tailscale mesh vpn
