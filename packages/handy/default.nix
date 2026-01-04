@@ -14,11 +14,13 @@
   libsoup_3,
   # audio
   alsa-lib,
-  alsa-plugins,
   pipewire,
   libpulseaudio,
-  # input
-  libxkbcommon,
+  # gstreamer for audio feedback
+  gst_all_1,
+  # input (wayland)
+  wtype,
+  dotool,
   xdotool,
   # vulkan for GPU whisper
   vulkan-loader,
@@ -30,14 +32,12 @@
   dbus,
   openssl,
   sqlite,
-  # gstreamer for audio
-  gst_all_1,
   # feature flags
   enableGpu ? true,
 }:
 let
-  pname = "voquill";
-  version = "0.0.269";
+  pname = "handy";
+  version = "0.6.10";
 
   runtimeDeps = [
     # tauri/webkit runtime deps
@@ -50,12 +50,12 @@ let
     libsoup_3
     # audio
     alsa-lib
-    alsa-plugins
     pipewire
     libpulseaudio
-    # input
-    libxkbcommon
-    xdotool
+    # gstreamer
+    gst_all_1.gstreamer
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
     # x11
     xorg.libX11
     xorg.libXcursor
@@ -66,11 +66,6 @@ let
     dbus
     openssl
     sqlite
-    # gstreamer
-    gst_all_1.gstreamer
-    gst_all_1.gst-plugins-base
-    gst_all_1.gst-plugins-good
-    gst_all_1.gst-plugins-bad
   ]
   ++ lib.optionals enableGpu [
     vulkan-loader
@@ -80,10 +75,9 @@ in
 stdenv.mkDerivation {
   inherit pname version;
 
-  # use pre-built binary from github releases
   src = fetchurl {
-    url = "https://github.com/josiahsrc/voquill/releases/download/desktop-v${version}/Voquill_${version}_amd64.deb";
-    hash = "sha256-u3xYcvarVjnflunXOd1z9NeOuE9KFq3jkJyOyanYXa0=";
+    url = "https://github.com/cjpais/Handy/releases/download/v${version}/Handy_${version}_amd64.deb";
+    hash = "sha256-mHKbcVJnshAdQT6I4Y7kxMsq5jUfZosBGe107Aaoy3I=";
   };
 
   nativeBuildInputs = [
@@ -104,42 +98,43 @@ stdenv.mkDerivation {
     mkdir -p $out
     cp -r usr/* $out/
 
-    # rename to lowercase
-    if [ -f "$out/bin/Voquill" ]; then
-      mv $out/bin/Voquill $out/bin/voquill
-    fi
-    if [ -f "$out/bin/voquill" ]; then
-      :
-    elif [ -f "$out/share/Voquill/voquill" ]; then
-      mkdir -p $out/bin
-      ln -s $out/share/Voquill/voquill $out/bin/voquill
+    # rename to lowercase if needed
+    if [ -f "$out/bin/Handy" ]; then
+      mv $out/bin/Handy $out/bin/handy
     fi
 
     # fix desktop file
     if [ -d "$out/share/applications" ]; then
       for f in $out/share/applications/*.desktop; do
         substituteInPlace "$f" \
-          --replace-quiet "Exec=Voquill" "Exec=voquill" \
-          --replace-quiet "Exec=/usr/bin/voquill" "Exec=voquill" || true
+          --replace-quiet "Exec=Handy" "Exec=handy" \
+          --replace-quiet "Exec=/usr/bin/handy" "Exec=handy" || true
       done
     fi
 
     runHook postInstall
   '';
 
-  # runtime library path
   postFixup = ''
-    wrapProgram $out/bin/voquill \
+    wrapProgram $out/bin/handy \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeDeps}" \
-      --set ALSA_PLUGIN_DIR "${alsa-plugins}/lib/alsa-lib"
+      --prefix PATH : "${
+        lib.makeBinPath [
+          wtype
+          dotool
+          xdotool
+        ]
+      }" \
+      --prefix GST_PLUGIN_PATH : "${gst_all_1.gst-plugins-base}/lib/gstreamer-1.0" \
+      --prefix GST_PLUGIN_PATH : "${gst_all_1.gst-plugins-good}/lib/gstreamer-1.0"
   '';
 
   meta = {
-    description = "AI voice dictation - open source Wispr Flow alternative";
-    homepage = "https://github.com/josiahsrc/voquill";
+    description = "Open source speech-to-text with Whisper and Parakeet";
+    homepage = "https://github.com/cjpais/Handy";
     license = lib.licenses.agpl3Only;
     maintainers = [ ];
     platforms = [ "x86_64-linux" ];
-    mainProgram = "voquill";
+    mainProgram = "handy";
   };
 }
