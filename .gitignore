@@ -58,3 +58,7 @@ terraform.rc
 
 # Backup files
 *.bak
+
+
+# Claude
+.claude
