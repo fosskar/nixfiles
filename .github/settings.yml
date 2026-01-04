@@ -1,0 +1,30 @@
+repository:
+  name: nixfiles
+  description: this repo describes my hole life thats why i use nixos unstable
+  homepage: ""
+  topics: "clan,nixos,nix-flake,home-manager,nixfiles,dotfiles,nix-dotfiles"
+  private: false
+  has_issues: false
+  has_projects: false
+  has_wiki: true
+  has_downloads: false
+  default_branch: main
+  allow_squash_merge: true
+  allow_merge_commit: true
+  allow_rebase_merge: true
+  delete_branch_on_merge: true
+  enable_automated_security_fixes: true
+  enable_vulnerability_alerts: true
+
+# Collaborators: give specific users access to this repository.
+# See https://docs.github.com/en/rest/reference/repos#add-a-repository-collaborator for available options
+#ollaborators:
+# - username: username
+# Note: `permission` is only valid on organization-owned repositories.
+# The permission to grant the collaborator. Can be one of:
+# * `pull` - can pull, but not push to or administer this repository.
+# * `push` - can pull and push, but not administer this repository.
+# * `admin` - can pull, push and administer this repository.
+# * `maintain` - Recommended for project managers who need to manage the repository without access to sensitive or destructive actions.
+# * `triage` - Recommended for contributors who need to proactively manage issues and pull requests without write access.
+# permission: push
