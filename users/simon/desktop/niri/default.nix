@@ -87,7 +87,7 @@
       focus-ring = {
         enable = false;
         width = 2;
-        active.color = "#ffa420";
+        active.color = "#5DE4c7";
         inactive.color = "#505050";
       };
 
@@ -96,12 +96,7 @@
         width = 1;
         urgent.color = "#9b0000";
         inactive.color = "transparent";
-        active.gradient = {
-          from = "#76D493";
-          to = "#5B957B";
-          angle = 180;
-          relative-to = "workspace-view";
-        };
+        active.color = "#5DE4c7";
       };
 
       shadow.enable = true;
