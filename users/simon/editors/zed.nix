@@ -59,6 +59,7 @@
       #  "editor.active_line.background" = "#00000042";
       #  "scrollbar.track.background" = "#00000000";
       #};
+      colorize_brackets = true;
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
       buffer_font_family = "JetBrainsMono Nerd Font";
@@ -243,6 +244,9 @@
             "yaml-language-server"
             "!docker-compose"
           ];
+        };
+        Markdown = {
+          format_on_save = "on";
         };
       };
       lsp = {
