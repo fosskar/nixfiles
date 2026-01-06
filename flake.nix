@@ -103,6 +103,13 @@
       inputs.flake-parts.follows = "flake-parts";
     };
 
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      #inputs.blueprint.follows = "blueprint";
+    };
+
     # wm
     niri-flake = {
       url = "github:sodiboo/niri-flake";

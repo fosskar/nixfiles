@@ -1,23 +1,32 @@
-{ lib, pkgs, ... }:
-let
-  ohMyOpencodeConfig = {
-    "$schema" =
-      "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
-    google_auth = true;
-    experimental = {
-      preemptive_compaction = true;
-      preemptive_compaction_threshold = 0.98;
-    };
-  };
-in
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
+#let
+#  ohMyOpencodeConfig = {
+#    "$schema" =
+#      "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
+#    google_auth = true;
+#    experimental = {
+#      preemptive_compaction = true;
+#      preemptive_compaction_threshold = 0.98;
+#    };
+#  };
+#in
 {
   programs.opencode = {
     enable = true;
+    package = inputs.llm-agents.packages.${pkgs.system}.opencode;
     settings = {
       theme = "system";
       autoshare = false;
       autoupdate = false;
-      plugin = [ "oh-my-opencode" ];
+      plugin = [
+        #"oh-my-opencode"
+        "@simonwjackson/opencode-direnv"
+      ];
       provider.anthropic.options.setCacheKey = true;
 
       formatter = {
@@ -76,7 +85,7 @@ in
   };
 
   xdg.configFile = {
-    "opencode/oh-my-opencode.json".text = builtins.toJSON ohMyOpencodeConfig;
+    #"opencode/oh-my-opencode.json".text = builtins.toJSON ohMyOpencodeConfig;
     "opencode/AGENTS.md".source = ../AGENTS.md;
   };
 }

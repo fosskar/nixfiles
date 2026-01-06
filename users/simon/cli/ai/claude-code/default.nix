@@ -1,6 +1,8 @@
 {
   config,
   mylib,
+  pkgs,
+  inputs,
   ...
 }:
 {
@@ -18,6 +20,7 @@
   programs = {
     claude-code = {
       enable = true;
+      package = inputs.llm-agents.packages.${pkgs.system}.claude-code;
       settings = {
         theme = "dark";
         includeCoAuthoredBy = false;
