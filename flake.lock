@@ -129,11 +129,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767866828,
-        "narHash": "sha256-CEY6HfzABR0p6hC4PhUjav2E/W4gZDfxh2ZAEf8jvdQ=",
-        "rev": "749aa31b2a90ce44b018573119b92fb623f92997",
+        "lastModified": 1767970934,
+        "narHash": "sha256-BkanBxX6QRCQWdmbU0dZTxSbdIlq1U1aiEWs8MikFpY=",
+        "rev": "a89ee88dcfd3b30b5df7a6db1b3e784ddb768460",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/749aa31b2a90ce44b018573119b92fb623f92997.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/a89ee88dcfd3b30b5df7a6db1b3e784ddb768460.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -212,11 +212,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767844768,
-        "narHash": "sha256-G8c2WlXCeZTMS7XL5yrLS29596JeRLVKHQx2blup40c=",
+        "lastModified": 1767985857,
+        "narHash": "sha256-ieCw7GQiWiYPF/g82brxtPV9XKynuMjZloq/8B1JbdQ=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "3c69e8b1cc4a06e0c0f46cd3759d4b662eb9fb62",
+        "rev": "4b46d022af899b6e6ddab7a7b0b2cff595a90e0d",
         "type": "github"
       },
       "original": {
@@ -859,11 +859,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767866249,
-        "narHash": "sha256-34M8rysW3vuOYijI/Ns59bPkKPecaQW5oOupR45IRwQ=",
+        "lastModified": 1768034297,
+        "narHash": "sha256-aV+jOPm6jKM2SI5Pm3ZQrxEgKOd6hiif5WVttWeJTHQ=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "7173b37ee4ff714e34dab539aeccb0cc7e4b24dc",
+        "rev": "1b146e8f8e133dc388706724b6b9bd1c03431271",
         "type": "github"
       },
       "original": {
@@ -899,11 +899,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1767833217,
-        "narHash": "sha256-HLr9k8g1Geq40PLsNw7I5N8TZkBYtQVjkgDPV/Kehxk=",
+        "lastModified": 1767968032,
+        "narHash": "sha256-YQoAOsFSbxBMHpKVB9gT3n4ErQXTN0JH8aHq0i674Ws=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "a789aa1512a9157d5d3392b27e60621fd0d83438",
+        "rev": "ed95e95f30d6bea60538f198c28c790a0a1045ef",
         "type": "github"
       },
       "original": {
@@ -1168,11 +1168,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767864913,
-        "narHash": "sha256-PsrIQxUkpTCioHJpDXVhvDgIurQHSiYFhtoAu4VIiq4=",
+        "lastModified": 1767990889,
+        "narHash": "sha256-HAPzJPlE7dNueymD3H9wzdNu98RSI0yu80A01yKu6Eo=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "8028191f4a78288a8157249b09d352a7b7d235e4",
+        "rev": "0f20adaa12c4cb8e38de8b3562420947e693cbb1",
         "type": "github"
       },
       "original": {
@@ -1203,11 +1203,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767868508,
-        "narHash": "sha256-Hxf1mAGY7pIeG15G1JG8Uf+GfooppPnq6EZm/gpWaAU=",
+        "lastModified": 1767949765,
+        "narHash": "sha256-sb9X1evrQI2+4qmYCCAHMSiJFqj4eAuZp5BwYrOiJmA=",
         "owner": "outfoxxed",
         "repo": "quickshell",
-        "rev": "8d19beb69ea72585b93d0ec94168d0bf25f1bd68",
+        "rev": "eecc2f88b3b12a672df79e74f2bd49ef65f0abdf",
         "type": "github"
       },
       "original": {
@@ -1463,11 +1463,11 @@
     "xwayland-satellite-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1767830382,
-        "narHash": "sha256-0PgS7M1SV6JCN3MugFZPaP8J+Mr2o7lSDFTPVYZSIAY=",
+        "lastModified": 1767932953,
+        "narHash": "sha256-V8+DrPOp940J6icERAaGuDQTKyEyZzFuRw363XwDKXg=",
         "owner": "Supreeeme",
         "repo": "xwayland-satellite",
-        "rev": "74cf1a95a35fd7aec76432bc2cd9b310e0d908c5",
+        "rev": "bc47ef59501556fc2584155ddef76493752dd727",
         "type": "github"
       },
       "original": {
