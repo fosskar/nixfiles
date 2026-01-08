@@ -53,6 +53,18 @@ in
             "10-disable-camera" = {
               "wireplumber.profiles".main."monitor.libcamera" = "disabled";
             };
+            # fix usb audio profile=off at boot (race condition: restore runs before usb enumerated)
+            "11-usb-audio-autoprofile" = {
+              "monitor.alsa.rules" = [
+                {
+                  matches = [{ "device.bus" = "usb"; }];
+                  actions.update-props = {
+                    "api.acp.auto-profile" = true;
+                    "api.acp.auto-port" = true;
+                  };
+                }
+              ];
+            };
           }
           // lib.optionalAttrs cfg.lowLatency.enable {
             "98-alsa-low-latency" = {
