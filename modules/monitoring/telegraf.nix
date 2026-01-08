@@ -134,11 +134,54 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.telegraf = {
-      enable = true;
+    services = {
+      telegraf = {
+        enable = true;
 
-      # add required binaries to telegraf's PATH
-      package = pkgs.telegraf;
+        # add required binaries to telegraf's PATH
+        package = pkgs.telegraf;
+
+        extraConfig = {
+          agent = {
+            interval = "10s";
+            flush_interval = "10s";
+          };
+
+          outputs.prometheus_client = [
+            {
+              listen = ":${toString cfg.listenPort}";
+              metric_version = 2;
+            }
+          ];
+
+          inputs = lib.mkMerge (map (name: inputConfigs.${name}) cfg.plugins);
+        };
+      };
+
+      # postgresql: create telegraf role for monitoring
+      postgresql.ensureUsers = lib.mkIf (builtins.elem "postgresql" cfg.plugins) [
+        {
+          name = "telegraf";
+          ensureDBOwnership = false;
+        }
+      ];
+
+      # nginx: enable stub_status endpoint for metrics
+      nginx.virtualHosts."127.0.0.1".locations."/nginx_status" =
+        lib.mkIf (builtins.elem "nginx" cfg.plugins)
+          {
+            extraConfig = ''
+              stub_status on;
+              access_log off;
+              allow 127.0.0.1;
+              deny all;
+            '';
+          };
+
+      # allow disk group to access nvme controller devices (for smart monitoring)
+      udev.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) ''
+        KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
+      '';
     };
 
     systemd.services.telegraf.path = lib.mkMerge [
@@ -159,31 +202,6 @@ in
       (lib.mkIf (builtins.elem "docker" cfg.plugins) [ "docker" ])
     ];
 
-    # postgresql: create telegraf role for monitoring
-    services.postgresql.ensureUsers = lib.mkIf (builtins.elem "postgresql" cfg.plugins) [
-      {
-        name = "telegraf";
-        ensureDBOwnership = false;
-      }
-    ];
-
-    # nginx: enable stub_status endpoint for metrics
-    services.nginx.virtualHosts."127.0.0.1".locations."/nginx_status" =
-      lib.mkIf (builtins.elem "nginx" cfg.plugins)
-        {
-          extraConfig = ''
-            stub_status on;
-            access_log off;
-            allow 127.0.0.1;
-            deny all;
-          '';
-        };
-
-    # allow disk group to access nvme controller devices (for smart monitoring)
-    services.udev.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) ''
-      KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
-    '';
-
     # sudo rules for telegraf to run smartctl/nvme without password
     security.sudo-rs.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) [
       {
@@ -200,21 +218,5 @@ in
         ];
       }
     ];
-
-    services.telegraf.extraConfig = {
-      agent = {
-        interval = "10s";
-        flush_interval = "10s";
-      };
-
-      outputs.prometheus_client = [
-        {
-          listen = ":${toString cfg.listenPort}";
-          metric_version = 2;
-        }
-      ];
-
-      inputs = lib.mkMerge (map (name: inputConfigs.${name}) cfg.plugins);
-    };
   };
 }

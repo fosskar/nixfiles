@@ -50,55 +50,57 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # node exporter - system metrics (includes systemd collector)
-    services.prometheus.exporters.node = lib.mkIf cfg.enableNodeExporter {
-      enable = true;
-      port = 9100;
-      openFirewall = false;
-      enabledCollectors = [
-        "systemd" # systemd service metrics
-        "processes"
-      ];
-    };
+    services.prometheus.exporters = {
+      # node exporter - system metrics (includes systemd collector)
+      node = lib.mkIf cfg.enableNodeExporter {
+        enable = true;
+        port = 9100;
+        openFirewall = false;
+        enabledCollectors = [
+          "systemd" # systemd service metrics
+          "processes"
+        ];
+      };
 
-    # nginx exporter
-    services.prometheus.exporters.nginx = lib.mkIf cfg.enableNginxExporter {
-      enable = true;
-      port = 9113;
-      openFirewall = false;
-      scrapeUri = "http://127.0.0.1:80/nginx_status";
-    };
+      # nginx exporter
+      nginx = lib.mkIf cfg.enableNginxExporter {
+        enable = true;
+        port = 9113;
+        openFirewall = false;
+        scrapeUri = "http://127.0.0.1:80/nginx_status";
+      };
 
-    # postgres exporter
-    services.prometheus.exporters.postgres = lib.mkIf cfg.enablePostgresExporter {
-      enable = true;
-      port = 9187;
-      openFirewall = false;
-      runAsLocalSuperUser = true;
-    };
+      # postgres exporter
+      postgres = lib.mkIf cfg.enablePostgresExporter {
+        enable = true;
+        port = 9187;
+        openFirewall = false;
+        runAsLocalSuperUser = true;
+      };
 
-    # restic exporter
-    services.prometheus.exporters.restic = lib.mkIf cfg.enableResticExporter {
-      enable = true;
-      port = 9753;
-      openFirewall = false;
-      refreshInterval = 3600; # 1 hour - restic operations are expensive
-    };
+      # restic exporter
+      restic = lib.mkIf cfg.enableResticExporter {
+        enable = true;
+        port = 9753;
+        openFirewall = false;
+        refreshInterval = 3600; # 1 hour - restic operations are expensive
+      };
 
-    # nut exporter
-    services.prometheus.exporters.nut = lib.mkIf cfg.enableNutExporter {
-      enable = true;
-      port = 9199;
-      listenAddress = "127.0.0.1";
-      openFirewall = false;
-      inherit (cfg) nutServer;
-    };
+      # nut exporter
+      nut = lib.mkIf cfg.enableNutExporter {
+        enable = true;
+        port = 9199;
+        listenAddress = "127.0.0.1";
+        openFirewall = false;
+        inherit (cfg) nutServer;
+      };
 
-    # zfs exporter
-    services.prometheus.exporters.zfs = lib.mkIf cfg.enableZfsExporter {
-      enable = true;
-      port = 9134;
-      openFirewall = false;
+      # zfs exporter
+      zfs = lib.mkIf cfg.enableZfsExporter {
+        enable = true;
+        port = 9134;
+        openFirewall = false;
+      };
     };
   };
 }

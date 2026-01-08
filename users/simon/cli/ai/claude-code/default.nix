@@ -20,7 +20,7 @@
   programs = {
     claude-code = {
       enable = true;
-      package = inputs.llm-agents.packages.${pkgs.system}.claude-code;
+      package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
       settings = {
         theme = "dark";
         includeCoAuthoredBy = false;

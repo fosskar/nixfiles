@@ -45,13 +45,15 @@ in
 
     # main authelia secrets generator
     clan.core.vars.generators.authelia = {
-      files."jwt-secret" = secretsPermission;
-      files."session-secret" = secretsPermission;
-      files."hmac-secret" = secretsPermission;
-      files."jwks-private-key" = secretsPermission;
-      files."jwks-certificate" = secretsPermission;
-      files."lldap-password" = secretsPermission;
-      files."storage-encryption-key" = secretsPermission;
+      files = {
+        "jwt-secret" = secretsPermission;
+        "session-secret" = secretsPermission;
+        "hmac-secret" = secretsPermission;
+        "jwks-private-key" = secretsPermission;
+        "jwks-certificate" = secretsPermission;
+        "lldap-password" = secretsPermission;
+        "storage-encryption-key" = secretsPermission;
+      };
 
       dependencies = [ "authelia-storage-encryption-key" ];
 

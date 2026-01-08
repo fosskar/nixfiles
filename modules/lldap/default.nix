@@ -29,20 +29,22 @@ in
 
     # generate lldap secrets via clan vars
     clan.core.vars.generators.lldap = {
-      files."jwt-secret" = {
-        secret = true;
-        owner = "lldap";
-        group = "lldap";
-      };
-      files."password" = {
-        secret = true;
-        owner = "lldap";
-        group = "lldap";
-      };
-      files."envfile" = {
-        secret = true;
-        owner = "lldap";
-        group = "lldap";
+      files = {
+        "jwt-secret" = {
+          secret = true;
+          owner = "lldap";
+          group = "lldap";
+        };
+        "password" = {
+          secret = true;
+          owner = "lldap";
+          group = "lldap";
+        };
+        "envfile" = {
+          secret = true;
+          owner = "lldap";
+          group = "lldap";
+        };
       };
 
       runtimeInputs = [ pkgs.pwgen ];

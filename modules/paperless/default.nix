@@ -22,18 +22,20 @@ in
   config = lib.mkIf cfg.enable {
     # generate paperless secrets
     clan.core.vars.generators.paperless = {
-      files."admin-password" = {
-        owner = "paperless";
-        group = "paperless";
-      };
-      files."oauth-client-secret-hash" = { };
-      files."oauth-client-secret" = {
-        owner = "paperless";
-        group = "paperless";
-      };
-      files."oauth.env" = {
-        owner = "paperless";
-        group = "paperless";
+      files = {
+        "admin-password" = {
+          owner = "paperless";
+          group = "paperless";
+        };
+        "oauth-client-secret-hash" = { };
+        "oauth-client-secret" = {
+          owner = "paperless";
+          group = "paperless";
+        };
+        "oauth.env" = {
+          owner = "paperless";
+          group = "paperless";
+        };
       };
 
       runtimeInputs = with pkgs; [

@@ -1,4 +1,5 @@
-_: {
+{ lib, ... }:
+{
   disabledModules = [
     "profiles/all-hardware.nix"
     "profiles/base.nix"
@@ -10,7 +11,7 @@ _: {
   '';
 
   environment = {
-    variables.EDITOR = "nvim --clean";
+    variables.EDITOR = lib.mkForce "nvim --clean";
     ldso32 = null;
   };
 }

@@ -22,14 +22,16 @@ in
   config = lib.mkIf cfg.enable {
     # generate immich secrets
     clan.core.vars.generators.immich = {
-      files."oauth-client-secret-hash" = { };
-      files."oauth-client-secret" = {
-        owner = "immich";
-        group = "immich";
-      };
-      files."db-password.env" = {
-        owner = "immich";
-        group = "immich";
+      files = {
+        "oauth-client-secret-hash" = { };
+        "oauth-client-secret" = {
+          owner = "immich";
+          group = "immich";
+        };
+        "db-password.env" = {
+          owner = "immich";
+          group = "immich";
+        };
       };
 
       runtimeInputs = with pkgs; [

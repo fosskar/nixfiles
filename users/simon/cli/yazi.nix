@@ -13,7 +13,7 @@
     enable = true;
 
     # when using input so latest from git
-    #package = inputs.yazi.packages.${pkgs.system}.default;
+    #package = inputs.yazi.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
     settings = {
       manager = {
