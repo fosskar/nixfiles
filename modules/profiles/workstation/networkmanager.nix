@@ -3,16 +3,43 @@
   # add wheel users to networkmanager group
   users.groups.networkmanager.members = config.users.groups.wheel.members;
 
-  # persist networkmanager connections
-  nixfiles.persistence.directories = [ "/var/lib/NetworkManager" ];
+  # wireless regulatory database
+  hardware.wirelessRegulatoryDatabase = true;
+
+  # persist networkmanager + iwd state
+  nixfiles.persistence.directories = [
+    "/var/lib/NetworkManager"
+    "/var/lib/iwd"
+  ];
 
   networking = {
     networkmanager = {
       enable = lib.mkDefault true;
       # use systemd-resolved for DNS (enabled in base/network.nix)
       dns = lib.mkDefault "systemd-resolved";
-      # use iwd instead of wpa_supplicant (configured in modules/wifi for machines that need it)
-      wifi.backend = lib.mkDefault "iwd";
+      # iwd backend with privacy defaults
+      wifi = {
+        backend = lib.mkDefault "iwd";
+        macAddress = lib.mkDefault "random";
+        powersave = lib.mkDefault true;
+        scanRandMacAddress = lib.mkDefault true;
+      };
+    };
+
+    # iwd settings
+    wireless.iwd.settings = {
+      Scan.DisablePeriodicScan = true;
+      Settings.AutoConnect = true;
+      General = {
+        AddressRandomization = "network";
+        AddressRandomizationRange = "full";
+        EnableNetworkConfiguration = true;
+        RoamRetryInterval = 15;
+      };
+      Network = {
+        EnableIPv6 = true;
+        RoutePriorityOffset = 300;
+      };
     };
 
     # fallback dns servers (privacy-focused, non-us)

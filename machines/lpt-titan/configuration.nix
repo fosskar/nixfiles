@@ -17,7 +17,6 @@
     ../../modules/bcachefs
     ../../modules/dms
     ../../modules/niri
-    ../../modules/wifi
     ../../modules/persistence
   ]
   ++ mylib.scanPaths ./. { };
@@ -42,10 +41,6 @@
 
     audio.lowLatency.enable = true;
     yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
-    wifi.credentials = {
-      enable = true;
-      ssid = "OWRT";
-    };
     cpu.amd.enable = true;
     gpu.amd = {
       enable = true;

@@ -167,6 +167,20 @@ in
           };
         };
 
+        wifi = {
+          module = {
+            name = "wifi";
+            input = "clan-core";
+          };
+          roles.default.machines.lpt-titan = {
+            settings.networks = {
+              home = { };
+              # add more networks as needed, e.g.:
+              # mobile = { autoConnect = false; };
+            };
+          };
+        };
+
         borgbackup = {
           module = {
             name = "borgbackup";
