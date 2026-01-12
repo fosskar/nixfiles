@@ -40,6 +40,5 @@ in
 {
   home.packages = [
     star-citizen
-    pkgs.umu-launcher
   ];
 }
