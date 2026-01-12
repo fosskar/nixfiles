@@ -57,7 +57,7 @@ in
             "11-usb-audio-autoprofile" = {
               "monitor.alsa.rules" = [
                 {
-                  matches = [{ "device.bus" = "usb"; }];
+                  matches = [ { "device.bus" = "usb"; } ];
                   actions.update-props = {
                     "api.acp.auto-profile" = true;
                     "api.acp.auto-port" = true;

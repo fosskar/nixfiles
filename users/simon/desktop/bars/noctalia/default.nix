@@ -17,7 +17,12 @@
       enable = true;
       systemd.enable = true;
       settings = {
-        appLauncher.terminalCommand = "ghostty -e";
+        appLauncher = {
+          terminalCommand = "ghostty -e";
+          iconMode = "tabler";
+          sortByMostUsed = true;
+          viewMode = "list";
+        };
 
         audio.preferredPlayer = "mpv, spotify";
 
@@ -81,7 +86,7 @@
                 displayMode = "onhover";
               }
               {
-                id = "WiFi";
+                id = "Network";
                 displayMode = "onhover";
               }
               {
@@ -98,22 +103,67 @@
                 id = "SessionMenu";
                 colorName = "error";
               }
-              { id = "plugin:launcher-button"; }
             ];
           };
         };
 
         colorSchemes = {
-          predefinedScheme = "Monochrome";
-          matugenSchemeType = "scheme-monochrome";
+          # predefinedScheme = "Oxocarbon";
+          matugenSchemeType = "scheme-neutral";
+          useWallpaperColors = true;
         };
 
-        controlCenter.position = "top_center";
+        controlCenter = {
+          position = "top_center";
+          cards = [
+            {
+              enabled = true;
+              id = "profile-card";
+            }
+            {
+              enabled = true;
+              id = "shortcuts-card";
+            }
+            {
+              enabled = true;
+              id = "audio-card";
+            }
+            {
+              enabled = false;
+              id = "brightness-card";
+            }
+            {
+              enabled = true;
+              id = "weather-card";
+            }
+            {
+              enabled = true;
+              id = "media-sysmon-card";
+            }
+          ];
+        };
+
+        dock = {
+          enabled = true;
+          displayMode = "auto_hide";
+          position = "bottom";
+          onlySameOutput = true;
+        };
 
         general = {
           showScreenCorners = true;
+          forceBlackScreenCorners = true;
           animationSpeed = 2;
           compactLockScreen = true;
+          enableShadows = false;
+        };
+
+        location = {
+          name = "Hamburg";
+          weatherEnabled = true;
+          hideWeatherCityName = true;
+          hideWeatherTimezone = true;
+          showWeekNumberInCalendar = true;
         };
 
         notifications.sounds.volume = 0.1;
@@ -126,9 +176,30 @@
           largeButtonsLayout = "grid";
         };
 
+        templates = {
+          ghostty = true;
+          gtk = true;
+          niri = true;
+          qt = true;
+          yazi = true;
+          zed = true;
+          zenBrowser = true;
+        };
+
         ui = {
           fontDefault = "Inter";
           fontFixed = "JetBrainsMono Nerd Font Mono";
+          panelsAttachedToBar = true;
+        };
+
+        wallpaper = {
+          enabled = true;
+          directory = "/home/simon/pictures/wallpaper";
+          fillMode = "crop";
+          transitionType = "random";
+          transitionDuration = 1500;
+          overviewEnabled = true;
+          setWallpaperOnAllMonitors = true;
         };
       };
     };

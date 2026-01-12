@@ -223,7 +223,7 @@
       # }
       {
         matches = [ { } ]; # match all windows
-        opacity = 1.0; # for toggle-window-rule-opacity
+        opacity = 0.9; # for toggle-window-rule-opacity
         draw-border-with-background = false;
         geometry-corner-radius = {
           top-left = 10.0;

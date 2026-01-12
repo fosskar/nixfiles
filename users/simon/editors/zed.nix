@@ -34,31 +34,31 @@
         light = "VSCode Dark Modern";
         dark = "VSCode Dark Modern";
       };
-      ## this makes vscode dark modern transparent
-      #"experimental.theme_overrides" = {
-      #  "background.appearance" = "blurred";
-      #  "background" = "#111111D7";
-      #  "status_bar.background" = "#111111d7";
-      #  "title_bar.background" = "#111111d7";
-      #  "title_bar.inactive_background" = "#111111d7";
-      #  "elevated_surface.background" = "#1E1E1EF2";
-      #  "surface.background" = "#111111d7";
-      #  "editor.background" = "#00000000";
-      #  "editor.gutter.background" = "#00000000";
-      #  "tab_bar.background" = "#00000000";
-      #  "terminal.background" = "#00000000";
-      #  "toolbar.background" = "#00000000";
-      #  "tab.active_background" = "#00000055";
-      #  "tab.inactive_background" = "#00000000";
-      #  "panel.indent_guide" = "#111111d7";
-      #  "panel.background" = "#00000000";
-      #  "panel.focused_border" = "00000000";
-      #  "element.active" = "#00000000";
-      #  "border.variant" = "#00000000";
-      #  "scrollbar.track.border" = "#00000000";
-      #  "editor.active_line.background" = "#00000042";
-      #  "scrollbar.track.background" = "#00000000";
-      #};
+      # this makes vscode dark modern transparent
+      "experimental.theme_overrides" = {
+        "background.appearance" = "blurred";
+        "background" = "#111111D7";
+        "status_bar.background" = "#111111d7";
+        "title_bar.background" = "#111111d7";
+        "title_bar.inactive_background" = "#111111d7";
+        "elevated_surface.background" = "#1E1E1EF2";
+        "surface.background" = "#111111d7";
+        "editor.background" = "#00000000";
+        "editor.gutter.background" = "#00000000";
+        "tab_bar.background" = "#00000000";
+        "terminal.background" = "#00000000";
+        "toolbar.background" = "#00000000";
+        "tab.active_background" = "#00000055";
+        "tab.inactive_background" = "#00000000";
+        "panel.indent_guide" = "#111111d7";
+        "panel.background" = "#00000000";
+        "panel.focused_border" = "00000000";
+        "element.active" = "#00000000";
+        "border.variant" = "#00000000";
+        "scrollbar.track.border" = "#00000000";
+        "editor.active_line.background" = "#00000042";
+        "scrollbar.track.background" = "#00000000";
+      };
       colorize_brackets = true;
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
