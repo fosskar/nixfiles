@@ -103,13 +103,14 @@ in
         webauthn = {
           disable = false;
           enable_passkey_login = true;
+          experimental_enable_passkey_uv_two_factors = true;
           display_name = "Authelia";
         };
 
         totp = {
           disable = false;
           issuer = if cfg.publicDomain != null then cfg.publicDomain else acmeDomain;
-          algorithm = "sha1";
+          algorithm = "sha512";
           digits = 6;
           period = 30;
           skew = 1;
@@ -126,6 +127,7 @@ in
 
         session = {
           name = "authelia_session";
+          same_site = "strict";
           expiration = "1h";
           inactivity = "5m";
           remember_me = "1M";
@@ -154,6 +156,12 @@ in
 
         access_control = {
           default_policy = "two_factor";
+        };
+
+        identity_validation.elevated_session = {
+          require_second_factor = true;
+          code_lifespan = "5m";
+          elevation_lifespan = "10m";
         };
 
         storage.local.path = "/var/lib/authelia-main/db.sqlite3";
