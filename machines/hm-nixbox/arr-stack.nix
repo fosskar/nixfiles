@@ -35,6 +35,33 @@
       enable = true;
       openFirewall = false;
       group = "media";
+      allowConfigWrite = true;
+      secretFiles = [ config.sops.secrets."sabnzbd".path ];
+      settings = {
+        misc = {
+          port = 8080;
+          host_whitelist = "hm-nixbox, sabnzbd.osscar.me";
+          download_dir = "/tank/media/downloads/incomplete";
+          complete_dir = "/tank/media/downloads/complete";
+          permissions = "770";
+        };
+        categories = {
+          movies.name = "movies";
+          tv.name = "tv";
+          music.name = "music";
+          books.name = "books";
+          podcasts = {
+            name = "podcasts";
+            script = "Default";
+          };
+          "*" = {
+            name = "*";
+            pp = 3;
+            script = "Default";
+          };
+        };
+        # servers + api keys in secretFiles (sabnzbd.ini)
+      };
     };
 
     # indexer
@@ -91,6 +118,10 @@
       enable = true;
       openFirewall = false; # port 8096
       group = "media";
+      hardwareAcceleration = {
+        device = "/dev/dri/renderD128";
+        type = "qsv";
+      };
     };
 
     audiobookshelf = {
@@ -142,9 +173,6 @@
     services = {
       sabnzbd = {
         serviceConfig.UMask = "0027";
-        preStart = lib.mkAfter ''
-          ${pkgs.gnused}/bin/sed -i 's/^host_whitelist = .*/host_whitelist = hm-nixbox, sabnzbd.osscar.me/' /var/lib/sabnzbd/sabnzbd.ini
-        '';
       };
       prowlarr.serviceConfig.UMask = "0027";
       sonarr.serviceConfig.UMask = "0027";

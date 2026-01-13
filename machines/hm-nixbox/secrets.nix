@@ -11,5 +11,9 @@ _: {
     };
 
     "beszel.env" = { };
+
+    "sabnzbd" = {
+      owner = "sabnzbd";
+    };
   };
 }
