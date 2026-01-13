@@ -9,16 +9,8 @@
     #protonvpn-gui
     #protonvpn-cli
     filen-desktop
-    #bitwarden-desktop
-    #(symlinkJoin {
-    #  name = "element-desktop";
-    #  paths = [ element-desktop ];
-    #  buildInputs = [ makeWrapper ];
-    #  postBuild = ''
-    #    wrapProgram $out/bin/element-desktop \
-    #      --add-flags "--password-store=gnome-libsecret"
-    #  '';
-    #})
+    bitwarden-desktop
+
     (pkgs.symlinkJoin {
       name = "element-desktop";
       paths = [ pkgs.element-desktop ];
