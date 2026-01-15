@@ -190,6 +190,15 @@
         ];
         open-floating = true;
       }
+      # element to secondary monitor, maximized
+      {
+        matches = [
+          { app-id = "^Element$"; }
+          { app-id = "^element$"; }
+        ];
+        open-on-workspace = "secondary";
+        open-maximized = true;
+      }
       # webcord/ts3 to steam workspace (secondary monitor)
       {
         matches = [
