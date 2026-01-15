@@ -43,6 +43,7 @@
         };
       };
       systemd.user.startServices = "sd-switch";
+      nix.channels = { };
     };
   };
 }

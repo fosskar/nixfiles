@@ -7,6 +7,6 @@
   services.resolved = {
     enable = lib.mkDefault true;
     # srvos.server sets llmnr, but desktop doesn't - keep for both
-    llmnr = lib.mkDefault "false";
+    settings.Resolve.LLMNR = lib.mkDefault "false";
   };
 }

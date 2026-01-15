@@ -13,6 +13,12 @@
     configHome = "/home/simon";
   };
 
-  # persist greeter state
-  nixfiles.persistence.directories = [ "/var/lib/dms-greeter" ];
+  # persist greeter state (must be writable by greeter user to save memory.json)
+  nixfiles.persistence.directories = [
+    {
+      directory = "/var/lib/dms-greeter";
+      user = "greeter";
+      group = "greeter";
+    }
+  ];
 }
