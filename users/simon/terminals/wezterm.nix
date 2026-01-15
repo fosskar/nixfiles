@@ -87,7 +87,7 @@ _: {
         webgpu_power_preference = "HighPerformance",
         webgpu_force_fallback_adapter = false,
         check_for_updates = false,
-        window_background_opacity = 0.8,
+        window_background_opacity = 1.0,
         adjust_window_size_when_changing_font_size = false,
         keys = {
           { key = "LeftArrow",   mods = "CTRL|SHIFT",   action = wezterm.action({ ActivatePaneDirection = "Left" }) },
