@@ -12,6 +12,7 @@
     ../../modules/cpu
     ../../modules/power
     ../../modules/persistence
+    ../../modules/hd-idle
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
