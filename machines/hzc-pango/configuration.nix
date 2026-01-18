@@ -2,6 +2,7 @@
 {
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
+    ../../modules/borgbackup
     ../../modules/power
     ../../modules/persistence
   ]
@@ -26,6 +27,13 @@
         "/var/lib/private"
       ];
     };
+    # backup
+    borgbackup = {
+      enable = true;
+      useSnapshots = true;
+      snapshotType = "btrfs";
+    };
+
     power.tuned = {
       enable = true;
       profile = "virtual-guest";
