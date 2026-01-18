@@ -37,7 +37,7 @@
 }:
 let
   pname = "handy";
-  version = "0.6.10";
+  version = "0.6.11";
 
   runtimeDeps = [
     # tauri/webkit runtime deps
@@ -77,7 +77,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/cjpais/Handy/releases/download/v${version}/Handy_${version}_amd64.deb";
-    hash = "sha256-mHKbcVJnshAdQT6I4Y7kxMsq5jUfZosBGe107Aaoy3I=";
+    hash = "sha256-N2FZ1CgfZ57ACOuMDqbMZQHuQwe+l2DSbLMCjjfJFq8=";
   };
 
   nativeBuildInputs = [
