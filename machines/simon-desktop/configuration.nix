@@ -45,5 +45,7 @@
       docker.enable = true;
       podman.enable = true;
     };
+
+    gaming.starCitizen.enable = true;
   };
 }

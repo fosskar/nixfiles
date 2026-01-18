@@ -1,4 +1,4 @@
 { mylib, ... }:
 {
-  imports = mylib.scanPaths ./. { exclude = [ ]; };
+  imports = mylib.scanPaths ./. { exclude = [ "star-citizen.nix" ]; };
 }

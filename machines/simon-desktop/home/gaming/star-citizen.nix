@@ -6,7 +6,7 @@
 }:
 let
 
-  #fixes gamemode when using omu-launcher. See https://github.com/FeralInteractive/gamemode/issues/254#issuecomment-643648779
+  #fixes gamemode when using umu-launcher. See https://github.com/FeralInteractive/gamemode/issues/254#issuecomment-643648779
   gamemodeSharedObjects = lib.concatMapStringsSep ":" (v: "${lib.getLib pkgs.gamemode}/lib/${v}") [
     "libgamemodeauto.so"
     "libgamemode.so"

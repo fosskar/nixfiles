@@ -98,9 +98,13 @@
 
     # gaming
     nix-gaming = {
-      url = "github:fufexan/nix-gaming";
+      url = "github:fufexan/nix-gaming/88f03a8a5685eca1c645372ebd1767b9b228d60c"; # github:fufexan/nix-gaming
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
+    };
+    nix-citizen = {
+      url = "github:LovingMelody/nix-citizen";
+      inputs.nix-gaming.follows = "nix-gaming";
     };
 
     llm-agents = {

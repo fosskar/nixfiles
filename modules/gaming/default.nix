@@ -52,5 +52,7 @@
         description = "include wine packages with lutris";
       };
     };
+
+    starCitizen.enable = lib.mkEnableOption "star citizen via rsi-launcher";
   };
 }
