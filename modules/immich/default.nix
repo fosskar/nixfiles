@@ -67,6 +67,8 @@ in
         redirect_uris = [
           "https://${serviceDomain}/auth/login"
           "https://${serviceDomain}/user-settings"
+          "https://immich.${publicDomain}/auth/login"
+          "https://immich.${publicDomain}/user-settings"
           "app.immich:///oauth-callback"
         ];
         scopes = [
@@ -76,6 +78,17 @@ in
         ];
       }
     ];
+
+    # postgresql backup/restore integration
+    clan.core.postgresql.enable = true;
+    clan.core.postgresql.databases.immich = {
+      create.enable = false; # immich module creates it
+      restore.stopOnRestore = [
+        "immich-server.service"
+        "immich-machine-learning.service"
+        "redis-immich.service"
+      ];
+    };
 
     # nginx reverse proxy
     nixfiles.nginx.vhosts.immich = {

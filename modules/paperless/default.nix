@@ -104,8 +104,27 @@ in
       }
     ];
 
+    # postgresql backup/restore integration
+    clan.core.postgresql.enable = true;
+    clan.core.postgresql.databases.paperless = {
+      create.enable = false; # paperless module creates it
+      restore.stopOnRestore = [
+        "paperless-consumer.service"
+        "paperless-scheduler.service"
+        "paperless-task-queue.service"
+        "paperless-web.service"
+        "redis-paperless.service"
+      ];
+    };
+
     # persist dataDir (on SSD, avoids waking HDDs)
-    nixfiles.persistence.directories = [ config.services.paperless.dataDir ];
+    nixfiles.persistence.directories = [
+      {
+        directory = config.services.paperless.dataDir;
+        user = "paperless";
+        group = "paperless";
+      }
+    ];
 
     # nginx reverse proxy
     nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
