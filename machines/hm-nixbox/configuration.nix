@@ -2,11 +2,13 @@
 {
   imports = [
     ../../modules/acme
+    ../../modules/borgbackup
     ../../modules/nginx
     ../../modules/lldap
     ../../modules/authelia
     ../../modules/immich
     ../../modules/paperless
+    ../../modules/vaultwarden
     ../../modules/zfs
     ../../modules/gpu
     ../../modules/cpu
@@ -26,6 +28,7 @@
   clan.core.settings.machine-id.enable = true;
 
   nixfiles = {
+    # persistence
     persistence = {
       enable = true;
       backend = "preservation";
@@ -40,6 +43,17 @@
         "/var/lib"
       ];
     };
+    # backup
+    borgbackup = {
+      enable = true;
+      folders = [
+        "/tank/apps"
+        "/tank/shares"
+      ];
+      useSnapshots = true;
+      snapshotType = "zfs";
+    };
+
     gpu.intel.enable = true;
     cpu.amd.enable = true;
     power.tuned = {
