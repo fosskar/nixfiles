@@ -4,6 +4,20 @@
   lib,
   ...
 }:
+let
+  sqliteBackup = pkgs.writeShellScript "sqlite-backup" ''
+    export PATH=${
+      lib.makeBinPath [
+        pkgs.sqlite
+        pkgs.coreutils
+      ]
+    }
+    src="$1"
+    dst="$2"
+    mkdir -p "$(dirname "$dst")"
+    sqlite3 "$src" ".backup '$dst'"
+  '';
+in
 {
   nixfiles.nginx.vhosts = {
     jellyfin.port = 8096; # no port option
@@ -210,4 +224,56 @@
     jellyfin-web
     jellyfin-ffmpeg
   ];
+
+  # sqlite backups for borgbackup
+  clan.core.state = {
+    jellyfin = {
+      folders = [ "/var/backup/jellyfin" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/jellyfin/data/jellyfin.db /var/backup/jellyfin/jellyfin.db
+      '';
+    };
+    prowlarr = {
+      folders = [ "/var/backup/prowlarr" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/private/prowlarr/prowlarr.db /var/backup/prowlarr/prowlarr.db
+      '';
+    };
+    sonarr = {
+      folders = [ "/var/backup/sonarr" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/sonarr/.config/NzbDrone/sonarr.db /var/backup/sonarr/sonarr.db
+      '';
+    };
+    radarr = {
+      folders = [ "/var/backup/radarr" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/radarr/.config/Radarr/radarr.db /var/backup/radarr/radarr.db
+      '';
+    };
+    lidarr = {
+      folders = [ "/var/backup/lidarr" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/lidarr/.config/Lidarr/lidarr.db /var/backup/lidarr/lidarr.db
+      '';
+    };
+    readarr = {
+      folders = [ "/var/backup/readarr" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/readarr/readarr.db /var/backup/readarr/readarr.db
+      '';
+    };
+    bazarr = {
+      folders = [ "/var/backup/bazarr" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/bazarr/db/bazarr.db /var/backup/bazarr/bazarr.db
+      '';
+    };
+    audiobookshelf = {
+      folders = [ "/var/backup/audiobookshelf" ];
+      preBackupScript = ''
+        ${sqliteBackup} /var/lib/audiobookshelf/config/absdatabase.sqlite /var/backup/audiobookshelf/absdatabase.sqlite
+      '';
+    };
+  };
 }

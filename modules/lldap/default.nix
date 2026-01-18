@@ -85,5 +85,20 @@ in
     nixfiles.nginx.vhosts.ldap = {
       port = 17170;
     };
+
+    # sqlite backup for borgbackup
+    clan.core.state.lldap = {
+      folders = [ "/var/backup/lldap" ];
+      preBackupScript = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/lldap
+        sqlite3 /var/lib/lldap/users.db ".backup '/var/backup/lldap/users.db'"
+      '';
+    };
   };
 }
