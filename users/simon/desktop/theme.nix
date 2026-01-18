@@ -63,9 +63,18 @@
 
     # terminal palette (ANSI colors)
     term = {
-      green = lib.mkOption { type = lib.types.str; default = "#73C991"; };
-      blue = lib.mkOption { type = lib.types.str; default = "#6796E6"; };
-      magenta = lib.mkOption { type = lib.types.str; default = "#C586C0"; };
+      green = lib.mkOption {
+        type = lib.types.str;
+        default = "#73C991";
+      };
+      blue = lib.mkOption {
+        type = lib.types.str;
+        default = "#6796E6";
+      };
+      magenta = lib.mkOption {
+        type = lib.types.str;
+        default = "#C586C0";
+      };
     };
 
     # light theme variants
