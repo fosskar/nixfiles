@@ -81,7 +81,7 @@ in
       {
         client_id = "paperless";
         client_name = "Paperless";
-        client_secret = "$pbkdf2-sha512$310000$HDBRNh3jh4LrCBedHghEbw$rjtVFb4ZbTORu88htgMtZklCCX43WrO75TiU6dJNEnF3SXJtP50W1ZFz8.N3pwhJyzMlrAarIG5rdoKFLZLBRQ";
+        client_secret = "$pbkdf2-sha512$310000$g4iE28Iw.uP2OC5Mq3uxqQ$XCcsIvXUEJd2G/CqcW.eyVSOen5Lm69E2rhLMIT4O7PH/rLnDeCextqKCHAd.8nv48PpWiv3zoyO15ZQambmXw";
         public = false;
         authorization_policy = "one_factor";
         consent_mode = "implicit";
@@ -104,6 +104,9 @@ in
       }
     ];
 
+    # persist dataDir (on SSD, avoids waking HDDs)
+    nixfiles.persistence.directories = [ config.services.paperless.dataDir ];
+
     # nginx reverse proxy
     nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
 
@@ -113,8 +116,7 @@ in
       port = 28981;
       domain = serviceDomain;
 
-      # storage locations
-      dataDir = "/tank/apps/paperless/data";
+      # storage locations (dataDir defaults to /var/lib/paperless - on SSD)
       mediaDir = "/tank/apps/paperless/media";
       consumptionDir = "/tank/apps/paperless/consume";
 
