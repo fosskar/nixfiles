@@ -79,6 +79,21 @@ in
       '';
     };
 
+    # sqlite backup for borgbackup
+    clan.core.state.authelia = {
+      folders = [ "/var/backup/authelia" ];
+      preBackupScript = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/authelia
+        sqlite3 /var/lib/authelia-main/db.sqlite3 ".backup '/var/backup/authelia/db.sqlite3'"
+      '';
+    };
+
     services.authelia.instances.main = {
       enable = true;
 

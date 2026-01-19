@@ -152,6 +152,7 @@ in
           auth_url = "https://auth.${publicDomain}/api/oidc/authorization";
           token_url = "https://auth.${publicDomain}/api/oidc/token";
           api_url = "https://auth.${publicDomain}/api/oidc/userinfo";
+          signout_redirect_url = "https://auth.${publicDomain}/logout";
           use_pkce = true;
           login_attribute_path = "preferred_username";
           name_attribute_path = "name";

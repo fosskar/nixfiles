@@ -275,6 +275,13 @@
               siteMonitor = "http://127.0.0.1:28981";
             };
           }
+          {
+            "Filebrowser" = {
+              href = "https://files.osscar.me";
+              icon = "filebrowser.svg";
+              siteMonitor = "http://127.0.0.1:8081";
+            };
+          }
         ];
       }
       {

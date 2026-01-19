@@ -4,6 +4,7 @@
     ../../modules/acme
     ../../modules/borgbackup
     ../../modules/nginx
+    ../../modules/filebrowser-quantum
     ../../modules/lldap
     ../../modules/authelia
     ../../modules/immich
@@ -60,6 +61,7 @@
       enable = true;
       profile = "server-powersave";
     };
+
     authelia.publicDomain = "fosskar.eu";
   };
 

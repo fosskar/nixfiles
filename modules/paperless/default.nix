@@ -150,6 +150,7 @@ in
       settings = {
         PAPERLESS_ADMIN_USER = "admin";
         PAPERLESS_OCR_LANGUAGE = "deu+eng";
+        PAPERLESS_LOGOUT_REDIRECT_URL = "https://auth.${publicDomain}/logout";
         PAPERLESS_TIME_ZONE = "Europe/Berlin";
         PAPERLESS_TRUSTED_PROXIES = "138.201.155.21,127.0.0.1";
 
