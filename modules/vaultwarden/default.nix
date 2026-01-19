@@ -45,12 +45,7 @@ in
 
         # sso env file
         {
-          echo "SSO_ENABLED=true"
-          echo "SSO_ONLY=false"
-          echo "SSO_AUTHORITY=https://auth.${publicDomain}"
-          echo "SSO_CLIENT_ID=vaultwarden"
           echo "SSO_CLIENT_SECRET=$SECRET"
-          echo "SSO_PKCE=true"
           echo "ADMIN_TOKEN=$ADMIN"
         } > "$out/sso.env"
       '';
@@ -110,6 +105,12 @@ in
         SIGNUPS_ALLOWED = false;
         INVITATIONS_ALLOWED = true;
         SHOW_PASSWORD_HINT = false;
+
+        SSO_PKCE = true;
+        SSO_CLIENT_ID = "vaultwarden";
+        SSO_ENABLED = true;
+        SSO_ONLY = false;
+        SSO_AUTHORITY = "https://auth.${publicDomain}";
       };
     };
   };
