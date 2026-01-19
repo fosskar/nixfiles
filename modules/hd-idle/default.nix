@@ -8,7 +8,7 @@
 
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${lib.getExe pkgs.hd-idle} -i 600 -c ata -l /var/log/hd-idle.log";
+      ExecStart = "${lib.getExe pkgs.hd-idle} -i 600 -c ata"; # logs to journald
       Restart = "always";
 
       # sandboxing
