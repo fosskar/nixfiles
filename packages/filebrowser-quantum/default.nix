@@ -6,22 +6,18 @@
 }:
 
 let
-  version = "1.1.0-stable";
+  version = "1.1.1-stable";
 
   src = fetchFromGitHub {
     owner = "gtsteffaniak";
     repo = "filebrowser";
     tag = "v${version}";
-    hash = "sha256-S3MtqIqmFYDY053HX8yYGxHc6ev0Y8eXbe24TL8PtYQ=";
+    hash = "sha256-Oh+gfPdt9Xx6cQJHBIXGp+kCk8FcHKj2qUamV5kKjMI=";
   };
 
   frontend = buildNpmPackage {
     pname = "filebrowser-quantum-frontend";
     inherit version src;
-
-    postPatch = ''
-      cp ${./package-lock.json} package-lock.json
-    '';
 
     sourceRoot = "${src.name}/frontend";
     npmDepsHash = "sha256-pJR5m1XrqeHwOADWMnFDtHivaKCBqqdG2O6fWql7ugA=";
