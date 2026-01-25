@@ -16,6 +16,7 @@
     ../../modules/power
     ../../modules/persistence
     ../../modules/hd-idle
+    ../../modules/notify
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
