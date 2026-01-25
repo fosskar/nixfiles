@@ -38,7 +38,6 @@
       client_secret = "$pbkdf2-sha512$310000$86J7nqg93a.FxsgeBJpyxw$JlSY4iDkcyqFhbni4D1/ykjLQJvQer9V26w6OwSvrS7uL3IS8HkkFBgn02DJrm/IXSAqVw5F9HFzUlp7cYeeMQ";
       claims_policy = "pangolin";
       public = false;
-      authorization_policy = "two_factor";
       consent_mode = "implicit";
       require_pkce = true;
       pkce_challenge_method = "S256";

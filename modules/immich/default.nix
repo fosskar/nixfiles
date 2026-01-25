@@ -61,7 +61,6 @@ in
         client_name = "Immich";
         client_secret = "$pbkdf2-sha512$310000$oCkOJgdGAH/cHnDopJbuCQ$eknxkWx3IYQ0Bo.PDN1p4pcmdcrumz94g3eQ8bRtrp/MNsBh9wzFG85HlRuLiLE9D2Tq8afgQ2.HXiONRR4fZw";
         public = false;
-        authorization_policy = "one_factor";
         consent_mode = "implicit";
         token_endpoint_auth_method = "client_secret_post";
         redirect_uris = [

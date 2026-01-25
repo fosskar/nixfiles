@@ -129,7 +129,6 @@ in
         client_name = "Filebrowser Quantum";
         client_secret = "$pbkdf2-sha512$310000$ZYhpHYGG/1Kec9Lv5Q1JHQ$y2ghAiROnsN6kTRh2AXV6.5eZJVRNHXxnZ1m22rBZw1wyPTQkNtJMP977Jt8nYPJo8JNDDR./uuoseRfpgk1.w";
         public = false;
-        authorization_policy = "one_factor";
         consent_mode = "implicit";
         require_pkce = false;
         redirect_uris = [

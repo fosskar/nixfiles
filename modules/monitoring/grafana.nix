@@ -62,7 +62,6 @@ in
         client_name = "Grafana";
         client_secret = "$pbkdf2-sha512$310000$YErtbDH5FQp5GSc8Pt/Lhg$1pwR1Cj4FmJIuZb6nvoZfx8MfvXXzKs5XQ52sU1TDhCZlYVPVlatf7vB0AY5mSqyWgAo3kJUJ6T1o2EBntyCfw";
         public = false;
-        authorization_policy = "one_factor";
         consent_mode = "implicit";
         require_pkce = true;
         pkce_challenge_method = "S256";
@@ -133,16 +132,16 @@ in
           auto_assign_org_role = "Viewer";
         };
 
-        auth = {
-          disable_login_form = true;
-          oauth_auto_login = true;
-        };
+        #auth = {
+        #  disable_login_form = true;
+        #  oauth_auto_login = true;
+        #};
 
         "auth.generic_oauth" = {
           enabled = true;
           name = "Authelia";
           icon = "signin";
-          allow_sign_up = true;
+          #allow_sign_up = true;
           auto_login = true;
           client_id = "grafana";
           client_secret = "$__file{${

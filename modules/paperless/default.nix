@@ -83,7 +83,6 @@ in
         client_name = "Paperless";
         client_secret = "$pbkdf2-sha512$310000$g4iE28Iw.uP2OC5Mq3uxqQ$XCcsIvXUEJd2G/CqcW.eyVSOen5Lm69E2rhLMIT4O7PH/rLnDeCextqKCHAd.8nv48PpWiv3zoyO15ZQambmXw";
         public = false;
-        authorization_policy = "one_factor";
         consent_mode = "implicit";
         require_pkce = true;
         pkce_challenge_method = "S256";

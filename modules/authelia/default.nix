@@ -142,7 +142,7 @@ in
 
         session = {
           name = "authelia_session";
-          same_site = "strict";
+          same_site = "lax";
           expiration = "1h";
           inactivity = "5m";
           remember_me = "1M";

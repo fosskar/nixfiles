@@ -59,7 +59,6 @@ in
         client_name = "Vaultwarden";
         client_secret = "$pbkdf2-sha512$310000$vS4JyqsD/VynwdOErh0r1w$D/xr3XEYjUq6RhncZbpwwlerxUYjF13ZW8trRtkEjk6CtBebOLHgGqrGOm74Kc5dvoTUyAjdfAzYWXGHnuDasg";
         public = false;
-        authorization_policy = "one_factor";
         consent_mode = "implicit";
         require_pkce = true;
         pkce_challenge_method = "S256";
