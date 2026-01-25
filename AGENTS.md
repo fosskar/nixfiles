@@ -52,8 +52,7 @@ ssh root@<ip>                   # direct IP (from deploy output)
 ## patterns
 
 - `mylib.scanPaths ./. { }` - auto-import all .nix files in directory
-- `nixfiles.<category>.<feature>.enable` - module option convention
-- **importing a module enables it** - no extra `nixfiles.*.enable = true` needed
+- **importing a module enables it** - NO `enable` options, NO `nixfiles.*.enable = true`. just import the module and it's on. exception: modules with submodules (like monitoring) where you import the parent but enable specific children
 - some modules have prerequisites (e.g., lanzaboote needs `sbctl create-keys` on target before deploy)
 - `lib.mkDefault` for overridable defaults in profiles
 - `lib.mkForce` to override conflicting services
