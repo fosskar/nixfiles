@@ -143,6 +143,13 @@
             };
           }
           {
+            "Gotify" = {
+              href = "https://gotify.fosskar.eu";
+              icon = "gotify.svg";
+              siteMonitor = "http://127.0.0.1:8070";
+            };
+          }
+          {
             "VictoriaMetrics" = {
               href = "https://vm.osscar.me";
               icon = "victoriametrics.svg";
@@ -154,6 +161,13 @@
               href = "https://grafana.osscar.me";
               icon = "grafana.svg";
               siteMonitor = "https://grafana.osscar.me";
+            };
+          }
+          {
+            "Netdata" = {
+              href = "https://netdata.osscar.me";
+              icon = "netdata.svg";
+              siteMonitor = "http://127.0.0.1:19999";
             };
           }
         ];
