@@ -8,13 +8,13 @@
 }:
 buildGoModule rec {
   pname = "beszel";
-  version = "0.17.0";
+  version = "0.18.2";
 
   src = fetchFromGitHub {
     owner = "henrygd";
     repo = "beszel";
     tag = "v${version}";
-    hash = "sha256-MY/rsWdIiYsqcw6gqDkfA8A/Ied3OSHfJI3KUBxoRKc=";
+    hash = "sha256-7jXhlstGuQc3EP4fm5k9FD22nge0ecXVZAk8mXdyKc0=";
   };
 
   webui = buildNpmPackage {
@@ -48,10 +48,10 @@ buildGoModule rec {
 
     sourceRoot = "${src.name}/internal/site";
 
-    npmDepsHash = "sha256-1au4kSxyjdwFExIoUBSPf/At0jQsfbzlEXuigygBTRM=";
+    npmDepsHash = "sha256-Ks78fCJeHoLCImkyEHo1fSRJqIOEEvL6Zyydpy5LlTw=";
   };
 
-  vendorHash = "sha256-gfQU3jGwTGmMJIy9KTjk/Ncwpk886vMo4CJvm5Y5xpA=";
+  vendorHash = "sha256-OnCX/0DGtkcACuWxGfIreS6SSx9dKq+feWKSymtkABs=";
 
   # relax go version requirement (1.25.5 -> 1.25.4)
   postPatch = ''
@@ -82,11 +82,8 @@ buildGoModule rec {
     homepage = "https://github.com/henrygd/beszel";
     changelog = "https://github.com/henrygd/beszel/releases/tag/v${version}";
     description = "Lightweight server monitoring hub with historical data, docker stats, and alerts";
-    maintainers = with lib.maintainers; [
-      bot-wxt1221
-      arunoruto
-      BonusPlay
-    ];
+    # upstream: bot-wxt1221, arunoruto, BonusPlay
+    maintainers = [ ];
     license = lib.licenses.mit;
   };
 }

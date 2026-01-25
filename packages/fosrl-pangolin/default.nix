@@ -29,16 +29,16 @@ in
 
 buildNpmPackage (finalAttrs: {
   pname = "pangolin";
-  version = "1.14.1";
+  version = "1.15.1";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "pangolin";
     tag = finalAttrs.version;
-    hash = "sha256-Lblxkldmg8MQsaP8ACnXjMUtJhEx7McWOqOegyAFi9Q=";
+    hash = "sha256-SItYudhY+4JQ8Qrm2FgR5se9blETE5y0i1nnjZNQli4=";
   };
 
-  npmDepsHash = "sha256-8H2LRVXSUvxt5H4FA9tf9AnJQJXQOSd43Z1/K1P6g9M=";
+  npmDepsHash = "sha256-4uGIR0KnVl0SvTnD14bavqlv00aX91s2caPPLPdlhO4=";
 
   nativeBuildInputs = [
     esbuild
@@ -93,6 +93,8 @@ buildNpmPackage (finalAttrs: {
     cp -r init $out/share/pangolin/dist/init
 
     cp server/db/names.json $out/share/pangolin/dist/names.json
+    cp server/db/ios_models.json $out/share/pangolin/dist/ios_models.json
+    cp server/db/mac_models.json $out/share/pangolin/dist/mac_models.json
 
     runHook postInstall
   '';
@@ -167,10 +169,8 @@ buildNpmPackage (finalAttrs: {
     homepage = "https://github.com/fosrl/pangolin";
     changelog = "https://github.com/fosrl/pangolin/releases/tag/${finalAttrs.version}";
     license = lib.licenses.agpl3Only;
-    maintainers = with lib.maintainers; [
-      jackr
-      sigmasquadron
-    ];
+    # upstream: jackr, sigmasquadron
+    maintainers = [ ];
     platforms = lib.platforms.linux;
     mainProgram = "pangolin";
   };

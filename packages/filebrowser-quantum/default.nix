@@ -70,10 +70,7 @@ buildGoModule {
     homepage = "https://github.com/gtsteffaniak/filebrowser";
     changelog = "https://github.com/gtsteffaniak/filebrowser/blob/v${version}/CHANGELOG.md";
     license = lib.licenses.asl20;
-    maintainers = with lib.maintainers; [
-      jocimsus
-      denperidge
-    ];
+    maintainers = [ ];
     mainProgram = "filebrowser-quantum";
   };
 }

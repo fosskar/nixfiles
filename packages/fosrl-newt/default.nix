@@ -8,16 +8,16 @@
 
 buildGoModule rec {
   pname = "newt";
-  version = "1.8.1";
+  version = "1.9.0";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "newt";
     tag = version;
-    hash = "sha256-ndgigIk/3/cPZaJHfxWh6XvtAJe3S57sEwNTMBH0lSE=";
+    hash = "sha256-Ya+OVSChGmiZ8JTAfl/im8fOhLCC+r6JKSlH+CnSwP8=";
   };
 
-  vendorHash = "sha256-5Xr6mwPtsqEliKeKv2rhhp6JC7u3coP4nnhIxGMqccU=";
+  vendorHash = "sha256-Sib6AUCpMgxlMpTc2Esvs+UU0yduVOxWUgT44FHAI+k=";
 
   nativeInstallCheckInputs = [ versionCheckHook ];
 
@@ -38,12 +38,8 @@ buildGoModule rec {
     homepage = "https://github.com/fosrl/newt";
     changelog = "https://github.com/fosrl/newt/releases/tag/${src.tag}";
     license = lib.licenses.agpl3Only;
-    maintainers = with lib.maintainers; [
-      fab
-      jackr
-      sigmasquadron
-      water-sucks
-    ];
+    # upstream nixpkgs maintainers: fab, jackr, sigmasquadron, water-sucks
+    maintainers = [ ];
     mainProgram = "newt";
   };
 }
