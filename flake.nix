@@ -67,7 +67,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     tangled = {
-      url = "git+https://tangled.org/@tangled.org/core";
+      url = "git+https://tangled.org/tangled.org/core";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-compat.follows = "";
       inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";
