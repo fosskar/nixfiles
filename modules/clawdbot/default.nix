@@ -24,12 +24,13 @@ let
           "::1"
           "192.168.10.0/24"
         ];
+        auth.mode = "token"; # token from CLAWDBOT_GATEWAY_TOKEN env var
       };
       agents = {
         defaults = {
-          model.primary = "anthropic/claude-haiku-4-5";
+          model.primary = "anthropic/claude-sonnet-4-5";
           model.fallbacks = [
-            "anthropic/claude-sonnet-4-5"
+            "anthropic/claude-haiku-4-5"
             "anthropic/claude-opus-4-5"
           ];
           maxConcurrent = 4;
@@ -39,29 +40,16 @@ let
             every = "30m";
             target = "last";
           };
-          models = {
-            "anthropic/claude-haiku-4-5" = {
-              alias = "haiku";
-            };
-            "anthropic/claude-sonnet-4-5" = {
-              alias = "sonnet";
-            };
-            "anthropic/claude-opus-4-5" = {
-              alias = "opus";
-            };
-            "ollama/deepseek-r1:7b" = {
-              alias = "deepseek";
-            };
-            "ollama/gemma3:4b" = {
-              alias = "gemma";
-            };
-            "ollama/minicpm-v:8b" = {
-              alias = "minicpm";
-            };
-            "ollama/qwen3:8b" = {
-              alias = "qwen";
-            };
-          };
+          #models = {
+          #  "anthropic/claude-haiku-4-5" = {
+          #    alias = "haiku";
+          #  };
+          #  "anthropic/claude-sonnet-4-5" = {
+          #    alias = "sonnet";
+          #  };
+          #  "anthropic/claude-opus-4-5" = {
+          #    alias = "opus";
+          #  };
         };
         list = [
           {
@@ -164,13 +152,18 @@ in
       type = "hidden";
       persist = true;
     };
+    files."gateway-token".secret = true;
     files."env" = {
       secret = true;
       owner = "clawdbot";
       group = "clawdbot";
     };
     script = ''
-      echo "BRAVE_API_KEY=$(cat $prompts/brave-api-key)" > $out/env
+      head -c 32 /dev/urandom | base64 | tr -d '/+=' | head -c 32 > $out/gateway-token
+      {
+        echo "BRAVE_API_KEY=$(cat $prompts/brave-api-key)"
+        echo "CLAWDBOT_GATEWAY_TOKEN=$(cat $out/gateway-token)"
+      } > $out/env
     '';
   };
 
