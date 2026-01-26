@@ -51,6 +51,7 @@
       enable = true;
       folders = [
         "/tank/apps"
+        "/tank/backup"
         "/tank/shares"
       ];
       useSnapshots = true;
