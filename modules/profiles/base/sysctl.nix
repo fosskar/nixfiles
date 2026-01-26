@@ -106,7 +106,8 @@
     "net.ipv4.tcp_congestion_control" = lib.mkDefault "bbr";
     "net.core.default_qdisc" = lib.mkDefault "cake";
     # increase netdev receive queue higher backlog allows the kernel to handle bursts of incoming packets reducing the chance of packet loss
-    "net.core.netdev_max_backlog" = lib.mkDefault 4096;
+    "net.core.netdev_max_backlog" = lib.mkDefault 16384;
+    "net.core.netdev_budget" = lib.mkDefault 600;
     "net.ipv4.tcp_max_syn_backlog" = lib.mkDefault 8192;
     # defines the maximum ancillary buffer size allowed per socket
     "net.core.optmem_max" = lib.mkDefault 65536;

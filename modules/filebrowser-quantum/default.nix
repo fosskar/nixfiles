@@ -75,18 +75,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # sqlite backup for borgbackup
+    # boltdb backup for borgbackup (filebrowser-quantum uses storm/boltdb, not sqlite)
     clan.core.state.filebrowser-quantum = {
       folders = [ "/var/backup/filebrowser-quantum" ];
       preBackupScript = ''
-        export PATH=${
-          lib.makeBinPath [
-            pkgs.sqlite
-            pkgs.coreutils
-          ]
-        }
+        export PATH=${lib.makeBinPath [ pkgs.coreutils ]}
         mkdir -p /var/backup/filebrowser-quantum
-        sqlite3 /var/lib/filebrowser-quantum/database.db ".backup '/var/backup/filebrowser-quantum/database.db'"
+        cp /var/lib/filebrowser-quantum/database.db /var/backup/filebrowser-quantum/database.db
       '';
     };
 

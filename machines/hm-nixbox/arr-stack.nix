@@ -28,7 +28,7 @@ in
     radarr.port = config.services.radarr.settings.server.port;
     lidarr.port = config.services.lidarr.settings.server.port;
     readarr.port = config.services.readarr.settings.server.port;
-    sabnzbd.port = 8080; # no port option
+    sabnzbd.port = 8085; # moved from 8080 for signal-cli
   };
 
   users = {
@@ -53,7 +53,7 @@ in
       secretFiles = [ config.sops.secrets."sabnzbd".path ];
       settings = {
         misc = {
-          port = 8080;
+          port = 8085;
           host_whitelist = "hm-nixbox, sabnzbd.osscar.me";
           download_dir = "/tank/media/downloads/incomplete";
           complete_dir = "/tank/media/downloads/complete";

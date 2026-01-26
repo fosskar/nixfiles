@@ -3,6 +3,7 @@
   imports = [
     ../../modules/acme
     ../../modules/borgbackup
+    ../../modules/clawdbot
     ../../modules/nginx
     ../../modules/filebrowser-quantum
     ../../modules/lldap

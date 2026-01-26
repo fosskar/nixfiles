@@ -17,32 +17,44 @@ let
   // cfg.gotify.applications;
 
   notifyScript = pkgs.writeShellScript "systemd-notify" ''
-        SERVICE="$1"
-        TOKEN_FILE="${tokenFile "systemd-notify"}"
+    SERVICE="$1"
+    TOKEN_FILE="${tokenFile "systemd-notify"}"
+    COOLDOWN_DIR="/run/systemd-notify-cooldown"
+    COOLDOWN_SECS=300  # 5 min cooldown per service
 
-        # skip if token doesn't exist yet
-        if [ ! -f "$TOKEN_FILE" ]; then
-          echo "gotify app token not found, skipping notification"
-          exit 0
-        fi
+    # skip if token doesn't exist yet
+    if [ ! -f "$TOKEN_FILE" ]; then
+      echo "gotify app token not found, skipping notification"
+      exit 0
+    fi
 
-        HOST=$(${pkgs.hostname}/bin/hostname)
-        RESULT=$(${pkgs.systemd}/bin/systemctl show "$SERVICE" --property=Result --value 2>/dev/null || echo "unknown")
-        EXIT_CODE=$(${pkgs.systemd}/bin/systemctl show "$SERVICE" --property=ExecMainStatus --value 2>/dev/null || echo "?")
-        STATE=$(${pkgs.systemd}/bin/systemctl show "$SERVICE" --property=ActiveState --value 2>/dev/null || echo "unknown")
+    # rate limit: skip if notified recently
+    mkdir -p "$COOLDOWN_DIR"
+    COOLDOWN_FILE="$COOLDOWN_DIR/$SERVICE"
+    if [ -f "$COOLDOWN_FILE" ]; then
+      LAST=$(cat "$COOLDOWN_FILE")
+      NOW=$(date +%s)
+      if [ $((NOW - LAST)) -lt $COOLDOWN_SECS ]; then
+        echo "rate limited: $SERVICE failed again within cooldown"
+        exit 0
+      fi
+    fi
+    date +%s > "$COOLDOWN_FILE"
 
-        JSON=$(${pkgs.jq}/bin/jq -n \
-          --arg title "🔴 $SERVICE failed" \
-          --arg message "Host: $HOST
-    Result: $RESULT
-    Exit code: $EXIT_CODE
-    State: $STATE" \
-          '{title: $title, message: $message, priority: 8}')
+    HOST=$(${pkgs.hostname}/bin/hostname)
+    # get last 10 log lines, filter to errors/relevant info
+    LOGS=$(${pkgs.systemd}/bin/journalctl -u "$SERVICE" -n 15 --no-pager -o cat 2>/dev/null | tail -10)
 
-        ${pkgs.curl}/bin/curl -s \
-          -X POST "http://127.0.0.1:${toString cfg.gotify.port}/message?token=$(cat $TOKEN_FILE)" \
-          -H "Content-Type: application/json" \
-          -d "$JSON"
+    JSON=$(${pkgs.jq}/bin/jq -n \
+      --arg title "🔴 $SERVICE failed" \
+      --arg host "$HOST" \
+      --arg logs "$LOGS" \
+      '{title: $title, message: "Host: \($host)\n\n\($logs)", priority: 8}')
+
+    ${pkgs.curl}/bin/curl -s \
+      -X POST "http://127.0.0.1:${toString cfg.gotify.port}/message?token=$(cat $TOKEN_FILE)" \
+      -H "Content-Type: application/json" \
+      -d "$JSON"
   '';
 
   bootstrapScript = pkgs.writeShellScript "gotify-bootstrap" ''

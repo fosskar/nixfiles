@@ -114,6 +114,11 @@
       #inputs.blueprint.follows = "blueprint";
     };
 
+    nix-clawdbot = {
+      url = "github:fosskar/nix-clawdbot"; # "github:clawdbot/nix-clawdbot";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # wm
     niri-flake = {
       url = "github:sodiboo/niri-flake";

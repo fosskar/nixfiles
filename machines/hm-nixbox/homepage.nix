@@ -263,7 +263,7 @@
             "SABnzbd" = {
               href = "https://sabnzbd.osscar.me";
               icon = "sabnzbd.svg";
-              siteMonitor = "http://127.0.0.1:8080";
+              siteMonitor = "http://127.0.0.1:8085";
             };
           }
         ];
