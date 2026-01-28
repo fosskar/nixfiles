@@ -137,6 +137,9 @@
     };
   };
 
-  # faster shutdown for crowdsec
-  systemd.services.crowdsec.serviceConfig.TimeoutStopSec = "10s";
+  # faster shutdown for crowdsec + memory limit
+  systemd.services.crowdsec.serviceConfig = {
+    TimeoutStopSec = "10s";
+    MemoryMax = "1G";
+  };
 }
