@@ -2,6 +2,10 @@
   config,
   ...
 }:
+let
+  gotifyPort = config.nixfiles.notify.gotify.port;
+  gotifyTokenFile = config.nixfiles.notify.gotify.tokenFile.grafana;
+in
 {
   imports = [
     ../../modules/monitoring
@@ -11,6 +15,26 @@
   systemd.services.beszel-agent.unitConfig.RequiresMountsFor = [ "/tank" ];
 
   services.beszel.agent.environmentFile = config.sops.secrets."beszel.env".path;
+
+  # grafana alerting -> gotify
+  services.grafana.provision.alerting.contactPoints.settings = {
+    apiVersion = 1;
+    contactPoints = [
+      {
+        orgId = 1;
+        name = "gotify";
+        receivers = [
+          {
+            uid = "gotify";
+            type = "webhook";
+            settings = {
+              url = "http://127.0.0.1:${toString gotifyPort}/message?token=$__file{${gotifyTokenFile}}";
+            };
+          }
+        ];
+      }
+    ];
+  };
 
   nixfiles.monitoring = {
     beszel = {
