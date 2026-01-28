@@ -6,8 +6,7 @@
 }:
 let
   cfg = config.nixfiles.notify;
-  stateDir = "/var/lib/${config.services.gotify.stateDirectoryName}";
-  tokenDir = "${stateDir}/tokens";
+  tokenDir = "/run/gotify-tokens";
   tokenFile = name: "${tokenDir}/${name}";
 
   # always include systemd-notify
@@ -86,7 +85,7 @@ let
 
         if [ -n "$EXISTING" ]; then
           echo "$EXISTING" > "$TOKEN_DIR/${name}"
-          chmod 600 "$TOKEN_DIR/${name}"
+          chmod 644 "$TOKEN_DIR/${name}"
           echo "${name}: synced token from gotify"
         else
           RESPONSE=$(${pkgs.curl}/bin/curl -s -u "admin:$PASSWORD" \
@@ -100,7 +99,7 @@ let
             echo "${name}: failed to create - $RESPONSE"
           else
             echo "$TOKEN" > "$TOKEN_DIR/${name}"
-            chmod 600 "$TOKEN_DIR/${name}"
+            chmod 644 "$TOKEN_DIR/${name}"
             echo "${name}: created"
           fi
         fi
