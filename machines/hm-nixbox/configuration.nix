@@ -3,7 +3,7 @@
   imports = [
     ../../modules/acme
     ../../modules/borgbackup
-    ../../modules/clawdbot
+    ../../modules/moltbot
     ../../modules/nginx
     ../../modules/filebrowser-quantum
     ../../modules/lldap
@@ -18,6 +18,7 @@
     ../../modules/persistence
     ../../modules/hd-idle
     ../../modules/notify
+    ../../modules/virtualization
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
@@ -66,11 +67,20 @@
     };
 
     authelia.publicDomain = "fosskar.eu";
+
+    virtualization.docker.enable = true;
+
+    notify.gotify.applications = {
+      grafana = "grafana alerts";
+    };
   };
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)
   boot = {
-    kernelModules = [ "nct6775" ];
+    kernelModules = [
+      "nct6775"
+      "kvm-amd"
+    ];
     loader = {
       systemd-boot.enable = false;
       grub = {
