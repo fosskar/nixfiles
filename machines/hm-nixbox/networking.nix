@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   networking = {
     hostName = "hm-nixbox";
     hostId = "25e85037"; # zfs requires unique hostId
@@ -32,8 +33,11 @@ _: {
     linkConfig.WakeOnLan = "off";
   };
 
-  # enable runtime power management for ethernet devices
+  # udev rules for network interfaces
   services.udev.extraRules = ''
+    # increase ring buffer to reduce packet drops on 10G NIC
+    ACTION=="add", SUBSYSTEM=="net", KERNEL=="enp36s0f0np0", RUN+="${pkgs.ethtool}/bin/ethtool -G $name rx 2047 tx 2047"
+    # enable runtime power management for ethernet devices
     ACTION=="add", SUBSYSTEM=="net", KERNEL=="en*", RUN+="/bin/sh -c 'echo auto > /sys/class/net/%k/device/power/control'"
   '';
 }
