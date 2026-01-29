@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.stirling-pdf;
-  port = 8080;
+  port = 8180;
 in
 {
   options.nixfiles.stirling-pdf = {

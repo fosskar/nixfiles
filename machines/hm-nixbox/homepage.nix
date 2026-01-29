@@ -300,7 +300,7 @@
             "Stirling PDF" = {
               href = "https://pdf.osscar.me";
               icon = "stirling-pdf.svg";
-              siteMonitor = "http://127.0.0.1:8080";
+              siteMonitor = "http://127.0.0.1:8180";
             };
           }
           {
