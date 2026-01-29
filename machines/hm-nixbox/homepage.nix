@@ -303,6 +303,13 @@
               siteMonitor = "http://127.0.0.1:8080";
             };
           }
+          {
+            "Vert" = {
+              href = "https://converter.osscar.me";
+              icon = "mdi-video-switch";
+              siteMonitor = "http://127.0.0.1:8088";
+            };
+          }
         ];
       }
       {
