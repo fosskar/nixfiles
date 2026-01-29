@@ -5,6 +5,7 @@
     ../../modules/borgbackup
     ../../modules/power
     ../../modules/persistence
+    ../../modules/tailscale
   ]
   ++ (mylib.scanPaths ./. { exclude = [ ]; });
 
