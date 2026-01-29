@@ -278,6 +278,13 @@
               siteMonitor = "http://127.0.0.1:11434";
             };
           }
+          {
+            "Moltbot" = {
+              href = "https://moltbot.osscar.me";
+              icon = "mdi-robot";
+              siteMonitor = "http://127.0.0.1:18789";
+            };
+          }
         ];
       }
       {
