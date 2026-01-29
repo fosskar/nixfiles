@@ -2,7 +2,7 @@
 {
   nixfiles.nginx.vhosts.home.port = config.services.homepage-dashboard.listenPort;
 
-  services.glances.enable = true;
+  # services.glances.enable = true; # cpu hog
 
   services.homepage-dashboard = {
     enable = true;
@@ -30,13 +30,13 @@
       statusStyle = "dot";
 
       layout = [
-        {
-          Glances = {
-            header = false;
-            style = "row";
-            columns = 3;
-          };
-        }
+        # {
+        #   Glances = {
+        #     header = false;
+        #     style = "row";
+        #     columns = 3;
+        #   };
+        # }
         {
           Network = {
             header = true;
@@ -296,6 +296,13 @@
               siteMonitor = "http://127.0.0.1:8081";
             };
           }
+          {
+            "Stirling PDF" = {
+              href = "https://pdf.osscar.me";
+              icon = "stirling-pdf.svg";
+              siteMonitor = "http://127.0.0.1:8080";
+            };
+          }
         ];
       }
       {
@@ -334,76 +341,76 @@
           }
         ];
       }
-      {
-        "Glances" = [
-          {
-            "Info" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "info";
-                chart = false;
-                version = 4;
-              };
-            };
-          }
-          {
-            "CPU" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "cpu";
-                chart = false;
-                version = 4;
-              };
-            };
-          }
-          {
-            "CPU Temp" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "sensor:Tctl";
-                chart = false;
-                version = 4;
-              };
-            };
-          }
-          {
-            "Memory" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "memory";
-                chart = false;
-                version = 4;
-              };
-            };
-          }
-          {
-            "Disk /" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "fs:/";
-                chart = false;
-                version = 4;
-              };
-            };
-          }
-          {
-            "Disk /tank" = {
-              widget = {
-                type = "glances";
-                url = "http://127.0.0.1:61208";
-                metric = "fs:/tank";
-                chart = false;
-                version = 4;
-              };
-            };
-          }
-        ];
-      }
+      # {
+      #   "Glances" = [
+      #     {
+      #       "Info" = {
+      #         widget = {
+      #           type = "glances";
+      #           url = "http://127.0.0.1:61208";
+      #           metric = "info";
+      #           chart = false;
+      #           version = 4;
+      #         };
+      #       };
+      #     }
+      #     {
+      #       "CPU" = {
+      #         widget = {
+      #           type = "glances";
+      #           url = "http://127.0.0.1:61208";
+      #           metric = "cpu";
+      #           chart = false;
+      #           version = 4;
+      #         };
+      #       };
+      #     }
+      #     {
+      #       "CPU Temp" = {
+      #         widget = {
+      #           type = "glances";
+      #           url = "http://127.0.0.1:61208";
+      #           metric = "sensor:Tctl";
+      #           chart = false;
+      #           version = 4;
+      #         };
+      #       };
+      #     }
+      #     {
+      #       "Memory" = {
+      #         widget = {
+      #           type = "glances";
+      #           url = "http://127.0.0.1:61208";
+      #           metric = "memory";
+      #           chart = false;
+      #           version = 4;
+      #         };
+      #       };
+      #     }
+      #     {
+      #       "Disk /" = {
+      #         widget = {
+      #           type = "glances";
+      #           url = "http://127.0.0.1:61208";
+      #           metric = "fs:/";
+      #           chart = false;
+      #           version = 4;
+      #         };
+      #       };
+      #     }
+      #     {
+      #       "Disk /tank" = {
+      #         widget = {
+      #           type = "glances";
+      #           url = "http://127.0.0.1:61208";
+      #           metric = "fs:/tank";
+      #           chart = false;
+      #           version = 4;
+      #         };
+      #       };
+      #     }
+      #   ];
+      # }
     ];
 
     bookmarks = [
