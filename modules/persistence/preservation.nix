@@ -34,6 +34,12 @@ in
 
   config = lib.mkIf (cfg.enable && cfg.backend == "preservation") {
     preservation.enable = true;
+
+    # prevent systemd from creating tmpfs overlay on /nix/store/*-etc-machine-id
+    # which breaks nix-optimise (EXDEV: cross-device link)
+    # see: https://github.com/nix-community/impermanence/blob/master/nixos.nix
+    boot.initrd.systemd.suppressedUnits = [ "systemd-machine-id-commit.service" ];
+    systemd.services.systemd-machine-id-commit.unitConfig.ConditionFirstBoot = true;
     preservation.preserveAt.${cfg.persistPath} = {
       directories =
         map toPreservationDir (
