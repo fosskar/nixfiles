@@ -37,14 +37,14 @@ let
 in
 python3Packages.buildPythonApplication rec {
   pname = "hyprwhspr";
-  version = "1.18.6";
+  version = "1.18.9";
   format = "other"; # no setup.py, custom install
 
   src = fetchFromGitHub {
     owner = "goodroot";
     repo = "hyprwhspr";
     tag = "v${version}";
-    hash = "sha256-7ENS9dL3Wus7Pahi4YjvaNOvkgxctAei4Mc0ZYyJ3T0=";
+    hash = "sha256-bx42Ue5SNbNNOTIgtZI8M9zAdA/XlcFoT6Zq7KUA6Lo=";
   };
 
   nativeBuildInputs = [
