@@ -22,6 +22,9 @@ in
           # extra args to pass to specific packages
           extraArgs = {
             hyprwhspr = { inherit pywhispercpp; };
+            stirling-pdf = {
+              isDesktopVariant = false;
+            };
           };
 
           # convert to attrset of callPackage calls

@@ -11,6 +11,7 @@
     ../../modules/immich
     ../../modules/paperless
     ../../modules/vaultwarden
+    ../../modules/stirling-pdf
     ../../modules/zfs
     ../../modules/gpu
     ../../modules/cpu
@@ -19,6 +20,8 @@
     ../../modules/hd-idle
     ../../modules/notify
     ../../modules/virtualization
+    ../../modules/tailscale
+    ../../modules/vert
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [

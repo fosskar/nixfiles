@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p nix-update
+#!nix-shell -i bash -p nix-update nix
 # shellcheck shell=bash
 # update packages in this directory
 # usage: ./update.sh [package...]
@@ -20,6 +20,9 @@ declare -A SUBPACKAGES=(
 
 # packages to skip (binary releases, manual updates)
 SKIP_PACKAGES=("handy" "voquill")
+
+# packages with gradle deps that need mitmCache update
+GRADLE_PACKAGES=("stirling-pdf")
 
 get_all_packages() {
   for dir in "$SCRIPT_DIR"/*/; do
@@ -56,6 +59,18 @@ update_package() {
     echo "!! failed to update $pkg"
     return 1
   }
+
+  # update gradle deps if needed
+  for gradle_pkg in "${GRADLE_PACKAGES[@]}"; do
+    if [[ $pkg == "$gradle_pkg" ]]; then
+      echo ":: updating gradle deps for $pkg"
+      script=$(cd "$FLAKE_ROOT" && nix build ".#${pkg}.mitmCache.updateScript" --no-link --print-out-paths)
+      (cd "$FLAKE_ROOT" && "$script") || {
+        echo "!! failed to update gradle deps for $pkg"
+        return 1
+      }
+    fi
+  done
 }
 
 main() {
