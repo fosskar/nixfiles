@@ -32,11 +32,14 @@ in
     virtualisation.oci-containers.containers.vert = {
       image = "ghcr.io/vert-sh/vert:latest";
       ports = [ "127.0.0.1:${toString cfg.port}:80" ];
+      environment = lib.mkIf cfg.vertd.enable {
+        PUB_VERTD_URL = "https://vertd.${config.nixfiles.acme.domain}";
+      };
     };
 
     virtualisation.oci-containers.containers.vertd = lib.mkIf cfg.vertd.enable {
       image = "ghcr.io/vert-sh/vertd:latest";
-      ports = [ "127.0.0.1:${toString cfg.vertd.port}:8000" ];
+      ports = [ "127.0.0.1:${toString cfg.vertd.port}:24153" ];
       # gpu passthrough for vaapi
       extraOptions = [
         "--device=/dev/dri/card1"
@@ -45,5 +48,6 @@ in
     };
 
     nixfiles.nginx.vhosts.converter.port = cfg.port;
+    nixfiles.nginx.vhosts.vertd = lib.mkIf cfg.vertd.enable { inherit (cfg.vertd) port; };
   };
 }
