@@ -84,7 +84,7 @@ let
             channel = "signal";
             peer = {
               kind = "dm";
-              id = "uuid:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+              id = "uuid:c4c7789f-f5e0-4340-bb57-ffb4e412bbd9";
             };
           };
         }
