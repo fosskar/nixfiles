@@ -27,7 +27,7 @@ in
     sonarr.port = config.services.sonarr.settings.server.port;
     radarr.port = config.services.radarr.settings.server.port;
     lidarr.port = config.services.lidarr.settings.server.port;
-    readarr.port = config.services.readarr.settings.server.port;
+    # readarr.port = config.services.readarr.settings.server.port; # archived, replaced by bookshelf
     sabnzbd.port = 8085; # moved from 8080 for signal-cli
   };
 
@@ -107,12 +107,13 @@ in
       group = "media";
     };
 
-    readarr = {
-      enable = true;
-      openFirewall = false;
-      settings.server.port = 8787;
-      group = "media";
-    };
+    # readarr archived - use bookshelf when packaged
+    # readarr = {
+    #   enable = true;
+    #   openFirewall = false;
+    #   settings.server.port = 8787;
+    #   group = "media";
+    # };
 
     bazarr = {
       enable = true;
@@ -192,7 +193,7 @@ in
       sonarr.serviceConfig.UMask = "0027";
       radarr.serviceConfig.UMask = "0027";
       lidarr.serviceConfig.UMask = "0027";
-      readarr.serviceConfig.UMask = "0027";
+      # readarr.serviceConfig.UMask = "0027";
       bazarr.serviceConfig.UMask = "0027";
       jellyseerr.serviceConfig.UMask = "0027";
 
@@ -257,12 +258,12 @@ in
         ${sqliteBackup} /var/lib/lidarr/.config/Lidarr/lidarr.db /var/backup/lidarr/lidarr.db
       '';
     };
-    readarr = {
-      folders = [ "/var/backup/readarr" ];
-      preBackupScript = ''
-        ${sqliteBackup} /var/lib/readarr/readarr.db /var/backup/readarr/readarr.db
-      '';
-    };
+    # readarr = {
+    #   folders = [ "/var/backup/readarr" ];
+    #   preBackupScript = ''
+    #     ${sqliteBackup} /var/lib/readarr/readarr.db /var/backup/readarr/readarr.db
+    #   '';
+    # };
     bazarr = {
       folders = [ "/var/backup/bazarr" ];
       preBackupScript = ''
