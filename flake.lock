@@ -128,15 +128,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1769772670,
-        "narHash": "sha256-QL0XSi5aUHUFDTPJyBCe2bxVrENFNccCxQyaUmrt2fI=",
-        "rev": "6918edd40d686dee5ce353e5d64d525bfaeff48c",
-        "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/6918edd40d686dee5ce353e5d64d525bfaeff48c.tar.gz"
+        "lastModified": 1769803566,
+        "narHash": "sha256-EZev9LDW9xC0rLcjNflmS1U1m+NqiZGLZBGjw5o4J18=",
+        "ref": "refs/heads/main",
+        "rev": "d09391d5612df02711d9aa4b68c4b8400a6766f0",
+        "revCount": 12604,
+        "type": "git",
+        "url": "https://git.clan.lol/clan/clan-core"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "type": "git",
+        "url": "https://git.clan.lol/clan/clan-core"
       }
     },
     "crane": {
@@ -549,11 +551,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1769782457,
-        "narHash": "sha256-ZXyT+qjqELGZWipc/P727hd1weTRQnv9pM+YilNy8Go=",
+        "lastModified": 1769802121,
+        "narHash": "sha256-P2KVccrXznyha83gPQeVJ3k+3+/hYXIPQ91DwuRmFF4=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "b8fc0def97a5b6279b8d0e8e13972575a84c310a",
+        "rev": "ec120d57328e5ae4bfc93a7e809ace47d98f2dc3",
         "type": "github"
       },
       "original": {
@@ -1244,10 +1246,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1769798551,
-        "narHash": "sha256-E1ZjXnIdtY9fbs6Dp0wjRPD/5FI8zAbsqsVdvSPqQ7s=",
+        "lastModified": 1769803534,
+        "narHash": "sha256-ON3sCqVQBQ/yI6dlAaMvCX5tkp0IcpYINUDb8GuOaag=",
         "ref": "master",
-        "rev": "5f2d88416e88f571ae59ffe050fe6de9d597f775",
+        "rev": "1d93f82f309bdac051a4183aecb35c817098c599",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1332,11 +1334,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769799276,
-        "narHash": "sha256-6iTvXAsHhqAZAz1ZcpUpPPrsavGC2W4+oWxMRI2y9E4=",
+        "lastModified": 1769803827,
+        "narHash": "sha256-EtGFVP4DFvi9+bXoFaV6bgHyIPvUnXPiHxZ/kRFF1Vc=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "e36a6789adcc51882ba124d2ab00c7d7c185f9ae",
+        "rev": "2625ff29547b6607222ce1edb416131623e580fc",
         "type": "github"
       },
       "original": {
