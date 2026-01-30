@@ -8,13 +8,13 @@ in
     settings = {
       theme = "custom";
       themes.custom = {
-        bg = t.bg;
-        fg = t.fg;
+        inherit (t) bg;
+        inherit (t) fg;
         red = t.error;
-        green = t.term.green;
-        blue = t.term.blue;
+        inherit (t.term) green;
+        inherit (t.term) blue;
         yellow = t.warning;
-        magenta = t.term.magenta;
+        inherit (t.term) magenta;
         orange = t.warning;
         cyan = t.secondary;
         black = t.bg;
