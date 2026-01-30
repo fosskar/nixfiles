@@ -63,6 +63,7 @@ in
         "upsd"
         "sensors"
         "smart"
+        "postgresql"
       ];
     };
 
