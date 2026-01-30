@@ -5,15 +5,17 @@
   ...
 }:
 let
-  stateDir = "/var/lib/moltbot";
-  inherit (inputs.nix-moltbot.packages.${pkgs.stdenv.hostPlatform.system}) moltbot-gateway;
+  stateDir = "/var/lib/openclaw";
+  # TODO: fork nix-openclaw to include docs in package build
+  # the binary resolves its own store path for docs, wrapper approach doesn't work
+  inherit (inputs.nix-openclaw.packages.${pkgs.stdenv.hostPlatform.system}) openclaw-gateway;
 
   # secondary agents that share credentials with main
   secondaryAgents = [
     "simon"
     "iuser"
   ];
-  configFile = pkgs.writeText "moltbot.json" (
+  configFile = pkgs.writeText "openclaw.json" (
     builtins.toJSON {
       gateway = {
         mode = "local";
@@ -24,7 +26,7 @@ let
           "::1"
           "192.168.10.0/24"
         ];
-        auth.mode = "token"; # token from MOLTBOT_GATEWAY_TOKEN env var
+        auth.mode = "token"; # token from CLAWDBOT_GATEWAY_TOKEN env var
       };
       agents = {
         defaults = {
@@ -134,7 +136,7 @@ let
 in
 {
   environment.systemPackages = [
-    moltbot-gateway
+    openclaw-gateway
     pkgs.claude-code
     pkgs.signal-cli
     pkgs.libreoffice
@@ -148,20 +150,20 @@ in
     ]))
   ];
 
-  nixfiles.nginx.vhosts.moltbot.port = 18789;
+  nixfiles.nginx.vhosts.openclaw.port = 18789;
 
-  users.users.moltbot = {
+  users.users.openclaw = {
     isSystemUser = true;
-    group = "moltbot";
+    group = "openclaw";
     extraGroups = [ "shared" ];
-    home = "/var/lib/moltbot";
+    home = "/var/lib/openclaw";
     createHome = true;
     shell = pkgs.bash;
   };
 
-  users.groups.moltbot = { };
+  users.groups.openclaw = { };
 
-  clan.core.vars.generators.moltbot = {
+  clan.core.vars.generators.openclaw = {
     prompts.brave-api-key = {
       description = "Brave Search API key (get free at brave.com/search/api)";
       type = "hidden";
@@ -170,8 +172,8 @@ in
     files."gateway-token".secret = true;
     files."env" = {
       secret = true;
-      owner = "moltbot";
-      group = "moltbot";
+      owner = "openclaw";
+      group = "openclaw";
     };
     script = ''
       head -c 32 /dev/urandom | base64 | tr -d '/+=' | head -c 32 > $out/gateway-token
@@ -183,28 +185,28 @@ in
   };
 
   environment.sessionVariables = {
-    MOLTBOT_CONFIG_PATH = "${configFile}";
-    MOLTBOT_STATE_DIR = stateDir;
+    CLAWDBOT_CONFIG_PATH = "${configFile}";
+    CLAWDBOT_STATE_DIR = stateDir;
   };
 
-  systemd.services.moltbot = {
-    description = "moltbot AI gateway";
+  systemd.services.openclaw = {
+    description = "openclaw AI gateway";
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {
       Type = "simple";
-      User = "moltbot";
-      Group = "moltbot";
+      User = "openclaw";
+      Group = "openclaw";
       WorkingDirectory = stateDir;
-      RuntimeDirectory = "moltbot";
-      EnvironmentFile = config.clan.core.vars.generators.moltbot.files."env".path;
+      RuntimeDirectory = "openclaw";
+      EnvironmentFile = config.clan.core.vars.generators.openclaw.files."env".path;
       Environment = [
-        "MOLTBOT_CONFIG_PATH=${configFile}"
-        "MOLTBOT_STATE_DIR=${stateDir}"
-        "MOLTBOT_NIX_MODE=1"
+        "CLAWDBOT_CONFIG_PATH=${configFile}"
+        "CLAWDBOT_STATE_DIR=${stateDir}"
+        "CLAWDBOT_NIX_MODE=1"
         "OLLAMA_API_KEY=ollama-local"
-        "XDG_RUNTIME_DIR=/run/moltbot"
+        "XDG_RUNTIME_DIR=/run/openclaw"
       ];
       ExecStartPre = [
         "${pkgs.coreutils}/bin/mkdir -p ${stateDir}/workspaces/main ${stateDir}/workspaces/simon ${stateDir}/workspaces/iuser ${stateDir}/agents/main/agent"
@@ -213,7 +215,7 @@ in
         id:
         "${pkgs.bash}/bin/bash -c 'mkdir -p ${stateDir}/agents/${id}/agent && [ ! -e ${stateDir}/agents/${id}/agent/auth-profiles.json ] && ln -s ${stateDir}/agents/main/agent/auth-profiles.json ${stateDir}/agents/${id}/agent/auth-profiles.json || true'"
       ) secondaryAgents;
-      ExecStart = "${moltbot-gateway}/bin/moltbot gateway";
+      ExecStart = "${openclaw-gateway}/bin/openclaw gateway";
       Restart = "on-failure";
       RestartSec = "10s";
     };

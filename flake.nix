@@ -114,8 +114,8 @@
       #inputs.blueprint.follows = "blueprint";
     };
 
-    nix-moltbot = {
-      url = "github:fosskar/nix-moltbot";
+    nix-openclaw = {
+      url = "github:fosskar/nix-openclaw";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
