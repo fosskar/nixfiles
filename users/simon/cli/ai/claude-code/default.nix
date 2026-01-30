@@ -18,7 +18,7 @@
   };
 
   home.packages = [
-    inputs.llm-agents.packages.${pkgs.system}.ccstatusline
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccstatusline
   ];
 
   programs = {
