@@ -17,6 +17,10 @@
     source = ../AGENTS.md;
   };
 
+  home.packages = [
+    inputs.llm-agents.packages.${pkgs.system}.ccstatusline
+  ];
+
   programs = {
     claude-code = {
       enable = true;
@@ -40,34 +44,16 @@
         statusLine = {
           type = "command";
           padding = 0;
-          command = "${config.home.homeDirectory}/.claude/claude-code-status.sh";
+          command = "ccstatusline";
+          #command = "${config.home.homeDirectory}/.claude/claude-code-status.sh";
         };
         allowedDirectories = [
           "${config.home.homeDirectory}"
         ];
 
-        extraKnownMarketplaces = {
-          superpowers-marketplace = {
-            source = {
-              source = "github";
-              repo = "obra/superpowers-marketplace";
-            };
-          };
-          claude-code-workflows = {
-            source = {
-              source = "github";
-              repo = "wshobson/agents";
-            };
-          };
-        };
+        extraKnownMarketplaces = { };
 
-        enabledPlugins = {
-          "superpowers@superpowers-marketplace" = true;
-          "code-documentation@claude-code-workflows" = true;
-          "cloud-infrastructure@claude-code-workflows" = true;
-          "cicd-automation@claude-code-workflows" = true;
-          "context7@claude-plugins-official" = true;
-        };
+        enabledPlugins = { };
       };
     };
   };
