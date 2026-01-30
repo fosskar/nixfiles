@@ -108,6 +108,10 @@ let
         };
       };
       skills = {
+        allowBundled = [
+          "github"
+          "clawdhub"
+        ];
         load = {
           extraDirs = [ "${stateDir}/skills" ];
         };
@@ -158,7 +162,7 @@ in
     extraGroups = [ "shared" ];
     home = "/var/lib/openclaw";
     createHome = true;
-    shell = pkgs.bash;
+    shell = pkgs.bashInteractive;
   };
 
   users.groups.openclaw = { };
