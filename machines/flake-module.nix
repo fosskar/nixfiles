@@ -71,11 +71,32 @@ in
           roles.default.tags.nixos = { };
         };
 
+        # TODO: migrate admin.allowedKeys to sshd.authorizedKeys when
+        # https://git.clan.lol/clan/clan-core/pulls/6609 merges
         admin = {
           roles.default = {
             tags.all = { };
             settings.allowedKeys = {
               simon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE";
+            };
+          };
+        };
+
+        sshd = {
+          module = {
+            name = "sshd";
+            input = "clan-core";
+          };
+          roles.server.tags.all = { };
+          roles.client = {
+            tags.all = { };
+            settings = {
+              certificate.searchDomains = [
+                "l"
+                "lan"
+                "local"
+                "osscar.me"
+              ];
             };
           };
         };
