@@ -199,6 +199,7 @@ in
       User = "openclaw";
       Group = "openclaw";
       WorkingDirectory = stateDir;
+      StateDirectory = "openclaw";
       RuntimeDirectory = "openclaw";
       EnvironmentFile = config.clan.core.vars.generators.openclaw.files."env".path;
       Environment = [

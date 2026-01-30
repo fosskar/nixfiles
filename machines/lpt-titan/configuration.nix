@@ -18,6 +18,7 @@
     ../../modules/dms
     ../../modules/niri
     ../../modules/persistence
+    ../../modules/tailscale
   ]
   ++ mylib.scanPaths ./. { };
 
