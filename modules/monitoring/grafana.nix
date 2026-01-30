@@ -129,7 +129,6 @@ in
         users = {
           allow_sign_up = false;
           auto_assign_org = true;
-          auto_assign_org_role = "Viewer";
         };
 
         #auth = {
