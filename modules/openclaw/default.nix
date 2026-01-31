@@ -116,6 +116,10 @@ let
           };
         };
       };
+      tools.media.audio = {
+        enabled = true;
+        # uses whisper-cli from PATH, auto-downloads tiny model
+      };
       skills = {
         allowBundled = [
           "github"
@@ -141,9 +145,17 @@ let
       };
       messages = {
         ackReactionScope = "group-mentions";
+        tts = {
+          auto = "off"; # always reply with voice
+          provider = "elevenlabs";
+          elevenlabs = {
+            voiceId = "CwhRBWXzGAHq8TQ4Fs17";
+            modelId = "eleven_flash_v2_5";
+          };
+        };
       };
       session = {
-        dmScope = "per-channel-peer";
+        dmScope = "per-peer"; # per-channel-peer
       };
     }
   );
@@ -154,6 +166,7 @@ in
     openclaw-gateway
     pkgs.claude-code
     pkgs.signal-cli
+    pkgs.whisper-cpp # STT - must be in system PATH for openclaw to find
   ];
 
   nixfiles.nginx.vhosts.openclaw.port = 18789;
@@ -175,6 +188,11 @@ in
       type = "hidden";
       persist = true;
     };
+    prompts.elevenlabs-api-key = {
+      description = "ElevenLabs API key for TTS";
+      type = "hidden";
+      persist = true;
+    };
     files."gateway-token".secret = true;
     files."env" = {
       secret = true;
@@ -185,6 +203,7 @@ in
       head -c 32 /dev/urandom | base64 | tr -d '/+=' | head -c 32 > $out/gateway-token
       {
         echo "BRAVE_API_KEY=$(cat $prompts/brave-api-key)"
+        echo "ELEVENLABS_API_KEY=$(cat $prompts/elevenlabs-api-key)"
         echo "CLAWDBOT_GATEWAY_TOKEN=$(cat $out/gateway-token)"
         echo "OPENCLAW_GATEWAY_TOKEN=$(cat $out/gateway-token)"
       } > $out/env
@@ -214,6 +233,7 @@ in
       zip
       unzip
       (python3.withPackages (ps: [ ps.python-pptx ]))
+      whisper-cpp # STT for voice messages
     ];
 
     serviceConfig = {
@@ -235,6 +255,7 @@ in
 
         "OLLAMA_API_KEY=ollama-local"
         "XDG_RUNTIME_DIR=/run/openclaw"
+        "WHISPER_CPP_MODEL=${stateDir}/ggml-base.bin"
       ];
       ExecStartPre = [
         "${pkgs.coreutils}/bin/mkdir -p ${stateDir}/workspaces/main ${stateDir}/workspaces/simon ${stateDir}/workspaces/iuser ${stateDir}/agents/main/agent"
