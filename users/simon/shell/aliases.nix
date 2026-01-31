@@ -20,7 +20,7 @@ _: {
     #myip = "${dig} @resolver4.opendns.com myip.opendns.com +short";
 
     # cli
-    c = "claude";
+    c = "claude --dangerously-skip-permissions";
     j = "jj";
     g = "git";
     k = "kubectl";

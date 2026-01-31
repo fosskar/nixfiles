@@ -8,17 +8,13 @@
 {
   imports = mylib.scanPaths ./. { };
 
-  home.file.".claude/claude-code-status.sh" = {
-    source = ./claude-code-status.sh;
-    executable = true;
-  };
-
   home.file.".claude/CLAUDE.md" = {
     source = ../AGENTS.md;
   };
 
   home.packages = [
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccstatusline
+    pkgs.gh
   ];
 
   programs = {
@@ -30,7 +26,6 @@
         includeCoAuthoredBy = false;
         autoUpdates = false;
         enableAllProjectMcpServers = true;
-        alwaysThinkingEnabled = true;
         env = {
           CLAUDE_CODE_ENABLE_TELEMETRY = "0";
           CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
@@ -54,6 +49,42 @@
         extraKnownMarketplaces = { };
 
         enabledPlugins = { };
+      };
+      mcpServers = {
+        nixos = {
+          args = [
+            "run"
+            "github:utensils/mcp-nixos"
+            "--"
+          ];
+          command = "nix";
+        };
+        "plugin:context7:context7" = {
+          args = [
+            "shell"
+            "nixpkgs#nodejs"
+            "-c"
+            "npx"
+            "-y"
+            "@upstash/context7-mcp"
+          ];
+          command = "nix";
+          type = "stdio";
+        };
+        #kagimcp = {
+        #  args = [
+        #    "shell"
+        #    "nixpkgs#uv"
+        #    "-c"
+        #    "uvx"
+        #    "kagimcp"
+        #  ];
+        #  command = "nix";
+        #  env = {
+        #    KAGI_API_KEY = "your-api-key-here";
+        #  };
+        #  type = "stdio";
+        #};
       };
     };
   };

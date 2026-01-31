@@ -4,10 +4,7 @@
 }:
 {
   imports = mylib.scanPaths ./. {
-    exclude = [
-      "codex"
-      "gemini-cli"
-    ];
+    exclude = [ ];
   };
 
   xdg.configFile."AGENTS.md".source = ./AGENTS.md;
