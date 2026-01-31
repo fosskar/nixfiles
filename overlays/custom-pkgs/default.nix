@@ -3,9 +3,7 @@ let
   inherit (final) lib;
   mylib = import ../../lib { inherit lib; };
   packageDirs = mylib.scanPaths ../../packages {
-    exclude = [
-      "onnxruntime-openvino" # python package, needs special handling
-    ];
+    exclude = [ ];
   };
   # extra args for specific packages
   extraArgs = {
