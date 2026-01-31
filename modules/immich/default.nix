@@ -121,7 +121,8 @@ in
       redis.enable = true;
 
       machine-learning = {
-        enable = false; # FIXME
+        # disabled: Intel Arc GPU has onnx/openvino compatibility issues
+        enable = false;
         environment = {
           OCL_ICD_VENDORS = "/run/opengl-driver/etc/OpenCL/vendors";
 
