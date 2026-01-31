@@ -110,7 +110,8 @@ let
       skills = {
         allowBundled = [
           "github"
-          "clawdhub"
+          "clawhub"
+          "weather"
         ];
         load = {
           extraDirs = [ "${stateDir}/skills" ];
@@ -139,19 +140,11 @@ let
   );
 in
 {
+  # cli tools for manual use, rest goes to service path
   environment.systemPackages = [
     openclaw-gateway
     pkgs.claude-code
     pkgs.signal-cli
-    pkgs.libreoffice
-    pkgs.ffmpeg
-    pkgs.imagemagick
-    pkgs.tesseract
-    pkgs.zip
-    pkgs.unzip
-    (pkgs.python3.withPackages (ps: [
-      ps.python-pptx
-    ]))
   ];
 
   nixfiles.nginx.vhosts.openclaw.port = 18789;
@@ -184,6 +177,7 @@ in
       {
         echo "BRAVE_API_KEY=$(cat $prompts/brave-api-key)"
         echo "CLAWDBOT_GATEWAY_TOKEN=$(cat $out/gateway-token)"
+        echo "OPENCLAW_GATEWAY_TOKEN=$(cat $out/gateway-token)"
       } > $out/env
     '';
   };
@@ -191,12 +185,27 @@ in
   environment.sessionVariables = {
     CLAWDBOT_CONFIG_PATH = "${configFile}";
     CLAWDBOT_STATE_DIR = stateDir;
+
+    OPENCLAW_CONFIG_PATH = "${configFile}";
+    OPENCLAW_STATE_DIR = stateDir;
   };
 
   systemd.services.openclaw = {
     description = "openclaw AI gateway";
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
+
+    # tools available to the service (skills, document processing, etc.)
+    path = with pkgs; [
+      gh # github skill
+      libreoffice
+      ffmpeg
+      imagemagick
+      tesseract
+      zip
+      unzip
+      (python3.withPackages (ps: [ ps.python-pptx ]))
+    ];
 
     serviceConfig = {
       Type = "simple";
@@ -210,6 +219,11 @@ in
         "CLAWDBOT_CONFIG_PATH=${configFile}"
         "CLAWDBOT_STATE_DIR=${stateDir}"
         "CLAWDBOT_NIX_MODE=1"
+
+        "OPENCLAW_CONFIG_PATH=${configFile}"
+        "OPENCLAW_STATE_DIR=${stateDir}"
+        "OPENCLAW_NIX_MODE=1"
+
         "OLLAMA_API_KEY=ollama-local"
         "XDG_RUNTIME_DIR=/run/openclaw"
       ];
@@ -218,11 +232,60 @@ in
       ]
       ++ map (
         id:
-        "${pkgs.bash}/bin/bash -c 'mkdir -p ${stateDir}/agents/${id}/agent && [ ! -e ${stateDir}/agents/${id}/agent/auth-profiles.json ] && ln -s ${stateDir}/agents/main/agent/auth-profiles.json ${stateDir}/agents/${id}/agent/auth-profiles.json || true'"
+        "${pkgs.bash}/bin/bash -c 'mkdir -p ${stateDir}/agents/${id}/agent && [ ! -L ${stateDir}/agents/${id}/agent/auth-profiles.json ] && rm -f ${stateDir}/agents/${id}/agent/auth-profiles.json; ln -sf ${stateDir}/agents/main/agent/auth-profiles.json ${stateDir}/agents/${id}/agent/auth-profiles.json'"
       ) secondaryAgents;
       ExecStart = "${openclaw-gateway}/bin/openclaw gateway";
-      Restart = "on-failure";
+      Restart = "always";
       RestartSec = "10s";
+
+      # Hardening options
+      ProtectHome = true;
+      ProtectSystem = "strict";
+      PrivateTmp = true;
+      PrivateDevices = true;
+      NoNewPrivileges = true;
+      ProtectKernelTunables = true;
+      ProtectKernelModules = true;
+      ProtectKernelLogs = true;
+      ProtectControlGroups = true;
+      ProtectProc = "invisible";
+      ProcSubset = "pid";
+      ProtectHostname = true;
+      ProtectClock = true;
+      RestrictRealtime = true;
+      RestrictSUIDSGID = true;
+      RemoveIPC = true;
+      LockPersonality = true;
+
+      # Filesystem access
+      ReadWritePaths = [ stateDir ];
+
+      # Capability restrictions
+      CapabilityBoundingSet = "";
+      AmbientCapabilities = "";
+
+      # Network restrictions (gateway needs network)
+      # AF_NETLINK required for os.networkInterfaces() in Node.js
+      RestrictAddressFamilies = [
+        "AF_INET"
+        "AF_INET6"
+        "AF_UNIX"
+        "AF_NETLINK"
+      ];
+      IPAddressDeny = "multicast";
+
+      # System call filtering
+      # Only @system-service - Node.js with native modules needs more syscalls
+      # Security comes from capability restrictions and namespace isolation instead
+      SystemCallFilter = [ "@system-service" ];
+      SystemCallArchitectures = "native";
+
+      # Memory protection
+      # Note: MemoryDenyWriteExecute may break Node.js JIT - disabled for now
+      # MemoryDenyWriteExecute = true;
+
+      RestrictNamespaces = true;
+      UMask = "0027";
     };
   };
 }
