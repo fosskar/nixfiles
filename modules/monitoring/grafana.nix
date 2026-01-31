@@ -141,7 +141,7 @@ in
           name = "Authelia";
           icon = "signin";
           #allow_sign_up = true;
-          auto_login = true;
+          #auto_login = true;
           client_id = "grafana";
           client_secret = "$__file{${
             config.clan.core.vars.generators.grafana.files."oauth-client-secret".path
