@@ -6,9 +6,18 @@
 }:
 let
   stateDir = "/var/lib/openclaw";
-  # TODO: fork nix-openclaw to include docs in package build
-  # the binary resolves its own store path for docs, wrapper approach doesn't work
-  inherit (inputs.nix-openclaw.packages.${pkgs.stdenv.hostPlatform.system}) openclaw-gateway;
+  # override to bundle docs until upstream PR #29 merges
+  openclaw-gateway =
+    inputs.nix-openclaw.packages.${pkgs.stdenv.hostPlatform.system}.openclaw-gateway.overrideAttrs
+      (old: {
+        # installPhase is a script path, run it then copy docs
+        installPhase = ''
+          source ${old.installPhase}
+          if [ -d "$src/docs" ]; then
+            cp -r "$src/docs" "$out/lib/openclaw/"
+          fi
+        '';
+      });
 
   # secondary agents that share credentials with main
   secondaryAgents = [

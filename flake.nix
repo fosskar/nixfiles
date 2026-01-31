@@ -116,7 +116,7 @@
     };
 
     nix-openclaw = {
-      url = "github:fosskar/nix-openclaw";
+      url = "github:openclaw/nix-openclaw";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
