@@ -25,6 +25,7 @@ in
         SERVER_PORT = toString port;
         SYSTEM_ENABLEANALYTICS = "false";
         SECURITY_ENABLELOGIN = "false";
+        JAVA_TOOL_OPTIONS = "-Xmx512m";
       };
     };
 
