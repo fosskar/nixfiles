@@ -48,6 +48,7 @@ ssh root@<ip>                   # direct IP (from deploy output)
   - refactor module → one commit
   - update docs for that refactor → separate commit
   - unrelated config change → separate commit
+- **run `nix fmt` before committing** - always format nix files
 
 ## patterns
 
