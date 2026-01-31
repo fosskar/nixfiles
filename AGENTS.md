@@ -176,6 +176,60 @@ in
 }
 ```
 
+## module categories
+
+modules live in `modules/` with these categories:
+
+| category    | modules                                                           |
+| ----------- | ----------------------------------------------------------------- |
+| hardware    | cpu/, gpu/, bcachefs/, zfs/, fprint/, yubikey/, lanzaboote/       |
+| power       | power/ (tuned, ppd, auto-cpufreq, logind, upower)                 |
+| persistence | persistence/ (impermanence, preservation, rollback)               |
+| networking  | tailscale/, pangolin/                                             |
+| services    | nginx/, acme/, authelia/, lldap/, k3s/, notify/, vert/            |
+| monitoring  | monitoring/ (beszel, victoriametrics, telegraf, grafana, netdata) |
+| media       | immich/, paperless/, arr-stack (in machine config)                |
+| security    | vaultwarden/                                                      |
+| ai          | openclaw/, ollama (in machine config)                             |
+| desktop     | dms/, niri/, quickshell/, gaming/, virtualization/                |
+| profiles    | profiles/base/, profiles/server/, profiles/workstation/           |
+
+## module enable patterns
+
+modules with submodules use enable options:
+
+```nix
+# monitoring - import parent, enable children
+nixfiles.monitoring.beszel.hub.enable = true;
+nixfiles.monitoring.telegraf.enable = true;
+
+# gaming - import parent, enable children
+nixfiles.gaming.steam.enable = true;
+nixfiles.gaming.lutris.enable = true;
+
+# virtualization
+nixfiles.virtualization.docker.enable = true;
+nixfiles.virtualization.podman.enable = true;
+
+# power
+nixfiles.power.tuned.enable = true;
+nixfiles.power.logind.enable = true;
+```
+
+## known deprecations
+
+| issue              | status           | action                                                              |
+| ------------------ | ---------------- | ------------------------------------------------------------------- |
+| nixos-generators   | deprecated 25.05 | migrate to `nixos-rebuild build-image` when convenient              |
+| clanServices/admin | deprecated       | waiting for clan-core PR #6609, then migrate to sshd.authorizedKeys |
+
+## service quirks
+
+- **immich** - ML disabled (`modules/immich/default.nix:124`), Intel Arc GPU onnx compatibility issue
+- **radicle** - checkConfig disabled, settings format needs fixing
+- **zfs** - hostId in `modules/zfs/default.nix` must not change (breaks existing pools)
+- **tuned** - has workaround for nixpkgs#463443 (ppd.conf bug)
+
 ## desktop shell
 
 - `nixfiles.quickshell` - "dms", "noctalia", or "none"
@@ -199,3 +253,32 @@ jj git push                     # push
 ```
 
 workflow: commit working changes, continue on new change. bookmark + push only when ready.
+
+## debugging
+
+```bash
+# build without deploying (catch errors early)
+nix build .#nixosConfigurations.<machine>.config.system.build.toplevel
+
+# evaluate specific option
+nix eval .#nixosConfigurations.<machine>.config.<option> --json
+
+# find what provides a file in the system closure
+nix-store -qR /run/current-system | xargs -I{} sh -c 'ls {}/ 2>/dev/null | grep -q <file> && echo {}'
+
+# view service logs
+journalctl -u <service> -f
+
+# check systemd service status
+systemctl status <service>
+
+# view nixos-rebuild output
+nixos-rebuild build --flake . 2>&1 | head -100
+```
+
+## file structure conventions
+
+- machine configs: `machines/<name>/` with `configuration.nix` as entry
+- facter.json: hardware facts (auto-generated, don't edit)
+- disko.nix: disk partitioning (used by clan install)
+- home.nix: machine-specific home-manager overrides
