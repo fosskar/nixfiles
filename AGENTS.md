@@ -10,12 +10,12 @@ this repo is built on [clan-core](https://docs.clan.lol/) - a framework for mana
 
 ## machines
 
-| machine       | type    | description                       |
-| ------------- | ------- | --------------------------------- |
-| simon-desktop | desktop | daily driver workstation          |
-| lpt-titan     | laptop  | framework 13                      |
-| hm-nixbox     | server  | home server, self-hosted services |
-| hzc-pango     | vps     | hetzner, reverse proxy (pangolin) |
+| machine       | type    | description                                          |
+| ------------- | ------- | ---------------------------------------------------- |
+| simon-desktop | desktop | daily driver workstation                             |
+| lpt-titan     | laptop  | framework 13                                         |
+| hm-nixbox     | server  | home server: monitoring, immich, paperless, openclaw |
+| hzc-pango     | vps     | hetzner, reverse proxy (pangolin)                    |
 
 IPs in `machines/flake-module.nix` under `inventory.machines` and `instances.internet`.
 
@@ -56,6 +56,17 @@ ssh root@<ip>                   # direct IP (from deploy output)
 - some modules have prerequisites (e.g., lanzaboote needs `sbctl create-keys` on target before deploy)
 - `lib.mkDefault` for overridable defaults in profiles
 - `lib.mkForce` to override conflicting services
+- flake input package overrides - patch external packages locally:
+
+```nix
+inputs.foo.packages.${system}.pkg.overrideAttrs (old: {
+  # if installPhase is a script path, source it then add commands:
+  installPhase = ''
+    source ${old.installPhase}
+    cp -r $src/extra $out/lib/pkg/
+  '';
+});
+```
 
 ## clan-core
 
@@ -130,11 +141,21 @@ nix flake check                 # run checks
 nix build .#nixosConfigurations.<machine>.config.system.build.toplevel
 nix eval .#nixosConfigurations.<machine>.config.<option> --json
 nix shell nixpkgs#<pkg>         # temporary tool outside devshell
+nix log <store-path>            # view build log
+nix-store -qR <path> | grep x   # find package in closure
 ```
 
 ## monitoring
 
 metrics are stored in VictoriaMetrics on hm-nixbox. when looking for metrics, query there.
+
+## notable services (hm-nixbox)
+
+- **openclaw** (`modules/openclaw/`) - AI gateway, uses flake input override for docs bundling
+- **immich** - photo management
+- **paperless** - document management
+- **authelia** - SSO/auth proxy
+- **arr-stack** - media automation (sonarr, radarr, etc)
 
 ## persistence
 
