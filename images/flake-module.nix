@@ -8,12 +8,14 @@ in
     { system, ... }:
     {
       packages = {
-        vm-base = inputs.nixos-generators.nixosGenerate {
-          inherit system;
-          modules = [ ./vm-base.nix ];
-          specialArgs = { inherit inputs mylib; };
-          format = "iso";
-        };
+        # build iso using upstream nixpkgs (no nixos-generators needed)
+        # usage: nix build .#vm-base
+        vm-base =
+          (lib.nixosSystem {
+            inherit system;
+            modules = [ ./vm-base.nix ];
+            specialArgs = { inherit inputs mylib; };
+          }).config.system.build.isoImage;
       };
     };
 }

@@ -393,11 +393,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769813945,
-        "narHash": "sha256-9ABv9Lo9t6MrFjlnRnU8Zw1C6LVj2+R8PipQ/rxGLHk=",
+        "lastModified": 1769872935,
+        "narHash": "sha256-07HMIGQ/WJeAQJooA7Kkg1SDKxhAiV6eodvOwTX6WKI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "475921375def3eb930e1f8883f619ff8609accb6",
+        "rev": "f4ad5068ee8e89e4a7c2e963e10dd35cd77b37b7",
         "type": "github"
       },
       "original": {
@@ -551,11 +551,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1769802121,
-        "narHash": "sha256-P2KVccrXznyha83gPQeVJ3k+3+/hYXIPQ91DwuRmFF4=",
+        "lastModified": 1769866762,
+        "narHash": "sha256-OFTMhMUnJCg3woctP+qrWNM0ALeiTnGlbsC7eHStdDY=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "ec120d57328e5ae4bfc93a7e809ace47d98f2dc3",
+        "rev": "db6114c6c53edc4a60695a12d7f857308b6cd6cd",
         "type": "github"
       },
       "original": {
@@ -920,11 +920,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769830491,
-        "narHash": "sha256-qiScNwBoY79YezHgAcqnbVjXvbCQtwDw/EYxy/pUCR0=",
+        "lastModified": 1769869571,
+        "narHash": "sha256-C7eErPZXxD4ZPdIl0oMwaVQ7w3gNFJ9ZnV+CHhF1vHk=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "989ed811a3115ffd4c44a8a7bc4d0ed61f511abd",
+        "rev": "c95785e98d1725042b829d785ea9b6eba7c35847",
         "type": "github"
       },
       "original": {
@@ -1177,42 +1177,6 @@
         "type": "github"
       }
     },
-    "nixlib": {
-      "locked": {
-        "lastModified": 1736643958,
-        "narHash": "sha256-tmpqTSWVRJVhpvfSN9KXBvKEXplrwKnSZNAoNPf/S/s=",
-        "owner": "nix-community",
-        "repo": "nixpkgs.lib",
-        "rev": "1418bc28a52126761c02dd3d89b2d8ca0f521181",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nixpkgs.lib",
-        "type": "github"
-      }
-    },
-    "nixos-generators": {
-      "inputs": {
-        "nixlib": "nixlib",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1769813415,
-        "narHash": "sha256-nnVmNNKBi1YiBNPhKclNYDORoHkuKipoz7EtVnXO50A=",
-        "owner": "nix-community",
-        "repo": "nixos-generators",
-        "rev": "8946737ff703382fda7623b9fab071d037e897d5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nixos-generators",
-        "type": "github"
-      }
-    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1769302137,
@@ -1246,10 +1210,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1769848429,
-        "narHash": "sha256-A874YjzfWeLFlp0QE5ogWVaU+rEcLJSYnDWyzGUEoko=",
+        "lastModified": 1769876631,
+        "narHash": "sha256-jjUzUtYpYVkM2bYcHqUx4rs8KdfvuvAiVDjkQykc6w0=",
         "ref": "master",
-        "rev": "5591ce5f98998e7196e3cfb0a5767e5952f257e7",
+        "rev": "5a4b6bab88cb071ff5dd323eacc4fb672d45a8c5",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1334,11 +1298,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769831457,
-        "narHash": "sha256-UCHlDVBQe0QGmcra1Oq9yX4LqLGkEPV7I6XvR4eq+oc=",
+        "lastModified": 1769877331,
+        "narHash": "sha256-Y/86dOa2zeVTwixCjeW54gC9eudNuE1W0jqH3I3RDIc=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "131740dcc01af2d0372e169b060984bfe8afaa7a",
+        "rev": "ffd1538d64b48ea9e76d995fa0191767c511e6ba",
         "type": "github"
       },
       "original": {
@@ -1400,7 +1364,6 @@
         "nix-citizen": "nix-citizen",
         "nix-gaming": "nix-gaming",
         "nix-openclaw": "nix-openclaw",
-        "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-git": "nixpkgs-git",
