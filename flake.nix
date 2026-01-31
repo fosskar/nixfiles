@@ -148,6 +148,7 @@
         quickshell.follows = "quickshell";
       };
     };
+
   };
 
   outputs =
