@@ -13,7 +13,6 @@
     workspaces = {
       primary.name = "primary";
       secondary.name = "secondary";
-      gaming.name = "gaming";
     };
 
     # input configuration
@@ -92,11 +91,11 @@
       };
 
       border = {
-        enable = true;
-        width = 1;
-        urgent.color = "#9b0000";
-        inactive.color = "transparent";
-        active.color = "#5DE4c7";
+        enable = false;
+        # width = 1;
+        # urgent.color = "#9b0000";
+        # inactive.color = "transparent";
+        # active.color = "#5DE4c7";
       };
 
       shadow.enable = true;
@@ -235,10 +234,10 @@
         opacity = 1.0; # for toggle-window-rule-opacity
         draw-border-with-background = false;
         geometry-corner-radius = {
-          top-left = 10.0;
-          top-right = 10.0;
-          bottom-left = 10.0;
-          bottom-right = 10.0;
+          top-left = 14.0;
+          top-right = 14.0;
+          bottom-left = 14.0;
+          bottom-right = 14.0;
         };
         clip-to-geometry = true;
       }

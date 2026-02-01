@@ -38,7 +38,6 @@ _: {
     workspaces = {
       primary.open-on-output = "DP-1";
       secondary.open-on-output = "HDMI-A-2";
-      gaming.open-on-output = "DP-1";
     };
 
     # element to secondary workspace (desktop only, has second monitor)
