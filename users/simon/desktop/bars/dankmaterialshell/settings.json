@@ -451,16 +451,6 @@
       ],
       "centerWidgets": [
         {
-          "id": "music",
-          "enabled": true,
-          "mediaSize": 0
-        },
-        {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
-        },
-        {
           "id": "clock",
           "enabled": true,
           "clockCompactMode": false
