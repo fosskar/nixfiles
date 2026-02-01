@@ -110,10 +110,10 @@
       #inputs.blueprint.follows = "blueprint";
     };
 
-    nix-openclaw = {
-      url = "github:openclaw/nix-openclaw";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #nix-openclaw = {
+    #  url = "github:openclaw/nix-openclaw";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
 
     # wm
     niri-flake = {

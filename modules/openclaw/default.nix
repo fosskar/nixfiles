@@ -1,23 +1,10 @@
 {
   config,
   pkgs,
-  inputs,
   ...
 }:
 let
   stateDir = "/var/lib/openclaw";
-  # override to bundle docs until upstream PR #29 merges
-  openclaw-gateway =
-    inputs.nix-openclaw.packages.${pkgs.stdenv.hostPlatform.system}.openclaw-gateway.overrideAttrs
-      (old: {
-        # installPhase is a script path, run it then copy docs
-        installPhase = ''
-          source ${old.installPhase}
-          if [ -d "$src/docs" ]; then
-            cp -r "$src/docs" "$out/lib/openclaw/"
-          fi
-        '';
-      });
 
   # secondary agents that share credentials with main
   secondaryAgents = [
@@ -163,7 +150,9 @@ in
 {
   # cli tools for manual use, rest goes to service path
   environment.systemPackages = [
-    openclaw-gateway
+    pkgs.llm-agents.openclaw
+    pkgs.llm-agents.agent-browser
+
     pkgs.claude-code
     pkgs.signal-cli
     pkgs.whisper-cpp # STT - must be in system PATH for openclaw to find
@@ -248,10 +237,12 @@ in
         "CLAWDBOT_CONFIG_PATH=${configFile}"
         "CLAWDBOT_STATE_DIR=${stateDir}"
         "CLAWDBOT_NIX_MODE=1"
+        "CLAWDBOT_DISABLE_BONJOUR=1"
 
         "OPENCLAW_CONFIG_PATH=${configFile}"
         "OPENCLAW_STATE_DIR=${stateDir}"
         "OPENCLAW_NIX_MODE=1"
+        "OPENCLAW_DISABLE_BONJOUR=1"
 
         "OLLAMA_API_KEY=ollama-local"
         "XDG_RUNTIME_DIR=/run/openclaw"
@@ -264,7 +255,7 @@ in
         id:
         "${pkgs.bash}/bin/bash -c 'mkdir -p ${stateDir}/agents/${id}/agent && [ ! -L ${stateDir}/agents/${id}/agent/auth-profiles.json ] && rm -f ${stateDir}/agents/${id}/agent/auth-profiles.json; ln -sf ${stateDir}/agents/main/agent/auth-profiles.json ${stateDir}/agents/${id}/agent/auth-profiles.json'"
       ) secondaryAgents;
-      ExecStart = "${openclaw-gateway}/bin/openclaw gateway";
+      ExecStart = "${pkgs.llm-agents.openclaw}/bin/openclaw gateway";
       Restart = "always";
       RestartSec = "10s";
 
