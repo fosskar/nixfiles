@@ -23,7 +23,10 @@ in
     # generate immich secrets
     clan.core.vars.generators.immich = {
       files = {
-        "oauth-client-secret-hash" = { };
+        "oauth-client-secret-hash" = {
+          owner = "authelia-main";
+          group = "authelia-main";
+        };
         "oauth-client-secret" = {
           owner = "immich";
           group = "immich";
@@ -41,7 +44,7 @@ in
       script = ''
         # oauth secret
         SECRET=$(pwgen -s 64 1)
-        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 > "$out/oauth-client-secret-hash"
+        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
 
         # db password - generate only if not migrated manually
@@ -59,7 +62,9 @@ in
       {
         client_id = "immich";
         client_name = "Immich";
-        client_secret = "$pbkdf2-sha512$310000$oCkOJgdGAH/cHnDopJbuCQ$eknxkWx3IYQ0Bo.PDN1p4pcmdcrumz94g3eQ8bRtrp/MNsBh9wzFG85HlRuLiLE9D2Tq8afgQ2.HXiONRR4fZw";
+        client_secret = "{{ secret \"${
+          config.clan.core.vars.generators.immich.files."oauth-client-secret-hash".path
+        }\" }}";
         public = false;
         consent_mode = "implicit";
         token_endpoint_auth_method = "client_secret_post";

@@ -23,7 +23,10 @@ in
     # generate vaultwarden secrets
     clan.core.vars.generators.vaultwarden = {
       files = {
-        "oauth-client-secret-hash" = { };
+        "oauth-client-secret-hash" = {
+          owner = "authelia-main";
+          group = "authelia-main";
+        };
         "oauth-client-secret" = { };
         "admin-token" = { };
         "sso.env" = { };
@@ -36,7 +39,7 @@ in
       script = ''
         # oauth secret
         SECRET=$(pwgen -s 64 1)
-        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 > "$out/oauth-client-secret-hash"
+        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
 
         # admin token
@@ -57,7 +60,9 @@ in
       {
         client_id = "vaultwarden";
         client_name = "Vaultwarden";
-        client_secret = "$pbkdf2-sha512$310000$vS4JyqsD/VynwdOErh0r1w$D/xr3XEYjUq6RhncZbpwwlerxUYjF13ZW8trRtkEjk6CtBebOLHgGqrGOm74Kc5dvoTUyAjdfAzYWXGHnuDasg";
+        client_secret = "{{ secret \"${
+          config.clan.core.vars.generators.vaultwarden.files."oauth-client-secret-hash".path
+        }\" }}";
         public = false;
         consent_mode = "implicit";
         require_pkce = true;

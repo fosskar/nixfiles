@@ -88,7 +88,10 @@ in
     # generate filebrowser-quantum secrets
     clan.core.vars.generators.filebrowser-quantum = {
       files = {
-        "oauth-client-secret-hash" = { };
+        "oauth-client-secret-hash" = {
+          owner = "authelia-main";
+          group = "authelia-main";
+        };
         "oauth-client-secret" = { };
         "admin-password" = { };
         "secrets.env" = { };
@@ -101,7 +104,7 @@ in
       script = ''
         # oidc client secret
         SECRET=$(pwgen -s 64 1)
-        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 > "$out/oauth-client-secret-hash"
+        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
 
         # admin password
@@ -122,7 +125,9 @@ in
       {
         client_id = "filebrowser-quantum";
         client_name = "Filebrowser Quantum";
-        client_secret = "$pbkdf2-sha512$310000$ZYhpHYGG/1Kec9Lv5Q1JHQ$y2ghAiROnsN6kTRh2AXV6.5eZJVRNHXxnZ1m22rBZw1wyPTQkNtJMP977Jt8nYPJo8JNDDR./uuoseRfpgk1.w";
+        client_secret = "{{ secret \"${
+          config.clan.core.vars.generators.filebrowser-quantum.files."oauth-client-secret-hash".path
+        }\" }}";
         public = false;
         consent_mode = "implicit";
         require_pkce = false;
@@ -147,7 +152,10 @@ in
     # systemd service
     systemd.services.filebrowser-quantum = {
       description = "filebrowser-quantum web file manager";
-      after = [ "network.target" ];
+      after = [
+        "network.target"
+        "authelia-main.service"
+      ];
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {

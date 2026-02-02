@@ -109,6 +109,7 @@ in
       environmentVariables = {
         AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE =
           config.clan.core.vars.generators.authelia.files."lldap-password".path;
+        X_AUTHELIA_CONFIG_FILTERS = "template";
       };
 
       settings = {

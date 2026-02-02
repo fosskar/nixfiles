@@ -38,7 +38,10 @@ in
 
     # generate grafana oauth secret
     clan.core.vars.generators.grafana = {
-      files."oauth-client-secret-hash" = { };
+      files."oauth-client-secret-hash" = {
+        owner = "authelia-main";
+        group = "authelia-main";
+      };
       files."oauth-client-secret" = {
         owner = "grafana";
         group = "grafana";
@@ -50,7 +53,7 @@ in
       ];
       script = ''
         SECRET=$(pwgen -s 64 1)
-        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 > "$out/oauth-client-secret-hash"
+        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
       '';
     };
@@ -60,7 +63,9 @@ in
       {
         client_id = "grafana";
         client_name = "Grafana";
-        client_secret = "$pbkdf2-sha512$310000$YErtbDH5FQp5GSc8Pt/Lhg$1pwR1Cj4FmJIuZb6nvoZfx8MfvXXzKs5XQ52sU1TDhCZlYVPVlatf7vB0AY5mSqyWgAo3kJUJ6T1o2EBntyCfw";
+        client_secret = "{{ secret \"${
+          config.clan.core.vars.generators.grafana.files."oauth-client-secret-hash".path
+        }\" }}";
         public = false;
         consent_mode = "implicit";
         require_pkce = true;

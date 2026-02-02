@@ -27,7 +27,10 @@ in
           owner = "paperless";
           group = "paperless";
         };
-        "oauth-client-secret-hash" = { };
+        "oauth-client-secret-hash" = {
+          owner = "authelia-main";
+          group = "authelia-main";
+        };
         "oauth-client-secret" = {
           owner = "paperless";
           group = "paperless";
@@ -46,7 +49,7 @@ in
       script = ''
         # oauth secret
         SECRET=$(pwgen -s 64 1)
-        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 > "$out/oauth-client-secret-hash"
+        authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
 
         # admin password
@@ -81,7 +84,9 @@ in
       {
         client_id = "paperless";
         client_name = "Paperless";
-        client_secret = "$pbkdf2-sha512$310000$g4iE28Iw.uP2OC5Mq3uxqQ$XCcsIvXUEJd2G/CqcW.eyVSOen5Lm69E2rhLMIT4O7PH/rLnDeCextqKCHAd.8nv48PpWiv3zoyO15ZQambmXw";
+        client_secret = "{{ secret \"${
+          config.clan.core.vars.generators.paperless.files."oauth-client-secret-hash".path
+        }\" }}";
         public = false;
         consent_mode = "implicit";
         require_pkce = true;

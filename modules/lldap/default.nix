@@ -71,11 +71,9 @@ in
         http_url = "https://${serviceDomain}";
 
         force_ldap_user_pass_reset = "always";
-      };
 
-      environment = {
-        LLDAP_JWT_SECRET_FILE = config.clan.core.vars.generators.lldap.files."jwt-secret".path;
-        LLDAP_LDAP_USER_PASS_FILE = config.clan.core.vars.generators.lldap.files."password".path;
+        jwt_secret_file = config.clan.core.vars.generators.lldap.files."jwt-secret".path;
+        ldap_user_pass_file = config.clan.core.vars.generators.lldap.files."password".path;
       };
 
       environmentFile = config.clan.core.vars.generators.lldap.files."envfile".path;
