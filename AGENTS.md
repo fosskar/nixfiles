@@ -44,10 +44,10 @@ ssh root@<ip>                   # direct IP (from deploy output)
 - if something needs manual intervention, find a way to declare it instead
 - **troubleshoot remotely** - don't ask user to check machines, ssh in and debug yourself
 - **no deploy without permission** - never run `clan machines update` or deploy to machines without explicit user instruction
-- **ATOMIC COMMITS** - one logical change per commit. NEVER bundle unrelated changes. use `jj split` to separate changes before committing. examples of separate commits:
-  - refactor module → one commit
-  - update docs for that refactor → separate commit
-  - unrelated config change → separate commit
+- **ATOMIC COMMITS** - one logical change per commit. NEVER bundle unrelated changes. use `jj split` to separate changes before committing.
+  - one feature across multiple files = ONE commit (e.g., adding ldap group mapping to immich + grafana + authelia)
+  - unrelated changes = separate commits
+  - refactor + docs for that refactor = separate commits
 - **run `nix fmt` before committing** - always format nix files
 
 ## patterns
