@@ -147,21 +147,18 @@ in
           expiration = "1h";
           inactivity = "5m";
           remember_me = "1M";
-          cookies =
-            if cfg.publicDomain != null then
-              [
-                {
-                  domain = cfg.publicDomain;
-                  authelia_url = "https://auth.${cfg.publicDomain}";
-                }
-              ]
-            else
-              [
-                {
-                  domain = acmeDomain;
-                  authelia_url = "https://${serviceDomain}";
-                }
-              ];
+          cookies = [
+            {
+              domain = acmeDomain;
+              authelia_url = "https://${serviceDomain}";
+            }
+          ]
+          ++ lib.optionals (cfg.publicDomain != null) [
+            {
+              domain = cfg.publicDomain;
+              authelia_url = "https://auth.${cfg.publicDomain}";
+            }
+          ];
         };
 
         regulation = {
@@ -186,9 +183,7 @@ in
       };
     };
 
-    # nginx reverse proxy (only when not using public domain via pangolin)
-    nixfiles.nginx.vhosts.auth = lib.mkIf (cfg.publicDomain == null) {
-      port = listenPort;
-    };
+    # nginx reverse proxy (always create for local domain)
+    nixfiles.nginx.vhosts.auth.port = listenPort;
   };
 }
