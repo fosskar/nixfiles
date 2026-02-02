@@ -58,6 +58,10 @@ in
       '';
     };
 
+    # claims policy to include groups in id_token for role mapping
+    services.authelia.instances.main.settings.identity_providers.oidc.claims_policies.grafana_groups.id_token =
+      [ "groups" ];
+
     # register oidc client with authelia
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
@@ -82,6 +86,8 @@ in
         response_types = [ "code" ];
         grant_types = [ "authorization_code" ];
         token_endpoint_auth_method = "client_secret_basic";
+        id_token_signed_response_alg = "RS256";
+        claims_policy = "grafana_groups";
       }
     ];
 
@@ -144,6 +150,7 @@ in
         "auth.generic_oauth" = {
           enabled = true;
           name = "Authelia";
+          use_refresh_token = true;
           icon = "signin";
           #allow_sign_up = true;
           #auto_login = true;
@@ -159,8 +166,14 @@ in
           use_pkce = true;
           login_attribute_path = "preferred_username";
           name_attribute_path = "name";
-          role_attribute_path = "contains(groups[*], 'lldap_admin') && 'GrafanaAdmin' || 'Editor'";
+          groups_attribute_path = "groups";
+          role_attribute_path = builtins.concatStringsSep " || " [
+            "contains(groups, 'admin') && 'Admin'"
+            "'Editor'"
+          ];
+          role_attribute_strict = false;
           allow_assign_grafana_admin = true;
+          skip_org_role_sync = false;
         };
       };
     };
