@@ -171,6 +171,13 @@ in
           default_policy = "two_factor";
         };
 
+        # custom user attribute for immich admin mapping
+        definitions.user_attributes.immich_role.expression = ''"admin" in groups ? "admin" : "user"'';
+
+        # claims policy that exposes the attribute
+        identity_providers.oidc.claims_policies.immich_policy.custom_claims.immich_role.attribute =
+          "immich_role";
+
         identity_validation.elevated_session = {
           require_second_factor = true;
           code_lifespan = "5m";

@@ -79,7 +79,9 @@ in
           "openid"
           "profile"
           "email"
+          "groups"
         ];
+        claims_policy = "immich_policy";
       }
     ];
 
@@ -168,7 +170,8 @@ in
           clientId = "immich";
           clientSecret._secret = config.clan.core.vars.generators.immich.files."oauth-client-secret".path;
           issuerUrl = "https://auth.${publicDomain}/.well-known/openid-configuration";
-          scope = "openid profile email";
+          scope = "openid profile email groups";
+          roleClaim = "immich_role";
         };
       };
     };
