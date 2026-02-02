@@ -226,9 +226,17 @@ nixfiles.power.logind.enable = true;
 ## service quirks
 
 - **immich** - ML disabled (`modules/immich/default.nix:124`), Intel Arc GPU onnx compatibility issue
+- **grafana** - needs `groups` in id_token (not just userinfo) for role_attribute_path to work; requires authelia claims_policy
 - **radicle** - checkConfig disabled, settings format needs fixing
 - **zfs** - hostId in `modules/zfs/default.nix` must not change (breaks existing pools)
 - **tuned** - has workaround for nixpkgs#463443 (ppd.conf bug)
+
+## oidc patterns
+
+ldap admin group → app admin role mapping:
+
+- **immich**: authelia `definitions.user_attributes` expression + `claims_policies` custom claim + immich `roleClaim`
+- **grafana**: authelia `claims_policies.X.id_token = ["groups"]` + grafana `role_attribute_path` JMESPath
 
 ## desktop shell
 
