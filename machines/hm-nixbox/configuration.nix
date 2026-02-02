@@ -2,6 +2,7 @@
 {
   imports = [
     ../../modules/acme
+    ../../modules/arr-stack
     ../../modules/borgbackup
     ../../modules/openclaw
     ../../modules/nginx
@@ -25,6 +26,7 @@
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
+      "arr-stack.nix"
       "dashboards"
       "radicle.nix"
     ];
