@@ -2,11 +2,13 @@
 #!nix-shell -i bash -p nix-update nix
 # shellcheck shell=bash
 # update packages in this directory
-# usage: ./update.sh [package...]
+# usage: ./update.sh [--exclude pkg...] [package...]
 # examples:
-#   ./update.sh              # update all packages
-#   ./update.sh beszel       # update specific package
-#   ./update.sh newt gerbil  # update multiple packages
+#   ./update.sh                          # update all packages
+#   ./update.sh beszel                   # update specific package
+#   ./update.sh newt gerbil              # update multiple packages
+#   ./update.sh --exclude stirling-pdf   # update all except stirling-pdf
+#   ./update.sh -e foo -e bar            # exclude multiple packages
 
 set -euo pipefail
 
@@ -75,11 +77,39 @@ update_package() {
 
 main() {
   local packages=()
+  local excludes=()
 
-  if [[ $# -eq 0 ]]; then
+  # parse args
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -e|--exclude)
+        shift
+        [[ $# -gt 0 ]] && excludes+=("$1")
+        shift
+        ;;
+      *)
+        packages+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  # if no packages specified, get all
+  if [[ ${#packages[@]} -eq 0 ]]; then
     mapfile -t packages < <(get_all_packages)
-  else
-    packages=("$@")
+  fi
+
+  # filter out excludes
+  if [[ ${#excludes[@]} -gt 0 ]]; then
+    local filtered=()
+    for pkg in "${packages[@]}"; do
+      local skip=false
+      for ex in "${excludes[@]}"; do
+        [[ $pkg == "$ex" ]] && skip=true && break
+      done
+      $skip || filtered+=("$pkg")
+    done
+    packages=("${filtered[@]}")
   fi
 
   local failed=()
