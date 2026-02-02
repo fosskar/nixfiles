@@ -213,13 +213,6 @@
               siteMonitor = "http://127.0.0.1:5055";
             };
           }
-          {
-            "Audiobookshelf" = {
-              href = "https://audiobookshelf.osscar.me";
-              icon = "audiobookshelf.svg";
-              siteMonitor = "http://127.0.0.1:13378";
-            };
-          }
         ];
       }
       {
@@ -246,17 +239,10 @@
             };
           }
           {
-            "Lidarr" = {
-              href = "https://lidarr.osscar.me";
-              icon = "lidarr.svg";
-              siteMonitor = "http://127.0.0.1:8686";
-            };
-          }
-          {
-            "Readarr" = {
-              href = "https://readarr.osscar.me";
-              icon = "readarr.svg";
-              siteMonitor = "http://127.0.0.1:8787";
+            "Bazarr" = {
+              href = "https://bazarr.osscar.me";
+              icon = "bazarr.svg";
+              siteMonitor = "http://127.0.0.1:6767";
             };
           }
           {

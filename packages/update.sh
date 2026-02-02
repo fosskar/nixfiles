@@ -82,15 +82,15 @@ main() {
   # parse args
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -e|--exclude)
-        shift
-        [[ $# -gt 0 ]] && excludes+=("$1")
-        shift
-        ;;
-      *)
-        packages+=("$1")
-        shift
-        ;;
+    -e | --exclude)
+      shift
+      [[ $# -gt 0 ]] && excludes+=("$1")
+      shift
+      ;;
+    *)
+      packages+=("$1")
+      shift
+      ;;
     esac
   done
 
