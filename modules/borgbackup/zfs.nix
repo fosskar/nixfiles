@@ -18,6 +18,7 @@ in
       dataset=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE "$folder" | grep -v '^/dev')
       if [ -n "$dataset" ]; then
         echo "creating zfs snapshot: $dataset@${snapshotName}"
+        ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${snapshotName}" 2>/dev/null || true
         ${pkgs.zfs}/bin/zfs snapshot -r "$dataset@${snapshotName}"
         # trigger automount of snapshot
         ls "$folder/.zfs/snapshot/${snapshotName}" >/dev/null
