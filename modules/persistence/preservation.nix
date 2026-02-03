@@ -8,7 +8,7 @@
 let
   cfg = config.nixfiles.persistence;
 
-  # convert to preservation format
+  # convert string or attrset to preservation directory format
   toPreservationDir =
     d:
     let
@@ -35,11 +35,12 @@ in
   config = lib.mkIf (cfg.enable && cfg.backend == "preservation") {
     preservation.enable = true;
 
-    # prevent systemd from creating tmpfs overlay on /nix/store/*-etc-machine-id
-    # which breaks nix-optimise (EXDEV: cross-device link)
-    # see: https://github.com/nix-community/impermanence/blob/master/nixos.nix
-    boot.initrd.systemd.suppressedUnits = [ "systemd-machine-id-commit.service" ];
-    systemd.services.systemd-machine-id-commit.unitConfig.ConditionFirstBoot = true;
+    # clan.core.settings.machine-id creates /etc/machine-id in the nix store,
+    # causing systemd to mount a tmpfs overlay (for writability), which breaks
+    # nix-optimise (EXDEV cross-device link). disable store-based file and let
+    # preservation handle it via symlink. clan's kernel cmdline still works.
+    environment.etc.machine-id.enable = lib.mkForce false;
+
     preservation.preserveAt.${cfg.persistPath} = {
       directories =
         map toPreservationDir (
@@ -54,7 +55,15 @@ in
           how = "bindmount";
           inInitrd = true;
         };
-      files = map toPreservationFile cfg.files;
+
+      files = map toPreservationFile cfg.files ++ [
+        {
+          file = "/etc/machine-id";
+          how = "symlink";
+          inInitrd = true;
+          createLinkTarget = true;
+        }
+      ];
     };
   };
 }
