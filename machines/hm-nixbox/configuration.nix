@@ -26,7 +26,6 @@
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
-      "arr-stack.nix"
       "dashboards"
       "radicle.nix"
     ];
