@@ -43,7 +43,7 @@ ssh root@<ip>                   # direct IP (from deploy output)
 - **declarative first** - avoid manual changes, everything should be in nix config
 - if something needs manual intervention, find a way to declare it instead
 - **troubleshoot remotely** - don't ask user to check machines, ssh in and debug yourself
-- **no deploy without permission** - never run `clan machines update` or deploy to machines without explicit user instruction
+- **no destructive actions without explicit permission** - never run `clan machines update`, `reboot`, `systemctl restart`, or any destructive command without explicit user instruction. if user says "i would restart now?" that's a QUESTION seeking confirmation, not an instruction. "check it please" means check AFTER user does it, not do it yourself. when in doubt, ask.
 - **ATOMIC COMMITS** - one logical change per commit. NEVER bundle unrelated changes. use `jj split` to separate changes before committing.
   - one feature across multiple files = ONE commit (e.g., adding ldap group mapping to immich + grafana + authelia)
   - unrelated changes = separate commits
@@ -241,6 +241,8 @@ nixfiles.power.logind.enable = true;
 ## vcs
 
 jj (jujutsu) colocated with git. **ignore git internals** - jj handles everything, don't analyze git state.
+
+**NEVER run `jj restore` or `git restore` or `git checkout -- <file>`** - these discard ALL uncommitted changes, not just the last edit. to undo a specific change, use the Edit tool to manually revert that change only.
 
 ```bash
 jj status                       # current changes
