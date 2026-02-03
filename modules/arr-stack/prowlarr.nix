@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -25,7 +26,14 @@ in
     clan.core.state.prowlarr = {
       folders = [ "/var/backup/prowlarr" ];
       preBackupScript = ''
-        sqlite-backup /var/lib/private/prowlarr/prowlarr.db /var/backup/prowlarr/prowlarr.db
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/prowlarr
+        sqlite3 /var/lib/private/prowlarr/prowlarr.db ".backup '/var/backup/prowlarr/prowlarr.db'"
       '';
     };
   };

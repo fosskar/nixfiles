@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -26,7 +27,14 @@ in
     clan.core.state.bazarr = {
       folders = [ "/var/backup/bazarr" ];
       preBackupScript = ''
-        sqlite-backup /var/lib/bazarr/db/bazarr.db /var/backup/bazarr/bazarr.db
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/bazarr
+        sqlite3 /var/lib/bazarr/db/bazarr.db ".backup '/var/backup/bazarr/bazarr.db'"
       '';
     };
   };

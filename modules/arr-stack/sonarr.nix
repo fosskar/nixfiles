@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -26,7 +27,14 @@ in
     clan.core.state.sonarr = {
       folders = [ "/var/backup/sonarr" ];
       preBackupScript = ''
-        sqlite-backup /var/lib/sonarr/.config/NzbDrone/sonarr.db /var/backup/sonarr/sonarr.db
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/sonarr
+        sqlite3 /var/lib/sonarr/.config/NzbDrone/sonarr.db ".backup '/var/backup/sonarr/sonarr.db'"
       '';
     };
   };

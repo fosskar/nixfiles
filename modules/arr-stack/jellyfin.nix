@@ -43,7 +43,14 @@ in
     clan.core.state.jellyfin = {
       folders = [ "/var/backup/jellyfin" ];
       preBackupScript = ''
-        sqlite-backup /var/lib/jellyfin/data/jellyfin.db /var/backup/jellyfin/jellyfin.db
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/jellyfin
+        sqlite3 /var/lib/jellyfin/data/jellyfin.db ".backup '/var/backup/jellyfin/jellyfin.db'"
       '';
     };
   };

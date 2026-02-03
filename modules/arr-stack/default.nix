@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   mylib,
   ...
 }:
@@ -107,22 +106,6 @@ in
       "d ${cfg.mediaRoot}/downloads 0775 root media -"
       "d ${cfg.mediaRoot}/downloads/incomplete 0775 root media -"
       "d ${cfg.mediaRoot}/downloads/complete 0775 root media -"
-    ];
-
-    # sqlite backup helper available to all submodules
-    environment.systemPackages = [
-      (pkgs.writeShellScriptBin "sqlite-backup" ''
-        export PATH=${
-          lib.makeBinPath [
-            pkgs.sqlite
-            pkgs.coreutils
-          ]
-        }
-        src="$1"
-        dst="$2"
-        mkdir -p "$(dirname "$dst")"
-        sqlite3 "$src" ".backup '$dst'"
-      '')
     ];
 
     # authelia access control rules for arr services

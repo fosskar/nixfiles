@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -26,7 +27,14 @@ in
     clan.core.state.radarr = {
       folders = [ "/var/backup/radarr" ];
       preBackupScript = ''
-        sqlite-backup /var/lib/radarr/.config/Radarr/radarr.db /var/backup/radarr/radarr.db
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/radarr
+        sqlite3 /var/lib/radarr/.config/Radarr/radarr.db ".backup '/var/backup/radarr/radarr.db'"
       '';
     };
   };

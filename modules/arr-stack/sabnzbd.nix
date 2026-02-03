@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -51,7 +52,14 @@ in
     clan.core.state.sabnzbd = {
       folders = [ "/var/backup/sabnzbd" ];
       preBackupScript = ''
-        sqlite-backup /var/lib/sabnzbd/sabnzbd.db /var/backup/sabnzbd/sabnzbd.db
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/sabnzbd
+        sqlite3 /var/lib/sabnzbd/sabnzbd.db ".backup '/var/backup/sabnzbd/sabnzbd.db'"
       '';
     };
   };
