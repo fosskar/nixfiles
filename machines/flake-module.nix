@@ -59,7 +59,6 @@ in
             "workstation"
           ];
         };
-
       };
 
       instances = {
@@ -102,7 +101,7 @@ in
             name = "users";
             input = "clan-core";
           };
-          roles.default.tags.all = { };
+          roles.default.tags.workstation = { };
           roles.default.settings = {
             user = "root";
             prompt = true;
@@ -130,6 +129,26 @@ in
             extraModules = [ "${self}/users/simon" ];
           };
         };
+
+        #monitoring = {
+        #  module = {
+        #    name = "monitoring";
+        #    input = "clan-core";
+        #  };
+        #
+        #  roles = {
+        #    client = {
+        #      tags = [ "server" ];
+        #      # Decide whether or not your server is reachable via https.
+        #      settings.useSSL = false;
+        #    };
+        #
+        #    server.machines."hm-nixbox".settings = {
+        #      # Optionally enable grafana for dashboards and alerts.
+        #      grafana.enable = true;
+        #    };
+        #  };
+        #};
 
         clan-cache = {
           roles.default.tags.all = { };
