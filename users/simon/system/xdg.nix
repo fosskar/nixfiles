@@ -77,7 +77,7 @@ in
       templates = null;
 
       extraConfig = {
-        XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/screenshots";
+        SCREENSHOTS = "${config.xdg.userDirs.pictures}/screenshots";
       };
     };
     #configFile."gtk.css".force = true;
