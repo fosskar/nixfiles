@@ -184,7 +184,7 @@ modules live in `modules/` with these categories:
 | ----------- | ----------------------------------------------------------------- |
 | hardware    | cpu/, gpu/, bcachefs/, zfs/, fprint/, yubikey/, lanzaboote/       |
 | power       | power/ (tuned, ppd, auto-cpufreq, logind, upower)                 |
-| persistence | persistence/ (impermanence, preservation, rollback)               |
+| persistence | persistence/ (preservation, rollback)                             |
 | networking  | tailscale/, pangolin/                                             |
 | services    | nginx/, acme/, authelia/, lldap/, k3s/, notify/, vert/            |
 | monitoring  | monitoring/ (beszel, victoriametrics, telegraf, grafana, netdata) |

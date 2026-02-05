@@ -33,7 +33,6 @@
   nixfiles = {
     persistence = {
       enable = true;
-      backend = "preservation";
       rollback = {
         type = "bcachefs";
         subvolume = "@root";

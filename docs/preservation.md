@@ -39,29 +39,15 @@ preservation generates pure systemd configuration - no interpreters needed at ru
 3. **future-proof**: systemd initrd is where nixos is headed
 4. **debuggability**: can inspect generated mount units directly
 
-## our workarounds (now removed)
-
-with impermanence, we needed:
-
-```nix
-# fix home directory ownership (impermanence bug workaround)
-homeOwnershipFix = [ "simon" ];
-
-# fix /var/lib/private permissions manually
-systemd.tmpfiles.rules = [ "d /persist/var/lib/private 0700 root root -" ];
-```
-
-preservation handles these cases through explicit tmpfiles rules generated at build time.
-
-## migration
-
-the persistence module (`modules/persistence/`) supports both backends:
+## config
 
 ```nix
 nixfiles.persistence = {
   enable = true;
-  backend = "preservation";  # or "impermanence" for legacy
-  # ... rest of config unchanged
+  rollback.type = "btrfs";  # or "zfs", "bcachefs"
+  rollback.deviceLabel = "nixos";
+  directories = [ "/var/lib/myapp" ];
+  files = [ "/etc/myconfig" ];
 };
 ```
 

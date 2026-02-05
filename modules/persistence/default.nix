@@ -1,4 +1,4 @@
-# unified persistence module - supports impermanence or preservation backends
+# persistence module using preservation
 {
   config,
   lib,
@@ -51,26 +51,12 @@ let
       bcachefs
     else
       null;
-
-  # check if /var/lib/private or /var/lib is persisted
 in
 {
-  imports = [
-    ./impermanence.nix
-    ./preservation.nix
-  ];
+  imports = [ ./preservation.nix ];
 
   options.nixfiles.persistence = {
     enable = lib.mkEnableOption "persistence with rollback support";
-
-    backend = lib.mkOption {
-      type = lib.types.enum [
-        "impermanence"
-        "preservation"
-      ];
-      default = "impermanence";
-      description = "which persistence backend to use";
-    };
 
     rollback = {
       type = lib.mkOption {
@@ -150,12 +136,6 @@ in
       type = lib.types.listOf (lib.types.either lib.types.str (lib.types.attrsOf lib.types.anything));
       default = [ ];
       description = "files to persist";
-    };
-
-    homeOwnershipFix = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "users to fix home directory ownership for (impermanence bug workaround)";
     };
   };
 

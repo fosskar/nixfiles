@@ -32,7 +32,7 @@ in
 {
   imports = [ inputs.preservation.nixosModules.preservation ];
 
-  config = lib.mkIf (cfg.enable && cfg.backend == "preservation") {
+  config = lib.mkIf cfg.enable {
     preservation.enable = true;
 
     # clan.core.settings.machine-id creates /etc/machine-id in the nix store,

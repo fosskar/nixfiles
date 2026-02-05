@@ -1,5 +1,4 @@
-# Disko configuration for NVMe disk with BTRFS impermanence
-# Based on https://www.notashelf.dev/posts/impermanence
+# disko config for nvme with btrfs + preservation
 _: {
   disko.devices = {
     disk = {

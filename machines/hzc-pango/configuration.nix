@@ -17,7 +17,6 @@
   nixfiles = {
     persistence = {
       enable = true;
-      backend = "preservation";
       rollback = {
         type = "btrfs";
         deviceLabel = "root";

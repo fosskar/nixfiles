@@ -39,7 +39,6 @@
     # persistence
     persistence = {
       enable = true;
-      backend = "preservation";
       rollback = {
         type = "zfs";
         dataset = "znixos/root";
