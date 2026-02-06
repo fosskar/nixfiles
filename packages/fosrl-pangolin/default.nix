@@ -29,16 +29,16 @@ in
 
 buildNpmPackage (finalAttrs: {
   pname = "pangolin";
-  version = "1.15.1";
+  version = "1.15.2";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "pangolin";
     tag = finalAttrs.version;
-    hash = "sha256-SItYudhY+4JQ8Qrm2FgR5se9blETE5y0i1nnjZNQli4=";
+    hash = "sha256-OwaMTj8d8PcqB2V3iTH2CVAqunChN6V5EOCH683d/aQ=";
   };
 
-  npmDepsHash = "sha256-4uGIR0KnVl0SvTnD14bavqlv00aX91s2caPPLPdlhO4=";
+  npmDepsHash = "sha256-kfgwU5QusUNWVcRXlYCS3ES1Av/phCHG8nFBj0yjz2Q=";
 
   nativeBuildInputs = [
     esbuild
