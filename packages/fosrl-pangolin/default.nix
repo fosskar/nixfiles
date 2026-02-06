@@ -70,7 +70,7 @@ buildNpmPackage (finalAttrs: {
   buildPhase = ''
     runHook preBuild
 
-    npm run build:${db false}
+    npm run build
     npm run build:cli
 
     runHook postBuild
