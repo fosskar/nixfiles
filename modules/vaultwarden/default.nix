@@ -89,7 +89,7 @@ in
     nixfiles.nginx.vhosts.vault.port = config.services.vaultwarden.config.ROCKET_PORT;
 
     # postgresql backup/restore integration
-    clan.core.postgresql.enable = true;
+    clan.core.postgresql.enable = lib.mkForce true;
     clan.core.postgresql.databases.vaultwarden = {
       create.enable = false; # vaultwarden module creates it
       restore.stopOnRestore = [ "vaultwarden.service" ];
