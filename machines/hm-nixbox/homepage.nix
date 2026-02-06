@@ -266,9 +266,9 @@
           }
           {
             "Openclaw" = {
-              href = "https://openclaw.osscar.me";
+              href = "https://192.168.10.90";
               icon = "mdi-robot";
-              siteMonitor = "http://127.0.0.1:18789";
+              siteMonitor = "https://192.168.10.90";
             };
           }
         ];
