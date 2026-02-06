@@ -21,6 +21,7 @@ in
     imagemagick
     tesseract
     bun
+    newsboat
     ripgrep
     zip
     unzip
