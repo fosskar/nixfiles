@@ -13,6 +13,11 @@ let
         type = lib.types.port;
         description = "backend port to proxy to";
       };
+      host = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+        description = "backend host to proxy to";
+      };
       websockets = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -83,7 +88,7 @@ in
           inherit (vhost) extraConfig;
           locations = {
             "/" = {
-              proxyPass = "http://127.0.0.1:${toString vhost.port}";
+              proxyPass = "http://${vhost.host}:${toString vhost.port}";
               recommendedProxySettings = true;
               proxyWebsockets = vhost.websockets;
               extraConfig = lib.optionalString vhost.proxy-auth autheliaAuthSnippet;
