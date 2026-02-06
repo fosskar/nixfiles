@@ -33,37 +33,40 @@ in
   imports = [ inputs.preservation.nixosModules.preservation ];
 
   config = lib.mkIf cfg.enable {
-    preservation.enable = true;
-
     # clan.core.settings.machine-id creates /etc/machine-id in the nix store,
     # causing systemd to mount a tmpfs overlay (for writability), which breaks
     # nix-optimise (EXDEV cross-device link). disable store-based file and let
     # preservation handle it via symlink. clan's kernel cmdline still works.
     environment.etc.machine-id.enable = lib.mkForce false;
 
-    preservation.preserveAt.${cfg.persistPath} = {
-      directories =
-        map toPreservationDir (
-          [
-            "/var/lib/nixos"
-            "/var/lib/systemd"
-          ]
-          ++ cfg.directories
-        )
-        ++ lib.optional cfg.manageSopsMount {
-          directory = "/var/lib/sops-nix";
-          how = "bindmount";
-          inInitrd = true;
-        };
+    preservation = {
+      enable = true;
 
-      files = map toPreservationFile cfg.files ++ [
-        {
-          file = "/etc/machine-id";
-          how = "symlink";
-          inInitrd = true;
-          createLinkTarget = true;
-        }
-      ];
+      preserveAt.${cfg.persistPath} = {
+        directories =
+          map toPreservationDir (
+            [
+              "/var/lib/nixos"
+              "/var/lib/systemd"
+              "/var/log"
+            ]
+            ++ cfg.directories
+          )
+          ++ lib.optional cfg.manageSopsMount {
+            directory = "/var/lib/sops-nix";
+            how = "bindmount";
+            inInitrd = true;
+          };
+
+        files = map toPreservationFile cfg.files ++ [
+          {
+            file = "/etc/machine-id";
+            how = "symlink";
+            inInitrd = true;
+            createLinkTarget = true;
+          }
+        ];
+      };
     };
   };
 }

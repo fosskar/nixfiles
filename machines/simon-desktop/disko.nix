@@ -1,5 +1,6 @@
 # disko config for nvme with btrfs + preservation
-_: {
+{ config, ... }:
+{
   disko.devices = {
     disk = {
       main = {
@@ -33,6 +34,7 @@ _: {
                   "nixos"
                   "-f"
                 ];
+                postMountHook = config.nixfiles.persistence.diskoPostMountHook;
                 subvolumes = {
                   "@root" = {
                     mountpoint = "/";

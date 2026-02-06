@@ -1,4 +1,5 @@
-_: {
+{ config, ... }:
+{
   disko.devices = {
     disk = {
       # optane drive 1 (16gb) - primary boot + slog
@@ -137,6 +138,7 @@ _: {
             options.mountpoint = "legacy";
             mountpoint = "/persist";
             options."com.sun:auto-snapshot" = "true";
+            postMountHook = config.nixfiles.persistence.diskoPostMountHook;
           };
           reserved = {
             type = "zfs_fs";

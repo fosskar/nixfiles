@@ -1,4 +1,5 @@
-_: {
+{ config, ... }:
+{
   disko.devices = {
     disk.main = {
       type = "disk";
@@ -31,6 +32,7 @@ _: {
                 "root"
                 "-f"
               ];
+              postMountHook = config.nixfiles.persistence.diskoPostMountHook;
               subvolumes = {
                 "@root" = {
                   mountpoint = "/";

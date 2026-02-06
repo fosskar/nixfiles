@@ -51,6 +51,27 @@ let
       bcachefs
     else
       null;
+
+  # extract directory path from string or attrset
+  getDirPath = d: if builtins.isString d then d else d.directory or "";
+
+  # all directories that need to exist on /persist during fresh install
+  allPersistDirs = [
+    "/var/lib/nixos"
+    "/var/lib/systemd"
+    "/var/log"
+  ]
+  ++ lib.optional cfg.manageSopsMount "/var/lib/sops-nix"
+  ++ map getDirPath cfg.directories;
+
+  # parent dirs for persisted files
+  getFilePath = f: if builtins.isString f then f else f.file or "";
+  fileParentDirs = map (f: builtins.dirOf (getFilePath f)) cfg.files;
+
+  # all unique dirs to create
+  installDirs = lib.unique (lib.sort (a: b: a < b) (allPersistDirs ++ fileParentDirs));
+
+  mountPoint = config.disko.rootMountPoint or "/mnt";
 in
 {
   imports = [ ./preservation.nix ];
@@ -137,6 +158,12 @@ in
       default = [ ];
       description = "files to persist";
     };
+
+    diskoPostMountHook = lib.mkOption {
+      type = lib.types.lines;
+      readOnly = true;
+      description = "shell commands for disko postMountHook to pre-create persistent dirs during fresh install";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -167,5 +194,19 @@ in
     fileSystems = {
       ${cfg.persistPath}.neededForBoot = true;
     };
+
+    # auto-generated commands to pre-create persistent dirs during disko install
+    nixfiles.persistence.diskoPostMountHook = lib.concatStringsSep "\n" (
+      [ "# pre-create persistent directories for fresh install" ]
+      ++ map (
+        dir:
+        let
+          needsChmod = dir == "/var/lib/private";
+          mkdirCmd = "mkdir -p ${mountPoint}${cfg.persistPath}${dir}";
+          chmodCmd = lib.optionalString needsChmod " && chmod 0700 ${mountPoint}${cfg.persistPath}${dir}";
+        in
+        mkdirCmd + chmodCmd
+      ) installDirs
+    );
   };
 }
