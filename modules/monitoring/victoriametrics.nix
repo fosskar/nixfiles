@@ -94,7 +94,7 @@ in
         type = "prometheus";
         access = "proxy";
         url = "http://${config.services.victoriametrics.listenAddress}";
-        isDefault = true;
+        isDefault = false;
       }
     ];
   };

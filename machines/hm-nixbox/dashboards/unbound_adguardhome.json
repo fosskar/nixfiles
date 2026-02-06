@@ -21,7 +21,7 @@
       }
     ]
   },
-  "description": "Unbound DNS and AdGuard Home metrics dashboard using Telegraf and VictoriaMetrics/Prometheus",
+  "description": "Unbound DNS and AdGuard Home metrics dashboard using Telegraf and mimir/Prometheus",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,

@@ -16,6 +16,14 @@ in
 
   services.beszel.agent.environmentFile = config.sops.secrets."beszel.env".path;
 
+  # remove old grafana datasources
+  services.grafana.provision.datasources.settings.deleteDatasources = [
+    {
+      name = "VictoriaLogs";
+      orgId = 1;
+    }
+  ];
+
   # grafana alerting -> gotify
   services.grafana.provision.alerting.contactPoints.settings = {
     apiVersion = 1;
@@ -72,32 +80,6 @@ in
       enableZfsExporter = true;
     };
 
-    # machine-specific remote scrape targets
-    victoriametrics = {
-      enable = true;
-      scrapeConfigs = [
-        {
-          job_name = "openwrt-node-exporter";
-          static_configs = [
-            {
-              targets = [
-                "192.168.10.1:9100"
-                "192.168.10.2:9100"
-              ];
-              labels.type = "node-exporter";
-            }
-          ];
-        }
-        {
-          job_name = "openwrt-telegraf";
-          static_configs = [
-            {
-              targets = [ "192.168.10.1:9273" ];
-              labels.type = "telegraf";
-            }
-          ];
-        }
-      ];
-    };
+    victoriametrics.enable = true;
   };
 }

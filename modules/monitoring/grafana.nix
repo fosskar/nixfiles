@@ -98,10 +98,7 @@ in
       enable = true;
       openFirewall = false;
 
-      declarativePlugins = with pkgs.grafanaPlugins; [
-        victoriametrics-metrics-datasource
-        victoriametrics-logs-datasource
-      ];
+      declarativePlugins = with pkgs.grafanaPlugins; [ ];
 
       provision.dashboards.settings = {
         apiVersion = 1;
@@ -121,8 +118,8 @@ in
         server = {
           http_addr = "127.0.0.1";
           http_port = 3100;
-          domain = serviceDomain;
-          root_url = "https://${serviceDomain}";
+          domain = lib.mkForce serviceDomain;
+          root_url = lib.mkForce "https://${serviceDomain}";
           enable_gzip = true;
         };
 
@@ -132,9 +129,7 @@ in
         };
 
         security = {
-          admin_user = "admin";
-          cookie_secure = true;
-          admin_password = "$__file{${config.sops.secrets."admin-password".path}}";
+          cookie_secure = lib.mkForce true;
         };
 
         users = {

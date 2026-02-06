@@ -1,20 +1,20 @@
-{ pkgs, ... }:
 {
-  # restart vector when pangolin restarts (tunnel connections drop)
-  systemd.services.vector = {
-    after = [ "pangolin.service" ];
-    bindsTo = [ "pangolin.service" ];
-    serviceConfig = {
-      RestartSec = "5s";
-    };
-  };
-
-  # push metrics + logs via pangolin tcp tunnels
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  mimirPasswordFile = config.clan.core.vars.generators.mimir-auth.files."password".path;
+  lokiPasswordFile = config.clan.core.vars.generators.loki-auth.files."password".path;
+  vectorConfig = (pkgs.formats.toml { }).generate "vector.toml" config.services.vector.settings;
+in
+{
   services.vector = {
     enable = true;
     package = pkgs.vector;
+    validateConfig = false; # uses env vars for secrets
     settings = {
-      # metrics sources
       sources = {
         crowdsec_metrics = {
           type = "prometheus_scrape";
@@ -26,7 +26,6 @@
           endpoints = [ "http://127.0.0.1:8082/metrics" ];
           scrape_interval_secs = 15;
         };
-        # log source
         traefik_logs = {
           type = "file";
           include = [ "/var/log/traefik/access.log" ];
@@ -34,7 +33,6 @@
       };
 
       transforms = {
-        # add instance label to metrics
         labeled_metrics = {
           type = "remap";
           inputs = [
@@ -45,7 +43,6 @@
             .tags.instance = "hzc-pango"
           '';
         };
-        # parse traefik json logs for victorialogs
         parsed_logs = {
           type = "remap";
           inputs = [ "traefik_logs" ];
@@ -57,22 +54,46 @@
       };
 
       sinks = {
-        victoriametrics = {
+        mimir = {
           type = "prometheus_remote_write";
           inputs = [ "labeled_metrics" ];
-          endpoint = "http://127.0.0.1:8428/api/v1/write";
-        };
-        victorialogs = {
-          type = "http";
-          inputs = [ "parsed_logs" ];
-          uri = "http://127.0.0.1:9428/insert/jsonline?_stream_fields=instance&_msg_field=RequestPath&_time_field=StartUTC";
-          encoding = {
-            codec = "json";
+          endpoint = "http://hm-nixbox.clan/mimir/api/v1/push";
+          auth = {
+            strategy = "basic";
+            user = "alloy";
+            password = "\${MIMIR_PASSWORD}";
           };
-          framing.method = "newline_delimited";
-          healthcheck.enabled = false;
+        };
+        loki = {
+          type = "loki";
+          inputs = [ "parsed_logs" ];
+          endpoint = "http://hm-nixbox.clan/loki";
+          labels = {
+            instance = "hzc-pango";
+            job = "traefik-access";
+          };
+          auth = {
+            strategy = "basic";
+            user = "alloy";
+            password = "\${LOKI_PASSWORD}";
+          };
+          encoding.codec = "json";
         };
       };
     };
   };
+
+  systemd.services.vector.serviceConfig.LoadCredential = [
+    "mimir-password:${mimirPasswordFile}"
+    "loki-password:${lokiPasswordFile}"
+  ];
+
+  # wrap ExecStart to inject secrets as env vars from credentials
+  systemd.services.vector.serviceConfig.ExecStart = lib.mkForce (
+    pkgs.writeShellScript "vector-start" ''
+      export MIMIR_PASSWORD="$(cat "$CREDENTIALS_DIRECTORY/mimir-password")"
+      export LOKI_PASSWORD="$(cat "$CREDENTIALS_DIRECTORY/loki-password")"
+      exec ${pkgs.vector}/bin/vector --config ${vectorConfig} --graceful-shutdown-limit-secs 60
+    ''
+  );
 }

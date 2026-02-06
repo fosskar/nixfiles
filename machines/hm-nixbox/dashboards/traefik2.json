@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "Traefik dashboard converted for VictoriaLogs + VictoriaMetrics",
+  "description": "Traefik detailed dashboard",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -24,8 +24,8 @@
   "panels": [
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {
@@ -78,11 +78,10 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
-          "expr": "* | stats count() as requests",
-          "queryType": "statsRange",
+          "expr": "count_over_time({job=\"traefik-access\"} [$__auto])",
           "refId": "A"
         }
       ],
@@ -92,7 +91,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -151,7 +150,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "editorMode": "code",
           "expr": "histogram_quantile(0.95, sum(rate(traefik_service_request_duration_seconds_bucket[5m])) by (le)) * 1000",
@@ -166,7 +165,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -217,7 +216,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "disableTextWrap": false,
           "editorMode": "code",
@@ -238,7 +237,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -289,7 +288,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -308,8 +307,8 @@
     },
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "description": "",
       "fieldConfig": {
@@ -358,11 +357,10 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
-          "expr": "* | stats count() as requests",
-          "queryType": "statsRange",
+          "expr": "count_over_time({job=\"traefik-access\"} [$__auto])",
           "refId": "A"
         }
       ],
@@ -372,8 +370,8 @@
     },
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "description": "",
       "fieldConfig": {
@@ -419,11 +417,10 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
-          "expr": "DownstreamStatus:200 | stats sum(DownstreamContentSize) as bytes",
-          "queryType": "statsRange",
+          "expr": "sum(sum_over_time({job=\"traefik-access\"} | json | DownstreamStatus=\"200\" | unwrap DownstreamContentSize [$__auto]))",
           "refId": "A"
         }
       ],
@@ -460,7 +457,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "description": "",
       "fieldConfig": {
@@ -513,7 +510,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -532,7 +529,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -586,7 +583,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "editorMode": "code",
           "expr": "sum(traefik_service_requests_total) by (service)",
@@ -603,8 +600,8 @@
     },
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "description": "",
       "fieldConfig": {
@@ -761,13 +758,12 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "* | stats by (DownstreamStatus) count() as requests",
+          "expr": "sum by (DownstreamStatus) (count_over_time({job=\"traefik-access\"} | json [$__auto]))",
           "legendFormat": "{{DownstreamStatus}}",
-          "queryType": "statsRange",
           "refId": "A"
         }
       ],
@@ -776,8 +772,8 @@
     },
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {
@@ -829,13 +825,12 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "request_X-Ipcountry:* | stats by (request_X-Ipcountry) count() as requests",
-          "legendFormat": "{{request_X-Ipcountry}}",
-          "queryType": "statsRange",
+          "expr": "sum by (request_X_Ipcountry) (count_over_time({job=\"traefik-access\"} | json | request_X_Ipcountry != \"\" [$__auto]))",
+          "legendFormat": "{{request_X_Ipcountry}}",
           "refId": "A"
         }
       ],
@@ -846,7 +841,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -910,7 +905,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "editorMode": "code",
           "expr": "sum(traefik_service_request_duration_seconds_sum)\n/\nsum(traefik_service_requests_total)",
@@ -925,8 +920,8 @@
     },
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {
@@ -1017,11 +1012,10 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
-          "expr": "* | stats by (ClientHost) count() as requests | sort by (requests) desc | limit 20",
-          "queryType": "stats",
+          "expr": "topk(20, sum by (ClientHost) (count_over_time({job=\"traefik-access\"} | json [$__auto])))",
           "refId": "A"
         }
       ],
@@ -1032,7 +1026,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -1118,7 +1112,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "expr": "sum(traefik_service_request_duration_seconds_sum{}) by (service) / sum(traefik_service_request_duration_seconds_count{}) by (service)",
           "format": "time_series",
@@ -1134,8 +1128,8 @@
     },
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {},
@@ -1164,11 +1158,10 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
-          "expr": "* | format \"Status: <DownstreamStatus> From <request_X-Ipcountry> IP <ClientHost> <RequestMethod> <RequestAddr><RequestPath> -> <ServiceAddr>\" as _msg",
-          "queryType": "range",
+          "expr": "{job=\"traefik-access\"} | json | line_format \"Status: {{.DownstreamStatus}} From {{.request_X_Ipcountry}} IP {{.ClientHost}} {{.RequestMethod}} {{.RequestAddr}}{{.RequestPath}} -> {{.ServiceAddr}}\"",
           "refId": "A"
         }
       ],
@@ -1178,8 +1171,8 @@
     },
     {
       "datasource": {
-        "type": "victorialogs-datasource",
-        "uid": "VictoriaLogs"
+        "type": "loki",
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {},
@@ -1208,11 +1201,10 @@
       "targets": [
         {
           "datasource": {
-            "type": "victorialogs-datasource",
-            "uid": "VictoriaLogs"
+            "type": "loki",
+            "uid": "loki"
           },
-          "expr": "DownstreamStatus:>399 | format \"Status: <DownstreamStatus> From <request_X-Ipcountry> IP <ClientHost> <RequestMethod> <RequestAddr><RequestPath> -> <ServiceAddr>\" as _msg",
-          "queryType": "range",
+          "expr": "{job=\"traefik-access\"} | json | DownstreamStatus >= 400 | line_format \"Status: {{.DownstreamStatus}} From {{.request_X_Ipcountry}} IP {{.ClientHost}} {{.RequestMethod}} {{.RequestAddr}}{{.RequestPath}} -> {{.ServiceAddr}}\"",
           "refId": "A"
         }
       ],
@@ -1222,7 +1214,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -1305,7 +1297,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "disableTextWrap": false,
           "editorMode": "code",
@@ -1328,7 +1320,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -1415,7 +1407,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "editorMode": "code",
           "expr": "sum by(router) (rate(traefik_router_requests_total[$__rate_interval]))",
@@ -1431,7 +1423,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -1516,7 +1508,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "editorMode": "code",
           "expr": "sum by(service) (rate(traefik_router_request_duration_seconds_count[$__rate_interval]))",
@@ -1532,7 +1524,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "description": "",
       "fieldConfig": {
@@ -1621,7 +1613,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -1640,7 +1632,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -1725,7 +1717,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "editorMode": "code",
           "expr": "sum by(entrypoint) (rate(traefik_entrypoint_request_duration_seconds_sum[$__rate_interval]))",
@@ -1741,7 +1733,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "VictoriaMetrics"
+        "uid": "mimir"
       },
       "fieldConfig": {
         "defaults": {
@@ -1826,7 +1818,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "VictoriaMetrics"
+            "uid": "mimir"
           },
           "editorMode": "code",
           "expr": "sum by(entrypoint) (rate(traefik_entrypoint_requests_total[$__rate_interval]))",
@@ -1842,7 +1834,7 @@
   ],
   "preload": false,
   "schemaVersion": 42,
-  "tags": ["traefik", "victorialogs"],
+  "tags": ["traefik"],
   "templating": {
     "list": []
   },
@@ -1852,7 +1844,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Traefik (VictoriaLogs)",
+  "title": "Traefik Detailed",
   "uid": "traefik-vlogs",
   "version": 1
 }
