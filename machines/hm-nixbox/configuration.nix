@@ -4,7 +4,6 @@
     ../../modules/acme
     ../../modules/arr-stack
     ../../modules/borgbackup
-    ../../modules/openclaw
     ../../modules/nginx
     ../../modules/filebrowser-quantum
     ../../modules/lldap

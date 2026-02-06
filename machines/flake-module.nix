@@ -26,11 +26,12 @@ in
 
     inventory = {
       machines = {
-        hzc-pango = {
-          deploy.targetHost = "root@138.201.155.21";
+        clawbox = {
+          deploy.targetHost = "root@192.168.10.90";
           tags = [
             "server"
-            "hetzner"
+            "home"
+            "ai"
           ];
         };
 
@@ -39,6 +40,14 @@ in
           tags = [
             "server"
             "home"
+          ];
+        };
+
+        hzc-pango = {
+          deploy.targetHost = "root@138.201.155.21";
+          tags = [
+            "server"
+            "hetzner"
           ];
         };
 
@@ -169,6 +178,7 @@ in
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
           roles.default.machines = {
+            clawbox.settings.host = "192.168.10.90";
             hzc-pango.settings.host = "138.201.155.21";
             hm-nixbox.settings.host = "192.168.10.80";
             simon-desktop.settings.host = "192.168.10.200";

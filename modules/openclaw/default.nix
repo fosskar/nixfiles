@@ -29,7 +29,7 @@ let
           model.primary = "anthropic/claude-sonnet-4-5";
           model.fallbacks = [
             "anthropic/claude-haiku-4-5"
-            "anthropic/claude-opus-4-5"
+            "anthropic/claude-opus-4-6"
           ];
           maxConcurrent = 4;
           subagents.maxConcurrent = 8;
@@ -58,10 +58,18 @@ let
           {
             id = "simon";
             workspace = "${stateDir}/workspaces/simon";
+            heartbeat = {
+              every = "30m";
+              target = "last";
+            };
           }
           {
             id = "iuser";
             workspace = "${stateDir}/workspaces/iuser";
+            #heartbeat = {
+            #  every = "30m";
+            #  target = "last";
+            #};
           }
         ];
       };
