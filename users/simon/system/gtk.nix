@@ -11,8 +11,7 @@
   gtk = {
     enable = true;
     font = {
-      name = "Inter";
-      package = pkgs.inter;
+      name = config.font;
     };
     theme = {
       name = "adw-gtk3-dark";

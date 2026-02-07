@@ -18,7 +18,7 @@
           "Noto Color Emoji"
         ];
         monospace = lib.mkDefault [
-          "JetBrainsMono Nerd Font"
+          "CommitMono Nerd Font Propo"
           "Noto Color Emoji"
         ];
         emoji = lib.mkDefault [ "Noto Color Emoji" ];
@@ -46,6 +46,7 @@
       roboto
       material-icons
       material-design-icons
+      nerd-fonts.commit-mono
       nerd-fonts.jetbrains-mono
       nerd-fonts.symbols-only
       nerd-fonts.zed-mono

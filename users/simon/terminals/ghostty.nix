@@ -33,7 +33,7 @@ in
     };
     settings = {
       theme = "grey-teal";
-      font-family = "JetBrainsMono Nerd Font";
+      font-family = config.monospaceFont;
       font-size = 10;
       copy-on-select = false;
       window-padding-x = 4;

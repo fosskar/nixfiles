@@ -187,8 +187,8 @@
         };
 
         ui = {
-          fontDefault = "Inter";
-          fontFixed = "JetBrainsMono Nerd Font Mono";
+          fontDefault = config.font;
+          fontFixed = config.monospaceFont;
           panelsAttachedToBar = true;
         };
 

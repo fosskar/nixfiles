@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   ...
 }:
 {
@@ -42,9 +43,9 @@
           outer_color = "rgba(20, 20, 20, 1)";
           inner_color = "rgba(51, 209, 122, 1)";
           font_color = "rgb(255, 255, 255)";
-          font_family = "Inter";
+          font_family = config.font;
           fade_on_empty = false;
-          placeholder_text = ''<span font_family="Inter">passwd</span>'';
+          placeholder_text = ''<span font_family="${config.font}">passwd</span>'';
           hide_input = false;
           halign = "center";
           valign = "center";
@@ -56,7 +57,7 @@
           monitor = "";
           text = "<b>$TIME</b>";
           color = "rgb(255, 255, 255)";
-          font_family = "Inter";
+          font_family = config.font;
           font_size = 94;
           position = "0, -80";
           halign = "center";
@@ -66,7 +67,7 @@
           monitor = "";
           text = ''cmd[update:1000] echo "$(date "+%a %d %b")"'';
           color = "rgb(255, 255, 255)";
-          font_family = "Inter";
+          font_family = config.font;
           font_size = 24;
           position = "0, -210";
           halign = "center";
@@ -76,7 +77,7 @@
           monitor = "";
           text = "henlo <i>$USER</i>";
           color = "rgb(255, 255, 255)";
-          font_family = "Inter";
+          font_family = config.font;
           font_size = 32;
           position = "0, 240";
           halign = "center";

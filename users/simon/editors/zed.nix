@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   ...
 }:
 {
@@ -62,9 +63,9 @@
       colorize_brackets = true;
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
-      buffer_font_family = "JetBrainsMono Nerd Font";
+      buffer_font_family = config.monospaceFont;
       buffer_line_height = "standard";
-      ui_font_family = "Inter";
+      ui_font_family = config.font;
       confirm_quit = true;
       show_whitespaces = "boundary";
       calls = {
