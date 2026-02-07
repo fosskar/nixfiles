@@ -26,6 +26,7 @@ in
         SYSTEM_ENABLEANALYTICS = "false";
         SECURITY_ENABLELOGIN = "false";
         JAVA_TOOL_OPTIONS = "-Xmx512m";
+        STIRLING_LOCK_CONNECTION = "1";
       };
     };
 
