@@ -26,6 +26,7 @@
         includeCoAuthoredBy = false;
         autoUpdates = false;
         enableAllProjectMcpServers = true;
+        teammateMode = "tmux";
         env = {
           CLAUDE_CODE_ENABLE_TELEMETRY = "0";
           CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
@@ -35,6 +36,7 @@
           CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL = "1";
           CLAUDE_CODE_AUTO_CONNECT_IDE = "0";
           DISABLE_NON_ESSENTIAL_MODEL_CALLS = "1";
+          CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
         };
         statusLine = {
           type = "command";
