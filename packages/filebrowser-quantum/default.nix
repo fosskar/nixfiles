@@ -6,13 +6,13 @@
 }:
 
 let
-  version = "1.1.1-stable";
+  version = "1.1.2-stable";
 
   src = fetchFromGitHub {
     owner = "gtsteffaniak";
     repo = "filebrowser";
     tag = "v${version}";
-    hash = "sha256-Oh+gfPdt9Xx6cQJHBIXGp+kCk8FcHKj2qUamV5kKjMI=";
+    hash = "sha256-WUYfl4mUyAK5Z+Yjrde0qmLBVh/JZslIk/oBVAF3lgk=";
   };
 
   frontend = buildNpmPackage {
@@ -20,7 +20,7 @@ let
     inherit version src;
 
     sourceRoot = "${src.name}/frontend";
-    npmDepsHash = "sha256-pJR5m1XrqeHwOADWMnFDtHivaKCBqqdG2O6fWql7ugA=";
+    npmDepsHash = "sha256-MVpITFYnmBJngd3+zEIfoljwUgjjjjLvt5N3R+8apgk=";
 
     buildPhase = ''
       runHook preBuild
@@ -47,7 +47,7 @@ buildGoModule {
 
   sourceRoot = "${src.name}/backend";
 
-  vendorHash = "sha256-t4cREfkj+z+EvgXjzqYc8xs0jhTMUZMjcHxkkuuLpZs=";
+  vendorHash = "sha256-j7zNwkW9EBzmzVLmENTkmxSaokdxsTxdI3CkTEMhnG4=";
 
   preBuild = ''
     mkdir -p http/embed
