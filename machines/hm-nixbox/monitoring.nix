@@ -18,10 +18,6 @@ in
 
   # remove old grafana datasources
   services.grafana.provision.datasources.settings.deleteDatasources = [
-    {
-      name = "VictoriaLogs";
-      orgId = 1;
-    }
   ];
 
   # grafana alerting -> gotify
@@ -80,6 +76,31 @@ in
       enableZfsExporter = true;
     };
 
-    victoriametrics.enable = true;
+    victoriametrics = {
+      enable = true;
+      scrapeConfigs = [
+        {
+          job_name = "openwrt-node-exporter";
+          static_configs = [
+            {
+              targets = [
+                "192.168.10.1:9100"
+                "192.168.10.2:9100"
+              ];
+              labels.type = "node-exporter";
+            }
+          ];
+        }
+        {
+          job_name = "openwrt-telegraf";
+          static_configs = [
+            {
+              targets = [ "192.168.10.1:9273" ];
+              labels.type = "telegraf";
+            }
+          ];
+        }
+      ];
+    };
   };
 }
