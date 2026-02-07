@@ -34,5 +34,10 @@
         ];
       };
     };
+    # machine-specific traefik entrypoints for raw resources
+    traefik.staticConfigOptions = {
+      entryPoints.tcp-8428.address = ":8428/tcp"; # victoriametrics
+      entryPoints.tcp-9428.address = ":9428/tcp"; # victorialogs
+    };
   };
 }

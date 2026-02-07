@@ -96,11 +96,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770408336,
-        "narHash": "sha256-eZkaL1hBk656D0jJWjee/vWMMfR/3XlliWvz+cY6b20=",
+        "lastModified": 1770458742,
+        "narHash": "sha256-yRRp/srDaCwIqFbGMAIJ10fHFnaHxVpeea7ST8kkOfk=",
         "ref": "refs/heads/main",
-        "rev": "0ad6430177ef6842d535705e6374099e081e3c26",
-        "revCount": 12805,
+        "rev": "2f6602c909149d9ff4fb8b73ffa07bb33db056f7",
+        "revCount": 12809,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -1032,10 +1032,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1770450547,
-        "narHash": "sha256-zmwcPOv3hdYhbn4wdw+cCsU/z+xwB8qlWVbx66u/gPk=",
+        "lastModified": 1770460582,
+        "narHash": "sha256-Ein9QJU4AScoSswZj8IhSulPzQM5n5/H974QLNgt9vI=",
         "ref": "master",
-        "rev": "3e625ad274b504da65021f439bce13c95a6a655d",
+        "rev": "76889a437cdf7a8fc3b318ec076303ac7ecd934a",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1088,11 +1088,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770436113,
-        "narHash": "sha256-Ekc6E1uo7OBMROUUZ3pBiTwha7KlHcsNf6jy1g1hCco=",
+        "lastModified": 1770458444,
+        "narHash": "sha256-ZUh8eoJSkA/NVj451Y4onrRjv0XRfNyTMZhfrY71FoU=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "93838353573233b5584b106eb897a37f8a4e63ac",
+        "rev": "b56f3bd363e5a582bf0cfab4d00faaf0e5fc5d0b",
         "type": "github"
       },
       "original": {

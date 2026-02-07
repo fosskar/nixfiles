@@ -23,7 +23,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -77,7 +77,7 @@
       "type": "stat"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -131,7 +131,7 @@
       "type": "stat"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -189,7 +189,10 @@
           "refId": "A"
         },
         {
-          "datasource": "mimir",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P4169E866C3094E38"
+          },
           "editorMode": "code",
           "expr": "sum(rate(traefik_entrypoint_request_duration_seconds_sum{instance=\"$instance\"}[5m])) / sum(rate(traefik_entrypoint_request_duration_seconds_count{instance=\"$instance\"}[5m])) * 1000",
           "hide": false,
@@ -203,7 +206,7 @@
       "type": "stat"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -267,7 +270,7 @@
       "type": "stat"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -321,7 +324,7 @@
       "type": "stat"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -456,7 +459,7 @@
       "type": "table"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -574,7 +577,7 @@
       "type": "piechart"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -721,7 +724,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -778,7 +781,7 @@
       "type": "piechart"
     },
     {
-      "datasource": "loki",
+      "datasource": "VictoriaLogs",
       "description": "requests by country from geoblock header",
       "fieldConfig": {
         "defaults": {
@@ -827,10 +830,11 @@
       "pluginVersion": "",
       "targets": [
         {
-          "datasource": "loki",
+          "datasource": "VictoriaLogs",
           "editorMode": "code",
-          "expr": "sum by (request_X_Ipcountry) (count_over_time({job=\"traefik-access\", instance=\"$instance\"} | json | request_X_Ipcountry != \"\" [$__auto]))",
-          "legendFormat": "{{request_X_Ipcountry}}",
+          "expr": "request_X-Ipcountry:* | stats by (request_X-Ipcountry) count() as requests",
+          "legendFormat": "{{request_X-Ipcountry}}",
+          "queryType": "statsRange",
           "refId": "A"
         }
       ],
@@ -838,7 +842,7 @@
       "type": "piechart"
     },
     {
-      "datasource": "loki",
+      "datasource": "VictoriaLogs",
       "description": "blocked requests (403) by country - geoblock/crowdsec",
       "fieldConfig": {
         "defaults": {
@@ -887,10 +891,11 @@
       "pluginVersion": "",
       "targets": [
         {
-          "datasource": "loki",
+          "datasource": "VictoriaLogs",
           "editorMode": "code",
-          "expr": "sum by (request_X_Ipcountry) (count_over_time({job=\"traefik-access\", instance=\"$instance\"} | json | DownstreamStatus=\"403\" | request_X_Ipcountry != \"\" [$__auto]))",
-          "legendFormat": "{{request_X_Ipcountry}}",
+          "expr": "DownstreamStatus:403 | stats by (request_X-Ipcountry) count() as blocked",
+          "legendFormat": "{{request_X-Ipcountry}}",
+          "queryType": "statsRange",
           "refId": "A"
         }
       ],
@@ -898,7 +903,7 @@
       "type": "piechart"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -984,7 +989,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1080,7 +1085,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1168,7 +1173,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "mimir",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1290,7 +1295,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "loki",
+      "datasource": "VictoriaLogs",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -1317,8 +1322,8 @@
       "pluginVersion": "",
       "targets": [
         {
-          "datasource": "loki",
-          "expr": "{job=\"traefik-access\", instance=\"$instance\"} | json | DownstreamStatus=\"403\"",
+          "datasource": "VictoriaLogs",
+          "expr": "DownstreamStatus:403 AND instance:$instance",
           "refId": "A"
         }
       ],
@@ -1326,7 +1331,7 @@
       "type": "logs"
     },
     {
-      "datasource": "loki",
+      "datasource": "VictoriaLogs",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -1353,8 +1358,8 @@
       "pluginVersion": "",
       "targets": [
         {
-          "datasource": "loki",
-          "expr": "{job=\"traefik-access\", instance=\"$instance\"} | json | DownstreamStatus=~\"5..\"",
+          "datasource": "VictoriaLogs",
+          "expr": "DownstreamStatus:~\"5..\" AND instance:$instance",
           "refId": "A"
         }
       ],
@@ -1373,7 +1378,7 @@
           "text": "hzc-pango",
           "value": "hzc-pango"
         },
-        "datasource": "mimir",
+        "datasource": "VictoriaMetrics",
         "definition": "label_values(traefik_config_reloads_total, instance)",
         "includeAll": false,
         "label": "Instance",

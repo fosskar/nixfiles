@@ -139,25 +139,25 @@ in
           };
         };
 
-        monitoring = {
-          module = {
-            name = "monitoring";
-            input = "clan-core";
-          };
-
-          roles = {
-            client = {
-              tags = [ "server" ];
-              # Decide whether or not your server is reachable via https.
-              settings.useSSL = false;
-            };
-
-            server.machines."hm-nixbox".settings = {
-              # Optionally enable grafana for dashboards and alerts.
-              grafana.enable = true;
-            };
-          };
-        };
+        #monitoring = {
+        #  module = {
+        #    name = "monitoring";
+        #    input = "clan-core";
+        #  };
+        #
+        #  roles = {
+        #    client = {
+        #      tags = [ "server" ];
+        #      # Decide whether or not your server is reachable via https.
+        #      settings.useSSL = false;
+        #    };
+        #
+        #    server.machines."hm-nixbox".settings = {
+        #      # Optionally enable grafana for dashboards and alerts.
+        #      grafana.enable = true;
+        #    };
+        #  };
+        #};
 
         clan-cache = {
           roles.default.tags.all = { };

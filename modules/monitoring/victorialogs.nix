@@ -10,15 +10,21 @@ in
   options.nixfiles.monitoring.victorialogs = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = true;
       description = "victorialogs log aggregation";
+    };
+
+    listenAddress = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1:9428";
+      description = "listen address for VictoriaLogs";
     };
   };
 
   config = lib.mkIf cfg.enable {
     services.victorialogs = {
       enable = true;
-      listenAddress = "127.0.0.1:9428";
+      inherit (cfg) listenAddress;
     };
 
     # grafana datasource
