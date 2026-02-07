@@ -25,12 +25,6 @@ in
       default = [ ];
       description = "prometheus scrape configs";
     };
-
-    listenAddress = lib.mkOption {
-      type = lib.types.str;
-      default = "127.0.0.1:8428";
-      description = "listen address for VictoriaMetrics";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -39,7 +33,7 @@ in
 
     services.victoriametrics = {
       enable = true;
-      inherit (cfg) listenAddress;
+      listenAddress = "127.0.0.1:8428";
       inherit (cfg) retentionPeriod;
 
       extraOptions = [

@@ -84,7 +84,7 @@ in
                 "192.168.10.1:9100"
                 "192.168.10.2:9100"
               ];
-              labels.type = "openwrt-node-exporter";
+              labels.type = "node-exporter";
             }
           ];
         }
@@ -93,7 +93,7 @@ in
           static_configs = [
             {
               targets = [ "192.168.10.1:9273" ];
-              labels.type = "openwrt-telegraf";
+              labels.type = "telegraf";
             }
           ];
         }

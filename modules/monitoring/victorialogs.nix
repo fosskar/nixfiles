@@ -13,18 +13,12 @@ in
       default = true;
       description = "victorialogs log aggregation";
     };
-
-    listenAddress = lib.mkOption {
-      type = lib.types.str;
-      default = "127.0.0.1:9428";
-      description = "listen address for VictoriaLogs";
-    };
   };
 
   config = lib.mkIf cfg.enable {
     services.victorialogs = {
       enable = true;
-      inherit (cfg) listenAddress;
+      listenAddress = "127.0.0.1:9428";
     };
 
     # grafana datasource

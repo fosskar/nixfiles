@@ -61,6 +61,7 @@
           type = "prometheus_remote_write";
           inputs = [ "labeled_metrics" ];
           endpoint = "http://127.0.0.1:8428/api/v1/write";
+          healthcheck.enabled = false;
         };
         victorialogs = {
           type = "http";
