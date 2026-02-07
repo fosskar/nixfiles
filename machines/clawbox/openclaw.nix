@@ -22,9 +22,9 @@ in
     bun
     newsboat
     ripgrep
+    sqlite
     zip
     unzip
-    (python3.withPackages (ps: [ ps.python-pptx ]))
   ];
 
   clan.core.vars.generators.openclaw = {
