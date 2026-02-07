@@ -13,7 +13,6 @@ in
     llm-agents.claude-code
     llm-agents.codex
     llm-agents.opencode
-    signal-cli
     whisper-cpp
     gh
     libreoffice
