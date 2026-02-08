@@ -12,6 +12,7 @@
       ouch # archiver
       wget
       yq-go
+      ripgrep
     ];
   };
 }
