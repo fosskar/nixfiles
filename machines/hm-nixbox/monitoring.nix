@@ -47,7 +47,7 @@ in
       };
     };
 
-    netdata.enable = true;
+    netdata.enable = false;
 
     grafana = {
       enable = true;
