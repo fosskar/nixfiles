@@ -79,6 +79,10 @@
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)
   boot = {
+    kernelParams = [
+      # Workaround for OpenZFS 2.4 idle-disk wakeups: https://github.com/openzfs/zfs/issues/18082
+      "zfs.spa_note_txg_time=31557600"
+    ];
     kernelModules = [
       "nct6775"
       "kvm-amd"
