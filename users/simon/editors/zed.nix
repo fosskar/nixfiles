@@ -85,6 +85,7 @@
         };
       };
       soft_wrap = "editor_width";
+      restore_on_startup = "last_workspace";
       indent_guides = {
         line_width = 1;
         active_line_width = 2;
@@ -147,6 +148,7 @@
         #env = {
         #  EDITOR = "zeditor";
         #};
+        dock = "right";
         font_size = 14;
       };
       file_types = {
