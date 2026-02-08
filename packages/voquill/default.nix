@@ -61,7 +61,7 @@ let
     xorg.libXcursor
     xorg.libXrandr
     xorg.libXi
-    xorg.libxcb
+    libxcb
     # misc
     dbus
     openssl
