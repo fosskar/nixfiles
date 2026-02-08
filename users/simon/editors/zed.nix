@@ -63,6 +63,7 @@
       colorize_brackets = true;
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
+      #vim_mode = true;
       buffer_font_family = config.monospaceFont;
       buffer_line_height = "standard";
       ui_font_family = config.font;
