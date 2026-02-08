@@ -16,6 +16,7 @@ this repo is built on [clan-core](https://docs.clan.lol/) - a framework for mana
 | lpt-titan     | laptop  | framework 13                                         |
 | hm-nixbox     | server  | home server: monitoring, immich, paperless, openclaw |
 | hzc-pango     | vps     | hetzner, reverse proxy (pangolin)                    |
+| clawbox       | server  | local AI box (openclaw, signal-cli)                  |
 
 IPs in `machines/flake-module.nix` under `inventory.machines` and `instances.internet`.
 
@@ -96,13 +97,14 @@ defined in `machines/flake-module.nix` - machines, services, deploy targets. sel
 
 | service            | module    | purpose                             |
 | ------------------ | --------- | ----------------------------------- |
-| admin              | (builtin) | ssh key management                  |
+| sshd               | clan-core | authorized keys + ssh certificates  |
 | users              | clan-core | user creation + home-manager        |
 | clan-cache         | clan-core | trusted nix caches                  |
 | yggdrasil          | (builtin) | mesh networking                     |
 | internet           | (builtin) | IP exports for yggdrasil peering    |
 | syncthing          | clan-core | folder sync (desktop ↔ laptop)     |
 | borgbackup         | clan-core | backups to hetzner storagebox       |
+| wifi               | clan-core | declarative wifi profiles (laptop)  |
 | server-module      | importer  | applies server profile via tag      |
 | workstation-module | importer  | applies workstation profile via tag |
 
@@ -180,19 +182,17 @@ in
 
 modules live in `modules/` with these categories:
 
-| category    | modules                                                           |
-| ----------- | ----------------------------------------------------------------- |
-| hardware    | cpu/, gpu/, bcachefs/, zfs/, fprint/, yubikey/, lanzaboote/       |
-| power       | power/ (tuned, ppd, auto-cpufreq, logind, upower)                 |
-| persistence | persistence/ (preservation, rollback)                             |
-| networking  | tailscale/, pangolin/                                             |
-| services    | nginx/, acme/, authelia/, lldap/, k3s/, notify/, vert/            |
-| monitoring  | monitoring/ (beszel, victoriametrics, telegraf, grafana, netdata) |
-| media       | immich/, paperless/, arr-stack (in machine config)                |
-| security    | vaultwarden/                                                      |
-| ai          | openclaw/, ollama (in machine config)                             |
-| desktop     | dms/, niri/, quickshell/, gaming/, virtualization/                |
-| profiles    | profiles/base/, profiles/server/, profiles/workstation/           |
+| category       | modules                                                                                       |
+| -------------- | --------------------------------------------------------------------------------------------- |
+| hardware       | cpu/, gpu/, bcachefs/, zfs/, fprint/, yubikey/, lanzaboote/                                   |
+| power          | power/ (tuned, ppd, auto-cpufreq, logind, upower, powertop)                                   |
+| persistence    | persistence/ (preservation, fs-specific persistence helpers)                                  |
+| networking     | tailscale/, pangolin/                                                                         |
+| infra/services | nginx/, acme/, authelia/, lldap/, kanidm/, k3s/, notify/, vert/, borgbackup/, hd-idle/        |
+| monitoring     | monitoring/ (beszel, victoriametrics, victorialogs, telegraf, grafana, netdata, exporter)     |
+| apps           | immich/, paperless/, vaultwarden/, it-tools/, stirling-pdf/, filebrowser-quantum/, arr-stack/ |
+| desktop        | dms/, niri/, gaming/, virtualization/                                                         |
+| profiles       | profiles/base/, profiles/server/, profiles/workstation/                                       |
 
 ## module enable patterns
 
@@ -216,7 +216,9 @@ nixfiles.power.tuned.enable = true;
 nixfiles.power.logind.enable = true;
 ```
 
-## known deprecations
+## known deprecations / volatile status
+
+keep this section short. if it grows, move details to `docs/runbook-current.md` and link from here.
 
 | issue              | status           | action                                                              |
 | ------------------ | ---------------- | ------------------------------------------------------------------- |
@@ -225,10 +227,10 @@ nixfiles.power.logind.enable = true;
 
 ## service quirks
 
-- **immich** - ML disabled (`modules/immich/default.nix:124`), Intel Arc GPU onnx compatibility issue
+- **immich** - ML is enabled with OpenVINO/onnxruntime overrides (`modules/immich/default.nix`); keep an eye on upstream package changes that can break custom patches
 - **grafana** - needs `groups` in id_token (not just userinfo) for role mapping
 - **radicle** - checkConfig disabled, settings format needs fixing
-- **zfs** - hostId in `modules/zfs/default.nix` must not change (breaks existing pools)
+- **zfs** - hostId for zfs machines must stay stable (see machine networking config, e.g. `machines/hm-nixbox/networking.nix`)
 - **tuned** - has workaround for nixpkgs#463443 (ppd.conf bug)
 
 ## desktop shell
@@ -284,4 +286,11 @@ nixos-rebuild build --flake . 2>&1 | head -100
 - machine configs: `machines/<name>/` with `configuration.nix` as entry
 - facter.json: hardware facts (auto-generated, don't edit)
 - disko.nix: disk partitioning (used by clan install)
-- home.nix: machine-specific home-manager overrides
+- home-manager machine overrides: typically under `machines/<name>/home/default.nix`
+
+## pre-finish checklist
+
+- run `nix fmt` after nix edits
+- run targeted `nix build .#nixosConfigurations.<machine>.config.system.build.toplevel` for touched machines
+- use `nix eval` for changed options when behavior is unclear
+- do not deploy/restart/update remotely unless user explicitly asked
