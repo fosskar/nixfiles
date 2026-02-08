@@ -9,6 +9,71 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "immich.${acmeDomain}";
+
+  onnxruntimeOpenVino =
+    (pkgs.onnxruntime.override {
+      python3Packages = pkgs.python312Packages;
+    }).overrideAttrs
+      (oldAttrs: {
+        buildInputs = (oldAttrs.buildInputs or [ ]) ++ [
+          pkgs.openvino
+        ];
+
+        nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
+          pkgs.patchelf
+        ];
+
+        cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
+          (lib.cmakeBool "onnxruntime_USE_OPENVINO" true)
+          (lib.cmakeFeature "OpenVINO_DIR" "${pkgs.openvino}/runtime/cmake")
+        ];
+
+        # OpenVINO loads some frontends dynamically, so onnxruntime's provider must
+        # retain a runtime path to openvino libs after fixup.
+        postFixup = (oldAttrs.postFixup or "") + ''
+          provider="''${!outputLib}/lib/libonnxruntime_providers_openvino.so"
+          if [ -e "$provider" ]; then
+            patchelf --add-rpath "${pkgs.openvino}/runtime/lib/intel64" "$provider"
+          fi
+        '';
+
+        doCheck = false;
+      });
+
+  python312OpenVino = pkgs.python312.override {
+    packageOverrides = _pyFinal: pyPrev: {
+      onnxruntime =
+        (pyPrev.onnxruntime.override {
+          onnxruntime = onnxruntimeOpenVino;
+        }).overrideAttrs
+          (oldAttrs: {
+            buildInputs = (oldAttrs.buildInputs or [ ]) ++ [
+              pkgs.openvino
+            ];
+          });
+    };
+  };
+
+  immichMachineLearningOpenVino =
+    (pkgs.immich-machine-learning.override {
+      python3 = python312OpenVino;
+    }).overrideAttrs
+      (_oldAttrs: {
+        doCheck = false;
+      });
+
+  immichOpenVino = pkgs.immich.override {
+    immich-machine-learning = immichMachineLearningOpenVino;
+  };
+
+  immichOpenVinoPatched = immichOpenVino.overrideAttrs (oldAttrs: {
+    passthru = oldAttrs.passthru // {
+      machine-learning = oldAttrs.passthru.machine-learning.overrideAttrs (_: {
+        doCheck = false;
+        doInstallCheck = false;
+      });
+    };
+  });
 in
 {
   options.nixfiles.immich = {
@@ -109,6 +174,7 @@ in
 
     services.immich = {
       enable = true;
+      package = immichOpenVinoPatched;
       host = "127.0.0.1";
       port = 2283;
       mediaLocation = "/tank/apps/immich";
@@ -128,12 +194,12 @@ in
       redis.enable = true;
 
       machine-learning = {
-        # disabled: Intel Arc GPU has onnx/openvino compatibility issues
-        enable = false;
+        enable = true;
         environment = {
           OCL_ICD_VENDORS = "/run/opengl-driver/etc/OpenCL/vendors";
 
           LD_LIBRARY_PATH = builtins.concatStringsSep ":" [
+            "${pkgs.openvino}/runtime/lib/intel64"
             "${pkgs.python312Packages.openvino}/lib"
             "${pkgs.python312Packages.openvino}/lib/python3.12/site-packages/openvino"
           ];
