@@ -1,4 +1,9 @@
-{ mylib, ... }:
+{
+  mylib,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
     ../../modules/acme
@@ -29,6 +34,14 @@
       "radicle.nix"
     ];
   });
+
+  environment = {
+    systemPackages = [
+      (inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.quickemu
+        or inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default
+      )
+    ];
+  };
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
