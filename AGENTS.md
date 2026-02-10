@@ -259,6 +259,10 @@ jj git push                     # push
 
 workflow: commit working changes, continue on new change. bookmark + push only when ready.
 
+codex/sandbox note:
+- keep commit signing enabled; do not disable `git.sign-on-push` (globally, locally, or per-command override)
+- when `jj git push` fails in sandbox due to signing key or network/socket access, rerun the same `jj git push` with escalation instead of changing signing behavior
+
 ## debugging
 
 ```bash
