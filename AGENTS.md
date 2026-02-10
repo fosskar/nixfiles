@@ -46,7 +46,7 @@ ssh root@<ip>                   # direct IP (from deploy output)
 - **troubleshoot remotely** - don't ask user to check machines, ssh in and debug yourself
 - **no destructive actions without explicit permission** - never run `clan machines update`, `reboot`, `systemctl restart`, or any destructive command without explicit user instruction. if user says "i would restart now?" that's a QUESTION seeking confirmation, not an instruction. "check it please" means check AFTER user does it, not do it yourself. when in doubt, ask.
 - **ATOMIC COMMITS** - one logical change per commit. NEVER bundle unrelated changes. use `jj split` to separate changes before committing.
-  - one feature across multiple files = ONE commit (e.g., adding ldap group mapping to immich + grafana + authelia)
+  - one feature across multiple files = ONE commit (e.g., a single auth/role-mapping change across related services)
   - unrelated changes = separate commits
   - refactor + docs for that refactor = separate commits
 - **run `nix fmt` before committing** - always format nix files
@@ -55,7 +55,7 @@ ssh root@<ip>                   # direct IP (from deploy output)
 
 - `mylib.scanPaths ./. { }` - auto-import all .nix files in directory
 - **importing a module enables it** - NO `enable` options, NO `nixfiles.*.enable = true`. just import the module and it's on. exception: modules with submodules (like monitoring) where you import the parent but enable specific children
-- some modules have prerequisites (e.g., lanzaboote needs `sbctl create-keys` on target before deploy)
+- some modules require one-time host prerequisites before deploy (e.g., lanzaboote key provisioning with `sbctl create-keys`)
 - `lib.mkDefault` for overridable defaults in profiles
 - `lib.mkForce` to override conflicting services
 - flake input package overrides - patch external packages locally:
@@ -150,7 +150,7 @@ nix-store -qR <path> | grep x   # find package in closure
 
 ## monitoring
 
-metrics are stored in VictoriaMetrics on hm-nixbox. when looking for metrics, query there.
+primary metrics backend is VictoriaMetrics. query the host defined in inventory for current location.
 
 ## notable services (hm-nixbox)
 
@@ -223,14 +223,14 @@ keep this section short. if it grows, move details to `docs/runbook-current.md` 
 | issue              | status           | action                                                              |
 | ------------------ | ---------------- | ------------------------------------------------------------------- |
 | nixos-generators   | deprecated 25.05 | migrate to `nixos-rebuild build-image` when convenient              |
-| clanServices/admin | deprecated       | waiting for clan-core PR #6609, then migrate to sshd.authorizedKeys |
+| clanServices/admin | removed          | migrated to `sshd.authorizedKeys`                                    |
 
 ## service quirks
 
-- **immich** - ML is enabled with OpenVINO/onnxruntime overrides (`modules/immich/default.nix`); keep an eye on upstream package changes that can break custom patches
+- **immich** - ML uses local package/runtime overrides (`modules/immich/default.nix`); verify compatibility after nixpkgs or immich updates
 - **grafana** - needs `groups` in id_token (not just userinfo) for role mapping
 - **radicle** - checkConfig disabled, settings format needs fixing
-- **zfs** - hostId for zfs machines must stay stable (see machine networking config, e.g. `machines/hm-nixbox/networking.nix`)
+- **zfs** - for zfs machines, keep `networking.hostId` stable per machine (in each machine's networking config)
 - **tuned** - has workaround for nixpkgs#463443 (ppd.conf bug)
 
 ## desktop shell
