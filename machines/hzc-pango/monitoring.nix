@@ -2,9 +2,20 @@
 {
   # restart vector when pangolin restarts (tunnel connections drop)
   systemd.services.vector = {
-    after = [ "pangolin.service" ];
-    bindsTo = [ "pangolin.service" ];
+    after = [
+      "pangolin.service"
+      "traefik.service"
+    ];
+    bindsTo = [
+      "pangolin.service"
+      "traefik.service"
+    ];
+    partOf = [
+      "pangolin.service"
+      "traefik.service"
+    ];
     serviceConfig = {
+      Restart = "always";
       RestartSec = "5s";
     };
   };

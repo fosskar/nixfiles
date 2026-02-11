@@ -220,10 +220,10 @@ nixfiles.power.logind.enable = true;
 
 keep this section short. if it grows, move details to `docs/runbook-current.md` and link from here.
 
-| issue              | status           | action                                                              |
-| ------------------ | ---------------- | ------------------------------------------------------------------- |
-| nixos-generators   | deprecated 25.05 | migrate to `nixos-rebuild build-image` when convenient              |
-| clanServices/admin | removed          | migrated to `sshd.authorizedKeys`                                    |
+| issue              | status           | action                                                 |
+| ------------------ | ---------------- | ------------------------------------------------------ |
+| nixos-generators   | deprecated 25.05 | migrate to `nixos-rebuild build-image` when convenient |
+| clanServices/admin | removed          | migrated to `sshd.authorizedKeys`                      |
 
 ## service quirks
 
@@ -260,6 +260,7 @@ jj git push                     # push
 workflow: commit working changes, continue on new change. bookmark + push only when ready.
 
 codex/sandbox note:
+
 - keep commit signing enabled; do not disable `git.sign-on-push` (globally, locally, or per-command override)
 - when `jj git push` fails in sandbox due to signing key or network/socket access, rerun the same `jj git push` with escalation instead of changing signing behavior
 

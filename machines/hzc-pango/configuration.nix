@@ -1,4 +1,9 @@
-{ mylib, inputs, ... }:
+{
+  lib,
+  mylib,
+  inputs,
+  ...
+}:
 {
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
@@ -42,7 +47,23 @@
 
   clan.core.settings.machine-id.enable = true;
 
-  services.cloud-init.settings.preserve_hostname = true;
+  services.cloud-init = {
+    settings = {
+      preserve_hostname = true;
+      # Force module list so cloud-init doesn't run users-groups on NixOS/userborn setup.
+      cloud_init_modules = lib.mkForce [
+        "migrator"
+        "seed_random"
+        "bootcmd"
+        "write-files"
+        "growpart"
+        "resizefs"
+        "resolv_conf"
+        "ca-certs"
+        "rsyslog"
+      ];
+    };
+  };
 
   boot = {
     loader = {

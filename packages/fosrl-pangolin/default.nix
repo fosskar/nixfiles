@@ -29,13 +29,13 @@ in
 
 buildNpmPackage (finalAttrs: {
   pname = "pangolin";
-  version = "1.15.2";
+  version = "1.15.4";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "pangolin";
     tag = finalAttrs.version;
-    hash = "sha256-OwaMTj8d8PcqB2V3iTH2CVAqunChN6V5EOCH683d/aQ=";
+    hash = "sha256-ZXtZFaSPSDMU+WukDevgujkWCCKoSnrfBTsARwXZHzY=";
   };
 
   npmDepsHash = "sha256-kfgwU5QusUNWVcRXlYCS3ES1Av/phCHG8nFBj0yjz2Q=";

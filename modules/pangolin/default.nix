@@ -105,8 +105,9 @@ in
 
     # traefik config
     services.traefik = {
+      dynamic.dir = lib.mkDefault "/var/lib/traefik/dynamic";
       # defaults
-      staticConfigOptions = {
+      static.settings = {
         log.level = lib.mkDefault "WARN";
         api = {
           dashboard = lib.mkDefault true;
@@ -154,7 +155,7 @@ in
           lib.optional cfg.crowdsec.enable "crowdsec@file" ++ lib.optional cfg.geoblock.enable "geoblock@file"
         );
       };
-      dynamicConfigOptions.http.middlewares = lib.mkMerge [
+      dynamic.files."pangolin-middlewares".settings.http.middlewares = lib.mkMerge [
         (lib.mkIf cfg.geoblock.enable {
           geoblock.plugin.geoblock = {
             allowLocalRequests = true;

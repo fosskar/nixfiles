@@ -2,16 +2,17 @@
   lib,
   config,
   inputs,
+  pkgs,
   ...
 }:
 let
   cfg = config.nixfiles.gaming;
 
   #fixes gamemode when using umu-launcher. See https://github.com/FeralInteractive/gamemode/issues/254#issuecomment-643648779
-  #gamemodeSharedObjects = lib.concatMapStringsSep ":" (v: "${lib.getLib pkgs.gamemode}/lib/${v}") [
-  #  "libgamemodeauto.so"
-  #  "libgamemode.so"
-  #];
+  gamemodeSharedObjects = lib.concatMapStringsSep ":" (v: "${lib.getLib pkgs.gamemode}/lib/${v}") [
+    "libgamemodeauto.so"
+    "libgamemode.so"
+  ];
 in
 {
   imports = [
@@ -22,6 +23,7 @@ in
     programs.rsi-launcher = {
       enable = true;
       umu.enable = true;
+      enableNTsync = true;
       gamescope = {
         enable = true;
         args = [
@@ -40,12 +42,10 @@ in
           #"--hdr-enabled"
         ];
       };
-      #enforceWaylandDrv = true;
-      #preCommands = ''
-      #  #export LD_PRELOAD=${gamemodeSharedObjects};
-      #  #export DXVK_HUD=compiler;
-      #  #export MANGO_HUD=1;
-      #'';
+      enforceWaylandDrv = true;
+      preCommands = ''
+        export LD_PRELOAD=${gamemodeSharedObjects};
+      '';
     };
   };
 }

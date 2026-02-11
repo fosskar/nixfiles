@@ -62,7 +62,7 @@ in
     autoSnapshot = {
       enable = lib.mkDefault true;
       frequent = 0;
-      hourly = 24;
+      hourly = 0;
       daily = 7;
       weekly = 4;
       monthly = 3;
