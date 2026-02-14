@@ -16,6 +16,7 @@ in
 
     meta = {
       name = "nixfiles";
+      domain = "s";
       description = "personal nix infrastructure";
     };
 
@@ -96,7 +97,7 @@ in
             tags.all = { };
             settings = {
               certificate.searchDomains = [
-                "l"
+                "s"
                 "lan"
                 "local"
                 "osscar.me"
@@ -175,6 +176,21 @@ in
           roles.default.tags.all = { };
         };
 
+        wireguard = {
+          module.name = "wireguard";
+          module.input = "clan-core";
+          roles.controller.machines."hzc-pango".settings = {
+            endpoint = "138.201.155.21";
+            port = 51821; # default 51820 port already used by pangolin/newt tunnel (also wireguard)
+          };
+          roles.peer.machines = {
+            hm-nixbox.settings = { };
+            simon-desktop.settings = { };
+            lpt-titan.settings = { };
+            clawbox.settings = { };
+          };
+        };
+
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
           roles.default.machines = {
@@ -236,6 +252,39 @@ in
               home = { };
               # add more networks as needed, e.g.:
               # mobile = { autoConnect = false; };
+            };
+          };
+        };
+
+        ncps = {
+          module = {
+            name = "ncps";
+            input = "clan-core";
+          };
+          roles = {
+            server.machines."hm-nixbox".settings = {
+              caches = [
+                "https://cache.nixos.org"
+                "https://nix-community.cachix.org"
+                "https://hyprland.cachix.org"
+                "https://cosmic.cachix.org"
+                "https://nixpkgs-unfree.cachix.org"
+                "https://nix-gaming.cachix.org"
+              ];
+              publicKeys = [
+                "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+                "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+                "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+                "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
+                "nixpkgs-unfree.cachix.org-1:hqvoInulhbV4nJ9yJOEr+4wxhDV4xq2d1DK7S6Nj6rs="
+                "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+              ];
+            };
+            client.machines = {
+              simon-desktop.settings = { };
+              lpt-titan.settings = { };
+              clawbox.settings = { };
+              hzc-pango.settings = { };
             };
           };
         };

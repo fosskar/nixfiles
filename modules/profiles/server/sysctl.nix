@@ -12,7 +12,7 @@
     # forwarding (servers may act as routers/gateways)
     "net.ipv4.ip_forward" = 1;
     "net.ipv4.conf.all.forwarding" = 1;
-    "net.ipv6.conf.all.forwarding" = 1;
+    "net.ipv6.conf.all.forwarding" = lib.mkDefault 1;
 
     # additional TCP hardening for servers
     "net.ipv4.tcp_rfc1337" = 1;

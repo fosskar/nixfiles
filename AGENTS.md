@@ -23,7 +23,7 @@ IPs in `machines/flake-module.nix` under `inventory.machines` and `instances.int
 ### ssh access
 
 ```bash
-ssh <machine>.clan              # .clan tld (clan-core)
+ssh <machine>.s                 # clan meta domain
 ssh <machine>.lan               # .lan tld (local network)
 ssh root@<ip>                   # direct IP (from deploy output)
 ```
@@ -79,7 +79,7 @@ nh os switch                    # switch locally
 clan machines update <machine>  # deploy remote (or local)
 clan install                    # install new machine
 clan vars generate              # generate missing vars
-ssh root@<machine>.clan         # .clan is default tld from clan-core
+ssh root@<machine>.s            # from clan.meta.domain = "s"
 ```
 
 ### inventory
