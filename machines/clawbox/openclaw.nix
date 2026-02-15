@@ -64,6 +64,7 @@ in
   environment.sessionVariables = {
     OPENCLAW_DISABLE_BONJOUR = "1";
     WHISPER_CPP_MODEL = "${stateDir}/ggml-base.bin";
+    OPENCLAW_NIX_MODE = "1";
   };
 
   environment.shellInit = ''
@@ -81,6 +82,7 @@ in
     environment = {
       OPENCLAW_DISABLE_BONJOUR = "1";
       WHISPER_CPP_MODEL = "${stateDir}/ggml-base.bin";
+      OPENCLAW_NIX_MODE = "1";
     };
     serviceConfig = {
       Type = "simple";
