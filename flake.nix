@@ -98,7 +98,10 @@
     };
     nix-citizen = {
       url = "github:LovingMelody/nix-citizen";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.nix-gaming.follows = "nix-gaming";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     llm-agents = {
