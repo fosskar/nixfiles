@@ -66,7 +66,7 @@ in
               ];
             };
           }
-          // lib.optionalAttrs cfg.lowLatency.enable {
+          // lib.mkIf cfg.lowLatency.enable {
             "98-alsa-low-latency" = {
               "monitor.alsa.rules" = [
                 {

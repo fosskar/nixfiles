@@ -47,8 +47,7 @@ in
       folders = backupFolders;
     }
     // lib.optionalAttrs cfg.useSnapshots {
-      inherit (snapshot) preBackupScript;
-      inherit (snapshot) postBackupScript;
+      inherit (snapshot) preBackupScript postBackupScript;
     };
   };
 }

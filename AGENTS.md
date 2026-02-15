@@ -218,7 +218,7 @@ nixfiles.power.logind.enable = true;
 
 ## known deprecations / volatile status
 
-keep this section short. if it grows, move details to `docs/runbook-current.md` and link from here.
+keep this section short. if it grows, move details to a dedicated doc under `docs/` and link from here.
 
 | issue              | status           | action                                                 |
 | ------------------ | ---------------- | ------------------------------------------------------ |

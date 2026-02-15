@@ -9,7 +9,7 @@ let
   tokenDir = "/run/gotify-tokens";
   tokenFile = name: "${tokenDir}/${name}";
 
-  # always include systemd-notify
+  # include built-in app plus user-defined applications
   allApps = {
     systemd-notify = "systemd failure notifications";
   }

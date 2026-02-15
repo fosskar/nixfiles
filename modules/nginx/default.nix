@@ -94,6 +94,7 @@ in
               extraConfig = lib.optionalString vhost.proxy-auth autheliaAuthSnippet;
             };
           }
+          # expose authelia auth endpoint only for protected vhosts
           // lib.optionalAttrs vhost.proxy-auth {
             "/authelia" = {
               proxyPass = "http://127.0.0.1:9091/api/authz/auth-request";
