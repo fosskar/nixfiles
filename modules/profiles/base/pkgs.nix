@@ -3,16 +3,20 @@
   environment = {
     defaultPackages = lib.mkForce [ ]; # no extra default packages are installed
     systemPackages = with pkgs; [
+      coreutils
       curl
       dnsutils
+      fd
+      findutils
+      lsof
       gitMinimal
       jq
       tcpdump
       nmap
-      ouch # archiver
       wget
-      yq-go
+      unzip
       ripgrep
+      pciutils
     ];
   };
 }
