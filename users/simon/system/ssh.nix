@@ -13,6 +13,8 @@ _: {
         serverAliveCountMax = 3;
         compression = true;
         extraOptions = {
+          # FIXME: Work around gpg-agent smartcard signing failures with hostbound pubkey auth.
+          PubkeyAuthentication = "unbound";
           UpdateHostKeys = "yes";
           StrictHostKeyChecking = "accept-new";
         };
