@@ -1,5 +1,4 @@
 {
-  config,
   mylib,
   pkgs,
   inputs,
@@ -21,8 +20,12 @@
     claude-code = {
       enable = true;
       package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
+
+      enableMcpIntegration = true;
+
       settings = {
         theme = "dark";
+        verbose = true;
         includeCoAuthoredBy = false;
         autoUpdates = false;
         enableAllProjectMcpServers = true;
@@ -42,51 +45,7 @@
           type = "command";
           padding = 0;
           command = "ccstatusline";
-          #command = "${config.home.homeDirectory}/.claude/claude-code-status.sh";
         };
-        allowedDirectories = [
-          "${config.home.homeDirectory}"
-        ];
-
-        extraKnownMarketplaces = { };
-
-        enabledPlugins = { };
-      };
-      mcpServers = {
-        nixos = {
-          args = [
-            "run"
-            "github:utensils/mcp-nixos"
-            "--"
-          ];
-          command = "nix";
-        };
-        "plugin:context7:context7" = {
-          args = [
-            "shell"
-            "nixpkgs#nodejs"
-            "-c"
-            "npx"
-            "-y"
-            "@upstash/context7-mcp"
-          ];
-          command = "nix";
-          type = "stdio";
-        };
-        #kagimcp = {
-        #  args = [
-        #    "shell"
-        #    "nixpkgs#uv"
-        #    "-c"
-        #    "uvx"
-        #    "kagimcp"
-        #  ];
-        #  command = "nix";
-        #  env = {
-        #    KAGI_API_KEY = "your-api-key-here";
-        #  };
-        #  type = "stdio";
-        #};
       };
     };
   };
