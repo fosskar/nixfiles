@@ -97,7 +97,6 @@ in
             tags.all = { };
             settings = {
               certificate.searchDomains = [
-                "s"
                 "lan"
                 "local"
                 "osscar.me"
