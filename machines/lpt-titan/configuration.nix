@@ -28,7 +28,10 @@
 
   programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
 
-  clan.core.settings.machine-id.enable = true;
+  clan.core = {
+    settings.machine-id.enable = true;
+    deployment.requireExplicitUpdate = true;
+  };
 
   nixfiles = {
     persistence = {

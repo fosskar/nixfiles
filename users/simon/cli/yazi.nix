@@ -11,6 +11,7 @@
   # yazi file manager
   programs.yazi = {
     enable = true;
+    shellWrapperName = "y";
 
     # when using input so latest from git
     #package = inputs.yazi.packages.${pkgs.stdenv.hostPlatform.system}.default;

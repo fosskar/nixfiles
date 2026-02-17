@@ -45,7 +45,11 @@
     };
   };
 
-  clan.core.settings.machine-id.enable = true;
+  clan.core = {
+    settings.machine-id.enable = true;
+    # Build hzc-pango on a stronger host; this VPS can stay target-only.
+    #networking.buildHost = "root@simon-desktop.s";
+  };
 
   services.cloud-init = {
     settings = {

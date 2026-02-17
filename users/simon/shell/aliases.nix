@@ -20,7 +20,8 @@ _: {
     #myip = "${dig} @resolver4.opendns.com myip.opendns.com +short";
 
     # cli
-    c = "claude --dangerously-skip-permissions";
+    cc = "claude --dangerously-skip-permissions";
+    codex-yolo = "codex --dangerously-bypass-approvals-and-sandbox";
     j = "jj";
     g = "git";
     k = "kubectl";
