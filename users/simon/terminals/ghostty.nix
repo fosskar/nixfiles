@@ -6,6 +6,14 @@ in
   programs.ghostty = {
     enable = true;
     package = pkgs.ghostty;
+
+    installBatSyntax = true;
+    installVimSyntax = true;
+
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+    enableZshIntegration = true;
+
     themes.grey-teal = {
       background = t.bg;
       foreground = t.fg;
@@ -39,6 +47,8 @@ in
       window-padding-x = 4;
       window-padding-y = 4;
       window-padding-balance = true;
+      clipboard-trim-trailing-spaces = true;
+      focus-follows-mouse = true;
     };
   };
 }
