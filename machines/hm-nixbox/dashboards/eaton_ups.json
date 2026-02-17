@@ -1680,8 +1680,8 @@
       },
       {
         "current": {
-          "text": "0.3931",
-          "value": "0.3931"
+          "text": "0.3430",
+          "value": "0.3430"
         },
         "description": "electricity cost per kWh in EUR",
         "label": "cost/kWh",
@@ -1689,11 +1689,11 @@
         "options": [
           {
             "selected": true,
-            "text": "0.3931",
-            "value": "0.3931"
+            "text": "0.3430",
+            "value": "0.3430"
           }
         ],
-        "query": "0.3931",
+        "query": "0.3430",
         "type": "textbox"
       }
     ]
