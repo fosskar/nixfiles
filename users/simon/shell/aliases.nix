@@ -22,16 +22,11 @@ _: {
     # cli
     cc = "claude --dangerously-skip-permissions";
     codex-yolo = "codex --dangerously-bypass-approvals-and-sandbox";
-    j = "jj";
     g = "git";
-    k = "kubectl";
     h = "helm";
     d = "docker";
     p = "podman";
     z = "zeditor";
-
-    # kubectl
-    kcs = "kubectl config use-context $(kubectl config get-contexts --output=name | fzf)";
 
     # nav
     ".." = "cd ..";

@@ -45,11 +45,6 @@
     #android-udev-rules
     #android-tools
 
-    kubectl
-    kubernetes-helm
-    talosctl
-    clusterctl
-
     # drone
     # Override betaflight-configurator to use an older nwjs version
     # commented out due to qtwebengine-5.15.19 insecurity issues
