@@ -17,8 +17,6 @@ in
       settings.server.port = port;
     };
 
-    systemd.services.radarr.serviceConfig.UMask = "0027";
-
     nixfiles.nginx.vhosts.radarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;

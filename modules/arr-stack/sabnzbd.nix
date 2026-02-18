@@ -42,8 +42,6 @@ in
       };
     };
 
-    systemd.services.sabnzbd.serviceConfig.UMask = "0027";
-
     nixfiles.nginx.vhosts.sabnzbd = {
       inherit port;
       proxy-auth = cfg.authelia.enable;

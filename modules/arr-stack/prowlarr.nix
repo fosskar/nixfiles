@@ -16,8 +16,6 @@ in
       settings.server.port = port;
     };
 
-    systemd.services.prowlarr.serviceConfig.UMask = "0027";
-
     nixfiles.nginx.vhosts.prowlarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;

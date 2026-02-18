@@ -17,8 +17,6 @@ in
       settings.server.port = port;
     };
 
-    systemd.services.sonarr.serviceConfig.UMask = "0027";
-
     nixfiles.nginx.vhosts.sonarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
