@@ -46,15 +46,22 @@ in
         owner = "grafana";
         group = "grafana";
       };
+      files."secret-key" = {
+        owner = "grafana";
+        group = "grafana";
+      };
 
       runtimeInputs = with pkgs; [
         pwgen
+        openssl
         authelia
       ];
       script = ''
         SECRET=$(pwgen -s 64 1)
+        SECRET_KEY=$(openssl rand -hex 32)
         authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
+        echo -n "$SECRET_KEY" > "$out/secret-key"
       '';
     };
 
@@ -135,6 +142,7 @@ in
           admin_user = "admin";
           cookie_secure = true;
           admin_password = "$__file{${config.sops.secrets."admin-password".path}}";
+          secret_key = "$__file{${config.clan.core.vars.generators.grafana.files."secret-key".path}}";
         };
 
         users = {
