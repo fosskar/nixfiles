@@ -14,7 +14,7 @@
       model_reasoning_effort = "medium";
 
       approval_policy = "never";
-      sandbox_mode = "workspace-write";
+      sandbox_mode = "danger-full-access";
       sandbox_workspace_write = {
         network_access = true;
         exclude_tmpdir_env_var = false;
