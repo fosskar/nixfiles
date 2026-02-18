@@ -128,7 +128,7 @@
       # browsers/editors at 50% width
       {
         matches = [
-          { app-id = "^zen"; }
+          { app-id = "^zen-beta"; }
           { app-id = "^firefox"; }
           { app-id = "^chromium"; }
           { app-id = "^dev\\.zed\\.Zed$"; }
@@ -141,7 +141,7 @@
       {
         matches = [
           {
-            app-id = "^zen$";
+            app-id = "^zen-beta$";
             title = "^Picture-in-Picture$";
           }
         ];
@@ -259,7 +259,7 @@
         spawn = "yazi";
       };
       "Mod+W".action = {
-        spawn = "zen";
+        spawn = "zen-beta";
       };
       "Mod+Z".action = {
         spawn = "zeditor";

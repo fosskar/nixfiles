@@ -6,7 +6,7 @@ let
     PSNAME="brave"
   '';
   zenBrowser = pkgs.writeText "zen" ''
-    DIRArr[0]="$HOME/.zen"
+    DIRArr[0]="$XDG_CONFIG_HOME/zen"
     PSNAME="zen"
     check_suffix=1
   '';
