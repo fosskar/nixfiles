@@ -49,6 +49,11 @@ ssh root@<ip>                   # direct IP (from deploy output)
   - one feature across multiple files = ONE commit (e.g., a single auth/role-mapping change across related services)
   - unrelated changes = separate commits
   - refactor + docs for that refactor = separate commits
+- **prefer minimal fixes first** - default to the simplest direct fix for current config/runtime. only introduce compatibility layers or broader refactors when explicitly requested.
+- **prefer the simplest valid command flow** - avoid over-engineered command sequences when a shorter equivalent exists.
+- **be explicit, not abstract** - when debugging conflicts, state exactly who sets the option, where, and to what value.
+- **communicate continuously while working** - send short progress updates during exploration, edits, and verification (what is being checked/changed and why), not only final results.
+- **prioritize WHY over WHAT** - user can read the code for implementation details; always explain the reasoning, intent, and tradeoffs behind changes first.
 - **run `nix fmt` before committing** - always format nix files
 
 ## patterns
@@ -258,6 +263,12 @@ jj git push                     # push
 ```
 
 workflow: commit working changes, continue on new change. bookmark + push only when ready.
+
+when user says **"commit and push"**:
+- include **all current working-copy changes** in repo (unless user explicitly scopes files)
+- split into **atomic commits** by logical change
+- use the **simplest jj flow** that moves `main` to the intended commit and pushes it
+- avoid unnecessary command complexity; if scope is ambiguous, ask once before pushing
 
 codex/sandbox note:
 
