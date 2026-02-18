@@ -5,14 +5,17 @@
     after = [
       "pangolin.service"
       "traefik.service"
+      "gerbil.service"
     ];
     bindsTo = [
       "pangolin.service"
       "traefik.service"
+      "gerbil.service"
     ];
     partOf = [
       "pangolin.service"
       "traefik.service"
+      "gerbil.service"
     ];
     serviceConfig = {
       Restart = "always";
