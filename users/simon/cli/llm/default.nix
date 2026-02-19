@@ -10,8 +10,8 @@
   };
 
   home.packages = [
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qmd
   ];
 
-  xdg.configFile."AGENTS.md".source = ./AGENTS.md;
+  home.file."AGENTS.md".source = ./AGENTS.md;
 }

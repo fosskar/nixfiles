@@ -1,0 +1,13 @@
+{
+  "lastChangelogVersion": "99.99.99",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.3-codex",
+  "defaultThinkingLevel": "medium",
+  "followUpMode": "all",
+  "theme": "dark",
+  "quietStartup": true,
+  "packages": ["https://github.com/rytswd/pi-agent-extensions"],
+  "compaction": {
+    "enabled": true
+  }
+}
