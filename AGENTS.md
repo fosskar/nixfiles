@@ -338,4 +338,5 @@ nixos-rebuild build --flake . 2>&1 | head -100
 - run `nix fmt` after nix edits
 - run targeted `nix build .#nixosConfigurations.<machine>.config.system.build.toplevel` for touched machines
 - use `nix eval` for changed options when behavior is unclear
+- add newly created files to vcs tracking before finish (`jj file track <path>`)
 - do not deploy/restart/update remotely unless user explicitly asked
