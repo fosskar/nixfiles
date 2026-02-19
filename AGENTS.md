@@ -269,6 +269,7 @@ when user says **"commit and push"**:
 - include **all current working-copy changes** in repo (unless user explicitly scopes files)
 - split into **atomic commits** by logical change
 - use the **simplest jj flow** that moves `main` to the intended commit and pushes it
+- do **not** ask for reconfirmation on explicit imperative commands; execute directly
 - avoid unnecessary command complexity; if scope is ambiguous, ask once before pushing
 
 codex/sandbox note:
