@@ -265,6 +265,7 @@ jj git push                     # push
 workflow: commit working changes, continue on new change. bookmark + push only when ready.
 
 when user says **"commit and push"**:
+
 - include **all current working-copy changes** in repo (unless user explicitly scopes files)
 - split into **atomic commits** by logical change
 - use the **simplest jj flow** that moves `main` to the intended commit and pushes it
