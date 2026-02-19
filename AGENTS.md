@@ -276,6 +276,33 @@ codex/sandbox note:
 - keep commit signing enabled; do not disable `git.sign-on-push` (globally, locally, or per-command override)
 - when `jj git push` fails in sandbox due to signing key or network/socket access, rerun the same `jj git push` with escalation instead of changing signing behavior
 
+## agent operating playbook
+
+use this as the default execution order to reduce misses and backtracking.
+
+1. scope first (always)
+   - `jj status`
+   - `jj diff --stat`
+   - `rg "<option|service|module>" machines modules users`
+
+2. change minimally
+   - edit the smallest surface that can fix the issue
+   - prefer direct fixes over abstractions/compat layers unless explicitly requested
+
+3. verify proportionally
+   - docs/text-only changes: no build by default
+   - nix changes with clear machine scope: run targeted `nix build .#nixosConfigurations.<machine>.config.system.build.toplevel`
+   - uncertain behavior/merge semantics: verify with `nix eval` on the exact option
+
+4. communicate in phases
+   - short updates during: exploration → edit → verification → commit/push
+   - always state why this next step is being run
+
+5. finalize with simplest valid flow
+   - for "commit and push": include full requested scope, split atomically, then:
+     - `jj bookmark set main -r @`
+     - `jj git push`
+
 ## debugging
 
 ```bash
