@@ -10,10 +10,14 @@ let
   extensionEntries = lib.mapAttrs' (
     name: _: lib.nameValuePair ".pi/agent/extensions/${name}" { source = ./extensions/${name}; }
   ) extensionFiles;
+  promptFiles = builtins.readDir ./prompts;
+  promptEntries = lib.mapAttrs' (
+    name: _: lib.nameValuePair ".pi/agent/prompts/${name}" { source = ./prompts/${name}; }
+  ) promptFiles;
 in
 {
   imports = mylib.scanPaths ./. {
-    exclude = [ "extensions" ];
+    exclude = [ "extensions" "prompts" ];
   };
 
   home.packages = [
@@ -24,5 +28,6 @@ in
     ".pi/agent/AGENTS.md".source = ../AGENTS.md;
     ".pi/agent/settings.json".source = ./settings.json;
   }
-  // extensionEntries;
+  // extensionEntries
+  // promptEntries;
 }
