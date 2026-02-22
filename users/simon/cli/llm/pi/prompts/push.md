@@ -5,7 +5,7 @@ description: push current jj change(s) to remote
 push committed work with jj.
 
 goal:
-- move `main` bookmark to current change
+- move `main` bookmark to latest non-empty change
 - push to remote
 
 flow:
