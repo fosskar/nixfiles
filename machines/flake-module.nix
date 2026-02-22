@@ -175,6 +175,38 @@ in
           roles.default.tags.all = { };
         };
 
+        data-mesher = {
+          module = {
+            name = "data-mesher";
+            input = "clan-core";
+          };
+          roles.default = {
+            tags.all = { };
+            settings = {
+              interfaces = [
+                "ygg"
+                "wireguard"
+              ];
+            };
+          };
+          roles.bootstrap.machines = {
+            hm-nixbox = { };
+            hzc-pango = { };
+          };
+        };
+
+        dm-dns = {
+          module = {
+            name = "dm-dns";
+            input = "clan-core";
+          };
+          roles.default.tags.all = { };
+          roles.push.machines = {
+            hm-nixbox = { };
+            hzc-pango = { };
+          };
+        };
+
         wireguard = {
           module.name = "wireguard";
           module.input = "clan-core";
