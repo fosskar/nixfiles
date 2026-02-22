@@ -24,11 +24,7 @@ import { Text, matchesKey, visibleWidth } from "@mariozechner/pi-tui";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-const ORACLE_PROVIDER_ORDER = [
-  "openai-codex",
-  "anthropic",
-  "google",
-] as const;
+const ORACLE_PROVIDER_ORDER = ["openai-codex", "anthropic", "google"] as const;
 const ORACLE_PROVIDERS = new Set<string>(ORACLE_PROVIDER_ORDER);
 const ORACLE_MAX_FILE_BYTES = 64 * 1024;
 const ORACLE_MAX_TOTAL_FILE_BYTES = 256 * 1024;
@@ -48,7 +44,9 @@ function parseVersion(modelId: string): number[] {
 }
 
 function parseAnthropicVersion(modelId: string): number[] {
-  const m = modelId.match(/^claude-(?:opus|sonnet|haiku)-(\d+)-(\d+)(?:-(\d+))?$/);
+  const m = modelId.match(
+    /^claude-(?:opus|sonnet|haiku)-(\d+)-(\d+)(?:-(\d+))?$/,
+  );
   if (!m) return parseVersion(modelId);
 
   const major = parseInt(m[1], 10) || 0;
@@ -73,7 +71,11 @@ function compareVersionDesc(a: string, b: string): number {
   return b.localeCompare(a);
 }
 
-function compareModelVersionDesc(provider: string, a: string, b: string): number {
+function compareModelVersionDesc(
+  provider: string,
+  a: string,
+  b: string,
+): number {
   if (provider === "anthropic") {
     const va = parseAnthropicVersion(a);
     const vb = parseAnthropicVersion(b);
@@ -129,12 +131,18 @@ function sortOracleModels(models: AvailableModel[]): AvailableModel[] {
   });
 }
 
-async function collectOracleModels(ctx: ExtensionContext): Promise<AvailableModel[]> {
+async function collectOracleModels(
+  ctx: ExtensionContext,
+): Promise<AvailableModel[]> {
   const newestPerFamily = new Map<string, Model>();
 
   for (const model of ctx.modelRegistry.getAvailable()) {
     if (!ORACLE_PROVIDERS.has(model.provider)) continue;
-    if (ctx.model && model.id === ctx.model.id && model.provider === ctx.model.provider) {
+    if (
+      ctx.model &&
+      model.id === ctx.model.id &&
+      model.provider === ctx.model.provider
+    ) {
       continue;
     }
 
@@ -143,7 +151,10 @@ async function collectOracleModels(ctx: ExtensionContext): Promise<AvailableMode
 
     const key = `${model.provider}:${family}`;
     const existing = newestPerFamily.get(key);
-    if (!existing || compareModelVersionDesc(model.provider, model.id, existing.id) < 0) {
+    if (
+      !existing ||
+      compareModelVersionDesc(model.provider, model.id, existing.id) < 0
+    ) {
       newestPerFamily.set(key, model);
     }
   }
@@ -518,7 +529,9 @@ class ModelPickerComponent {
       const name = i === this.selected ? green(bold(m.name)) : m.name;
       const provider = dim(` (${m.provider})`);
       const modelId = dim(` [${m.modelId}]`);
-      lines.push(padLine(boxLine(`${pointer}${num}. ${name}${provider}${modelId}`)));
+      lines.push(
+        padLine(boxLine(`${pointer}${num}. ${name}${provider}${modelId}`)),
+      );
     }
 
     lines.push(padLine(boxLine("")));
@@ -688,7 +701,11 @@ async function executeOracle(
       }
 
       const remaining = ORACLE_MAX_TOTAL_FILE_BYTES - totalFileBytes;
-      const allowed = Math.min(buffer.byteLength, ORACLE_MAX_FILE_BYTES, remaining);
+      const allowed = Math.min(
+        buffer.byteLength,
+        ORACLE_MAX_FILE_BYTES,
+        remaining,
+      );
 
       if (allowed <= 0) {
         skippedFiles.push(file);
