@@ -133,6 +133,8 @@ in
     # nginx reverse proxy
     nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
 
+    users.users.paperless.extraGroups = [ "shared" ];
+
     services.paperless = {
       enable = true;
       address = "127.0.0.1";
@@ -141,7 +143,7 @@ in
 
       # storage locations (dataDir defaults to /var/lib/paperless - on SSD)
       mediaDir = "/tank/apps/paperless/media";
-      consumptionDir = "/tank/apps/paperless/consume";
+      consumptionDir = "/tank/shares/shared/documents/consume";
 
       # local postgresql
       database.createLocally = true;
@@ -156,6 +158,7 @@ in
         PAPERLESS_OCR_LANGUAGE = "deu+eng";
         PAPERLESS_LOGOUT_REDIRECT_URL = "https://auth.${publicDomain}/logout";
         PAPERLESS_TIME_ZONE = "Europe/Berlin";
+        PAPERLESS_DATE_ORDER = "DMY";
         PAPERLESS_TRUSTED_PROXIES = "138.201.155.21,127.0.0.1";
 
         PAPERLESS_CONSUMER_RECURSIVE = true;
@@ -166,8 +169,8 @@ in
           "desktop.ini"
         ];
         PAPERLESS_OCR_USER_ARGS = {
-          optimize = 1;
-          pdfa_image_compression = "lossless";
+          language = "deu+eng";
+          rotate_pages = true;
         };
 
         # oidc via authelia
