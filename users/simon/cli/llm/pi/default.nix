@@ -17,7 +17,10 @@ let
 in
 {
   imports = mylib.scanPaths ./. {
-    exclude = [ "extensions" "prompts" ];
+    exclude = [
+      "extensions"
+      "prompts"
+    ];
   };
 
   home.packages = [
