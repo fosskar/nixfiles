@@ -4,8 +4,6 @@ _: {
 
     "arr-stack.env" = { };
 
-    "samba-user-passwords" = { };
-
     "admin-password" = {
       mode = "0444";
     };

@@ -1,65 +1,43 @@
 {
-  pkgs,
-  lib,
   config,
+  lib,
+  pkgs,
   ...
 }:
-let
-  users = [
-    {
-      name = "simon";
-      uid = 3000;
-    }
-    {
-      name = "ina";
-      uid = 3001;
-    }
-  ];
-
-  mkShare =
-    u:
-    lib.nameValuePair u.name {
-      path = "/tank/shares/${u.name}";
-      browseable = "yes";
-      "read only" = "no";
-      "guest ok" = "no";
-      "create mask" = "0600";
-      "directory mask" = "0700";
-      "force user" = u.name;
-      "valid users" = u.name;
-      "delete readonly" = "no";
-      comment = "personal folder";
-    };
-in
 {
-  users = {
-    groups.shared = { };
+  # enable sssd for posix identity from lldap
+  nixfiles.lldap.sssd.enable = true;
 
-    users = lib.listToAttrs (
-      map (
-        u:
-        lib.nameValuePair u.name {
-          inherit (u) uid;
-          description = "samba user";
-          group = "shared";
-          isSystemUser = true;
-        }
-      ) users
-    );
+  # optional smb passdb sync input (plaintext passwords, separate from lldap)
+  # format: one line per user -> username:password
+  clan.core.vars.generators.samba = {
+    files."users" = {
+      secret = true;
+    };
+    script = ''
+      cat > "$out/users" <<'EOF'
+      # username:password
+      EOF
+    '';
   };
 
+  # create home dirs on first auth/session for ldap users ([homes] share)
+  security.pam.services.samba.makeHomeDir = true;
+
+  # shared dir is static; personal dirs come from [homes] + pam_mkhomedir
   systemd.tmpfiles.rules = [
     "d /tank/shares/shared 2775 root shared -"
-  ]
-  ++ map (u: "d /tank/shares/${u.name} 0700 ${u.name} - -") users;
+  ];
 
-  system.activationScripts.createUserShareSubdirs = lib.stringAfter [ "users" "groups" ] ''
+  system.activationScripts.createSharedSubdirs = lib.stringAfter [ "users" "groups" ] ''
     install -d -m 2775 -o root -g shared /tank/shares/shared/documents
-    ${lib.concatMapStringsSep "\n" (u: ''
-      install -d -m 0700 -o ${u.name} /tank/shares/${u.name}/pictures
-      install -d -m 0700 -o ${u.name} /tank/shares/${u.name}/documents
-    '') users}
   '';
+
+  # shared group must exist for directory ownership (sssd provides it at runtime,
+  # but tmpfiles/activation run before sssd — keep a static fallback)
+  users.groups.shared = {
+    gid = 3030;
+  };
 
   services = {
     samba = {
@@ -73,6 +51,10 @@ in
           "server role" = "standalone server";
           "workgroup" = "WORKGROUP";
           security = "user";
+
+          # identity lookup via nss/sssd; smb passwords still use samba passdb
+          "obey pam restrictions" = "yes";
+          "pam password change" = "yes";
 
           # disable netbios (not needed, clients use direct ip/hostname)
           "disable netbios" = "yes";
@@ -117,8 +99,17 @@ in
           "recycle:maxsize" = "0";
         };
       }
-      // lib.listToAttrs (map mkShare users)
       // {
+        homes = {
+          browseable = "no";
+          "read only" = "no";
+          "guest ok" = "no";
+          "create mask" = "0600";
+          "directory mask" = "0700";
+          "valid users" = "%S";
+          "delete readonly" = "no";
+          comment = "personal folder";
+        };
         shared = {
           path = "/tank/shares/shared";
           browseable = "yes";
@@ -149,33 +140,55 @@ in
     };
   };
 
-  systemd.services = lib.mkMerge (
-    map (u: {
-      "samba-user-${u.name}" = {
-        description = "add samba user ${u.name}";
-        after = [ "samba-smbd.service" ];
-        wants = [ "samba-smbd.service" ];
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-        };
-        script = ''
-          timeout=10
-          while [ $timeout -gt 0 ]; do
-            [ -f /var/lib/samba/private/secrets.tdb ] && break
-            sleep 1
-            ((timeout--))
-          done
-          [ $timeout -eq 0 ] && { echo "ERROR: samba database not ready" >&2; exit 1; }
+  systemd.services.samba-passdb-sync = {
+    description = "sync samba passdb from clan var file";
+    after = [
+      "sssd.service"
+      "samba-smbd.service"
+      "sops-install-secrets.service"
+    ];
+    wants = [
+      "sssd.service"
+      "samba-smbd.service"
+      "sops-install-secrets.service"
+    ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      set -euo pipefail
 
-          password=$(${pkgs.gnugrep}/bin/grep "^${u.name}:" ${
-            config.sops.secrets."samba-user-passwords".path
-          } | ${pkgs.coreutils}/bin/cut -d: -f2)
-          [ -z "$password" ] && { echo "ERROR: no password for ${u.name}" >&2; exit 1; }
-          ${pkgs.coreutils}/bin/printf "%s\n%s\n" "$password" "$password" | ${lib.getExe' pkgs.samba "smbpasswd"} -sa ${u.name}
-        '';
-      };
-    }) users
-  );
+      pwfile=${config.clan.core.vars.generators.samba.files."users".path}
+
+      # no file yet -> no-op until you populate clan vars
+      [ -e "$pwfile" ] || exit 0
+
+      timeout=15
+      while [ "$timeout" -gt 0 ]; do
+        [ -f /var/lib/samba/private/secrets.tdb ] && break
+        sleep 1
+        timeout=$((timeout - 1))
+      done
+      [ "$timeout" -gt 0 ] || { echo "samba db not ready" >&2; exit 1; }
+
+      while IFS=: read -r user password rest || [ -n "''${user:-}" ]; do
+        [ -n "''${user:-}" ] || continue
+        case "$user" in
+          \#*) continue ;;
+        esac
+        [ -n "''${password:-}" ] || { echo "missing password for $user" >&2; exit 1; }
+        [ -z "''${rest:-}" ] || { echo "invalid line for $user (extra colon)" >&2; exit 1; }
+
+        ${pkgs.getent}/bin/getent passwd "$user" >/dev/null || {
+          echo "warning: missing linux user via sssd: $user" >&2
+          continue
+        }
+
+        ${pkgs.coreutils}/bin/printf "%s\n%s\n" "$password" "$password" | \
+          ${lib.getExe' pkgs.samba "smbpasswd"} -s -a "$user" >/dev/null
+      done < "$pwfile"
+    '';
+  };
 }

@@ -2,6 +2,7 @@
   mylib,
   pkgs,
   inputs,
+  lib,
   ...
 }:
 {
@@ -34,6 +35,8 @@
       "radicle.nix"
     ];
   });
+
+  services.userborn.enable = lib.mkForce false;
 
   environment = {
     systemPackages = [
