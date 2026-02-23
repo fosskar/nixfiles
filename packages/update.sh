@@ -20,6 +20,11 @@ declare -A SUBPACKAGES=(
   ["beszel"]="webui"
 )
 
+# packages with custom version regex (filter out unwanted tags)
+declare -A VERSION_REGEX=(
+  ["fosrl-pangolin"]='(\d+\.\d+\.\d+)$'
+)
+
 # packages to skip (binary releases, manual updates)
 SKIP_PACKAGES=("handy" "voquill")
 
@@ -56,23 +61,35 @@ update_package() {
   if [[ -v "SUBPACKAGES[$pkg]" ]]; then
     extra_args+=("--subpackage" "${SUBPACKAGES[$pkg]}")
   fi
+  if [[ -v "VERSION_REGEX[$pkg]" ]]; then
+    extra_args+=("--version-regex" "${VERSION_REGEX[$pkg]}")
+  fi
 
+  local is_gradle=false
+  for gradle_pkg in "${GRADLE_PACKAGES[@]}"; do
+    [[ $pkg == "$gradle_pkg" ]] && is_gradle=true && break
+  done
+
+  # nix-update's built-in gradle mitm cache update uses legacy nix-build -A
+  # which fails in flake-only repos. for gradle packages, ignore nix-update's
+  # failure (it still updates version + src/npm/cargo hashes) and handle
+  # gradle deps separately below.
   (cd "$FLAKE_ROOT" && nix-update -F "$pkg" "${extra_args[@]}") || {
-    echo "!! failed to update $pkg"
-    return 1
+    if ! $is_gradle; then
+      echo "!! failed to update $pkg"
+      return 1
+    fi
+    echo ":: nix-update gradle step failed (expected in flake repos), continuing..."
   }
 
-  # update gradle deps if needed
-  for gradle_pkg in "${GRADLE_PACKAGES[@]}"; do
-    if [[ $pkg == "$gradle_pkg" ]]; then
-      echo ":: updating gradle deps for $pkg"
-      script=$(cd "$FLAKE_ROOT" && nix build ".#${pkg}.mitmCache.updateScript" --no-link --print-out-paths)
-      (cd "$FLAKE_ROOT" && "$script") || {
-        echo "!! failed to update gradle deps for $pkg"
-        return 1
-      }
-    fi
-  done
+  if $is_gradle; then
+    echo ":: updating gradle deps for $pkg"
+    script=$(cd "$FLAKE_ROOT" && nix build ".#${pkg}.mitmCache.updateScript" --no-link --print-out-paths)
+    (cd "$FLAKE_ROOT" && "$script") || {
+      echo "!! failed to update gradle deps for $pkg"
+      return 1
+    }
+  fi
 }
 
 main() {
