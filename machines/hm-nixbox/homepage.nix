@@ -188,6 +188,13 @@
               siteMonitor = "https://192.168.10.114";
             };
           }
+          {
+            "HP Drucker" = {
+              href = "http://192.168.10.153";
+              icon = "mdi-printer";
+              siteMonitor = "http://192.168.10.153";
+            };
+          }
         ];
       }
       {
