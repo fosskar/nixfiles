@@ -290,9 +290,10 @@ use this as the default execution order to reduce misses and backtracking.
    - edit the smallest surface that can fix the issue
    - prefer direct fixes over abstractions/compat layers unless explicitly requested
 
-3. verify proportionally
-   - docs/text-only changes: no build by default
-   - nix changes with clear machine scope: run targeted `nix build .#nixosConfigurations.<machine>.config.system.build.toplevel`
+3. verify proportionally — **don't always full-build**
+   - docs/text-only changes: no verification needed
+   - simple value changes (strings, URLs, ports, settings in existing options): `nix eval` on the specific option is enough
+   - structural changes (new modules, new packages/extensions, option type changes, new imports): full `nix build .#nixosConfigurations.<machine>.config.system.build.toplevel`
    - uncertain behavior/merge semantics: verify with `nix eval` on the exact option
 
 4. communicate in phases
