@@ -283,6 +283,13 @@
       {
         "Documents" = [
           {
+            "Nextcloud" = {
+              href = "https://cloud.osscar.me";
+              icon = "nextcloud.svg";
+              siteMonitor = "http://127.0.0.1:8009/status.php";
+            };
+          }
+          {
             "Paperless" = {
               href = "https://docs.osscar.me";
               icon = "paperless.png";
