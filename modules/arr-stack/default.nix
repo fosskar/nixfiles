@@ -125,7 +125,7 @@ in
           "^/feed.*"
         ];
       }
-      # require 2FA for web UI access
+      # only allow admin group access to web UI (one factor sufficient for LAN)
       {
         domain = [
           "sonarr.*"
@@ -134,7 +134,19 @@ in
           "bazarr.*"
           "sabnzbd.*"
         ];
-        policy = "two_factor";
+        subject = [ "group:admin" ];
+        policy = "one_factor";
+      }
+      # deny everyone else
+      {
+        domain = [
+          "sonarr.*"
+          "radarr.*"
+          "prowlarr.*"
+          "bazarr.*"
+          "sabnzbd.*"
+        ];
+        policy = "deny";
       }
     ];
   };
