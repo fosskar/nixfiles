@@ -169,6 +169,12 @@ in
 
         access_control = {
           default_policy = "two_factor";
+          rules = [
+            {
+              domain = [ "*.${acmeDomain}" ];
+              policy = "one_factor";
+            }
+          ];
         };
 
         # custom user attribute for immich admin mapping
