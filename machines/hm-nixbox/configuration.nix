@@ -1,8 +1,5 @@
 {
   mylib,
-  pkgs,
-  inputs,
-  lib,
   ...
 }:
 {
@@ -12,6 +9,7 @@
     ../../modules/borgbackup
     ../../modules/nginx
     ../../modules/filebrowser-quantum
+    ../../modules/nextcloud
     ../../modules/lldap
     ../../modules/authelia
     ../../modules/immich
@@ -36,13 +34,11 @@
     ];
   });
 
-  services.userborn.enable = lib.mkForce false;
+  ## INFO: this i needed when i want to remove a conflicting user or group. userborn never deleted removes user or groups.
+  #services.userborn.enable = lib.mkForce false;
 
   environment = {
     systemPackages = [
-      (inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.quickemu
-        or inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default
-      )
     ];
   };
 
@@ -85,6 +81,7 @@
     };
 
     authelia.publicDomain = "fosskar.eu";
+    arr-stack.authelia.enable = true;
 
     virtualization.docker.enable = true;
 
