@@ -8,6 +8,6 @@
     nixos.enable = lib.mkDefault false;
     man.mandoc.enable = lib.mkDefault false;
     # low priority so fish.nix can override if needed
-    man.generateCaches = false;
+    man.cache.enable = false;
   };
 }
