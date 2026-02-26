@@ -30,10 +30,12 @@
   "nightModeEnabled": false,
   "animationSpeed": 4,
   "customAnimationDuration": 600,
+  "syncComponentAnimationSpeeds": true,
   "popoutAnimationSpeed": 1,
   "popoutCustomAnimationDuration": 150,
   "modalAnimationSpeed": 1,
   "modalCustomAnimationDuration": 150,
+  "enableRippleEffects": true,
   "wallpaperFillMode": "Fill",
   "blurredWallpaperLayer": true,
   "blurWallpaperOnOverview": false,
@@ -147,6 +149,7 @@
   "scrollTitleEnabled": false,
   "audioVisualizerEnabled": false,
   "audioScrollMode": "volume",
+  "audioWheelScrollAmount": 5,
   "clockCompactMode": false,
   "focusedWindowCompactMode": false,
   "runningAppsCompactMode": true,
@@ -211,6 +214,7 @@
   "dankLauncherV2BorderThickness": 2,
   "dankLauncherV2BorderColor": "primary",
   "dankLauncherV2ShowFooter": true,
+  "dankLauncherV2UnloadOnClose": false,
   "useAutoLocation": true,
   "weatherEnabled": true,
   "networkPreference": "wifi",
@@ -331,6 +335,8 @@
   "dockMaxVisibleRunningApps": 0,
   "dockShowOverflowBadge": true,
   "notificationOverlayEnabled": false,
+  "notificationPopupShadowEnabled": true,
+  "notificationPopupPrivacyMode": false,
   "modalDarkenBackground": true,
   "lockScreenShowPowerActions": true,
   "lockScreenShowSystemIcons": true,
@@ -340,6 +346,7 @@
   "lockScreenShowPasswordField": true,
   "lockScreenShowMediaPlayer": true,
   "lockScreenPowerOffMonitorsOnLock": true,
+  "lockAtStartup": false,
   "enableFprint": true,
   "maxFprintTries": 15,
   "lockScreenActiveMonitor": "all",
@@ -351,12 +358,15 @@
   "notificationTimeoutCritical": 0,
   "notificationCompactMode": true,
   "notificationPopupPosition": 0,
+  "notificationAnimationSpeed": 1,
+  "notificationCustomAnimationDuration": 400,
   "notificationHistoryEnabled": false,
   "notificationHistoryMaxCount": 50,
   "notificationHistoryMaxAgeDays": 1,
   "notificationHistorySaveLow": false,
   "notificationHistorySaveNormal": false,
   "notificationHistorySaveCritical": true,
+  "notificationRules": [],
   "osdAlwaysShowValue": true,
   "osdPosition": 7,
   "osdVolumeEnabled": true,
@@ -422,18 +432,8 @@
           "enabled": true
         },
         {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
-        },
-        {
           "id": "workspaceSwitcher",
           "enabled": true
-        },
-        {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
         },
         {
           "id": "diskUsage",
@@ -464,11 +464,6 @@
           "clockCompactMode": false
         },
         {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
-        },
-        {
           "id": "weather",
           "enabled": true
         }
@@ -479,27 +474,12 @@
           "enabled": true
         },
         {
-          "id": "spacer",
-          "enabled": true,
-          "size": 20
-        },
-        {
           "id": "clipboard",
           "enabled": true
         },
         {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
-        },
-        {
           "id": "battery",
           "enabled": true
-        },
-        {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
         },
         {
           "id": "controlCenterButton",
@@ -517,18 +497,8 @@
           "showPrinterIcon": true
         },
         {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
-        },
-        {
           "id": "notificationButton",
           "enabled": true
-        },
-        {
-          "id": "spacer",
-          "enabled": true,
-          "size": 10
         },
         {
           "id": "powerMenuButton",
@@ -633,6 +603,7 @@
       "trigger": "?"
     }
   },
+  "clipboardEnterToPaste": false,
   "launcherPluginVisibility": {
     "dms_settings_search": {
       "allowWithoutTrigger": true
