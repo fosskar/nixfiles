@@ -6,7 +6,7 @@
 }:
 {
   imports = mylib.scanPaths ./. {
-    exclude = [ ];
+    exclude = [ "mcp.nix" ];
   };
 
   home.packages = [
