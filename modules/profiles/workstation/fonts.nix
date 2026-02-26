@@ -41,8 +41,8 @@
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-color-emoji
-      openmoji-color
-      openmoji-black
+      #openmoji-color
+      #openmoji-black
       roboto
       material-icons
       material-design-icons
