@@ -1,0 +1,28 @@
+--- a/clan_cli/secrets/sops.py
++++ b/clan_cli/secrets/sops.py
+@@ -113,6 +113,17 @@
+                     raise ClanError(error_msg) from e
+ 
+             # Sops will try every location, see age/keysource.go
++            elif age_key_cmd := os.environ.get("SOPS_AGE_KEY_CMD"):
++                import subprocess as _subprocess
++                _result = _subprocess.run(age_key_cmd, shell=True, capture_output=True, text=True, check=True)
++                content = _result.stdout.strip()
++                try:
++                    for public_key in get_public_age_keys(content):
++                        log.debug(f"Found age public key from SOPS_AGE_KEY_CMD: {public_key}")
++                        keyring.append(SopsKey(pubkey=public_key, username="", key_type=self, source="SOPS_AGE_KEY_CMD"))
++                except ClanError as e:
++                    error_msg = "Failed to read age keys from SOPS_AGE_KEY_CMD"
++                    raise ClanError(error_msg) from e
+             elif key_path := os.environ.get("SOPS_AGE_KEY_FILE"):
+                 maybe_read_from_path(Path(key_path))
+             else:
+@@ -276,6 +287,7 @@
+                     if var.startswith("SOPS_") and var not in {  # allowed:
+                         "SOPS_GPG_EXEC",
+                         "SOPS_AGE_KEY",
++                        "SOPS_AGE_KEY_CMD",
+                         "SOPS_AGE_KEY_FILE",
+                     }:
+                         del environ[var]
