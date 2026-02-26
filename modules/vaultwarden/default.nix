@@ -115,6 +115,11 @@ in
         SSO_ENABLED = true;
         SSO_ONLY = false;
         SSO_AUTHORITY = "https://auth.${publicDomain}";
+
+        # decouple vaultwarden session from sso token lifetime
+        # without this, vaultwarden refresh tokens expire with authelia's
+        # access token (1h default), breaking sessions
+        SSO_AUTH_ONLY_NOT_SESSION = true;
       };
     };
   };
