@@ -16,6 +16,7 @@
 
     settings = {
       general = {
+        common.log_level = "warning";
         api.server.enable = true;
         plugin_config = {
           user = "crowdsec";
