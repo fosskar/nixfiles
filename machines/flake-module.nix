@@ -22,7 +22,7 @@ in
 
     secrets.age.plugins = [
       "age-plugin-yubikey"
-      "age-plugin-tpm"
+      #"age-plugin-tpm"
     ];
 
     inventory = {
