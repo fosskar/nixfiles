@@ -98,7 +98,8 @@
     };
     nix-citizen = {
       url = "github:LovingMelody/nix-citizen";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # don't follow nixpkgs — nix-citizen's wine-astral needs old wine/base.nix API
+      # (supportFlags parameter removed in nixpkgs unstable 2025-02-24)
       inputs.nix-gaming.follows = "nix-gaming";
       inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
