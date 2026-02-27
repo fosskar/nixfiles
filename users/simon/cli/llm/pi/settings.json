@@ -3,10 +3,15 @@
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-6",
   "defaultThinkingLevel": "low",
+  "hideThinking": true,
+  "steeringMode": "all",
   "followUpMode": "all",
   "theme": "dark",
-  "quietStartup": true,
-  "packages": ["https://github.com/rytswd/pi-agent-extensions"],
+  "quietStartup": false,
+  "packages": [
+    "https://github.com/rytswd/pi-agent-extensions",
+    "https://github.com/badlogic/pi-skills"
+  ],
   "compaction": {
     "enabled": true
   }
