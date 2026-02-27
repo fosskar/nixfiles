@@ -109,7 +109,6 @@
     # startup commands (steam is desktop-only, see machines/simon-desktop/home/niri.nix)
     spawn-at-startup = [
       { command = [ "element-desktop" ]; }
-      { command = [ "handy" ]; }
     ];
 
     # hotkey overlay
