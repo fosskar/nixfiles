@@ -4,6 +4,7 @@
     settings = {
       exec-once = [
         "[workspace 3 silent] steam -console"
+        "element-desktop"
       ];
       env = [
         "QT_QPA_PLATFORM,wayland;xcb"
@@ -14,14 +15,14 @@
         "CLUTTER_BACKEND,wayland"
         "OZONE_PLATFORM,wayland"
         "NIXOS_OZONE_WL,1"
-        "XDG_CURRENT_DESKTOP = Hyprland"
-        "XDG_SESSION_TYPE = wayland"
-        "XDG_SESSION_DESKTOP = Hyprland"
-        #"GTK_USE_PORTAL = 1"
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_TYPE,wayland"
+        "XDG_SESSION_DESKTOP,Hyprland"
+        #"GTK_USE_PORTAL,1"
         #"SDL_VIDEODRIVER,wayland"
       ];
       general = {
-        #layout = "scrolling";
+        layout = "scrolling";
         border_size = 0;
         allow_tearing = true;
         gaps_in = 8;
@@ -29,6 +30,15 @@
         "col.active_border" = "0xFF2BBF6E";
         "col.inactive_border" = "0xFF114D2C";
         resize_on_border = true;
+      };
+      scrolling = {
+        column_width = 0.33333;
+        fullscreen_on_one_column = true;
+        focus_fit_method = 0;
+        follow_focus = true;
+        follow_min_visible = 0.4;
+        explicit_column_widths = "0.333, 0.5, 0.667, 1.0";
+        direction = "right";
       };
       decoration = {
         rounding = 12;

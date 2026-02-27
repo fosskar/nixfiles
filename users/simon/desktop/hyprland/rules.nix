@@ -52,22 +52,6 @@ _: {
         "match:class ^(xdg-desktop-portal-gtk)$, dim_around on"
         "match:class ^(hyprpolkitagent)$, dim_around on"
         "match:class ^(anyrun)$, dim_around on"
-
-        #"match:title (Awakened PoE Trade), tag +apt"
-        #"match:tag apt, float"
-        #"match:tag apt, noblur"
-        #"match:tag apt, nofocus"
-        #"match:tag apt, noshadow"
-        #"match:tag apt, noborder"
-        #"match:tag apt, size 100% 100%"
-        #"match:tag apt, center"
-
-        # xwaylandvideobridge?!
-        #"match:class ^(xwaylandvideobridge)$, opacity 0.0 override"
-        #"match:class ^(xwaylandvideobridge)$, noanim"
-        #"match:class ^(xwaylandvideobridge)$, noinitialfocus"
-        #"match:class ^(xwaylandvideobridge)$, maxsize 1 1"
-        #"match:class ^(xwaylandvideobridge)$, noblur"
       ];
       workspace = [
         "1, monitor:DP-1, default:true persistent:true"
