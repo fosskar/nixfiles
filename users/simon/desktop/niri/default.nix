@@ -1,10 +1,13 @@
 {
   config,
   mylib,
+  pkgs,
   ...
 }:
 {
   imports = mylib.scanPaths ./. { };
+
+  home.packages = [ pkgs.wl-clipboard ];
 
   #xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
