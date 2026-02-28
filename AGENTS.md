@@ -120,10 +120,12 @@ defined in `machines/flake-module.nix` - machines, services, deploy targets. sel
 - auto-generated: syncthing keys, borgbackup keys, passwords, ssh keys, etc
 - encrypted with sops (age + yubikey/tpm)
 
+generator naming: **`service` as generator name, secrets as file names** — `generators.myservice.files."my-secret"`, NOT `generators.myservice-my-secret.files."my-secret"`.
+
 generator pattern:
 
 ```nix
-clan.core.vars.generators.myvar = {
+clan.core.vars.generators.myservice = {
   share = true;                        # shared across machines (vs per-machine)
   files."filename.ext".secret = false; # public file (not encrypted)
   files."secret.key" = { };            # encrypted by default
