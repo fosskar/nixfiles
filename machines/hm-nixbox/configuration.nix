@@ -24,7 +24,6 @@
     ../../modules/hd-idle
     ../../modules/notify
     ../../modules/virtualization
-    ../../modules/tailscale
     ../../modules/vert
   ]
   ++ (mylib.scanPaths ./. {

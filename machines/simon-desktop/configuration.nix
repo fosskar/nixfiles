@@ -5,7 +5,6 @@
 }:
 {
   imports = [
-    ../../modules/tailscale
     ../../modules/gaming
     ../../modules/yubikey
     ../../modules/power

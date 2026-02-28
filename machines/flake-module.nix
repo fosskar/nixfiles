@@ -207,12 +207,26 @@ in
           };
         };
 
+        netbird = {
+          module.name = "netbird";
+          module.input = "self";
+          roles.server.machines."hzc-pango".settings = {
+            domain = "nb.fosskar.eu";
+            proxyDomain = "fosskar.eu";
+            port = 51821;
+          };
+          roles.client = {
+            tags.workstation = { };
+            machines."hm-nixbox".settings.routingFeatures = "server";
+          };
+        };
+
         wireguard = {
           module.name = "wireguard";
           module.input = "clan-core";
           roles.controller.machines."hzc-pango".settings = {
             endpoint = "138.201.155.21";
-            port = 51821; # default 51820 port already used by pangolin/newt tunnel (also wireguard)
+            port = 51820; # default
           };
           roles.peer.machines = {
             hm-nixbox.settings = { };

@@ -10,9 +10,14 @@
     ../../modules/borgbackup
     ../../modules/power
     ../../modules/persistence
-    ../../modules/tailscale
   ]
-  ++ (mylib.scanPaths ./. { exclude = [ ]; });
+  ++ (mylib.scanPaths ./. {
+    exclude = [
+      "pangolin.nix"
+      "crowdsec.nix"
+      "monitoring.nix"
+    ];
+  });
 
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression

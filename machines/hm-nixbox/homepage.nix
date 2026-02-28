@@ -125,12 +125,19 @@
             };
           }
           {
-            "Pangolin public" = {
-              href = "https://pangolin.fosskar.eu";
-              icon = "pangolin.png";
-              siteMonitor = "https://pangolin.fosskar.eu";
+            "NetBird" = {
+              href = "https://nb.fosskar.eu";
+              icon = "netbird.svg";
+              siteMonitor = "https://nb.fosskar.eu";
             };
           }
+          # {
+          #   "Pangolin public" = {
+          #     href = "https://pangolin.fosskar.eu";
+          #     icon = "pangolin.png";
+          #     siteMonitor = "https://pangolin.fosskar.eu";
+          #   };
+          # }
         ];
       }
       {
@@ -161,13 +168,6 @@
               href = "https://grafana.osscar.me";
               icon = "grafana.svg";
               siteMonitor = "https://grafana.osscar.me";
-            };
-          }
-          {
-            "Netdata" = {
-              href = "https://netdata.osscar.me";
-              icon = "netdata.svg";
-              siteMonitor = "http://127.0.0.1:19999";
             };
           }
         ];

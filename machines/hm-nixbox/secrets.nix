@@ -1,7 +1,5 @@
 _: {
   sops.secrets = {
-    "newt.env" = { };
-
     "arr-stack.env" = { };
 
     "admin-password" = {

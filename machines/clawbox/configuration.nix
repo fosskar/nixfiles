@@ -3,7 +3,6 @@
   imports = [
     ../../modules/power
     ../../modules/persistence
-    ../../modules/tailscale
   ]
   ++ (mylib.scanPaths ./. { exclude = [ ]; });
 

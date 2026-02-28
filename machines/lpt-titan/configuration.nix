@@ -7,7 +7,6 @@
 {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-    ../../modules/tailscale
     ../../modules/yubikey
     ../../modules/power
     ../../modules/gpu
@@ -18,7 +17,6 @@
     ../../modules/dms
     ../../modules/niri
     ../../modules/persistence
-    ../../modules/tailscale
   ]
   ++ mylib.scanPaths ./. { };
 
