@@ -3,7 +3,7 @@
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-6",
   "defaultThinkingLevel": "low",
-  "hideThinking": true,
+  "hideThinkingBlock": true,
   "steeringMode": "all",
   "followUpMode": "all",
   "theme": "dark",
