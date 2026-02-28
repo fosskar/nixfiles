@@ -83,12 +83,16 @@ in
       OPENCLAW_DISABLE_BONJOUR = "1";
       WHISPER_CPP_MODEL = "${stateDir}/ggml-base.bin";
       OPENCLAW_NIX_MODE = "1";
+      # workaround: openclaw 2026.2.26 rejects hardlinked plugin manifests (nix store dedup)
+      OPENCLAW_BUNDLED_PLUGINS_DIR = "${stateDir}/bundled-extensions";
     };
     serviceConfig = {
       Type = "simple";
       WorkingDirectory = stateDir;
       EnvironmentFile = config.clan.core.vars.generators.openclaw.files."env".path;
       ExecStartPre = [
+        # copy bundled extensions to mutable dir (breaks nix store hardlinks that openclaw rejects)
+        "${pkgs.bash}/bin/bash -c 'rm -rf ${stateDir}/bundled-extensions && cp -r --no-preserve=links ${pkgs.llm-agents.openclaw}/lib/openclaw/extensions ${stateDir}/bundled-extensions'"
         "${pkgs.coreutils}/bin/mkdir -p ${stateDir}"
       ];
       ExecStart = "${pkgs.llm-agents.openclaw}/bin/openclaw gateway";
