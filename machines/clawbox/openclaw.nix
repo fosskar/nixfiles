@@ -15,7 +15,7 @@ in
     llm-agents.opencode
     whisper-cpp
     gh
-    libreoffice
+    # libreoffice  # disabled: noto-fonts-subset build failure
     ffmpeg
     imagemagick
     tesseract
