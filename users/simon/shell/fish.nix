@@ -60,6 +60,10 @@
     interactiveShellInit = ''
       set fish_greeting
 
+      # ensure gpg-agent uses current tty for pinentry
+      set -gx GPG_TTY (tty)
+      gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+
       set tide_left_prompt_items pwd jj newline character
 
       set tide_pwd_color_anchors brgreen

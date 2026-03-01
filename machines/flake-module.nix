@@ -215,9 +215,8 @@ in
             port = 51821;
           };
           roles.client = {
-            tags.workstation = { };
+            tags.all = { };
             machines."hm-nixbox".settings.routingFeatures = "server";
-            machines."clawbox" = { };
           };
         };
 
@@ -235,6 +234,21 @@ in
             clawbox.settings = { };
           };
         };
+
+        #rosenpass = {
+        #  module.name = "rosenpass";
+        #  module.input = "self";
+        #  roles.peer.machines = {
+        #    hzc-pango.settings = {
+        #      listenPort = 9999;
+        #      endpoint = "138.201.155.21:9999";
+        #    };
+        #    hm-nixbox.settings = { };
+        #    simon-desktop.settings = { };
+        #    lpt-titan.settings = { };
+        #    clawbox.settings = { };
+        #  };
+        #};
 
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
