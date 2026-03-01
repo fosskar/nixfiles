@@ -340,6 +340,9 @@ _: {
               };
             };
 
+            # trust netbird interface — netbird handles access control
+            networking.firewall.trustedInterfaces = [ "wt0" ];
+
             # persist client state
             nixfiles.persistence.directories = [
               "/var/lib/netbird"
