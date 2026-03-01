@@ -28,7 +28,6 @@ in
     inventory = {
       machines = {
         clawbox = {
-          deploy.targetHost = "root@192.168.10.90";
           tags = [
             "server"
             "home"
@@ -37,7 +36,6 @@ in
         };
 
         hm-nixbox = {
-          deploy.targetHost = "root@192.168.10.80";
           tags = [
             "server"
             "home"
@@ -45,7 +43,6 @@ in
         };
 
         hzc-pango = {
-          deploy.targetHost = "root@138.201.155.21";
           tags = [
             "server"
             "hetzner"
@@ -53,7 +50,6 @@ in
         };
 
         simon-desktop = {
-          deploy.targetHost = "root@192.168.10.200";
           tags = [
             "desktop"
             "home"
@@ -62,7 +58,6 @@ in
         };
 
         lpt-titan = {
-          deploy.targetHost = "root@192.168.10.202";
           tags = [
             "laptop"
             "home"
@@ -175,41 +170,45 @@ in
           roles.default.tags.all = { };
         };
 
-        data-mesher = {
-          module = {
-            name = "data-mesher";
-            input = "clan-core";
-          };
-          roles.default = {
-            tags.all = { };
-            settings = {
-              interfaces = [
-                "ygg"
-                "wireguard"
-              ];
-            };
-          };
-          roles.bootstrap.machines = {
-            hm-nixbox = { };
-            hzc-pango = { };
-          };
-        };
+        # disabled: dm-dns exports lack "peer" key, crashes clan networking
+        # fallback resolution (KeyError('peer') in networks_from_flake).
+        # TODO: re-enable after clan-core fix
+        #data-mesher = {
+        #  module = {
+        #    name = "data-mesher";
+        #    input = "clan-core";
+        #  };
+        #  roles.default = {
+        #    tags.all = { };
+        #    settings = {
+        #      interfaces = [
+        #        "ygg"
+        #        "wireguard"
+        #      ];
+        #    };
+        #  };
+        #  roles.bootstrap.machines = {
+        #    hm-nixbox = { };
+        #    hzc-pango = { };
+        #  };
+        #};
 
-        dm-dns = {
-          module = {
-            name = "dm-dns";
-            input = "clan-core";
-          };
-          roles.default.tags.all = { };
-          roles.push.machines = {
-            hm-nixbox = { };
-            hzc-pango = { };
-          };
-        };
+        #dm-dns = {
+        #  module = {
+        #    name = "dm-dns";
+        #    input = "clan-core";
+        #  };
+        #  roles.default.tags.all = { };
+        #  roles.push.machines = {
+        #    hm-nixbox = { };
+        #    hzc-pango = { };
+        #  };
+        #};
 
         netbird = {
-          module.name = "netbird";
           module.input = "self";
+          module.name = "netbird";
+
           roles.server.machines."hzc-pango".settings = {
             domain = "nb.fosskar.eu";
             proxyDomain = "fosskar.eu";
@@ -218,6 +217,7 @@ in
           roles.client = {
             tags.workstation = { };
             machines."hm-nixbox".settings.routingFeatures = "server";
+            machines."clawbox" = { };
           };
         };
 
