@@ -294,6 +294,7 @@ _: {
       {
         nixosModule =
           {
+            config,
             lib,
             ...
           }:
@@ -304,11 +305,28 @@ _: {
             serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
           in
           {
+            # setup key secret
+            clan.core.vars.generators.netbird-client = {
+              share = true;
+              files."setup-key" = { };
+              prompts.setup-key = {
+                description = "netbird setup key (create one in the dashboard)";
+                type = "hidden";
+              };
+              script = ''
+                cp "$prompts/setup-key" "$out/setup-key"
+              '';
+            };
+
             services.netbird = {
               enable = true;
               useRoutingFeatures = settings.routingFeatures;
               clients.default = {
                 port = serverSettings.port or 51820;
+                login = {
+                  enable = true;
+                  setupKeyFile = config.clan.core.vars.generators.netbird-client.files."setup-key".path;
+                };
                 config = {
                   ManagementURL = {
                     Scheme = "https";
