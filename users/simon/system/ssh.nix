@@ -17,6 +17,9 @@ _: {
           PubkeyAuthentication = "unbound";
           UpdateHostKeys = "yes";
           StrictHostKeyChecking = "accept-new";
+          # ensure ssh finds gpg-agent even when SSH_AUTH_SOCK is stripped
+          # (e.g. nixos-rebuild-ng env sanitization, nixpkgs#493085)
+          IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
         };
       };
     };
