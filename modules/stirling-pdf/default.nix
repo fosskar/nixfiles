@@ -30,6 +30,25 @@ in
       };
     };
 
+    # FIXME: workaround for nixpkgs noto-fonts-subset build failure (broken glob
+    # for variable font filenames). remove unoconv/libreoffice from service path
+    # until upstream fixes noto-fonts-2026.02.01 subset builder.
+    systemd.services.stirling-pdf.path = lib.mkForce [
+      pkgs.which
+      pkgs.unpaper
+      pkgs.qpdf
+      pkgs.python3Packages.ocrmypdf
+      pkgs.poppler-utils
+      pkgs.pngquant
+      pkgs.tesseract
+      (pkgs.python3.withPackages (ps: [ ps.weasyprint ]))
+      pkgs.ghostscript
+      pkgs.coreutils
+      pkgs.findutils
+      pkgs.gnugrep
+      pkgs.gnused
+    ];
+
     nixfiles.nginx.vhosts.pdf.port = port;
   };
 }
