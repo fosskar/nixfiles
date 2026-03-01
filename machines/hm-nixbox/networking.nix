@@ -23,7 +23,7 @@
       443
       5930
     ];
-    firewall.interfaces.wt0.allowedTCPPorts = [ 2283 ];
+
   };
 
   # disable resolved mdns (avahi handles it for samba/apple discovery)

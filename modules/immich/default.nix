@@ -175,7 +175,7 @@ in
     services.immich = {
       enable = true;
       package = immichOpenVinoPatched;
-      host = "127.0.0.1";
+      host = "0.0.0.0";
       port = 2283;
       mediaLocation = "/tank/apps/immich";
       secretsFile = config.clan.core.vars.generators.immich.files."db-password.env".path;

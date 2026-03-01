@@ -132,7 +132,7 @@ in
           skew = 1;
         };
 
-        server.address = "tcp://127.0.0.1:${toString listenPort}";
+        server.address = "tcp://0.0.0.0:${toString listenPort}";
 
         authentication_backend.ldap = {
           implementation = "lldap";
