@@ -100,7 +100,7 @@ in
     # nextcloud creates its own nginx vhost at hostName; pin it to localhost
     services.nginx.virtualHosts."localhost".listen = [
       {
-        addr = "127.0.0.1";
+        addr = "0.0.0.0";
         inherit port;
       }
     ];
