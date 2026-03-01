@@ -55,7 +55,9 @@ export default function (pi: ExtensionAPI) {
 
           // 1. shield + model · thinking
           // orange shield (mdHeading = #f0c674, matches [Extensions] orange)
-          const shield = shieldStatus ? theme.fg("mdHeading", "\uf132") + "  " : "";
+          const shield = shieldStatus
+            ? theme.fg("mdHeading", "\uf132") + "  "
+            : "";
           const modelId = ctx.model?.id || "no-model";
           const thinkingLevel = pi.getThinkingLevel();
           const thinkingColorMap = {
@@ -141,7 +143,8 @@ export default function (pi: ExtensionAPI) {
           const freeSpace = Math.max(0, innerWidth - totalUsed);
 
           const spacePerGap = gaps > 0 ? Math.floor(freeSpace / gaps) : 0;
-          const leftover = gaps > 0 ? freeSpace - spacePerGap * gaps : freeSpace;
+          const leftover =
+            gaps > 0 ? freeSpace - spacePerGap * gaps : freeSpace;
 
           const dimPipe = theme.fg("dim", "│");
           let result = " ".repeat(pad);
