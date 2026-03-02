@@ -21,6 +21,9 @@ in
     !include ${config.sops.secrets."nix-access-tokens".path}
   '';
 
+  # cross-build for aarch64 (e.g. nix-on-droid)
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   # allow running unpatched binaries (editor LSPs, etc.)
   programs.nix-ld.enable = true;
 
