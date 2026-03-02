@@ -126,6 +126,8 @@ in
         RestrictSUIDSGID = true;
         AmbientCapabilities = [ "CAP_NET_ADMIN" ];
         CapabilityBoundingSet = [ "CAP_NET_ADMIN" ];
+        User = "netbird";
+        Group = "netbird";
       };
 
       stopIfChanged = false;

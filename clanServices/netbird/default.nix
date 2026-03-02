@@ -218,6 +218,8 @@ _: {
               serviceConfig = {
                 Type = "oneshot";
                 RemainAfterExit = true;
+                User = "netbird";
+                Group = "netbird";
                 StateDirectory = "netbird-server";
               };
               script = ''
@@ -343,10 +345,10 @@ _: {
             # trust netbird interface — netbird handles access control
             networking.firewall.trustedInterfaces = [ "wt0" ];
 
-            # persist client state
-            nixfiles.persistence.directories = [
-              "/var/lib/netbird"
-            ];
+            ## persist client state
+            #nixfiles.persistence.directories = [
+            #  "/var/lib/netbird"
+            #];
           };
       };
   };

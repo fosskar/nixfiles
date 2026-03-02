@@ -167,11 +167,18 @@ in
         RestrictNamespaces = true;
         RestrictRealtime = true;
         RestrictSUIDSGID = true;
-
+        User = "netbird";
+        Group = "netbird";
       };
 
       stopIfChanged = false;
     };
+
+    users.users.netbird = {
+      isSystemUser = true;
+      group = "netbird";
+    };
+    users.groups.netbird = { };
 
     networking.firewall = lib.mkIf cfg.openFirewall {
       allowedTCPPorts = [
