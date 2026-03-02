@@ -10,23 +10,39 @@ this repo is built on [clan-core](https://docs.clan.lol/) - a framework for mana
 
 ## machines
 
-| machine       | type    | description                                          |
-| ------------- | ------- | ---------------------------------------------------- |
-| simon-desktop | desktop | daily driver workstation                             |
-| lpt-titan     | laptop  | framework 13                                         |
-| hm-nixbox     | server  | home server: monitoring, immich, paperless, openclaw |
-| hzc-pango     | vps     | hetzner, reverse proxy (pangolin)                    |
-| clawbox       | server  | local AI box (openclaw, signal-cli)                  |
+| machine       | type    | description                                                       |
+| ------------- | ------- | ----------------------------------------------------------------- |
+| simon-desktop | desktop | daily driver workstation                                          |
+| lpt-titan     | laptop  | framework 13 (lanzaboote, fprint, bcachefs)                      |
+| hm-nixbox     | server  | home server: apps, monitoring, nix cache, backups                 |
+| hzc-pango     | vps     | hetzner: netbird server, wireguard controller, monitoring hub     |
+| clawbox       | server  | local AI box (openclaw, signal-cli)                               |
 
 IPs in `machines/flake-module.nix` under `inventory.machines` and `instances.internet`.
+
+### per-machine module imports
+
+know what each machine uses to avoid building/evaluating wrong targets.
+
+- **simon-desktop**: gaming, yubikey, power, gpu, cpu, virtualization, dms, niri, persistence
+- **lpt-titan**: nixos-hardware.framework-amd-ai-300-series, yubikey, power, gpu, cpu, lanzaboote, fprint, bcachefs, dms, niri, persistence
+- **hm-nixbox**: acme, arr-stack, borgbackup, nginx, filebrowser-quantum, nextcloud, lldap, authelia, immich, paperless, vaultwarden, stirling-pdf, zfs, gpu, cpu, power, persistence, hd-idle, notify, virtualization, vert + scanPaths (excludes: dashboards, radicle.nix)
+- **hzc-pango**: srvos.hardware-hetzner-cloud, borgbackup, power, persistence + scanPaths (excludes: pangolin.nix, crowdsec.nix, monitoring.nix)
+- **clawbox**: power, persistence + scanPaths (openclaw.nix, signal-cli.nix, networking.nix via scan)
 
 ### ssh access
 
 ```bash
-ssh <machine>.s                 # clan meta domain
+ssh <machine>.s                 # clan meta domain (yggdrasil mesh)
 ssh <machine>.lan               # .lan tld (local network)
 ssh root@<ip>                   # direct IP (from deploy output)
 ```
+
+### networking
+
+- **yggdrasil** — mesh network, provides `.s` domain resolution between all machines
+- **netbird** — mesh vpn, server on hzc-pango (`nb.fosskar.eu`), all machines are clients
+- **wireguard** — site-to-site, controller on hzc-pango
 
 ## repo structure
 
@@ -34,10 +50,10 @@ ssh root@<ip>                   # direct IP (from deploy output)
 - `machines/flake-module.nix` - clan inventory, services, deploy targets
 - `modules/` - reusable nixos modules under `nixfiles.*` namespace
 - `modules/profiles/` - base profiles (server, workstation) applied via tags
-- `users/` - home-manager configs per user
-- `lib/` - mylib helpers
+- `users/` - home-manager configs per user (only `users/simon/`)
+- `lib/` - mylib helpers (`scanPaths`, `scanFlakeModules`)
 - `vars/` - clan-generated secrets/config per machine
-- `docs/` - guides and rationale (why things are the way they are)
+- `docs/` - guides (preservation.md, secureboot.md, tangled.md, gpg-yubikey.md)
 
 ## principles
 
@@ -58,7 +74,8 @@ ssh root@<ip>                   # direct IP (from deploy output)
 
 ## patterns
 
-- `mylib.scanPaths ./. { }` - auto-import all .nix files in directory
+- `mylib.scanPaths ./. { }` - auto-import all .nix files in directory (exclude with `{ exclude = [ "file.nix" ]; }`)
+- `mylib.scanFlakeModules ./.` - auto-discover `flake-module.nix` files across repo
 - **importing a module enables it** - NO `enable` options, NO `nixfiles.*.enable = true`. just import the module and it's on. exception: modules with submodules (like monitoring) where you import the parent but enable specific children
 - some modules require one-time host prerequisites before deploy (e.g., lanzaboote key provisioning with `sbctl create-keys`)
 - `lib.mkDefault` for overridable defaults in profiles
@@ -94,31 +111,37 @@ defined in `machines/flake-module.nix` - machines, services, deploy targets. sel
 ### tags
 
 - `server` → `modules/profiles/server`
-- `desktop`, `laptop` → `modules/profiles/workstation`
+- `desktop`, `laptop`, `workstation` → `modules/profiles/workstation`
 - `home`, `hetzner` - location grouping
-- `all` - all machines
+- `ai` - AI machines (clawbox)
+- `all` - all machines (used by sshd, clan-cache, yggdrasil, netbird client)
 
 ### clan services in use
 
-| service            | module    | purpose                             |
-| ------------------ | --------- | ----------------------------------- |
-| sshd               | clan-core | authorized keys + ssh certificates  |
-| users              | clan-core | user creation + home-manager        |
-| clan-cache         | clan-core | trusted nix caches                  |
-| yggdrasil          | (builtin) | mesh networking                     |
-| internet           | (builtin) | IP exports for yggdrasil peering    |
-| syncthing          | clan-core | folder sync (desktop ↔ laptop)     |
-| borgbackup         | clan-core | backups to hetzner storagebox       |
-| wifi               | clan-core | declarative wifi profiles (laptop)  |
-| server-module      | importer  | applies server profile via tag      |
-| workstation-module | importer  | applies workstation profile via tag |
+| service            | module    | purpose                                        |
+| ------------------ | --------- | ---------------------------------------------- |
+| emergency-access   | clan-core | emergency access for all nixos machines        |
+| sshd               | clan-core | authorized keys + ssh certificates             |
+| root-user          | clan-core | root user on workstations (users module)       |
+| simon-user         | clan-core | simon user on desktop+laptop (users module)    |
+| clan-cache         | clan-core | trusted nix caches                             |
+| yggdrasil          | (builtin) | mesh networking                                |
+| internet           | (builtin) | IP exports for yggdrasil peering               |
+| syncthing          | clan-core | folder sync (desktop ↔ laptop)                |
+| borgbackup         | clan-core | backups to hetzner storagebox (hm-nixbox, hzc-pango) |
+| wifi               | clan-core | declarative wifi profiles (lpt-titan only)     |
+| ncps               | clan-core | nix cache proxy (server: hm-nixbox, clients: rest) |
+| netbird            | self      | mesh vpn (server: hzc-pango, all clients)      |
+| wireguard          | clan-core | site-to-site (controller: hzc-pango)           |
+| server-module      | importer  | applies server profile via tag                 |
+| workstation-module | importer  | applies workstation profile via tag            |
 
 ### vars
 
 - `vars/per-machine/<machine>/` - machine-specific generated secrets
 - `vars/shared/` - shared across machines
 - auto-generated: syncthing keys, borgbackup keys, passwords, ssh keys, etc
-- encrypted with sops (age + yubikey/tpm)
+- encrypted with sops (age + yubikey)
 
 generator naming: **`service` as generator name, secrets as file names** — `generators.myservice.files."my-secret"`, NOT `generators.myservice-my-secret.files."my-secret"`.
 
@@ -155,36 +178,6 @@ nix log <store-path>            # view build log
 nix-store -qR <path> | grep x   # find package in closure
 ```
 
-## monitoring
-
-primary metrics backend is VictoriaMetrics. query the host defined in inventory for current location.
-
-## notable services (hm-nixbox)
-
-- **openclaw** (`modules/openclaw/`) - AI gateway, uses flake input override for docs bundling
-- **immich** - photo management
-- **paperless** - document management
-- **authelia** - SSO/auth proxy
-- **arr-stack** - media automation (sonarr, radarr, etc)
-
-## persistence
-
-all machines use preservation (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. see `docs/preservation.md` for details.
-
-## home-manager
-
-home-manager configs in `users/<user>/`. access nixos config via `osConfig`:
-
-```nix
-{ osConfig ? null, ... }:
-let
-  varPath = osConfig.clan.core.vars.generators.myvar.files."file".path or null;
-in
-{
-  # use varPath...
-}
-```
-
 ## module categories
 
 modules live in `modules/` with these categories:
@@ -194,12 +187,14 @@ modules live in `modules/` with these categories:
 | hardware       | cpu/, gpu/, bcachefs/, zfs/, fprint/, yubikey/, lanzaboote/                                   |
 | power          | power/ (tuned, ppd, auto-cpufreq, logind, upower, powertop)                                   |
 | persistence    | persistence/ (preservation, fs-specific persistence helpers)                                  |
-| networking     | tailscale/, pangolin/                                                                         |
+| networking     | netbird/, tailscale/, pangolin/                                                               |
 | infra/services | nginx/, acme/, authelia/, lldap/, kanidm/, k3s/, notify/, vert/, borgbackup/, hd-idle/        |
 | monitoring     | monitoring/ (beszel, victoriametrics, victorialogs, telegraf, grafana, netdata, exporter)     |
-| apps           | immich/, paperless/, vaultwarden/, it-tools/, stirling-pdf/, filebrowser-quantum/, arr-stack/ |
+| apps           | immich/, paperless/, vaultwarden/, nextcloud/, openclaw/, it-tools/, stirling-pdf/, filebrowser-quantum/, arr-stack/ |
 | desktop        | dms/, niri/, gaming/, virtualization/                                                         |
-| profiles       | profiles/base/, profiles/server/, profiles/workstation/                                       |
+| profiles       | profiles/server/, profiles/workstation/                                                       |
+
+note: some modules exist but are not actively imported by any machine (kanidm, k3s, it-tools, tailscale, pangolin). they're available but unused.
 
 ## module enable patterns
 
@@ -223,6 +218,37 @@ nixfiles.power.tuned.enable = true;
 nixfiles.power.logind.enable = true;
 ```
 
+## persistence
+
+all machines use preservation (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. see `docs/preservation.md` for details.
+
+## home-manager
+
+home-manager configs in `users/simon/` with categories: browsers/, cli/, desktop/, editors/, media/, shell/, system/, terminals/.
+
+options defined in `users/simon/default.nix`:
+- `nixfiles.machineType` - "desktop" or "laptop" (set per-machine in `machines/<name>/home/default.nix`)
+- `nixfiles.quickshell` - "dms", "noctalia", or "none" (default: "noctalia")
+
+access nixos config via `osConfig`:
+
+```nix
+{ osConfig ? null, ... }:
+let
+  varPath = osConfig.clan.core.vars.generators.myvar.files."file".path or null;
+in
+{
+  # use varPath...
+}
+```
+
+## desktop shell
+
+- niri (wayland compositor) + quickshell-based shell (dms or noctalia)
+- dms: use `settings.json` directly, not nix attrset (simpler to maintain)
+- way-displays: always takes control of scaling, no passthrough to niri
+- both simon-desktop and lpt-titan use dms + niri
+
 ## known deprecations / volatile status
 
 keep this section short. if it grows, move details to a dedicated doc under `docs/` and link from here.
@@ -236,16 +262,11 @@ keep this section short. if it grows, move details to a dedicated doc under `doc
 
 - **immich** - ML uses local package/runtime overrides (`modules/immich/default.nix`); verify compatibility after nixpkgs or immich updates
 - **grafana** - needs `groups` in id_token (not just userinfo) for role mapping
-- **radicle** - checkConfig disabled, settings format needs fixing
+- **radicle** - checkConfig disabled, settings format needs fixing (excluded from hm-nixbox scanPaths)
 - **zfs** - for zfs machines, keep `networking.hostId` stable per machine (in each machine's networking config)
 - **tuned** - has workaround for nixpkgs#463443 (ppd.conf bug)
-
-## desktop shell
-
-- `nixfiles.quickshell` - "dms", "noctalia", or "none"
-- `nixfiles.machineType` - "desktop" or "laptop"
-- dms: use `settings.json` directly, not nix attrset (simpler to maintain)
-- way-displays: always takes control of scaling, no passthrough to niri
+- **nix-citizen** - don't follow nixpkgs; wine-astral needs old wine/base.nix API (pinned in flake.nix)
+- **openclaw** - AI gateway with hardlinked plugin manifest workaround; uses llm-agents flake input
 
 ## vcs
 
@@ -334,7 +355,8 @@ nixos-rebuild build --flake . 2>&1 | head -100
 - machine configs: `machines/<name>/` with `configuration.nix` as entry
 - facter.json: hardware facts (auto-generated, don't edit)
 - disko.nix: disk partitioning (used by clan install)
-- home-manager machine overrides: typically under `machines/<name>/home/default.nix`
+- home-manager machine overrides: `machines/<name>/home/default.nix`
+- extra machine-local configs via scanPaths (e.g., monitoring.nix, networking.nix, samba.nix)
 
 ## pre-finish checklist
 
