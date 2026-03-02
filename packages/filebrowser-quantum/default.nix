@@ -6,7 +6,7 @@
 }:
 
 let
-  version = "1.2.0-stable";
+  version = "1.2.1-stable";
 
   src = fetchFromGitHub {
     owner = "gtsteffaniak";
