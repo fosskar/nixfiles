@@ -10,13 +10,13 @@ this repo is built on [clan-core](https://docs.clan.lol/) - a framework for mana
 
 ## machines
 
-| machine       | type    | description                                                       |
-| ------------- | ------- | ----------------------------------------------------------------- |
-| simon-desktop | desktop | daily driver workstation                                          |
-| lpt-titan     | laptop  | framework 13 (lanzaboote, fprint, bcachefs)                      |
-| hm-nixbox     | server  | home server: apps, monitoring, nix cache, backups                 |
-| hzc-pango     | vps     | hetzner: netbird server, wireguard controller, monitoring hub     |
-| clawbox       | server  | local AI box (openclaw, signal-cli)                               |
+| machine       | type    | description                                                   |
+| ------------- | ------- | ------------------------------------------------------------- |
+| simon-desktop | desktop | daily driver workstation                                      |
+| lpt-titan     | laptop  | framework 13 (lanzaboote, fprint, bcachefs)                   |
+| hm-nixbox     | server  | home server: apps, monitoring, nix cache, backups             |
+| hzc-pango     | vps     | hetzner: netbird server, wireguard controller, monitoring hub |
+| clawbox       | server  | local AI box (openclaw, signal-cli)                           |
 
 IPs in `machines/flake-module.nix` under `inventory.machines` and `instances.internet`.
 
@@ -118,23 +118,23 @@ defined in `machines/flake-module.nix` - machines, services, deploy targets. sel
 
 ### clan services in use
 
-| service            | module    | purpose                                        |
-| ------------------ | --------- | ---------------------------------------------- |
-| emergency-access   | clan-core | emergency access for all nixos machines        |
-| sshd               | clan-core | authorized keys + ssh certificates             |
-| root-user          | clan-core | root user on workstations (users module)       |
-| simon-user         | clan-core | simon user on desktop+laptop (users module)    |
-| clan-cache         | clan-core | trusted nix caches                             |
-| yggdrasil          | (builtin) | mesh networking                                |
-| internet           | (builtin) | IP exports for yggdrasil peering               |
-| syncthing          | clan-core | folder sync (desktop ↔ laptop)                |
+| service            | module    | purpose                                              |
+| ------------------ | --------- | ---------------------------------------------------- |
+| emergency-access   | clan-core | emergency access for all nixos machines              |
+| sshd               | clan-core | authorized keys + ssh certificates                   |
+| root-user          | clan-core | root user on workstations (users module)             |
+| simon-user         | clan-core | simon user on desktop+laptop (users module)          |
+| clan-cache         | clan-core | trusted nix caches                                   |
+| yggdrasil          | (builtin) | mesh networking                                      |
+| internet           | (builtin) | IP exports for yggdrasil peering                     |
+| syncthing          | clan-core | folder sync (desktop ↔ laptop)                      |
 | borgbackup         | clan-core | backups to hetzner storagebox (hm-nixbox, hzc-pango) |
-| wifi               | clan-core | declarative wifi profiles (lpt-titan only)     |
-| ncps               | clan-core | nix cache proxy (server: hm-nixbox, clients: rest) |
-| netbird            | self      | mesh vpn (server: hzc-pango, all clients)      |
-| wireguard          | clan-core | site-to-site (controller: hzc-pango)           |
-| server-module      | importer  | applies server profile via tag                 |
-| workstation-module | importer  | applies workstation profile via tag            |
+| wifi               | clan-core | declarative wifi profiles (lpt-titan only)           |
+| ncps               | clan-core | nix cache proxy (server: hm-nixbox, clients: rest)   |
+| netbird            | self      | mesh vpn (server: hzc-pango, all clients)            |
+| wireguard          | clan-core | site-to-site (controller: hzc-pango)                 |
+| server-module      | importer  | applies server profile via tag                       |
+| workstation-module | importer  | applies workstation profile via tag                  |
 
 ### vars
 
@@ -182,17 +182,17 @@ nix-store -qR <path> | grep x   # find package in closure
 
 modules live in `modules/` with these categories:
 
-| category       | modules                                                                                       |
-| -------------- | --------------------------------------------------------------------------------------------- |
-| hardware       | cpu/, gpu/, bcachefs/, zfs/, fprint/, yubikey/, lanzaboote/                                   |
-| power          | power/ (tuned, ppd, auto-cpufreq, logind, upower, powertop)                                   |
-| persistence    | persistence/ (preservation, fs-specific persistence helpers)                                  |
-| networking     | netbird/, tailscale/, pangolin/                                                               |
-| infra/services | nginx/, acme/, authelia/, lldap/, kanidm/, k3s/, notify/, vert/, borgbackup/, hd-idle/        |
-| monitoring     | monitoring/ (beszel, victoriametrics, victorialogs, telegraf, grafana, netdata, exporter)     |
+| category       | modules                                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------------------- |
+| hardware       | cpu/, gpu/, bcachefs/, zfs/, fprint/, yubikey/, lanzaboote/                                                          |
+| power          | power/ (tuned, ppd, auto-cpufreq, logind, upower, powertop)                                                          |
+| persistence    | persistence/ (preservation, fs-specific persistence helpers)                                                         |
+| networking     | netbird/, tailscale/, pangolin/                                                                                      |
+| infra/services | nginx/, acme/, authelia/, lldap/, kanidm/, k3s/, notify/, vert/, borgbackup/, hd-idle/                               |
+| monitoring     | monitoring/ (beszel, victoriametrics, victorialogs, telegraf, grafana, netdata, exporter)                            |
 | apps           | immich/, paperless/, vaultwarden/, nextcloud/, openclaw/, it-tools/, stirling-pdf/, filebrowser-quantum/, arr-stack/ |
-| desktop        | dms/, niri/, gaming/, virtualization/                                                         |
-| profiles       | profiles/server/, profiles/workstation/                                                       |
+| desktop        | dms/, niri/, gaming/, virtualization/                                                                                |
+| profiles       | profiles/server/, profiles/workstation/                                                                              |
 
 note: some modules exist but are not actively imported by any machine (kanidm, k3s, it-tools, tailscale, pangolin). they're available but unused.
 
@@ -227,6 +227,7 @@ all machines use preservation (opt-in state). root filesystem is ephemeral, only
 home-manager configs in `users/simon/` with categories: browsers/, cli/, desktop/, editors/, media/, shell/, system/, terminals/.
 
 options defined in `users/simon/default.nix`:
+
 - `nixfiles.machineType` - "desktop" or "laptop" (set per-machine in `machines/<name>/home/default.nix`)
 - `nixfiles.quickshell` - "dms", "noctalia", or "none" (default: "noctalia")
 
