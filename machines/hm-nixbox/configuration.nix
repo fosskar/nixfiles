@@ -8,7 +8,6 @@
     ../../modules/arr-stack
     ../../modules/borgbackup
     ../../modules/nginx
-    ../../modules/filebrowser-quantum
     ../../modules/nextcloud
     ../../modules/lldap
     ../../modules/authelia
