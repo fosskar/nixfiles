@@ -36,6 +36,7 @@ const ASK: Rule[] = [
   { re: /\bgit\s+push\s+.*(-f\b|--force\b)/, tag: "force push" },
   { re: /\bgit\s+reset\s+--hard\b/, tag: "hard reset" },
   { re: /\bgit\s+clean\s+-[^\s]*f/, tag: "git clean" },
+  { re: /\bjj\s+git\s+push\b/, tag: "jj git push" },
   // remote exec
   { re: /\bcurl\b.*\|\s*(ba)?sh\b/, tag: "curl | sh" },
   { re: /\bwget\b.*\|\s*(ba)?sh\b/, tag: "wget | sh" },
