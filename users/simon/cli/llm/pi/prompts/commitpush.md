@@ -1,8 +1,8 @@
 ---
-description: commit and push current work with jj
+description: commit current work with jj and move bookmark
 ---
 
-create atomic commit(s) and push committed work with jj.
+create atomic commit(s) and move main bookmark to tip. do NOT push.
 
 rules:
 
