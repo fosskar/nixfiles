@@ -11,4 +11,4 @@ rules:
 - focus msg on why, not what.
 - no conventional commit prefixes.
 - prefix docs changes with `docs:`.
-- after all commits are done and bookmark is moved, run `jj new` to create a fresh empty working copy change.
+- ensure working copy ends on a fresh empty change (if last operation was `jj describe`, run `jj new`).
