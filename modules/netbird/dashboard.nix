@@ -6,52 +6,25 @@
 }:
 
 let
-  inherit (lib)
-    boolToString
-    concatStringsSep
-    hasAttr
-    isBool
-    mapAttrs
-    mkDefault
-    mkEnableOption
-    mkIf
-    mkOption
-    mkPackageOption
-    ;
-
-  inherit (lib.types)
-    attrsOf
-    bool
-    either
-    package
-    str
-    submodule
-    ;
-
-  toStringEnv = value: if isBool value then boolToString value else toString value;
-
+  toStringEnv = value: if lib.isBool value then lib.boolToString value else toString value;
   cfg = config.services.netbird.server.dashboard;
 in
 
 {
   options.services.netbird.server.dashboard = {
-    enable = mkEnableOption "the static netbird dashboard frontend";
+    enable = lib.mkEnableOption "the static netbird dashboard frontend";
 
-    package = mkPackageOption pkgs "netbird-dashboard" { };
+    package = lib.mkPackageOption pkgs "netbird-dashboard" { };
 
-    domain = mkOption {
-      type = str;
-      default = "localhost";
-      description = "The domain under which the dashboard runs.";
-    };
-
-    managementServer = mkOption {
-      type = str;
+    managementServer = lib.mkOption {
+      type = lib.types.str;
       description = "The address of the management server, used for the API endpoints.";
     };
 
-    settings = mkOption {
-      type = submodule { freeformType = attrsOf (either str bool); };
+    settings = lib.mkOption {
+      type = lib.types.submodule {
+        freeformType = lib.types.attrsOf (lib.types.either lib.types.str lib.types.bool);
+      };
 
       defaultText = ''
         {
@@ -72,19 +45,19 @@ in
       '';
     };
 
-    finalDrv = mkOption {
+    finalDrv = lib.mkOption {
       readOnly = true;
-      type = package;
+      type = lib.types.package;
       description = ''
         The derivation containing the final templated dashboard.
       '';
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = hasAttr "AUTH_AUTHORITY" cfg.settings;
+        assertion = lib.hasAttr "AUTH_AUTHORITY" cfg.settings;
         message = "The setting AUTH_AUTHORITY is required for the dashboard to function.";
       }
     ];
@@ -108,7 +81,7 @@ in
         NETBIRD_MGMT_API_ENDPOINT = cfg.managementServer;
         NETBIRD_MGMT_GRPC_API_ENDPOINT = cfg.managementServer;
       }
-      // (mapAttrs (_: mkDefault) {
+      // (lib.mapAttrs (_: lib.mkDefault) {
         # Those values have to be easily overridable
         AUTH_AUDIENCE = "netbird"; # must be set for your devices to be able to log in
         AUTH_CLIENT_ID = "netbird";
@@ -123,7 +96,7 @@ in
           {
             nativeBuildInputs = [ pkgs.gettext ];
             env = {
-              ENV_STR = concatStringsSep " " [
+              ENV_STR = lib.concatStringsSep " " [
                 "$AUTH_AUDIENCE"
                 "$AUTH_AUTHORITY"
                 "$AUTH_CLIENT_ID"
@@ -142,7 +115,7 @@ in
                 "$USE_AUTH0"
               ];
             }
-            // (mapAttrs (_: toStringEnv) cfg.settings);
+            // (lib.mapAttrs (_: toStringEnv) cfg.settings);
           }
           ''
             cp -R ${cfg.package} build

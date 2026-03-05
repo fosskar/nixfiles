@@ -101,18 +101,18 @@ in
           cliRedirectURIs = lib.mkDefault [
             "http://localhost:53000/"
           ];
-          # owner placeholder — replaced in preStart
+          # owner placeholder — replaced in preStart via envsubst
           owner = {
             email = cfg.ownerEmail;
-            password = "__OWNER_HASH__";
+            password = "$OWNER_HASH";
           };
         };
 
         store.engine = lib.mkDefault "sqlite";
 
-        # secrets are placeholders — replaced in preStart
-        authSecret = "__AUTH_SECRET__";
-        store.encryptionKey = "__ENCRYPTION_KEY__";
+        # secrets are placeholders — replaced in preStart via envsubst
+        authSecret = "$AUTH_SECRET";
+        store.encryptionKey = "$ENCRYPTION_KEY";
       };
     };
 
@@ -125,14 +125,10 @@ in
 
       preStart = ''
         umask 077
-        AUTH_SECRET=$(cat "$CREDENTIALS_DIRECTORY/auth-secret")
-        ENCRYPTION_KEY=$(cat "$CREDENTIALS_DIRECTORY/encryption-key")
-        OWNER_HASH=$(cat "$CREDENTIALS_DIRECTORY/owner-password-hash")
-        ${lib.getExe pkgs.gnused} \
-          -e "s|__AUTH_SECRET__|$AUTH_SECRET|g" \
-          -e "s|__ENCRYPTION_KEY__|$ENCRYPTION_KEY|g" \
-          -e "s|__OWNER_HASH__|$OWNER_HASH|g" \
-          ${configFile} > "${stateDir}/config.yaml"
+        export AUTH_SECRET=$(cat "$CREDENTIALS_DIRECTORY/auth-secret")
+        export ENCRYPTION_KEY=$(cat "$CREDENTIALS_DIRECTORY/encryption-key")
+        export OWNER_HASH=$(cat "$CREDENTIALS_DIRECTORY/owner-password-hash")
+        ${lib.getExe pkgs.envsubst} < ${configFile} > "${stateDir}/config.yaml"
       '';
 
       serviceConfig = {

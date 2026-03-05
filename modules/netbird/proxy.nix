@@ -180,10 +180,18 @@ in
       };
       script = ''
         # wait for server to be ready
+        ready=0
         for i in $(seq 1 30); do
-          ${pkgs.curl}/bin/curl -sf http://localhost:${toString cfg.serverPort}/api/users >/dev/null 2>&1 && break
+          if ${pkgs.curl}/bin/curl -sf http://localhost:${toString cfg.serverPort}/api/users >/dev/null 2>&1; then
+            ready=1
+            break
+          fi
           sleep 2
         done
+        if [ "$ready" -ne 1 ]; then
+          echo "netbird server did not become ready after 60s" >&2
+          exit 1
+        fi
         TOKEN=$(${serverCfg.package}/bin/netbird-server token create \
           --config /var/lib/netbird-server/config.yaml \
           --name proxy --expires-in 3650d 2>&1 | grep -oP 'nbx_\S+')

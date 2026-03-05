@@ -81,7 +81,6 @@ _: {
             # dashboard
             services.netbird.server.dashboard = {
               enable = true;
-              inherit (settings) domain;
               package = pkgs.custom.netbird-dashboard;
               managementServer = "https://${settings.domain}";
               settings = {
