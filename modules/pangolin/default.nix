@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.services.pangolin;
+  geoipDir = "/var/lib/GeoIP";
 in
 {
   options.services.pangolin = {
@@ -13,9 +14,7 @@ in
     localOnly = lib.mkEnableOption "local-only mode (disables gerbil tunnel service)";
 
     # maxmind geoip for pangolin resource-level blocking
-    maxmindGeoip = {
-      enable = lib.mkEnableOption "MaxMind GeoIP database for pangolin resource-level geo blocking";
-    };
+    maxmindGeoip = lib.mkEnableOption "MaxMind GeoIP database for pangolin resource-level geo blocking";
 
     # traefik-level geoblock
     geoblock = {
@@ -56,16 +55,16 @@ in
   config = {
 
     # maxmind geoipupdate service (optional)
-    sops.secrets."geoip-license-key" = lib.mkIf cfg.maxmindGeoip.enable { };
+    sops.secrets."geoip-license-key" = lib.mkIf cfg.maxmindGeoip { };
 
-    services.geoipupdate = lib.mkIf cfg.maxmindGeoip.enable {
+    services.geoipupdate = lib.mkIf cfg.maxmindGeoip {
       enable = true;
       interval = lib.mkDefault "weekly";
       settings = {
         AccountID = 1267557;
         LicenseKey = config.sops.secrets."geoip-license-key".path;
         EditionIDs = [ "GeoLite2-Country" ];
-        DatabaseDirectory = "/var/lib/GeoIP";
+        DatabaseDirectory = geoipDir;
       };
     };
 
@@ -77,7 +76,7 @@ in
         group = config.systemd.services.pangolin.serviceConfig.Group;
       }
     ]
-    ++ lib.optional cfg.maxmindGeoip.enable "/var/lib/GeoIP";
+    ++ lib.optional cfg.maxmindGeoip geoipDir;
 
     services.pangolin = {
       enable = lib.mkDefault true;
@@ -88,11 +87,9 @@ in
       letsEncryptEmail = lib.mkDefault "letsencrypt.unpleased904@passmail.net";
 
       settings = {
-        app.telemetry = {
-          enabled = lib.mkForce false;
-        };
-        server = lib.mkIf cfg.maxmindGeoip.enable {
-          maxmind_db_path = "/var/lib/GeoIP/GeoLite2-Country.mmdb";
+        app.telemetry.enabled = false;
+        server = lib.mkIf cfg.maxmindGeoip {
+          maxmind_db_path = "${geoipDir}/GeoLite2-Country.mmdb";
         };
         flags = {
           disable_signup_without_invite = true;
@@ -188,6 +185,11 @@ in
         })
       ];
     };
+
+    # ensure access log directory exists when geoblock is enabled
+    systemd.tmpfiles.rules = lib.mkIf cfg.geoblock.enable [
+      "d /var/log/traefik 0755 traefik traefik -"
+    ];
 
     systemd.services = {
       # reduce shutdown timeout for faster reboots
