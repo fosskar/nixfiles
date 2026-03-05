@@ -13,7 +13,6 @@
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
-      "pangolin.nix"
       "crowdsec.nix"
       "monitoring.nix"
     ];
