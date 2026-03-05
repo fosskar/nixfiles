@@ -85,14 +85,14 @@ export default function (pi: ExtensionAPI) {
             // try jj first
             try {
               const bookmark = execSync(
-                "jj log -r @ --no-graph -T 'bookmarks.map(|b| b.name()).join(\",\")'",
-                { cwd: ctx.cwd, timeout: 500, encoding: "utf-8" },
+                "jj log -r @ --no-graph -T 'bookmarks.map(|b| b.name()).join(\",\")' 2>/dev/null",
+                { cwd: ctx.cwd, timeout: 500, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
               ).trim();
               if (bookmark) return { icon: "🥋", label: bookmark };
               // no bookmark on @, show short change id
               const changeId = execSync(
-                "jj log -r @ --no-graph -T 'change_id.shortest(4)'",
-                { cwd: ctx.cwd, timeout: 500, encoding: "utf-8" },
+                "jj log -r @ --no-graph -T 'change_id.shortest(4)' 2>/dev/null",
+                { cwd: ctx.cwd, timeout: 500, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
               ).trim();
               if (changeId) return { icon: "🥋", label: changeId };
             } catch {

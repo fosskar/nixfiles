@@ -28,6 +28,19 @@ let
     theme = "dark";
     quietStartup = false;
     packages = [
+
+      {
+        source = "git:github.com/fosskar/pi-pack";
+      }
+      {
+        source = "git:github.com/rytswd/pi-agent-extensions";
+        extensions = [
+          "direnv/index.ts"
+          "fetch/index.ts"
+          "questionnaire/index.ts"
+          "slow-mode/index.ts"
+        ];
+      }
       {
         source = "git:github.com/rytswd/pi-agent-extensions";
         extensions = [
