@@ -1,13 +1,20 @@
-# netbird reverse proxy
-# exposes internal services to the public internet through the netbird mesh
+# netbird reverse proxy + traefik frontend
+# when enabled, sets up:
+# - traefik as TLS termination for dashboard/API/gRPC + TLS passthrough for proxy
+# - nginx to serve dashboard static files on internal port
+# - proxy token generation on first boot
+# - the proxy service itself
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
 let
   cfg = config.services.netbird.server.proxy;
+  serverCfg = config.services.netbird.server;
+  dashboardCfg = config.services.netbird.server.dashboard;
   stateDir = "/var/lib/netbird-proxy";
 in
 {
@@ -63,9 +70,33 @@ in
       default = false;
       description = "allow insecure (non-TLS) gRPC connection to management server";
     };
+
+    acmeEmail = lib.mkOption {
+      type = lib.types.str;
+      description = "email for Let's Encrypt ACME certificates";
+    };
+
+    dashboardPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8080;
+      description = "internal port where nginx serves the dashboard";
+    };
+
+    serverPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8081;
+      description = "internal port where netbird-server listens";
+    };
+
+    accessLog = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "enable traefik access logging to /var/log/traefik/access.log";
+    };
   };
 
   config = lib.mkIf cfg.enable {
+    # proxy service
     systemd.services.netbird-proxy = {
       description = "netbird reverse proxy";
       documentation = [ "https://docs.netbird.io/manage/reverse-proxy" ];
@@ -132,5 +163,164 @@ in
 
       stopIfChanged = false;
     };
+
+    # generate proxy access token on first boot
+    systemd.services.netbird-proxy-token = {
+      description = "generate netbird proxy access token";
+      after = [ "netbird-server.service" ];
+      requires = [ "netbird-server.service" ];
+      wantedBy = [ "multi-user.target" ];
+      unitConfig.ConditionPathExists = "!/var/lib/netbird-server/proxy-token";
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        User = "netbird";
+        Group = "netbird";
+        StateDirectory = "netbird-server";
+      };
+      script = ''
+        # wait for server to be ready
+        for i in $(seq 1 30); do
+          ${pkgs.curl}/bin/curl -sf http://localhost:${toString cfg.serverPort}/api/users >/dev/null 2>&1 && break
+          sleep 2
+        done
+        TOKEN=$(${serverCfg.package}/bin/netbird-server token create \
+          --config /var/lib/netbird-server/config.yaml \
+          --name proxy --expires-in 3650d 2>&1 | grep -oP 'nbx_\S+')
+        echo -n "$TOKEN" > /var/lib/netbird-server/proxy-token
+        chmod 600 /var/lib/netbird-server/proxy-token
+      '';
+    };
+
+    # nginx — serve dashboard static files on internal port
+    services.nginx = lib.mkIf dashboardCfg.enable {
+      enable = true;
+      defaultHTTPListenPort = cfg.dashboardPort;
+      virtualHosts.dashboard = {
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = cfg.dashboardPort;
+          }
+        ];
+        root = dashboardCfg.finalDrv;
+        locations."/".tryFiles = "$uri $uri.html $uri/ =404";
+        extraConfig = "error_page 404 /404.html;";
+      };
+    };
+
+    # traefik — TLS termination for dashboard/API, TLS passthrough for proxy
+    systemd.services.traefik.serviceConfig.StateDirectory = "traefik";
+
+    # traefik access log directory
+    systemd.tmpfiles.rules = lib.mkIf cfg.accessLog [
+      "d /var/log/traefik 0755 traefik traefik -"
+    ];
+
+    services.traefik = {
+      enable = true;
+      staticConfigOptions = {
+        entryPoints = {
+          web = {
+            address = ":80";
+            http.redirections.entryPoint = {
+              to = "websecure";
+              scheme = "https";
+            };
+          };
+          websecure = {
+            address = ":443";
+            allowACMEByPass = true;
+            transport.respondingTimeouts = {
+              readTimeout = "0s";
+              writeTimeout = "0s";
+              idleTimeout = "0s";
+            };
+          };
+        };
+        certificatesResolvers.letsencrypt.acme = {
+          email = cfg.acmeEmail;
+          storage = "/var/lib/traefik/acme.json";
+          tlsChallenge = { };
+        };
+        serversTransport.forwardingTimeouts = {
+          responseHeaderTimeout = "0s";
+          idleConnTimeout = "0s";
+        };
+        accessLog = lib.mkIf cfg.accessLog {
+          filePath = "/var/log/traefik/access.log";
+          format = "json";
+        };
+      };
+
+      dynamicConfigOptions = {
+        http = {
+          routers = {
+            # gRPC — needs h2c backend (highest priority)
+            netbird-grpc = {
+              rule = "Host(`${serverCfg.domain}`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))";
+              service = "netbird-server-h2c";
+              entryPoints = [ "websecure" ];
+              tls.certResolver = "letsencrypt";
+              priority = 100;
+            };
+            # HTTP/WS — API, oauth2, relay, websocket proxies
+            netbird-backend = {
+              rule = "Host(`${serverCfg.domain}`) && (PathPrefix(`/api`) || PathPrefix(`/oauth2`) || PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`))";
+              service = "netbird-server";
+              entryPoints = [ "websecure" ];
+              tls.certResolver = "letsencrypt";
+              priority = 100;
+            };
+            # dashboard catch-all (lowest HTTP priority)
+            netbird-dashboard = {
+              rule = "Host(`${serverCfg.domain}`)";
+              service = "netbird-dashboard";
+              entryPoints = [ "websecure" ];
+              tls.certResolver = "letsencrypt";
+              priority = 1;
+            };
+          };
+          services = {
+            netbird-dashboard.loadBalancer.servers = [
+              { url = "http://127.0.0.1:${toString cfg.dashboardPort}"; }
+            ];
+            netbird-server.loadBalancer.servers = [
+              { url = "http://127.0.0.1:${toString cfg.serverPort}"; }
+            ];
+            netbird-server-h2c.loadBalancer.servers = [
+              { url = "h2c://127.0.0.1:${toString cfg.serverPort}"; }
+            ];
+          };
+        };
+        # TCP passthrough for reverse proxy (catches unmatched SNI)
+        tcp = {
+          routers.proxy-passthrough = {
+            rule = "HostSNI(`*`)";
+            entryPoints = [ "websecure" ];
+            service = "proxy-tls";
+            tls.passthrough = true;
+            priority = 1;
+          };
+          services.proxy-tls.loadBalancer.servers = [
+            { address = "127.0.0.1:${toString (lib.toInt (lib.removePrefix ":" cfg.addr))}"; }
+          ];
+        };
+      };
+    };
+
+    # persist state
+    nixfiles.persistence.directories = [
+      "/var/lib/netbird-server"
+      "/var/lib/netbird-proxy"
+      "/var/lib/traefik"
+    ];
+
+    # firewall — traefik needs 80/443, STUN needs 3478/udp
+    networking.firewall.allowedTCPPorts = [
+      80
+      443
+    ];
+    networking.firewall.allowedUDPPorts = [ 3478 ];
   };
 }
