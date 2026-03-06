@@ -22,7 +22,7 @@ let
     "https://cloud.${publicDomain}/web-oidc-callback"
   ];
 
-  # OIDC origins that need to be in CSP connect-src
+  # OIDC origins that need to be in CSP connect-src + frame-src
   oidcOrigins = [
     "https://auth.${acmeDomain}"
   ]
@@ -30,44 +30,41 @@ let
 
   settingsFormat = pkgs.formats.yaml { };
 
+  # shared OIDC client config — all opencloud clients are public PKCE
+  commonClientConfig = {
+    public = true;
+    consent_mode = "implicit";
+    scopes = [
+      "openid"
+      "profile"
+      "email"
+      "groups"
+      "offline_access"
+    ];
+    response_types = [ "code" ];
+    grant_types = [
+      "authorization_code"
+      "refresh_token"
+    ];
+    token_endpoint_auth_method = "none";
+  };
+
+  # helper for radicale proxy routes
+  radicaleRoute = endpoint: scriptName: {
+    inherit endpoint;
+    backend = "http://127.0.0.1:5232";
+    remote_user_header = "X-Remote-User";
+    skip_x_access_token = true;
+    additional_headers = [ { "X-Script-Name" = scriptName; } ];
+  };
+
+  # only additions to opencloud's default CSP — deep-merged at runtime
   cspConfig = {
     directives = {
-      child-src = [ "'self'" ];
-      connect-src = [
-        "'self'"
-        "blob:"
-        "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
-        "https://update.opencloud.eu/"
-      ]
-      ++ oidcOrigins;
-      default-src = [ "'none'" ];
-      font-src = [ "'self'" ];
-      frame-ancestors = [ "'self'" ];
-      frame-src = [
-        "'self'"
-        "blob:"
-        "https://embed.diagrams.net/"
-      ];
-      img-src = [
-        "'self'"
-        "data:"
-        "blob:"
-        "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
-      ];
-      manifest-src = [ "'self'" ];
-      media-src = [ "'self'" ];
-      object-src = [
-        "'self'"
-        "blob:"
-      ];
-      script-src = [
-        "'self'"
-        "'unsafe-inline'"
-      ];
-      style-src = [
-        "'self'"
-        "'unsafe-inline'"
-      ];
+      # external OIDC provider needs to be in connect-src for API calls
+      connect-src = oidcOrigins;
+      # needed for silent OIDC token renewal via iframe (oidc-silent-redirect.html)
+      frame-src = oidcOrigins;
     };
   };
 in
@@ -111,82 +108,47 @@ in
     # web client_id = "web" (hardcoded in opencloud web app)
     # desktop/mobile client_ids are hardcoded in their respective apps
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
-      {
-        client_id = "web";
-        client_name = "OpenCloud Web";
-        public = true;
-        consent_mode = "implicit";
-        redirect_uris = [
-          "https://${serviceDomain}/"
-          "https://${serviceDomain}/oidc-callback.html"
-          "https://${serviceDomain}/oidc-silent-redirect.html"
-          "https://${serviceDomain}/web-oidc-callback"
-        ]
-        ++ publicDomainUris;
-        scopes = [
-          "openid"
-          "profile"
-          "email"
-          "groups"
-        ];
-        response_types = [ "code" ];
-        grant_types = [ "authorization_code" ];
-        token_endpoint_auth_method = "none";
-      }
-      {
-        client_id = "OpenCloudDesktop";
-        client_name = "OpenCloud Desktop";
-        public = true;
-        consent_mode = "implicit";
-        redirect_uris = [
-          "http://127.0.0.1"
-          "http://localhost"
-        ];
-        scopes = [
-          "openid"
-          "profile"
-          "email"
-          "groups"
-          "offline_access"
-        ];
-        response_types = [ "code" ];
-        grant_types = [ "authorization_code" ];
-        token_endpoint_auth_method = "none";
-      }
-      {
-        client_id = "OpenCloudAndroid";
-        client_name = "OpenCloud Android";
-        public = true;
-        consent_mode = "implicit";
-        redirect_uris = [ "oc://android.opencloud.eu" ];
-        scopes = [
-          "openid"
-          "profile"
-          "email"
-          "groups"
-          "offline_access"
-        ];
-        response_types = [ "code" ];
-        grant_types = [ "authorization_code" ];
-        token_endpoint_auth_method = "none";
-      }
-      {
-        client_id = "OpenCloudIOS";
-        client_name = "OpenCloud iOS";
-        public = true;
-        consent_mode = "implicit";
-        redirect_uris = [ "oc://ios.opencloud.eu" ];
-        scopes = [
-          "openid"
-          "profile"
-          "email"
-          "groups"
-          "offline_access"
-        ];
-        response_types = [ "code" ];
-        grant_types = [ "authorization_code" ];
-        token_endpoint_auth_method = "none";
-      }
+      (
+        commonClientConfig
+        // {
+          client_id = "web";
+          client_name = "OpenCloud Web";
+          redirect_uris = [
+            "https://${serviceDomain}/"
+            "https://${serviceDomain}/oidc-callback.html"
+            "https://${serviceDomain}/oidc-silent-redirect.html"
+            "https://${serviceDomain}/web-oidc-callback"
+          ]
+          ++ publicDomainUris;
+        }
+      )
+      (
+        commonClientConfig
+        // {
+          client_id = "OpenCloudDesktop";
+          client_name = "OpenCloud Desktop";
+          redirect_uris = [
+            "http://127.0.0.1"
+            "http://localhost"
+          ];
+        }
+      )
+      (
+        commonClientConfig
+        // {
+          client_id = "OpenCloudAndroid";
+          client_name = "OpenCloud Android";
+          redirect_uris = [ "oc://android.opencloud.eu" ];
+        }
+      )
+      (
+        commonClientConfig
+        // {
+          client_id = "OpenCloudIOS";
+          client_name = "OpenCloud iOS";
+          redirect_uris = [ "oc://ios.opencloud.eu" ];
+        }
+      )
     ];
 
     services.opencloud = {
@@ -199,58 +161,55 @@ in
         PROXY_TLS = "false";
         OC_INSECURE = "true";
         OC_LOG_LEVEL = "warn";
-        PROXY_CSP_CONFIG_FILE_LOCATION = "/etc/opencloud/csp.yaml";
+        PROXY_CSP_CONFIG_FILE_LOCATION = "${settingsFormat.generate "csp.yaml" cspConfig}";
 
         # external OIDC via authelia — disable built-in IDP
         OC_OIDC_ISSUER = oidcIssuerUrl;
         OC_EXCLUDE_RUN_SERVICES = "idp";
         PROXY_AUTOPROVISION_ACCOUNTS = "true";
+
         PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD = "none";
-        PROXY_USER_OIDC_CLAIM = "preferred_username";
+        PROXY_OIDC_USERINFO_CACHE_TTL = "10m";
+        GRAPH_ASSIGN_DEFAULT_USER_ROLE = "true";
+        GRAPH_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
+        PROXY_USER_OIDC_CLAIM = "sub";
         PROXY_USER_CS3_CLAIM = "username";
         GRAPH_USERNAME_MATCH = "none";
-        GRAPH_ASSIGN_DEFAULT_USER_ROLE = "false";
+        WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${oidcDomain}/settings";
 
         # posix driver — inotify watches for external changes (samba/paperless)
         STORAGE_USERS_POSIX_ROOT = cfg.dataDir;
         STORAGE_USERS_POSIX_WATCH_FS = "true";
       };
 
-      # role mapping + web OIDC config via yaml settings
+      # role mapping, radicale proxy routes, web OIDC config via yaml settings
       settings = {
         proxy = {
           oidc.rewrite_well_known = true;
-          role_assignment = {
-            driver = "oidc";
-            oidc_role_mapper = {
-              role_claim = "groups";
-              role_mapping = [
-                {
-                  role_name = "admin";
-                  claim_value = "admin";
-                }
-                {
-                  role_name = "spaceadmin";
-                  claim_value = "user";
-                }
-                {
-                  role_name = "user";
-                  claim_value = "user";
-                }
+          # default driver assigns 'user' role to all new users
+          # oidc driver can't work because mobile/desktop apps don't request 'groups' scope
+          # see: https://github.com/opencloud-eu/opencloud/issues/1592
+          role_assignment.driver = "default";
+          # proxy caldav/carddav to radicale for calendar+contacts
+          additional_policies = [
+            {
+              name = "default";
+              routes = [
+                (radicaleRoute "/caldav/" "/caldav")
+                (radicaleRoute "/.well-known/caldav" "/caldav")
+                (radicaleRoute "/carddav/" "/carddav")
+                (radicaleRoute "/.well-known/carddav" "/carddav")
               ];
-            };
-          };
+            }
+          ];
         };
         web.web.config.oidc = {
           authority = oidcIssuerUrl;
           client_id = "web";
-          scope = "openid profile email groups";
+          scope = "openid profile email groups offline_access";
         };
       };
     };
-
-    # CSP config — default opencloud CSP + external OIDC origins in connect-src
-    environment.etc."opencloud/csp.yaml".source = settingsFormat.generate "csp.yaml" cspConfig;
 
     # allow opencloud to write to dataDir (ProtectSystem=strict blocks it otherwise)
     # add inotify-tools to PATH for posix driver filesystem watching
@@ -264,6 +223,11 @@ in
         directory = "/var/lib/opencloud";
         user = "opencloud";
         group = "opencloud";
+      }
+      {
+        directory = "/var/lib/radicale";
+        user = "radicale";
+        group = "radicale";
       }
     ];
 
@@ -297,8 +261,25 @@ in
       };
     };
 
+    # radicale — caldav/carddav server, auth via X-Remote-User from opencloud proxy
+    services.radicale = {
+      enable = true;
+      settings = {
+        server = {
+          hosts = [ "127.0.0.1:5232" ];
+        };
+        auth = {
+          type = "http_x_remote_user";
+        };
+        storage = {
+          filesystem_folder = "/var/lib/radicale/collections";
+        };
+      };
+    };
+
     # backup service state — dataDir on /tank is already covered by ZFS snapshots + borgbackup
-    clan.core.state.opencloud.folders = [
+    clan.core.state.radicale.folders = [
+      "/var/lib/radicale"
       "/var/lib/opencloud"
     ];
   };
