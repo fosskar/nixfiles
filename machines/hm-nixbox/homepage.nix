@@ -283,10 +283,10 @@
       {
         "Documents" = [
           {
-            "Nextcloud" = {
+            "OpenCloud" = {
               href = "https://cloud.osscar.me";
-              icon = "nextcloud.svg";
-              siteMonitor = "http://127.0.0.1:8009/status.php";
+              icon = "https://cloud.osscar.me/themes/opencloud/assets/favicon.svg";
+              siteMonitor = "http://127.0.0.1:9200";
             };
           }
           {
@@ -294,13 +294,6 @@
               href = "https://docs.osscar.me";
               icon = "paperless.png";
               siteMonitor = "http://127.0.0.1:28981";
-            };
-          }
-          {
-            "Filebrowser" = {
-              href = "https://files.osscar.me";
-              icon = "filebrowser.svg";
-              siteMonitor = "http://127.0.0.1:8081";
             };
           }
           {
