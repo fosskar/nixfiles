@@ -97,7 +97,8 @@ in
       }
     ];
 
-    # nextcloud creates its own nginx vhost at hostName; pin it to localhost
+    # nextcloud creates its own nginx vhost at hostName; pin it to 0.0.0.0:port
+    # so it's reachable by traefik on hzc-pango via netbird
     services.nginx.virtualHosts."localhost".listen = [
       {
         addr = "0.0.0.0";
@@ -105,17 +106,24 @@ in
       }
     ];
 
-    # reverse proxy (matches nixfiles.nginx.vhosts pattern used by all other services)
-    nixfiles.nginx.vhosts.cloud = { inherit port; };
+    nixfiles.nginx.vhosts.cloud = {
+      inherit port;
+      extraConfig = "client_max_body_size 512M;";
+    };
 
     services.nextcloud = {
       enable = true;
-      # TODO: switch to pkgs.nextcloud33 after `nix flake update nixpkgs`
       package = pkgs.nextcloud33;
       datadir = "/tank/apps/nextcloud";
       hostName = "localhost";
       https = false;
       autoUpdateApps.enable = false;
+
+      notify_push = {
+        enable = true;
+        bendDomainToLocalhost = false;
+        nextcloudUrl = "https://${serviceDomain}";
+      };
 
       # socket auth — no dbpassFile
       database.createLocally = true;
@@ -130,6 +138,7 @@ in
           user_oidc
           calendar
           contacts
+          groupfolders
           ;
         news = pkgs.fetchNextcloudApp {
           appName = "news";
@@ -142,12 +151,30 @@ in
       extraAppsEnable = true;
 
       phpExtraExtensions = all: [ all.smbclient ];
-      phpOptions."opcache.interned_strings_buffer" = "16";
+      phpOptions = {
+        "opcache.interned_strings_buffer" = "16";
+        "opcache.jit" = "1255";
+        "opcache.jit_buffer_size" = "8M";
+        "opcache.revalidate_freq" = "60";
+      };
+
+      # limit php-fpm for 2-user home setup (default max_children=120 is way too high)
+      poolSettings = {
+        pm = "dynamic";
+        "pm.max_children" = "8";
+        "pm.start_servers" = "2";
+        "pm.min_spare_servers" = "1";
+        "pm.max_spare_servers" = "4";
+        "pm.max_requests" = "500";
+      };
 
       settings = {
         overwriteprotocol = "https";
         "overwrite.cli.url" = "https://${serviceDomain}";
-        trusted_proxies = [ "127.0.0.1" ];
+        trusted_proxies = [
+          "127.0.0.1"
+          "192.168.10.80" # hm-nixbox own IP — needed because external nginx proxies to nextcloud's localhost:8009
+        ];
         trusted_domains = [
           "127.0.0.1"
           serviceDomain
@@ -180,6 +207,10 @@ in
         };
       };
     };
+
+    # notify_push daemon talks directly to nextcloud, bypassing external nginx
+    systemd.services.nextcloud-notify_push.environment.NEXTCLOUD_URL =
+      lib.mkForce "http://localhost:${toString port}";
 
     # bootstrap oidc provider in nextcloud DB via occ
     # user_oidc:provider is idempotent (creates or updates)
