@@ -55,12 +55,11 @@ home server at `192.168.10.80` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 
 ### infrastructure
 
-| service    | port   | domain       | notes                           |
-| ---------- | ------ | ------------ | ------------------------------- |
-| nginx      | 80/443 | \*.osscar.me | reverse proxy, acme certs       |
-| postgresql | 5432   | -            | database backend                |
-| samba      | 445    | -            | smb3 encrypted, per-user shares |
-| avahi      | -      | -            | mdns/bonjour for mac/ios        |
+| service    | port   | domain       | notes                     |
+| ---------- | ------ | ------------ | ------------------------- |
+| nginx      | 80/443 | \*.osscar.me | reverse proxy, acme certs |
+| postgresql | 5432   | -            | database backend          |
+| avahi      | -      | -            | mdns/bonjour for mac/ios  |
 
 **storage:**
 
