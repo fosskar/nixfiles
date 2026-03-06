@@ -11,6 +11,8 @@ let
   serviceDomain = "docs.${acmeDomain}";
 in
 {
+  imports = [ ./samba.nix ];
+
   options.nixfiles.paperless = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -133,7 +135,8 @@ in
     # nginx reverse proxy
     nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
 
-    users.users.paperless.extraGroups = [ "shared" ];
+    # paperless needs to traverse nextcloud data dir to reach groupfolder consume dir
+    users.users.paperless.extraGroups = [ "nextcloud" ];
 
     services.paperless = {
       enable = true;
@@ -143,7 +146,8 @@ in
 
       # storage locations (dataDir defaults to /var/lib/paperless - on SSD)
       mediaDir = "/tank/apps/paperless/media";
-      consumptionDir = "/tank/shares/shared/documents/consume";
+      consumptionDir = "/tank/apps/nextcloud/data/__groupfolders/1/files/documents/consume";
+      consumptionDirIsPublic = true;
 
       # local postgresql
       database.createLocally = true;
