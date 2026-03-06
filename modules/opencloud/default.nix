@@ -192,7 +192,7 @@ in
     services.opencloud = {
       enable = true;
       url = "https://${serviceDomain}";
-      address = "127.0.0.1";
+      address = "0.0.0.0";
       inherit port;
 
       environment = {
