@@ -8,7 +8,7 @@
     ../../modules/arr-stack
     ../../modules/borgbackup
     ../../modules/nginx
-    ../../modules/nextcloud
+    ../../modules/opencloud
     ../../modules/lldap
     ../../modules/authelia
     ../../modules/immich
@@ -31,6 +31,9 @@
       "radicle.nix"
     ];
   });
+
+  # HP printer scan-to-network-folder via samba → paperless
+  nixfiles.paperless.samba.enable = true;
 
   ## INFO: this i needed when i want to remove a conflicting user or group. userborn never deleted removes user or groups.
   #services.userborn.enable = lib.mkForce false;
