@@ -162,6 +162,10 @@ in
           };
         };
 
+        garage = {
+          roles.default.machines."hm-nixbox" = { };
+        };
+
         #mycelium = {
         #  roles.peer.tags.all = { };
         #};
@@ -170,40 +174,42 @@ in
           roles.default.tags.all = { };
         };
 
-        # disabled: dm-dns exports lack "peer" key, crashes clan networking
-        # fallback resolution (KeyError('peer') in networks_from_flake).
-        # TODO: re-enable after clan-core fix
-        #data-mesher = {
-        #  module = {
-        #    name = "data-mesher";
-        #    input = "clan-core";
-        #  };
-        #  roles.default = {
-        #    tags.all = { };
-        #    settings = {
-        #      interfaces = [
-        #        "ygg"
-        #        "wireguard"
-        #      ];
-        #    };
-        #  };
-        #  roles.bootstrap.machines = {
-        #    hm-nixbox = { };
-        #    hzc-pango = { };
-        #  };
-        #};
+        tor = {
+          roles.server.tags.nixos = { };
+        };
 
-        #dm-dns = {
-        #  module = {
-        #    name = "dm-dns";
-        #    input = "clan-core";
-        #  };
-        #  roles.default.tags.all = { };
-        #  roles.push.machines = {
-        #    hm-nixbox = { };
-        #    hzc-pango = { };
-        #  };
-        #};
+        data-mesher = {
+          module = {
+            name = "data-mesher";
+            input = "clan-core";
+          };
+          roles.default = {
+            tags.all = { };
+            settings = {
+              interfaces = [
+                "ygg"
+                "wireguard"
+                "wt0"
+              ];
+            };
+          };
+          roles.bootstrap.machines = {
+            hm-nixbox = { };
+            hzc-pango = { };
+          };
+        };
+
+        dm-dns = {
+          module = {
+            name = "dm-dns";
+            input = "clan-core";
+          };
+          roles.default.tags.all = { };
+          roles.push.machines = {
+            hm-nixbox = { };
+            hzc-pango = { };
+          };
+        };
 
         netbird = {
           module.input = "self";
