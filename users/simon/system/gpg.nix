@@ -60,7 +60,7 @@ in
   services.gpg-agent = {
     enable = true;
     enableSshSupport = true;
-    pinentry.package = pkgs.pinentry-curses;
+    pinentry.package = pkgs.pinentry-gnome3;
     # https://github.com/drduh/config/blob/main/gpg-agent.conf
     enableExtraSocket = true;
     defaultCacheTtl = 86400; # 24 hours
