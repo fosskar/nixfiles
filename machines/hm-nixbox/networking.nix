@@ -21,13 +21,9 @@
     firewall.allowedTCPPorts = [
       80
       443
-      5930
     ];
 
   };
-
-  # disable resolved mdns (avahi handles it for samba/apple discovery)
-  services.resolved.settings.Resolve.MulticastDNS = "no";
 
   # disable WoL on all ethernet interfaces
   systemd.network.links."10-disable-wol" = {

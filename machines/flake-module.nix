@@ -189,7 +189,6 @@ in
               interfaces = [
                 "ygg"
                 "wireguard"
-                "wt0"
               ];
             };
           };
