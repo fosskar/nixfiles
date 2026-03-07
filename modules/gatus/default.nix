@@ -48,6 +48,9 @@ let
         conditions
         ;
       enabled = true;
+      alerts = [
+        { type = "ntfy"; }
+      ];
     }
     // lib.optionalAttrs (ep.group != "") { inherit (ep) group; }
   ) cfg.endpoints;
@@ -74,12 +77,24 @@ in
 
     services.gatus = {
       enable = true;
-      environmentFile = null;
+      environmentFile = config.clan.core.vars.generators.ntfy.files."token-env".path;
       settings = {
         web.port = port;
         storage = {
           type = "sqlite";
           path = "/var/lib/gatus/gatus.db";
+        };
+        alerting.ntfy = {
+          topic = "gatus";
+          url = "http://127.0.0.1:8091";
+          token = "$NTFY_TOKEN";
+          priority = 4;
+          default-alert = {
+            enabled = true;
+            failure-threshold = 2;
+            success-threshold = 2;
+            send-on-resolved = true;
+          };
         };
         endpoints = gatusEndpoints;
       };

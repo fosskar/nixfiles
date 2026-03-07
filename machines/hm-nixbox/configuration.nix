@@ -21,11 +21,11 @@
     ../../modules/power
     ../../modules/persistence
     ../../modules/hd-idle
-    ../../modules/notify
     ../../modules/virtualization
     ../../modules/vert
     ../../modules/homepage
     ../../modules/gatus
+    ../../modules/ntfy
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
@@ -88,9 +88,6 @@
 
     virtualization.docker.enable = true;
 
-    notify.gotify.applications = {
-      grafana = "grafana alerts";
-    };
   };
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)

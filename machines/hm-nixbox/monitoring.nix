@@ -2,10 +2,6 @@
   config,
   ...
 }:
-let
-  gotifyPort = config.nixfiles.notify.gotify.port;
-  gotifyTokenFile = config.nixfiles.notify.gotify.tokenFile.grafana;
-in
 {
   imports = [
     ../../modules/monitoring
@@ -16,19 +12,24 @@ in
 
   services.beszel.agent.environmentFile = config.sops.secrets."beszel.env".path;
 
-  # grafana alerting -> gotify
+  # grafana alerting -> ntfy
+  systemd.services.grafana.serviceConfig.EnvironmentFile =
+    config.clan.core.vars.generators.ntfy.files."token-env".path;
+
   services.grafana.provision.alerting.contactPoints.settings = {
     apiVersion = 1;
     contactPoints = [
       {
         orgId = 1;
-        name = "gotify";
+        name = "ntfy";
         receivers = [
           {
-            uid = "gotify";
+            uid = "ntfy";
             type = "webhook";
             settings = {
-              url = "http://127.0.0.1:${toString gotifyPort}/message?token=$__file{${gotifyTokenFile}}";
+              url = "http://127.0.0.1:8091/grafana";
+              httpMethod = "POST";
+              authorization_header = "Bearer $__env{NTFY_TOKEN}";
             };
           }
         ];
