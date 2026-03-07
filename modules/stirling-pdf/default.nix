@@ -9,6 +9,8 @@ let
   port = 8180;
 in
 {
+  # --- options ---
+
   options.nixfiles.stirling-pdf = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -18,6 +20,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # --- service ---
+
     services.stirling-pdf = {
       enable = true;
       package = pkgs.custom.stirling-pdf;
@@ -29,6 +33,12 @@ in
         STIRLING_LOCK_CONNECTION = "1";
       };
     };
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.pdf.port = port;
+
+    # --- systemd ---
 
     # FIXME: workaround for nixpkgs noto-fonts-subset build failure (broken glob
     # for variable font filenames). remove unoconv/libreoffice from service path
@@ -48,7 +58,5 @@ in
       pkgs.gnugrep
       pkgs.gnused
     ];
-
-    nixfiles.nginx.vhosts.pdf.port = port;
   };
 }

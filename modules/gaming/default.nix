@@ -2,6 +2,8 @@
 {
   imports = mylib.scanPaths ./. { };
 
+  # --- options ---
+
   options.nixfiles.gaming = {
     enable = lib.mkOption {
       type = lib.types.bool;

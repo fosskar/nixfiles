@@ -3,6 +3,8 @@ let
   cfg = config.nixfiles.tailscale;
 in
 {
+  # --- options ---
+
   options.nixfiles.tailscale = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -17,13 +19,16 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # --- service ---
+
     services.tailscale = {
       enable = true;
       openFirewall = true;
     };
     networking.firewall.trustedInterfaces = lib.mkIf cfg.trustInterface [ "tailscale0" ];
 
-    # persist tailscale state
+    # --- persistence ---
+
     nixfiles.persistence.directories = [
       "/var/cache/tailscale"
       "/var/lib/tailscale"

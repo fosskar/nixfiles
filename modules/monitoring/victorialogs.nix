@@ -7,6 +7,8 @@ let
   cfg = config.nixfiles.monitoring.victorialogs;
 in
 {
+  # --- options ---
+
   options.nixfiles.monitoring.victorialogs = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -16,6 +18,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # --- service ---
+
     services.victorialogs = {
       enable = true;
       listenAddress = "127.0.0.1:9428";

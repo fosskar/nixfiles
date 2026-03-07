@@ -8,7 +8,7 @@ let
   cfg = config.nixfiles.authelia;
   acmeDomain = config.nixfiles.acme.domain;
   serviceDomain = "auth.${acmeDomain}";
-  listenPort = 9091;
+  port = 9091;
 
   secretsPermission = {
     secret = true;
@@ -17,6 +17,8 @@ let
   };
 in
 {
+  # --- options ---
+
   options.nixfiles.authelia = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -33,6 +35,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # --- secrets ---
+
     # storage encryption key - separate generator, must never regenerate
     clan.core.vars.generators.authelia-storage-encryption-key = {
       files."storage-encryption-key" = secretsPermission;
@@ -79,20 +83,7 @@ in
       '';
     };
 
-    # sqlite backup for borgbackup
-    clan.core.state.authelia = {
-      folders = [ "/var/backup/authelia" ];
-      preBackupScript = ''
-        export PATH=${
-          lib.makeBinPath [
-            pkgs.sqlite
-            pkgs.coreutils
-          ]
-        }
-        mkdir -p /var/backup/authelia
-        sqlite3 /var/lib/authelia-main/db.sqlite3 ".backup '/var/backup/authelia/db.sqlite3'"
-      '';
-    };
+    # --- service ---
 
     services.authelia.instances.main = {
       enable = true;
@@ -132,7 +123,7 @@ in
           skew = 1;
         };
 
-        server.address = "tcp://0.0.0.0:${toString listenPort}";
+        server.address = "tcp://0.0.0.0:${toString port}";
 
         authentication_backend.ldap = {
           implementation = "lldap";
@@ -196,7 +187,24 @@ in
       };
     };
 
-    # nginx reverse proxy (always create for local domain)
-    nixfiles.nginx.vhosts.auth.port = listenPort;
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.auth.port = port;
+
+    # --- backup ---
+
+    clan.core.state.authelia = {
+      folders = [ "/var/backup/authelia" ];
+      preBackupScript = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/authelia
+        sqlite3 /var/lib/authelia-main/db.sqlite3 ".backup '/var/backup/authelia/db.sqlite3'"
+      '';
+    };
   };
 }

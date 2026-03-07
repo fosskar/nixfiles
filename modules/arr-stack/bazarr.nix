@@ -10,6 +10,8 @@ let
 in
 {
   config = lib.mkIf cfg.bazarr.enable {
+    # --- service ---
+
     services.bazarr = {
       enable = true;
       openFirewall = false;
@@ -19,10 +21,14 @@ in
 
     systemd.services.bazarr.serviceConfig.UMask = "0027";
 
+    # --- nginx ---
+
     nixfiles.nginx.vhosts.bazarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };
+
+    # --- backup ---
 
     clan.core.state.bazarr = {
       folders = [ "/var/backup/bazarr" ];

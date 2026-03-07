@@ -76,6 +76,8 @@ let
   });
 in
 {
+  # --- options ---
+
   options.nixfiles.immich = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -85,7 +87,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # generate immich secrets
+    # --- secrets ---
+
     clan.core.vars.generators.immich = {
       files = {
         "oauth-client-secret-hash" = {
@@ -121,8 +124,8 @@ in
       '';
     };
 
-    # register oidc client with authelia
-    # client_secret hash generated with: authelia crypto hash generate pbkdf2 --password <secret>
+    # --- oidc ---
+
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
         client_id = "immich";
@@ -150,27 +153,7 @@ in
       }
     ];
 
-    # postgresql backup/restore integration
-    clan.core.postgresql.enable = true;
-    clan.core.postgresql.databases.immich = {
-      create.enable = false; # immich module creates it
-      restore.stopOnRestore = [
-        "immich-server.service"
-        "immich-machine-learning.service"
-        "redis-immich.service"
-      ];
-    };
-
-    # nginx reverse proxy
-    nixfiles.nginx.vhosts.immich = {
-      inherit (config.services.immich) port;
-      extraConfig = ''
-        client_max_body_size 50000M;
-        proxy_read_timeout   600s;
-        proxy_send_timeout   600s;
-        send_timeout         600s;
-      '';
-    };
+    # --- service ---
 
     services.immich = {
       enable = true;
@@ -246,6 +229,32 @@ in
       "render"
       "video"
     ];
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.immich = {
+      inherit (config.services.immich) port;
+      extraConfig = ''
+        client_max_body_size 50000M;
+        proxy_read_timeout   600s;
+        proxy_send_timeout   600s;
+        send_timeout         600s;
+      '';
+    };
+
+    # --- backup ---
+
+    clan.core.postgresql.enable = true;
+    clan.core.postgresql.databases.immich = {
+      create.enable = false; # immich module creates it
+      restore.stopOnRestore = [
+        "immich-server.service"
+        "immich-machine-learning.service"
+        "redis-immich.service"
+      ];
+    };
+
+    # --- systemd ---
 
     systemd = {
       services = {

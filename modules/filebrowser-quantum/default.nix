@@ -24,6 +24,8 @@ let
   );
 in
 {
+  # --- options ---
+
   options.nixfiles.filebrowser-quantum = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -75,17 +77,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # boltdb backup for borgbackup (filebrowser-quantum uses storm/boltdb, not sqlite)
-    clan.core.state.filebrowser-quantum = {
-      folders = [ "/var/backup/filebrowser-quantum" ];
-      preBackupScript = ''
-        export PATH=${lib.makeBinPath [ pkgs.coreutils ]}
-        mkdir -p /var/backup/filebrowser-quantum
-        cp /var/lib/filebrowser-quantum/database.db /var/backup/filebrowser-quantum/database.db
-      '';
-    };
+    # --- secrets ---
 
-    # generate filebrowser-quantum secrets
     clan.core.vars.generators.filebrowser-quantum = {
       files = {
         "oauth-client-secret-hash" = {
@@ -119,8 +112,8 @@ in
       '';
     };
 
-    # register oidc client with authelia
-    # clan vars get hm-nixbox filebrowser-quantum/oauth-client-secret-hash
+    # --- oidc ---
+
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
         client_id = "filebrowser-quantum";
@@ -146,10 +139,49 @@ in
       }
     ];
 
-    # nginx reverse proxy
+    # --- service ---
+
+    # default settings with OIDC
+    nixfiles.filebrowser-quantum.settings = {
+      auth.methods.oidc = {
+        enabled = true;
+        clientId = "filebrowser-quantum";
+        issuerUrl = "https://auth.${publicDomain}";
+        scopes = "openid profile email groups";
+        userIdentifier = "preferred_username";
+        createUser = true;
+        logoutRedirectUrl = "https://auth.${publicDomain}/logout";
+      };
+      server.sources = cfg.sources;
+      userDefaults.darkMode = true;
+    };
+
+    users.users.filebrowser-quantum = {
+      group = "filebrowser-quantum";
+      isSystemUser = true;
+      inherit (cfg) extraGroups;
+    };
+
+    users.groups.filebrowser-quantum = { };
+
+    # --- nginx ---
+
     nixfiles.nginx.vhosts.files.port = cfg.port;
 
-    # systemd service
+    # --- backup ---
+
+    # boltdb backup for borgbackup (filebrowser-quantum uses storm/boltdb, not sqlite)
+    clan.core.state.filebrowser-quantum = {
+      folders = [ "/var/backup/filebrowser-quantum" ];
+      preBackupScript = ''
+        export PATH=${lib.makeBinPath [ pkgs.coreutils ]}
+        mkdir -p /var/backup/filebrowser-quantum
+        cp /var/lib/filebrowser-quantum/database.db /var/backup/filebrowser-quantum/database.db
+      '';
+    };
+
+    # --- systemd ---
+
     systemd.services.filebrowser-quantum = {
       description = "filebrowser-quantum web file manager";
       after = [
@@ -204,29 +236,6 @@ in
       preStart = ''
         ln -sf ${configFile} /var/lib/filebrowser-quantum/config.yaml
       '';
-    };
-
-    users.users.filebrowser-quantum = {
-      group = "filebrowser-quantum";
-      isSystemUser = true;
-      inherit (cfg) extraGroups;
-    };
-
-    users.groups.filebrowser-quantum = { };
-
-    # default settings with OIDC
-    nixfiles.filebrowser-quantum.settings = {
-      auth.methods.oidc = {
-        enabled = true;
-        clientId = "filebrowser-quantum";
-        issuerUrl = "https://auth.${publicDomain}";
-        scopes = "openid profile email groups";
-        userIdentifier = "preferred_username";
-        createUser = true;
-        logoutRedirectUrl = "https://auth.${publicDomain}/logout";
-      };
-      server.sources = cfg.sources;
-      userDefaults.darkMode = true;
     };
   };
 }

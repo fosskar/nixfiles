@@ -7,6 +7,8 @@ let
   cfg = config.nixfiles.monitoring.exporter;
 in
 {
+  # --- options ---
+
   options.nixfiles.monitoring.exporter = {
     enable = lib.mkEnableOption "prometheus exporters";
 
@@ -49,20 +51,20 @@ in
     };
   };
 
+  # --- service ---
+
   config = lib.mkIf cfg.enable {
     services.prometheus.exporters = {
-      # node exporter - system metrics (includes systemd collector)
       node = lib.mkIf cfg.enableNodeExporter {
         enable = true;
         port = 9100;
         openFirewall = false;
         enabledCollectors = [
-          "systemd" # systemd service metrics
+          "systemd"
           "processes"
         ];
       };
 
-      # nginx exporter
       nginx = lib.mkIf cfg.enableNginxExporter {
         enable = true;
         port = 9113;
@@ -70,7 +72,6 @@ in
         scrapeUri = "http://127.0.0.1:80/nginx_status";
       };
 
-      # postgres exporter
       postgres = lib.mkIf cfg.enablePostgresExporter {
         enable = true;
         port = 9187;
@@ -78,15 +79,13 @@ in
         runAsLocalSuperUser = true;
       };
 
-      # restic exporter
       restic = lib.mkIf cfg.enableResticExporter {
         enable = true;
         port = 9753;
         openFirewall = false;
-        refreshInterval = 3600; # 1 hour - restic operations are expensive
+        refreshInterval = 3600;
       };
 
-      # nut exporter
       nut = lib.mkIf cfg.enableNutExporter {
         enable = true;
         port = 9199;
@@ -95,7 +94,6 @@ in
         inherit (cfg) nutServer;
       };
 
-      # zfs exporter
       zfs = lib.mkIf cfg.enableZfsExporter {
         enable = true;
         port = 9134;

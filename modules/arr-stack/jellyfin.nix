@@ -10,6 +10,8 @@ let
 in
 {
   config = lib.mkIf cfg.jellyfin.enable {
+    # --- service ---
+
     services.jellyfin = {
       enable = true;
       openFirewall = false;
@@ -25,20 +27,20 @@ in
       "video"
     ];
 
-    systemd.services.jellyfin.environment = lib.mkIf (cfg.jellyfin.hwAccel.type == "qsv") {
-      LIBVA_DRIVER_NAME = "iHD";
-    };
-
     environment.systemPackages = with pkgs; [
       jellyfin
       jellyfin-web
       jellyfin-ffmpeg
     ];
 
+    # --- nginx ---
+
     # no proxy-auth - jellyfin has built-in auth
     nixfiles.nginx.vhosts.jellyfin = {
       inherit port;
     };
+
+    # --- backup ---
 
     clan.core.state.jellyfin = {
       folders = [ "/var/backup/jellyfin" ];
@@ -52,6 +54,12 @@ in
         mkdir -p /var/backup/jellyfin
         sqlite3 /var/lib/jellyfin/data/jellyfin.db ".backup '/var/backup/jellyfin/jellyfin.db'"
       '';
+    };
+
+    # --- systemd ---
+
+    systemd.services.jellyfin.environment = lib.mkIf (cfg.jellyfin.hwAccel.type == "qsv") {
+      LIBVA_DRIVER_NAME = "iHD";
     };
   };
 }

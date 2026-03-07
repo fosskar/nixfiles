@@ -18,6 +18,8 @@ let
   stateDir = "/var/lib/netbird-proxy";
 in
 {
+  # --- options ---
+
   options.services.netbird.server.proxy = {
     enable = lib.mkEnableOption "netbird reverse proxy";
 
@@ -96,7 +98,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # proxy service
+    # --- systemd ---
+
     systemd.services.netbird-proxy = {
       description = "netbird reverse proxy";
       documentation = [ "https://docs.netbird.io/manage/reverse-proxy" ];
@@ -200,7 +203,8 @@ in
       '';
     };
 
-    # nginx — serve dashboard static files on internal port
+    # --- nginx ---
+
     services.nginx = lib.mkIf dashboardCfg.enable {
       enable = true;
       defaultHTTPListenPort = cfg.dashboardPort;
@@ -317,7 +321,8 @@ in
       };
     };
 
-    # persist state
+    # --- persistence ---
+
     nixfiles.persistence.directories = [
       "/var/lib/netbird-server"
       "/var/lib/netbird-proxy"

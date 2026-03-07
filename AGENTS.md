@@ -218,6 +218,44 @@ nixfiles.power.tuned.enable = true;
 nixfiles.power.logind.enable = true;
 ```
 
+## module formatting convention
+
+all modules follow a consistent internal structure with lightweight section comments.
+
+### let preamble order
+
+```nix
+let
+  cfg = config.nixfiles.<name>;
+  acmeDomain = config.nixfiles.acme.domain;        # if web service
+  inherit (config.nixfiles.authelia) publicDomain;  # if uses oidc
+  serviceDomain = "<sub>.${acmeDomain}";            # if web service
+  port = <number>;                                  # if defines a port
+  # module-specific bindings...
+in
+```
+
+### section order (only include sections that exist)
+
+```nix
+{
+  # --- options ---
+  options.nixfiles.<name> = { ... };
+
+  config = lib.mkIf cfg.enable {
+    # --- secrets ---        # clan.core.vars.generators
+    # --- oidc ---           # authelia client registration
+    # --- service ---        # main service config, users/groups
+    # --- nginx ---          # nixfiles.nginx.vhosts or manual vhost
+    # --- backup ---         # clan.core.state, clan.core.postgresql
+    # --- persistence ---    # nixfiles.persistence.directories
+    # --- systemd ---        # systemd overrides, tmpfiles, extra packages
+  };
+}
+```
+
+for non-web modules (hardware, desktop, infra), use `# --- options ---`, `# --- config ---`, or `# --- service ---` as appropriate. skip section comments in tiny files (<15 lines of config).
+
 ## persistence
 
 all machines use preservation (opt-in state). root filesystem is ephemeral, only explicitly persisted paths survive reboot. see `docs/preservation.md` for details.

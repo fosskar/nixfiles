@@ -7,6 +7,8 @@ let
   cfg = config.nixfiles.acme;
 in
 {
+  # --- options ---
+
   options.nixfiles.acme = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -28,6 +30,8 @@ in
   };
 
   config = lib.mkMerge [
+    # --- service ---
+
     (lib.mkIf cfg.enable {
       security.acme = {
         acceptTerms = true;
@@ -55,7 +59,8 @@ in
       };
     })
 
-    # cloudflare dns provider config
+    # --- secrets ---
+
     (lib.mkIf (cfg.enable && cfg.dnsProvider == "cloudflare") {
       clan.core.vars.generators.prompt_acme_api_key = {
         prompts."acme_api_key" = {

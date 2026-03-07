@@ -11,6 +11,8 @@ let
   serviceDomain = "vault.${acmeDomain}";
 in
 {
+  # --- options ---
+
   options.nixfiles.vaultwarden = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -20,7 +22,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # generate vaultwarden secrets
+    # --- secrets ---
+
     clan.core.vars.generators.vaultwarden = {
       files = {
         "oauth-client-secret-hash" = {
@@ -54,8 +57,8 @@ in
       '';
     };
 
-    # register oidc client with authelia
-    # clan vars get hm-nixbox vaultwarden/oauth-client-secret-hash
+    # --- oidc ---
+
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
         client_id = "vaultwarden";
@@ -85,15 +88,7 @@ in
       }
     ];
 
-    # nginx reverse proxy
-    nixfiles.nginx.vhosts.vault.port = config.services.vaultwarden.config.ROCKET_PORT;
-
-    # postgresql backup/restore integration
-    clan.core.postgresql.enable = lib.mkForce true;
-    clan.core.postgresql.databases.vaultwarden = {
-      create.enable = false; # vaultwarden module creates it
-      restore.stopOnRestore = [ "vaultwarden.service" ];
-    };
+    # --- service ---
 
     services.vaultwarden = {
       enable = true;
@@ -121,6 +116,18 @@ in
         # access token (1h default), breaking sessions
         SSO_AUTH_ONLY_NOT_SESSION = true;
       };
+    };
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.vault.port = config.services.vaultwarden.config.ROCKET_PORT;
+
+    # --- backup ---
+
+    clan.core.postgresql.enable = lib.mkForce true;
+    clan.core.postgresql.databases.vaultwarden = {
+      create.enable = false; # vaultwarden module creates it
+      restore.stopOnRestore = [ "vaultwarden.service" ];
     };
   };
 }

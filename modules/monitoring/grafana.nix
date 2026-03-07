@@ -11,6 +11,8 @@ let
   serviceDomain = "grafana.${acmeDomain}";
 in
 {
+  # --- options ---
+
   options.nixfiles.monitoring.grafana = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -26,17 +28,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # provision dashboards via /etc
-    environment.etc = lib.mkIf (cfg.dashboardsDir != null) (
-      builtins.listToAttrs (
-        map (file: {
-          name = "grafana-dashboards/${file}";
-          value.source = "${cfg.dashboardsDir}/${file}";
-        }) (builtins.attrNames (builtins.readDir cfg.dashboardsDir))
-      )
-    );
+    # --- secrets ---
 
-    # generate grafana oauth secret
     clan.core.vars.generators.grafana = {
       files."oauth-client-secret-hash" = {
         owner = "authelia-main";
@@ -65,11 +58,12 @@ in
       '';
     };
 
+    # --- oidc ---
+
     # claims policy to include groups in id_token for role mapping
     services.authelia.instances.main.settings.identity_providers.oidc.claims_policies.grafana_groups.id_token =
       [ "groups" ];
 
-    # register oidc client with authelia
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
         client_id = "grafana";
@@ -98,8 +92,17 @@ in
       }
     ];
 
-    # nginx reverse proxy
-    nixfiles.nginx.vhosts.grafana.port = config.services.grafana.settings.server.http_port;
+    # --- service ---
+
+    # provision dashboards via /etc
+    environment.etc = lib.mkIf (cfg.dashboardsDir != null) (
+      builtins.listToAttrs (
+        map (file: {
+          name = "grafana-dashboards/${file}";
+          value.source = "${cfg.dashboardsDir}/${file}";
+        }) (builtins.attrNames (builtins.readDir cfg.dashboardsDir))
+      )
+    );
 
     services.grafana = {
       enable = true;
@@ -185,5 +188,9 @@ in
         };
       };
     };
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.grafana.port = config.services.grafana.settings.server.http_port;
   };
 }

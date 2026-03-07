@@ -50,8 +50,8 @@ in
           browseable = "yes";
           "read only" = "no";
           "guest ok" = "no";
-          "force user" = "nextcloud";
-          "force group" = "nextcloud";
+          "force user" = "opencloud";
+          "force group" = "opencloud";
           "create mask" = "0666";
           "directory mask" = "0777";
           comment = "printer scan to paperless";

@@ -8,6 +8,8 @@ let
   cfg = config.nixfiles.virtualization;
 in
 {
+  # --- options ---
+
   options.nixfiles.virtualization = {
     docker = {
       enable = lib.mkEnableOption "docker container runtime";
@@ -26,6 +28,8 @@ in
       enable = lib.mkEnableOption "libvirt/qemu virtualization";
     };
   };
+
+  # --- service ---
 
   config = lib.mkMerge [
     (lib.mkIf cfg.docker.enable {

@@ -7,6 +7,8 @@ let
   cfg = config.nixfiles.monitoring.victoriametrics;
 in
 {
+  # --- options ---
+
   options.nixfiles.monitoring.victoriametrics = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -28,8 +30,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # nginx reverse proxy
-    nixfiles.nginx.vhosts.vm.port = 8428;
+    # --- service ---
 
     services.victoriametrics = {
       enable = true;
@@ -97,5 +98,9 @@ in
         isDefault = true;
       }
     ];
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.vm.port = 8428;
   };
 }

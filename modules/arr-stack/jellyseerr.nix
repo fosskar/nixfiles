@@ -9,6 +9,8 @@ let
 in
 {
   config = lib.mkIf cfg.jellyseerr.enable {
+    # --- service ---
+
     services.jellyseerr = {
       enable = true;
       inherit port;
@@ -16,6 +18,8 @@ in
     };
 
     systemd.services.jellyseerr.serviceConfig.UMask = "0027";
+
+    # --- nginx ---
 
     # no proxy-auth - jellyseerr has built-in auth
     nixfiles.nginx.vhosts.jellyseerr = {

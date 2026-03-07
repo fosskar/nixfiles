@@ -28,6 +28,8 @@ let
   );
 in
 {
+  # --- boot ---
+
   boot = {
     kernelPackages = lib.mkIf (lib.meta.availableOn pkgs.stdenv.hostPlatform pkgs.zfs) latestKernelPackage;
 
@@ -53,6 +55,8 @@ in
     };
   };
 
+  # --- service ---
+
   services.zfs = lib.mkIf config.boot.zfs.enabled {
     autoScrub = {
       enable = lib.mkDefault true;
@@ -68,6 +72,7 @@ in
       monthly = 3;
     };
   };
+
   environment.systemPackages = [
     pkgs.zfs-prune-snapshots
   ];

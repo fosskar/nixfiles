@@ -10,6 +10,8 @@ let
 in
 {
   config = lib.mkIf cfg.sonarr.enable {
+    # --- service ---
+
     services.sonarr = {
       enable = true;
       openFirewall = false;
@@ -17,10 +19,14 @@ in
       settings.server.port = port;
     };
 
+    # --- nginx ---
+
     nixfiles.nginx.vhosts.sonarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };
+
+    # --- backup ---
 
     clan.core.state.sonarr = {
       folders = [ "/var/backup/sonarr" ];

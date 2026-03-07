@@ -10,6 +10,8 @@ in
 {
   imports = mylib.scanPaths ./. { };
 
+  # --- options ---
+
   options.nixfiles.arr-stack = {
     mediaRoot = lib.mkOption {
       type = lib.types.str;
@@ -93,6 +95,8 @@ in
   };
 
   config = {
+    # --- service ---
+
     # media group for shared access
     users.groups.media = { };
 
@@ -107,6 +111,8 @@ in
       "d ${cfg.mediaRoot}/downloads/incomplete 0775 root media -"
       "d ${cfg.mediaRoot}/downloads/complete 0775 root media -"
     ];
+
+    # --- oidc ---
 
     # authelia access control rules for arr services
     services.authelia.instances.main.settings.access_control.rules = lib.mkIf cfg.authelia.enable [

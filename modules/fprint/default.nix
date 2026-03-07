@@ -8,6 +8,8 @@ let
   cfg = config.nixfiles.fprint;
 in
 {
+  # --- options ---
+
   options.nixfiles.fprint = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -26,10 +28,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.fprintd.enable = true;
+    # --- service ---
 
-    # persist enrolled fingerprints
-    nixfiles.persistence.directories = [ "/var/lib/fprint" ];
+    services.fprintd.enable = true;
 
     # fprint AFTER password (order 13000 > unix at 12900)
     # flow: yubikey → password → fprint
@@ -41,5 +42,9 @@ in
         modulePath = "${pkgs.fprintd}/lib/security/pam_fprintd.so";
       };
     });
+
+    # --- persistence ---
+
+    nixfiles.persistence.directories = [ "/var/lib/fprint" ];
   };
 }

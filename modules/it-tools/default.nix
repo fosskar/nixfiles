@@ -8,6 +8,8 @@ let
   cfg = config.nixfiles.it-tools;
 in
 {
+  # --- options ---
+
   options.nixfiles.it-tools = {
     port = lib.mkOption {
       type = lib.types.port;
@@ -17,6 +19,8 @@ in
   };
 
   config = {
+    # --- service ---
+
     systemd.services.it-tools = {
       description = "it-tools static web server";
       wantedBy = [ "multi-user.target" ];
@@ -27,6 +31,8 @@ in
         Restart = "on-failure";
       };
     };
+
+    # --- nginx ---
 
     nixfiles.nginx.vhosts.tools.port = cfg.port;
   };

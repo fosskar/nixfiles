@@ -13,6 +13,8 @@ in
 {
   imports = [ ./samba.nix ];
 
+  # --- options ---
+
   options.nixfiles.paperless = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -22,7 +24,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # generate paperless secrets
+    # --- secrets ---
+
     clan.core.vars.generators.paperless = {
       files = {
         "admin-password" = {
@@ -80,8 +83,8 @@ in
       '';
     };
 
-    # register oidc client with authelia
-    # clan vars get hm-nixbox paperless/oauth-client-secret-hash
+    # --- oidc ---
+
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
         client_id = "paperless";
@@ -110,33 +113,10 @@ in
       }
     ];
 
-    # postgresql backup/restore integration
-    clan.core.postgresql.enable = true;
-    clan.core.postgresql.databases.paperless = {
-      create.enable = false; # paperless module creates it
-      restore.stopOnRestore = [
-        "paperless-consumer.service"
-        "paperless-scheduler.service"
-        "paperless-task-queue.service"
-        "paperless-web.service"
-        "redis-paperless.service"
-      ];
-    };
-
-    # persist dataDir (on SSD, avoids waking HDDs)
-    nixfiles.persistence.directories = [
-      {
-        directory = config.services.paperless.dataDir;
-        user = "paperless";
-        group = "paperless";
-      }
-    ];
-
-    # nginx reverse proxy
-    nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
+    # --- service ---
 
     # paperless needs to traverse nextcloud data dir to reach groupfolder consume dir
-    users.users.paperless.extraGroups = [ "nextcloud" ];
+    users.users.paperless.extraGroups = [ "opencloud" ];
 
     services.paperless = {
       enable = true;
@@ -146,7 +126,9 @@ in
 
       # storage locations (dataDir defaults to /var/lib/paperless - on SSD)
       mediaDir = "/tank/apps/paperless/media";
-      consumptionDir = "/tank/apps/nextcloud/data/__groupfolders/1/files/documents/consume";
+      #consumptionDir = "/tank/apps/nextcloud/data/__groupfolders/1/files/documents/consume";
+      consumptionDir = "/tank/apps/opencloud/data/projects/f9beb848-8a0b-4be6-ad43-fdce26636a4b";
+      #consumptionDir = "/tank/apps/paperless/consume";
       consumptionDirIsPublic = true;
 
       # local postgresql
@@ -170,10 +152,15 @@ in
 
         PAPERLESS_CONSUMER_RECURSIVE = true;
         PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = true;
+        PAPERLESS_CONSUMER_DELETE_DUPLICATES = true;
 
         PAPERLESS_CONSUMER_IGNORE_PATTERN = [
           ".DS_STORE/*"
           "desktop.ini"
+          ".space/**"
+          ".oc-nodes/**"
+          ".oc-tmp/**"
+          ".Trash/**"
         ];
         PAPERLESS_OCR_USER_ARGS = {
           language = "deu+eng";
@@ -189,5 +176,33 @@ in
         PAPERLESS_REDIRECT_LOGIN_TO_SSO = false;
       };
     };
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
+
+    # --- backup ---
+
+    clan.core.postgresql.enable = true;
+    clan.core.postgresql.databases.paperless = {
+      create.enable = false; # paperless module creates it
+      restore.stopOnRestore = [
+        "paperless-consumer.service"
+        "paperless-scheduler.service"
+        "paperless-task-queue.service"
+        "paperless-web.service"
+        "redis-paperless.service"
+      ];
+    };
+
+    # --- persistence ---
+
+    nixfiles.persistence.directories = [
+      {
+        directory = config.services.paperless.dataDir;
+        user = "paperless";
+        group = "paperless";
+      }
+    ];
   };
 }

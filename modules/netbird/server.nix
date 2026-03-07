@@ -14,6 +14,8 @@ let
   configFile = settingsFormat.generate "netbird-server.yaml" cfg.settings;
 in
 {
+  # --- options ---
+
   options.services.netbird.server = {
     enable = lib.mkEnableOption "netbird server";
 
@@ -76,6 +78,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # --- service ---
+
     services.netbird.server.settings = {
       server = {
         listenAddress = lib.mkDefault ":8081";
@@ -115,6 +119,23 @@ in
         store.encryptionKey = "$ENCRYPTION_KEY";
       };
     };
+
+    users.users.netbird = {
+      isSystemUser = true;
+      group = "netbird";
+    };
+    users.groups.netbird = { };
+
+    networking.firewall = lib.mkIf cfg.openFirewall {
+      allowedTCPPorts = [
+        80
+        443
+      ];
+      # STUN
+      allowedUDPPorts = [ 3478 ];
+    };
+
+    # --- systemd ---
 
     systemd.services.netbird-server = {
       description = "netbird server (management + signal + relay)";
@@ -168,21 +189,6 @@ in
       };
 
       stopIfChanged = false;
-    };
-
-    users.users.netbird = {
-      isSystemUser = true;
-      group = "netbird";
-    };
-    users.groups.netbird = { };
-
-    networking.firewall = lib.mkIf cfg.openFirewall {
-      allowedTCPPorts = [
-        80
-        443
-      ];
-      # STUN
-      allowedUDPPorts = [ 3478 ];
     };
   };
 }

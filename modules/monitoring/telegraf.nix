@@ -106,6 +106,8 @@ let
   };
 in
 {
+  # --- options ---
+
   options.nixfiles.monitoring.telegraf = {
     enable = lib.mkEnableOption "telegraf monitoring agent";
 
@@ -134,11 +136,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # --- service ---
+
     services = {
       telegraf = {
         enable = true;
-
-        # add required binaries to telegraf's PATH
         package = pkgs.telegraf;
 
         extraConfig = {
@@ -183,6 +185,8 @@ in
         KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
       '';
     };
+
+    # --- systemd ---
 
     systemd.services.telegraf.path = lib.mkMerge [
       (lib.mkIf (builtins.elem "sensors" cfg.plugins) [ pkgs.lm_sensors ])

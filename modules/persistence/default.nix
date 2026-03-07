@@ -76,6 +76,8 @@ in
 {
   imports = [ ./preservation.nix ];
 
+  # --- options ---
+
   options.nixfiles.persistence = {
     enable = lib.mkEnableOption "persistence with rollback support";
 
@@ -165,6 +167,8 @@ in
       description = "shell commands for disko postMountHook to pre-create persistent dirs during fresh install";
     };
   };
+
+  # --- config ---
 
   config = lib.mkIf cfg.enable {
     # assertions for required rollback options

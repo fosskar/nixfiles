@@ -10,16 +10,22 @@ let
 in
 {
   config = lib.mkIf cfg.prowlarr.enable {
+    # --- service ---
+
     services.prowlarr = {
       enable = true;
       openFirewall = false;
       settings.server.port = port;
     };
 
+    # --- nginx ---
+
     nixfiles.nginx.vhosts.prowlarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };
+
+    # --- backup ---
 
     clan.core.state.prowlarr = {
       folders = [ "/var/backup/prowlarr" ];

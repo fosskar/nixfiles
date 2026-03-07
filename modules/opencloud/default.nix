@@ -9,9 +9,9 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "cloud.${acmeDomain}";
+  port = 9200;
   oidcDomain = if publicDomain != null then publicDomain else acmeDomain;
   oidcIssuerUrl = "https://auth.${oidcDomain}";
-  port = 9200;
 
   # all opencloud clients need to be registered in the IDP
   # client IDs are hardcoded in the apps — see docs
@@ -69,6 +69,8 @@ let
   };
 in
 {
+  # --- options ---
+
   options.nixfiles.opencloud = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -84,7 +86,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # admin password for initial setup
+    # --- secrets ---
+
     clan.core.vars.generators.opencloud = {
       files."admin-password" = { };
       runtimeInputs = [ pkgs.pwgen ];
@@ -92,6 +95,8 @@ in
         pwgen -s 32 1 | tr -d '\n' > "$out/admin-password"
       '';
     };
+
+    # --- oidc ---
 
     # authelia oidc cors — opencloud web does cross-origin calls to auth.<domain>
     services.authelia.instances.main.settings.identity_providers.oidc.cors = {
@@ -151,6 +156,8 @@ in
       )
     ];
 
+    # --- service ---
+
     services.opencloud = {
       enable = true;
       url = "https://${serviceDomain}";
@@ -180,6 +187,7 @@ in
         # posix driver — inotify watches for external changes (samba/paperless)
         STORAGE_USERS_POSIX_ROOT = cfg.dataDir;
         STORAGE_USERS_POSIX_WATCH_FS = "true";
+        STORAGE_USERS_POSIX_USE_SPACE_GROUPS = "true";
       };
 
       # role mapping, radicale proxy routes, web OIDC config via yaml settings
@@ -211,36 +219,19 @@ in
       };
     };
 
-    # allow opencloud to write to dataDir (ProtectSystem=strict blocks it otherwise)
-    # add inotify-tools to PATH for posix driver filesystem watching
-    systemd.services.opencloud.serviceConfig.ReadWritePaths = [ cfg.dataDir ];
-    systemd.services.opencloud.path = [ pkgs.inotify-tools ];
-
-    # persist service state on ephemeral root (metadata, IDM, nats, search index, config)
-    # dataDir on /tank doesn't need persistence — ZFS pool survives reboots
-    nixfiles.persistence.directories = [
-      {
-        directory = "/var/lib/opencloud";
-        user = "opencloud";
-        group = "opencloud";
-      }
-      {
-        directory = "/var/lib/radicale";
-        user = "radicale";
-        group = "radicale";
-      }
-    ];
-
-    # ensure data dir exists with correct ownership
-    systemd.tmpfiles.settings."10-opencloud-data" = {
-      ${cfg.dataDir}.d = {
-        user = "opencloud";
-        group = "opencloud";
-        mode = "0750";
+    # radicale — caldav/carddav server, auth via X-Remote-User from opencloud proxy
+    services.radicale = {
+      enable = true;
+      settings = {
+        server.hosts = [ "127.0.0.1:5232" ];
+        auth.type = "http_x_remote_user";
+        storage.filesystem_folder = "/var/lib/radicale/collections";
       };
     };
 
-    # nginx reverse proxy — opencloud needs buffering off for SSE + long timeouts
+    # --- nginx ---
+
+    # opencloud needs buffering off for SSE + long timeouts
     services.nginx.virtualHosts."${serviceDomain}" = {
       useACMEHost = acmeDomain;
       forceSSL = true;
@@ -261,26 +252,72 @@ in
       };
     };
 
-    # radicale — caldav/carddav server, auth via X-Remote-User from opencloud proxy
-    services.radicale = {
-      enable = true;
-      settings = {
-        server = {
-          hosts = [ "127.0.0.1:5232" ];
-        };
-        auth = {
-          type = "http_x_remote_user";
-        };
-        storage = {
-          filesystem_folder = "/var/lib/radicale/collections";
-        };
-      };
-    };
+    # --- backup ---
 
-    # backup service state — dataDir on /tank is already covered by ZFS snapshots + borgbackup
     clan.core.state.radicale.folders = [
       "/var/lib/radicale"
       "/var/lib/opencloud"
     ];
+
+    # --- persistence ---
+
+    nixfiles.persistence.directories = [
+      {
+        directory = "/var/lib/opencloud";
+        user = "opencloud";
+        group = "opencloud";
+      }
+      {
+        directory = "/var/lib/radicale";
+        user = "radicale";
+        group = "radicale";
+      }
+    ];
+
+    # --- systemd ---
+
+    # allow opencloud to write to dataDir (ProtectSystem=strict blocks it otherwise)
+    # add inotify-tools to PATH for posix driver filesystem watching
+    systemd.services.opencloud.serviceConfig.ReadWritePaths = [ cfg.dataDir ];
+    systemd.services.opencloud.path = [ pkgs.inotify-tools ];
+
+    # ensure data dir exists with correct ownership
+    systemd.tmpfiles.settings."10-opencloud-data" = {
+      ${cfg.dataDir}.d = {
+        user = "opencloud";
+        group = "opencloud";
+        mode = "0750";
+      };
+    };
+
+    # opencloud hardcodes 0600 on uploaded files — fix group permissions so other
+    # services (paperless, samba) in the opencloud group can read/write them
+    systemd.services.opencloud-permission-fixer = {
+      description = "fix opencloud file permissions for group access";
+      after = [ "opencloud.service" ];
+      requires = [ "opencloud.service" ];
+      wantedBy = [ "multi-user.target" ];
+      path = [
+        pkgs.inotify-tools
+        pkgs.coreutils
+        pkgs.findutils
+      ];
+      serviceConfig = {
+        Type = "simple";
+        User = "opencloud";
+        Group = "opencloud";
+        Restart = "always";
+        RestartSec = 5;
+        ExecStart = pkgs.writeShellScript "opencloud-permission-fixer" ''
+          ${pkgs.inotify-tools}/bin/inotifywait -m -r -e create,moved_to --format '%w%f' "${cfg.dataDir}" | while read -r path; do
+            if [ -f "$path" ]; then
+              chmod g+rw "$path"
+            elif [ -d "$path" ]; then
+              chmod g+rwx "$path"
+            fi
+          done
+        '';
+      };
+    };
   };
 }

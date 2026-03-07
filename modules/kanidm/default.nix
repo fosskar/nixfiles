@@ -11,6 +11,8 @@ let
   acmeCertDir = config.security.acme.certs.${acmeDomain}.directory;
 in
 {
+  # --- options ---
+
   options.nixfiles.kanidm = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -20,7 +22,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # generate kanidm admin passwords via clan vars
+    # --- secrets ---
+
     clan.core.vars.generators.kanidm = {
       files."admin-password" = {
         secret = true;
@@ -39,6 +42,8 @@ in
         pwgen -s 32 1 | tr -d '\n' > "$out/idm-admin-password"
       '';
     };
+
+    # --- service ---
 
     services.kanidm = {
       enableServer = true;
@@ -62,14 +67,9 @@ in
       };
     };
 
-    # kanidm needs acme cert access
-    systemd.services.kanidm = {
-      after = [ "acme-${acmeDomain}.service" ];
-      wants = [ "acme-${acmeDomain}.service" ];
-      serviceConfig.SupplementaryGroups = [ config.security.acme.certs.${acmeDomain}.group ];
-    };
+    # --- nginx ---
 
-    # nginx reverse proxy (https backend requires manual config)
+    # https backend requires manual vhost config (can't use nixfiles.nginx.vhosts)
     services.nginx.virtualHosts.${serviceDomain} = {
       useACMEHost = acmeDomain;
       forceSSL = true;
@@ -78,6 +78,15 @@ in
         recommendedProxySettings = true;
         proxyWebsockets = true;
       };
+    };
+
+    # --- systemd ---
+
+    # kanidm needs acme cert access
+    systemd.services.kanidm = {
+      after = [ "acme-${acmeDomain}.service" ];
+      wants = [ "acme-${acmeDomain}.service" ];
+      serviceConfig.SupplementaryGroups = [ config.security.acme.certs.${acmeDomain}.group ];
     };
   };
 }

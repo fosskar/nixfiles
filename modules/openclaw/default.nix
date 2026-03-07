@@ -156,28 +156,7 @@ let
   );
 in
 {
-  # cli tools for manual use, rest goes to service path
-  environment.systemPackages = [
-    pkgs.llm-agents.openclaw
-    pkgs.llm-agents.agent-browser
-
-    pkgs.claude-code
-    pkgs.signal-cli
-    pkgs.whisper-cpp # STT - must be in system PATH for openclaw to find
-  ];
-
-  nixfiles.nginx.vhosts.openclaw.port = 18789;
-
-  users.users.openclaw = {
-    isSystemUser = true;
-    group = "openclaw";
-    extraGroups = [ "shared" ];
-    home = "/var/lib/openclaw";
-    createHome = true;
-    shell = pkgs.bashInteractive;
-  };
-
-  users.groups.openclaw = { };
+  # --- secrets ---
 
   clan.core.vars.generators.openclaw = {
     prompts.brave-api-key = {
@@ -207,6 +186,19 @@ in
     '';
   };
 
+  # --- service ---
+
+  users.users.openclaw = {
+    isSystemUser = true;
+    group = "openclaw";
+    extraGroups = [ "shared" ];
+    home = "/var/lib/openclaw";
+    createHome = true;
+    shell = pkgs.bashInteractive;
+  };
+
+  users.groups.openclaw = { };
+
   environment.sessionVariables = {
     CLAWDBOT_CONFIG_PATH = "${configFile}";
     CLAWDBOT_STATE_DIR = stateDir;
@@ -214,6 +206,21 @@ in
     OPENCLAW_CONFIG_PATH = "${configFile}";
     OPENCLAW_STATE_DIR = stateDir;
   };
+
+  environment.systemPackages = [
+    pkgs.llm-agents.openclaw
+    pkgs.llm-agents.agent-browser
+
+    pkgs.claude-code
+    pkgs.signal-cli
+    pkgs.whisper-cpp # STT - must be in system PATH for openclaw to find
+  ];
+
+  # --- nginx ---
+
+  nixfiles.nginx.vhosts.openclaw.port = 18789;
+
+  # --- systemd ---
 
   systemd.services.openclaw = {
     description = "openclaw AI gateway";

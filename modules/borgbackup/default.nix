@@ -17,6 +17,8 @@ let
   backupFolders = if cfg.useSnapshots then snapshot.transformFolders cfg.folders else cfg.folders;
 in
 {
+  # --- options ---
+
   options.nixfiles.borgbackup = {
     enable = lib.mkEnableOption "borgbackup state configuration for clan";
 
@@ -41,6 +43,8 @@ in
       description = "filesystem type for snapshots (must match the filesystem of your backup folders)";
     };
   };
+
+  # --- service ---
 
   config = lib.mkIf cfg.enable {
     clan.core.state.backup = {

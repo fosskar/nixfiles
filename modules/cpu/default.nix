@@ -2,12 +2,7 @@
 {
   imports = mylib.scanPaths ./. { };
 
-  config = {
-    hardware.enableRedistributableFirmware = lib.mkDefault true;
-
-    # delegate cgroups for better resource management (gamemode, ananicy, etc.)
-    systemd.services."user@".serviceConfig.Delegate = "cpu cpuset io memory pids";
-  };
+  # --- options ---
 
   options.nixfiles.cpu = {
     amd = {
@@ -35,5 +30,14 @@
         description = "enable Intel CPU optimizations";
       };
     };
+  };
+
+  # --- config ---
+
+  config = {
+    hardware.enableRedistributableFirmware = lib.mkDefault true;
+
+    # delegate cgroups for better resource management (gamemode, ananicy, etc.)
+    systemd.services."user@".serviceConfig.Delegate = "cpu cpuset io memory pids";
   };
 }

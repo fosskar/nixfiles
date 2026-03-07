@@ -10,6 +10,8 @@ let
 in
 {
   config = lib.mkIf cfg.radarr.enable {
+    # --- service ---
+
     services.radarr = {
       enable = true;
       openFirewall = false;
@@ -17,10 +19,14 @@ in
       settings.server.port = port;
     };
 
+    # --- nginx ---
+
     nixfiles.nginx.vhosts.radarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };
+
+    # --- backup ---
 
     clan.core.state.radarr = {
       folders = [ "/var/backup/radarr" ];

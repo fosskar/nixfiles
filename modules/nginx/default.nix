@@ -52,11 +52,15 @@ let
   '';
 in
 {
+  # --- options ---
+
   options.nixfiles.nginx.vhosts = lib.mkOption {
     type = lib.types.attrsOf vhostModule;
     default = { };
     description = "simplified vhost definitions";
   };
+
+  # --- service ---
 
   config = lib.mkIf (cfg.vhosts != { }) {
     services.nginx = {

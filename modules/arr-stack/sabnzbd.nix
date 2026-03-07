@@ -10,6 +10,8 @@ let
 in
 {
   config = lib.mkIf cfg.sabnzbd.enable {
+    # --- service ---
+
     services.sabnzbd = {
       enable = true;
       openFirewall = false;
@@ -42,10 +44,14 @@ in
       };
     };
 
+    # --- nginx ---
+
     nixfiles.nginx.vhosts.sabnzbd = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };
+
+    # --- backup ---
 
     clan.core.state.sabnzbd = {
       folders = [ "/var/backup/sabnzbd" ];

@@ -9,11 +9,13 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "cloud.${acmeDomain}";
+  port = 8009;
   oidcDomain = if publicDomain != null then publicDomain else acmeDomain;
   oidcIssuerUrl = "https://auth.${oidcDomain}";
-  port = 8009;
 in
 {
+  # --- options ---
+
   options.nixfiles.nextcloud = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -23,7 +25,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # secrets
+    # --- secrets ---
+
     clan.core.vars.generators.nextcloud = {
       files = {
         "admin-password" = {
@@ -57,21 +60,8 @@ in
       '';
     };
 
-    # postgresql backup/restore
-    clan.core.postgresql.enable = true;
-    clan.core.postgresql.databases.nextcloud = {
-      create.enable = false;
-      restore.stopOnRestore = [
-        "nextcloud-cron.service"
-        "nextcloud-oidc-bootstrap.service"
-        "phpfpm-nextcloud.service"
-      ];
-    };
+    # --- oidc ---
 
-    # backup nextcloud datadir (db backed up separately via clan postgresql)
-    clan.core.state.nextcloud.folders = [ "/tank/apps/nextcloud" ];
-
-    # authelia oidc client
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
         client_id = "nextcloud";
@@ -97,6 +87,8 @@ in
       }
     ];
 
+    # --- service ---
+
     # nextcloud creates its own nginx vhost at hostName; pin it to 0.0.0.0:port
     # so it's reachable by traefik on hzc-pango via netbird
     services.nginx.virtualHosts."localhost".listen = [
@@ -105,11 +97,6 @@ in
         inherit port;
       }
     ];
-
-    nixfiles.nginx.vhosts.cloud = {
-      inherit port;
-      extraConfig = "client_max_body_size 512M;";
-    };
 
     services.nextcloud = {
       enable = true;
@@ -207,6 +194,29 @@ in
         };
       };
     };
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.cloud = {
+      inherit port;
+      extraConfig = "client_max_body_size 512M;";
+    };
+
+    # --- backup ---
+
+    clan.core.postgresql.enable = true;
+    clan.core.postgresql.databases.nextcloud = {
+      create.enable = false;
+      restore.stopOnRestore = [
+        "nextcloud-cron.service"
+        "nextcloud-oidc-bootstrap.service"
+        "phpfpm-nextcloud.service"
+      ];
+    };
+
+    clan.core.state.nextcloud.folders = [ "/tank/apps/nextcloud" ];
+
+    # --- systemd ---
 
     # notify_push daemon talks directly to nextcloud, bypassing external nginx
     systemd.services.nextcloud-notify_push.environment.NEXTCLOUD_URL =

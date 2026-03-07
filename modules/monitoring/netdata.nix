@@ -8,17 +8,17 @@ let
   cfg = config.nixfiles.monitoring.netdata;
 in
 {
+  # --- options ---
+
   options.nixfiles.monitoring.netdata = {
     enable = lib.mkEnableOption "netdata real-time monitoring";
   };
 
   config = lib.mkIf cfg.enable {
-    # nginx reverse proxy -> netdata.<acmeDomain>
-    nixfiles.nginx.vhosts.netdata.port = 19999;
+    # --- service ---
 
     services.netdata = {
       enable = true;
-      # modern web UI is proprietary
       package = pkgs.netdata.override { withCloudUi = true; };
       config = {
         global = {
@@ -33,5 +33,9 @@ in
         };
       };
     };
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.netdata.port = 19999;
   };
 }

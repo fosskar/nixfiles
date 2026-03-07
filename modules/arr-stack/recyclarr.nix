@@ -9,6 +9,8 @@ let
 in
 {
   config = lib.mkIf cfg.recyclarr.enable {
+    # --- service ---
+
     services.recyclarr = {
       enable = true;
       schedule = "weekly";
@@ -37,6 +39,8 @@ in
         };
       };
     };
+
+    # --- systemd ---
 
     systemd.services.recyclarr = {
       serviceConfig.EnvironmentFile = config.sops.secrets."arr-stack.env".path;

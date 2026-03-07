@@ -9,6 +9,8 @@ let
   geoipDir = "/var/lib/GeoIP";
 in
 {
+  # --- options ---
+
   options.services.pangolin = {
     # local-only mode (no gerbil/wireguard tunnels)
     localOnly = lib.mkEnableOption "local-only mode (disables gerbil tunnel service)";
@@ -53,9 +55,11 @@ in
   };
 
   config = {
+    # --- secrets ---
 
-    # maxmind geoipupdate service (optional)
     sops.secrets."geoip-license-key" = lib.mkIf cfg.maxmindGeoip { };
+
+    # --- service ---
 
     services.geoipupdate = lib.mkIf cfg.maxmindGeoip {
       enable = true;
@@ -67,16 +71,6 @@ in
         DatabaseDirectory = geoipDir;
       };
     };
-
-    # persist pangolin data
-    nixfiles.persistence.directories = [
-      {
-        directory = "/var/lib/pangolin";
-        user = config.systemd.services.pangolin.serviceConfig.User;
-        group = config.systemd.services.pangolin.serviceConfig.Group;
-      }
-    ]
-    ++ lib.optional cfg.maxmindGeoip geoipDir;
 
     services.pangolin = {
       enable = lib.mkDefault true;
@@ -100,9 +94,7 @@ in
       };
     };
 
-    # traefik config
     services.traefik = {
-      # defaults
       staticConfigOptions = {
         log.level = lib.mkDefault "WARN";
         api = {
@@ -185,6 +177,19 @@ in
         })
       ];
     };
+
+    # --- persistence ---
+
+    nixfiles.persistence.directories = [
+      {
+        directory = "/var/lib/pangolin";
+        user = config.systemd.services.pangolin.serviceConfig.User;
+        group = config.systemd.services.pangolin.serviceConfig.Group;
+      }
+    ]
+    ++ lib.optional cfg.maxmindGeoip geoipDir;
+
+    # --- systemd ---
 
     # ensure access log directory exists when geoblock is enabled
     systemd.tmpfiles.rules = lib.mkIf cfg.geoblock.enable [

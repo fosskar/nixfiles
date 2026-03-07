@@ -7,6 +7,8 @@ let
   cfg = config.nixfiles.vert;
 in
 {
+  # --- options ---
+
   options.nixfiles.vert = {
     port = lib.mkOption {
       type = lib.types.port;
@@ -29,6 +31,8 @@ in
   };
 
   config = {
+    # --- service ---
+
     virtualisation.oci-containers.containers.vert = {
       image = "ghcr.io/vert-sh/vert:latest";
       ports = [ "127.0.0.1:${toString cfg.port}:80" ];
@@ -46,6 +50,8 @@ in
         "--device=/dev/dri/renderD128"
       ];
     };
+
+    # --- nginx ---
 
     nixfiles.nginx.vhosts.converter.port = cfg.port;
     nixfiles.nginx.vhosts.vertd = lib.mkIf cfg.vertd.enable { inherit (cfg.vertd) port; };

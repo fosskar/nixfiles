@@ -108,6 +108,8 @@ let
   '';
 in
 {
+  # --- options ---
+
   options.nixfiles.notify = {
     excludeServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -142,6 +144,8 @@ in
   };
 
   config = {
+    # --- secrets ---
+
     clan.core.vars.generators.gotify = {
       prompts.password.description = "gotify admin password";
       prompts.password.type = "hidden";
@@ -156,6 +160,8 @@ in
       '';
     };
 
+    # --- service ---
+
     services.gotify = {
       enable = true;
       environment = {
@@ -164,6 +170,8 @@ in
       };
       environmentFiles = [ config.clan.core.vars.generators.gotify.files.env.path ];
     };
+
+    # --- systemd ---
 
     # bootstrap: create gotify apps and save tokens
     systemd.services.gotify-bootstrap = {

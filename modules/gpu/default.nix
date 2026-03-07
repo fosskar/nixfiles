@@ -8,21 +8,7 @@
 {
   imports = mylib.scanPaths ./. { };
 
-  config = {
-    hardware.graphics = {
-      enable = lib.mkDefault true;
-      enable32Bit = lib.mkDefault true;
-    };
-
-    environment.systemPackages = with pkgs; [
-      clinfo # opencl info
-      vulkan-tools # vulkaninfo, vkcube
-      mesa-demos # glxinfo, glxgears
-      libva-utils # vainfo for video acceleration
-    ];
-
-    users.groups.video.members = config.users.groups.wheel.members;
-  };
+  # --- options ---
 
   options.nixfiles.gpu = {
     amd = {
@@ -58,5 +44,23 @@
         description = "enable Intel GPU support";
       };
     };
+  };
+
+  # --- config ---
+
+  config = {
+    hardware.graphics = {
+      enable = lib.mkDefault true;
+      enable32Bit = lib.mkDefault true;
+    };
+
+    environment.systemPackages = with pkgs; [
+      clinfo # opencl info
+      vulkan-tools # vulkaninfo, vkcube
+      mesa-demos # glxinfo, glxgears
+      libva-utils # vainfo for video acceleration
+    ];
+
+    users.groups.video.members = config.users.groups.wheel.members;
   };
 }

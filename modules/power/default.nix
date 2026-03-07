@@ -6,6 +6,8 @@
 {
   imports = mylib.scanPaths ./. { };
 
+  # --- options ---
+
   options.nixfiles.power = {
     upower.enable = lib.mkOption {
       type = lib.types.bool;

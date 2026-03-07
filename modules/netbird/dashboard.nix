@@ -11,6 +11,8 @@ let
 in
 
 {
+  # --- options ---
+
   options.services.netbird.server.dashboard = {
     enable = lib.mkEnableOption "the static netbird dashboard frontend";
 
@@ -53,6 +55,8 @@ in
       '';
     };
   };
+
+  # --- service ---
 
   config = lib.mkIf cfg.enable {
     assertions = [

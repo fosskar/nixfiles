@@ -8,6 +8,8 @@ let
   cfg = config.nixfiles.monitoring.beszel;
 in
 {
+  # --- options ---
+
   options.nixfiles.monitoring.beszel = {
     hub.enable = lib.mkEnableOption "beszel monitoring hub";
 
@@ -43,18 +45,22 @@ in
   };
 
   config = lib.mkMerge [
-    # hub config
-    (lib.mkIf cfg.hub.enable {
-      nixfiles.nginx.vhosts.beszel.port = config.services.beszel.hub.port;
+    # --- service (hub) ---
 
+    (lib.mkIf cfg.hub.enable {
       services.beszel.hub = {
         enable = true;
         host = "127.0.0.1";
         port = 8090;
       };
+
+      # --- nginx ---
+
+      nixfiles.nginx.vhosts.beszel.port = config.services.beszel.hub.port;
     })
 
-    # agent config
+    # --- service (agent) ---
+
     (lib.mkIf cfg.agent.enable {
       services.beszel.agent = {
         enable = true;
@@ -73,6 +79,8 @@ in
           EXTRA_FILESYSTEMS = cfg.agent.extraFilesystems;
         };
       };
+
+      # --- systemd ---
 
       # hardening overrides for smart/systemd monitoring
       systemd.services.beszel-agent.serviceConfig = {
