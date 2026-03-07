@@ -9,71 +9,10 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "immich.${acmeDomain}";
-
-  onnxruntimeOpenVino =
-    (pkgs.onnxruntime.override {
-      python3Packages = pkgs.python312Packages;
-    }).overrideAttrs
-      (oldAttrs: {
-        buildInputs = (oldAttrs.buildInputs or [ ]) ++ [
-          pkgs.openvino
-        ];
-
-        nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
-          pkgs.patchelf
-        ];
-
-        cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
-          (lib.cmakeBool "onnxruntime_USE_OPENVINO" true)
-          (lib.cmakeFeature "OpenVINO_DIR" "${pkgs.openvino}/runtime/cmake")
-        ];
-
-        # OpenVINO loads some frontends dynamically, so onnxruntime's provider must
-        # retain a runtime path to openvino libs after fixup.
-        postFixup = (oldAttrs.postFixup or "") + ''
-          provider="''${!outputLib}/lib/libonnxruntime_providers_openvino.so"
-          if [ -e "$provider" ]; then
-            patchelf --add-rpath "${pkgs.openvino}/runtime/lib/intel64" "$provider"
-          fi
-        '';
-
-        doCheck = false;
-      });
-
-  python312OpenVino = pkgs.python312.override {
-    packageOverrides = _pyFinal: pyPrev: {
-      onnxruntime =
-        (pyPrev.onnxruntime.override {
-          onnxruntime = onnxruntimeOpenVino;
-        }).overrideAttrs
-          (oldAttrs: {
-            buildInputs = (oldAttrs.buildInputs or [ ]) ++ [
-              pkgs.openvino
-            ];
-          });
-    };
-  };
-
-  immichMachineLearningOpenVino =
-    (pkgs.immich-machine-learning.override {
-      python3 = python312OpenVino;
-    }).overrideAttrs
-      (_oldAttrs: {
-        doCheck = false;
-      });
-
-  immichOpenVino = pkgs.immich.override {
-    immich-machine-learning = immichMachineLearningOpenVino;
-  };
-
-  immichOpenVinoPatched = immichOpenVino.overrideAttrs (oldAttrs: {
-    passthru = oldAttrs.passthru // {
-      machine-learning = oldAttrs.passthru.machine-learning.overrideAttrs (_: {
-        doCheck = false;
-        doInstallCheck = false;
-      });
-    };
-  });
+  bindAddress = "0.0.0.0";
+  port = 2283;
+  internalUrl = "http://127.0.0.1:${toString port}";
+  immichPackage = import ./openvino.nix { inherit lib pkgs; };
 in
 {
   # --- options ---
@@ -84,6 +23,7 @@ in
       default = true;
       description = "immich photo management";
     };
+
   };
 
   config = lib.mkIf cfg.enable {
@@ -157,9 +97,9 @@ in
 
     services.immich = {
       enable = true;
-      package = immichOpenVinoPatched;
-      host = "0.0.0.0";
-      port = 2283;
+      package = immichPackage;
+      host = bindAddress;
+      inherit port;
       mediaLocation = "/tank/apps/immich";
       secretsFile = config.clan.core.vars.generators.immich.files."db-password.env".path;
 
@@ -230,10 +170,32 @@ in
       "video"
     ];
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Immich";
+        category = "Media";
+        icon = "immich.png";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Immich";
+        url = "https://${serviceDomain}";
+        group = "Media";
+      }
+    ];
+
     # --- nginx ---
 
     nixfiles.nginx.vhosts.immich = {
-      inherit (config.services.immich) port;
+      inherit port;
       extraConfig = ''
         client_max_body_size 50000M;
         proxy_read_timeout   600s;
