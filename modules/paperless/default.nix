@@ -9,6 +9,9 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "docs.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  port = 28981;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   imports = [ ./samba.nix ];
@@ -21,6 +24,7 @@ in
       default = true;
       description = "paperless-ngx document management";
     };
+
   };
 
   config = lib.mkIf cfg.enable {
@@ -120,8 +124,8 @@ in
 
     services.paperless = {
       enable = true;
-      address = "127.0.0.1";
-      port = 28981;
+      address = bindAddress;
+      inherit port;
       domain = serviceDomain;
 
       # storage locations (dataDir defaults to /var/lib/paperless - on SSD)
@@ -177,9 +181,33 @@ in
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Paperless";
+        category = "Documents";
+        icon = "paperless.png";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Paperless";
+        url = "https://${serviceDomain}";
+        group = "Documents";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.docs.port = config.services.paperless.port;
+    nixfiles.nginx.vhosts.docs = {
+      inherit port;
+    };
 
     # --- backup ---
 

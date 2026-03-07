@@ -9,7 +9,9 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "cloud.${acmeDomain}";
+  bindAddress = "0.0.0.0";
   port = 9200;
+  internalUrl = "http://127.0.0.1:${toString port}";
   oidcDomain = if publicDomain != null then publicDomain else acmeDomain;
   oidcIssuerUrl = "https://auth.${oidcDomain}";
 
@@ -161,7 +163,7 @@ in
     services.opencloud = {
       enable = true;
       url = "https://${serviceDomain}";
-      address = "0.0.0.0";
+      address = bindAddress;
       inherit port;
 
       environment = {
@@ -229,6 +231,28 @@ in
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "OpenCloud";
+        category = "Documents";
+        icon = "https://cloud.${acmeDomain}/themes/opencloud/assets/favicon.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "OpenCloud";
+        url = "https://${serviceDomain}";
+        group = "Documents";
+      }
+    ];
+
     # --- nginx ---
 
     # opencloud needs buffering off for SSE + long timeouts
@@ -239,7 +263,7 @@ in
         client_max_body_size 10G;
       '';
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString port}";
+        proxyPass = internalUrl;
         recommendedProxySettings = true;
         proxyWebsockets = true;
         extraConfig = ''

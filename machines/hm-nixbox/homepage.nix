@@ -1,106 +1,60 @@
-{ config, ... }:
-{
-  nixfiles.nginx.vhosts.home.port = config.services.homepage-dashboard.listenPort;
-
-  # services.glances.enable = true; # cpu hog
-
-  services.homepage-dashboard = {
-    enable = true;
-    listenPort = 8082;
-    openFirewall = false;
-
-    # allow access from network (not just localhost)
-    allowedHosts = "home.osscar.me";
-
-    # environment file for secrets (proxmox api tokens, etc.)
-    #environmentFile = config.sops.secrets."homepage.env".path;
-
-    # basic settings
-    settings = {
-      title = "home-lab dashboard";
-      headerStyle = "underlined";
-      useEqualheights = true;
-      hideVersion = true;
-      disableUpdateCheck = true;
-      disableIndexing = true;
-      description = "a description of my  homepage";
-      cardBlur = "xl"; # xs, sm, md, lg, xl, 2xl, 3xl - see https://tailwindcss.com/docs/backdrop-blur
-
-      # show dots instead of response times for ping/siteMonitor
-      statusStyle = "dot";
-
-      layout = [
-        # {
-        #   Glances = {
-        #     header = false;
-        #     style = "row";
-        #     columns = 3;
-        #   };
-        # }
-        {
-          Network = {
-            header = true;
-            columns = 2;
-          };
-        }
-        {
-          Monitoring = {
-            header = true;
-            style = "column";
-          };
-        }
-        {
-          Infrastructure = {
-            header = true;
-          };
-        }
-        {
-          Automation = {
-            header = true;
-          };
-        }
-        {
-          Media = {
-            header = true;
-          };
-        }
-        {
-          Documents = {
-            header = true;
-          };
-        }
-        {
-          "AI / LLM" = {
-            header = true;
-          };
-        }
-        {
-          Security = {
-            header = true;
-          };
-        }
-        {
-          "Arr Stack" = {
-            header = true;
-            columns = 2;
-            initiallyCollapsed = true;
-          };
-        }
-      ];
-    };
-
-    # https://gethomepage.dev/latest/configs/custom-css-js/
-    customJS = "";
-    customCSS = ''
-      #bookmarks {
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding-top: 1rem;
-        margin-top: 1rem;
+_: {
+  nixfiles.homepage = {
+    # layout ordering and column config
+    layout = [
+      {
+        Network = {
+          header = true;
+          columns = 2;
+        };
       }
-    '';
+      {
+        Monitoring = {
+          header = true;
+          style = "column";
+        };
+      }
+      {
+        Infrastructure = {
+          header = true;
+        };
+      }
+      {
+        Automation = {
+          header = true;
+        };
+      }
+      {
+        Media = {
+          header = true;
+        };
+      }
+      {
+        Documents = {
+          header = true;
+        };
+      }
+      {
+        "AI / LLM" = {
+          header = true;
+        };
+      }
+      {
+        Security = {
+          header = true;
+        };
+      }
+      {
+        "Arr Stack" = {
+          header = true;
+          columns = 2;
+          initiallyCollapsed = true;
+        };
+      }
+    ];
 
-    # services to display on dashboard
-    services = [
+    # services on other machines — can't auto-register cross-machine
+    manualServices = [
       {
         "Network" = [
           {
@@ -131,45 +85,6 @@
               siteMonitor = "https://nb.fosskar.eu";
             };
           }
-          # {
-          #   "Pangolin public" = {
-          #     href = "https://pangolin.fosskar.eu";
-          #     icon = "pangolin.png";
-          #     siteMonitor = "https://pangolin.fosskar.eu";
-          #   };
-          # }
-        ];
-      }
-      {
-        "Monitoring" = [
-          {
-            "Beszel" = {
-              href = "https://beszel.osscar.me";
-              icon = "beszel.svg";
-              siteMonitor = "http://127.0.0.1:8090";
-            };
-          }
-          {
-            "Gotify" = {
-              href = "https://gotify.fosskar.eu";
-              icon = "gotify.svg";
-              siteMonitor = "http://127.0.0.1:8070";
-            };
-          }
-          {
-            "VictoriaMetrics" = {
-              href = "https://vm.osscar.me";
-              icon = "victoriametrics.svg";
-              siteMonitor = "https://vm.osscar.me";
-            };
-          }
-          {
-            "Grafana" = {
-              href = "https://grafana.osscar.me";
-              icon = "grafana.svg";
-              siteMonitor = "https://grafana.osscar.me";
-            };
-          }
         ];
       }
       {
@@ -198,70 +113,6 @@
         ];
       }
       {
-        "Media" = [
-          {
-            "Immich" = {
-              href = "https://immich.osscar.me";
-              icon = "immich.png";
-              siteMonitor = "http://127.0.0.1:2283";
-            };
-          }
-          {
-            "Jellyfin" = {
-              href = "https://jellyfin.osscar.me";
-              icon = "jellyfin.png";
-              siteMonitor = "http://127.0.0.1:8096";
-            };
-          }
-          {
-            "Jellyseerr" = {
-              href = "https://jellyseerr.osscar.me";
-              icon = "jellyseerr.svg";
-              siteMonitor = "http://127.0.0.1:5055";
-            };
-          }
-        ];
-      }
-      {
-        "Arr Stack" = [
-          {
-            "Prowlarr" = {
-              href = "https://prowlarr.osscar.me";
-              icon = "prowlarr.svg";
-              siteMonitor = "http://127.0.0.1:9696";
-            };
-          }
-          {
-            "Sonarr" = {
-              href = "https://sonarr.osscar.me";
-              icon = "sonarr.svg";
-              siteMonitor = "http://127.0.0.1:8989";
-            };
-          }
-          {
-            "Radarr" = {
-              href = "https://radarr.osscar.me";
-              icon = "radarr.svg";
-              siteMonitor = "http://127.0.0.1:7878";
-            };
-          }
-          {
-            "Bazarr" = {
-              href = "https://bazarr.osscar.me";
-              icon = "bazarr.svg";
-              siteMonitor = "http://127.0.0.1:6767";
-            };
-          }
-          {
-            "SABnzbd" = {
-              href = "https://sabnzbd.osscar.me";
-              icon = "sabnzbd.svg";
-              siteMonitor = "http://127.0.0.1:8085";
-            };
-          }
-        ];
-      }
-      {
         "AI / LLM" = [
           {
             "Ollama" = {
@@ -281,63 +132,6 @@
         ];
       }
       {
-        "Documents" = [
-          {
-            "OpenCloud" = {
-              href = "https://cloud.osscar.me";
-              icon = "https://cloud.osscar.me/themes/opencloud/assets/favicon.svg";
-              siteMonitor = "http://127.0.0.1:9200";
-            };
-          }
-          {
-            "Paperless" = {
-              href = "https://docs.osscar.me";
-              icon = "paperless.png";
-              siteMonitor = "http://127.0.0.1:28981";
-            };
-          }
-          {
-            "Stirling PDF" = {
-              href = "https://pdf.osscar.me";
-              icon = "stirling-pdf.svg";
-              siteMonitor = "http://127.0.0.1:8180";
-            };
-          }
-          {
-            "Vert" = {
-              href = "https://converter.osscar.me";
-              icon = "mdi-video-switch";
-              siteMonitor = "http://127.0.0.1:8088";
-            };
-          }
-        ];
-      }
-      {
-        Security = [
-          {
-            "Vaultwarden" = {
-              href = "https://vault.osscar.me";
-              icon = "vaultwarden.svg";
-              siteMonitor = "http://127.0.0.1:8222";
-            };
-          }
-          {
-            "Authelia" = {
-              href = "https://auth.fosskar.eu";
-              icon = "authelia.svg";
-              siteMonitor = "http://127.0.0.1:9091";
-            };
-          }
-          {
-            "LLDAP" = {
-              href = "https://ldap.osscar.me";
-              icon = "lldap.png";
-              siteMonitor = "http://127.0.0.1:17170";
-            };
-          }
-        ];
-      }
-      {
         "Automation" = [
           {
             "Home Assistant" = {
@@ -348,76 +142,6 @@
           }
         ];
       }
-      # {
-      #   "Glances" = [
-      #     {
-      #       "Info" = {
-      #         widget = {
-      #           type = "glances";
-      #           url = "http://127.0.0.1:61208";
-      #           metric = "info";
-      #           chart = false;
-      #           version = 4;
-      #         };
-      #       };
-      #     }
-      #     {
-      #       "CPU" = {
-      #         widget = {
-      #           type = "glances";
-      #           url = "http://127.0.0.1:61208";
-      #           metric = "cpu";
-      #           chart = false;
-      #           version = 4;
-      #         };
-      #       };
-      #     }
-      #     {
-      #       "CPU Temp" = {
-      #         widget = {
-      #           type = "glances";
-      #           url = "http://127.0.0.1:61208";
-      #           metric = "sensor:Tctl";
-      #           chart = false;
-      #           version = 4;
-      #         };
-      #       };
-      #     }
-      #     {
-      #       "Memory" = {
-      #         widget = {
-      #           type = "glances";
-      #           url = "http://127.0.0.1:61208";
-      #           metric = "memory";
-      #           chart = false;
-      #           version = 4;
-      #         };
-      #       };
-      #     }
-      #     {
-      #       "Disk /" = {
-      #         widget = {
-      #           type = "glances";
-      #           url = "http://127.0.0.1:61208";
-      #           metric = "fs:/";
-      #           chart = false;
-      #           version = 4;
-      #         };
-      #       };
-      #     }
-      #     {
-      #       "Disk /tank" = {
-      #         widget = {
-      #           type = "glances";
-      #           url = "http://127.0.0.1:61208";
-      #           metric = "fs:/tank";
-      #           chart = false;
-      #           version = 4;
-      #         };
-      #       };
-      #     }
-      #   ];
-      # }
     ];
 
     bookmarks = [
@@ -511,7 +235,6 @@
       }
     ];
 
-    # https://gethomepage.dev/latest/configs/service-widgets/
     widgets = [
       {
         datetime = {
@@ -524,5 +247,13 @@
         };
       }
     ];
+
+    customCSS = ''
+      #bookmarks {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1rem;
+        margin-top: 1rem;
+      }
+    '';
   };
 }

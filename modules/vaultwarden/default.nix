@@ -9,6 +9,9 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "vault.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  port = 8222;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -19,6 +22,7 @@ in
       default = true;
       description = "vaultwarden password manager";
     };
+
   };
 
   config = lib.mkIf cfg.enable {
@@ -98,8 +102,8 @@ in
 
       config = {
         DOMAIN = "https://${serviceDomain}";
-        ROCKET_ADDRESS = "127.0.0.1";
-        ROCKET_PORT = 8222;
+        ROCKET_ADDRESS = bindAddress;
+        ROCKET_PORT = port;
 
         SIGNUPS_ALLOWED = false;
         INVITATIONS_ALLOWED = true;
@@ -118,9 +122,33 @@ in
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Vaultwarden";
+        category = "Security";
+        icon = "vaultwarden.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Vaultwarden";
+        url = "https://${serviceDomain}";
+        group = "Security";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.vault.port = config.services.vaultwarden.config.ROCKET_PORT;
+    nixfiles.nginx.vhosts.vault = {
+      inherit port;
+    };
 
     # --- backup ---
 

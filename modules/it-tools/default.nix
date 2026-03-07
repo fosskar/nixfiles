@@ -6,6 +6,11 @@
 }:
 let
   cfg = config.nixfiles.it-tools;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "tools.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  inherit (cfg) port;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -26,14 +31,38 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       serviceConfig = {
-        ExecStart = "${pkgs.darkhttpd}/bin/darkhttpd ${pkgs.it-tools}/lib --port ${toString cfg.port} --addr 127.0.0.1";
+        ExecStart = "${pkgs.darkhttpd}/bin/darkhttpd ${pkgs.it-tools}/lib --port ${toString port} --addr ${bindAddress}";
         DynamicUser = true;
         Restart = "on-failure";
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "IT Tools";
+        category = "Documents";
+        icon = "it-tools.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "IT Tools";
+        url = "https://${serviceDomain}";
+        group = "Documents";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.tools.port = cfg.port;
+    nixfiles.nginx.vhosts.tools = {
+      inherit port;
+    };
   };
 }

@@ -5,6 +5,11 @@
 }:
 let
   cfg = config.nixfiles.vert;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "converter.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  inherit (cfg) port;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -37,7 +42,7 @@ in
       image = "ghcr.io/vert-sh/vert:latest";
       ports = [ "127.0.0.1:${toString cfg.port}:80" ];
       environment = lib.mkIf cfg.vertd.enable {
-        PUB_VERTD_URL = "https://vertd.${config.nixfiles.acme.domain}";
+        PUB_VERTD_URL = "https://vertd.${acmeDomain}";
       };
     };
 
@@ -51,9 +56,33 @@ in
       ];
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Vert";
+        category = "Documents";
+        icon = "mdi-video-switch";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Vert";
+        url = "https://${serviceDomain}";
+        group = "Documents";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.converter.port = cfg.port;
+    nixfiles.nginx.vhosts.converter = {
+      inherit port;
+    };
     nixfiles.nginx.vhosts.vertd = lib.mkIf cfg.vertd.enable { inherit (cfg.vertd) port; };
   };
 }

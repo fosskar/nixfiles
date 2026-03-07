@@ -9,6 +9,9 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "files.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  inherit (cfg) port;
+  internalUrl = "http://${bindAddress}:${toString port}";
 
   format = pkgs.formats.yaml { };
 
@@ -164,9 +167,33 @@ in
 
     users.groups.filebrowser-quantum = { };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Filebrowser";
+        category = "Documents";
+        icon = "filebrowser.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Filebrowser";
+        url = "https://${serviceDomain}";
+        group = "Documents";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.files.port = cfg.port;
+    nixfiles.nginx.vhosts.files = {
+      inherit port;
+    };
 
     # --- backup ---
 

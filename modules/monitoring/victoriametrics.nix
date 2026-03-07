@@ -5,6 +5,11 @@
 }:
 let
   cfg = config.nixfiles.monitoring.victoriametrics;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "vm.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  port = 8428;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -34,7 +39,7 @@ in
 
     services.victoriametrics = {
       enable = true;
-      listenAddress = "127.0.0.1:8428";
+      listenAddress = "${bindAddress}:${toString port}";
       inherit (cfg) retentionPeriod;
 
       extraOptions = [
@@ -99,8 +104,32 @@ in
       }
     ];
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "VictoriaMetrics";
+        category = "Monitoring";
+        icon = "victoriametrics.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "VictoriaMetrics";
+        url = "https://${serviceDomain}";
+        group = "Monitoring";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.vm.port = 8428;
+    nixfiles.nginx.vhosts.vm = {
+      inherit port;
+    };
   };
 }

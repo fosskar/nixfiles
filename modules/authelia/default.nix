@@ -8,7 +8,9 @@ let
   cfg = config.nixfiles.authelia;
   acmeDomain = config.nixfiles.acme.domain;
   serviceDomain = "auth.${acmeDomain}";
+  bindAddress = "0.0.0.0";
   port = 9091;
+  internalUrl = "http://127.0.0.1:${toString port}";
 
   secretsPermission = {
     secret = true;
@@ -123,7 +125,7 @@ in
           skew = 1;
         };
 
-        server.address = "tcp://0.0.0.0:${toString port}";
+        server.address = "tcp://${bindAddress}:${toString port}";
 
         authentication_backend.ldap = {
           implementation = "lldap";
@@ -187,9 +189,33 @@ in
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Authelia";
+        category = "Security";
+        icon = "authelia.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Authelia";
+        url = "https://${serviceDomain}";
+        group = "Security";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.auth.port = port;
+    nixfiles.nginx.vhosts.auth = {
+      inherit port;
+    };
 
     # --- backup ---
 

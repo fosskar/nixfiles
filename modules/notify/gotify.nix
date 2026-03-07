@@ -106,6 +106,11 @@ let
       '') allApps
     )}
   '';
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "gotify.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  inherit (cfg.gotify) port;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -169,6 +174,34 @@ in
         GOTIFY_DEFAULTUSER_NAME = "admin";
       };
       environmentFiles = [ config.clan.core.vars.generators.gotify.files.env.path ];
+    };
+
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Gotify";
+        category = "Monitoring";
+        icon = "gotify.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Gotify";
+        url = "https://${serviceDomain}";
+        group = "Monitoring";
+      }
+    ];
+
+    # --- nginx ---
+
+    nixfiles.nginx.vhosts.gotify = {
+      inherit port;
     };
 
     # --- systemd ---

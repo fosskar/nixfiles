@@ -10,6 +10,7 @@ let
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "cloud.${acmeDomain}";
   port = 8009;
+  internalUrl = "http://127.0.0.1:${toString port}";
   oidcDomain = if publicDomain != null then publicDomain else acmeDomain;
   oidcIssuerUrl = "https://auth.${oidcDomain}";
 in
@@ -22,6 +23,7 @@ in
       default = true;
       description = "nextcloud with authelia oidc";
     };
+
   };
 
   config = lib.mkIf cfg.enable {
@@ -194,6 +196,28 @@ in
         };
       };
     };
+
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Nextcloud";
+        category = "Documents";
+        icon = "nextcloud.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Nextcloud";
+        url = "https://${serviceDomain}";
+        group = "Documents";
+      }
+    ];
 
     # --- nginx ---
 

@@ -24,6 +24,8 @@
     ../../modules/notify
     ../../modules/virtualization
     ../../modules/vert
+    ../../modules/homepage
+    ../../modules/gatus
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [

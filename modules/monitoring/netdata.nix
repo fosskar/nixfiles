@@ -6,6 +6,11 @@
 }:
 let
   cfg = config.nixfiles.monitoring.netdata;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "netdata.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  port = 19999;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -22,20 +27,44 @@ in
       package = pkgs.netdata.override { withCloudUi = true; };
       config = {
         global = {
-          "bind to" = "127.0.0.1";
+          "bind to" = bindAddress;
           "memory mode" = "ram";
           "debug log" = "none";
           "access log" = "none";
           "error log" = "syslog";
         };
         web = {
-          "default port" = "19999";
+          "default port" = toString port;
         };
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Netdata";
+        category = "Monitoring";
+        icon = "netdata.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Netdata";
+        url = "https://${serviceDomain}";
+        group = "Monitoring";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.netdata.port = 19999;
+    nixfiles.nginx.vhosts.netdata = {
+      inherit port;
+    };
   };
 }

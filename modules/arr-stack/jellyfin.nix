@@ -6,7 +6,11 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "jellyfin.${acmeDomain}";
+  bindAddress = "127.0.0.1";
   port = 8096;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   config = lib.mkIf cfg.jellyfin.enable {
@@ -31,6 +35,28 @@ in
       jellyfin
       jellyfin-web
       jellyfin-ffmpeg
+    ];
+
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Jellyfin";
+        category = "Media";
+        icon = "jellyfin.png";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Jellyfin";
+        url = "https://${serviceDomain}";
+        group = "Media";
+      }
     ];
 
     # --- nginx ---

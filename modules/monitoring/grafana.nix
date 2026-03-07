@@ -9,6 +9,9 @@ let
   acmeDomain = config.nixfiles.acme.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "grafana.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  port = 3100;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -129,8 +132,8 @@ in
 
       settings = {
         server = {
-          http_addr = "127.0.0.1";
-          http_port = 3100;
+          http_addr = bindAddress;
+          http_port = port;
           domain = serviceDomain;
           root_url = "https://${serviceDomain}";
           enable_gzip = true;
@@ -189,8 +192,32 @@ in
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Grafana";
+        category = "Monitoring";
+        icon = "grafana.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Grafana";
+        url = "https://${serviceDomain}";
+        group = "Monitoring";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.grafana.port = config.services.grafana.settings.server.http_port;
+    nixfiles.nginx.vhosts.grafana = {
+      inherit port;
+    };
   };
 }

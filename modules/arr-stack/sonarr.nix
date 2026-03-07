@@ -6,7 +6,11 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "sonarr.${acmeDomain}";
+  bindAddress = "127.0.0.1";
   port = 8989;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   config = lib.mkIf cfg.sonarr.enable {
@@ -18,6 +22,28 @@ in
       group = "media";
       settings.server.port = port;
     };
+
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Sonarr";
+        category = "Arr Stack";
+        icon = "sonarr.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Sonarr";
+        url = "https://${serviceDomain}";
+        group = "Arr Stack";
+      }
+    ];
 
     # --- nginx ---
 

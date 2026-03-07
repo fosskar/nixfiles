@@ -8,6 +8,9 @@ let
   cfg = config.nixfiles.kanidm;
   acmeDomain = config.nixfiles.acme.domain;
   serviceDomain = "auth.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  port = 8443;
+  internalUrl = "https://${bindAddress}:${toString port}";
   acmeCertDir = config.security.acme.certs.${acmeDomain}.directory;
 in
 {
@@ -52,8 +55,8 @@ in
       serverSettings = {
         origin = "https://${serviceDomain}";
         domain = acmeDomain;
-        bindaddress = "127.0.0.1:8443";
-        ldapbindaddress = "127.0.0.1:3636";
+        bindaddress = "${bindAddress}:${toString port}";
+        ldapbindaddress = "${bindAddress}:3636";
 
         tls_chain = "${acmeCertDir}/fullchain.pem";
         tls_key = "${acmeCertDir}/key.pem";
@@ -74,7 +77,7 @@ in
       useACMEHost = acmeDomain;
       forceSSL = true;
       locations."/" = {
-        proxyPass = "https://${config.services.kanidm.serverSettings.bindaddress}";
+        proxyPass = internalUrl;
         recommendedProxySettings = true;
         proxyWebsockets = true;
       };

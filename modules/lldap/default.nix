@@ -8,6 +8,9 @@ let
   cfg = config.nixfiles.lldap;
   acmeDomain = config.nixfiles.acme.domain;
   serviceDomain = "ldap.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  port = 17170;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -76,8 +79,8 @@ in
           ldap_host = "127.0.0.1";
           ldap_port = 3890;
 
-          http_host = "127.0.0.1";
-          http_port = 17170;
+          http_host = bindAddress;
+          http_port = port;
           http_url = "https://${serviceDomain}";
 
           force_ldap_user_pass_reset = "always";
@@ -89,10 +92,32 @@ in
         environmentFile = config.clan.core.vars.generators.lldap.files."envfile".path;
       };
 
+      # --- homepage ---
+
+      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        {
+          name = "LLDAP";
+          category = "Security";
+          icon = "lldap.png";
+          href = "https://${serviceDomain}";
+          siteMonitor = internalUrl;
+        }
+      ];
+
+      # --- gatus ---
+
+      nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+        {
+          name = "LLDAP";
+          url = "https://${serviceDomain}";
+          group = "Security";
+        }
+      ];
+
       # --- nginx ---
 
       nixfiles.nginx.vhosts.ldap = {
-        port = config.services.lldap.settings.http_port;
+        inherit port;
       };
 
       # --- backup ---

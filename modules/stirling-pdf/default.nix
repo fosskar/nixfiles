@@ -6,7 +6,11 @@
 }:
 let
   cfg = config.nixfiles.stirling-pdf;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "pdf.${acmeDomain}";
+  bindAddress = "127.0.0.1";
   port = 8180;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   # --- options ---
@@ -17,6 +21,7 @@ in
       default = true;
       description = "stirling-pdf document tools";
     };
+
   };
 
   config = lib.mkIf cfg.enable {
@@ -34,9 +39,33 @@ in
       };
     };
 
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "Stirling PDF";
+        category = "Documents";
+        icon = "stirling-pdf.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "Stirling PDF";
+        url = "https://${serviceDomain}";
+        group = "Documents";
+      }
+    ];
+
     # --- nginx ---
 
-    nixfiles.nginx.vhosts.pdf.port = port;
+    nixfiles.nginx.vhosts.pdf = {
+      inherit port;
+    };
 
     # --- systemd ---
 

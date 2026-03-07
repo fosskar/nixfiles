@@ -6,7 +6,11 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "sabnzbd.${acmeDomain}";
+  bindAddress = "127.0.0.1";
   port = 8085;
+  internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
   config = lib.mkIf cfg.sabnzbd.enable {
@@ -43,6 +47,28 @@ in
         };
       };
     };
+
+    # --- homepage ---
+
+    nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      {
+        name = "SABnzbd";
+        category = "Arr Stack";
+        icon = "sabnzbd.svg";
+        href = "https://${serviceDomain}";
+        siteMonitor = internalUrl;
+      }
+    ];
+
+    # --- gatus ---
+
+    nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+      {
+        name = "SABnzbd";
+        url = "https://${serviceDomain}";
+        group = "Arr Stack";
+      }
+    ];
 
     # --- nginx ---
 

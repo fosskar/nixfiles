@@ -6,6 +6,11 @@
 }:
 let
   cfg = config.nixfiles.monitoring.beszel;
+  acmeDomain = config.nixfiles.acme.domain;
+  serviceDomain = "beszel.${acmeDomain}";
+  bindAddress = "127.0.0.1";
+  hubPort = 8090;
+  internalUrl = "http://${bindAddress}:${toString hubPort}";
 in
 {
   # --- options ---
@@ -50,13 +55,37 @@ in
     (lib.mkIf cfg.hub.enable {
       services.beszel.hub = {
         enable = true;
-        host = "127.0.0.1";
-        port = 8090;
+        host = bindAddress;
+        port = hubPort;
       };
+
+      # --- homepage ---
+
+      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        {
+          name = "Beszel";
+          category = "Monitoring";
+          icon = "beszel.svg";
+          href = "https://${serviceDomain}";
+          siteMonitor = internalUrl;
+        }
+      ];
+
+      # --- gatus ---
+
+      nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+        {
+          name = "Beszel";
+          url = "https://${serviceDomain}";
+          group = "Monitoring";
+        }
+      ];
 
       # --- nginx ---
 
-      nixfiles.nginx.vhosts.beszel.port = config.services.beszel.hub.port;
+      nixfiles.nginx.vhosts.beszel = {
+        port = hubPort;
+      };
     })
 
     # --- service (agent) ---
