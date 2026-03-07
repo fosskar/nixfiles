@@ -9,6 +9,7 @@
     exclude = [
       "hypridle.nix"
       "hyprlock.nix"
+      "plugins.nix"
     ];
   };
 
@@ -19,8 +20,8 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = null;
-    portalPackage = null;
+    #package = null;
+    #portalPackage = null;
     systemd = {
       enable = true;
       variables = [ "--all" ];
