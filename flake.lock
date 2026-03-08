@@ -133,11 +133,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772914139,
-        "narHash": "sha256-9ukeWaUtEDN5rbPaxMYnlhWTQs7svoTbf7VkVd372xs=",
+        "lastModified": 1772982616,
+        "narHash": "sha256-+y9g+76qAMNLq6ZS2roPvOs77f0ZKU7SIJioTwTcIP4=",
         "ref": "refs/heads/main",
-        "rev": "06bfae92d5ca1fb556e73a7b3d1c0911a2cb726e",
-        "revCount": 13329,
+        "rev": "0db57738588ccff1f8fba8d7a910a774421bbb9b",
+        "revCount": 13362,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -925,11 +925,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772941110,
-        "narHash": "sha256-krm7enK551PkiQ+JxZ0VnxPinbCa/UmoDuyvfJ6m8jc=",
+        "lastModified": 1772980630,
+        "narHash": "sha256-Xw49NCHYzYhuHy6DZ9TPhQrb6a5cdbyUPtrt2PGFDew=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "3e4f40c169079e883af315f015715da8a5349043",
+        "rev": "1a42c19a42717a9871e96181ded90dc0efb93020",
         "type": "github"
       },
       "original": {
@@ -1133,11 +1133,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1771969195,
-        "narHash": "sha256-qwcDBtrRvJbrrnv1lf/pREQi8t2hWZxVAyeMo7/E9sw=",
+        "lastModified": 1772972630,
+        "narHash": "sha256-mUJxsNOrBMNOUJzN0pfdVJ1r2pxeqm9gI/yIKXzVVbk=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "41c6b421bdc301b2624486e11905c9af7b8ec68e",
+        "rev": "3966ce987e1a9a164205ac8259a5fe8a64528f72",
         "type": "github"
       },
       "original": {
@@ -1164,10 +1164,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1772959519,
-        "narHash": "sha256-E+zgydBQnPNt/9LJAYpMDrykvLA6vz1C/haigS1aV3I=",
+        "lastModified": 1772983448,
+        "narHash": "sha256-38wIJ8BQlxVwPIEUDxbltHQjKVHtkOjSzmPr0aeyvRY=",
         "ref": "master",
-        "rev": "b6a86c522a9ee1233bd867ba0d3afb9e39c45c9a",
+        "rev": "2a787816c91f43f001ca258ba914f6ae7975131b",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1221,11 +1221,11 @@
         "noctalia-qs": "noctalia-qs"
       },
       "locked": {
-        "lastModified": 1772925400,
-        "narHash": "sha256-I0Gb+CO6bXi1U5PYgCqnuvI1B+R9kZtamLwhVvOywSo=",
+        "lastModified": 1772983326,
+        "narHash": "sha256-4iNQ9Up6yRWnjtSfScXJBXICoJ9ZJjj5914W+keAc9c=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "5f319987a5003c383678f4aae0cf71f78c7ea49e",
+        "rev": "1fd0b187b50eff28f4f5fe7d93210d6c98b80e6c",
         "type": "github"
       },
       "original": {

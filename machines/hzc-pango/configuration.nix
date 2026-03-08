@@ -48,7 +48,7 @@
       profile = "virtual-guest";
     };
 
-    crowdsec.traefik.enable = false;
+    crowdsec.traefik.enable = true;
   };
 
   clan.core = {
