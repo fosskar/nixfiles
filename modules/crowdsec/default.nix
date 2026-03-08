@@ -128,7 +128,7 @@ in
       };
       dynamicConfigOptions.http.middlewares.crowdsec.plugin.crowdsec-bouncer = {
         enabled = true;
-        crowdsecLapiKeyFile = "/var/lib/crowdsec-traefik-bouncer-register/api-key.cred";
+        crowdsecLapiKeyFile = "/var/lib/crowdsec/traefik-bouncer.key";
         crowdsecLapiHost = "127.0.0.1:${toString cfg.listenPort}";
         crowdsecMode = "live";
         forwardedHeadersTrustedIPs = [
@@ -162,7 +162,7 @@ in
     # traefik bouncer registration (oneshot)
     systemd.services.crowdsec-traefik-bouncer-register = lib.mkIf cfg.traefik.enable (
       let
-        apiKeyFile = "/var/lib/crowdsec-traefik-bouncer-register/api-key.cred";
+        apiKeyFile = "/var/lib/crowdsec/traefik-bouncer.key";
         bouncerName = "crowdsec-traefik-bouncer";
       in
       {
@@ -173,24 +173,29 @@ in
         script = ''
           cscli=${lib.getExe' config.services.crowdsec.package "cscli"}
           if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
-            if [ ! -f ${apiKeyFile} ]; then
-              echo "bouncer registered but api key missing"
-              exit 1
+            if [ -f ${apiKeyFile} ]; then
+              echo "bouncer already registered, key exists"
+              exit 0
             fi
-          else
+            echo "bouncer registered but key missing, re-registering"
+            $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
+          fi
+          rm -f '${apiKeyFile}'
+          if ! $cscli -c ${configFile} bouncers add --output raw -- ${lib.escapeShellArg bouncerName} >${apiKeyFile}; then
             rm -f '${apiKeyFile}'
-            if ! $cscli -c ${configFile} bouncers add --output raw -- ${lib.escapeShellArg bouncerName} >${apiKeyFile}; then
-              rm -f '${apiKeyFile}'
-              exit 1
-            fi
+            exit 1
           fi
         '';
         serviceConfig = {
           Type = "oneshot";
           User = config.services.crowdsec.user;
           Group = config.services.crowdsec.group;
-          StateDirectory = "crowdsec-traefik-bouncer-register";
           ReadWritePaths = [ "/var/lib/crowdsec" ];
+          ExecStartPost = "+${pkgs.writeShellScript "fix-traefik-bouncer-key" ''
+            chgrp traefik /var/lib/crowdsec/traefik-bouncer.key
+            chmod 0640 /var/lib/crowdsec/traefik-bouncer.key
+            systemctl try-restart traefik.service
+          ''}";
           DynamicUser = true;
           LockPersonality = true;
           PrivateDevices = true;
