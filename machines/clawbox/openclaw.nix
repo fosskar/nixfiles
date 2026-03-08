@@ -65,6 +65,8 @@ in
     OPENCLAW_DISABLE_BONJOUR = "1";
     WHISPER_CPP_MODEL = "${stateDir}/ggml-base.bin";
     OPENCLAW_NIX_MODE = "1";
+    OPENCLAW_CONFIG_PATH = "${stateDir}/openclaw.json";
+    OPENCLAW_STATE_DIR = stateDir;
   };
 
   environment.shellInit = ''
@@ -83,8 +85,11 @@ in
       OPENCLAW_DISABLE_BONJOUR = "1";
       WHISPER_CPP_MODEL = "${stateDir}/ggml-base.bin";
       OPENCLAW_NIX_MODE = "1";
+      OPENCLAW_CONFIG_PATH = "${stateDir}/openclaw.json";
+      OPENCLAW_STATE_DIR = stateDir;
       # workaround: openclaw 2026.2.26 rejects hardlinked plugin manifests (nix store dedup)
       OPENCLAW_BUNDLED_PLUGINS_DIR = "${stateDir}/bundled-extensions";
+      NODE_PATH = "${pkgs.llm-agents.openclaw}/lib/openclaw/node_modules";
     };
     serviceConfig = {
       Type = "simple";
@@ -94,6 +99,16 @@ in
         # copy bundled extensions to mutable dir (breaks nix store hardlinks that openclaw rejects)
         "${pkgs.bash}/bin/bash -c 'rm -rf ${stateDir}/bundled-extensions && cp -r --no-preserve=links ${pkgs.llm-agents.openclaw}/lib/openclaw/extensions ${stateDir}/bundled-extensions'"
         "${pkgs.coreutils}/bin/mkdir -p ${stateDir}"
+        # copy control-ui assets (nix store hardlinks rejected by openclaw's security checks)
+        # and inject controlUi.root into config (argv1 lost after respawn breaks auto-discovery)
+        (pkgs.writeShellScript "openclaw-setup-control-ui" ''
+          rm -rf ${stateDir}/control-ui
+          cp -r --no-preserve=links ${pkgs.llm-agents.openclaw}/lib/openclaw/dist/control-ui ${stateDir}/control-ui
+          ${pkgs.jq}/bin/jq \
+            '.gateway.controlUi.enabled = true | .gateway.controlUi.root = "${stateDir}/control-ui" | .gateway.controlUi.allowedOrigins = ["https://192.168.10.90"]' \
+            ${stateDir}/openclaw.json > ${stateDir}/openclaw.json.tmp \
+            && mv ${stateDir}/openclaw.json.tmp ${stateDir}/openclaw.json
+        '')
       ];
       ExecStart = "${pkgs.llm-agents.openclaw}/bin/openclaw gateway";
       Restart = "always";
