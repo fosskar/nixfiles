@@ -7,8 +7,10 @@
 let
   cfg = config.nixfiles.ntfy;
   acmeDomain = config.nixfiles.acme.domain;
+  inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "ntfy.${acmeDomain}";
-  bindAddress = "127.0.0.1";
+  publicUrl = "https://ntfy.${publicDomain}";
+  bindAddress = "0.0.0.0";
   port = 8091;
   internalUrl = "http://${bindAddress}:${toString port}";
 
@@ -119,7 +121,7 @@ in
         name = "ntfy";
         category = "Monitoring";
         icon = "ntfy.svg";
-        href = "https://${serviceDomain}";
+        href = publicUrl;
         siteMonitor = internalUrl;
       }
     ];
