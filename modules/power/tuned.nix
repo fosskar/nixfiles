@@ -1,12 +1,10 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }:
 let
   cfg = config.nixfiles.power.tuned;
-  ppdSettingsFormat = pkgs.formats.ini { };
 in
 {
   config = lib.mkIf cfg.enable {
@@ -16,6 +14,10 @@ in
       settings.dynamic_tuning = cfg.ppdSupport;
       # profiles: map PPD API names to tuned profiles
       # battery: override tuned profile when on battery (key = PPD profile name)
+      # when ppdSupport=false, use recommend to set the default profile
+      recommend = lib.mkIf (!cfg.ppdSupport) {
+        ${cfg.profile} = { };
+      };
       ppdSettings = lib.mkIf cfg.ppdSupport {
         battery = {
           # when on battery + PPD "balanced" selected -> use batteryProfile
@@ -32,15 +34,5 @@ in
 
     # tuned conflicts with tlp
     services.tlp.enable = lib.mkForce false;
-
-    environment.etc = lib.mkMerge [
-      # workaround: upstream bug - ppd.conf entry exists but source undefined when ppdSupport=false
-      # TODO: remove after nixpkgs#463443 is merged
-      (lib.mkIf (!cfg.ppdSupport) {
-        "tuned/ppd.conf".source = ppdSettingsFormat.generate "ppd.conf" { };
-        "tuned/active_profile".text = cfg.profile;
-        "tuned/profile_mode".text = "manual";
-      })
-    ];
   };
 }
