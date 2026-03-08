@@ -49,6 +49,7 @@
     };
 
     crowdsec.traefik.enable = true;
+    traefik.geoblock.enable = true;
   };
 
   clan.core = {
