@@ -11,9 +11,6 @@ in
         let
           pkgs = import inputs.nixpkgs { inherit system; };
 
-          # build packages that others depend on first
-          pywhispercpp = pkgs.callPackage ./pywhispercpp { };
-
           # auto-discover all package directories
           packageDirs = mylib.scanPaths ./. {
             exclude = [ ];
@@ -21,7 +18,6 @@ in
 
           # extra args to pass to specific packages
           extraArgs = {
-            hyprwhspr = { inherit pywhispercpp; };
             stirling-pdf = {
               isDesktopVariant = false;
             };
