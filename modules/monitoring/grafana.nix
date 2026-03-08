@@ -86,9 +86,13 @@ in
           "profile"
           "email"
           "groups"
+          "offline_access"
         ];
         response_types = [ "code" ];
-        grant_types = [ "authorization_code" ];
+        grant_types = [
+          "authorization_code"
+          "refresh_token"
+        ];
         token_endpoint_auth_method = "client_secret_basic";
         id_token_signed_response_alg = "RS256";
         claims_policy = "grafana_groups";
@@ -172,7 +176,7 @@ in
           client_secret = "$__file{${
             config.clan.core.vars.generators.grafana.files."oauth-client-secret".path
           }}";
-          scopes = "openid profile email groups";
+          scopes = "openid profile email groups offline_access";
           auth_url = "https://auth.${publicDomain}/api/oidc/authorization";
           token_url = "https://auth.${publicDomain}/api/oidc/token";
           api_url = "https://auth.${publicDomain}/api/oidc/userinfo";
