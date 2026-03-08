@@ -8,12 +8,13 @@
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     ../../modules/borgbackup
+    ../../modules/crowdsec
     ../../modules/power
     ../../modules/persistence
+    ../../modules/traefik
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
-      "crowdsec.nix"
       "monitoring.nix"
     ];
   });
@@ -31,7 +32,6 @@
         deviceLabel = "root";
       };
       directories = [
-        "/var/lib/crowdsec"
         "/var/log"
         "/var/lib/private"
       ];
@@ -47,6 +47,8 @@
       enable = true;
       profile = "virtual-guest";
     };
+
+    crowdsec.traefik.enable = false;
   };
 
   clan.core = {
