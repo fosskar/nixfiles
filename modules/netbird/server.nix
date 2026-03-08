@@ -57,12 +57,6 @@ in
       description = "netbird server YAML config (secrets injected at runtime)";
     };
 
-    openFirewall = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "open firewall for HTTPS, HTTP, and STUN";
-    };
-
     logLevel = lib.mkOption {
       type = lib.types.enum [
         "panic"
@@ -82,10 +76,10 @@ in
 
     services.netbird.server.settings = {
       server = {
-        listenAddress = lib.mkDefault ":8081";
+        listenAddress = lib.mkDefault "127.0.0.1:8081";
         exposedAddress = lib.mkDefault "https://${cfg.domain}:443";
         metricsPort = lib.mkDefault 9090;
-        healthcheckAddress = lib.mkDefault ":9000";
+        healthcheckAddress = lib.mkDefault "127.0.0.1:9000";
         logLevel = lib.mkDefault cfg.logLevel;
         logFile = lib.mkDefault "console";
         dataDir = lib.mkDefault stateDir;
@@ -126,14 +120,8 @@ in
     };
     users.groups.netbird = { };
 
-    networking.firewall = lib.mkIf cfg.openFirewall {
-      allowedTCPPorts = [
-        80
-        443
-      ];
-      # STUN
-      allowedUDPPorts = [ 3478 ];
-    };
+    # STUN — netbird clients connect directly, not through traefik
+    networking.firewall.allowedUDPPorts = [ 3478 ];
 
     # --- persistence ---
 

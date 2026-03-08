@@ -294,7 +294,5 @@ in
       }
     ];
 
-    # STUN port for netbird relay
-    networking.firewall.allowedUDPPorts = [ 3478 ];
   };
 }
