@@ -114,14 +114,14 @@ crowdsec — attack intelligence is shared across all users.
 
 **scenarios installed:**
 
-| collection                              | detects                                            |
-| --------------------------------------- | -------------------------------------------------- |
-| `crowdsecurity/linux-lpe`               | local privilege escalation attempts                |
-| `crowdsecurity/iptables`                | patterns in firewall logs                          |
-| `crowdsecurity/sshd-impossible-travel`  | SSH logins from geographically impossible locations|
-| `crowdsecurity/appsec-virtual-patching` | known application vulnerabilities (virtual patch)  |
-| `crowdsecurity/appsec-generic-rules`    | generic application security patterns              |
-| `crowdsecurity/traefik`                 | HTTP scanning, probing, path traversal, crawlers   |
+| collection                              | detects                                             |
+| --------------------------------------- | --------------------------------------------------- |
+| `crowdsecurity/linux-lpe`               | local privilege escalation attempts                 |
+| `crowdsecurity/iptables`                | patterns in firewall logs                           |
+| `crowdsecurity/sshd-impossible-travel`  | SSH logins from geographically impossible locations |
+| `crowdsecurity/appsec-virtual-patching` | known application vulnerabilities (virtual patch)   |
+| `crowdsecurity/appsec-generic-rules`    | generic application security patterns               |
+| `crowdsecurity/traefik`                 | HTTP scanning, probing, path traversal, crawlers    |
 
 ## geoblock
 
@@ -158,10 +158,10 @@ reachable via traefik's TCP passthrough on port 443.
 
 internal-only services never exposed:
 
-| service        | address        | purpose                              |
-| -------------- | -------------- | ------------------------------------ |
-| crowdsec LAPI  | 127.0.0.1:8085 | bouncer queries, cscli               |
-| traefik metrics| 127.0.0.1:8082 | prometheus scrape endpoint           |
+| service         | address        | purpose                    |
+| --------------- | -------------- | -------------------------- |
+| crowdsec LAPI   | 127.0.0.1:8085 | bouncer queries, cscli     |
+| traefik metrics | 127.0.0.1:8082 | prometheus scrape endpoint |
 
 ## non-HTTP services
 
@@ -174,10 +174,10 @@ crowdsec's sshd scenarios (brute-force, impossible travel).
 
 ephemeral root (btrfs, rolled back every boot). only these paths survive:
 
-| path                    | contents                                |
-| ----------------------- | --------------------------------------- |
-| `/var/lib/crowdsec`     | engine DB, CAPI credentials, bouncer keys|
-| `/var/lib/traefik`      | ACME TLS certificates                   |
-| `/var/lib/netbird-server`| management DB, proxy token             |
-| `/var/lib/netbird-proxy`| proxy state, TLS certs                  |
-| `/var/lib/netbird`      | netbird client identity                 |
+| path                      | contents                                  |
+| ------------------------- | ----------------------------------------- |
+| `/var/lib/crowdsec`       | engine DB, CAPI credentials, bouncer keys |
+| `/var/lib/traefik`        | ACME TLS certificates                     |
+| `/var/lib/netbird-server` | management DB, proxy token                |
+| `/var/lib/netbird-proxy`  | proxy state, TLS certs                    |
+| `/var/lib/netbird`        | netbird client identity                   |
