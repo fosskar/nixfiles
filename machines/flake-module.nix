@@ -105,7 +105,7 @@ in
             name = "users";
             input = "clan-core";
           };
-          roles.default.tags.workstation = { };
+          roles.default.tags.all = { };
           roles.default.settings = {
             user = "root";
             prompt = true;
