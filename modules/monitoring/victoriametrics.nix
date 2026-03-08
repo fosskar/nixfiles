@@ -130,6 +130,7 @@ in
 
     nixfiles.nginx.vhosts.vm = {
       inherit port;
+      proxy-auth = true;
     };
   };
 }
