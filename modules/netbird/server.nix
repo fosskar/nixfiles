@@ -135,6 +135,16 @@ in
       allowedUDPPorts = [ 3478 ];
     };
 
+    # --- persistence ---
+
+    nixfiles.persistence.directories = [
+      {
+        directory = "/var/lib/netbird-server";
+        user = "netbird";
+        group = "netbird";
+      }
+    ];
+
     # --- systemd ---
 
     systemd.services.netbird-server = {

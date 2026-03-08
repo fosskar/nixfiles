@@ -104,7 +104,6 @@ _: {
               addr = ":8443";
               tokenFile = "/var/lib/netbird-server/proxy-token";
               allowInsecure = true; # connecting over localhost
-              acmeEmail = "letsencrypt.unpleased904@passmail.net";
             };
           };
       };
@@ -190,6 +189,9 @@ _: {
 
             # trust netbird interface — netbird handles access control
             networking.firewall.trustedInterfaces = [ "wt0" ];
+
+            # persist client identity across reboots
+            nixfiles.persistence.directories = [ "/var/lib/netbird" ];
           };
       };
   };
