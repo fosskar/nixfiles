@@ -191,7 +191,13 @@ _: {
             networking.firewall.trustedInterfaces = [ "wt0" ];
 
             # persist client identity across reboots
-            nixfiles.persistence.directories = [ "/var/lib/netbird" ];
+            nixfiles.persistence.directories = [
+              {
+                directory = "/var/lib/netbird";
+                user = "netbird";
+                group = "netbird";
+              }
+            ];
           };
       };
   };
