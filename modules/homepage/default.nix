@@ -52,8 +52,21 @@ let
     }
   ) { } cfg.entries;
 
-  # convert grouped entries to homepage-dashboard services format
-  autoServices = lib.mapAttrsToList (category: entries: { ${category} = entries; }) groupedEntries;
+  # extract category → entries from manualServices list-of-attrsets
+  manualGrouped = lib.foldl' (
+    acc: item:
+    lib.foldl' (
+      acc2: category: acc2 // { ${category} = (acc2.${category} or [ ]) ++ item.${category}; }
+    ) acc (lib.attrNames item)
+  ) { } cfg.manualServices;
+
+  # merge auto + manual entries by category
+  mergedGroups = lib.foldl' (
+    acc: category: acc // { ${category} = (acc.${category} or [ ]) ++ manualGrouped.${category}; }
+  ) groupedEntries (lib.attrNames manualGrouped);
+
+  # convert to homepage-dashboard services format
+  allServices = lib.mapAttrsToList (category: entries: { ${category} = entries; }) mergedGroups;
 in
 {
   # --- options ---
@@ -117,7 +130,7 @@ in
         inherit (cfg) layout;
       };
 
-      services = autoServices ++ cfg.manualServices;
+      services = allServices;
       inherit (cfg) bookmarks widgets;
       inherit (cfg) customCSS;
       customJS = "";

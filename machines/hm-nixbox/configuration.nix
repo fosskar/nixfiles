@@ -26,11 +26,13 @@
     ../../modules/homepage
     ../../modules/gatus
     ../../modules/ntfy
+    ../../modules/garage
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
       "dashboards"
       "radicle.nix"
+      "garage.nix"
     ];
   });
 
@@ -88,6 +90,7 @@
 
     virtualization.docker.enable = true;
 
+    garage.dataDir = "/tank/apps/garage";
   };
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)
