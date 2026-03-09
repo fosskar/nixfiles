@@ -75,7 +75,8 @@ in
           config.clan.core.vars.generators.grafana.files."oauth-client-secret-hash".path
         }\" }}";
         public = false;
-        consent_mode = "implicit";
+        consent_mode = "pre-configured";
+        pre_configured_consent_duration = "1y";
         require_pkce = true;
         pkce_challenge_method = "S256";
         redirect_uris = [
