@@ -39,7 +39,7 @@ in
     nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
       {
         name = "Prowlarr";
-        url = "https://${serviceDomain}";
+        url = internalUrl;
         group = "Arr Stack";
       }
     ];

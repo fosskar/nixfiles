@@ -84,7 +84,7 @@ in
     nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
       {
         name = "Garage";
-        url = "https://${serviceDomain}";
+        url = internalUrl;
         group = "Infrastructure";
       }
     ];

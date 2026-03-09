@@ -40,7 +40,7 @@ in
     nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
       {
         name = "Sonarr";
-        url = "https://${serviceDomain}";
+        url = internalUrl;
         group = "Arr Stack";
       }
     ];

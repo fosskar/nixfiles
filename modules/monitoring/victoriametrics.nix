@@ -121,7 +121,7 @@ in
     nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
       {
         name = "VictoriaMetrics";
-        url = "https://${serviceDomain}";
+        url = internalUrl;
         group = "Monitoring";
       }
     ];

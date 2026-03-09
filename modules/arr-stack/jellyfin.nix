@@ -54,7 +54,7 @@ in
     nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
       {
         name = "Jellyfin";
-        url = "https://${serviceDomain}";
+        url = internalUrl;
         group = "Media";
       }
     ];
