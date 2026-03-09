@@ -93,7 +93,13 @@ in
           token {env.DESEC_TOKEN}
         }
       '';
-      virtualHosts = lib.mapAttrs' (name: vhost: {
+      virtualHosts = {
+        # empty wildcard block — triggers wildcard cert issuance
+        "*.${cfg.domain}" = {
+          extraConfig = "";
+        };
+      }
+      // lib.mapAttrs' (name: vhost: {
         name = "${name}.${cfg.domain}";
         value = {
           extraConfig = ''
