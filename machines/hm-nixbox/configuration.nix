@@ -4,10 +4,9 @@
 }:
 {
   imports = [
-    ../../modules/acme
     ../../modules/arr-stack
+    ../../modules/caddy
     ../../modules/borgbackup
-    ../../modules/nginx
     ../../modules/opencloud
     ../../modules/lldap
     ../../modules/authelia
