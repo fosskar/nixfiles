@@ -49,7 +49,7 @@ in
   options.nixfiles.caddy = {
     domain = lib.mkOption {
       type = lib.types.str;
-      default = "osscar.me";
+      default = "nx3.eu";
       description = "base domain for vhosts";
     };
     email = lib.mkOption {
@@ -68,14 +68,14 @@ in
     # --- secrets ---
 
     clan.core.vars.generators.caddy = {
-      prompts."cf_api_token" = {
-        description = "cloudflare API token for ACME dns-01 challenge";
+      prompts."desec_token" = {
+        description = "deSEC API token for ACME dns-01 challenge";
         type = "hidden";
         persist = true;
       };
       files."envfile" = { };
       script = ''
-        echo "CF_DNS_API_TOKEN=$(cat "$prompts/cf_api_token")" > "$out/envfile"
+        echo "DESEC_TOKEN=$(cat "$prompts/desec_token")" > "$out/envfile"
       '';
     };
 
@@ -84,12 +84,14 @@ in
     services.caddy = {
       enable = true;
       package = pkgs.caddy.withPlugins {
-        plugins = [ "github.com/caddy-dns/cloudflare@v0.2.3" ];
-        hash = "sha256-mmkziFzEMBcdnCWCRiT3UyWPNbINbpd3KUJ0NMW632w=";
+        plugins = [ "github.com/caddy-dns/desec@v1.1.0" ];
+        hash = "sha256-Udwf/DfrUKGGiJ0hbbO4mgYknoH0/bvc44aNXHeI1BY=";
       };
       inherit (cfg) email;
       globalConfig = ''
-        acme_dns cloudflare {env.CF_DNS_API_TOKEN}
+        acme_dns desec {
+          token {env.DESEC_TOKEN}
+        }
       '';
       virtualHosts = lib.mapAttrs' (name: vhost: {
         name = "${name}.${cfg.domain}";
@@ -101,6 +103,18 @@ in
           '';
         };
       }) cfg.vhosts;
+    };
+
+    # --- firewall ---
+
+    networking.firewall = {
+      allowedTCPPorts = [
+        80
+        443
+      ];
+      allowedUDPPorts = [
+        443 # HTTP/3 (QUIC)
+      ];
     };
 
     # --- systemd ---
