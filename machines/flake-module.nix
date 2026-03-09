@@ -94,7 +94,7 @@ in
               certificate.searchDomains = [
                 "lan"
                 "local"
-                "osscar.me"
+                "nx3.eu"
               ];
             };
           };

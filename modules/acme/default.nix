@@ -17,7 +17,7 @@ in
     };
     domain = lib.mkOption {
       type = lib.types.str;
-      default = "osscar.me";
+      default = "nx3.eu";
     };
     email = lib.mkOption {
       type = lib.types.str;

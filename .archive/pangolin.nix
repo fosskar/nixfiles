@@ -11,7 +11,7 @@
     geoipupdate.enable = false;
 
     pangolin = {
-      baseDomain = "osscar.me";
+      baseDomain = "n";
       dashboardDomain = "pango.osscar.me";
       environmentFile = config.sops.secrets."pangolin.env".path;
 

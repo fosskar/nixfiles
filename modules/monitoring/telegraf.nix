@@ -98,7 +98,7 @@ let
     x509_cert = {
       x509_cert = [
         {
-          sources = [ "https://osscar.me:443" ];
+          sources = [ "https://nx3.eu:443" ];
           timeout = "5s";
         }
       ];
