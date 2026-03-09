@@ -24,6 +24,7 @@
       mod-key-nested = "Alt";
 
       focus-follows-mouse.enable = true;
+      focus-follows-mouse.max-scroll-amount = "0%";
       warp-mouse-to-focus.enable = true;
       workspace-auto-back-and-forth = true;
 
