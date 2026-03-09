@@ -78,6 +78,7 @@ in
           websecure = {
             address = ":443";
             http.middlewares = lib.optional cfg.geoblock.enable "geoblock@file";
+            http3 = { };
           };
         }
         // lib.optionalAttrs cfg.metrics.enable {
@@ -155,9 +156,14 @@ in
       "d /var/log/traefik 0755 traefik traefik -"
     ];
 
-    networking.firewall.allowedTCPPorts = [
-      80
-      443
-    ];
+    networking.firewall = {
+      allowedTCPPorts = [
+        80
+        443
+      ];
+      allowedUDPPorts = [
+        443 # HTTP/3 (QUIC)
+      ];
+    };
   };
 }
