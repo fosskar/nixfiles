@@ -17,12 +17,6 @@
         prefixLength = 24;
       }
     ];
-
-    firewall.allowedTCPPorts = [
-      80
-      443
-    ];
-
   };
 
   # disable WoL on all ethernet interfaces
