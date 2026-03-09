@@ -26,6 +26,7 @@
     ../../modules/gatus
     ../../modules/ntfy
     ../../modules/garage
+    ../../modules/miniflux
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
