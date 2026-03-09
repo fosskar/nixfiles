@@ -55,11 +55,11 @@ home server at `192.168.10.80` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 
 ### infrastructure
 
-| service    | port   | domain       | notes                     |
-| ---------- | ------ | ------------ | ------------------------- |
+| service    | port   | domain    | notes                     |
+| ---------- | ------ | --------- | ------------------------- |
 | nginx      | 80/443 | \*.nx3.eu | reverse proxy, acme certs |
-| postgresql | 5432   | -            | database backend          |
-| avahi      | -      | -            | mdns/bonjour for mac/ios  |
+| postgresql | 5432   | -         | database backend          |
+| avahi      | -      | -         | mdns/bonjour for mac/ios  |
 
 **storage:**
 
@@ -74,23 +74,23 @@ home server at `192.168.10.80` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 
 | service  | port  | domain          | notes                  |
 | -------- | ----- | --------------- | ---------------------- |
-| lldap    | 17170 | ldap.nx3.eu  | ldap directory         |
+| lldap    | 17170 | ldap.nx3.eu     | ldap directory         |
 | authelia | 9091  | auth.fosskar.eu | sso/2fa, oidc provider |
 
 ### monitoring
 
-| service         | port       | domain            | notes                             |
-| --------------- | ---------- | ----------------- | --------------------------------- |
+| service         | port       | domain         | notes                             |
+| --------------- | ---------- | -------------- | --------------------------------- |
 | beszel          | 8090/45876 | beszel.nx3.eu  | lightweight monitoring            |
 | victoriametrics | -          | vm.nx3.eu      | tsdb, scrapes openwrt nodes       |
 | grafana         | -          | grafana.nx3.eu | dashboards                        |
-| telegraf        | -          | -                 | system, zfs, upsd, sensors, smart |
-| glances         | 61208      | -                 | real-time system stats            |
+| telegraf        | -          | -              | system, zfs, upsd, sensors, smart |
+| glances         | 61208      | -              | real-time system stats            |
 
 ### media
 
-| service        | port  | domain                   | notes                             |
-| -------------- | ----- | ------------------------ | --------------------------------- |
+| service        | port  | domain                | notes                             |
+| -------------- | ----- | --------------------- | --------------------------------- |
 | jellyfin       | 8096  | jellyfin.nx3.eu       | media server, intel qsv transcode |
 | jellyseerr     | 5055  | jellyseerr.nx3.eu     | request management                |
 | immich         | 2283  | immich.nx3.eu         | photo management                  |
@@ -98,23 +98,23 @@ home server at `192.168.10.80` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 
 ### arr stack
 
-| service   | port | domain             | notes                      |
-| --------- | ---- | ------------------ | -------------------------- |
+| service   | port | domain          | notes                      |
+| --------- | ---- | --------------- | -------------------------- |
 | prowlarr  | 9696 | prowlarr.nx3.eu | indexer manager            |
 | sonarr    | 8989 | sonarr.nx3.eu   | tv shows                   |
 | radarr    | 7878 | radarr.nx3.eu   | movies                     |
 | lidarr    | 8686 | lidarr.nx3.eu   | music                      |
 | readarr   | 8787 | readarr.nx3.eu  | books                      |
-| bazarr    | 6767 | -                  | subtitles                  |
+| bazarr    | 6767 | -               | subtitles                  |
 | sabnzbd   | 8080 | sabnzbd.nx3.eu  | usenet client              |
-| recyclarr | -    | -                  | trash guides sync (weekly) |
+| recyclarr | -    | -               | trash guides sync (weekly) |
 
 all services run as `media` group with umask 0027
 
 ### documents & security
 
-| service     | port  | domain          | notes                         |
-| ----------- | ----- | --------------- | ----------------------------- |
+| service     | port  | domain       | notes                         |
+| ----------- | ----- | ------------ | ----------------------------- |
 | paperless   | 28981 | docs.nx3.eu  | document management           |
 | vaultwarden | 8222  | vault.nx3.eu | password manager (postgresql) |
 
@@ -131,7 +131,7 @@ all services run as `media` group with umask 0027
 | service  | notes                               |
 | -------- | ----------------------------------- |
 | newt     | pangolin tunnel client to hzc-pango |
-| homepage | dashboard at home.nx3.eu         |
+| homepage | dashboard at home.nx3.eu            |
 
 ### backup
 
