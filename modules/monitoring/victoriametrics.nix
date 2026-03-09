@@ -5,7 +5,7 @@
 }:
 let
   cfg = config.nixfiles.monitoring.victoriametrics;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "vm.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 8428;
@@ -126,9 +126,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.vm = {
+    nixfiles.caddy.vhosts.vm = {
       inherit port;
       proxy-auth = true;
     };

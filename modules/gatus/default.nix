@@ -100,9 +100,9 @@ in
       };
     };
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.gatus = {
+    nixfiles.caddy.vhosts.gatus = {
       inherit port;
     };
 
@@ -113,7 +113,7 @@ in
         name = "Gatus";
         category = "Monitoring";
         icon = "gatus.svg";
-        href = "https://gatus.${config.nixfiles.acme.domain}";
+        href = "https://gatus.${config.nixfiles.caddy.domain}";
         siteMonitor = internalUrl;
       }
     ];

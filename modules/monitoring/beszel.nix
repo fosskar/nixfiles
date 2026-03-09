@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.monitoring.beszel;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "beszel.${acmeDomain}";
   bindAddress = "127.0.0.1";
   hubPort = 8090;
@@ -81,9 +81,9 @@ in
         }
       ];
 
-      # --- nginx ---
+      # --- caddy ---
 
-      nixfiles.nginx.vhosts.beszel = {
+      nixfiles.caddy.vhosts.beszel = {
         port = hubPort;
       };
     })

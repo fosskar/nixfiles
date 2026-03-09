@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.kanidm;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "auth.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 8443;
@@ -70,26 +70,10 @@ in
       };
     };
 
-    # --- nginx ---
+    # --- caddy ---
 
-    # https backend requires manual vhost config (can't use nixfiles.nginx.vhosts)
-    services.nginx.virtualHosts.${serviceDomain} = {
-      useACMEHost = acmeDomain;
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = internalUrl;
-        recommendedProxySettings = true;
-        proxyWebsockets = true;
-      };
-    };
-
-    # --- systemd ---
-
-    # kanidm needs acme cert access
-    systemd.services.kanidm = {
-      after = [ "acme-${acmeDomain}.service" ];
-      wants = [ "acme-${acmeDomain}.service" ];
-      serviceConfig.SupplementaryGroups = [ config.security.acme.certs.${acmeDomain}.group ];
-    };
+    services.caddy.virtualHosts.${serviceDomain}.extraConfig = ''
+      reverse_proxy ${internalUrl}
+    '';
   };
 }

@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.nextcloud;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "cloud.${acmeDomain}";
   port = 8009;
@@ -219,12 +219,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.cloud = {
-      inherit port;
-      extraConfig = "client_max_body_size 512M;";
-    };
+    nixfiles.caddy.vhosts.cloud.port = port;
 
     # --- backup ---
 

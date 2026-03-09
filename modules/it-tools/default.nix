@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.it-tools;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "tools.${acmeDomain}";
   bindAddress = "127.0.0.1";
   inherit (cfg) port;
@@ -59,9 +59,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.tools = {
+    nixfiles.caddy.vhosts.tools = {
       inherit port;
     };
   };

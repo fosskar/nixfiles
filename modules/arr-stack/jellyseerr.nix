@@ -5,7 +5,7 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "jellyseerr.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 5055;
@@ -45,10 +45,10 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
     # no proxy-auth - jellyseerr has built-in auth
-    nixfiles.nginx.vhosts.jellyseerr = {
+    nixfiles.caddy.vhosts.jellyseerr = {
       inherit port;
     };
   };

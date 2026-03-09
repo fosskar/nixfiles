@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.filebrowser-quantum;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "files.${acmeDomain}";
   bindAddress = "127.0.0.1";
@@ -189,9 +189,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.files = {
+    nixfiles.caddy.vhosts.files = {
       inherit port;
     };
 

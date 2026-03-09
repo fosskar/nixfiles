@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "jellyfin.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 8096;
@@ -59,10 +59,10 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
     # no proxy-auth - jellyfin has built-in auth
-    nixfiles.nginx.vhosts.jellyfin = {
+    nixfiles.caddy.vhosts.jellyfin = {
       inherit port;
     };
 

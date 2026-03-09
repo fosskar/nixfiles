@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "sonarr.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 8989;
@@ -45,9 +45,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.sonarr = {
+    nixfiles.caddy.vhosts.sonarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };

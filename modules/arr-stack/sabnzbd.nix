@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "sabnzbd.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 8085;
@@ -70,9 +70,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.sabnzbd = {
+    nixfiles.caddy.vhosts.sabnzbd = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };

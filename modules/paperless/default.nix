@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.paperless;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "docs.${acmeDomain}";
   bindAddress = "127.0.0.1";
@@ -203,9 +203,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.docs = {
+    nixfiles.caddy.vhosts.docs = {
       inherit port;
     };
 

@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.stirling-pdf;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "pdf.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 8180;
@@ -61,9 +61,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.pdf = {
+    nixfiles.caddy.vhosts.pdf = {
       inherit port;
     };
 

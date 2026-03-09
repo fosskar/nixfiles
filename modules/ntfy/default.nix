@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.ntfy;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "ntfy.${acmeDomain}";
   publicUrl = "https://ntfy.${publicDomain}";
@@ -136,9 +136,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.ntfy = {
+    nixfiles.caddy.vhosts.ntfy = {
       inherit port;
     };
 

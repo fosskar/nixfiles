@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.opencloud;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "cloud.${acmeDomain}";
   bindAddress = "0.0.0.0";
@@ -253,28 +253,20 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    # opencloud needs buffering off for SSE + long timeouts
-    services.nginx.virtualHosts."${serviceDomain}" = {
-      useACMEHost = acmeDomain;
-      forceSSL = true;
-      extraConfig = ''
-        client_max_body_size 10G;
-      '';
-      locations."/" = {
-        proxyPass = internalUrl;
-        recommendedProxySettings = true;
-        proxyWebsockets = true;
-        extraConfig = ''
-          proxy_buffering off;
-          proxy_request_buffering off;
-          proxy_read_timeout 3600s;
-          proxy_send_timeout 3600s;
-          proxy_next_upstream off;
-        '';
-      };
-    };
+    services.caddy.virtualHosts."${serviceDomain}".extraConfig = ''
+      reverse_proxy ${internalUrl} {
+        flush_interval -1
+        transport http {
+          read_timeout 3600s
+          write_timeout 3600s
+        }
+      }
+      request_body {
+        max_size 10GB
+      }
+    '';
 
     # --- backup ---
 

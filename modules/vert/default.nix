@@ -5,7 +5,7 @@
 }:
 let
   cfg = config.nixfiles.vert;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "converter.${acmeDomain}";
   bindAddress = "127.0.0.1";
   inherit (cfg) port;
@@ -78,11 +78,11 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.converter = {
+    nixfiles.caddy.vhosts.converter = {
       inherit port;
     };
-    nixfiles.nginx.vhosts.vertd = lib.mkIf cfg.vertd.enable { inherit (cfg.vertd) port; };
+    nixfiles.caddy.vhosts.vertd = lib.mkIf cfg.vertd.enable { inherit (cfg.vertd) port; };
   };
 }

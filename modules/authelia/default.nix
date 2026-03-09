@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.authelia;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "auth.${acmeDomain}";
   bindAddress = "0.0.0.0";
   port = 9091;
@@ -211,9 +211,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.auth = {
+    nixfiles.caddy.vhosts.auth = {
       inherit port;
     };
 

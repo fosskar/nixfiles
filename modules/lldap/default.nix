@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.lldap;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "ldap.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 17170;
@@ -114,9 +114,9 @@ in
         }
       ];
 
-      # --- nginx ---
+      # --- caddy ---
 
-      nixfiles.nginx.vhosts.ldap = {
+      nixfiles.caddy.vhosts.ldap = {
         inherit port;
       };
 

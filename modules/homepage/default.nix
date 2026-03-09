@@ -116,7 +116,7 @@ in
       enable = true;
       listenPort = 8082;
       openFirewall = false;
-      allowedHosts = "home.${config.nixfiles.acme.domain}";
+      allowedHosts = "home.${config.nixfiles.caddy.domain}";
 
       settings = {
         title = "home-lab dashboard";
@@ -136,8 +136,8 @@ in
       customJS = "";
     };
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.home.port = config.services.homepage-dashboard.listenPort;
+    nixfiles.caddy.vhosts.home.port = config.services.homepage-dashboard.listenPort;
   };
 }

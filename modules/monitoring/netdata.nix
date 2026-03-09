@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.monitoring.netdata;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "netdata.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 19999;
@@ -61,9 +61,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.netdata = {
+    nixfiles.caddy.vhosts.netdata = {
       inherit port;
     };
   };

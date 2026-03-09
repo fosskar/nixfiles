@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.arr-stack;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "radarr.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 7878;
@@ -45,9 +45,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.radarr = {
+    nixfiles.caddy.vhosts.radarr = {
       inherit port;
       proxy-auth = cfg.authelia.enable;
     };

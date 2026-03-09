@@ -216,9 +216,9 @@ in
     pkgs.whisper-cpp # STT - must be in system PATH for openclaw to find
   ];
 
-  # --- nginx ---
+  # --- caddy ---
 
-  nixfiles.nginx.vhosts.openclaw.port = 18789;
+  nixfiles.caddy.vhosts.openclaw.port = 18789;
 
   # --- systemd ---
 

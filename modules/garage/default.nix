@@ -8,7 +8,7 @@
 }:
 let
   cfg = config.nixfiles.garage;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "s3.${acmeDomain}";
   webuiPort = 3909;
   adminPort = 3903;
@@ -89,9 +89,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.s3 = {
+    nixfiles.caddy.vhosts.s3 = {
       port = webuiPort;
       proxy-auth = true;
     };

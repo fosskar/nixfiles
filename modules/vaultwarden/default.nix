@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.nixfiles.vaultwarden;
-  acmeDomain = config.nixfiles.acme.domain;
+  acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "vault.${acmeDomain}";
   bindAddress = "127.0.0.1";
@@ -144,9 +144,9 @@ in
       }
     ];
 
-    # --- nginx ---
+    # --- caddy ---
 
-    nixfiles.nginx.vhosts.vault = {
+    nixfiles.caddy.vhosts.vault = {
       inherit port;
     };
 
