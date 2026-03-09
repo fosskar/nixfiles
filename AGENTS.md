@@ -44,6 +44,10 @@ ssh root@<ip>                   # direct IP (from deploy output)
 - **netbird** — mesh vpn, server on hzc-pango (`nb.fosskar.eu`), all machines are clients
 - **wireguard** — site-to-site, controller on hzc-pango
 
+## custom packages
+
+custom packages in `packages/` are available as `pkgs.custom.<name>` (not `pkgs.<name>`).
+
 ## repo structure
 
 - `machines/` - per-host nixos configs
