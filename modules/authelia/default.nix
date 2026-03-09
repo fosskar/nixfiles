@@ -39,17 +39,6 @@ in
   config = lib.mkIf cfg.enable {
     # --- secrets ---
 
-    # storage encryption key - separate generator, must never regenerate
-    clan.core.vars.generators.authelia-storage-encryption-key = {
-      files."storage-encryption-key" = secretsPermission;
-
-      runtimeInputs = [ pkgs.pwgen ];
-      script = ''
-        pwgen -s 64 1 | tr -d '\n' > "$out/storage-encryption-key"
-      '';
-    };
-
-    # main authelia secrets generator
     clan.core.vars.generators.authelia = {
       files = {
         "jwt-secret" = secretsPermission;
@@ -61,8 +50,6 @@ in
         "storage-encryption-key" = secretsPermission;
       };
 
-      dependencies = [ "authelia-storage-encryption-key" ];
-
       runtimeInputs = with pkgs; [
         authelia
         pwgen
@@ -72,6 +59,7 @@ in
         pwgen -s 64 1 | tr -d '\n' > "$out/jwt-secret"
         pwgen -s 64 1 | tr -d '\n' > "$out/session-secret"
         pwgen -s 64 1 | tr -d '\n' > "$out/hmac-secret"
+        pwgen -s 64 1 | tr -d '\n' > "$out/storage-encryption-key"
         pwgen -s 32 1 | tr -d '\n' > "$out/lldap-password"
 
         authelia crypto certificate rsa generate \
@@ -80,8 +68,6 @@ in
           --file.private-key jwks-private-key \
           --file.certificate jwks-certificate \
           --directory "$out"
-
-        cat "$in/authelia-storage-encryption-key/storage-encryption-key" > "$out/storage-encryption-key"
       '';
     };
 
