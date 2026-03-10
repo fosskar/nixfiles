@@ -10,13 +10,19 @@ let
   vhostModule = lib.types.submodule {
     options = {
       port = lib.mkOption {
-        type = lib.types.port;
+        type = lib.types.nullOr lib.types.port;
+        default = null;
         description = "backend port to proxy to";
       };
       host = lib.mkOption {
         type = lib.types.str;
         default = "127.0.0.1";
         description = "backend host to proxy to";
+      };
+      root = lib.mkOption {
+        type = lib.types.nullOr lib.types.path;
+        default = null;
+        description = "serve static files from this path instead of reverse proxying";
       };
       websockets = lib.mkOption {
         type = lib.types.bool;
@@ -85,7 +91,7 @@ in
       enable = true;
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/desec@v1.1.0" ];
-        hash = "sha256-Udwf/DfrUKGGiJ0hbbO4mgYknoH0/bvc44aNXHeI1BY=";
+        hash = "sha256-706Z9kw+7DJz4a3qDGemuFAHSD4ko8rSJblr8S9BgH0=";
       };
       inherit (cfg) email;
       globalConfig = ''
@@ -104,7 +110,16 @@ in
         value = {
           extraConfig = ''
             ${lib.optionalString vhost.proxy-auth autheliaForwardAuth}
-            reverse_proxy ${vhost.host}:${toString vhost.port}
+            ${
+              if vhost.root != null then
+                ''
+                  root * ${vhost.root}
+                  file_server
+                  try_files {path} {path}.html {path}/ =404
+                ''
+              else
+                "reverse_proxy ${vhost.host}:${toString vhost.port}"
+            }
             ${vhost.extraConfig}
           '';
         };
