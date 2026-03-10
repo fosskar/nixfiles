@@ -192,11 +192,7 @@ _: {
 
             # persist client identity across reboots
             nixfiles.persistence.directories = [
-              {
-                directory = "/var/lib/netbird";
-                user = "netbird";
-                group = "netbird";
-              }
+              "/var/lib/netbird"
             ];
           };
       };
