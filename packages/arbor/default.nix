@@ -3,38 +3,38 @@
   stdenv,
   fetchurl,
   autoPatchelfHook,
+  makeWrapper,
+  makeDesktopItem,
+  copyDesktopItems,
   vulkan-loader,
   libGL,
   libxkbcommon,
-  xorg,
   wayland,
+  zlib,
+  gcc-unwrapped,
   fontconfig,
   freetype,
-  openssl,
-  zlib,
-  libgit2,
-  libssh2,
+  git,
+  openssh,
+  libxcb,
+  avahi,
+  zsh,
 }:
 let
   pname = "arbor";
-  version = "20260309.05";
+  version = "20260311.03";
 
   runtimeDeps = [
     vulkan-loader
     libGL
     libxkbcommon
-    xorg.libxcb
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXi
+    libxcb
     wayland
     fontconfig
     freetype
-    openssl
     zlib
-    libgit2
-    libssh2
+    gcc-unwrapped.lib
+    avahi
   ];
 in
 stdenv.mkDerivation {
@@ -42,10 +42,28 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/penso/arbor/releases/download/${version}/Arbor-${version}-x86_64-unknown-linux-gnu.tar.gz";
-    hash = "sha256-/WdYKyb4wCCKndrTgS/spC2rzFJ1qD/x9qUVwosaOcc=";
+    hash = "sha256-tSfPvYrzPnzDvJ2S+cIzIUSz/L9KryPYP+yh4HhV6JU=";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook ];
+  desktopItems = [
+    (makeDesktopItem {
+      name = "arbor";
+      desktopName = "Arbor";
+      comment = "agentic coding with git worktrees, terminals, and diffs";
+      exec = "arbor";
+      terminal = false;
+      categories = [
+        "Development"
+        "IDE"
+      ];
+    })
+  ];
+
+  nativeBuildInputs = [
+    autoPatchelfHook
+    copyDesktopItems
+    makeWrapper
+  ];
   buildInputs = runtimeDeps;
 
   sourceRoot = "Arbor-${version}-x86_64-unknown-linux-gnu";
@@ -64,8 +82,17 @@ stdenv.mkDerivation {
 
   postFixup = ''
     for bin in $out/bin/arbor $out/bin/arbor-httpd $out/bin/arbor-mcp; do
-      patchelf --add-rpath "${lib.makeLibraryPath runtimeDeps}" "$bin"
+      wrapProgram "$bin" \
+        --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeDeps}" \
+        --prefix PATH : "${
+          lib.makeBinPath [
+            git
+            openssh
+          ]
+        }"
     done
+    # use zsh for embedded terminal (fish has DA1 query issues with arbor's terminal emulator)
+    wrapProgram $out/bin/arbor --set SHELL "${zsh}/bin/zsh"
   '';
 
   meta = {
