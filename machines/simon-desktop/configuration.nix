@@ -15,6 +15,8 @@
     ../../modules/niri
     ../../modules/persistence
     ../../modules/agent-desktop
+    ../../modules/arbor
+    ../../modules/t3code
   ]
   ++ mylib.scanPaths ./. { };
 
