@@ -150,6 +150,11 @@
       };
     };
 
+    wiki = {
+      url = "git+https://tangled.org/fosskar.eu/wiki";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
