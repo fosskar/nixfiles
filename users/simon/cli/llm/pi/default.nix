@@ -77,7 +77,6 @@ in
     exclude = [
       "extensions"
       "prompts"
-      "skills"
     ];
   };
 
@@ -88,8 +87,7 @@ in
 
   home.file = {
     ".pi/agent/AGENTS.md".source = ../AGENTS.md;
-    ".pi/agent/skills".source = ./skills;
-    ".pi/agent/skills".recursive = true;
+
   }
   // extensionEntries
   // promptEntries;

@@ -30,6 +30,10 @@
 - `nix fmt` - format nix files
 - always check **unstable** channel for modules/packages
 
+## tools
+
+- always prefer `gh` cli for GitHub interactions, never scrape github.com
+
 ## devops
 
 - everything as code, declarative over imperative
