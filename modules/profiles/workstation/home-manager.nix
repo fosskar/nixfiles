@@ -14,9 +14,18 @@
     verbose = true;
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension =
-      "backup-"
-      + pkgs.lib.readFile "${pkgs.runCommand "timestamp" { } "echo -n `date '+%Y%m%d%H%M%S'` > $out"}";
+    backupFileExtension = null;
+    backupCommand = pkgs.writeShellScript "hm-backup" ''
+      src="$1"
+      ts="$(date +%Y%m%d%H%M%S)"
+      dst="$src.hm.$ts"
+      i=0
+      while [ -e "$dst" ]; do
+        i=$((i+1))
+        dst="$src.hm.$ts.$i"
+      done
+      mv -- "$src" "$dst"
+    '';
 
     extraSpecialArgs = {
       inherit inputs;
