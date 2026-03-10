@@ -73,18 +73,6 @@
         mute_on_join = true;
         share_on_join = false;
       };
-      context_servers = {
-        mcp-server-nixos = {
-          enabled = true;
-          command = "nix";
-          args = [
-            "run"
-            "github:utensils/mcp-nixos"
-            "--"
-          ];
-          env = { };
-        };
-      };
       soft_wrap = "editor_width";
       restore_on_startup = "last_workspace";
       indent_guides = {
