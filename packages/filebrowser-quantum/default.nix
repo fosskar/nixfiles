@@ -6,13 +6,13 @@
 }:
 
 let
-  version = "1.2.1-stable";
+  version = "1.2.2-stable";
 
   src = fetchFromGitHub {
     owner = "gtsteffaniak";
     repo = "filebrowser";
     tag = "v${version}";
-    hash = "sha256-aRGknePTgWukEz8Z1o+KyeeisBCyE8OBDimesRi2414=";
+    hash = "sha256-MWFBoVr5WRfLhDUGEGS6ntb3v23HcOcm91x3fGriM2A=";
   };
 
   frontend = buildNpmPackage {
@@ -47,7 +47,7 @@ buildGoModule {
 
   sourceRoot = "${src.name}/backend";
 
-  vendorHash = "sha256-EREERMHM7EIP1g2cW3WAwZi/BW+AHULT7egayf8Tj24=";
+  vendorHash = "sha256-brW5YR/DNBOCPBDMEjSzyk+YTbrP5ppdQ0US/DLbyIs=";
 
   preBuild = ''
     mkdir -p http/embed
