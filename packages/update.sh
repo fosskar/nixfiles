@@ -25,6 +25,15 @@ declare -A VERSION_REGEX=(
   ["fosrl-pangolin"]='(\d+\.\d+\.\d+)$'
 )
 
+# packages that need explicit upstream url (derivation src has no direct url)
+declare -A UPDATE_URL=(
+  ["agent-desktop"]="https://github.com/BaLaurent/agent-desktop"
+  ["t3code"]="https://github.com/pingdotgg/t3code"
+)
+
+# packages that should use github releases api
+GITHUB_RELEASE_PACKAGES=("agent-desktop" "t3code")
+
 # packages to skip (binary releases, manual updates)
 SKIP_PACKAGES=("handy" "voquill")
 
@@ -64,6 +73,15 @@ update_package() {
   if [[ -v "VERSION_REGEX[$pkg]" ]]; then
     extra_args+=("--version-regex" "${VERSION_REGEX[$pkg]}")
   fi
+  if [[ -v "UPDATE_URL[$pkg]" ]]; then
+    extra_args+=("--url" "${UPDATE_URL[$pkg]}")
+  fi
+
+  local use_github_releases=false
+  for gh_pkg in "${GITHUB_RELEASE_PACKAGES[@]}"; do
+    [[ $pkg == "$gh_pkg" ]] && use_github_releases=true && break
+  done
+  $use_github_releases && extra_args+=("--use-github-releases")
 
   local is_gradle=false
   for gradle_pkg in "${GRADLE_PACKAGES[@]}"; do
