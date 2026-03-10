@@ -19,16 +19,15 @@ let
   # merged on top of existing local settings.json (or deployed 1:1 if none exists).
   piSettings = {
     lastChangelogVersion = "99.99.99";
-    defaultProvider = "anthropic";
-    defaultModel = "claude-opus-4-6";
-    defaultThinkingLevel = "low";
+    #defaultProvider = "anthropic";
+    #defaultModel = "claude-opus-4-6";
+    #defaultThinkingLevel = "low";
     hideThinkingBlock = true;
     steeringMode = "all";
     followUpMode = "all";
     theme = "dark";
-    quietStartup = false;
+    quietStartup = true;
     packages = [
-
       {
         source = "git:github.com/fosskar/pi-pack";
       }
