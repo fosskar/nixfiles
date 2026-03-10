@@ -7,16 +7,16 @@
 
 buildGoModule (finalAttrs: {
   pname = "netbird-client";
-  version = "0.66.2";
+  version = "0.66.3";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "netbird";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-KKVznhyk+zg8j/5d9YiL1BFpvXGZrDwLkmzbYy+LV8I=";
+    hash = "sha256-Cj9AcdWdHAfdBbqKAkwk3/Vy24XicjTZpmRXLYkyx3k=";
   };
 
-  vendorHash = "sha256-zMjbciItpzzCmUoLZy+gEF9etQy2dRmZrRVg4iSC0+o=";
+  vendorHash = "sha256-vyf3zLTMtkmt+AXfCTRSPZ/TaJ8VP/5IzNbJwxQcfPs=";
 
   nativeBuildInputs = [ installShellFiles ];
 
