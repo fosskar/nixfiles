@@ -28,6 +28,9 @@
 
   clan.core.settings.machine-id.enable = true;
 
+  # nixpkgs netbird ui wrapper currently fails on desktop file exec replacement
+  services.netbird.ui.enable = false;
+
   nixfiles = {
     persistence = {
       enable = true;
