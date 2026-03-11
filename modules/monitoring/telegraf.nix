@@ -74,13 +74,7 @@ let
         }
       ];
     };
-    nginx = {
-      nginx = [
-        {
-          urls = [ "http://127.0.0.1:8009/nginx_status" ];
-        }
-      ];
-    };
+
     postgresql = {
       postgresql = [
         {
@@ -167,18 +161,6 @@ in
           ensureDBOwnership = false;
         }
       ];
-
-      # nginx: enable stub_status endpoint for metrics
-      nginx.virtualHosts."127.0.0.1".locations."/nginx_status" =
-        lib.mkIf (builtins.elem "nginx" cfg.plugins)
-          {
-            extraConfig = ''
-              stub_status on;
-              access_log off;
-              allow 127.0.0.1;
-              deny all;
-            '';
-          };
 
       # allow disk group to access nvme controller devices (for smart monitoring)
       udev.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) ''
