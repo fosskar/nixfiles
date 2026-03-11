@@ -9,6 +9,7 @@ let
   acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
   serviceDomain = "cloud.${acmeDomain}";
+  canonicalDomain = if publicDomain != null then "cloud.${publicDomain}" else serviceDomain;
   port = 8009;
   internalUrl = "http://127.0.0.1:${toString port}";
   oidcDomain = if publicDomain != null then publicDomain else acmeDomain;
@@ -74,8 +75,8 @@ in
         public = false;
         consent_mode = "implicit";
         redirect_uris = [
+          "https://${canonicalDomain}/apps/user_oidc/code"
           "https://${serviceDomain}/apps/user_oidc/code"
-          "https://cloud.${publicDomain}/apps/user_oidc/code"
         ];
         scopes = [
           "openid"
@@ -91,27 +92,37 @@ in
 
     # --- service ---
 
-    # nextcloud creates its own nginx vhost at hostName; pin it to 0.0.0.0:port
-    # so it's reachable by traefik on hzc-pango via netbird
-    services.nginx.virtualHosts."localhost".listen = [
-      {
-        addr = "0.0.0.0";
-        inherit port;
-      }
-    ];
+    # nextcloud creates its own nginx vhost; override default port to avoid
+    # conflicting with caddy on :80, bind 0.0.0.0 so it's reachable via netbird
+    services.nginx.defaultHTTPListenPort = port;
+    services.nginx.virtualHosts.${canonicalDomain} = {
+      serverAliases = [ serviceDomain ];
+      listen = lib.mkForce [
+        {
+          addr = "0.0.0.0";
+          inherit port;
+        }
+      ];
+      extraConfig = ''
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+      '';
+    };
+
+    users.users.nextcloud.extraGroups = lib.mkAfter [ "shared" ];
 
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud33;
       datadir = "/tank/apps/nextcloud";
-      hostName = "localhost";
+      hostName = canonicalDomain;
       https = false;
       autoUpdateApps.enable = false;
 
       notify_push = {
         enable = true;
         bendDomainToLocalhost = false;
-        nextcloudUrl = "https://${serviceDomain}";
+        # keep notify_push traffic on internal nginx backend
+        nextcloudUrl = "http://${serviceDomain}:${toString port}";
       };
 
       # socket auth — no dbpassFile
@@ -159,15 +170,15 @@ in
 
       settings = {
         overwriteprotocol = "https";
-        "overwrite.cli.url" = "https://${serviceDomain}";
+        "overwrite.cli.url" = "https://${canonicalDomain}";
         trusted_proxies = [
           "127.0.0.1"
           "192.168.10.80" # hm-nixbox own IP — needed because external nginx proxies to nextcloud's localhost:8009
+          "100.64.0.0/10" # NetBird CGNAT range (proxy source seen by notify_push setup checks)
         ];
         trusted_domains = [
-          "127.0.0.1"
+          canonicalDomain
           serviceDomain
-          "cloud.${publicDomain}"
         ];
 
         default_phone_region = "DE";
@@ -204,8 +215,8 @@ in
         name = "Nextcloud";
         category = "Documents";
         icon = "nextcloud.svg";
-        href = "https://${serviceDomain}";
-        siteMonitor = internalUrl;
+        href = "https://${canonicalDomain}";
+        siteMonitor = "${internalUrl}/status.php";
       }
     ];
 
@@ -214,7 +225,7 @@ in
     nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
       {
         name = "Nextcloud";
-        url = "https://${serviceDomain}";
+        url = "https://${canonicalDomain}";
         group = "Documents";
       }
     ];
@@ -235,13 +246,7 @@ in
       ];
     };
 
-    clan.core.state.nextcloud.folders = [ "/tank/apps/nextcloud" ];
-
     # --- systemd ---
-
-    # notify_push daemon talks directly to nextcloud, bypassing external nginx
-    systemd.services.nextcloud-notify_push.environment.NEXTCLOUD_URL =
-      lib.mkForce "http://localhost:${toString port}";
 
     # bootstrap oidc provider in nextcloud DB via occ
     # user_oidc:provider is idempotent (creates or updates)
@@ -274,12 +279,59 @@ in
           --mapping-email="email" \
           --group-provisioning=1
 
-        # disable bundled apps we don't use
-        "$occ" app:disable photos
+        # app policy
+        "$occ" app:enable activity || true
+
+        # disable apps we don't use
+        for app in \
+          photos \
+          weather_status \
+          recommendations \
+          support \
+          nextcloud_announcements \
+          related_resources \
+          federation \
+          cloud_federation_api \
+          federatedfilesharing \
+          lookup_server_connector \
+          circles \
+          dashboard \
+          firstrunwizard \
+          user_status \
+          logreader \
+          webhook_listeners \
+          app_api \
+          systemtags \
+          password_policy \
+          sharebymail \
+          files_downloadlimit \
+          survey_client
+        do
+          "$occ" app:disable "$app" || true
+        done
 
         # allow users to mount their own SMB external storage
+        "$occ" app:enable files_external
         "$occ" config:app:set files_external allow_user_mounting --value=yes
         "$occ" config:app:set files_external user_mounting_backends --value=smb
+
+        # declarative admin external mount: /shared -> /tank/shares/shared
+        mounts="$($occ files_external:list --output=json_pretty 2>/dev/null || echo '[]')"
+
+        # cleanup legacy root mount if present
+        for mid in $(${pkgs.jq}/bin/jq -r '.[] | select(.mount_point == "/" and .storage == "\\OC\\Files\\Storage\\Local") | .mount_id' <<< "$mounts"); do
+          printf 'y\n' | "$occ" files_external:delete "$mid" >/dev/null || true
+        done
+
+        shared_mid=$(${pkgs.jq}/bin/jq -r '.[] | select(.mount_point == "/shared" and .storage == "\\OC\\Files\\Storage\\Local") | .mount_id' <<< "$mounts" | head -n1)
+        if [ -n "$shared_mid" ] && [ "$shared_mid" != "null" ]; then
+          "$occ" files_external:config "$shared_mid" datadir /tank/shares/shared >/dev/null || true
+        else
+          "$occ" files_external:create /shared local null::null -c datadir=/tank/shares/shared >/dev/null || true
+        fi
+
+        # notify_push endpoint clients use (public URL)
+        "$occ" config:app:set notify_push base_endpoint --value="https://${canonicalDomain}/push"
       '';
     };
   };

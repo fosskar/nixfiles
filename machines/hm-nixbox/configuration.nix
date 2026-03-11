@@ -9,6 +9,7 @@
     ../../modules/caddy
     ../../modules/borgbackup
     ../../modules/opencloud
+    ../../modules/nextcloud
     ../../modules/lldap
     ../../modules/authelia
     ../../modules/immich

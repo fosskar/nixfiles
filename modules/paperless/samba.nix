@@ -50,10 +50,10 @@ in
           browseable = "yes";
           "read only" = "no";
           "guest ok" = "no";
-          "force user" = "opencloud";
-          "force group" = "opencloud";
-          "create mask" = "0666";
-          "directory mask" = "0777";
+          "force user" = "paperless";
+          "force group" = "shared";
+          "create mask" = "0664";
+          "directory mask" = "2775";
           comment = "printer scan to paperless";
         };
       };

@@ -119,8 +119,14 @@ in
 
     # --- service ---
 
-    # paperless needs to traverse nextcloud data dir to reach groupfolder consume dir
-    users.users.paperless.extraGroups = [ "opencloud" ];
+    # shared fs group membership (declarative, reliable)
+    users.groups.shared.members = [
+      "nextcloud"
+      "paperless"
+    ];
+
+    # paperless needs access to shared consume dir
+    users.users.paperless.extraGroups = [ "shared" ];
 
     services.paperless = {
       enable = true;
@@ -130,9 +136,7 @@ in
 
       # storage locations (dataDir defaults to /var/lib/paperless - on SSD)
       mediaDir = "/tank/apps/paperless/media";
-      #consumptionDir = "/tank/apps/nextcloud/data/__groupfolders/1/files/documents/consume";
-      consumptionDir = "/tank/apps/opencloud/data/projects/f9beb848-8a0b-4be6-ad43-fdce26636a4b";
-      #consumptionDir = "/tank/apps/paperless/consume";
+      consumptionDir = "/tank/shares/shared/documents/consume";
       consumptionDirIsPublic = true;
 
       # local postgresql
