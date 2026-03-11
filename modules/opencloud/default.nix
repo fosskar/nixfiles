@@ -8,7 +8,7 @@ let
   cfg = config.nixfiles.opencloud;
   acmeDomain = config.nixfiles.caddy.domain;
   inherit (config.nixfiles.authelia) publicDomain;
-  serviceDomain = "cloud.${acmeDomain}";
+  serviceDomain = "opencloud.${acmeDomain}";
   bindAddress = "0.0.0.0";
   port = 9200;
   internalUrl = "http://127.0.0.1:${toString port}";
@@ -18,10 +18,10 @@ let
   # all opencloud clients need to be registered in the IDP
   # client IDs are hardcoded in the apps — see docs
   publicDomainUris = lib.optionals (publicDomain != null) [
-    "https://cloud.${publicDomain}/"
-    "https://cloud.${publicDomain}/oidc-callback.html"
-    "https://cloud.${publicDomain}/oidc-silent-redirect.html"
-    "https://cloud.${publicDomain}/web-oidc-callback"
+    "https://opencloud.${publicDomain}/"
+    "https://opencloud.${publicDomain}/oidc-callback.html"
+    "https://opencloud.${publicDomain}/oidc-silent-redirect.html"
+    "https://opencloud.${publicDomain}/web-oidc-callback"
   ];
 
   # OIDC origins that need to be in CSP connect-src + frame-src
@@ -238,7 +238,7 @@ in
       {
         name = "OpenCloud";
         category = "Documents";
-        icon = "https://cloud.${acmeDomain}/themes/opencloud/assets/favicon.svg";
+        icon = "https://opencloud.${acmeDomain}/themes/opencloud/assets/favicon.svg";
         href = "https://${serviceDomain}";
         siteMonitor = internalUrl;
       }
