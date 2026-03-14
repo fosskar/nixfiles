@@ -134,25 +134,48 @@ in
           };
         };
 
-        #monitoring = {
-        #  module = {
-        #    name = "monitoring";
-        #    input = "clan-core";
-        #  };
-        #
-        #  roles = {
-        #    client = {
-        #      tags = [ "server" ];
-        #      # Decide whether or not your server is reachable via https.
-        #      settings.useSSL = false;
-        #    };
-        #
-        #    server.machines."hm-nixbox".settings = {
-        #      # Optionally enable grafana for dashboards and alerts.
-        #      grafana.enable = true;
-        #    };
-        #  };
-        #};
+        monitoring = {
+          module = {
+            name = "monitoring";
+            input = "self";
+          };
+
+          roles = {
+            client.tags = [ "server" ];
+
+            server.machines."hm-nixbox".settings = {
+              dashboardsDir = ./hm-nixbox/dashboards;
+              exporter = {
+                enable = true;
+                enableZfsExporter = true;
+              };
+              extraTelegrafTargets = [ "openwrt.lan:9273" ];
+              extraScrapeConfigs = [
+                {
+                  job_name = "openwrt-node-exporter";
+                  static_configs = [
+                    {
+                      targets = [ "openwrt.lan:9100" ];
+                      labels.type = "node-exporter";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            # hm-nixbox has richer local telemetry needs
+            client.machines."hm-nixbox".settings.plugins = [
+              "system"
+              "systemd"
+              "zfs"
+              "upsd"
+              "sensors"
+              "smart"
+              "postgresql"
+            ];
+
+          };
+        };
 
         clan-cache = {
           roles.default.tags.all = { };

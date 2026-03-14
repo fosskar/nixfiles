@@ -8,7 +8,7 @@ let
   acmeDomain = config.nixfiles.caddy.domain;
   serviceDomain = "vm.${acmeDomain}";
   bindAddress = "127.0.0.1";
-  port = 8428;
+  inherit (cfg) port;
   internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
@@ -25,6 +25,12 @@ in
       type = lib.types.str;
       default = "3";
       description = "data retention in months";
+    };
+
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 8428;
+      description = "victoriametrics listen port";
     };
 
     scrapeConfigs = lib.mkOption {
@@ -45,6 +51,7 @@ in
       extraOptions = [
         "-promscrape.dropOriginalLabels=false"
         "-selfScrapeInterval=10s"
+        "-enableTCP6"
       ];
 
       prometheusConfig.scrape_configs =

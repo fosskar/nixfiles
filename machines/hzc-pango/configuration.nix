@@ -13,11 +13,7 @@
     ../../modules/persistence
     ../../modules/traefik
   ]
-  ++ (mylib.scanPaths ./. {
-    exclude = [
-      "monitoring.nix"
-    ];
-  });
+  ++ (mylib.scanPaths ./. { });
 
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression

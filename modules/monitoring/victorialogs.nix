@@ -5,6 +5,7 @@
 }:
 let
   cfg = config.nixfiles.monitoring.victorialogs;
+  inherit (cfg) port;
 in
 {
   # --- options ---
@@ -15,6 +16,13 @@ in
       default = true;
       description = "victorialogs log aggregation";
     };
+
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 9428;
+      description = "victorialogs listen port";
+    };
+
   };
 
   config = lib.mkIf cfg.enable {
@@ -22,7 +30,8 @@ in
 
     services.victorialogs = {
       enable = true;
-      listenAddress = "127.0.0.1:9428";
+      listenAddress = "127.0.0.1:${toString port}";
+      extraOptions = [ "-enableTCP6" ];
     };
 
     # grafana datasource
