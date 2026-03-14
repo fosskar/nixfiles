@@ -19,7 +19,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 34,
   "links": [],
   "panels": [
     {
@@ -102,7 +101,7 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -121,42 +120,31 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "semi-dark-blue",
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
+          "fieldMinMax": false,
           "mappings": [],
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#0a3a52",
                 "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 50
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 90
               }
             ]
           },
-          "unit": "percent"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 2,
+        "w": 4,
         "x": 5,
         "y": 0
       },
-      "id": 108,
+      "id": 103,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -172,13 +160,16 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "zfs_pool_fragmentation_ratio{pool=~\"$pool\"} * 100",
-          "legendFormat": "fragmentation",
+          "exemplar": false,
+          "expr": "zfs_pool_size_bytes{pool=\"$pool\"}",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "size",
           "range": true,
           "refId": "A"
         }
@@ -212,8 +203,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 2,
-        "x": 7,
+        "w": 3,
+        "x": 9,
         "y": 0
       },
       "id": 107,
@@ -232,7 +223,7 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -277,7 +268,7 @@
       "gridPos": {
         "h": 10,
         "w": 2,
-        "x": 9,
+        "x": 12,
         "y": 0
       },
       "id": 203,
@@ -296,7 +287,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -402,8 +393,8 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 13,
-        "x": 11,
+        "w": 10,
+        "x": 14,
         "y": 0
       },
       "id": 104,
@@ -420,7 +411,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -434,7 +425,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_nwritten{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "write bytes",
           "range": true,
           "refId": "B"
@@ -443,7 +433,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_reads{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "read ops",
           "range": true,
           "refId": "C"
@@ -452,7 +441,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_writes{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "write ops",
           "range": true,
           "refId": "D"
@@ -469,7 +457,6 @@
             "fixedColor": "blue",
             "mode": "fixed"
           },
-          "fieldMinMax": false,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -485,12 +472,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 2,
+        "h": 4,
+        "w": 4,
         "x": 0,
         "y": 3
       },
-      "id": 103,
+      "id": 102,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -506,16 +493,13 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "exemplar": false,
-          "expr": "zfs_pool_size_bytes{pool=\"$pool\"}",
-          "format": "time_series",
-          "instant": false,
-          "legendFormat": "size",
+          "expr": "zfs_pool_free_bytes{pool=~\"$pool\"}",
+          "legendFormat": "free",
           "range": true,
           "refId": "A"
         }
@@ -546,9 +530,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 2,
+        "h": 4,
+        "w": 4,
+        "x": 4,
         "y": 3
       },
       "id": 101,
@@ -567,71 +551,13 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "zfs_pool_allocated_bytes{pool=~\"$pool\"}",
           "legendFormat": "alloc",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#0a3a52",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 4,
-        "y": 3
-      },
-      "id": 102,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": false
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "editorMode": "code",
-          "expr": "zfs_pool_free_bytes{pool=~\"$pool\"}",
-          "legendFormat": "free",
           "range": true,
           "refId": "A"
         }
@@ -671,9 +597,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 3,
-        "x": 6,
+        "h": 4,
+        "w": 4,
+        "x": 8,
         "y": 3
       },
       "id": 109,
@@ -690,7 +616,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -728,11 +654,11 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 1,
+        "w": 4,
         "x": 0,
-        "y": 6
+        "y": 7
       },
-      "id": 106,
+      "id": 105,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -748,13 +674,13 @@
         "textMode": "value_and_name",
         "wideLayout": true
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "zfs_pool_freeing_bytes{pool=~\"$pool\"}",
-          "legendFormat": "freeing",
+          "expr": "zfs_pool_leaked_bytes{pool=~\"$pool\"}",
+          "legendFormat": "leaked",
           "range": true,
           "refId": "A"
         }
@@ -786,11 +712,11 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 1,
-        "x": 1,
-        "y": 6
+        "w": 4,
+        "x": 4,
+        "y": 7
       },
-      "id": 105,
+      "id": 106,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -806,13 +732,85 @@
         "textMode": "value_and_name",
         "wideLayout": true
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "zfs_pool_leaked_bytes{pool=~\"$pool\"}",
-          "legendFormat": "leaked",
+          "expr": "zfs_pool_freeing_bytes{pool=~\"$pool\"}",
+          "legendFormat": "freeing",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "type": "stat"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "semi-dark-blue",
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 50
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 8,
+        "y": 7
+      },
+      "id": 108,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": false
+      },
+      "pluginVersion": "12.4.0",
+      "targets": [
+        {
+          "datasource": "VictoriaMetrics",
+          "editorMode": "code",
+          "expr": "zfs_pool_fragmentation_ratio{pool=~\"$pool\"} * 100",
+          "legendFormat": "fragmentation",
           "range": true,
           "refId": "A"
         }
@@ -895,7 +893,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -909,7 +907,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_reads{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "sync read",
           "range": true,
           "refId": "B"
@@ -918,7 +915,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_writes{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "async write",
           "range": true,
           "refId": "C"
@@ -1002,7 +998,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -1016,7 +1012,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "zfs_dmu_tx_dirty_over_max",
-          "hide": false,
           "legendFormat": "dirty over max",
           "range": true,
           "refId": "B"
@@ -1100,7 +1095,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -1114,7 +1109,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_nwritten{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "write",
           "range": true,
           "refId": "B"
@@ -1198,7 +1192,7 @@
           "sort": "desc"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -1212,7 +1206,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "rate(zfs_pool_nwritten{pool=~\"$pool\"}[$__rate_interval])",
-          "hide": false,
           "legendFormat": "{{dataset}} write",
           "range": true,
           "refId": "B"
@@ -1296,7 +1289,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -1310,7 +1303,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_zil_itx_count{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "zil itx",
           "range": true,
           "refId": "B"
@@ -1394,7 +1386,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
@@ -1408,7 +1400,6 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "expr": "sum(rate(zfs_pool_writes{pool=~\"$pool\"}[$__rate_interval]))",
-          "hide": false,
           "legendFormat": "writes",
           "range": true,
           "refId": "B"
@@ -1486,7 +1477,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 36
+            "y": 34
           },
           "id": 1,
           "options": {
@@ -1502,7 +1493,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "",
+          "pluginVersion": "12.4.0",
           "targets": [
             {
               "datasource": "VictoriaMetrics",
@@ -1516,7 +1507,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "zfs_arcstats_c",
-              "hide": false,
               "legendFormat": "arc target",
               "range": true,
               "refId": "B"
@@ -1525,7 +1515,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "zfs_arcstats_c_max",
-              "hide": false,
               "legendFormat": "arc max",
               "range": true,
               "refId": "C"
@@ -1593,7 +1582,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 36
+            "y": 34
           },
           "id": 12,
           "options": {
@@ -1609,7 +1598,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "",
+          "pluginVersion": "12.4.0",
           "targets": [
             {
               "datasource": "VictoriaMetrics",
@@ -1623,7 +1612,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "100 * zfs_arcstats_demand_data_hits / (zfs_arcstats_demand_data_hits + zfs_arcstats_demand_data_misses)",
-              "hide": false,
               "legendFormat": "demand data hit ratio",
               "range": true,
               "refId": "B"
@@ -1632,7 +1620,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "100 * zfs_arcstats_demand_metadata_hits / (zfs_arcstats_demand_metadata_hits + zfs_arcstats_demand_metadata_misses)",
-              "hide": false,
               "legendFormat": "demand metadata hit ratio",
               "range": true,
               "refId": "C"
@@ -1700,7 +1687,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 44
+            "y": 42
           },
           "id": 13,
           "options": {
@@ -1716,7 +1703,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "",
+          "pluginVersion": "12.4.0",
           "targets": [
             {
               "datasource": "VictoriaMetrics",
@@ -1730,7 +1717,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "zfs_arcstats_mfu_size",
-              "hide": false,
               "legendFormat": "mfu size",
               "range": true,
               "refId": "B"
@@ -1739,7 +1725,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "zfs_arcstats_metadata_size",
-              "hide": false,
               "legendFormat": "metadata size",
               "range": true,
               "refId": "C"
@@ -1748,7 +1733,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "zfs_arcstats_data_size",
-              "hide": false,
               "legendFormat": "data size",
               "range": true,
               "refId": "D"
@@ -1816,7 +1800,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 44
+            "y": 42
           },
           "id": 14,
           "options": {
@@ -1832,7 +1816,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "",
+          "pluginVersion": "12.4.0",
           "targets": [
             {
               "datasource": "VictoriaMetrics",
@@ -1846,7 +1830,6 @@
               "datasource": "VictoriaMetrics",
               "editorMode": "code",
               "expr": "rate(zfs_zfetchstats_misses[$__rate_interval])",
-              "hide": false,
               "legendFormat": "prefetch misses",
               "range": true,
               "refId": "B"
@@ -1871,7 +1854,6 @@
           "text": "tank",
           "value": "tank"
         },
-        "datasource": "VictoriaMetrics",
         "definition": "label_values(zfs_pool_health,pool)",
         "includeAll": false,
         "label": "pool",
@@ -1884,6 +1866,7 @@
         },
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       }
     ]
@@ -1893,8 +1876,9 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "browser",
   "title": "ZFS",
   "uid": "zfs",
-  "version": 24
+  "version": 2,
+  "weekStart": ""
 }
