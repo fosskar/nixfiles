@@ -66,6 +66,9 @@ let
           "extensions/memory-mode.ts"
         ];
       }
+      {
+        source = "npm:pi-powerline-footer";
+      }
     ];
     compaction.enabled = true;
   };
