@@ -138,6 +138,14 @@ in
       };
     };
 
+    services.telegraf.extraConfig.inputs.prometheus =
+      lib.mkIf (config.services.telegraf.enable && cfg.metrics.enable)
+        [
+          {
+            urls = [ "http://${cfg.metrics.address}/metrics" ];
+          }
+        ];
+
     # --- persistence ---
 
     nixfiles.persistence.directories = [

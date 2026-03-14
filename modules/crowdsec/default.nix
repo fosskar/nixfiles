@@ -114,6 +114,13 @@ in
       registerBouncer.enable = true;
     };
 
+    # export crowdsec metrics via telegraf scrape endpoint
+    services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
+      {
+        urls = [ "http://127.0.0.1:6060/metrics" ];
+      }
+    ];
+
     # workaround: bouncer-register calls raw cscli which expects /etc/crowdsec/config.yaml
     environment.etc."crowdsec/config.yaml".source = configFile;
 

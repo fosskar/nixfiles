@@ -19,7 +19,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 0,
   "links": [],
   "panels": [
     {
@@ -45,7 +44,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 5,
         "x": 0,
         "y": 0
       },
@@ -65,10 +64,10 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_requests_total{instance=\"$instance\"}[$__range]))",
+          "expr": "sum(increase(traefik_entrypoint_requests_total_counter{machine=\"$machine\",protocol=~\"$protocol\"}[$__range]))",
           "legendFormat": "Requests",
           "refId": "A"
         }
@@ -99,8 +98,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 3,
+        "w": 5,
+        "x": 5,
         "y": 0
       },
       "id": 4,
@@ -119,208 +118,15 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(traefik_open_connections{instance=\"$instance\"})",
+          "expr": "sum(traefik_open_connections_gauge{machine=\"$machine\"})",
           "legendFormat": "Connections",
           "refId": "A"
         }
       ],
       "title": "Open Connections",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 1000
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 6,
-        "y": 0
-      },
-      "id": 3,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, sum(rate(traefik_entrypoint_request_duration_seconds_bucket{instance=\"$instance\"}[5m])) by (le)) * 1000",
-          "legendFormat": "P95 Latency",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "P4169E866C3094E38"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(traefik_entrypoint_request_duration_seconds_sum{instance=\"$instance\"}[5m])) / sum(rate(traefik_entrypoint_request_duration_seconds_count{instance=\"$instance\"}[5m])) * 1000",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Avg Latency",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "P95 Latency",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 5
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 11,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "expr": "sum(rate(traefik_entrypoint_requests_total{instance=\"$instance\",code=~\"5..\"}[5m])) / sum(rate(traefik_entrypoint_requests_total{instance=\"$instance\"}[5m])) * 100",
-          "legendFormat": "Error Rate",
-          "refId": "A"
-        }
-      ],
-      "title": "Error Rate (5xx)",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "orange",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 14,
-        "y": 0
-      },
-      "id": 5,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "expr": "sum(increase(traefik_entrypoint_requests_total{instance=\"$instance\",code=\"403\"}[$__range]))",
-          "legendFormat": "Blocked",
-          "refId": "A"
-        }
-      ],
-      "title": "Blocked (403)",
       "type": "stat"
     },
     {
@@ -409,9 +215,9 @@
         ]
       },
       "gridPos": {
-        "h": 21,
-        "w": 7,
-        "x": 17,
+        "h": 4,
+        "w": 8,
+        "x": 13,
         "y": 0
       },
       "id": 6,
@@ -426,10 +232,10 @@
           }
         ]
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "(traefik_tls_certs_not_after{instance=\"$instance\"} - time()) / 86400",
+          "expr": "(traefik_tls_certs_not_after_gauge{machine=\"$machine\"} - time()) / 86400",
           "format": "table",
           "instant": true,
           "legendFormat": "{{sans}}",
@@ -445,9 +251,14 @@
               "Time": true,
               "__name__": true,
               "cn": true,
+              "host": true,
               "instance": true,
               "job": true,
-              "serial": true
+              "machine": true,
+              "serial": true,
+              "source": true,
+              "type": true,
+              "url": true
             },
             "renameByName": {
               "Value": "Days",
@@ -539,8 +350,8 @@
         ]
       },
       "gridPos": {
-        "h": 9,
-        "w": 7,
+        "h": 7,
+        "w": 12,
         "x": 0,
         "y": 4
       },
@@ -565,15 +376,72 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_requests_total{instance=\"$instance\",entrypoint=~\"web|websecure\"}[$__range])) by (code)",
-          "legendFormat": "{{code}}",
+          "expr": "sum(increase(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[$__range])) by (protocol, code)",
+          "legendFormat": "{{protocol}} {{code}}",
           "refId": "A"
         }
       ],
       "title": "Response Codes",
+      "type": "piechart"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": ["percent"]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.0",
+      "targets": [
+        {
+          "expr": "sum(increase(traefik_service_requests_total_counter{machine=\"$machine\",protocol=~\"$protocol\"}[$__range])) by (service)",
+          "legendFormat": "{{service}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests by Service",
       "type": "piechart"
     },
     {
@@ -693,10 +561,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
-        "w": 10,
-        "x": 7,
-        "y": 4
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 11
       },
       "id": 11,
       "options": {
@@ -712,195 +580,16 @@
           "sort": "desc"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_total{instance=\"$instance\",entrypoint=~\"web|websecure\"}[5m])) by (code)",
-          "legendFormat": "{{code}}",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m])) by (protocol, code)",
+          "legendFormat": "{{protocol}} {{code}}",
           "refId": "A"
         }
       ],
       "title": "Response Codes Over Time",
       "type": "timeseries"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": [],
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 0,
-        "y": 13
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": ["percent"]
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
-        },
-        "sort": "desc",
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "expr": "sum(increase(traefik_service_requests_total{instance=\"$instance\",protocol=\"http\"}[$__range])) by (service)",
-          "legendFormat": "{{service}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Requests by Service",
-      "type": "piechart"
-    },
-    {
-      "datasource": "VictoriaLogs",
-      "description": "requests by country from geoblock header",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": [],
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 10,
-        "x": 7,
-        "y": 31
-      },
-      "id": 16,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": ["percent"]
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
-        },
-        "sort": "desc",
-        "tooltip": {
-          "hideZeros": true,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "datasource": "VictoriaLogs",
-          "editorMode": "code",
-          "expr": "request_X-Ipcountry:* | stats by (request_X-Ipcountry) count() as requests",
-          "legendFormat": "{{request_X-Ipcountry}}",
-          "queryType": "statsRange",
-          "refId": "A"
-        }
-      ],
-      "title": "Requests by Country",
-      "type": "piechart"
-    },
-    {
-      "datasource": "VictoriaLogs",
-      "description": "blocked requests (403) by country - geoblock/crowdsec",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": [],
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 17,
-        "y": 31
-      },
-      "id": 17,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": ["percent"]
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
-        },
-        "sort": "desc",
-        "tooltip": {
-          "hideZeros": true,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "datasource": "VictoriaLogs",
-          "editorMode": "code",
-          "expr": "DownstreamStatus:403 | stats by (request_X-Ipcountry) count() as blocked",
-          "legendFormat": "{{request_X-Ipcountry}}",
-          "queryType": "statsRange",
-          "refId": "A"
-        }
-      ],
-      "title": "Blocked by Country",
-      "type": "piechart"
     },
     {
       "datasource": "VictoriaMetrics",
@@ -958,10 +647,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 10,
-        "x": 7,
-        "y": 13
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 11
       },
       "id": 7,
       "options": {
@@ -977,10 +666,10 @@
           "sort": "desc"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_total{instance=\"$instance\",entrypoint=~\"web|websecure\"}[5m])) by (entrypoint)",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m])) by (entrypoint)",
           "legendFormat": "{{entrypoint}}",
           "refId": "A"
         }
@@ -1004,7 +693,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1012,109 +701,13 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 0,
-        "y": 21
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": ["mean", "max", "min"],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.50, sum(rate(traefik_entrypoint_request_duration_seconds_bucket{instance=\"$instance\",entrypoint=\"websecure\"}[5m])) by (le)) * 1000",
-          "legendFormat": "P50",
-          "refId": "A"
-        },
-        {
-          "expr": "histogram_quantile(0.90, sum(rate(traefik_entrypoint_request_duration_seconds_bucket{instance=\"$instance\",entrypoint=\"websecure\"}[5m])) by (le)) * 1000",
-          "legendFormat": "P90",
-          "refId": "B"
-        },
-        {
-          "expr": "histogram_quantile(0.99, sum(rate(traefik_entrypoint_request_duration_seconds_bucket{instance=\"$instance\",entrypoint=\"websecure\"}[5m])) by (le)) * 1000",
-          "legendFormat": "P99",
-          "refId": "C"
-        }
-      ],
-      "title": "Latency Percentiles",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
+            "showPoints": "auto",
             "showValues": false,
             "spanNulls": false,
             "stacking": {
@@ -1140,31 +733,29 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 8,
-        "y": 21
+        "h": 7,
+        "w": 14,
+        "x": 0,
+        "y": 18
       },
       "id": 12,
       "options": {
         "legend": {
-          "calcs": ["mean", "max"],
-          "displayMode": "table",
+          "calcs": [],
+          "displayMode": "list",
           "placement": "right",
-          "showLegend": true,
-          "sortBy": "Mean",
-          "sortDesc": true
+          "showLegend": true
         },
         "tooltip": {
           "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "topk(10, sum(rate(traefik_service_requests_total{instance=\"$instance\",protocol=\"http\"}[5m])) by (service))",
+          "expr": "topk(10, sum(rate(traefik_service_requests_total_counter{machine=\"$machine\",protocol=~\"$protocol\"}[5m])) by (service))",
           "legendFormat": "{{service}}",
           "refId": "A"
         }
@@ -1259,10 +850,10 @@
         ]
       },
       "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 16,
-        "y": 21
+        "h": 7,
+        "w": 10,
+        "x": 14,
+        "y": 18
       },
       "id": 13,
       "options": {
@@ -1278,15 +869,15 @@
           "sort": "desc"
         }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_bytes_total{instance=\"$instance\",entrypoint=~\"web|websecure\"}[5m]))",
+          "expr": "sum(rate(traefik_entrypoint_requests_bytes_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m]))",
           "legendFormat": "in",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(traefik_entrypoint_responses_bytes_total{instance=\"$instance\",entrypoint=~\"web|websecure\"}[5m]))",
+          "expr": "sum(rate(traefik_entrypoint_responses_bytes_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m]))",
           "legendFormat": "out",
           "refId": "B"
         }
@@ -1295,76 +886,230 @@
       "type": "timeseries"
     },
     {
-      "datasource": "VictoriaLogs",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 24,
+        "h": 6,
+        "w": 12,
         "x": 0,
-        "y": 39
+        "y": 25
       },
       "id": 14,
       "options": {
-        "dedupStrategy": "none",
-        "enableInfiniteScrolling": false,
-        "enableLogDetails": true,
-        "prettifyLogMessage": false,
-        "showCommonLabels": false,
-        "showControls": false,
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "legend": {
+          "calcs": ["mean", "max"],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "datasource": "VictoriaLogs",
-          "expr": "DownstreamStatus:403 AND instance:$instance",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\",code=\"403\"}[5m])) or on() vector(0)",
+          "legendFormat": "403",
           "refId": "A"
         }
       ],
       "title": "Blocked Requests (403)",
-      "type": "logs"
+      "type": "timeseries"
     },
     {
-      "datasource": "VictoriaLogs",
+      "datasource": "VictoriaMetrics",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 49
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 25
       },
       "id": 15,
       "options": {
-        "dedupStrategy": "none",
-        "enableInfiniteScrolling": false,
-        "enableLogDetails": true,
-        "prettifyLogMessage": false,
-        "showCommonLabels": false,
-        "showControls": false,
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "legend": {
+          "calcs": ["mean", "max"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "pluginVersion": "",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "datasource": "VictoriaLogs",
-          "expr": "DownstreamStatus:~\"5..\" AND instance:$instance",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\",code=~\"5..\"}[5m])) or on() vector(0)",
+          "legendFormat": "5xx",
           "refId": "A"
         }
       ],
       "title": "Server Errors (5xx)",
-      "type": "logs"
+      "type": "timeseries"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 18,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "manual",
+        "valueMode": "color"
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "expr": "sum by (protocol, code) (increase(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[$__range]))",
+          "legendFormat": "{{protocol}} {{code}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests per status code",
+      "type": "bargauge"
     }
   ],
   "preload": false,
@@ -1378,18 +1123,39 @@
           "text": "hzc-pango",
           "value": "hzc-pango"
         },
-        "datasource": "VictoriaMetrics",
-        "definition": "label_values(traefik_config_reloads_total, instance)",
+        "definition": "label_values(traefik_config_reloads_total_counter, machine)",
         "includeAll": false,
-        "label": "Instance",
-        "name": "instance",
+        "label": "Machine",
+        "name": "machine",
         "options": [],
         "query": {
-          "query": "label_values(traefik_config_reloads_total, instance)",
+          "query": "label_values(traefik_config_reloads_total_counter, machine)",
           "refId": "A"
         },
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        },
+        "definition": "label_values(traefik_entrypoint_requests_total_counter{machine=\"$machine\"}, protocol)",
+        "includeAll": true,
+        "label": "Protocol",
+        "name": "protocol",
+        "options": [],
+        "query": {
+          "query": "label_values(traefik_entrypoint_requests_total_counter{machine=\"$machine\"}, protocol)",
+          "refId": "A"
+        },
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
         "sort": 1,
         "type": "query"
       }
@@ -1400,8 +1166,9 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "browser",
   "title": "Traefik",
   "uid": "traefik-dashboard",
-  "version": 15
+  "version": 9,
+  "weekStart": ""
 }
