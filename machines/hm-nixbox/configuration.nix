@@ -33,8 +33,6 @@
   ++ (mylib.scanPaths ./. {
     exclude = [
       "dashboards"
-      "radicle.nix"
-      "garage.nix"
     ];
   });
 
