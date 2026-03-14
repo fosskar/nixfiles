@@ -69,6 +69,7 @@ _: {
           {
             config,
             lib,
+            pkgs,
             ...
           }:
           let
@@ -112,6 +113,18 @@ _: {
                 }
               ];
             };
+
+            serviceDashboardsDir =
+              if settings.dashboardsDir == null then
+                ./dashboards
+              else
+                pkgs.symlinkJoin {
+                  name = "monitoring-dashboards";
+                  paths = [
+                    ./dashboards
+                    settings.dashboardsDir
+                  ];
+                };
           in
           {
             imports = [ ../../modules/monitoring ];
@@ -119,7 +132,7 @@ _: {
             nixfiles.monitoring = {
               grafana = {
                 enable = lib.mkDefault settings.grafana.enable;
-                dashboardsDir = lib.mkDefault settings.dashboardsDir;
+                dashboardsDir = lib.mkDefault serviceDashboardsDir;
               };
 
               exporter = {
