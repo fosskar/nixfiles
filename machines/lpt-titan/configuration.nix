@@ -13,7 +13,7 @@
     ../../modules/cpu
     ../../modules/lanzaboote
     ../../modules/fprint
-    ../../modules/bcachefs
+    ../../modules/filesystems/bcachefs.nix
     ../../modules/dms
     ../../modules/niri
     ../../modules/persistence

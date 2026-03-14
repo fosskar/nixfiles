@@ -16,7 +16,7 @@
     ../../modules/paperless
     ../../modules/vaultwarden
     ../../modules/stirling-pdf
-    ../../modules/zfs
+    ../../modules/filesystems/zfs.nix
     ../../modules/gpu
     ../../modules/cpu
     ../../modules/power

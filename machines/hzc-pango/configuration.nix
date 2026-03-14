@@ -9,6 +9,7 @@
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     ../../modules/borgbackup
     ../../modules/crowdsec
+    ../../modules/filesystems/btrfs.nix
     ../../modules/power
     ../../modules/persistence
     ../../modules/traefik
@@ -79,8 +80,5 @@
       grub.enable = true;
       # srvos sets grub.devices = ["/dev/sda"]
     };
-    # btrfs support (disko handles actual fs config)
-    supportedFilesystems = [ "btrfs" ];
-    initrd.supportedFilesystems = [ "btrfs" ];
   };
 }

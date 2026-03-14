@@ -1,6 +1,7 @@
 { mylib, ... }:
 {
   imports = [
+    ../../modules/filesystems/btrfs.nix
     ../../modules/power
     ../../modules/persistence
   ]
@@ -30,8 +31,4 @@
 
   users.users.root.linger = true;
 
-  boot = {
-    supportedFilesystems = [ "btrfs" ];
-    initrd.supportedFilesystems = [ "btrfs" ];
-  };
 }

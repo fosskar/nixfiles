@@ -10,6 +10,7 @@
     ../../modules/power
     ../../modules/gpu
     ../../modules/cpu
+    ../../modules/filesystems/btrfs.nix
     ../../modules/virtualization
     ../../modules/dms
     ../../modules/niri
