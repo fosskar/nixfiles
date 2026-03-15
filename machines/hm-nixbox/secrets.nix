@@ -6,8 +6,6 @@ _: {
       mode = "0444";
     };
 
-    "beszel.env" = { };
-
     "sabnzbd" = {
       owner = "sabnzbd";
     };

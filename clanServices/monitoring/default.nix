@@ -219,14 +219,15 @@ _: {
               !(builtins.elem config.networking.hostName serverMachines)
             ) [ settings.listenPort ];
 
-            nixfiles.monitoring.telegraf = {
-              enable = lib.mkDefault true;
-              listenPort = lib.mkDefault settings.listenPort;
-              plugins = lib.mkDefault settings.plugins;
+            nixfiles.monitoring = {
+              telegraf = {
+                enable = lib.mkDefault true;
+                listenPort = lib.mkDefault settings.listenPort;
+                plugins = lib.mkDefault settings.plugins;
+              };
+
+              vector.enable = lib.mkDefault settings.vector.enable;
             };
-
-            nixfiles.monitoring.vector.enable = lib.mkDefault settings.vector.enable;
-
           };
       };
   };

@@ -177,6 +177,18 @@ in
           };
         };
 
+        beszel = {
+          module = {
+            name = "beszel";
+            input = "self";
+          };
+
+          roles = {
+            client.tags = [ "server" ];
+            server.machines."hm-nixbox" = { };
+          };
+        };
+
         clan-cache = {
           roles.default.tags.all = { };
           module = {

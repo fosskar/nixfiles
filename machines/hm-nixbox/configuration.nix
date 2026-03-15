@@ -92,7 +92,18 @@
     virtualization.docker.enable = true;
 
     garage.dataDir = "/tank/apps/garage";
+
+    beszel.agent = {
+      sensors = "-nct6798_cputin,-nct6798_auxtin0,-nct6798_auxtin2,-nct6798_auxtin4";
+      filesystem = "/persist";
+      extraFilesystems = "/__Root,/nix__Nix,/boot__Boot,/boot-fallback__BootFallback,/tank__Tank,/tank/apps__Apps,/tank/media__Media,/tank/shares__Shares,/tank/backup__Backup";
+    };
   };
+
+  # machine-specific beszel config
+  services.beszel.agent.environment.SMART_DEVICES =
+    "/dev/nvme0,/dev/nvme1,/dev/sda,/dev/sdb,/dev/sdc,/dev/sdd,/dev/sde,/dev/sdf,/dev/sdg";
+  systemd.services.beszel-agent.unitConfig.RequiresMountsFor = [ "/tank" ];
 
   # systemd-boot doesn't support mirroredBoots yet (nixpkgs#152155)
   boot = {
