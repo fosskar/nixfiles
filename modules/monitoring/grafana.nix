@@ -34,6 +34,16 @@ in
     # --- secrets ---
 
     clan.core.vars.generators.grafana = {
+      prompts.smtp-email = {
+        description = "gmail address for grafana smtp sender/login";
+        persist = true;
+      };
+      prompts.smtp-password = {
+        description = "gmail app password for grafana smtp";
+        type = "hidden";
+        persist = true;
+      };
+
       files."oauth-client-secret-hash" = {
         owner = "authelia-main";
         group = "authelia-main";
@@ -46,6 +56,14 @@ in
         owner = "grafana";
         group = "grafana";
       };
+      files."smtp-email" = {
+        owner = "grafana";
+        group = "grafana";
+      };
+      files."smtp-password" = {
+        owner = "grafana";
+        group = "grafana";
+      };
 
       runtimeInputs = with pkgs; [
         pwgen
@@ -55,9 +73,14 @@ in
       script = ''
         SECRET=$(pwgen -s 64 1)
         SECRET_KEY=$(openssl rand -hex 32)
+        SMTP_EMAIL=$(cat "$prompts/smtp-email")
+        SMTP_PASSWORD=$(cat "$prompts/smtp-password")
+
         authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
         echo -n "$SECRET_KEY" > "$out/secret-key"
+        echo -n "$SMTP_EMAIL" > "$out/smtp-email"
+        echo -n "$SMTP_PASSWORD" > "$out/smtp-password"
       '';
     };
 
@@ -94,7 +117,7 @@ in
           "authorization_code"
           "refresh_token"
         ];
-        token_endpoint_auth_method = "client_secret_basic";
+        token_endpoint_auth_method = "client_secret_post";
         id_token_signed_response_alg = "RS256";
         claims_policy = "grafana_groups";
       }
@@ -156,6 +179,17 @@ in
           secret_key = "$__file{${config.clan.core.vars.generators.grafana.files."secret-key".path}}";
         };
 
+        smtp = {
+          enabled = true;
+          host = "smtp.gmail.com:587";
+          user = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-email".path}}";
+          password = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-password".path}}";
+          from_address = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-email".path}}";
+          from_name = "grafana";
+          ehlo_identity = serviceDomain;
+          startTLS_policy = "MandatoryStartTLS";
+        };
+
         users = {
           allow_sign_up = false;
           auto_assign_org = true;
@@ -195,6 +229,18 @@ in
           skip_org_role_sync = false;
         };
       };
+    };
+
+    # --- alerting ---
+
+    services.grafana.provision.alerting.contactPoints.settings = {
+      apiVersion = 1;
+      deleteContactPoints = [
+        #{
+        #  orgId = 1;
+        #  uid = "ntfy";
+        #}
+      ];
     };
 
     # --- homepage ---
