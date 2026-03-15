@@ -13,6 +13,7 @@
     ../../modules/lldap
     ../../modules/authelia
     ../../modules/immich
+    ../../modules/it-tools
     ../../modules/paperless
     ../../modules/vaultwarden
     ../../modules/stirling-pdf
