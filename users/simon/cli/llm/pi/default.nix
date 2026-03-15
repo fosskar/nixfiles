@@ -28,18 +28,11 @@ let
     theme = "dark";
     quietStartup = true;
     packages = [
-      {
-        source = "git:github.com/fosskar/pi-pack";
-      }
-      {
-        source = "git:github.com/rytswd/pi-agent-extensions";
-        extensions = [
-          "direnv/index.ts"
-          "fetch/index.ts"
-          "questionnaire/index.ts"
-          "slow-mode/index.ts"
-        ];
-      }
+      #{
+      #  source = "git:github.com/fosskar/pi-pack";
+      #  extensions = [ ];
+      #  skills = [ ];
+      #}
       {
         source = "git:github.com/rytswd/pi-agent-extensions";
         extensions = [
@@ -47,15 +40,6 @@ let
           "fetch/index.ts"
           "questionnaire/index.ts"
           "slow-mode/index.ts"
-        ];
-      }
-      {
-        source = "git:github.com/tmustier/pi-extensions";
-        extensions = [
-          "files-widget/index.ts"
-          "tab-status/tab-status.ts"
-          "ralph-wiggum/index.ts"
-          "agent-guidance/agent-guidance.ts"
         ];
       }
       {
@@ -67,7 +51,7 @@ let
         ];
       }
       {
-        source = "npm:pi-powerline-footer";
+        source = "git:github.com/nicobailon/pi-powerline-footer";
       }
     ];
     compaction.enabled = true;
