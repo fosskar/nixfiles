@@ -153,10 +153,11 @@ _: {
           {
             # setup key secret
             clan.core.vars.generators.netbird-client = {
+              # shared setup key across clients
               share = true;
               files."setup-key" = { };
               prompts.setup-key = {
-                description = "netbird setup key (create one in the dashboard)";
+                description = "netbird setup key for this machine (dashboard setup-keys)";
                 type = "hidden";
               };
               script = ''
@@ -170,6 +171,11 @@ _: {
               useRoutingFeatures = settings.routingFeatures;
               clients.default = {
                 port = serverSettings.port or 51820;
+                # netbird >=0.66 logs profile-manager warnings without HOME/XDG
+                environment = {
+                  HOME = "/var/lib/netbird";
+                  XDG_CONFIG_HOME = "/var/lib/netbird";
+                };
                 login = {
                   enable = true;
                   setupKeyFile = config.clan.core.vars.generators.netbird-client.files."setup-key".path;
@@ -185,6 +191,13 @@ _: {
                   };
                 };
               };
+            };
+
+            # run auto-login only on first enrollment; avoid silent re-registration clones
+            systemd.services.netbird-login.unitConfig.ConditionPathExists = "!/var/lib/netbird/state.json";
+            systemd.services.netbird-login.environment = {
+              HOME = "/var/lib/netbird";
+              XDG_CONFIG_HOME = "/var/lib/netbird";
             };
 
             # trust netbird interface — netbird handles access control

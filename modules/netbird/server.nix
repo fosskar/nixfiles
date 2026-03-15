@@ -123,6 +123,13 @@ in
     # STUN — netbird clients connect directly, not through traefik
     networking.firewall.allowedUDPPorts = [ 3478 ];
 
+    # export netbird metrics via telegraf scrape endpoint
+    services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
+      {
+        urls = [ "http://127.0.0.1:${toString cfg.settings.server.metricsPort}/metrics" ];
+      }
+    ];
+
     # --- persistence ---
 
     nixfiles.persistence.directories = [
