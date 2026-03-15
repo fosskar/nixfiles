@@ -126,11 +126,9 @@ in
         RuntimeDirectory = "netbird-proxy";
         RuntimeDirectoryMode = "0750";
         Restart = "always";
-        StateDirectory = [
-          "netbird-proxy"
-          "netbird"
-        ];
+        StateDirectory = "netbird-proxy";
         StateDirectoryMode = "0750";
+        UMask = "0077";
         WorkingDirectory = stateDir;
 
         # hardening
@@ -209,7 +207,13 @@ in
         ];
         root = dashboardCfg.finalDrv;
         locations."/".tryFiles = "$uri $uri.html $uri/ =404";
-        extraConfig = "error_page 404 /404.html;";
+        extraConfig = ''
+          error_page 404 /404.html;
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+          add_header X-Content-Type-Options "nosniff" always;
+          add_header X-Frame-Options "DENY" always;
+          add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        '';
       };
     };
 

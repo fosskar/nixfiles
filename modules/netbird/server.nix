@@ -169,6 +169,7 @@ in
 
         StateDirectory = "netbird-server";
         StateDirectoryMode = "0750";
+        UMask = "0077";
         WorkingDirectory = stateDir;
 
         # hardening
