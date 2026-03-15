@@ -8,7 +8,7 @@
 
 buildGoModule rec {
   pname = "newt";
-  version = "1.10.2";
+  version = "1.10.3";
 
   src = fetchFromGitHub {
     owner = "fosrl";

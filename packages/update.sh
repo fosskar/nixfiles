@@ -22,17 +22,19 @@ declare -A SUBPACKAGES=(
 
 # packages with custom version regex (filter out unwanted tags)
 declare -A VERSION_REGEX=(
+  ["fosrl-newt"]='v?(\d+\.\d+\.\d+)$'
   ["fosrl-pangolin"]='(\d+\.\d+\.\d+)$'
 )
 
 # packages that need explicit upstream url (derivation src has no direct url)
 declare -A UPDATE_URL=(
   ["agent-desktop"]="https://github.com/BaLaurent/agent-desktop"
+  ["arbor"]="https://github.com/penso/arbor"
   ["t3code"]="https://github.com/pingdotgg/t3code"
 )
 
 # packages that should use github releases api
-GITHUB_RELEASE_PACKAGES=("agent-desktop" "t3code")
+GITHUB_RELEASE_PACKAGES=("agent-desktop" "arbor" "t3code")
 
 # packages to skip (binary releases, manual updates)
 SKIP_PACKAGES=("handy" "voquill")
