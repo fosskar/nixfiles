@@ -14,6 +14,16 @@ let
   cfg = config.nixfiles.crowdsec;
   format = pkgs.formats.yaml { };
   configFile = format.generate "crowdsec.yaml" config.services.crowdsec.settings.general;
+
+  # extract IPs from networking.extraHosts (populated by clan yggdrasil + wireguard)
+  clanMeshIPs = lib.pipe config.networking.extraHosts [
+    (lib.splitString "\n")
+    (builtins.filter (line: line != ""))
+    (map (line: lib.head (lib.splitString " " line)))
+    lib.unique
+  ];
+
+  allWhitelistIPs = cfg.whitelistIPs ++ lib.optionals cfg.whitelistClanMesh clanMeshIPs;
 in
 {
   # --- options ---
@@ -24,6 +34,14 @@ in
       default = 8085;
       description = "crowdsec LAPI port (default avoids conflict with nginx:8080 and prometheus:6060)";
     };
+
+    whitelistIPs = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "IPs to whitelist from crowdsec bans (e.g. clan mesh IPs)";
+    };
+
+    whitelistClanMesh = lib.mkEnableOption "auto-whitelist all clan mesh IPs from networking.extraHosts";
 
     collections = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -76,36 +94,50 @@ in
 
       hub.collections = cfg.collections ++ lib.optionals cfg.traefik.enable [ "crowdsecurity/traefik" ];
 
-      localConfig.acquisitions = [
-        {
-          source = "journalctl";
-          journalctl_filter = [ "_TRANSPORT=journal" ];
-          labels.type = "syslog";
-        }
-        {
-          source = "journalctl";
-          journalctl_filter = [ "_TRANSPORT=syslog" ];
-          labels.type = "syslog";
-        }
-        {
-          source = "journalctl";
-          journalctl_filter = [ "_TRANSPORT=stdout" ];
-          labels.type = "syslog";
-        }
-        {
-          source = "journalctl";
-          journalctl_filter = [ "_TRANSPORT=kernel" ];
-          labels.type = "syslog";
-        }
-      ]
-      ++ lib.optionals cfg.traefik.enable [
-        {
-          source = "file";
-          filenames = [ "/var/log/traefik/access.log" ];
-          labels.type = "traefik";
-        }
-      ]
-      ++ cfg.acquisitions;
+      localConfig = {
+        acquisitions = [
+          {
+            source = "journalctl";
+            journalctl_filter = [ "_TRANSPORT=journal" ];
+            labels.type = "syslog";
+          }
+          {
+            source = "journalctl";
+            journalctl_filter = [ "_TRANSPORT=syslog" ];
+            labels.type = "syslog";
+          }
+          {
+            source = "journalctl";
+            journalctl_filter = [ "_TRANSPORT=stdout" ];
+            labels.type = "syslog";
+          }
+          {
+            source = "journalctl";
+            journalctl_filter = [ "_TRANSPORT=kernel" ];
+            labels.type = "syslog";
+          }
+        ]
+        ++ lib.optionals cfg.traefik.enable [
+          {
+            source = "file";
+            filenames = [ "/var/log/traefik/access.log" ];
+            labels.type = "traefik";
+          }
+        ]
+        ++ cfg.acquisitions;
+
+        # whitelist clan mesh IPs so they never get banned
+        parsers.s02Enrich = lib.mkIf (allWhitelistIPs != [ ]) [
+          {
+            name = "nixfiles/clan-whitelist";
+            description = "whitelist clan mesh network IPs";
+            whitelist = {
+              reason = "clan mesh network";
+              ip = allWhitelistIPs;
+            };
+          }
+        ];
+      };
     };
 
     services.crowdsec-firewall-bouncer = {

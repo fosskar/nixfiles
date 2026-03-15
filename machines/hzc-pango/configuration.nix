@@ -45,7 +45,10 @@
       profile = "virtual-guest";
     };
 
-    crowdsec.traefik.enable = true;
+    crowdsec = {
+      traefik.enable = true;
+      whitelistClanMesh = true;
+    };
     traefik.geoblock.enable = true;
   };
 
