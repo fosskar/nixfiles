@@ -237,7 +237,7 @@ in
     nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
       {
         name = "OpenCloud";
-        category = "Documents";
+        category = "Files";
         icon = "https://opencloud.${acmeDomain}/themes/opencloud/assets/favicon.svg";
         href = "https://${serviceDomain}";
         siteMonitor = internalUrl;
@@ -250,7 +250,7 @@ in
       {
         name = "OpenCloud";
         url = "https://${serviceDomain}";
-        group = "Documents";
+        group = "Files";
       }
     ];
 

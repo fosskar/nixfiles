@@ -61,7 +61,7 @@ in
     nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
       {
         name = "Vert";
-        category = "Documents";
+        category = "Tools";
         icon = "mdi-video-switch";
         href = "https://${serviceDomain}";
         siteMonitor = internalUrl;
@@ -74,7 +74,7 @@ in
       {
         name = "Vert";
         url = "https://${serviceDomain}";
-        group = "Documents";
+        group = "Tools";
       }
     ];
 

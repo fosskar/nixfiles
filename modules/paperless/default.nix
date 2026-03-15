@@ -190,7 +190,7 @@ in
     nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
       {
         name = "Paperless";
-        category = "Documents";
+        category = "Files";
         icon = "paperless.png";
         href = "https://${serviceDomain}";
         siteMonitor = internalUrl;
@@ -203,7 +203,7 @@ in
       {
         name = "Paperless";
         url = "https://${serviceDomain}";
-        group = "Documents";
+        group = "Files";
       }
     ];
 

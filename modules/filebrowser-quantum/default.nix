@@ -172,7 +172,7 @@ in
     nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
       {
         name = "Filebrowser";
-        category = "Documents";
+        category = "Files";
         icon = "filebrowser.svg";
         href = "https://${serviceDomain}";
         siteMonitor = internalUrl;
@@ -185,7 +185,7 @@ in
       {
         name = "Filebrowser";
         url = "https://${serviceDomain}";
-        group = "Documents";
+        group = "Files";
       }
     ];
 

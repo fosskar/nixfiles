@@ -44,7 +44,7 @@ in
     nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
       {
         name = "Stirling PDF";
-        category = "Documents";
+        category = "Tools";
         icon = "stirling-pdf.svg";
         href = "https://${serviceDomain}";
         siteMonitor = internalUrl;
@@ -57,7 +57,7 @@ in
       {
         name = "Stirling PDF";
         url = "https://${serviceDomain}";
-        group = "Documents";
+        group = "Tools";
       }
     ];
 

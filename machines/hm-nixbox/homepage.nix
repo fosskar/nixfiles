@@ -30,7 +30,12 @@ _: {
         };
       }
       {
-        Documents = {
+        Files = {
+          header = true;
+        };
+      }
+      {
+        Tools = {
           header = true;
         };
       }

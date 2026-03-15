@@ -213,7 +213,7 @@ in
     nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
       {
         name = "Nextcloud";
-        category = "Documents";
+        category = "Files";
         icon = "nextcloud.svg";
         href = "https://${canonicalDomain}";
         siteMonitor = "${internalUrl}/status.php";
@@ -226,7 +226,7 @@ in
       {
         name = "Nextcloud";
         url = "https://${canonicalDomain}";
-        group = "Documents";
+        group = "Files";
       }
     ];
 
