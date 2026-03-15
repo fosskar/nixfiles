@@ -6,8 +6,7 @@
     signal-desktop
     #protonvpn-gui
     #protonvpn-cli
-    filen-desktop
-    bitwarden-desktop
+    #filen-desktop
 
     (pkgs.symlinkJoin {
       name = "element-desktop";
