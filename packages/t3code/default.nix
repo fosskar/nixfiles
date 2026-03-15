@@ -6,11 +6,11 @@
 }:
 let
   pname = "t3code";
-  version = "0.0.9";
+  version = "0.0.11";
 
   src = fetchurl {
     url = "https://github.com/pingdotgg/t3code/releases/download/v${version}/T3-Code-${version}-x86_64.AppImage";
-    hash = "sha256-jdLmriOb9WsusOICaPhehxDx4gAsxHVb8mJPIkgFTZg=";
+    hash = "sha256-tasWxWSpPZV++N34FdcmM7sk5c81fBUP1PmsbBpMRHM=";
   };
 
   extracted = appimageTools.extractType2 { inherit pname version src; };
@@ -30,8 +30,6 @@ appimageTools.wrapAppImage {
     wrapProgram $out/bin/t3code \
       --add-flags "--ozone-platform-hint=auto" \
       --add-flags "--enable-features=WaylandWindowDecorations,UseOzonePlatform" \
-      --add-flags "--use-gl=angle" \
-      --add-flags "--use-angle=opengl" \
       --add-flags "--enable-wayland-ime"
   '';
 
