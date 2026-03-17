@@ -41,7 +41,7 @@
     };
 
     audio.lowLatency.enable = true;
-    yubikey.u2f.authfile = config.sops.secrets."u2f_keys".path;
+
     cpu.amd.enable = true;
     gpu.amd = {
       enable = true;

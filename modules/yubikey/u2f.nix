@@ -9,6 +9,21 @@ let
 in
 {
   config = lib.mkIf (cfg.enable && cfg.u2f.enable) {
+    clan.core.vars.generators.u2f-keys = {
+      share = true;
+      files.keys = {
+        secret = true;
+        neededFor = "users";
+      };
+      prompts.keys = {
+        description = "yubikey u2f pam auth mappings (pamu2fcfg output)";
+        type = "multiline";
+        persist = true;
+      };
+      script = "cat $prompts/keys > $out/keys";
+    };
+
+    nixfiles.yubikey.u2f.authfile = config.clan.core.vars.generators.u2f-keys.files.keys.path;
     # uhid kernel module for U2F
     boot.kernelModules = [ "uhid" ];
 
