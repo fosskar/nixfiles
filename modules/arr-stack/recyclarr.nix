@@ -42,14 +42,15 @@ in
 
     # --- systemd ---
 
-    systemd.services.recyclarr = {
-      serviceConfig.EnvironmentFile = config.sops.secrets."arr-stack.env".path;
-      preStart = ''
-        ${pkgs.yq-go}/bin/yq -o yaml \
-          'with((.. | select(kind == "scalar") | select(tag == "!!str") | select(test("^!env_var .*"))); . = sub("!env_var ", "") | . tag = "!env_var")' \
-          /var/lib/recyclarr/config.json > /var/lib/recyclarr/recyclarr.yml
-      '';
-      serviceConfig.ExecStart = lib.mkForce "${pkgs.recyclarr}/bin/recyclarr sync --config /var/lib/recyclarr/recyclarr.yml";
-    };
+    # inject api keys from sonarr/radarr configs into recyclarr.yml at runtime
+    # runs as root (+) after nixpkgs preStart creates the yml with !env_var placeholders
+    systemd.services.recyclarr.serviceConfig.ExecStartPre = lib.mkAfter [
+      "+${pkgs.writeShellScript "recyclarr-inject-keys" ''
+        SONARR_API_KEY=$(${pkgs.gnugrep}/bin/grep -oP '<ApiKey>\K[^<]+' /var/lib/sonarr/.config/NzbDrone/config.xml)
+        RADARR_API_KEY=$(${pkgs.gnugrep}/bin/grep -oP '<ApiKey>\K[^<]+' /var/lib/radarr/.config/Radarr/config.xml)
+        ${pkgs.gnused}/bin/sed -i "s|!env_var SONARR_API_KEY|$SONARR_API_KEY|; s|!env_var RADARR_API_KEY|$RADARR_API_KEY|" /var/lib/recyclarr/config.json
+        chown recyclarr:recyclarr /var/lib/recyclarr/config.json
+      ''}"
+    ];
   };
 }
