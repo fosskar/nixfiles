@@ -44,9 +44,9 @@ in
         persist = true;
       };
 
-      files."oauth-client-secret-hash" = {
-        owner = "authelia-main";
-        group = "authelia-main";
+      files."admin-password" = {
+        owner = "grafana";
+        group = "grafana";
       };
       files."oauth-client-secret" = {
         owner = "grafana";
@@ -65,17 +65,24 @@ in
         group = "grafana";
       };
 
+      files."oauth-client-secret-hash" = {
+        owner = "authelia-main";
+        group = "authelia-main";
+      };
+
       runtimeInputs = with pkgs; [
         pwgen
         openssl
         authelia
       ];
       script = ''
+        ADMIN_PASSWORD=$(openssl rand -hex 32)
         SECRET=$(pwgen -s 64 1)
         SECRET_KEY=$(openssl rand -hex 32)
         SMTP_EMAIL=$(cat "$prompts/smtp-email")
         SMTP_PASSWORD=$(cat "$prompts/smtp-password")
 
+        echo -n "$ADMIN_PASSWORD" > "$out/admin-password"
         authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
         echo -n "$SECRET" > "$out/oauth-client-secret"
         echo -n "$SECRET_KEY" > "$out/secret-key"
@@ -175,7 +182,7 @@ in
         security = {
           admin_user = "admin";
           cookie_secure = true;
-          admin_password = "$__file{${config.sops.secrets."admin-password".path}}";
+          admin_password = "$__file{${config.clan.core.vars.generators.grafana.files."admin-password".path}}";
           secret_key = "$__file{${config.clan.core.vars.generators.grafana.files."secret-key".path}}";
         };
 
