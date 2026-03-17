@@ -16,12 +16,25 @@ in
   config = lib.mkIf cfg.sabnzbd.enable {
     # --- service ---
 
+    clan.core.vars.generators.sabnzbd = {
+      files.secret = {
+        secret = true;
+        owner = "sabnzbd";
+      };
+      prompts.config = {
+        description = "sabnzbd secret ini (api keys, server credentials)";
+        type = "multiline";
+        persist = true;
+      };
+      script = "cat $prompts/config > $out/secret";
+    };
+
     services.sabnzbd = {
       enable = true;
       openFirewall = false;
       group = "media";
       allowConfigWrite = true;
-      secretFiles = [ config.sops.secrets."sabnzbd".path ];
+      secretFiles = [ config.clan.core.vars.generators.sabnzbd.files.secret.path ];
       settings = {
         misc = {
           inherit port;
