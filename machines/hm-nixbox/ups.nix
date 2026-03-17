@@ -2,6 +2,12 @@
 {
   environment.systemPackages = [ pkgs.nut ];
 
+  clan.core.vars.generators.ups = {
+    files.password.secret = true;
+    runtimeInputs = [ pkgs.openssl ];
+    script = "openssl rand -hex 32 > $out/password";
+  };
+
   power.ups = {
     enable = true;
     mode = "standalone";
@@ -17,7 +23,7 @@
     };
 
     users.upsmon = {
-      passwordFile = config.sops.secrets."admin-password".path;
+      passwordFile = config.clan.core.vars.generators.ups.files.password.path;
       upsmon = "primary";
     };
 
@@ -27,7 +33,7 @@
         user = "upsmon";
         type = "primary";
         powerValue = 1;
-        passwordFile = config.sops.secrets."admin-password".path;
+        passwordFile = config.clan.core.vars.generators.ups.files.password.path;
         system = "eaton-ellipse@localhost";
       };
     };
