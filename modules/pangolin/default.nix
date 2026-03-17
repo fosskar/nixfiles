@@ -57,7 +57,14 @@ in
   config = {
     # --- secrets ---
 
-    sops.secrets."geoip-license-key" = lib.mkIf cfg.maxmindGeoip { };
+    clan.core.vars.generators.geoip = lib.mkIf cfg.maxmindGeoip {
+      files.license-key.secret = true;
+      prompts.key = {
+        description = "MaxMind GeoLite2 license key";
+        persist = true;
+      };
+      script = "cat $prompts/key > $out/license-key";
+    };
 
     # --- service ---
 
@@ -66,7 +73,7 @@ in
       interval = lib.mkDefault "weekly";
       settings = {
         AccountID = 1267557;
-        LicenseKey = config.sops.secrets."geoip-license-key".path;
+        LicenseKey = config.clan.core.vars.generators.geoip.files.license-key.path;
         EditionIDs = [ "GeoLite2-Country" ];
         DatabaseDirectory = geoipDir;
       };
