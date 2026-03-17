@@ -3,9 +3,6 @@
   config,
   ...
 }:
-let
-  hasAccessTokens = config.sops.secrets ? "nix-access-tokens";
-in
 {
   # srvos.desktop sets: daemonCPUSchedPolicy = "idle"
 
@@ -16,9 +13,18 @@ in
     }
   ];
 
-  # include access tokens for private repos if secret exists
-  nix.extraOptions = lib.mkIf hasAccessTokens ''
-    !include ${config.sops.secrets."nix-access-tokens".path}
+  clan.core.vars.generators.nix-access-tokens = {
+    files.tokens.secret = true;
+    prompts.tokens = {
+      description = "nix access-tokens line (e.g. access-tokens = github.com=ghp_...)";
+      type = "multiline";
+      persist = true;
+    };
+    script = "cat $prompts/tokens > $out/tokens";
+  };
+
+  nix.extraOptions = ''
+    !include ${config.clan.core.vars.generators.nix-access-tokens.files.tokens.path}
   '';
 
   # cross-build for aarch64 (e.g. nix-on-droid)
