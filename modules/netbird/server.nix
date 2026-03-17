@@ -84,7 +84,7 @@ in
         logFile = lib.mkDefault "console";
         dataDir = lib.mkDefault stateDir;
         disableAnonymousMetrics = lib.mkDefault true;
-        disableGeoliteUpdate = lib.mkDefault true;
+        disableGeoliteUpdate = lib.mkDefault false;
 
         tls.letsencrypt = {
           enabled = lib.mkDefault false;
