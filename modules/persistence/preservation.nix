@@ -61,6 +61,11 @@ in
             directory = "/var/lib/sops-nix";
             how = "bindmount";
             inInitrd = true;
+          }
+          ++ lib.optional cfg.manageAgeMount {
+            directory = "/etc/secret-vars";
+            how = "bindmount";
+            inInitrd = true;
           };
 
         files = map toPreservationFile cfg.files ++ [

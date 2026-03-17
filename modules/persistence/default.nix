@@ -62,11 +62,12 @@ let
     "/var/log"
   ]
   ++ lib.optional cfg.manageSopsMount "/var/lib/sops-nix"
+  ++ lib.optional cfg.manageAgeMount "/etc/secret-vars"
   ++ map getDirPath cfg.directories;
 
   # parent dirs for persisted files
   getFilePath = f: if builtins.isString f then f else f.file or "";
-  fileParentDirs = map (f: builtins.dirOf (getFilePath f)) cfg.files;
+  fileParentDirs = map (f: dirOf (getFilePath f)) cfg.files;
 
   # all unique dirs to create
   installDirs = lib.unique (lib.sort (a: b: a < b) (allPersistDirs ++ fileParentDirs));
@@ -147,6 +148,12 @@ in
       type = lib.types.bool;
       default = true;
       description = "whether to manage /var/lib/sops-nix as a bind mount";
+    };
+
+    manageAgeMount = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "whether to manage /etc/secret-vars as a bind mount (age vars backend)";
     };
 
     directories = lib.mkOption {
