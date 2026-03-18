@@ -1,0 +1,38 @@
+# adguard home — reference config (not auto-deployed)
+# restore options/keys manually
+# web UI
+http:
+  address: 192.168.10.1:8080
+# dns: clients → adguard (53) → unbound (5335)
+dns:
+  bind_hosts:
+    - 192.168.10.1
+    - 127.0.0.1
+  port: 53
+  upstream_dns:
+    # unbound
+    - 127.0.0.1:5335
+  bootstrap_dns:
+    # unbound
+    - 127.0.0.1:5335
+  local_ptr_upstreams:
+    # unbound
+    - 127.0.0.1:5335
+  use_private_ptr_resolvers: true
+  enable_dnssec: true
+  cache_enabled: true
+  cache_size: 4194304 # 4MB
+  cache_ttl_min: 600
+  cache_ttl_max: 86400
+  cache_optimistic: true
+# filter lists
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_44.txt
+    name: HaGeZi's Threat Intelligence Feeds
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_45.txt
+    name: HaGeZi's Allowlist Referral
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_51.txt
+    name: HaGeZi's Pro++ Blocklist
