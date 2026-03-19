@@ -36,8 +36,8 @@ _: {
 
     # workspace->output assignments
     workspaces = {
-      primary.open-on-output = "DP-1";
-      secondary.open-on-output = "HDMI-A-2";
+      "1".open-on-output = "DP-1";
+      "2".open-on-output = "HDMI-A-2";
     };
 
     # element to secondary workspace (desktop only, has second monitor)
@@ -46,7 +46,7 @@ _: {
         matches = [
           { app-id = "^Element$"; }
         ];
-        open-on-workspace = "secondary";
+        open-on-workspace = "2";
       }
     ];
 

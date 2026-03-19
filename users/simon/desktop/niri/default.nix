@@ -4,25 +4,22 @@
   pkgs,
   ...
 }:
+let
+  inherit (config) theme;
+in
 {
   imports = mylib.scanPaths ./. { };
 
   home.packages = [ pkgs.wl-clipboard ];
 
-  #xdg.configFile."niri/config.kdl".source = ./config.kdl;
-
   programs.niri.settings = {
-    # workspace configuration (output assignments are per-machine)
     workspaces = {
-      primary.name = "primary";
-      secondary.name = "secondary";
+      "1" = { };
+      "2" = { };
     };
 
     # input configuration
     input = {
-      mod-key = "Super";
-      mod-key-nested = "Alt";
-
       focus-follows-mouse.enable = true;
       focus-follows-mouse.max-scroll-amount = "0%";
       warp-mouse-to-focus.enable = true;
@@ -32,11 +29,6 @@
         layout = "de";
       };
 
-      trackpoint.enable = false;
-      trackball.enable = false;
-      tablet.enable = false;
-      touch.enable = false;
-
       mouse = {
         accel-profile = "flat";
       };
@@ -45,126 +37,62 @@
     # prefer server-side decorations
     prefer-no-csd = true;
 
-    # environment variables
     environment = {
-      ELECTRON_OZONE_PLATFORM_HINT = "auto";
-      MOZ_ENABLE_WAYLAND = "1";
       NIXOS_OZONE_WL = "1";
-      OZONE_PLATFORM = "wayland";
-      XDG_CURRENT_DESKTOP = "niri";
-      XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "niri";
-      GDK_BACKEND = "wayland,x11,*";
-      CLUTTER_BACKEND = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      QT_QPA_PLATFORM = "wayland;xcb";
       QT_QPA_PLATFORMTHEME = "qt6ct";
     };
 
-    # output configuration is per-machine (see machines/<name>/home/niri.nix)
-
-    # layout configuration
     layout = {
       gaps = 8;
-      background-color = "transparent";
+
       always-center-single-column = true;
-      center-focused-column = "never";
 
-      preset-column-widths = [
-        { proportion = 0.33333; }
-        { proportion = 0.5; }
-        { proportion = 0.66666; }
-        { proportion = 1.0; }
-      ];
-
-      preset-window-heights = [
-        { proportion = 0.5; }
-        { proportion = 1.0; }
-      ];
-
-      # windows open at 33% width by default
-      default-column-width = {
-        proportion = 0.33333;
-      };
+      center-focused-column = "on-overflow";
 
       focus-ring = {
-        enable = false;
         width = 2;
-        active.color = "#5DE4c7";
-        inactive.color = "#505050";
+        active.color = theme.primary;
+        inactive.color = theme.fgDim;
       };
 
-      border = {
-        enable = false;
-        # width = 1;
-        # urgent.color = "#9b0000";
-        # inactive.color = "transparent";
-        # active.color = "#5DE4c7";
+      shadow = {
+        enable = true;
+        softness = 20;
+        spread = 3;
+        offset = {
+          x = 0.0;
+          y = 3.0;
+        };
+        color = "${theme.bg}70";
       };
-
-      shadow.enable = true;
     };
 
-    # animations
-    animations = {
-      slowdown = 2.0; # 2x slower, adjust to taste
-    };
-
-    # startup commands (steam is desktop-only, see machines/simon-desktop/home/niri.nix)
     spawn-at-startup = [
       { command = [ "element-desktop" ]; }
     ];
 
-    # hotkey overlay
     hotkey-overlay = {
       skip-at-startup = true;
     };
 
-    # overview
     overview = {
-      zoom = 0.5;
-      backdrop-color = "#242424";
+      backdrop-color = theme.bgLighter;
     };
 
-    # window rules
     window-rules = [
-      # browsers/editors at 50% width
       {
-        matches = [
-          { app-id = "^zen-beta"; }
-          { app-id = "^firefox"; }
-          { app-id = "^chromium"; }
-          { app-id = "^dev\\.zed\\.Zed$"; }
-          { app-id = "^zeditor$"; }
-        ];
-        default-column-width = {
-          proportion = 0.5;
+        matches = [ { } ]; # match all windows
+        draw-border-with-background = false;
+        geometry-corner-radius = {
+          top-left = 14.0;
+          top-right = 14.0;
+          bottom-left = 14.0;
+          bottom-right = 14.0;
         };
+        clip-to-geometry = true;
       }
-      {
-        matches = [
-          {
-            app-id = "^zen-beta$";
-            title = "^Picture-in-Picture$";
-          }
-        ];
-        open-floating = true;
-      }
-      {
-        matches = [
-          {
-            at-startup = true;
-            app-id = "^steam$";
-          }
-        ];
-        open-on-workspace = "secondary";
-      }
-      {
-        matches = [
-          { app-id = "^steam$"; }
-        ];
-        open-maximized = true;
-      }
+      #steam notifications as floating at bottom right
       {
         matches = [
           {
@@ -178,9 +106,13 @@
           relative-to = "bottom-right";
         };
       }
-      # float common dialogs (from hyprland config)
+      #floating windows rules
       {
         matches = [
+          {
+            app-id = "^zen-beta$|^firefox$|^brave$";
+            title = "^Picture-in-Picture$|^Extension:";
+          }
           { app-id = "^Pinentry-gtk$"; }
           { app-id = "^xdg-desktop-portal-gtk"; }
           { app-id = "^hyprpolkitagent$"; }
@@ -192,63 +124,9 @@
         ];
         open-floating = true;
       }
-      # element to secondary monitor, maximized
-      {
-        matches = [
-          { app-id = "^Element$"; }
-          { app-id = "^element$"; }
-        ];
-        open-on-workspace = "secondary";
-        open-maximized = true;
-      }
-      # webcord/ts3 to steam workspace (secondary monitor)
-      {
-        matches = [
-          { app-id = "^WebCord$"; }
-          { app-id = "^webcord$"; }
-          { title = "^TeamSpeak 3$"; }
-        ];
-        open-on-workspace = "secondary";
-      }
-      {
-        matches = [
-          { app-id = "^org\\.keepassxc\\.KeePassXC$"; }
-          { app-id = "^org\\.gnome\\.World\\.Secrets$"; }
-        ];
-        block-out-from = "screen-capture";
-      }
-      # gaming workspace window rule - uncomment after niri-flake supports on-workspace matcher
-      # {
-      #   matches = [
-      #     { on-workspace = "gaming"; }
-      #   ];
-      #   geometry-corner-radius = {
-      #     top-left = 0.0;
-      #     top-right = 0.0;
-      #     bottom-left = 0.0;
-      #     bottom-right = 0.0;
-      #   };
-      #   animations.window-open.enable = false;
-      #   animations.window-close.enable = false;
-      #   animations.window-resize.enable = false;
-      # }
-      {
-        matches = [ { } ]; # match all windows
-        opacity = 1.0; # for toggle-window-rule-opacity
-        draw-border-with-background = false;
-        geometry-corner-radius = {
-          top-left = 14.0;
-          top-right = 14.0;
-          bottom-left = 14.0;
-          bottom-right = 14.0;
-        };
-        clip-to-geometry = true;
-      }
     ];
 
-    # keybindings
-    # shell-specific binds (launcher, audio, brightness) are in shell-binds.nix
-    binds = with config.lib.niri.actions; {
+    binds = {
       # help overlay
       "Mod+Shift+Slash".action = {
         show-hotkey-overlay = [ ];
@@ -506,19 +384,6 @@
         move-column-left = [ ];
       };
 
-      "Mod+Shift+WheelScrollDown".action = {
-        focus-column-right = [ ];
-      };
-      "Mod+Shift+WheelScrollUp".action = {
-        focus-column-left = [ ];
-      };
-      "Mod+Ctrl+Shift+WheelScrollDown".action = {
-        move-column-right = [ ];
-      };
-      "Mod+Ctrl+Shift+WheelScrollUp".action = {
-        move-column-left = [ ];
-      };
-
       # workspace number bindings
       "Mod+1".action = {
         focus-workspace = 1;
@@ -636,11 +501,6 @@
       };
       "Mod+Shift+V".action = {
         switch-focus-between-floating-and-tiling = [ ];
-      };
-
-      # transparency toggle
-      "Mod+A".action = {
-        toggle-window-rule-opacity = [ ];
       };
 
       # screenshots
