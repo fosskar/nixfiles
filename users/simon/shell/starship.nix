@@ -1,47 +1,39 @@
 { config, lib, ... }:
+let
+  inherit (config) theme;
+in
 {
   home.sessionVariables.STARSHIP_CACHE = "${config.xdg.cacheHome}/starship";
 
   programs.starship = {
     enable = true;
-    enableFishIntegration = false; # using tide instead
 
     settings = {
       format = lib.concatStrings [
-        "$all"
-        "$fill"
-        "$cmd_duration"
+        "[╭─](bright-black) $all"
+        "$fill "
         "$kubernetes"
         "$terraform"
         "$package"
         "$nix_shell"
+        "[─╮](bright-black)"
         "$line_break"
         "$status"
         "$jobs"
-        "$character"
+        "[╰─](bright-black)$character"
       ];
       right_format = lib.concatStrings [
-
+        "$cmd_duration"
+        "[─╯](bright-black)"
       ];
       add_newline = true;
 
       cmd_duration = {
-        format = "[$duration]($style) ";
-        style = "yellow";
+        format = "[$duration](${theme.warning}) ";
       };
 
       directory = {
-        style = "bold green";
-      };
-
-      docker_context = {
-        format = "[$symbol$context]($style) ";
-        only_with_files = true;
-        detect_files = [
-          "docker-compose.yml"
-          "docker-compose.yaml"
-          "Dockerfile"
-        ];
+        style = theme.primary;
       };
 
       # jj and git integration
@@ -50,58 +42,43 @@
           description = "jujutsu vcs status";
           when = "jj --ignore-working-copy root";
           symbol = "󰘬 ";
-          command = "jj log -r@ --no-graph --ignore-working-copy --color=never -T 'if(empty, \"·\", \"●\")'";
-          format = "[\\[$symbol$output\\]]($style) ";
-          style = "bold purple";
+          command = "jj log -r@ --no-graph --ignore-working-copy --color=never -T 'change_id.shortest()'";
+          format = "[$symbol$output](${theme.term.magenta}) ";
         };
 
         git_branch = {
-          when = "! jj --ignore-working-copy root";
-          command = "starship module git_branch";
-          format = "$output";
-          style = "";
-          description = "only show git_branch if we're not in a jj repo";
-        };
-
-        git_status = {
-          when = "! jj --ignore-working-copy root";
-          command = "starship module git_status";
-          format = "$output";
-          style = "";
-          description = "only show git_status if we're not in a jj repo";
+          when = "git rev-parse --git-dir 2>/dev/null && ! jj --ignore-working-copy root 2>/dev/null";
+          command = "git branch --show-current 2>/dev/null || git rev-parse --short HEAD";
+          symbol = " ";
+          format = "[$symbol$output](${theme.term.magenta}) ";
+          description = "only show git branch if not in a jj repo";
         };
       };
 
-      # disable original git modules and use custom module with jj support
+      # disable built-in git modules, using custom modules instead
       git_branch.disabled = true;
       git_status.disabled = true;
       git_commit.disabled = true;
 
-      helm = {
-        format = "[$symbol($version)]($style) ";
-        detect_files = [
-          "helmfile.yaml"
-          "helmfile.yml"
-          "Chart.yaml"
-          "Chart.yml"
-          "values.yaml"
-          "values.yml"
-        ];
-      };
-
       kubernetes = {
         disabled = false;
         symbol = "󱃾 ";
-        format = "[$symbol$context]($style) ";
+        format = "[$symbol$context](${theme.term.blue}) ";
       };
 
       nix_shell = {
-        symbol = " ";
-        format = "[$symbol(\($name\))]($style) ";
+        symbol = "󱄅 ";
+        format = "[$symbol(\($name\))](${theme.term.blue}) ";
+      };
+
+      character = {
+        success_symbol = "[❯](${theme.primary})";
+        error_symbol = "[❯](${theme.error})";
       };
 
       fill = {
-        symbol = " ";
+        symbol = "─";
+        style = "bright-black";
       };
     };
   };
