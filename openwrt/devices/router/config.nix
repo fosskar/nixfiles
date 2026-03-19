@@ -1,4 +1,4 @@
-# gl-net GL-MT6000 (flint 2) — main router
+# GL.iNet GL-MT6000 (flint 2) — main router
 # TODO: run `nix run .#openwrt-fetch-router` to dump current config, then adjust below
 {
   host = "192.168.10.1";
