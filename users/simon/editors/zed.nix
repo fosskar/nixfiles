@@ -64,9 +64,9 @@
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
       #vim_mode = true;
-      buffer_font_family = config.monospaceFont;
+      buffer_font_family = config.theme.monospaceFont;
       buffer_line_height = "standard";
-      ui_font_family = config.font;
+      ui_font_family = config.theme.font;
       confirm_quit = true;
       show_whitespaces = "boundary";
       calls = {

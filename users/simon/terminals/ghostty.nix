@@ -41,7 +41,7 @@ in
     };
     settings = {
       theme = "grey-teal";
-      font-family = config.monospaceFont;
+      font-family = config.theme.monospaceFont;
       font-size = 10;
       copy-on-select = false;
       window-padding-x = 4;

@@ -1,138 +1,59 @@
 { lib, ... }:
+let
+  color =
+    default:
+    lib.mkOption {
+      type = lib.types.str;
+      inherit default;
+    };
+in
 {
-  options = {
-    font = lib.mkOption {
-      type = lib.types.str;
-      default = "Inter";
+  options.theme = {
+    # fonts
+    font = color "Inter";
+    monospaceFont = color "CommitMono Nerd Font Propo";
+
+    # backgrounds
+    bg = color "#181818";
+    bgLight = color "#1E1E1E";
+    bgLighter = color "#232323";
+    bgLightest = color "#282828";
+
+    # foregrounds
+    fg = color "#CCCCCC";
+    fgMuted = color "#9D9D9D";
+    fgDim = color "#616161";
+
+    # accents
+    primary = color "#16A085";
+    primaryDark = color "#0E6655";
+    secondary = color "#1ABC9C";
+
+    # semantic
+    error = color "#F85149";
+    warning = color "#FFA000";
+    info = color "#1ABC9C";
+
+    # terminal palette (ANSI colors)
+    term = {
+      green = color "#73C991";
+      blue = color "#6796E6";
+      magenta = color "#C586C0";
     };
-    monospaceFont = lib.mkOption {
-      type = lib.types.str;
-      default = "CommitMono Nerd Font Propo";
-    };
-    theme = {
-      # backgrounds
-      bg = lib.mkOption {
-        type = lib.types.str;
-        default = "#181818";
-      };
-      bgLight = lib.mkOption {
-        type = lib.types.str;
-        default = "#1E1E1E";
-      };
-      bgLighter = lib.mkOption {
-        type = lib.types.str;
-        default = "#232323";
-      };
-      bgLightest = lib.mkOption {
-        type = lib.types.str;
-        default = "#282828";
-      };
 
-      # foregrounds
-      fg = lib.mkOption {
-        type = lib.types.str;
-        default = "#CCCCCC";
-      };
-      fgMuted = lib.mkOption {
-        type = lib.types.str;
-        default = "#9D9D9D";
-      };
-      fgDim = lib.mkOption {
-        type = lib.types.str;
-        default = "#616161";
-      };
-
-      # accents
-      primary = lib.mkOption {
-        type = lib.types.str;
-        default = "#16A085";
-      };
-      primaryDark = lib.mkOption {
-        type = lib.types.str;
-        default = "#0E6655";
-      };
-      secondary = lib.mkOption {
-        type = lib.types.str;
-        default = "#1ABC9C";
-      };
-
-      # semantic
-      error = lib.mkOption {
-        type = lib.types.str;
-        default = "#F85149";
-      };
-      warning = lib.mkOption {
-        type = lib.types.str;
-        default = "#FFA000";
-      };
-      info = lib.mkOption {
-        type = lib.types.str;
-        default = "#1ABC9C";
-      };
-
-      # terminal palette (ANSI colors)
-      term = {
-        green = lib.mkOption {
-          type = lib.types.str;
-          default = "#73C991";
-        };
-        blue = lib.mkOption {
-          type = lib.types.str;
-          default = "#6796E6";
-        };
-        magenta = lib.mkOption {
-          type = lib.types.str;
-          default = "#C586C0";
-        };
-      };
-
-      # light theme variants
-      light = {
-        bg = lib.mkOption {
-          type = lib.types.str;
-          default = "#FAFAFA";
-        };
-        bgDark = lib.mkOption {
-          type = lib.types.str;
-          default = "#F5F5F5";
-        };
-        bgDarker = lib.mkOption {
-          type = lib.types.str;
-          default = "#EEEEEE";
-        };
-        bgDarkest = lib.mkOption {
-          type = lib.types.str;
-          default = "#E0E0E0";
-        };
-        fg = lib.mkOption {
-          type = lib.types.str;
-          default = "#181818";
-        };
-        fgMuted = lib.mkOption {
-          type = lib.types.str;
-          default = "#616161";
-        };
-        outline = lib.mkOption {
-          type = lib.types.str;
-          default = "#B0BEC5";
-        };
-        primary = lib.mkOption {
-          type = lib.types.str;
-          default = "#0E6655";
-        };
-        primaryContainer = lib.mkOption {
-          type = lib.types.str;
-          default = "#A3E4D7";
-        };
-        error = lib.mkOption {
-          type = lib.types.str;
-          default = "#D32F2F";
-        };
-        warning = lib.mkOption {
-          type = lib.types.str;
-          default = "#F57C00";
-        };
-      };
+    # light theme variants
+    light = {
+      bg = color "#FAFAFA";
+      bgDark = color "#F5F5F5";
+      bgDarker = color "#EEEEEE";
+      bgDarkest = color "#E0E0E0";
+      fg = color "#181818";
+      fgMuted = color "#616161";
+      outline = color "#B0BEC5";
+      primary = color "#0E6655";
+      primaryContainer = color "#A3E4D7";
+      error = color "#D32F2F";
+      warning = color "#F57C00";
     };
   };
 }

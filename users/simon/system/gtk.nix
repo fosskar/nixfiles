@@ -11,7 +11,7 @@
   gtk = {
     enable = true;
     font = {
-      name = config.font;
+      name = config.theme.font;
     };
     theme = {
       name = "adw-gtk3-dark";
