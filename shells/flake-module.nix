@@ -16,6 +16,7 @@ _: {
       });
 
       # until it not only a cli flag https://git.clan.lol/clan/clan-core/issues/4624
+      defaultShellName = "nixfiles";
       scripts = [
         (mkScript "clan" ''
           if [ "$1" = "m" ] && [ "$2" = "u" ]; then
@@ -29,8 +30,9 @@ _: {
     {
       devShells = {
         default = pkgs.mkShellNoCC {
-          name = "nixfiles";
+          name = defaultShellName;
           shellHook = ''
+            export name="${defaultShellName}"
             ${config.pre-commit.installationScript}
           '';
           packages = [ pkgs.hcloud ] ++ scripts;
