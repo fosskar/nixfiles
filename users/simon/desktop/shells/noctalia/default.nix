@@ -187,8 +187,8 @@
         };
 
         ui = {
-          fontDefault = config.font;
-          fontFixed = config.monospaceFont;
+          fontDefault = config.theme.font;
+          fontFixed = config.theme.monospaceFont;
           panelsAttachedToBar = true;
         };
 
