@@ -18,8 +18,8 @@ _: {
       # until it not only a cli flag https://git.clan.lol/clan/clan-core/issues/4624
       scripts = [
         (mkScript "clan" ''
-          if [ "$1" = "machines" ] && [ "$2" = "update" ]; then
-            ${clan-cli-patched}/bin/clan machines update --build-host localhost "''${@:3}"
+          if [ "$1" = "m" ] && [ "$2" = "u" ]; then
+            ${clan-cli-patched}/bin/clan m u --build-host localhost "''${@:3}"
           else
             ${clan-cli-patched}/bin/clan "$@"
           fi
