@@ -133,11 +133,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773846770,
-        "narHash": "sha256-KUsisdoh6DZcUJkGCA9y2DJ5CPF8TRKl7hYSCNVqX8w=",
+        "lastModified": 1773904694,
+        "narHash": "sha256-rKQahcGb/Qtw3jXt7JN/bPstGXdrZOJ5esUdvqn8wZY=",
         "ref": "refs/heads/main",
-        "rev": "9e672165ac41e68ed1b42be254d5a1fd0f3365db",
-        "revCount": 13645,
+        "rev": "e1a18e7a38bab2960f91f6d14225573ec681d8bf",
+        "revCount": 13649,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -1204,10 +1204,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1773902458,
-        "narHash": "sha256-y6y52vvk099RGz43fqLDb1jGHOhQYms4KOI3ZC6Yzc0=",
+        "lastModified": 1773917064,
+        "narHash": "sha256-0isO2VSaTBDQDBZmdzgtWJl6E2iG0JnHbtnnbUoPfFI=",
         "ref": "master",
-        "rev": "1a25a9d4cd474672fed8e68ba364581ab6269def",
+        "rev": "c58cfdd9a52f721a3c37d9af560ca13ec02508ce",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1277,11 +1277,11 @@
         "noctalia-qs": "noctalia-qs"
       },
       "locked": {
-        "lastModified": 1773886319,
-        "narHash": "sha256-lVL3PHExJy7UJ23Ph+5Gzxjak8Ma0E5ly9NPJ16EhtE=",
+        "lastModified": 1773907741,
+        "narHash": "sha256-VCOseUhojMawFh/O0ZlSftbiEql4kJn0+WjPqorvk9o=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "d2396b3e600721294837b10d90082f3bb1716d2a",
+        "rev": "5eb8b9cbcbf7f9ffcff8b75233bad6e80c721f4c",
         "type": "github"
       },
       "original": {
@@ -1335,11 +1335,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773826762,
-        "narHash": "sha256-YSaglla/8XF3PW5n/b/jpwCa0Z2UaprlCDhipvmBgBk=",
+        "lastModified": 1773916211,
+        "narHash": "sha256-FyO/nPw2CZn35YL22Xl8V5qkTTANwKoNw2MIAIcmZH0=",
         "owner": "outfoxxed",
         "repo": "quickshell",
-        "rev": "0cb62920a7ab0b199754c941046ae86e3a1c368d",
+        "rev": "7511545ee20664e3b8b8d3322c0ffe7567c56f7a",
         "type": "github"
       },
       "original": {
@@ -1564,11 +1564,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1773844578,
-        "narHash": "sha256-YeEjlyvCEQ9hDs8ubNEOW26psNdveLNpar2t2QoM0s4=",
+        "lastModified": 1773917924,
+        "narHash": "sha256-y5OCTIOS9fF5N+9owKK8UpgXjqhV6K9BnuvXjFcaIU0=",
         "ref": "refs/heads/master",
-        "rev": "e48a34f1426e191c69547a27ec7dd99331cd3659",
-        "revCount": 2078,
+        "rev": "3d739f816e1edad2a2e4235529a34a7e2928b2e8",
+        "revCount": 2080,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
       },
