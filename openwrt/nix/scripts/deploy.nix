@@ -115,6 +115,9 @@ pkgs.writeShellScriptBin "openwrt-deploy" ''
                 cfg_before=$(echo "$before" | grep "^$cfg\." || true)
                 cfg_after=$(echo "$after" | grep "^$cfg\." || true)
                 if [ "$cfg_before" != "$cfg_after" ]; then
+                  # show what changed
+                  echo "--- $cfg changed ---"
+                  diff <(echo "$cfg_before") <(echo "$cfg_after") | grep "^[<>]" | head -20 || true
                   echo "reloading $cfg..."
                   ssh "$HOST" "/etc/init.d/$cfg reload 2>/dev/null || /etc/init.d/$cfg restart 2>/dev/null || true"
                 fi
