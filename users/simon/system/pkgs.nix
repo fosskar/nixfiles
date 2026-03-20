@@ -1,63 +1,74 @@
-{ pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    # desktop apps
-    #webcord-vencord
-    signal-desktop
-    #protonvpn-gui
-    #protonvpn-cli
-    #filen-desktop
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+{
+  home.packages =
+    with pkgs;
+    [
+      # desktop apps
+      #webcord-vencord
+      signal-desktop
+      #protonvpn-gui
+      #protonvpn-cli
+      #filen-desktop
 
-    (pkgs.symlinkJoin {
-      name = "element-desktop";
-      paths = [ pkgs.element-desktop ];
-      buildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/element-desktop \
-          --add-flags "--password-store=gnome-libsecret"
-      '';
-    })
+      (pkgs.symlinkJoin {
+        name = "element-desktop";
+        paths = [ pkgs.element-desktop ];
+        buildInputs = [ pkgs.makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/element-desktop \
+            --add-flags "--password-store=gnome-libsecret"
+        '';
+      })
 
-    # media
-    spotify
+      # media
+      spotify
 
-    obsidian
+      obsidian
 
-    # audio
-    #teamspeak3
-    teamspeak6-client
+      # audio
+      #teamspeak3
+    ]
+    ++ lib.optionals (config.nixfiles.machineType == "desktop") [
+      teamspeak6-client
+    ]
+    ++ (with pkgs; [
 
-    #keepassxc
-    # gaming
-    #gamescope
-    #r2modman
-    #lutris
-    #wineWowPackages.stable
-    #wineWowPackages.waylandFull
-    #winetricks
-    #protontricks
-    #bottles
-    #path-of-building
-    #gfn-electron
+      #keepassxc
+      # gaming
+      #gamescope
+      #r2modman
+      #lutris
+      #wineWowPackages.stable
+      #wineWowPackages.waylandFull
+      #winetricks
+      #protontricks
+      #bottles
+      #path-of-building
+      #gfn-electron
 
-    # needed for graphene installer
-    #android-udev-rules
-    #android-tools
+      # needed for graphene installer
+      #android-udev-rules
+      #android-tools
 
-    # drone
-    # Override betaflight-configurator to use an older nwjs version
-    # commented out due to qtwebengine-5.15.19 insecurity issues
-    #(betaflight-configurator.override {
-    #  nwjs = pkgs.nwjs.overrideAttrs rec {
-    #    version = "0.84.0";
-    #    src = pkgs.fetchurl {
-    #      url = "https://dl.nwjs.io/v${version}/nwjs-v${version}-linux-x64.tar.gz";
-    #      hash = "sha256-VIygMzCPTKzLr47bG1DYy/zj0OxsjGcms0G1BkI/TEI=";
-    #    };
-    #  };
-    #})
-    libatomic_ops
+      # drone
+      # Override betaflight-configurator to use an older nwjs version
+      # commented out due to qtwebengine-5.15.19 insecurity issues
+      #(betaflight-configurator.override {
+      #  nwjs = pkgs.nwjs.overrideAttrs rec {
+      #    version = "0.84.0";
+      #    src = pkgs.fetchurl {
+      #      url = "https://dl.nwjs.io/v${version}/nwjs-v${version}-linux-x64.tar.gz";
+      #      hash = "sha256-VIygMzCPTKzLr47bG1DYy/zj0OxsjGcms0G1BkI/TEI=";
+      #    };
+      #  };
+      #})
+      libatomic_ops
 
-    lmstudio
-  ];
+      lmstudio
+    ]);
 }
