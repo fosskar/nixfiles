@@ -31,6 +31,16 @@
 
     powertop.enable = lib.mkEnableOption "powertop auto-tuning on startup";
 
+    suspend-then-shutdown = {
+      enable = lib.mkEnableOption "auto-shutdown after prolonged suspend via rtcwake";
+
+      delay = lib.mkOption {
+        type = lib.types.int;
+        default = 43200;
+        description = "seconds of suspend before shutdown (default: 12h)";
+      };
+    };
+
     tuned = {
       enable = lib.mkEnableOption "tuned";
 

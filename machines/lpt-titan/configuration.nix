@@ -52,6 +52,7 @@
     power = {
       logind.enable = true;
       powertop.enable = true;
+      suspend-then-shutdown.enable = true;
       tuned = {
         enable = true;
         ppdSupport = true;
