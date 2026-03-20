@@ -1,5 +1,3 @@
-# nixfiles
-
 <p align="center">
   <img src="docs/logo/logo.svg" width="300px" alt="nixfiles logo"/>
 </p>
