@@ -22,7 +22,7 @@
 }:
 let
   pname = "arbor";
-  version = "20260315.03";
+  version = "20260316.01";
 
   runtimeDeps = [
     vulkan-loader
@@ -42,7 +42,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/penso/arbor/releases/download/${version}/Arbor-${version}-x86_64-unknown-linux-gnu.tar.gz";
-    hash = "sha256-dmMa632nkpW2MCitxJcazqmOen4Vw+nzcQ0wTZwSyu4=";
+    hash = "sha256-tXcG939wBBAXaUHDBqSfz8utIqkHFH05agtQQqqtiI4=";
   };
 
   desktopItems = [
