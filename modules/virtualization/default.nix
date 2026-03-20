@@ -43,6 +43,10 @@ in
         enable = true;
         inherit (cfg.podman) dockerCompat;
       };
+      environment.systemPackages = [
+        pkgs.dive # inspect container image layers
+        pkgs.podman-tui # terminal UI for managing containers
+      ];
     })
 
     (lib.mkIf cfg.libvirt.enable {
