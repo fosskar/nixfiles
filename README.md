@@ -1,7 +1,7 @@
 # nixfiles
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/NixOS/nixos-artwork/master/logo/nix-snowflake-colours.svg" width="300px" alt="nixos logo"/>
+  <img src="docs/logo/logo.svg" width="300px" alt="nixfiles logo"/>
 </p>
 
 personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
