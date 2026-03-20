@@ -117,6 +117,13 @@ in
       hostName = canonicalDomain;
       https = false;
       autoUpdateApps.enable = false;
+      appstoreEnable = false;
+
+      caching = {
+        apcu = true;
+        redis = true;
+      };
+      configureRedis = true;
 
       notify_push = {
         enable = true;
