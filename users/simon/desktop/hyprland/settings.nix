@@ -90,10 +90,7 @@
         error_position = 1;
         full_cm_proto = true;
       };
-      monitor = [
-        "DP-1, 3440x1440@164.9, 0x0, 1"
-        "HDMI-A-2, 1920x1080@239.76, auto-right, 1, transform, 3"
-      ];
+      # outputs managed by kanshi
       dwindle = {
         pseudotile = true;
         preserve_split = true;
