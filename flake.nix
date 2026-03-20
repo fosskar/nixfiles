@@ -195,5 +195,22 @@
 
           formatter = config.treefmt.build.wrapper;
         };
+
+      # --- service inventory ---
+      # auto-generated from caddy vhosts: nix eval .#serviceSummary --json | jq
+      flake.serviceSummary =
+        let
+          machines = self.nixosConfigurations;
+          mkMachineSummary =
+            _: machine:
+            let
+              cfg = machine.config;
+              vhosts = cfg.nixfiles.caddy.vhosts or { };
+            in
+            lib.mapAttrs (_: vhost: vhost.port) (
+              lib.filterAttrs (_: vhost: vhost.port != null) vhosts
+            );
+        in
+        lib.mapAttrs mkMachineSummary machines;
     };
 }
