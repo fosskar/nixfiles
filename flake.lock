@@ -1158,6 +1158,26 @@
         "type": "github"
       }
     },
+    "nix-index-database": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1773552174,
+        "narHash": "sha256-mHSRNrT1rjeYBgkAlj07dW3+1nFEgAd8Gu6lgyfT9DU=",
+        "owner": "nix-community",
+        "repo": "nix-index-database",
+        "rev": "8faeb68130df077450451b6734a221ba0d6cde42",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-index-database",
+        "type": "github"
+      }
+    },
     "nix-select": {
       "locked": {
         "lastModified": 1763303120,
@@ -1204,10 +1224,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1773999953,
-        "narHash": "sha256-4/hKPHzkeotF5zuYjRlnSFwu7txNDVm4JXRlVe7I6eE=",
+        "lastModified": 1774005595,
+        "narHash": "sha256-CoKR9erHxVO3r7yx9+At0Ele8jZtR2Oh2QJnlvImuDo=",
         "ref": "master",
-        "rev": "b10e145984264120e18c53a16686dc79de17f18f",
+        "rev": "918beabdb81fbc66f49af6ff9d0b8b55c1e47a7d",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1363,6 +1383,7 @@
         "niri-flake": "niri-flake",
         "nix-citizen": "nix-citizen",
         "nix-gaming": "nix-gaming",
+        "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-git": "nixpkgs-git",
@@ -1564,11 +1585,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1773994002,
-        "narHash": "sha256-dLV4wAvjKL130005PEfzSv9W1r21XidJb0hqoZd6D4E=",
+        "lastModified": 1774005631,
+        "narHash": "sha256-cc1SeqKhugqX4quW6OMzp2JB+av15XlBNquuMY2ZA0s=",
         "ref": "refs/heads/master",
-        "rev": "91dcca51413c66582e8cc20c8b4c485053a955d1",
-        "revCount": 2085,
+        "rev": "5b86d15fcffb405684947dd110684548b8a27dfa",
+        "revCount": 2096,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
       },

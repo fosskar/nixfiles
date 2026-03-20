@@ -150,6 +150,11 @@
       };
     };
 
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     wiki = {
       url = "git+https://tangled.org/fosskar.eu/wiki";
       inputs.nixpkgs.follows = "nixpkgs";
