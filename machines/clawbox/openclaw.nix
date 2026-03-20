@@ -14,7 +14,13 @@ in
     llm-agents.codex
     llm-agents.opencode
     whisper-cpp
+    go
+    gcc
     gh
+    uv
+    python3
+    tmux
+    jq
     # libreoffice  # disabled: noto-fonts-subset build failure
     ffmpeg
     imagemagick
@@ -82,6 +88,9 @@ in
 
     path = config.environment.systemPackages;
     environment = {
+      HOME = "/root";
+      UV_PYTHON_PREFERENCE = "system";
+
       OPENCLAW_DISABLE_BONJOUR = "1";
       WHISPER_CPP_MODEL = "${stateDir}/ggml-base.bin";
       OPENCLAW_NIX_MODE = "1";
@@ -95,6 +104,7 @@ in
       Type = "simple";
       WorkingDirectory = stateDir;
       EnvironmentFile = config.clan.core.vars.generators.openclaw.files."env".path;
+      ExecSearchPath = "/root/go/bin /root/.local/bin";
       ExecStartPre = [
         # copy bundled extensions to mutable dir (breaks nix store hardlinks that openclaw rejects)
         "${pkgs.bash}/bin/bash -c 'rm -rf ${stateDir}/bundled-extensions && cp -r --no-preserve=links ${pkgs.llm-agents.openclaw}/lib/openclaw/extensions ${stateDir}/bundled-extensions'"
