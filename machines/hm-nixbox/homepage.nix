@@ -145,6 +145,12 @@ _: {
               siteMonitor = "http://192.168.10.30";
             };
           }
+          {
+            "Syncthing" = {
+              href = "http://127.0.0.1:8384";
+              icon = "syncthing.svg";
+            };
+          }
         ];
       }
     ];
