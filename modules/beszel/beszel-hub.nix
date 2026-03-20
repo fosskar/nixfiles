@@ -39,6 +39,24 @@ in
       '';
     };
 
+    # --- backup ---
+
+    clan.core.state.beszel-hub = {
+      folders = [ "/var/backup/beszel-hub" ];
+      preBackupScript = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/beszel-hub
+        sqlite3 /var/lib/beszel-hub/beszel_data/beszel.db ".backup '/var/backup/beszel-hub/beszel.db'"
+        sqlite3 /var/lib/beszel-hub/beszel_data/data.db ".backup '/var/backup/beszel-hub/data.db'"
+        sqlite3 /var/lib/beszel-hub/beszel_data/auxiliary.db ".backup '/var/backup/beszel-hub/auxiliary.db'"
+      '';
+    };
+
     services.authelia.instances.main.settings.identity_providers.oidc.clients = [
       {
         client_id = "beszel";

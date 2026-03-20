@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -50,6 +51,22 @@ in
     # no proxy-auth - jellyseerr has built-in auth
     nixfiles.caddy.vhosts.jellyseerr = {
       inherit port;
+    };
+
+    # --- backup ---
+
+    clan.core.state.jellyseerr = {
+      folders = [ "/var/backup/jellyseerr" ];
+      preBackupScript = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/jellyseerr
+        sqlite3 /var/lib/jellyseerr/config/db/db.sqlite3 ".backup '/var/backup/jellyseerr/db.sqlite3'"
+      '';
     };
   };
 }

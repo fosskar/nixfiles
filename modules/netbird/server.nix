@@ -130,6 +130,24 @@ in
       }
     ];
 
+    # --- backup ---
+
+    clan.core.state.netbird-server = {
+      folders = [ "/var/backup/netbird-server" ];
+      preBackupScript = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/netbird-server
+        sqlite3 /var/lib/netbird-server/store.db ".backup '/var/backup/netbird-server/store.db'"
+        sqlite3 /var/lib/netbird-server/events.db ".backup '/var/backup/netbird-server/events.db'"
+        sqlite3 /var/lib/netbird-server/idp.db ".backup '/var/backup/netbird-server/idp.db'"
+      '';
+    };
+
     # --- persistence ---
 
     nixfiles.persistence.directories = [

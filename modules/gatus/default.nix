@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -98,6 +99,22 @@ in
         };
         endpoints = gatusEndpoints;
       };
+    };
+
+    # --- backup ---
+
+    clan.core.state.gatus = {
+      folders = [ "/var/backup/gatus" ];
+      preBackupScript = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.sqlite
+            pkgs.coreutils
+          ]
+        }
+        mkdir -p /var/backup/gatus
+        sqlite3 /var/lib/gatus/gatus.db ".backup '/var/backup/gatus/gatus.db'"
+      '';
     };
 
     # --- caddy ---
