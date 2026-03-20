@@ -35,3 +35,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
 - [mic92 dotfiles](https://github.com/Mic92/dotfiles)
 - [badele nix-homelab](https://github.com/badele/nix-homelab)
+
+## license
+
+[MIT](LICENSE)
