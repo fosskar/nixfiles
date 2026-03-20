@@ -207,9 +207,7 @@
               cfg = machine.config;
               vhosts = cfg.nixfiles.caddy.vhosts or { };
             in
-            lib.mapAttrs (_: vhost: vhost.port) (
-              lib.filterAttrs (_: vhost: vhost.port != null) vhosts
-            );
+            lib.mapAttrs (_: vhost: vhost.port) (lib.filterAttrs (_: vhost: vhost.port != null) vhosts);
         in
         lib.mapAttrs mkMachineSummary machines;
     };
