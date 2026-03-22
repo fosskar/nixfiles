@@ -10,7 +10,10 @@ in
 {
   imports = mylib.scanPaths ./. { };
 
-  home.packages = [ pkgs.wl-clipboard ];
+  home.packages = [
+    pkgs.wl-clipboard
+    pkgs.custom.live-ocr
+  ];
 
   programs.niri.settings = {
     workspaces = {
@@ -105,6 +108,11 @@ in
           y = 10;
           relative-to = "bottom-right";
         };
+      }
+      # live-ocr overlay
+      {
+        matches = [ { app-id = "^live-ocr$"; } ];
+        open-floating = true;
       }
       #floating windows rules
       {
@@ -511,6 +519,17 @@ in
       };
       "Alt+Print".action = {
         screenshot-window = [ ];
+      };
+
+      # live-ocr
+      "Mod+Shift+Print".action = {
+        spawn = "live-ocr";
+      };
+      "Mod+Ctrl+Print".action = {
+        spawn-sh = "live-ocr --fullscreen";
+      };
+      "Mod+Alt+Print".action = {
+        spawn-sh = "live-ocr --window";
       };
 
       # system

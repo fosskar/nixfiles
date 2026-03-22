@@ -37,7 +37,7 @@ declare -A UPDATE_URL=(
 GITHUB_RELEASE_PACKAGES=("agent-desktop" "arbor" "t3code")
 
 # packages to skip (binary releases, manual updates)
-SKIP_PACKAGES=("handy" "voquill")
+SKIP_PACKAGES=("handy" "live-ocr" "voquill")
 
 # packages with gradle deps that need mitmCache update
 GRADLE_PACKAGES=("stirling-pdf")
