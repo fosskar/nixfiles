@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- document/screen background -->
+  <rect x="16" y="16" width="96" height="96" rx="8" fill="#1e1e2e" stroke="#cdd6f4" stroke-width="3"/>
+
+  <!-- text lines -->
+  <rect x="28" y="32" width="52" height="6" rx="3" fill="#89b4fa"/>
+  <rect x="28" y="46" width="72" height="6" rx="3" fill="#a6adc8"/>
+  <rect x="28" y="60" width="40" height="6" rx="3" fill="#a6adc8"/>
+  <rect x="28" y="74" width="60" height="6" rx="3" fill="#a6adc8"/>
+  <rect x="28" y="88" width="50" height="6" rx="3" fill="#a6adc8"/>
+
+  <!-- selection highlight over second line -->
+  <rect x="26" y="44" width="76" height="10" rx="2" fill="#89b4fa" opacity="0.25" stroke="#89b4fa" stroke-width="1.5"/>
+
+  <!-- magnifying glass centered on document -->
+  <circle cx="72" cy="68" r="28" fill="#1e1e2e" opacity="0.6"/>
+  <circle cx="72" cy="68" r="28" fill="none" stroke="#f38ba8" stroke-width="4"/>
+  <line x1="92" y1="88" x2="110" y2="106" stroke="#f38ba8" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- "T" inside magnifying glass -->
+  <text x="72" y="76" text-anchor="middle" font-family="sans-serif" font-size="28" font-weight="bold" fill="#cdd6f4">T</text>
+</svg>
