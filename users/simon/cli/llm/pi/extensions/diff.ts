@@ -25,11 +25,9 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("diff", {
     description: "Show git changes and open in Zed's diff view",
     handler: async (args, ctx) => {
-      const topResult = await pi.exec(
-        "git",
-        ["rev-parse", "--show-toplevel"],
-        { cwd: ctx.cwd },
-      );
+      const topResult = await pi.exec("git", ["rev-parse", "--show-toplevel"], {
+        cwd: ctx.cwd,
+      });
       if (topResult.code !== 0) {
         ctx.ui.notify(`not a git repo: ${topResult.stderr}`, "error");
         return;
@@ -79,7 +77,11 @@ export default function (pi: ExtensionAPI) {
         }
 
         // get HEAD version into temp file
-        const mktemp = await pi.exec("mktemp", ["-t", `diff-${f.file.replace(/\//g, "_")}-XXXXXX`], { cwd: ctx.cwd });
+        const mktemp = await pi.exec(
+          "mktemp",
+          ["-t", `diff-${f.file.replace(/\//g, "_")}-XXXXXX`],
+          { cwd: ctx.cwd },
+        );
         if (mktemp.code !== 0) {
           ctx.ui.notify("failed to create temp file", "error");
           return;
@@ -89,7 +91,10 @@ export default function (pi: ExtensionAPI) {
         const escaped = f.file.replace(/'/g, "'\\''");
         const showResult = await pi.exec(
           "sh",
-          ["-c", `git show 'HEAD:${escaped}' > '${tmpFile}' 2>/dev/null || true`],
+          [
+            "-c",
+            `git show 'HEAD:${escaped}' > '${tmpFile}' 2>/dev/null || true`,
+          ],
           { cwd: gitRoot },
         );
 
@@ -123,19 +128,34 @@ export default function (pi: ExtensionAPI) {
       // file picker
       await ctx.ui.custom<void>((tui, theme, _kb, done) => {
         const container = new Container();
-        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
         container.addChild(
-          new Text(theme.fg("accent", theme.bold(" Select file to diff")), 0, 0),
+          new DynamicBorder((s: string) => theme.fg("accent", s)),
+        );
+        container.addChild(
+          new Text(
+            theme.fg("accent", theme.bold(" Select file to diff")),
+            0,
+            0,
+          ),
         );
 
         const items: SelectItem[] = files.map((f) => {
           let sc: string;
           switch (f.status) {
-            case "M": sc = theme.fg("warning", f.status); break;
-            case "A": sc = theme.fg("success", f.status); break;
-            case "D": sc = theme.fg("error", f.status); break;
-            case "?": sc = theme.fg("muted", f.status); break;
-            default: sc = theme.fg("dim", f.status);
+            case "M":
+              sc = theme.fg("warning", f.status);
+              break;
+            case "A":
+              sc = theme.fg("success", f.status);
+              break;
+            case "D":
+              sc = theme.fg("error", f.status);
+              break;
+            case "?":
+              sc = theme.fg("muted", f.status);
+              break;
+            default:
+              sc = theme.fg("dim", f.status);
           }
           return { value: f, label: `${sc} ${f.file}` };
         });
@@ -162,10 +182,13 @@ export default function (pi: ExtensionAPI) {
         container.addChild(
           new Text(
             theme.fg("dim", " ↑↓ navigate • ←→ page • enter open • esc close"),
-            0, 0,
+            0,
+            0,
           ),
         );
-        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
+        container.addChild(
+          new DynamicBorder((s: string) => theme.fg("accent", s)),
+        );
 
         return {
           render: (w) => container.render(w),
@@ -175,7 +198,10 @@ export default function (pi: ExtensionAPI) {
               currentIndex = Math.max(0, currentIndex - visibleRows);
               selectList.setSelectedIndex(currentIndex);
             } else if (matchesKey(data, Key.right)) {
-              currentIndex = Math.min(items.length - 1, currentIndex + visibleRows);
+              currentIndex = Math.min(
+                items.length - 1,
+                currentIndex + visibleRows,
+              );
               selectList.setSelectedIndex(currentIndex);
             } else {
               selectList.handleInput(data);
