@@ -1,19 +1,14 @@
 /**
- * sketch extension - quick sketch pad that opens in browser
- * /sketch → opens browser canvas → draw → Enter sends to models
- *
- * based on pi-sketch by ogulcancelik, with:
- * - shape tools (line, rect, arrow) with live preview
- * - redo support (ctrl+shift+z)
- * - no server ready race condition
+ * sketch — quick sketch pad that opens in browser
+ * /sketch → opens browser canvas → draw → send
+ * image is injected into the next user message automatically
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { createServer, type Server } from "node:http";
 import { exec } from "node:child_process";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -129,6 +124,33 @@ function launchSketchServer() {
 }
 
 export default function (pi: ExtensionAPI) {
+  // pending sketch base64 to attach to the next user message
+  let pendingSketch: string | null = null;
+
+  // clear pending sketch on session switch
+  pi.on("session_switch", async () => {
+    pendingSketch = null;
+  });
+
+  // intercept next user input to attach the sketch image
+  pi.on("input", async (event, _ctx) => {
+    if (!pendingSketch) return { action: "continue" as const };
+
+    const imageData = pendingSketch;
+    pendingSketch = null;
+
+    // send as user message with image + user's text, then mark as handled
+    pi.sendUserMessage([
+      {
+        type: "image",
+        source: { type: "base64", mediaType: "image/png", data: imageData },
+      },
+      { type: "text", text: event.text || "Here's my sketch:" },
+    ]);
+
+    return { action: "handled" as const };
+  });
+
   pi.registerCommand("sketch", {
     description: "open a sketch pad in browser to draw something for models",
 
@@ -164,25 +186,15 @@ export default function (pi: ExtensionAPI) {
         },
       );
 
-      try {
-        if (imageBase64) {
-          const sketchDir = join(tmpdir(), "pi-sketches");
-          mkdirSync(sketchDir, { recursive: true });
-          const sketchPath = join(sketchDir, `sketch-${Date.now()}.png`);
-          writeFileSync(sketchPath, Buffer.from(imageBase64, "base64"));
-
-          const currentText = ctx.ui.getEditorText?.() || "";
-          const prefix = currentText ? currentText + "\n" : "";
-          ctx.ui.setEditorText(`${prefix}Sketch: ${sketchPath}`);
-        } else {
-          ctx.ui.notify("sketch cancelled", "info");
-        }
-      } catch (error) {
-        server.close();
+      if (imageBase64) {
+        pendingSketch = imageBase64;
         ctx.ui.notify(
-          `sketch error: ${error instanceof Error ? error.message : String(error)}`,
-          "error",
+          "sketch ready — type your prompt and it'll be attached",
+          "success",
         );
+        ctx.ui.setEditorText("describe what's in this sketch:");
+      } else {
+        ctx.ui.notify("sketch cancelled", "info");
       }
     },
   });

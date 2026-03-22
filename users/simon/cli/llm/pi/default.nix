@@ -5,6 +5,7 @@
   lib,
   ...
 }:
+
 let
   extensionFiles = builtins.readDir ./extensions;
   extensionEntries = lib.mapAttrs' (
@@ -14,6 +15,10 @@ let
   promptEntries = lib.mapAttrs' (
     name: _: lib.nameValuePair ".pi/agent/prompts/${name}" { source = ./prompts/${name}; }
   ) promptFiles;
+  skillDirs = builtins.readDir ./skills;
+  skillEntries = lib.mapAttrs' (
+    name: _: lib.nameValuePair ".pi/agent/skills/${name}" { source = ./skills/${name}; }
+  ) (lib.filterAttrs (_: type: type == "directory") skillDirs);
 
   # declarative pi settings — source of truth in nixfiles.
   # merged on top of existing local settings.json (or deployed 1:1 if none exists).
@@ -27,6 +32,7 @@ let
     followUpMode = "all";
     theme = "dark";
     quietStartup = true;
+    skills = [ "~/.claude/skills" ];
     packages = [
       #{
       #  source = "git:github.com/fosskar/pi-pack";
@@ -55,12 +61,12 @@ in
     exclude = [
       "extensions"
       "prompts"
+      "skills"
     ];
   };
 
   home.packages = [
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi
-    pkgs.glow
   ];
 
   home.file = {
@@ -68,7 +74,8 @@ in
 
   }
   // extensionEntries
-  // promptEntries;
+  // promptEntries
+  // skillEntries;
 
   # deploy or merge pi settings.json
   home.activation.piSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

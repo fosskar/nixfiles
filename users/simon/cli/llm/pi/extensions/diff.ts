@@ -88,23 +88,27 @@ export default function (pi: ExtensionAPI) {
         }
         const tmpFile = mktemp.stdout.trim();
 
-        const escaped = f.file.replace(/'/g, "'\\''");
-        const showResult = await pi.exec(
-          "sh",
-          [
-            "-c",
-            `git show 'HEAD:${escaped}' > '${tmpFile}' 2>/dev/null || true`,
-          ],
-          { cwd: gitRoot },
-        );
+        try {
+          const escaped = f.file.replace(/'/g, "'\\''");
+          await pi.exec(
+            "sh",
+            [
+              "-c",
+              `git show 'HEAD:${escaped}' > '${tmpFile}' 2>/dev/null || true`,
+            ],
+            { cwd: gitRoot },
+          );
 
-        const diffResult = await pi.exec(
-          "zeditor",
-          ["-a", "--diff", tmpFile, filePath],
-          { cwd: ctx.cwd },
-        );
-        if (diffResult.code !== 0) {
-          ctx.ui.notify(`zed diff failed: ${diffResult.stderr}`, "error");
+          const diffResult = await pi.exec(
+            "zeditor",
+            ["-a", "--diff", tmpFile, filePath],
+            { cwd: ctx.cwd },
+          );
+          if (diffResult.code !== 0) {
+            ctx.ui.notify(`zed diff failed: ${diffResult.stderr}`, "error");
+          }
+        } finally {
+          await pi.exec("rm", ["-f", tmpFile], { cwd: ctx.cwd });
         }
       };
 
@@ -171,7 +175,7 @@ export default function (pi: ExtensionAPI) {
           noMatch: (t) => theme.fg("warning", t),
         });
         selectList.onSelect = (item) => {
-          void openDiff(item.value as FileInfo);
+          void openDiff(item.value as FileInfo).finally(() => done());
         };
         selectList.onCancel = () => done();
         selectList.onSelectionChange = (item) => {
