@@ -43,14 +43,6 @@ let
         ];
       }
       {
-        source = "git:github.com/hjanuschka/shitty-extensions";
-        extensions = [
-          "extensions/clipboard.ts"
-          "extensions/oracle.ts"
-          "extensions/memory-mode.ts"
-        ];
-      }
-      {
         source = "git:github.com/nicobailon/pi-powerline-footer";
       }
     ];
