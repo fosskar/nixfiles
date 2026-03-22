@@ -109,8 +109,13 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
-      #inputs.blueprint.follows = "blueprint";
     };
+    #mics-skills = {
+    #  url = "github:Mic92/mics-skills";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #  inputs.flake-parts.follows = "flake-parts";
+    #  inputs.treefmt-nix.follows = "treefmt-nix";
+    #};
 
     # wm
     niri-flake = {
@@ -134,10 +139,6 @@
       url = "github:outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    #quickemu = {
-    #  url = "github:quickemu-project/quickemu";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
