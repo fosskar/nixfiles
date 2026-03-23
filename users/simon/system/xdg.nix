@@ -64,6 +64,8 @@ in
 
     userDirs = {
       enable = true;
+      setSessionVariables = true;
+
       createDirectories = true;
 
       # disable unused home dirs

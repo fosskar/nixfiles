@@ -56,6 +56,7 @@
       gtk-xft-hintstyle = "hintslight";
       gtk-xft-rgba = "rgb";
     };
+    gtk4.theme = config.gtk.theme;
     gtk4.extraConfig = {
       gtk-application-prefer-dark-theme = true;
 
