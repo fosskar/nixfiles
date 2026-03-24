@@ -71,8 +71,7 @@ in
           config.clan.core.vars.generators.vaultwarden.files."oauth-client-secret-hash".path
         }\" }}";
         public = false;
-        consent_mode = "pre-configured";
-        pre_configured_consent_duration = "1y";
+        consent_mode = "implicit";
         require_pkce = true;
         pkce_challenge_method = "S256";
         redirect_uris = [

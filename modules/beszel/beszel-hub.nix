@@ -66,6 +66,7 @@ in
         }\" }}";
         public = false;
         authorization_policy = "two_factor";
+        consent_mode = "implicit";
         require_pkce = true;
         pkce_challenge_method = "S256";
         redirect_uris = [ "https://${beszelDomain}/api/oauth2-redirect" ];

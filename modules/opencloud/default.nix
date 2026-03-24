@@ -35,8 +35,7 @@ let
   # shared OIDC client config — all opencloud clients are public PKCE
   commonClientConfig = {
     public = true;
-    consent_mode = "pre-configured";
-    pre_configured_consent_duration = "1y";
+    consent_mode = "implicit";
     scopes = [
       "openid"
       "profile"

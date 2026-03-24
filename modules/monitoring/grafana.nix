@@ -105,8 +105,7 @@ in
           config.clan.core.vars.generators.grafana.files."oauth-client-secret-hash".path
         }\" }}";
         public = false;
-        consent_mode = "pre-configured";
-        pre_configured_consent_duration = "1y";
+        consent_mode = "implicit";
         require_pkce = true;
         pkce_challenge_method = "S256";
         redirect_uris = [
@@ -202,10 +201,11 @@ in
           auto_assign_org = true;
         };
 
-        #auth = {
-        #  disable_login_form = true;
-        #  oauth_auto_login = true;
-        #};
+        auth = {
+          #oauth_auto_login = true;
+          login_maximum_inactive_lifetime_duration = "30d";
+          login_maximum_lifetime_duration = "30d";
+        };
 
         "auth.generic_oauth" = {
           enabled = true;
