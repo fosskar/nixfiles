@@ -1,4 +1,3 @@
-_:
-{
+_: {
   clan.modules.rosenpass = ./default.nix;
 }

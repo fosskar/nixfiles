@@ -63,6 +63,7 @@ in
       default = "letsencrypt.unpleased904@passmail.net";
       description = "email for ACME registration";
     };
+
     vhosts = lib.mkOption {
       type = lib.types.attrsOf vhostModule;
       default = { };
