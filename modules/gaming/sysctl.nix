@@ -8,6 +8,11 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
+    # ntsync for wine/proton (star citizen etc)
+    boot.kernelModules =
+      lib.optionals (lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.14")
+        [ "ntsync" ];
+
     boot.kernel.sysctl = {
       # scheduler tuning for responsiveness
       "kernel.sched_cfs_bandwidth_slice_us" = 3000;

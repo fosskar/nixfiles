@@ -9,6 +9,8 @@ let
 in
 {
   config = lib.mkIf (cfg.enable && cfg.gamemode.enable) {
+    users.groups.gamemode.members = config.users.groups.wheel.members;
+
     programs.gamemode = {
       enable = true;
       # enableRenice defaults to true
