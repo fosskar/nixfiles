@@ -5,7 +5,7 @@
       enable = false; # yeah its ugly
     };
     desktopManager.cosmic = {
-      enable = true;
+      enable = false; # disabled - build failure (cosmic-settings-daemon)
     };
   };
 
