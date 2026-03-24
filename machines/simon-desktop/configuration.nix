@@ -51,6 +51,6 @@
       podman.enable = true;
     };
 
-    gaming.starCitizen.enable = true;
+    # gaming.starCitizen.enable = true; # switched to nix-gaming via home-manager
   };
 }
