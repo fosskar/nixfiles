@@ -42,7 +42,7 @@ _: {
       };
       deployScript = import ./nix/scripts/deploy.nix (scriptArgs // { inherit uciOutputs; });
       fetchScript = import ./nix/scripts/fetch.nix scriptArgs;
-      diffScript = import ./nix/scripts/diff.nix scriptArgs;
+      diffScript = import ./nix/scripts/diff.nix (scriptArgs // { inherit uciOutputs; });
     in
     {
       apps = {

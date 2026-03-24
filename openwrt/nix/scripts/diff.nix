@@ -1,9 +1,10 @@
-# diff script — shows changes from factory defaults (/rom/etc/config/)
+# diff script — shows drift between nix-declared config and current router state
 {
   pkgs,
   lib,
   devices,
   deviceNames,
+  uciOutputs,
 }:
 pkgs.writeShellScriptBin "openwrt-diff" ''
   set -euo pipefail
@@ -11,7 +12,7 @@ pkgs.writeShellScriptBin "openwrt-diff" ''
   usage() {
     echo "usage: openwrt-diff <device>"
     echo ""
-    echo "shows changes from factory defaults"
+    echo "shows drift: nix config vs current router state"
     echo "devices: ${deviceNames}"
     exit 1
   }
@@ -22,34 +23,51 @@ pkgs.writeShellScriptBin "openwrt-diff" ''
 
   case "$DEVICE" in
     ${lib.concatStringsSep "\n" (
-      lib.mapAttrsToList (name: device: ''
-            ${name})
-              HOST="root@${device.host}"
-              echo "# config diff from factory defaults on ${name} ($HOST)"
+      lib.mapAttrsToList (
+        name: device:
+        let
+          uci = uciOutputs.${name};
+          managedCfgs = builtins.attrNames device.uci.settings;
+          cfgList = lib.concatStringsSep " " managedCfgs;
+        in
+        ''
+          ${name})
+            HOST="root@${device.host}"
+            commands=$(${uci.command})
+
+            # get current committed state for managed configs
+            current=$(ssh -o ConnectTimeout=5 "$HOST" '
+              for cfg in ${cfgList}; do
+                uci show "$cfg" 2>/dev/null
+              done
+            ' | sort)
+
+            # apply batch to staging, read result, then revert
+            desired=$(echo "$commands" | ssh "$HOST" '
+              uci -q batch >/dev/null 2>&1
+              for cfg in ${cfgList}; do
+                uci show "$cfg" 2>/dev/null
+              done
+              for cfg in ${cfgList}; do
+                uci revert "$cfg" 2>/dev/null
+              done
+            ' | sort)
+
+            if [ "$current" = "$desired" ]; then
+              echo "no drift — ${name} matches nix config"
+            else
+              echo "# drift on ${name} ($HOST)"
+              echo "# < current router state"
+              echo "# > nix-declared config"
               echo ""
-              ssh -o ConnectTimeout=5 "$HOST" '
-                for f in /etc/config/*; do
-                  cfg=$(basename "$f")
-                  current=$(uci show "$cfg" 2>/dev/null)
-                  default=$(uci -c /rom/etc/config show "$cfg" 2>/dev/null)
-                  if [ "$current" != "$default" ]; then
-                    changed=""
-                    while IFS= read -r line; do
-                      echo "$default" | grep -qxF "$line" || changed="$changed
-        $line"
-                    done <<EOF
-        $current
-        EOF
-                    if [ -n "$changed" ]; then
-                      echo "--- $cfg ---"
-                      echo "$changed" | tail -n +2
-                      echo ""
-                    fi
-                  fi
-                done
-              '
-              ;;
-      '') devices
+              ${lib.getExe' pkgs.diffutils "diff"} <(echo "$current") <(echo "$desired") \
+                --unified=0 --color=always \
+                --label "router" --label "nix" \
+                || true
+            fi
+            ;;
+        ''
+      ) devices
     )}
     *) echo "unknown device: $DEVICE"; echo "available: ${deviceNames}"; exit 1 ;;
   esac
