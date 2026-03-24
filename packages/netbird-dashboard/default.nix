@@ -6,16 +6,16 @@
 
 buildNpmPackage rec {
   pname = "netbird-dashboard";
-  version = "2.34.2";
+  version = "2.35.0";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "dashboard";
     rev = "v${version}";
-    hash = "sha256-eqDH0mtxb756M6G0pC+FmbZtgj0vk9uKXnzCHlPEquE=";
+    hash = "sha256-MGaf56KoUrgd4Uj2aFqeOeeG5FVJMm6aQmBLBLB1hyU=";
   };
 
-  npmDepsHash = "sha256-AYbTtUgo/e9BD5Kg877qUHkj+4l2OJ88rxnquA2789k=";
+  npmDepsHash = "sha256-vNkx31fN4DmP/6+lssbqUSf9orIKcfY3Q3prW5ZTAS4=";
   npmFlags = [ "--legacy-peer-deps" ];
 
   # auth config is baked in at build time via string replacement in the JS bundle.
