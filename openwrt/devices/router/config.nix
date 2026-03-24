@@ -205,6 +205,10 @@
             ednspacket_max = "1232";
             port = "54"; # adguard uses 53
             noresolv = "1";
+            # --- netboot.xyz PXE ---
+            enable_tftp = "1";
+            tftp_root = "/srv/tftp";
+            dhcp_boot = "netboot.xyz.efi";
           }
         ];
         lan = {
