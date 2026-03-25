@@ -1,9 +1,0 @@
-when:
-  - event: ["push", "pull_request"]
-    branch: main
-# this is nix and very nice
-engine: nixery
-steps:
-  - name: format
-    command: |
-      nix fmt
