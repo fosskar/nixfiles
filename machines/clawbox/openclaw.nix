@@ -98,7 +98,7 @@ in
       OPENCLAW_STATE_DIR = stateDir;
       # workaround: openclaw 2026.2.26 rejects hardlinked plugin manifests (nix store dedup)
       OPENCLAW_BUNDLED_PLUGINS_DIR = "${stateDir}/bundled-extensions";
-      NODE_PATH = "${pkgs.llm-agents.openclaw}/lib/openclaw/node_modules";
+      NODE_PATH = "${pkgs.llm-agents.openclaw}/lib/openclaw/node_modules:${pkgs.llm-agents.openclaw}/lib";
     };
     serviceConfig = {
       Type = "simple";
