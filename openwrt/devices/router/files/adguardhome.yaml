@@ -6,6 +6,7 @@ http:
 # dns: clients → adguard (53) → unbound (5335)
 dns:
   bind_hosts:
+    - fd8a:2e59:7bfd::1
     - 192.168.10.1
     - 127.0.0.1
   port: 53
@@ -20,8 +21,8 @@ dns:
     - 127.0.0.1:5335
   use_private_ptr_resolvers: true
   enable_dnssec: true
-  cache_enabled: true
-  cache_size: 4194304 # 4MB
+  cache_enabled: false
+  cache_size: 0 # 0MB
   cache_ttl_min: 600
   cache_ttl_max: 86400
   cache_optimistic: true

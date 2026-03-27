@@ -4,8 +4,11 @@
   host = "192.168.10.2";
 
   packages = [
-    "dawn"
-    "luci-app-dawn"
+    ## broken & overkill
+    #"dawn"
+    #"luci-app-dawn"
+    "usteer"
+    "luci-app-usteer"
 
     "wpad-wolfssl"
   ];

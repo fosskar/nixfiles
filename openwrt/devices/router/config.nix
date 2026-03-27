@@ -10,8 +10,11 @@
   packages = [
     "adguardhome"
 
-    "dawn"
-    "luci-app-dawn"
+    ## broken & overkill
+    #"dawn"
+    #"luci-app-dawn"
+    "usteer"
+    "luci-app-usteer"
 
     "wpad-wolfssl"
 
@@ -100,6 +103,7 @@
           proto = "static";
           ipaddr = "192.168.10.1";
           netmask = "255.255.255.0";
+          ip6addr = "fd8a:2e59:7bfd::1/64";
           ip6assign = "60";
         };
         wan = {
@@ -235,6 +239,25 @@
           limit = "150";
           leasetime = "12h";
         };
+
+        openwrt_ap = {
+          _type = "host";
+          name = "openwrt-ap";
+          ip = "192.168.10.2";
+          mac = "64:DD:68:37:2A:32";
+        };
+        homeassistant = {
+          _type = "host";
+          name = "homeassistant";
+          ip = "192.168.10.50";
+          mac = "20:F8:3B:01:57:AB";
+        };
+        printer = {
+          _type = "host";
+          name = "HPF4DB54";
+          ip = "192.168.10.153";
+          mac = "E0:73:E7:F4:DB:55";
+        };
       };
 
       # clients → AdGuard (port 53, filtering) → unbound (port 5335, recursive resolution) → root DNS servers (-> dnsmaq (port 54, caching, DHCP integration, local DNS))
@@ -317,9 +340,9 @@
             _type = "zone";
             name = "iot";
             network = [ "iot" ];
-            input = "ACCEPT";
+            input = "REJECT";
             output = "ACCEPT";
-            forward = "ACCEPT";
+            forward = "REJECT";
             masq = "1";
           }
         ];
@@ -345,134 +368,79 @@
           {
             _type = "redirect";
             target = "DNAT";
-            name = "Force DNS Interception";
-            proto = "udp";
+            name = "force dns interception";
+            proto = [
+              "tcp"
+              "udp"
+            ];
             src = "lan";
             src_dport = "53";
             dest_ip = "192.168.10.1";
             dest_port = "53";
+            family = "ipv4";
           }
           {
             _type = "redirect";
             target = "DNAT";
-            name = "Force DNS Interception - IoT";
-            proto = "udp";
+            name = "force dns interception - iot";
+            proto = [
+              "tcp"
+              "udp"
+            ];
             src = "iot";
             src_dport = "53";
             dest_ip = "192.168.10.1";
             dest_port = "53";
+            family = "ipv4";
+          }
+          {
+            _type = "redirect";
+            target = "DNAT";
+            name = "force dns interception v6";
+            proto = [
+              "tcp"
+              "udp"
+            ];
+            src = "lan";
+            src_dport = "53";
+            dest_ip = "fd8a:2e59:7bfd::1";
+            dest_port = "53";
+            family = "ipv6";
+          }
+          {
+            _type = "redirect";
+            target = "DNAT";
+            name = "force dns interception - iot v6";
+            proto = [
+              "tcp"
+              "udp"
+            ];
+            src = "iot";
+            src_dport = "53";
+            dest_ip = "fd8a:2e59:7bfd::1";
+            dest_port = "53";
+            family = "ipv6";
           }
         ];
-        #rule = [
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-DHCP-Renew";
-        #    src = "wan";
-        #    proto = "udp";
-        #    dest_port = "68";
-        #    target = "ACCEPT";
-        #    family = "ipv4";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-Ping";
-        #    src = "wan";
-        #    proto = "icmp";
-        #    icmp_type = "echo-request";
-        #    family = "ipv4";
-        #    target = "ACCEPT";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-IGMP";
-        #    src = "wan";
-        #    proto = "igmp";
-        #    family = "ipv4";
-        #    target = "ACCEPT";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-DHCPv6";
-        #    src = "wan";
-        #    proto = "udp";
-        #    dest_port = "546";
-        #    family = "ipv6";
-        #    target = "ACCEPT";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-MLD";
-        #    src = "wan";
-        #    proto = "icmp";
-        #    src_ip = "fe80::/10";
-        #    icmp_type = [
-        #      "130/0"
-        #      "131/0"
-        #      "132/0"
-        #      "143/0"
-        #    ];
-        #    family = "ipv6";
-        #    target = "ACCEPT";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-ICMPv6-Input";
-        #    src = "wan";
-        #    proto = "icmp";
-        #    icmp_type = [
-        #      "echo-request"
-        #      "echo-reply"
-        #      "destination-unreachable"
-        #      "packet-too-big"
-        #      "time-exceeded"
-        #      "bad-header"
-        #      "unknown-header-type"
-        #      "router-solicitation"
-        #      "neighbour-solicitation"
-        #      "router-advertisement"
-        #      "neighbour-advertisement"
-        #    ];
-        #    limit = "1000/sec";
-        #    family = "ipv6";
-        #    target = "ACCEPT";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-ICMPv6-Forward";
-        #    src = "wan";
-        #    dest = "*";
-        #    proto = "icmp";
-        #    icmp_type = [
-        #      "echo-request"
-        #      "echo-reply"
-        #      "destination-unreachable"
-        #      "packet-too-big"
-        #      "time-exceeded"
-        #      "bad-header"
-        #      "unknown-header-type"
-        #    ];
-        #    limit = "1000/sec";
-        #    family = "ipv6";
-        #    target = "ACCEPT";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-IPSec-ESP";
-        #    src = "wan";
-        #    dest = "lan";
-        #    proto = "esp";
-        #    target = "ACCEPT";
-        #  }
-        #  {
-        #    _type = "rule";
-        #    name = "Allow-ISAKMP";
-        #    src = "wan";
-        #    dest = "lan";
-        #    dest_port = "500";
-        #    proto = "udp";
-        #    target = "ACCEPT";
-        #  }
-        #];
+        iot_dhcp = {
+          _type = "rule";
+          name = "Allow-IoT-DHCP";
+          src = "iot";
+          proto = "udp";
+          dest_port = "67-68";
+          target = "ACCEPT";
+        };
+        iot_dns = {
+          _type = "rule";
+          name = "Allow-IoT-DNS";
+          src = "iot";
+          proto = [
+            "udp"
+            "tcp"
+          ];
+          dest_port = "53";
+          target = "ACCEPT";
+        };
       };
       prometheus-node-exporter-lua.main = {
         _type = "prometheus-node-exporter-lua";
