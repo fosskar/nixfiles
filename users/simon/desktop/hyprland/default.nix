@@ -1,6 +1,5 @@
 {
   mylib,
-  pkgs,
   #inputs,
   ...
 }:
@@ -13,7 +12,7 @@
     ];
   };
 
-  home.packages = with pkgs; [
+  home.packages = [
     #hyprshot # screenshot
     #wl-clipboard # wayland clipboard
   ];
