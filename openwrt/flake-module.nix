@@ -49,14 +49,17 @@ _: {
         openwrt-deploy = {
           type = "app";
           program = lib.getExe deployScript;
+          meta.description = "deploy openwrt device config via uci batch";
         };
         openwrt-fetch = {
           type = "app";
           program = lib.getExe fetchScript;
+          meta.description = "fetch live openwrt uci config";
         };
         openwrt-diff = {
           type = "app";
           program = lib.getExe diffScript;
+          meta.description = "diff generated vs live openwrt uci config";
         };
       };
 
