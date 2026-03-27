@@ -25,7 +25,11 @@
   # opengl
   libGL,
   # x11
-  xorg,
+  libx11,
+  libxcursor,
+  libxrandr,
+  libxi,
+  libxcb,
   # misc
   dbus,
   openssl,
@@ -57,10 +61,10 @@ let
     libxkbcommon
     xdotool
     # x11
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXi
+    libx11
+    libxcursor
+    libxrandr
+    libxi
     libxcb
     # misc
     dbus

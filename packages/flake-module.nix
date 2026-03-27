@@ -9,12 +9,25 @@ in
     {
       packages =
         let
-          pkgs = import inputs.nixpkgs { inherit system; };
+          pkgs = import inputs.nixpkgs {
+            inherit system;
+            config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "t3code" ];
+          };
 
           # auto-discover all package directories
-          packageDirs = mylib.scanPaths ./. {
-            exclude = [ ];
-          };
+          x86OnlyPackages = [
+            "agent-desktop"
+            "arbor"
+            "t3code"
+            "voquill"
+          ];
+          packageDirs =
+            lib.filter (path: system == "x86_64-linux" || !(builtins.elem (baseNameOf path) x86OnlyPackages))
+              (
+                mylib.scanPaths ./. {
+                  exclude = [ ];
+                }
+              );
 
           # extra args to pass to specific packages
           extraArgs = {
