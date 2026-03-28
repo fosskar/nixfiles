@@ -55,6 +55,12 @@
         }
       ];
 
+      usteer.usteer = {
+        _type = "usteer";
+        roam_scan_snr = "-65";
+        signal_diff_threshold = "8";
+      };
+
       network = {
         globals = {
           _type = "globals";
