@@ -20,7 +20,7 @@ let
     inherit version src;
 
     sourceRoot = "${src.name}/frontend";
-    npmDepsHash = "sha256-znWT2OVsXemNgjW+d3A9St6HmAGlIOWeeSZcP5IQr0g=";
+    npmDepsHash = "sha256-pDIpu504FeVBKlbRU1MMkaa6xHf2KF34etqwrNArZM8=";
 
     buildPhase = ''
       runHook preBuild
@@ -47,7 +47,7 @@ buildGoModule {
 
   sourceRoot = "${src.name}/backend";
 
-  vendorHash = "sha256-pDIpu504FeVBKlbRU1MMkaa6xHf2KF34etqwrNArZM8=";
+  vendorHash = "sha256-KAkNtkNxALIvcyMEG0jrkAIHNIM18G31EvE2lSpK+m0=";
 
   preBuild = ''
     mkdir -p http/embed

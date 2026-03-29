@@ -8,13 +8,13 @@
 }:
 buildGoModule rec {
   pname = "beszel";
-  version = "0.18.4";
+  version = "0.18.6";
 
   src = fetchFromGitHub {
     owner = "henrygd";
     repo = "beszel";
     tag = "v${version}";
-    hash = "sha256-Ugxy23bLrKIDclrYRFJc6Nq4Ak2S3OLeyMaxuRkS/tY=";
+    hash = "sha256-CRO0Y3o3hwdE55D027fo0tvt9o7vsA1ooEBFlXuw2So=";
   };
 
   webui = buildNpmPackage {
@@ -51,12 +51,14 @@ buildGoModule rec {
     npmDepsHash = "sha256-509/n5OH4z6LZH+jlmDLl2DlqKrD7M5ajtalmF/4n1o=";
   };
 
-  vendorHash = "sha256-O5gFpQ90AQFSAidPTWPrODZ4LWuwrOMpzEH/8HrjBig=";
+  vendorHash = "sha256-g+UmoxBoCL3oGXNTY67Wz7y6FC/nkcS8020jhTq4JQE=";
 
-  # relax go version requirement (1.25.5 -> 1.25.4)
-  postPatch = ''
-    substituteInPlace go.mod --replace-fail "go 1.25.5" "go 1.25.4"
-  '';
+  checkFlags = [
+    # test requires network/test fixtures
+    "-skip=TestHub"
+  ];
+
+  excludedPackages = [ "internal/hub" ];
 
   preBuild = ''
     mkdir -p internal/site/dist

@@ -15,12 +15,12 @@
   wrapGAppsHook3,
 
   glib-networking,
-  jre,
+  jdk25,
   libsoup_3,
   openssl,
   webkitgtk_4_1,
 
-  isDesktopVariant, # set in all-packages.nix
+  isDesktopVariant ? false,
   buildWithFrontend ? !isDesktopVariant,
 }:
 
@@ -29,16 +29,17 @@ assert isDesktopVariant -> !buildWithFrontend;
 
 let
   gradle = gradle_8;
+  jre = jdk25;
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "stirling-pdf" + lib.optionalString isDesktopVariant "-desktop";
-  version = "2.5.3";
+  version = "2.8.0";
 
   src = fetchFromGitHub {
     owner = "Stirling-Tools";
     repo = "Stirling-PDF";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-c49Z+oQF4+Gjh5i+tGWKoKBc1L+0w6JEImbiuMmy6+I=";
+    hash = "sha256-5MZwwBT8Qi1kO+DAO/3JIm0/yAFtQLBo1UXDRZUjK7s=";
   };
 
   patches = [
@@ -52,7 +53,7 @@ stdenv.mkDerivation (finalAttrs: {
     name = "${finalAttrs.pname}-${finalAttrs.version}-npm-deps";
     inherit (finalAttrs) src patches;
     postPatch = "cd ${finalAttrs.npmRoot}";
-    hash = "sha256-4+2o5t7AoxIn/Fe/G6h0X7bwQGhRpRdJEFcp9+LNuDc=";
+    hash = "sha256-HyQok7Cd1kfWKCtaeHAhvZgxSvaKCk32bdJoNKj//rA=";
   };
 
   cargoRoot = "frontend/src-tauri";
@@ -66,7 +67,7 @@ stdenv.mkDerivation (finalAttrs: {
       patches
       cargoRoot
       ;
-    hash = "sha256-eLdkRtON7/BDH+6CN2ZA9JpPS6Dq9U2Vrxef23rc1/8=";
+    hash = "sha256-t6TBUsfOadn3KNLxva6iajlhg21dFqxgH962e1bIRLI=";
   };
 
   mitmCache = gradle.fetchDeps {
@@ -94,8 +95,8 @@ stdenv.mkDerivation (finalAttrs: {
   doCheck = true;
 
   nativeBuildInputs = [
-    gradle
-    gradle.jdk # one of the tests also require that the `java` command is available on the command line
+    (gradle.override { java = jre; })
+    jre # one of the tests also require that the `java` command is available on the command line
     makeBinaryWrapper
   ]
   ++ lib.optionals (buildWithFrontend || isDesktopVariant) [

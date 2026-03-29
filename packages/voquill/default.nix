@@ -36,12 +36,14 @@
   sqlite,
   # gstreamer for audio
   gst_all_1,
+  # wayland layer shell
+  gtk-layer-shell,
   # feature flags
   enableGpu ? true,
 }:
 let
   pname = "voquill";
-  version = "0.0.269";
+  version = "0.0.534";
 
   runtimeDeps = [
     # tauri/webkit runtime deps
@@ -70,6 +72,7 @@ let
     dbus
     openssl
     sqlite
+    gtk-layer-shell
     # gstreamer
     gst_all_1.gstreamer
     gst_all_1.gst-plugins-base
@@ -86,8 +89,8 @@ stdenv.mkDerivation {
 
   # use pre-built binary from github releases
   src = fetchurl {
-    url = "https://github.com/josiahsrc/voquill/releases/download/desktop-v${version}/Voquill_${version}_amd64.deb";
-    hash = "sha256-u3xYcvarVjnflunXOd1z9NeOuE9KFq3jkJyOyanYXa0=";
+    url = "https://github.com/josiahsrc/voquill/releases/download/desktop-v${version}/voquill-desktop_${version}_amd64.deb";
+    hash = "sha256-VXbpmjpTFNCNGG0Na7sCz/AHOaAzYX9FislIOsV9kco=";
   };
 
   nativeBuildInputs = [
@@ -108,23 +111,15 @@ stdenv.mkDerivation {
     mkdir -p $out
     cp -r usr/* $out/
 
-    # rename to lowercase
-    if [ -f "$out/bin/Voquill" ]; then
-      mv $out/bin/Voquill $out/bin/voquill
-    fi
-    if [ -f "$out/bin/voquill" ]; then
-      :
-    elif [ -f "$out/share/Voquill/voquill" ]; then
-      mkdir -p $out/bin
-      ln -s $out/share/Voquill/voquill $out/bin/voquill
-    fi
+    # rename binary to voquill
+    mv $out/bin/voquill-desktop $out/bin/voquill
 
     # fix desktop file
     if [ -d "$out/share/applications" ]; then
       for f in $out/share/applications/*.desktop; do
         substituteInPlace "$f" \
-          --replace-quiet "Exec=Voquill" "Exec=voquill" \
-          --replace-quiet "Exec=/usr/bin/voquill" "Exec=voquill" || true
+          --replace-quiet "Exec=voquill-desktop" "Exec=voquill" \
+          --replace-quiet "Exec=/usr/bin/voquill-desktop" "Exec=voquill" || true
       done
     fi
 

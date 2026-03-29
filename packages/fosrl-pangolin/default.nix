@@ -38,7 +38,7 @@ buildNpmPackage (finalAttrs: {
     hash = "sha256-pWD2VinfkCiSSP6/einXgduKQ8lzWdHlrj2eqUU/x6Y=";
   };
 
-  npmDepsHash = "sha256-kfgwU5QusUNWVcRXlYCS3ES1Av/phCHG8nFBj0yjz2Q=";
+  npmDepsHash = "sha256-CwS26eRAIuxJ2fekRRapDWYAOHXPV0mIX/by4uW2ZOM=";
 
   nativeBuildInputs = [
     esbuild
@@ -48,17 +48,17 @@ buildNpmPackage (finalAttrs: {
   # Replace the googleapis.com Inter font with a local copy from Nixpkgs.
   # Based on pkgs.nextjs-ollama-llm-ui.
   postPatch = ''
-        substituteInPlace src/app/layout.tsx --replace-fail \
-          "{ Geist, Inter, Manrope, Open_Sans } from \"next/font/google\"" \
-          "localFont from \"next/font/local\""
+            substituteInPlace src/app/layout.tsx --replace-fail \
+              '{ Inter } from "next/font/google"' \
+              'localFont from "next/font/local"'
 
-        substituteInPlace src/app/layout.tsx --replace-fail \
-          'const font = Inter({
+            substituteInPlace src/app/layout.tsx --replace-fail \
+              'const inter = Inter({
         subsets: ["latin"]
     });' \
-          'const font = localFont({ src: "./Inter.ttf" });'
+              'const inter = localFont({ src: "./Inter.ttf" });'
 
-        cp "${inter}/share/fonts/truetype/InterVariable.ttf" src/app/Inter.ttf
+            cp "${inter}/share/fonts/truetype/InterVariable.ttf" src/app/Inter.ttf
   '';
 
   preBuild = ''
