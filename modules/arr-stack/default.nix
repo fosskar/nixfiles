@@ -81,10 +81,10 @@ in
       };
     };
 
-    jellyseerr.enable = lib.mkOption {
+    seerr.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "enable jellyseerr request management";
+      description = "enable seerr request management";
     };
 
     recyclarr.enable = lib.mkOption {

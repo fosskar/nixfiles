@@ -92,7 +92,7 @@ home server at `192.168.10.80` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 | service        | port  | domain                | notes                             |
 | -------------- | ----- | --------------------- | --------------------------------- |
 | jellyfin       | 8096  | jellyfin.nx3.eu       | media server, intel qsv transcode |
-| jellyseerr     | 5055  | jellyseerr.nx3.eu     | request management                |
+| seerr          | 5055  | seerr.nx3.eu          | request management                |
 | immich         | 2283  | immich.nx3.eu         | photo management                  |
 | audiobookshelf | 13378 | audiobookshelf.nx3.eu | audiobooks/podcasts               |
 

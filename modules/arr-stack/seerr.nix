@@ -7,28 +7,28 @@
 let
   cfg = config.nixfiles.arr-stack;
   acmeDomain = config.nixfiles.caddy.domain;
-  serviceDomain = "jellyseerr.${acmeDomain}";
+  serviceDomain = "seerr.${acmeDomain}";
   bindAddress = "127.0.0.1";
   port = 5055;
   internalUrl = "http://${bindAddress}:${toString port}";
 in
 {
-  config = lib.mkIf cfg.jellyseerr.enable {
+  config = lib.mkIf cfg.seerr.enable {
     # --- service ---
 
-    services.jellyseerr = {
+    services.seerr = {
       enable = true;
       inherit port;
       openFirewall = false;
     };
 
-    systemd.services.jellyseerr.serviceConfig.UMask = "0027";
+    systemd.services.seerr.serviceConfig.UMask = "0027";
 
     # --- homepage ---
 
     nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
       {
-        name = "Jellyseerr";
+        name = "Seerr";
         category = "Media";
         icon = "jellyseerr.svg";
         href = "https://${serviceDomain}";
@@ -40,7 +40,7 @@ in
 
     nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
       {
-        name = "Jellyseerr";
+        name = "Seerr";
         url = internalUrl;
         group = "Media";
       }
@@ -48,15 +48,15 @@ in
 
     # --- caddy ---
 
-    # no proxy-auth - jellyseerr has built-in auth
-    nixfiles.caddy.vhosts.jellyseerr = {
+    # no proxy-auth - seerr has built-in auth
+    nixfiles.caddy.vhosts.seerr = {
       inherit port;
     };
 
     # --- backup ---
 
-    clan.core.state.jellyseerr = {
-      folders = [ "/var/backup/jellyseerr" ];
+    clan.core.state.seerr = {
+      folders = [ "/var/backup/seerr" ];
       preBackupScript = ''
         export PATH=${
           lib.makeBinPath [
@@ -64,8 +64,8 @@ in
             pkgs.coreutils
           ]
         }
-        mkdir -p /var/backup/jellyseerr
-        sqlite3 /var/lib/jellyseerr/config/db/db.sqlite3 ".backup '/var/backup/jellyseerr/db.sqlite3'"
+        mkdir -p /var/backup/seerr
+        sqlite3 /var/lib/seerr/db/db.sqlite3 ".backup '/var/backup/seerr/db.sqlite3'"
       '';
     };
   };
