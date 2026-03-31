@@ -65,7 +65,7 @@ never trust memory for these.
 - `simon-desktop`
 - `lpt-titan`
 - `hm-nixbox`
-- `hzc-pango`
+- `gateway`
 - `clawbox`
 
 ssh patterns:

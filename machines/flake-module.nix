@@ -47,7 +47,7 @@ in
           ];
         };
 
-        hzc-pango = {
+        gateway = {
           tags = [
             "server"
             "hetzner"
@@ -245,7 +245,7 @@ in
         #  };
         #  roles.bootstrap.machines = {
         #    hm-nixbox = { };
-        #    hzc-pango = { };
+        #    gateway = { };
         #  };
         #};
 
@@ -257,7 +257,7 @@ in
         #  roles.default.tags.all = { };
         #  roles.push.machines = {
         #    hm-nixbox = { };
-        #    hzc-pango = { };
+        #    gateway = { };
         #  };
         #};
 
@@ -265,7 +265,7 @@ in
           module.input = "self";
           module.name = "netbird";
 
-          roles.server.machines."hzc-pango".settings = {
+          roles.server.machines."gateway".settings = {
             domain = "nb.fosskar.eu";
             proxyDomain = "fosskar.eu";
             port = 51821;
@@ -279,7 +279,7 @@ in
         wireguard = {
           module.name = "wireguard";
           module.input = "clan-core";
-          roles.controller.machines."hzc-pango".settings = {
+          roles.controller.machines."gateway".settings = {
             endpoint = "138.201.155.21";
             port = 51820; # default
           };
@@ -296,7 +296,7 @@ in
         #  module.name = "rosenpass";
         #  module.input = "self";
         #  roles.peer.machines = {
-        #    hzc-pango.settings = {
+        #    gateway.settings = {
         #      listenPort = 9999;
         #      endpoint = "138.201.155.21:9999";
         #    };
@@ -311,7 +311,7 @@ in
         internet = {
           roles.default.machines = {
             clawbox.settings.host = "192.168.10.240";
-            hzc-pango.settings.host = "138.201.155.21";
+            gateway.settings.host = "138.201.155.21";
             hm-nixbox.settings.host = "192.168.10.200";
             nixworker.settings.host = "192.168.10.210";
             simon-desktop.settings.host = "192.168.10.100";
@@ -401,7 +401,7 @@ in
               simon-desktop.settings = { };
               lpt-titan.settings = { };
               clawbox.settings = { };
-              hzc-pango.settings = { };
+              gateway.settings = { };
             };
           };
         };
@@ -413,7 +413,7 @@ in
           };
           roles = {
             client.machines = {
-              "hzc-pango".settings = {
+              "gateway".settings = {
                 startAt = "*-*-* 04:00:00";
                 exclude = [
                   "/var/cache"
@@ -425,7 +425,7 @@ in
                 ];
                 destinations = {
                   "storagebox" = {
-                    repo = "u499127-sub1@u499127.your-storagebox.de:/./hzc-pango";
+                    repo = "u499127-sub1@u499127.your-storagebox.de:/./gateway";
                     rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
                   };
                 };

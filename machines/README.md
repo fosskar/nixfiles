@@ -33,7 +33,7 @@ two-step bootstrap:
 | hm-nixbox     | `192.168.10.200` | NixOS static, no DHCP                |
 | nixworker     | `192.168.10.210` | NixOS static, no DHCP                |
 | clawbox       | `192.168.10.240` | NixOS static, no DHCP                |
-| hzc-pango     | `138.201.155.21` | hetzner                              |
+| gateway       | `138.201.155.21` | hetzner                              |
 
 servers define their own static IP in `networking.nix` with `useDHCP = false` per interface.
 the laptop keeps DHCP enabled so it works on other networks.
@@ -166,10 +166,10 @@ all services run as `media` group with umask 0027
 
 ### networking
 
-| service  | notes                               |
-| -------- | ----------------------------------- |
-| newt     | pangolin tunnel client to hzc-pango |
-| homepage | dashboard at home.nx3.eu            |
+| service  | notes                             |
+| -------- | --------------------------------- |
+| newt     | pangolin tunnel client to gateway |
+| homepage | dashboard at home.nx3.eu          |
 
 ### backup
 
@@ -181,7 +181,7 @@ borgbackup with zfs snapshots:
 
 ---
 
-## hzc-pango
+## gateway
 
 hetzner vps cx22 - reverse proxy and tunnel server
 

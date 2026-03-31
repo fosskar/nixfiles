@@ -783,8 +783,8 @@
     "list": [
       {
         "current": {
-          "text": "hzc-pango",
-          "value": "hzc-pango"
+          "text": "gateway",
+          "value": "gateway"
         },
         "datasource": "VictoriaMetrics",
         "definition": "label_values(cs_info_gauge, machine)",
