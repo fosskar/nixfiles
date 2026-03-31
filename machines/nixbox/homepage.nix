@@ -129,9 +129,9 @@ _: {
           }
           {
             "Openclaw" = {
-              href = "https://192.168.10.90";
+              href = "https://192.168.10.240";
               icon = "mdi-robot";
-              siteMonitor = "https://192.168.10.90";
+              siteMonitor = "https://192.168.10.240";
             };
           }
         ];
