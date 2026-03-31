@@ -1604,7 +1604,7 @@
         "unix_device_names": [
           "/dev/cdrom",
           "/dev/disk/by-id/usb-JetKVM_Virtual_Media-0:0",
-          "/dev/disk/by-label/nixos-26.05-x86_64",
+          "/dev/disk/by-label/nixos-25.11-x86_64",
           "/dev/disk/by-path/pci-0000:01:00.4-usb-0:2.1:1.3-scsi-0:0:0:0",
           "/dev/disk/by-path/pci-0000:01:00.4-usbv2-0:2.1:1.3-scsi-0:0:0:0",
           "/dev/disk/by-uuid/1980-01-01-00-00-00-00",
@@ -1804,7 +1804,7 @@
           "[13]",
           "[14]"
         ],
-        "bogo": 4990,
+        "bogo": 4991,
         "cache": 1024,
         "units": 32,
         "page_size": 4096,
@@ -3255,7 +3255,7 @@
         "resources": [
           {
             "type": "hwaddr",
-            "address": 57
+            "address": 98
           },
           {
             "type": "phwaddr",
@@ -3530,6 +3530,28 @@
     "network_interface": [
       {
         "index": 88,
+        "attached_to": 0,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_names": [
+          "lo"
+        ]
+      },
+      {
+        "index": 89,
         "attached_to": 66,
         "class_list": [
           "network_interface"
@@ -3570,49 +3592,8 @@
         ]
       },
       {
-        "index": 89,
-        "attached_to": 63,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0001",
-          "name": "Ethernet",
-          "value": 1
-        },
-        "model": "Ethernet network interface",
-        "sysfs_id": "/class/net/enp5s0f0np0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:02.1/0000:05:00.0",
-        "unix_device_names": [
-          "enp5s0f0np0"
-        ],
-        "resources": [
-          {
-            "type": "hwaddr",
-            "address": 51
-          },
-          {
-            "type": "phwaddr",
-            "address": 51
-          }
-        ],
-        "driver": "i40e",
-        "driver_module": "i40e",
-        "drivers": [
-          "i40e"
-        ],
-        "driver_modules": [
-          "i40e"
-        ]
-      },
-      {
         "index": 90,
-        "attached_to": 42,
+        "attached_to": 59,
         "class_list": [
           "network_interface"
         ],
@@ -3622,33 +3603,33 @@
           "value": 263
         },
         "sub_class": {
-          "hex": "0001",
-          "name": "Ethernet",
-          "value": 1
+          "hex": "000a",
+          "name": "WLAN",
+          "value": 10
         },
-        "model": "Ethernet network interface",
-        "sysfs_id": "/class/net/enp5s0f1np1",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:02.1/0000:05:00.1",
+        "model": "WLAN network interface",
+        "sysfs_id": "/class/net/wlan0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:02.2/0000:06:00.0",
         "unix_device_names": [
-          "enp5s0f1np1"
+          "wlan0"
         ],
         "resources": [
           {
             "type": "hwaddr",
-            "address": 51
+            "address": 98
           },
           {
             "type": "phwaddr",
-            "address": 51
+            "address": 48
           }
         ],
-        "driver": "i40e",
-        "driver_module": "i40e",
+        "driver": "mt7921e",
+        "driver_module": "mt7921e",
         "drivers": [
-          "i40e"
+          "mt7921e"
         ],
         "driver_modules": [
-          "i40e"
+          "mt7921e"
         ]
       },
       {
@@ -3694,7 +3675,7 @@
       },
       {
         "index": 92,
-        "attached_to": 0,
+        "attached_to": 63,
         "class_list": [
           "network_interface"
         ],
@@ -3704,55 +3685,74 @@
           "value": 263
         },
         "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
+          "hex": "0001",
+          "name": "Ethernet",
+          "value": 1
         },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
+        "model": "Ethernet network interface",
+        "sysfs_id": "/class/net/enp5s0f0np0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:02.1/0000:05:00.0",
         "unix_device_names": [
-          "lo"
-        ]
-      },
-      {
-        "index": 93,
-        "attached_to": 59,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "000a",
-          "name": "WLAN",
-          "value": 10
-        },
-        "model": "WLAN network interface",
-        "sysfs_id": "/class/net/wlan0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:02.2/0000:06:00.0",
-        "unix_device_names": [
-          "wlan0"
+          "enp5s0f0np0"
         ],
         "resources": [
           {
             "type": "hwaddr",
-            "address": 57
+            "address": 51
           },
           {
             "type": "phwaddr",
-            "address": 48
+            "address": 51
           }
         ],
-        "driver": "mt7921e",
-        "driver_module": "mt7921e",
+        "driver": "i40e",
+        "driver_module": "i40e",
         "drivers": [
-          "mt7921e"
+          "i40e"
         ],
         "driver_modules": [
-          "mt7921e"
+          "i40e"
+        ]
+      },
+      {
+        "index": 93,
+        "attached_to": 42,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0001",
+          "name": "Ethernet",
+          "value": 1
+        },
+        "model": "Ethernet network interface",
+        "sysfs_id": "/class/net/enp5s0f1np1",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:02.1/0000:05:00.1",
+        "unix_device_names": [
+          "enp5s0f1np1"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 51
+          },
+          {
+            "type": "phwaddr",
+            "address": 51
+          }
+        ],
+        "driver": "i40e",
+        "driver_module": "i40e",
+        "drivers": [
+          "i40e"
+        ],
+        "driver_modules": [
+          "i40e"
         ]
       }
     ],
