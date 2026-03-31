@@ -1,4 +1,4 @@
-{ config, ... }:
+_:
 {
   disko.devices = {
     disk.main = {
@@ -28,7 +28,7 @@
                 "root"
                 "-f"
               ];
-              postMountHook = config.nixfiles.persistence.diskoPostMountHook;
+
               subvolumes = {
                 "@root" = {
                   mountpoint = "/";
@@ -40,14 +40,6 @@
                 };
                 "@nix" = {
                   mountpoint = "/nix";
-                  mountOptions = [
-                    "compress=zstd"
-                    "noatime"
-                    "discard=async"
-                  ];
-                };
-                "@persist" = {
-                  mountpoint = "/persist";
                   mountOptions = [
                     "compress=zstd"
                     "noatime"
