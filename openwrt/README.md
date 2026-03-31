@@ -89,6 +89,45 @@ key = "@wifi_password@";
 deploy decrypts via sops, substitutes `@placeholders@`, pipes to device via SSH.
 fails if unsubstituted placeholders remain.
 
+## PXE / netboot
+
+the router runs a TFTP server (`/srv/tftp/`) and serves `netboot.xyz.efi` for PXE booting.
+
+### files
+
+```
+/srv/tftp/
+  netboot.xyz.efi               # netboot.xyz bootloader (dhcp_boot target)
+  custom.ipxe                   # custom menu, auto-detected by netboot.xyz
+  nixos/
+    bzImage                     # nix-community/nixos-images kernel
+    initrd                      # nix-community/nixos-images initrd
+    boot.ipxe                   # standalone boot script (optional)
+```
+
+### usage
+
+PXE boot any machine → netboot.xyz menu → **Custom** → **NixOS Installer**
+
+### updating images
+
+```bash
+ssh root@192.168.10.1
+cd /srv/tftp/nixos
+wget -O bzImage 'https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/bzImage-x86_64-linux'
+wget -O initrd 'https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/initrd-x86_64-linux'
+```
+
+after updating, check the [ipxe script](https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/netboot-x86_64-linux.ipxe) for updated `init=` path and update `custom.ipxe` accordingly.
+
+### UCI config
+
+```
+dhcp.@dnsmasq[0].dhcp_boot='netboot.xyz.efi'
+dhcp.@dnsmasq[0].enable_tftp='1'
+dhcp.@dnsmasq[0].tftp_root='/srv/tftp'
+```
+
 ## structure
 
 ```

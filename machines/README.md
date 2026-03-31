@@ -2,6 +2,44 @@
 
 all machines use [preservation](../docs/preservation.md) (ephemeral root, opt-in state persistence).
 
+### bootstrap caveat
+
+first install of a new machine **must** be done with persistence **disabled** (`nixfiles.persistence.enable` commented out).
+rollback wipes root on every boot, but secrets (sops) are written to root during install — so they get wiped before any service runs.
+
+two-step bootstrap:
+
+1. install with persistence disabled → machine boots, secrets land on root, services start
+2. enable persistence + `clan machines update` → preservation activates, secrets copied to `/persist`, rollback works from boot 2+
+
+---
+
+## networking
+
+### IP allocation scheme
+
+| range       | purpose                                          |
+| ----------- | ------------------------------------------------ |
+| `.1-.99`    | network infra (router, APs, switches, KVMs)      |
+| `.100-.199` | personal devices (workstations, laptops, phones) |
+| `.200-.255` | servers                                          |
+
+### static IPs
+
+| machine       | IP               | method                               |
+| ------------- | ---------------- | ------------------------------------ |
+| simon-desktop | `192.168.10.100` | NixOS static, no DHCP                |
+| lpt-titan     | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
+| hm-nixbox     | `192.168.10.200` | NixOS static, no DHCP                |
+| nixworker     | `192.168.10.210` | NixOS static, no DHCP                |
+| clawbox       | `192.168.10.240` | NixOS static, no DHCP                |
+| hzc-pango     | `138.201.155.21` | hetzner                              |
+
+servers define their own static IP in `networking.nix` with `useDHCP = false` per interface.
+the laptop keeps DHCP enabled so it works on other networks.
+
+IPs are also registered in `flake-module.nix` under the `internet` inventory instance.
+
 ---
 
 ## simon-desktop
@@ -51,7 +89,7 @@ framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 
 ## hm-nixbox
 
-home server at `192.168.10.80` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
+home server at `192.168.10.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 
 ### infrastructure
 
