@@ -373,6 +373,40 @@ in
           };
         };
 
+        remote-builder = {
+          module = {
+            name = "remote-builder";
+            input = "self";
+          };
+          roles = {
+            builder.machines.nixworker = { };
+            client.machines = {
+              simon-desktop = { };
+              lpt-titan = { };
+              nixbox = { };
+              clawbox = { };
+              gateway = { };
+            };
+          };
+        };
+
+        harmonia = {
+          module = {
+            name = "harmonia";
+            input = "self";
+          };
+          roles = {
+            server.machines.nixworker = { };
+            client.machines = {
+              simon-desktop = { };
+              lpt-titan = { };
+              nixbox = { };
+              clawbox = { };
+              gateway = { };
+            };
+          };
+        };
+
         ncps = {
           module = {
             name = "ncps";

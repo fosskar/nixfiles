@@ -16,4 +16,7 @@
   };
 
   clan.core.settings.machine-id.enable = true;
+
+  # zed remote server binary runs over ssh; nix-ld helps with dynamic linker deps.
+  programs.nix-ld.enable = true;
 }

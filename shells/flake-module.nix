@@ -19,11 +19,7 @@ _: {
       defaultShellName = "nixfiles";
       scripts = [
         (mkScript "clan" ''
-          if [ "$1" = "m" ] && [ "$2" = "u" ]; then
-            ${clan-cli-patched}/bin/clan m u --build-host localhost "''${@:3}"
-          else
-            ${clan-cli-patched}/bin/clan "$@"
-          fi
+          ${clan-cli-patched}/bin/clan "$@"
         '')
       ];
     in
