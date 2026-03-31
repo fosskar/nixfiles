@@ -151,64 +151,70 @@ _: {
             serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
           in
           {
-            # setup key secret
-            clan.core.vars.generators.netbird-client = {
-              # shared setup key across clients
-              share = true;
-              files."setup-key" = { };
-              prompts.setup-key = {
-                description = "netbird setup key for this machine (dashboard setup-keys)";
-                type = "hidden";
+            # persist client identity across reboots
+            # define option here so it works with or without persistence module imported
+            options.nixfiles.persistence.directories = lib.mkOption {
+              type = lib.types.listOf (lib.types.either lib.types.str (lib.types.attrsOf lib.types.anything));
+              default = [ ];
+              description = "directories to persist (set by services, consumed by persistence module)";
+            };
+
+            config = {
+              # setup key secret
+              clan.core.vars.generators.netbird-client = {
+                # shared setup key across clients
+                share = true;
+                files."setup-key" = { };
+                prompts.setup-key = {
+                  description = "netbird setup key for this machine (dashboard setup-keys)";
+                  type = "hidden";
+                };
+                script = ''
+                  cp "$prompts/setup-key" "$out/setup-key"
+                '';
               };
-              script = ''
-                cp "$prompts/setup-key" "$out/setup-key"
-              '';
-            };
 
-            services.netbird = {
-              enable = true;
-              package = pkgs.custom.netbird-client;
-              useRoutingFeatures = settings.routingFeatures;
-              clients.default = {
-                port = serverSettings.port or 51820;
-                # netbird >=0.66 logs profile-manager warnings without HOME/XDG
-                environment = {
-                  HOME = "/var/lib/netbird";
-                  XDG_CONFIG_HOME = "/var/lib/netbird";
-                };
-                login = {
-                  enable = true;
-                  setupKeyFile = config.clan.core.vars.generators.netbird-client.files."setup-key".path;
-                };
-                config = {
-                  ManagementURL = {
-                    Scheme = "https";
-                    Host = "${serverSettings.domain or "localhost"}:443";
+              services.netbird = {
+                enable = true;
+                package = pkgs.custom.netbird-client;
+                useRoutingFeatures = settings.routingFeatures;
+                clients.default = {
+                  port = serverSettings.port or 51820;
+                  # netbird >=0.66 logs profile-manager warnings without HOME/XDG
+                  environment = {
+                    HOME = "/var/lib/netbird";
+                    XDG_CONFIG_HOME = "/var/lib/netbird";
                   };
-                  AdminURL = {
-                    Scheme = "https";
-                    Host = "${serverSettings.domain or "localhost"}:443";
+                  login = {
+                    enable = true;
+                    setupKeyFile = config.clan.core.vars.generators.netbird-client.files."setup-key".path;
+                  };
+                  config = {
+                    ManagementURL = {
+                      Scheme = "https";
+                      Host = "${serverSettings.domain or "localhost"}:443";
+                    };
+                    AdminURL = {
+                      Scheme = "https";
+                      Host = "${serverSettings.domain or "localhost"}:443";
+                    };
                   };
                 };
               };
+
+              # run auto-login only on first enrollment; avoid silent re-registration clones
+              systemd.services.netbird-login.unitConfig.ConditionPathExists = "!/var/lib/netbird/state.json";
+              systemd.services.netbird-login.environment = {
+                HOME = "/var/lib/netbird";
+                XDG_CONFIG_HOME = "/var/lib/netbird";
+              };
+
+              # trust netbird interface — netbird handles access control
+              networking.firewall.trustedInterfaces = [ "wt0" ];
+
+              # persist client identity across reboots
+              nixfiles.persistence.directories = [ "/var/lib/netbird" ];
             };
-
-            # run auto-login only on first enrollment; avoid silent re-registration clones
-            systemd.services.netbird-login.unitConfig.ConditionPathExists = "!/var/lib/netbird/state.json";
-            systemd.services.netbird-login.environment = {
-              HOME = "/var/lib/netbird";
-              XDG_CONFIG_HOME = "/var/lib/netbird";
-            };
-
-            # trust netbird interface — netbird handles access control
-            networking.firewall.trustedInterfaces = [ "wt0" ];
-
-            # persist client identity across reboots (only if module exists)
-          }
-          // {
-            nixfiles.persistence.directories = lib.mkIf (config.nixfiles.persistence.enable or false) [
-              "/var/lib/netbird"
-            ];
           };
       };
   };
