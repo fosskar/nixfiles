@@ -1,4 +1,15 @@
 # persistence module using preservation
+#
+# bootstrap note:
+#   first install MUST be done with persistence DISABLED (enable = false).
+#   rollback wipes root on every boot, but secrets (sops) are written to
+#   root during install — so they get wiped before any service runs.
+#   /persist dirs exist but are empty on first boot.
+#
+#   two-step bootstrap:
+#     1. install with persistence disabled → machine boots, secrets land on root
+#     2. enable persistence + `clan machines update` → preservation activates,
+#        secrets get copied to /persist, rollback works from boot 2+
 {
   config,
   lib,
@@ -170,7 +181,7 @@ in
 
     diskoPostMountHook = lib.mkOption {
       type = lib.types.lines;
-      readOnly = true;
+      default = "";
       description = "shell commands for disko postMountHook to pre-create persistent dirs during fresh install";
     };
   };
