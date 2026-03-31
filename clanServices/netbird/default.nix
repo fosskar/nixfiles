@@ -203,8 +203,10 @@ _: {
             # trust netbird interface — netbird handles access control
             networking.firewall.trustedInterfaces = [ "wt0" ];
 
-            # persist client identity across reboots
-            nixfiles.persistence.directories = [
+            # persist client identity across reboots (only if module exists)
+          }
+          // {
+            nixfiles.persistence.directories = lib.mkIf (config.nixfiles.persistence.enable or false) [
               "/var/lib/netbird"
             ];
           };
