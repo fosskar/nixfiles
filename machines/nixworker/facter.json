@@ -1804,7 +1804,7 @@
           "[13]",
           "[14]"
         ],
-        "bogo": 4991,
+        "bogo": 4990,
         "cache": 1024,
         "units": 32,
         "page_size": 4096,
@@ -3255,7 +3255,7 @@
         "resources": [
           {
             "type": "hwaddr",
-            "address": 98
+            "address": 101
           },
           {
             "type": "phwaddr",
@@ -3530,69 +3530,6 @@
     "network_interface": [
       {
         "index": 88,
-        "attached_to": 0,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_names": [
-          "lo"
-        ]
-      },
-      {
-        "index": 89,
-        "attached_to": 66,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0001",
-          "name": "Ethernet",
-          "value": 1
-        },
-        "model": "Ethernet network interface",
-        "sysfs_id": "/class/net/enp4s0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:03.2/0000:04:00.0",
-        "unix_device_names": [
-          "enp4s0"
-        ],
-        "resources": [
-          {
-            "type": "hwaddr",
-            "address": 51
-          },
-          {
-            "type": "phwaddr",
-            "address": 51
-          }
-        ],
-        "driver": "igc",
-        "driver_module": "igc",
-        "drivers": [
-          "igc"
-        ],
-        "driver_modules": [
-          "igc"
-        ]
-      },
-      {
-        "index": 90,
         "attached_to": 59,
         "class_list": [
           "network_interface"
@@ -3616,7 +3553,7 @@
         "resources": [
           {
             "type": "hwaddr",
-            "address": 98
+            "address": 101
           },
           {
             "type": "phwaddr",
@@ -3633,7 +3570,7 @@
         ]
       },
       {
-        "index": 91,
+        "index": 89,
         "attached_to": 36,
         "class_list": [
           "network_interface"
@@ -3674,7 +3611,29 @@
         ]
       },
       {
-        "index": 92,
+        "index": 90,
+        "attached_to": 0,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_names": [
+          "lo"
+        ]
+      },
+      {
+        "index": 91,
         "attached_to": 63,
         "class_list": [
           "network_interface"
@@ -3715,7 +3674,7 @@
         ]
       },
       {
-        "index": 93,
+        "index": 92,
         "attached_to": 42,
         "class_list": [
           "network_interface"
@@ -3753,6 +3712,47 @@
         ],
         "driver_modules": [
           "i40e"
+        ]
+      },
+      {
+        "index": 93,
+        "attached_to": 66,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0001",
+          "name": "Ethernet",
+          "value": 1
+        },
+        "model": "Ethernet network interface",
+        "sysfs_id": "/class/net/enp4s0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:03.2/0000:04:00.0",
+        "unix_device_names": [
+          "enp4s0"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 51
+          },
+          {
+            "type": "phwaddr",
+            "address": 51
+          }
+        ],
+        "driver": "igc",
+        "driver_module": "igc",
+        "drivers": [
+          "igc"
+        ],
+        "driver_modules": [
+          "igc"
         ]
       }
     ],
