@@ -23,8 +23,6 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  networking.hostName = "simon-desktop";
-
   programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
 
   clan.core.settings.machine-id.enable = true;

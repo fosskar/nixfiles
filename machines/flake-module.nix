@@ -54,17 +54,25 @@ in
           ];
         };
 
-        simon-desktop = {
+        lpt-titan = {
           tags = [
-            "desktop"
+            "laptop"
             "home"
             "workstation"
           ];
         };
 
-        lpt-titan = {
+        nixworker = {
           tags = [
-            "laptop"
+            "server"
+            "home"
+            "remote-builder"
+          ];
+        };
+
+        simon-desktop = {
+          tags = [
+            "desktop"
             "home"
             "workstation"
           ];
@@ -280,6 +288,7 @@ in
             simon-desktop.settings = { };
             lpt-titan.settings = { };
             clawbox.settings = { };
+            nixworker.settings = { };
           };
         };
 
@@ -301,11 +310,12 @@ in
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
           roles.default.machines = {
-            clawbox.settings.host = "192.168.10.90";
+            clawbox.settings.host = "192.168.10.240";
             hzc-pango.settings.host = "138.201.155.21";
-            hm-nixbox.settings.host = "192.168.10.80";
-            simon-desktop.settings.host = "192.168.10.200";
-            lpt-titan.settings.host = "192.168.10.202";
+            hm-nixbox.settings.host = "192.168.10.200";
+            nixworker.settings.host = "192.168.10.210";
+            simon-desktop.settings.host = "192.168.10.100";
+            lpt-titan.settings.host = "192.168.10.150";
           };
         };
 

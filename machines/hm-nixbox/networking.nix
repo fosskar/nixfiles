@@ -7,16 +7,30 @@
     useDHCP = false;
     defaultGateway = {
       address = "192.168.10.1";
-      interface = "enp36s0f0np0";
+      interface = "bond0";
     };
     nameservers = [ "192.168.10.1" ];
 
-    interfaces.enp36s0f0np0.ipv4.addresses = [
-      {
-        address = "192.168.10.80";
-        prefixLength = 24;
-      }
-    ];
+    bonds.bond0 = {
+      interfaces = [
+        "enp36s0f0np0"
+        "enp36s0f1np1"
+      ];
+      driverOptions = {
+        mode = "active-backup";
+        miimon = "100";
+      };
+    };
+
+    interfaces.bond0 = {
+      useDHCP = false;
+      ipv4.addresses = [
+        {
+          address = "192.168.10.200";
+          prefixLength = 24;
+        }
+      ];
+    };
   };
 
   # disable WoL on all ethernet interfaces
@@ -29,6 +43,7 @@
   services.udev.extraRules = ''
     # increase ring buffer to reduce packet drops on 10G NIC
     ACTION=="add", SUBSYSTEM=="net", KERNEL=="enp36s0f0np0", RUN+="${pkgs.ethtool}/bin/ethtool -G $name rx 2047 tx 2047"
+    ACTION=="add", SUBSYSTEM=="net", KERNEL=="enp36s0f1np1", RUN+="${pkgs.ethtool}/bin/ethtool -G $name rx 2047 tx 2047"
     # enable runtime power management for ethernet devices
     ACTION=="add", SUBSYSTEM=="net", KERNEL=="en*", RUN+="/bin/sh -c 'echo auto > /sys/class/net/%k/device/power/control'"
   '';
