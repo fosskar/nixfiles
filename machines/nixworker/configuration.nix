@@ -9,7 +9,6 @@
   nixpkgs.hostPlatform = "x86_64-linux";
 
   nixfiles = {
-
     power.tuned = {
       enable = true;
       profile = "server-powersave";
