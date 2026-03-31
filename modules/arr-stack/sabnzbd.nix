@@ -38,7 +38,7 @@ in
       settings = {
         misc = {
           inherit port;
-          host_whitelist = "hm-nixbox, sabnzbd.nx3.eu";
+          host_whitelist = "nixbox, sabnzbd.nx3.eu";
           download_dir = "${cfg.mediaRoot}/downloads/incomplete";
           complete_dir = "${cfg.mediaRoot}/downloads/complete";
           permissions = "770";

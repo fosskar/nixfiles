@@ -40,7 +40,7 @@ in
           ];
         };
 
-        hm-nixbox = {
+        nixbox = {
           tags = [
             "server"
             "home"
@@ -156,8 +156,8 @@ in
           roles = {
             client.tags = [ "server" ];
 
-            server.machines."hm-nixbox".settings = {
-              dashboardsDir = ./hm-nixbox/dashboards;
+            server.machines."nixbox".settings = {
+              dashboardsDir = ./nixbox/dashboards;
               exporter = {
                 enable = true;
                 enableZfsExporter = true;
@@ -176,8 +176,8 @@ in
               ];
             };
 
-            # hm-nixbox has richer local telemetry needs
-            client.machines."hm-nixbox".settings.plugins = [
+            # nixbox has richer local telemetry needs
+            client.machines."nixbox".settings.plugins = [
               "system"
               "systemd"
               "zfs"
@@ -198,7 +198,7 @@ in
 
           roles = {
             client.tags = [ "server" ];
-            server.machines."hm-nixbox" = { };
+            server.machines."nixbox" = { };
           };
         };
 
@@ -211,7 +211,7 @@ in
         };
 
         garage = {
-          roles.default.machines."hm-nixbox" = { };
+          roles.default.machines."nixbox" = { };
         };
 
         #mycelium = {
@@ -244,7 +244,7 @@ in
         #    };
         #  };
         #  roles.bootstrap.machines = {
-        #    hm-nixbox = { };
+        #    nixbox = { };
         #    gateway = { };
         #  };
         #};
@@ -256,7 +256,7 @@ in
         #  };
         #  roles.default.tags.all = { };
         #  roles.push.machines = {
-        #    hm-nixbox = { };
+        #    nixbox = { };
         #    gateway = { };
         #  };
         #};
@@ -272,7 +272,7 @@ in
           };
           roles.client = {
             tags.all = { };
-            machines."hm-nixbox".settings.routingFeatures = "server";
+            machines."nixbox".settings.routingFeatures = "server";
           };
         };
 
@@ -284,7 +284,7 @@ in
             port = 51820; # default
           };
           roles.peer.machines = {
-            hm-nixbox.settings = { };
+            nixbox.settings = { };
             simon-desktop.settings = { };
             lpt-titan.settings = { };
             clawbox.settings = { };
@@ -300,7 +300,7 @@ in
         #      listenPort = 9999;
         #      endpoint = "138.201.155.21:9999";
         #    };
-        #    hm-nixbox.settings = { };
+        #    nixbox.settings = { };
         #    simon-desktop.settings = { };
         #    lpt-titan.settings = { };
         #    clawbox.settings = { };
@@ -312,7 +312,7 @@ in
           roles.default.machines = {
             clawbox.settings.host = "192.168.10.240";
             gateway.settings.host = "138.201.155.21";
-            hm-nixbox.settings.host = "192.168.10.200";
+            nixbox.settings.host = "192.168.10.200";
             nixworker.settings.host = "192.168.10.210";
             simon-desktop.settings.host = "192.168.10.100";
             lpt-titan.settings.host = "192.168.10.150";
@@ -379,7 +379,7 @@ in
             input = "clan-core";
           };
           roles = {
-            server.machines."hm-nixbox".settings = {
+            server.machines."nixbox".settings = {
               caches = [
                 "https://cache.nixos.org"
                 "https://nix-community.cachix.org"
@@ -430,7 +430,7 @@ in
                   };
                 };
               };
-              "hm-nixbox".settings = {
+              "nixbox".settings = {
                 startAt = "*-*-* 03:00:00";
                 exclude = [
                   "/var/cache"
@@ -443,7 +443,7 @@ in
                 ];
                 destinations = {
                   "storagebox" = {
-                    repo = "u499127-sub1@u499127.your-storagebox.de:/./hm-nixbox";
+                    repo = "u499127-sub1@u499127.your-storagebox.de:/./nixbox";
                     rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
                   };
                 };

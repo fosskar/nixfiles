@@ -15,7 +15,7 @@
     };
     runtimeInputs = with pkgs; [ openssh ];
     script = ''
-      ssh-keygen -t ed25519 -N "" -f $out/ssh-private-key -C "radicle@hm-nixbox"
+      ssh-keygen -t ed25519 -N "" -f $out/ssh-private-key -C "radicle@nixbox"
       ssh-keygen -y -f $out/ssh-private-key > $out/ssh-public-key
     '';
   };
@@ -51,7 +51,7 @@
         "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@seed.radicle.garden:8776"
       ];
       node = {
-        alias = "hm-nixbox";
+        alias = "nixbox";
         seedingPolicy = {
           default = "allow";
           scope = "followed";

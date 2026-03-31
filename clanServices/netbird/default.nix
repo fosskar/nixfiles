@@ -124,7 +124,7 @@ _: {
             ];
             default = "client";
             description = ''
-              "server" for routing peers (hm-nixbox), "client" for workstations that use routes
+              "server" for routing peers (nixbox), "client" for workstations that use routes
             '';
           };
         };

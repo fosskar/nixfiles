@@ -38,7 +38,7 @@ nix.distributedBuilds = true;
 serve locally-built store paths over HTTP. other machines pull instead of rebuild.
 
 - **harmonia** = serves local nix store (own builds)
-- **ncps** = proxy upstream caches (consider moving from hm-nixbox)
+- **ncps** = proxy upstream caches (consider moving from nixbox)
 
 ### 4. remote dev server (Zed)
 
@@ -63,7 +63,7 @@ ms-a2 (NixOS)
 ## open questions
 
 - codeberg vs self-hosted forgejo for buildbot-nix integration?
-- move ncps from hm-nixbox to ms-a2 or keep separate?
+- move ncps from nixbox to ms-a2 or keep separate?
 - auto-merge flake update PRs or manual approval?
 - network: same LAN as other home machines? IP assignment?
 - disk layout: zfs? disko? ephemeral root with persistence?

@@ -64,7 +64,7 @@ never trust memory for these.
 
 - `simon-desktop`
 - `lpt-titan`
-- `hm-nixbox`
+- `nixbox`
 - `gateway`
 - `clawbox`
 

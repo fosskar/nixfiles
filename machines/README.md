@@ -30,7 +30,7 @@ two-step bootstrap:
 | ------------- | ---------------- | ------------------------------------ |
 | simon-desktop | `192.168.10.100` | NixOS static, no DHCP                |
 | lpt-titan     | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
-| hm-nixbox     | `192.168.10.200` | NixOS static, no DHCP                |
+| nixbox        | `192.168.10.200` | NixOS static, no DHCP                |
 | nixworker     | `192.168.10.210` | NixOS static, no DHCP                |
 | clawbox       | `192.168.10.240` | NixOS static, no DHCP                |
 | gateway       | `138.201.155.21` | hetzner                              |
@@ -87,7 +87,7 @@ framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 
 ---
 
-## hm-nixbox
+## nixbox
 
 home server at `192.168.10.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 

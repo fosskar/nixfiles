@@ -180,7 +180,7 @@ in
         "overwrite.cli.url" = "https://${canonicalDomain}";
         trusted_proxies = [
           "127.0.0.1"
-          "192.168.10.200" # hm-nixbox own IP — needed because external nginx proxies to nextcloud's localhost:8009
+          "192.168.10.200" # nixbox own IP — needed because external nginx proxies to nextcloud's localhost:8009
           "100.64.0.0/10" # NetBird CGNAT range (proxy source seen by notify_push setup checks)
         ];
         trusted_domains = [
