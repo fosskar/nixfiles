@@ -9,11 +9,13 @@
   config,
   lib,
   pkgs,
+  options,
   ...
 }:
 
 let
   cfg = config.services.netbird.server.proxy;
+  hasPersistence = lib.hasAttrByPath [ "nixfiles" "persistence" "enable" ] options;
   serverCfg = config.services.netbird.server;
   dashboardCfg = config.services.netbird.server.dashboard;
   stateDir = "/var/lib/netbird-proxy";
@@ -290,13 +292,15 @@ in
 
     # --- persistence ---
 
-    nixfiles.persistence.directories = [
-      {
-        directory = "/var/lib/netbird-proxy";
-        user = "netbird";
-        group = "netbird";
-      }
-    ];
+    nixfiles = lib.optionalAttrs hasPersistence {
+      persistence.directories = [
+        {
+          directory = "/var/lib/netbird-proxy";
+          user = "netbird";
+          group = "netbird";
+        }
+      ];
+    };
 
   };
 }

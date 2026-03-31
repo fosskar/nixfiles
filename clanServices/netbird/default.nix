@@ -151,6 +151,8 @@ _: {
             serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
           in
           {
+            imports = [ ../../modules/netbird ];
+
             config = {
               # setup key secret
               clan.core.vars.generators.netbird-client = {

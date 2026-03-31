@@ -3,11 +3,13 @@
   config,
   lib,
   pkgs,
+  options,
   ...
 }:
 
 let
   cfg = config.services.netbird.server;
+  hasPersistence = lib.hasAttrByPath [ "nixfiles" "persistence" "enable" ] options;
   stateDir = "/var/lib/netbird-server";
   settingsFormat = pkgs.formats.yaml { };
   # config without secrets — secrets injected at runtime
@@ -150,13 +152,15 @@ in
 
     # --- persistence ---
 
-    nixfiles.persistence.directories = [
-      {
-        directory = "/var/lib/netbird-server";
-        user = "netbird";
-        group = "netbird";
-      }
-    ];
+    nixfiles = lib.optionalAttrs hasPersistence {
+      persistence.directories = [
+        {
+          directory = "/var/lib/netbird-server";
+          user = "netbird";
+          group = "netbird";
+        }
+      ];
+    };
 
     # --- systemd ---
 
