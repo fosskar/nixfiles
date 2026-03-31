@@ -109,6 +109,7 @@ override tools:
 
 - `lib.mkDefault` for soft defaults
 - `lib.mkForce` for conflicts
+- avoid adding new options unless user asked; hardcode sane defaults first
 
 ## 7) vars/secrets
 
@@ -195,6 +196,10 @@ if user says "commit and push":
 - grafana oidc role mapping needs `groups` in `id_token`
 - tuned has nixpkgs bug workaround (`ppd.conf` issue)
 - netbird is custom module set in this repo
+- remote-builder: `sshUser = "nix"` needs a real shell on builder (nologin breaks `ssh-ng`)
+- remote-builder proof cmd: `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`
+- harmonia option path is `services.harmonia.cache.*` (old `services.harmonia.*` is renamed)
+- do not force `--build-host localhost` in shell wrappers
 
 ## 13) pre-finish checklist
 
