@@ -151,14 +151,6 @@ _: {
             serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
           in
           {
-            # persist client identity across reboots
-            # define option here so it works with or without persistence module imported
-            options.nixfiles.persistence.directories = lib.mkOption {
-              type = lib.types.listOf (lib.types.either lib.types.str (lib.types.attrsOf lib.types.anything));
-              default = [ ];
-              description = "directories to persist (set by services, consumed by persistence module)";
-            };
-
             config = {
               # setup key secret
               clan.core.vars.generators.netbird-client = {
@@ -212,8 +204,6 @@ _: {
               # trust netbird interface — netbird handles access control
               networking.firewall.trustedInterfaces = [ "wt0" ];
 
-              # persist client identity across reboots
-              nixfiles.persistence.directories = [ "/var/lib/netbird" ];
             };
           };
       };
