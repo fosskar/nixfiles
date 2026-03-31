@@ -17,6 +17,11 @@
       enable = lib.mkDefault true;
       # use systemd-resolved for DNS (enabled in base/network.nix)
       dns = lib.mkDefault "systemd-resolved";
+      # NM handles wifi only — ethernet is managed by networkd (clan-core default)
+      unmanaged = [
+        "interface-name:en*"
+        "interface-name:eth*"
+      ];
       # iwd backend with privacy defaults
       wifi = {
         backend = lib.mkDefault "iwd";
