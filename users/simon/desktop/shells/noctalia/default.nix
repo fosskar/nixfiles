@@ -123,21 +123,6 @@
             forceBlackScreenCorners = true;
           };
 
-          templates.activeTemplates = [
-            {
-              id = "gtk";
-              enabled = true;
-            }
-            {
-              id = "niri";
-              enabled = true;
-            }
-            {
-              id = "yazi";
-              enabled = true;
-            }
-          ];
-
           osd.location = "right";
 
           sessionMenu = {
