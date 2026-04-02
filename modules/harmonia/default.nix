@@ -22,7 +22,7 @@ in
   config = lib.mkIf cfg.enable {
     services.harmonia.cache = {
       enable = true;
-      settings.bind = "0.0.0.0:${toString cfg.port}";
+      settings.bind = "[::]:${toString cfg.port}";
       inherit (cfg) signKeyPaths;
     };
 
