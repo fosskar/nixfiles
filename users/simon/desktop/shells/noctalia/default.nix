@@ -7,201 +7,145 @@
 {
   imports = [ inputs.noctalia.homeModules.default ];
 
-  config = lib.mkIf (config.nixfiles.quickshell == "noctalia") {
-    xdg.configFile."noctalia/pam/password.conf".text = ''
-      auth sufficient pam_fprintd.so max-tries=1
-      auth required pam_unix.so
-    '';
+  config = lib.mkIf (config.nixfiles.quickshell == "noctalia") (
+    let
+      t = config.theme;
+    in
+    {
+      xdg.configFile."noctalia/pam/password.conf".text = ''
+        auth sufficient pam_fprintd.so max-tries=1
+        auth required pam_unix.so
+      '';
 
-    programs.noctalia-shell = {
-      enable = true;
-      systemd.enable = true;
-      settings = {
-        appLauncher = {
-          terminalCommand = "ghostty -e";
-          iconMode = "tabler";
-          sortByMostUsed = true;
-          viewMode = "list";
+      programs.noctalia-shell = {
+        enable = true;
+        systemd.enable = true;
+        colors = {
+          mPrimary = t.primary;
+          mSecondary = t.secondary;
+          mTertiary = t.info;
+          mError = t.error;
+          mSurface = t.bg;
+          mSurfaceVariant = t.bgLight;
+          mOnPrimary = "#FFFFFF";
+          mOnSecondary = "#FFFFFF";
+          mOnTertiary = "#FFFFFF";
+          mOnError = "#FFFFFF";
+          mOnSurface = t.fg;
+          mOnSurfaceVariant = t.fgMuted;
+          mOutline = t.fgDim;
+          mShadow = "#000000";
         };
-
-        audio.preferredPlayer = "mpv, spotify";
-
-        bar = {
-          backgroundOpacity = 1;
-          capsuleOpacity = 0.15;
-          showCapsule = false;
-          widgets = {
-            center = [
-              {
-                id = "Clock";
-                formatHorizontal = "HH:mm\\ndd.MM.yy";
-                usePrimaryColor = true;
-              }
-            ];
-            left = [
-              {
-                id = "ControlCenter";
-                useDistroLogo = true;
-              }
-              {
-                id = "Workspace";
-                hideUnoccupied = true;
-                labelMode = "none";
-              }
-              {
-                id = "SystemMonitor";
-                compactMode = true;
-                showCpuTemp = true;
-                showCpuUsage = true;
-                showDiskUsage = true;
-                showLoadAverage = true;
-                showMemoryAsPercent = true;
-                showMemoryUsage = true;
-                showNetworkStats = true;
-                useMonospaceFont = true;
-              }
-            ];
-            right = [
-              {
-                id = "Tray";
-                hidePassive = true;
-                drawerEnabled = false;
-              }
-              {
-                id = "Microphone";
-                displayMode = "alwaysShow";
-              }
-              {
-                id = "Volume";
-                displayMode = "alwaysShow";
-              }
-              {
-                id = "Battery";
-                displayMode = "alwaysShow";
-                hideIfNotDetected = true;
-                warningThreshold = 20;
-              }
-              {
-                id = "VPN";
-                displayMode = "onhover";
-              }
-              {
-                id = "Network";
-                displayMode = "onhover";
-              }
-              {
-                id = "Bluetooth";
-                displayMode = "onhover";
-              }
-              { id = "PowerProfile"; }
-              { id = "KeepAwake"; }
-              {
-                id = "NotificationHistory";
-                showUnreadBadge = true;
-              }
-              {
-                id = "SessionMenu";
-                colorName = "error";
-              }
-            ];
+        # plugins managed via noctalia GUI
+        settings = {
+          appLauncher = {
+            terminalCommand = "ghostty -e";
           };
-        };
 
-        colorSchemes = {
-          # predefinedScheme = "Oxocarbon";
-          matugenSchemeType = "scheme-neutral";
-          useWallpaperColors = true;
-        };
+          bar = {
+            backgroundOpacity = 1;
+            showCapsule = false;
+            widgets = {
+              center = [
+                {
+                  id = "Clock";
+                  formatHorizontal = "HH:mm\\ndd.MM.yy";
+                }
+              ];
+              left = [
+                {
+                  id = "ControlCenter";
+                  useDistroLogo = true;
+                }
+                {
+                  id = "Workspace";
+                  hideUnoccupied = true;
+                  labelMode = "Name";
+                }
+                {
+                  id = "SystemMonitor";
+                }
+              ];
+              right = [
+                {
+                  id = "Tray";
+                }
+                {
+                  id = "Microphone";
+                }
+                {
+                  id = "Volume";
+                }
+                {
+                  id = "Battery";
+                }
+                {
+                  id = "VPN";
+                }
+                {
+                  id = "Network";
+                }
+                {
+                  id = "Bluetooth";
+                }
+                {
+                  id = "NoctaliaPerformance";
+                }
+                {
+                  id = "PowerProfile";
+                }
+                {
+                  id = "KeepAwake";
+                }
+                {
+                  id = "NotificationHistory";
+                }
+                {
+                  id = "SessionMenu";
+                }
+              ];
+            };
+          };
 
-        controlCenter = {
-          position = "top_center";
-          cards = [
+          dock = {
+            enabled = false;
+          };
+
+          idle = {
+            enabled = true;
+            screenOffTimeout = 300;
+            lockTimeout = 1800;
+            suspendTimeout = 3600;
+          };
+
+          general = {
+            showScreenCorners = true;
+            forceBlackScreenCorners = true;
+          };
+
+          templates.activeTemplates = [
             {
+              id = "gtk";
               enabled = true;
-              id = "profile-card";
             }
             {
+              id = "niri";
               enabled = true;
-              id = "shortcuts-card";
             }
             {
+              id = "yazi";
               enabled = true;
-              id = "audio-card";
-            }
-            {
-              enabled = false;
-              id = "brightness-card";
-            }
-            {
-              enabled = true;
-              id = "weather-card";
-            }
-            {
-              enabled = true;
-              id = "media-sysmon-card";
             }
           ];
-        };
 
-        dock = {
-          enabled = true;
-          displayMode = "auto_hide";
-          position = "bottom";
-          onlySameOutput = true;
-        };
+          osd.location = "right";
 
-        general = {
-          showScreenCorners = true;
-          forceBlackScreenCorners = true;
-          animationSpeed = 2;
-          compactLockScreen = true;
-          enableShadows = false;
-        };
-
-        location = {
-          name = "Hamburg";
-          weatherEnabled = true;
-          hideWeatherCityName = true;
-          hideWeatherTimezone = true;
-          showWeekNumberInCalendar = true;
-        };
-
-        notifications.sounds.volume = 0.1;
-
-        osd.location = "right";
-
-        sessionMenu = {
-          countdownDuration = 1000;
-          largeButtonsStyle = true;
-          largeButtonsLayout = "grid";
-        };
-
-        templates = {
-          ghostty = true;
-          gtk = true;
-          niri = true;
-          qt = true;
-          yazi = true;
-          zed = true;
-          zenBrowser = true;
-        };
-
-        ui = {
-          fontDefault = config.theme.font;
-          fontFixed = config.theme.monospaceFont;
-          panelsAttachedToBar = true;
-        };
-
-        wallpaper = {
-          enabled = true;
-          directory = "/home/simon/pictures/wallpaper";
-          fillMode = "crop";
-          transitionType = "random";
-          transitionDuration = 1500;
-          overviewEnabled = true;
-          setWallpaperOnAllMonitors = true;
+          sessionMenu = {
+            countdownDuration = 1000;
+            largeButtonsLayout = "grid";
+          };
         };
       };
-    };
-  };
+    }
+  );
 }
