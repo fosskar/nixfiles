@@ -14,6 +14,6 @@
     pkgs.xwayland-satellite
   ];
 
-  # disable niri-flake's polkit agent - using dms built-in
+  # disable niri-flake's polkit agent - using noctalia polkit plugin
   systemd.user.services.niri-flake-polkit.enable = false;
 }
