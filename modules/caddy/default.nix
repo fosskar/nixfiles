@@ -92,7 +92,7 @@ in
       enable = true;
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/desec@v1.1.0" ];
-        hash = "sha256-706Z9kw+7DJz4a3qDGemuFAHSD4ko8rSJblr8S9BgH0=";
+        hash = "sha256-4sP/IVuUhbTu+4Z5kBttVBdP7cXtHDavp8DChv1bwjQ=";
       };
       inherit (cfg) email;
       globalConfig = ''
