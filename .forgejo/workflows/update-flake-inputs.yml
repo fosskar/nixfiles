@@ -1,0 +1,15 @@
+name: update flake inputs
+on:
+  schedule:
+    - cron: "0 3 * * *" # nightly at 03:00 UTC
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: docker
+    steps:
+      - uses: actions/checkout@v4
+      - name: update flake inputs
+        uses: Mic92/update-flake-inputs-gitea@main
+        with:
+          gitea-token: ${{ secrets.TOKEN }}
+          auto-merge: true
