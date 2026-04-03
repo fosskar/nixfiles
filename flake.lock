@@ -1165,11 +1165,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775201254,
-        "narHash": "sha256-M4ywHFh4fUw/EWShkt47ZtaEUGf8Amhs2k0ZGkmASig=",
+        "lastModified": 1775244277,
+        "narHash": "sha256-GTrLvPPVvmByta0OnoSqC/h59CdLmg3/2rpycJxzROQ=",
         "owner": "LovingMelody",
         "repo": "nix-citizen",
-        "rev": "47a019a159088795b2d7d7de0e06b1b61d04e3cc",
+        "rev": "df2f092a526fbc8e721a9d12aecf96fd1320ee9f",
         "type": "github"
       },
       "original": {
