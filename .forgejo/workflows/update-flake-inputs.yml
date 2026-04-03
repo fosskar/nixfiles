@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   update:
-    runs-on: docker
+    runs-on: codeberg-tiny
     steps:
       - uses: actions/checkout@v4
       - name: update flake inputs
