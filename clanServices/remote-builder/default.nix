@@ -87,7 +87,7 @@
 
             nixfiles.remote-builder.client = {
               enable = lib.mkDefault true;
-              builderHost = lib.mkDefault builderName;
+              builderHost = lib.mkDefault "${builderName}.${config.clan.core.settings.domain}";
               sshKeyFile = lib.mkDefault config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
             };
           };
