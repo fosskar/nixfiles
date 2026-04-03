@@ -22,8 +22,8 @@ jobs:
             --gitea-url "https://codeberg.org" \
             --gitea-repository "fosskar/nixfiles" \
             --base-branch "main" \
-            --git-author-name "flake-updater" \
-            --git-author-email "flake-updater@noreply.codeberg.org" \
-            --git-committer-name "flake-updater" \
-            --git-committer-email "flake-updater@noreply.codeberg.org" \
+            --git-author-name "nixfiles-bot" \
+            --git-author-email "nixfiles-bot@noreply.codeberg.org" \
+            --git-committer-name "nixfiles-bot" \
+            --git-committer-email "nixfiles-bot@noreply.codeberg.org" \
             --auto-merge

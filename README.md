@@ -6,7 +6,8 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 
 ## features
 
-- [clan-core](https://docs.clan.lol/) - machine management, secrets (sops-nix), disk partitioning (disko)
+- [clan-core](https://docs.clan.lol/) - machine management, secrets (sops-nix/age), disk partitioning (disko), services (clanServices)
+
 - [flake-parts](https://github.com/hercules-ci/flake-parts) - modular flake framework
 - [preservation](https://github.com/nix-community/preservation) - opt-in state persistence
 - [home-manager](https://github.com/nix-community/home-manager) - user environment
