@@ -72,7 +72,7 @@ in
     };
 
     spawn-at-startup = [
-      { command = [ "element-desktop" ]; }
+      { sh = "sleep 3 && element-desktop"; }
     ];
 
     hotkey-overlay = {
