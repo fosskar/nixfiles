@@ -3,7 +3,7 @@ let
   inherit (lib) attrNames flip;
 
   varsForInstance = instanceName: pkgs: {
-    clan.core.vars.generators."harmonia-${instanceName}" = {
+    clan.core.vars.generators."harmonia" = {
       share = true;
       files.sign-key.secret = true;
       files.sign-key.deploy = false;
@@ -21,15 +21,17 @@ in
   manifest.name = "harmonia";
   manifest.description = "serve local nix store as binary cache";
   manifest.readme = "harmonia server/client cache wiring";
-  manifest.categories = [ "Developer Tools" ];
+  manifest.categories = [ "Nix Tools" ];
 
   roles.server = {
     description = "harmonia binary cache server";
 
-    interface.options.port = lib.mkOption {
-      type = lib.types.port;
-      default = 5000;
-      description = "harmonia listen port";
+    interface.options = {
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 5000;
+        description = "harmonia listen port";
+      };
     };
 
     perInstance =
@@ -42,24 +44,21 @@ in
             lib,
             ...
           }:
-          let
-            generator = "harmonia-${instanceName}";
-          in
           {
             imports = [ ../../modules/harmonia ] ++ [ (varsForInstance instanceName pkgs) ];
 
-            clan.core.vars.generators."${generator}-private" = {
-              dependencies = [ generator ];
+            clan.core.vars.generators."harmonia-private" = {
+              dependencies = [ "harmonia" ];
               files.sign-key.secret = true;
               script = ''
-                cp $in/${generator}/sign-key $out/sign-key
+                cp $in/harmonia/sign-key $out/sign-key
               '';
             };
 
             nixfiles.harmonia = {
               enable = lib.mkDefault true;
               port = lib.mkDefault settings.port;
-              signKeyPaths = [ config.clan.core.vars.generators."${generator}-private".files.sign-key.path ];
+              signKeyPaths = [ config.clan.core.vars.generators."harmonia-private".files.sign-key.path ];
             };
           };
       };
@@ -93,7 +92,7 @@ in
               );
 
             nix.settings.trusted-public-keys = [
-              config.clan.core.vars.generators."harmonia-${instanceName}".files.pub-key.value
+              config.clan.core.vars.generators."harmonia".files.pub-key.value
             ];
           };
       };
