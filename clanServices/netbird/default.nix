@@ -196,8 +196,9 @@ _: {
                 };
               };
 
-              # run auto-login only on first enrollment; avoid silent re-registration clones
-              systemd.services.netbird-login.unitConfig.ConditionPathExists = "!/var/lib/netbird/state.json";
+              # the login script already checks NeedsLogin status before acting,
+              # so the state.json guard is unnecessary and prevents re-auth on expired sessions
+              systemd.services.netbird-login.unitConfig.ConditionPathExists = lib.mkForce [ ];
               systemd.services.netbird-login.environment = {
                 HOME = "/var/lib/netbird";
                 XDG_CONFIG_HOME = "/var/lib/netbird";
