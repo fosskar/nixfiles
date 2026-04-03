@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   update:
-    runs-on: codeberg-tiny
+    runs-on: codeberg-medium
     steps:
       - uses: actions/checkout@v4
       - name: install nix
@@ -20,7 +20,6 @@ jobs:
           nix run \
             "github:Mic92/update-flake-inputs-gitea" -- \
             --gitea-url "https://codeberg.org" \
-            --gitea-token "$GITEA_TOKEN" \
             --gitea-repository "fosskar/nixfiles" \
             --base-branch "main" \
             --auto-merge
