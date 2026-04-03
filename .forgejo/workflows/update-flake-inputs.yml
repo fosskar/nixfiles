@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: update flake inputs
-        uses: Mic92/update-flake-inputs-gitea@main
+        uses: https://github.com/Mic92/update-flake-inputs-gitea@main
         with:
           gitea-token: ${{ secrets.TOKEN }}
           auto-merge: true
