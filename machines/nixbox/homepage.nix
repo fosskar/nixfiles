@@ -137,7 +137,25 @@ _: {
         ];
       }
       {
+        "Tools" = [
+          {
+            "NX3 Wiki" = {
+              href = "https://wiki.nx3.eu/";
+              icon = "mdi-book-open-variant";
+              siteMonitor = "https://wiki.nx3.eu/";
+            };
+          }
+        ];
+      }
+      {
         "Automation" = [
+          {
+            "Buildbot" = {
+              href = "https://buildbot.fosskar.eu/";
+              icon = "buildbot.svg";
+              siteMonitor = "https://buildbot.fosskar.eu/";
+            };
+          }
           {
             "Home Assistant" = {
               href = "https://ha.fosskar.eu";
