@@ -3,6 +3,7 @@
   imports = [
     ../../modules/filesystems/btrfs.nix
     ../../modules/power
+    ../../modules/buildbot
   ]
   ++ (mylib.scanPaths ./. { });
 
