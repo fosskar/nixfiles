@@ -5,54 +5,86 @@
     inputs.treefmt-nix.flakeModule
   ];
 
-  perSystem = {
-    treefmt = {
-      projectRootFile = "flake.nix";
-      settings.global.excludes = [
-        "*.gitignore"
-        "*.pub"
-        "*.priv"
-        "*.age"
-        "*.svg"
-        "*.patch"
-        ".envrc"
-        "**/.envrc"
-        "LICENSE"
-        "**/LICENSE"
-        "flake.lock"
-        "**/flake.lock"
-        "result"
-        "**/result"
-        "sops/secrets/*"
-        "**/sops/secrets/*"
-        "vars/*"
-        "**/vars/*"
-      ];
-      programs = {
-        nixfmt.enable = true;
-        prettier.enable = true;
-        deadnix.enable = true;
-        statix.enable = true;
-        shfmt.enable = true;
-        shellcheck.enable = true;
-        yamlfmt.enable = true;
-      };
-    };
-
-    pre-commit = {
-      settings = {
-        excludes = [
-          "flake.lock"
-          "CHANGELOG.md"
+  perSystem =
+    {
+      lib,
+      self',
+      system,
+      ...
+    }:
+    {
+      treefmt = {
+        projectRootFile = "flake.nix";
+        settings.global.excludes = [
+          "*.gitignore"
+          "*.pub"
+          "*.priv"
+          "*.age"
+          "*.svg"
+          "*.patch"
+          ".envrc"
+          "**/.envrc"
           "LICENSE"
+          "**/LICENSE"
+          "flake.lock"
+          "**/flake.lock"
+          "result"
+          "**/result"
+          "sops/secrets/*"
+          "**/sops/secrets/*"
+          "vars/*"
+          "**/vars/*"
         ];
-        hooks = {
-          treefmt.enable = true;
-          flake-checker.enable = true;
-          nil.enable = true;
-          detect-private-keys.enable = true;
+        programs = {
+          nixfmt.enable = true;
+          prettier.enable = true;
+          deadnix.enable = true;
+          statix.enable = true;
+          shfmt.enable = true;
+          shellcheck.enable = true;
+          yamlfmt.enable = true;
         };
       };
+
+      pre-commit = {
+        settings = {
+          excludes = [
+            "flake.lock"
+            "CHANGELOG.md"
+            "LICENSE"
+          ];
+          hooks = {
+            treefmt.enable = true;
+            flake-checker.enable = true;
+            nil.enable = true;
+            detect-private-keys.enable = true;
+          };
+        };
+      };
+
+      checks =
+        let
+          nixosMachines =
+            lib.mapAttrs'
+              (name: machine: lib.nameValuePair "nixos-${name}" machine.config.system.build.toplevel)
+              (
+                lib.filterAttrs (
+                  _: machine: machine.pkgs.stdenv.hostPlatform.system == system
+                ) inputs.self.nixosConfigurations
+              );
+
+          packages = lib.mapAttrs' (name: pkg: lib.nameValuePair "package-${name}" pkg) (
+            self'.packages or { }
+          );
+
+          devShells = lib.mapAttrs' (name: shell: lib.nameValuePair "devshell-${name}" shell) (
+            self'.devShells or { }
+          );
+
+          homeConfigurations = lib.mapAttrs' (
+            name: home: lib.nameValuePair "home-${name}" home.activation-script
+          ) ((self'.legacyPackages or { }).homeConfigurations or { });
+        in
+        nixosMachines // packages // devShells // homeConfigurations;
     };
-  };
 }
