@@ -42,6 +42,10 @@ let
               pkgs.openvino
             ];
           });
+      # openvino pythonImportsCheck needs gpu/opencl unavailable in sandbox
+      openvino = pyPrev.openvino.overrideAttrs (_: {
+        doInstallCheck = false;
+      });
     };
   };
 
