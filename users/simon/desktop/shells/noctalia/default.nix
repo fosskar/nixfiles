@@ -156,6 +156,10 @@
             compactLockScreen = true;
           };
 
+          location = {
+            name = "Hamburg";
+          };
+
           osd.location = "right";
 
           sessionMenu = {
