@@ -1,4 +1,9 @@
-{ config, lib, options, ... }:
+{
+  config,
+  lib,
+  options,
+  ...
+}:
 let
   hasPersistence = lib.hasAttrByPath [ "nixfiles" "persistence" "enable" ] options;
 in
