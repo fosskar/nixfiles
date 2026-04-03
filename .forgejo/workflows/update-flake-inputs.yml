@@ -11,5 +11,7 @@ jobs:
       - name: update flake inputs
         uses: https://github.com/Mic92/update-flake-inputs-gitea@main
         with:
+          gitea-url: https://codeberg.org
           gitea-token: ${{ secrets.TOKEN }}
+          gitea-repository: fosskar/nixfiles
           auto-merge: true
