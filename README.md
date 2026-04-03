@@ -14,12 +14,13 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
 
 ## machines
 
-| machine       | type        | description              | specs                                                                |
-| ------------- | ----------- | ------------------------ | -------------------------------------------------------------------- |
-| simon-desktop | desktop     | daily driver workstation | ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                |
-| lpt-titan     | laptop      | framework 13             | ryzen ai 5 340, radeon 840m, 32gb ddr5                               |
-| nixbox        | home server | self-hosted services     | ryzen 7 5700x, 64gb, arc b50 pro, 4x6tb + 2x960gb ssd, 2x16gb optane |
-| gateway       | vps         | reverse proxy (pangolin) | hetzner cx22                                                         |
+| machine       | type        | description               | specs                                                                |
+| ------------- | ----------- | ------------------------- | -------------------------------------------------------------------- |
+| simon-desktop | desktop     | daily driver workstation  | ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                |
+| lpt-titan     | laptop      | framework 13              | ryzen ai 5 340, radeon 840m, 32gb ddr5                               |
+| nixbox        | home server | self-hosted services      | ryzen 7 5700x, 64gb, arc b50 pro, 4x6tb + 2x960gb ssd, 2x16gb optane |
+| nixworker     | home server | ci, remote builder, cache | ryzen 9 9955hx, 96gb ddr5, minisforum ms-a2                          |
+| gateway       | vps         | reverse proxy (pangolin)  | hetzner cx22                                                         |
 
 ## documentation
 

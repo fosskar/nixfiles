@@ -181,6 +181,35 @@ borgbackup with zfs snapshots:
 
 ---
 
+## nixworker
+
+minisforum ms-a2 at `192.168.10.210` (ryzen 9 9955hx 16c/32t, 96gb ddr5)
+
+### ci/cd
+
+| service  | port | domain              | notes                         |
+| -------- | ---- | ------------------- | ----------------------------- |
+| buildbot | 8010 | buildbot.fosskar.eu | ci via buildbot-nix, codeberg |
+
+buildbot evaluates `.#checks` on push/PR: all nixos machines, packages, devshells.
+forgejo workflow runs nightly to create per-input flake update PRs.
+
+### nix infrastructure
+
+| service  | port | notes                                    |
+| -------- | ---- | ---------------------------------------- |
+| harmonia | 5000 | binary cache serving local nix store     |
+| ncps     | 8501 | proxy upstream caches (nixos, community) |
+
+other machines offload builds here via `nix.buildMachines` (remote builder).
+
+### dev
+
+- zed remote server via ssh (96gb ram for big evals, test vms)
+- `nix-ld` enabled for dynamic linker compat
+
+---
+
 ## gateway
 
 hetzner vps cx22 - reverse proxy and tunnel server
