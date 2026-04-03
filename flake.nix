@@ -104,6 +104,7 @@
       inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
+    millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
