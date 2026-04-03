@@ -12,6 +12,15 @@ let
 
   dms-pkg = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
+  noctalia =
+    cmd:
+    [
+      "noctalia-shell"
+      "ipc"
+      "call"
+    ]
+    ++ (pkgs.lib.splitString " " cmd);
+
   # key → { title?, locked?, dms = { t, a, args? }, noctalia = { t, a } }
   shellBinds = {
     "Mod+Space" = {
@@ -175,7 +184,7 @@ let
         ++ (bind.dms.args or [ ]);
       }
     else if isNoctalia then
-      { spawn-sh = "noctalia-shell ipc call ${bind.noctalia.t} ${bind.noctalia.a}"; }
+      { spawn = noctalia "${bind.noctalia.t} ${bind.noctalia.a}"; }
     else
       { spawn = [ "true" ]; };
 in

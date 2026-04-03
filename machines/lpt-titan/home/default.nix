@@ -8,7 +8,7 @@
     imports = mylib.scanPaths ./. { };
     nixfiles = {
       machineType = "laptop";
-      quickshell = "dms";
+      quickshell = "noctalia";
     };
   };
 }

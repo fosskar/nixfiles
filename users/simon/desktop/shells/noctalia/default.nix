@@ -109,7 +109,7 @@
                   id = "Volume";
                 }
                 {
-                  id = "Battery";
+                  id = "plugin:netbird";
                 }
                 {
                   id = "VPN";
@@ -119,6 +119,9 @@
                 }
                 {
                   id = "Bluetooth";
+                }
+                {
+                  id = "Battery";
                 }
                 {
                   id = "NoctaliaPerformance";
@@ -158,6 +161,10 @@
 
           location = {
             name = "Hamburg";
+          };
+
+          notifications = {
+            density = "compact";
           };
 
           osd.location = "right";
