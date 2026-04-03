@@ -13,13 +13,15 @@
           "hyprland"
           "gtk"
         ];
-        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        # "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        "org.freedesktop.impl.portal.Secret" = [ "kwallet" ];
       };
       niri = {
         default = [
           "gtk"
           "gnome"
         ];
+        "org.freedesktop.impl.portal.Secret" = [ "kwallet" ];
       };
     };
     extraPortals = with pkgs; [

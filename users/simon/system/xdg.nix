@@ -105,14 +105,20 @@ in
             "hyprland"
             "gtk"
           ];
+          # "org.freedesktop.impl.portal.Secret" = [
+          #   "gnome-keyring"
+          # ];
           "org.freedesktop.impl.portal.Secret" = [
-            "gnome-keyring"
+            "kwallet"
           ];
         };
         niri = {
           default = [
             "gtk"
             "gnome"
+          ];
+          "org.freedesktop.impl.portal.Secret" = [
+            "kwallet"
           ];
         };
       };
