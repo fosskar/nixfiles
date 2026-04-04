@@ -19,8 +19,8 @@ jobs:
         run: |
           nix run \
             "github:Mic92/update-flake-inputs-gitea" -- \
-            --gitea-url "https://codeberg.org" \
-            --gitea-repository "fosskar/nixfiles" \
+            --gitea-url "${{ forgejo.server_url }}" \
+            --gitea-repository "${{ forgejo.repository }}" \
             --base-branch "main" \
             --git-author-name "nixfiles-bot" \
             --git-author-email "nixfiles-bot@noreply.codeberg.org" \
