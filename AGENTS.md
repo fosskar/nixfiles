@@ -66,7 +66,7 @@ never trust memory for these.
 - `lpt-titan`
 - `nixbox`
 - `gateway`
-- `clawbox`
+- `crowbox`
 
 ssh patterns:
 

@@ -4,6 +4,7 @@
     ../../modules/filesystems/btrfs.nix
     ../../modules/power
     ../../modules/persistence
+    #../../modules/opencrow
   ]
   ++ (mylib.scanPaths ./. { exclude = [ ]; });
 

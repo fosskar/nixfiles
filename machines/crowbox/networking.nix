@@ -1,6 +1,6 @@
 {
   networking = {
-    hostName = "clawbox";
+    hostName = "crowbox";
 
     useDHCP = false;
     defaultGateway = {
