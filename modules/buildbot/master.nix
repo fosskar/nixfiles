@@ -45,9 +45,15 @@ in
       };
 
       topic = lib.mkOption {
-        type = lib.types.str;
+        type = lib.types.nullOr lib.types.str;
         default = "build-with-buildbot";
-        description = "codeberg topic to discover repos";
+        description = "codeberg topic to discover repos; set null to disable topic discovery";
+      };
+
+      repoAllowlist = lib.mkOption {
+        type = lib.types.nullOr (lib.types.listOf lib.types.str);
+        default = null;
+        description = "explicit codeberg repos allowed to build (owner/repo)";
       };
     };
   };
@@ -100,7 +106,7 @@ in
         webhookSecretFile = varsPath.files."webhook-secret".path;
         inherit (cfg.codeberg) oauthId;
         oauthSecretFile = varsPath.files."oauth-secret".path;
-        inherit (cfg.codeberg) topic;
+        inherit (cfg.codeberg) topic repoAllowlist;
       };
     };
   };
