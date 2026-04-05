@@ -127,13 +127,6 @@ _: {
               siteMonitor = "http://127.0.0.1:11434";
             };
           }
-          {
-            "Openclaw" = {
-              href = "https://192.168.10.240";
-              icon = "mdi-robot";
-              siteMonitor = "https://192.168.10.240";
-            };
-          }
         ];
       }
       {
