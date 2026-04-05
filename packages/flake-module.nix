@@ -11,7 +11,11 @@ in
         let
           pkgs = import inputs.nixpkgs {
             inherit system;
-            config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "t3code" ];
+            config.allowUnfreePredicate =
+              pkg:
+              builtins.elem (lib.getName pkg) [
+                "t3code"
+              ];
           };
 
           # auto-discover all package directories

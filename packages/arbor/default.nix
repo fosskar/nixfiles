@@ -19,6 +19,7 @@
   libxcb,
   avahi,
   zsh,
+  nix-update-script,
 }:
 let
   pname = "arbor";
@@ -94,6 +95,14 @@ stdenv.mkDerivation {
     # use zsh for embedded terminal (fish has DA1 query issues with arbor's terminal emulator)
     wrapProgram $out/bin/arbor --set SHELL "${zsh}/bin/zsh"
   '';
+
+  passthru.updateScript = nix-update-script {
+    extraArgs = [
+      "--url"
+      "https://github.com/penso/arbor"
+      "--use-github-releases"
+    ];
+  };
 
   meta = {
     description = "native desktop app for agentic coding with git worktrees, terminals, and diffs";

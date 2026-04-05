@@ -3,11 +3,11 @@
   iptables,
   fetchFromGitHub,
   buildGoModule,
+  nix-update-script,
 }:
-
 buildGoModule rec {
   pname = "gerbil";
-  version = "1.3.0-s.0";
+  version = "1.3.1";
 
   src = fetchFromGitHub {
     owner = "fosrl";
@@ -23,6 +23,10 @@ buildGoModule rec {
     substituteInPlace main.go \
       --replace-fail '/usr/sbin/iptables' '${lib.getExe iptables}'
   '';
+
+  passthru.updateScript = nix-update-script {
+    extraArgs = [ "--use-github-releases" ];
+  };
 
   meta = {
     description = "Simple WireGuard interface management server";

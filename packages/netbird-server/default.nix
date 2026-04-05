@@ -2,19 +2,20 @@
   lib,
   buildGoModule,
   fetchFromGitHub,
+  nix-update-script,
 }:
 buildGoModule (finalAttrs: {
   pname = "netbird-server";
-  version = "0.67.1";
+  version = "0.67.4";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "netbird";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-9jqT9cA6aJIZhrX9eJMKhFpPB8HVpkuKvL9plHAyHWo=";
+    hash = "sha256-8KafkdH92oOwDVH+fPi84+PYLvPtZuPMxJqzdWE0+B8=";
   };
 
-  vendorHash = "sha256-9PvxL7nTbSLnsl1zgLQnh0hiFJLBVNvfxl49xfHXRqk=";
+  vendorHash = "sha256-tsAbNuSqH8NjI6VWDXJ/9u3JKkBAnhjcEdeDXT2Bbv8=";
 
   subPackages = [ "combined" ];
 
@@ -37,6 +38,8 @@ buildGoModule (finalAttrs: {
   postInstall = ''
     mv $out/bin/combined $out/bin/netbird-server
   '';
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     homepage = "https://netbird.io";

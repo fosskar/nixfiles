@@ -2,8 +2,8 @@
   lib,
   buildNpmPackage,
   fetchFromGitHub,
+  nix-update-script,
 }:
-
 buildNpmPackage rec {
   pname = "netbird-dashboard";
   version = "2.36.0";
@@ -28,6 +28,8 @@ buildNpmPackage rec {
   env = {
     CYPRESS_INSTALL_BINARY = 0;
   };
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "netbird management dashboard (static web UI)";

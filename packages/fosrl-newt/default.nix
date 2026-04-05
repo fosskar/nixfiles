@@ -5,19 +5,18 @@
   versionCheckHook,
   nix-update-script,
 }:
-
 buildGoModule rec {
   pname = "newt";
-  version = "1.10.4";
+  version = "1.11.0";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "newt";
     tag = version;
-    hash = "sha256-Dtzx/Rs7aa2GkG7Qq4pvGN4ghfS7EyVhx7rQh8sRlQU=";
+    hash = "sha256-CHrBMHjRvxE78FfooYAH7NOUKNPxbHnWLMkJ4kH3Qkc=";
   };
 
-  vendorHash = "sha256-vy6Dqjek7pLdASbCrM9snq5Dt9lbwNJ0AuQboy1JWNQ=";
+  vendorHash = "sha256-YIcuj1S+ZWAzXZOMZbppTvsDcW1W1Sy8ynfMkzLMQpM=";
 
   nativeInstallCheckInputs = [ versionCheckHook ];
 
@@ -31,7 +30,13 @@ buildGoModule rec {
 
   versionCheckProgramArg = [ "-version" ];
 
-  passthru.updateScript = nix-update-script { };
+  passthru.updateScript = nix-update-script {
+    extraArgs = [
+      "--use-github-releases"
+      "--version-regex"
+      ''v?(\d+\.\d+\.\d+)$''
+    ];
+  };
 
   meta = {
     description = "Tunneling client for Pangolin";

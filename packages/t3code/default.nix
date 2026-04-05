@@ -3,6 +3,7 @@
   appimageTools,
   fetchurl,
   makeWrapper,
+  nix-update-script,
 }:
 let
   pname = "t3code";
@@ -32,6 +33,14 @@ appimageTools.wrapAppImage {
       --add-flags "--enable-features=WaylandWindowDecorations,UseOzonePlatform" \
       --add-flags "--enable-wayland-ime"
   '';
+
+  passthru.updateScript = nix-update-script {
+    extraArgs = [
+      "--url"
+      "https://github.com/pingdotgg/t3code"
+      "--use-github-releases"
+    ];
+  };
 
   meta = {
     description = "minimal web GUI for coding agents";

@@ -8,13 +8,11 @@ jobs:
     runs-on: codeberg-small
     steps:
       - uses: actions/checkout@v4
-
       - name: install nix
         uses: NixOS/nix-installer-action@main
         with:
           extra-conf: |
             experimental-features = nix-command flakes
-
       - name: update flake inputs
         env:
           GITEA_TOKEN: ${{ secrets.TOKEN }}

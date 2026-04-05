@@ -9,13 +9,12 @@
   databaseType ? "sqlite",
   environmentVariables ? { },
   nixosTests,
+  nix-update-script,
 }:
-
 assert lib.assertOneOf "databaseType" databaseType [
   "sqlite"
   "pg"
 ];
-
 let
   db =
     isLong:
@@ -26,19 +25,19 @@ let
     else
       "pg";
 in
-
 buildNpmPackage (finalAttrs: {
   pname = "pangolin";
-  version = "1.16.2";
+  version = "1.17.0";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "pangolin";
     tag = finalAttrs.version;
-    hash = "sha256-pWD2VinfkCiSSP6/einXgduKQ8lzWdHlrj2eqUU/x6Y=";
+    hash = "sha256-E0GfYznHj4CKsRWQm6zHTAJ8hJw9ieFoKIOT9tcumYQ=";
   };
 
-  npmDepsHash = "sha256-CwS26eRAIuxJ2fekRRapDWYAOHXPV0mIX/by4uW2ZOM=";
+  npmDepsHash = "sha256-DyPfylne9Ku7sEUNN0LLlN0EOnCjcklsh+F6YP+rXv4=";
+  npmFlags = [ "--legacy-peer-deps" ];
 
   nativeBuildInputs = [
     esbuild
@@ -162,6 +161,13 @@ buildNpmPackage (finalAttrs: {
   passthru = {
     inherit databaseType;
     tests = { inherit (nixosTests) pangolin; };
+    updateScript = nix-update-script {
+      extraArgs = [
+        "--use-github-releases"
+        "--version-regex"
+        ''(\d+\.\d+\.\d+)$''
+      ];
+    };
   };
 
   meta = {

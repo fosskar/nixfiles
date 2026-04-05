@@ -2,6 +2,7 @@
   lib,
   stdenv,
   fetchurl,
+  nix-update-script,
   wrapGAppsHook3,
   autoPatchelfHook,
   # tauri/webkit deps
@@ -43,7 +44,7 @@
 }:
 let
   pname = "voquill";
-  version = "0.0.534";
+  version = "0.0.561";
 
   runtimeDeps = [
     # tauri/webkit runtime deps
@@ -90,7 +91,7 @@ stdenv.mkDerivation {
   # use pre-built binary from github releases
   src = fetchurl {
     url = "https://github.com/josiahsrc/voquill/releases/download/desktop-v${version}/voquill-desktop_${version}_amd64.deb";
-    hash = "sha256-VXbpmjpTFNCNGG0Na7sCz/AHOaAzYX9FislIOsV9kco=";
+    hash = "sha256-J0mVqO2GGeX5rAOiKC81HvDXqWFGCLcTkkhqdJ6WKc0=";
   };
 
   nativeBuildInputs = [
@@ -132,6 +133,16 @@ stdenv.mkDerivation {
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeDeps}" \
       --set ALSA_PLUGIN_DIR "${alsa-plugins}/lib/alsa-lib"
   '';
+
+  passthru.updateScript = nix-update-script {
+    extraArgs = [
+      "--url"
+      "https://github.com/josiahsrc/voquill"
+      "--use-github-releases"
+      "--version-regex"
+      ''^desktop-v(\d+\.\d+\.\d+)$''
+    ];
+  };
 
   meta = {
     description = "AI voice dictation - open source Wispr Flow alternative";
