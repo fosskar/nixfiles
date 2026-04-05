@@ -110,12 +110,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
-    opencrow.url = "github:pinpox/opencrow";
-    opencrow.inputs.nixpkgs.follows = "nixpkgs";
-    opencrow.inputs.treefmt-nix.follows = "treefmt-nix";
+    opencrow = {
+      url = "github:pinpox/opencrow";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.flake-parts.follows = "flake-parts";
+    };
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix";
-    buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
+    buildbot-nix = {
+      url = "github:nix-community/buildbot-nix?shallow=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # wm
     niri-flake = {
@@ -143,14 +148,14 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    noctalia-plugins.url = "github:Mic92/noctalia-plugins";
-    noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";
+    noctalia-plugins = {
+      url = "github:Mic92/noctalia-plugins";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     dms = {
       url = "github:AvengeMedia/DankMaterialShell";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        quickshell.follows = "quickshell";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.quickshell.follows = "quickshell";
     };
 
     nix-index-database = {
