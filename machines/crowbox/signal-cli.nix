@@ -10,9 +10,6 @@ let
   ];
 in
 {
-  # ensure openclaw starts after signal-cli is up
-  systemd.services.openclaw.after = [ "signal-cli-daemon.service" ];
-
   systemd.services.signal-cli-daemon = {
     description = "signal-cli daemon (external mode for OpenClaw)";
     wantedBy = [ "multi-user.target" ];
