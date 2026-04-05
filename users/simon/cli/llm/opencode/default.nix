@@ -20,7 +20,6 @@
     enable = true;
     package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
     settings = {
-      theme = "system";
       autoshare = false;
       autoupdate = false;
       plugin = [
@@ -68,6 +67,10 @@
           ];
         };
       };
+    };
+
+    tui = {
+      theme = "system";
     };
   };
 
