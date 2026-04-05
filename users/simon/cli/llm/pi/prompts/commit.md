@@ -1,8 +1,8 @@
 ---
-description: commit current work with jj and move bookmark
+description: commit current work with jj
 ---
 
-create atomic commit(s). move `main` to latest non-empty commit. do NOT push.
+create atomic commit(s). do NOT move bookmarks. do NOT push.
 
 rules:
 
@@ -27,13 +27,11 @@ flow:
    - `jj split -m "<msg>" -- <paths...>`
 3. commit remaining change
    - `jj commit -m "<msg>"`
-4. move bookmark
-   - `jj bookmark set main -r @-`
-5. verify clean empty working change
+4. verify clean empty working change
    - `jj status`
 
 guardrails:
 
-- never set `main` to `@` when `@` is empty.
+- do not move bookmarks in this prompt.
 - no `jj restore`, `git restore`, `git checkout --`.
 - do not push.
