@@ -10,6 +10,7 @@
       # the breakage, or get rid of the package entirely.
       allowBroken = false;
       allowUnsupportedSystem = true;
+      allowDeprecatedx86_64Darwin = true;
       # really a pain in the ass to deal with when disabled. true means
       # we are able to build unfree packages without explicitly allowing
       # each unfree package.
