@@ -45,6 +45,17 @@ let
         a = "clipboard";
       };
     };
+    "Mod+G" = {
+      title = "Toggle Power Menu";
+      dms = {
+        t = "plugin:nostr-chat";
+        a = "toggle";
+      };
+      noctalia = {
+        t = "plugin:nostr-chat";
+        a = "toggle";
+      };
+    };
     "Mod+X" = {
       title = "Toggle Power Menu";
       dms = {
