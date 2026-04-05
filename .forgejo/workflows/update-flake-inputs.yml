@@ -8,11 +8,13 @@ jobs:
     runs-on: codeberg-small
     steps:
       - uses: actions/checkout@v4
+
       - name: install nix
-        uses: https://github.com/cachix/install-nix-action@v31
+        uses: NixOS/nix-installer-action@main
         with:
-          extra_nix_config: |
+          extra-conf: |
             experimental-features = nix-command flakes
+
       - name: update flake inputs
         env:
           GITEA_TOKEN: ${{ secrets.TOKEN }}
