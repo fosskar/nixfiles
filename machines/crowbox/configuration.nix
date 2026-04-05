@@ -4,7 +4,7 @@
     ../../modules/filesystems/btrfs.nix
     ../../modules/power
     ../../modules/persistence
-    #../../modules/opencrow
+    ../../modules/opencrow
   ]
   ++ (mylib.scanPaths ./. { exclude = [ ]; });
 
@@ -29,7 +29,4 @@
   };
 
   clan.core.settings.machine-id.enable = true;
-
-  users.users.root.linger = true;
-
 }
