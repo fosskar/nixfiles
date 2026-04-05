@@ -2,10 +2,11 @@
   config,
   lib,
   inputs,
+  mylib,
   ...
 }:
 {
-  imports = [ inputs.noctalia.homeModules.default ];
+  imports = [ inputs.noctalia.homeModules.default ] ++ mylib.scanPaths ./. { };
 
   config = lib.mkIf (config.nixfiles.quickshell == "noctalia") (
     let
@@ -131,6 +132,9 @@
                 }
                 {
                   id = "KeepAwake";
+                }
+                {
+                  id = "plugin:display-config";
                 }
                 {
                   id = "NotificationHistory";
