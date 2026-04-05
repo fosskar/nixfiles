@@ -143,6 +143,8 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    noctalia-plugins.url = "github:Mic92/noctalia-plugins";
+    noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";
     dms = {
       url = "github:AvengeMedia/DankMaterialShell";
       inputs = {

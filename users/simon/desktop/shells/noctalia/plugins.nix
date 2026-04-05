@@ -1,4 +1,5 @@
 _: {
+
   programs.noctalia-shell = {
     plugins = {
       sources = [
@@ -28,6 +29,10 @@ _: {
         };
 
         display-config = {
+          enabled = true;
+          sourceUrl = "https://github.com/Mic92/noctalia-plugins";
+        };
+        nostr-chat = {
           enabled = true;
           sourceUrl = "https://github.com/Mic92/noctalia-plugins";
         };
