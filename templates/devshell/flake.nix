@@ -16,9 +16,6 @@
 
           config = {
             allowUnfree = true;
-          }
-          // nixpkgs.lib.optionalAttrs (system == "x86_64-darwin") {
-            allowDeprecatedx86_64Darwin = true;
           };
         };
       in

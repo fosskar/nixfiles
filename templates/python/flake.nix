@@ -16,15 +16,7 @@
         "aarch64-darwin"
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgs = forAllSystems (
-        system:
-        import nixpkgs {
-          inherit system;
-          config = nixpkgs.lib.optionalAttrs (system == "x86_64-darwin") {
-            allowDeprecatedx86_64Darwin = true;
-          };
-        }
-      );
+      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
     in
     {
       packages = forAllSystems (

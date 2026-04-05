@@ -22,12 +22,7 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          config = nixpkgs.lib.optionalAttrs (system == "x86_64-darwin") {
-            allowDeprecatedx86_64Darwin = true;
-          };
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
       in
       {
         checks = {
