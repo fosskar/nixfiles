@@ -134,7 +134,7 @@
                   id = "KeepAwake";
                 }
                 {
-                  id = "plugin:display-config";
+                  id = "plugin:c4d277:display-config";
                 }
                 {
                   id = "NotificationHistory";
