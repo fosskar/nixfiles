@@ -32,7 +32,7 @@ two-step bootstrap:
 | lpt-titan     | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
 | nixbox        | `192.168.10.200` | NixOS static, no DHCP                |
 | nixworker     | `192.168.10.210` | NixOS static, no DHCP                |
-| clawbox       | `192.168.10.240` | NixOS static, no DHCP                |
+| crowbox       | `192.168.10.240` | NixOS static, no DHCP                |
 | gateway       | `138.201.155.21` | hetzner                              |
 
 servers define their own static IP in `networking.nix` with `useDHCP = false` per interface.

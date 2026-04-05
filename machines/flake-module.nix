@@ -32,7 +32,7 @@ in
 
     inventory = {
       machines = {
-        clawbox = {
+        crowbox = {
           tags = [
             "server"
             "home"
@@ -287,7 +287,7 @@ in
             nixbox.settings = { };
             simon-desktop.settings = { };
             lpt-titan.settings = { };
-            clawbox.settings = { };
+            crowbox.settings = { };
             nixworker.settings = { };
           };
         };
@@ -303,14 +303,14 @@ in
         #    nixbox.settings = { };
         #    simon-desktop.settings = { };
         #    lpt-titan.settings = { };
-        #    clawbox.settings = { };
+        #    crowbox.settings = { };
         #  };
         #};
 
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
           roles.default.machines = {
-            clawbox.settings.host = "192.168.10.240";
+            crowbox.settings.host = "192.168.10.240";
             gateway.settings.host = "138.201.155.21";
             nixbox.settings.host = "192.168.10.200";
             nixworker.settings.host = "192.168.10.210";
@@ -384,7 +384,7 @@ in
               simon-desktop = { };
               lpt-titan = { };
               nixbox = { };
-              clawbox = { };
+              crowbox = { };
               gateway = { };
             };
           };
@@ -401,7 +401,7 @@ in
               simon-desktop = { };
               lpt-titan = { };
               nixbox = { };
-              clawbox = { };
+              crowbox = { };
               gateway = { };
             };
           };
