@@ -6,7 +6,10 @@
   ...
 }:
 {
-  imports = [ inputs.opencrow.nixosModules.default ] ++ mylib.scanPaths ./. { };
+  imports = [
+    inputs.opencrow.nixosModules.default
+  ]
+  ++ mylib.scanPaths ./. { exclude = [ "skills" ]; };
 
   clan.core.vars.generators.opencrow = {
     files.nostr-private-key.secret = true;
@@ -40,6 +43,8 @@
 
     piPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
+    skills.web = "${config.services.opencrow.package}/share/opencrow/skills/web";
+
     extensions = {
       memory = true;
       reminders = true;
@@ -54,15 +59,15 @@
       OPENCROW_NOSTR_PRIVATE_KEY_FILE = "%d/nostr-private-key";
       OPENCROW_NOSTR_ALLOWED_USERS = "npub16le4pxhfvy04jwcp9rhw3ustkwt7sm0jydgq4lr3qderycrlm8ysjxmufc";
 
-      OPENCROW_NOSTR_NAME = "bot";
-      OPENCROW_NOSTR_DISPLAY_NAME = "bot";
+      OPENCROW_NOSTR_NAME = "crow";
+      OPENCROW_NOSTR_DISPLAY_NAME = "crow";
       OPENCROW_NOSTR_ABOUT = "henlo";
       #OPENCROW_NOSTR_PICTURE = "";
 
       OPENCROW_PI_PROVIDER = "anthropic";
       OPENCROW_PI_MODEL = "claude-sonnet-4-6";
 
-      #OPENCROW_SOUL_FILE = "${./soul.md}";
+      OPENCROW_SOUL_FILE = "${./soul.md}";
     };
 
     extraPackages = with pkgs; [
@@ -82,6 +87,7 @@
       w3m
       wget
       yq-go
+      zip
     ];
 
     credentialFiles."nostr-private-key" =
