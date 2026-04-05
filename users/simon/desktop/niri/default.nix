@@ -159,11 +159,6 @@ in
         spawn = "webcord";
       };
 
-      # voice dictation (handy)
-      "Mod+G".action = {
-        spawn-sh = "pkill -USR2 -n handy || handy &";
-      };
-
       # media controls (not shell-specific)
       "XF86AudioPlay" = {
         action = {
