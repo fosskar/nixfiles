@@ -1,5 +1,6 @@
 {
   mylib,
+  pkgs,
   ...
 }:
 let
@@ -23,6 +24,13 @@ let
 in
 {
   imports = mylib.scanPaths ./. { };
+
+  home.packages = [
+    pkgs.gh
+    pkgs.glab
+    pkgs.fjo
+    pkgs.forgejo-cli
+  ];
 
   programs.delta = {
     enable = true;
