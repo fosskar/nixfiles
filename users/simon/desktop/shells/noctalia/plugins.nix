@@ -28,11 +28,12 @@ _: {
           sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
         };
 
-        display-config = {
+        # mic92 plugins need the source hash prefix to match on-disk folder names
+        "c4d277:display-config" = {
           enabled = true;
           sourceUrl = "https://github.com/Mic92/noctalia-plugins";
         };
-        nostr-chat = {
+        "c4d277:nostr-chat" = {
           enabled = true;
           sourceUrl = "https://github.com/Mic92/noctalia-plugins";
         };
