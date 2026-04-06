@@ -42,8 +42,8 @@ jobs:
 
               if [ "$(printf '%s' "$json" | jq -r 'type')" = "array" ]; then
                 mapfile -t cmd < <(printf '%s' "$json" | jq -r '.[]')
-                if [[ "${cmd[0]}" == /nix/store/*/bin/nix-update ]]; then
-                  nix shell nixpkgs#nix-update -c nix-update "${cmd[@]:1}" -F "$pkg" || echo ":: $pkg - update failed"
+                if [[ "${cmd[0]}" == /nix/store/*/bin/nix-update || "${cmd[0]}" == "nix-update" ]]; then
+                  env -u GITHUB_TOKEN nix shell nixpkgs#nix-update -c nix-update "${cmd[@]:1}" -F "$pkg" || echo ":: $pkg - update failed"
                 else
                   "${cmd[@]}" -F "$pkg" || echo ":: $pkg - update failed"
                 fi
