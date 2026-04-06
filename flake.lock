@@ -156,11 +156,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775434671,
-        "narHash": "sha256-LFeBT8BMoS65Cz/z4pU8VNa4S3e+qzvz/KMpwNfo2Ew=",
+        "lastModified": 1775470399,
+        "narHash": "sha256-y9TCmC2eP2Vr7Uz6HOK9n1QTjHu7uuwselJApkRGQNY=",
         "ref": "refs/heads/main",
-        "rev": "1c5ac6799c9948b46745532f6fa5dcd8f2f06bdc",
-        "revCount": 13907,
+        "rev": "4482366398116c03a5e2ba77d0c34f9cf89fced8",
+        "revCount": 13909,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -1054,11 +1054,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775446641,
-        "narHash": "sha256-xzRYQF3iTdnjLnRDqLcud6bsBBth7jHqWXcY2/I13bY=",
+        "lastModified": 1775471989,
+        "narHash": "sha256-T2/Upjn30njeLzBqfkL+cXguALYDH5IMm7lwAucC+iU=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "cf24ebe96828b5c38fb0dbbbeed89f8d5397915f",
+        "rev": "b24b6c72048922b654af81a56a6df72496285709",
         "type": "github"
       },
       "original": {
@@ -1264,10 +1264,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1775465441,
-        "narHash": "sha256-bXEGoyy8DL0pTay7cR4tBS3YunMF5fPknBLLS69YYN4=",
+        "lastModified": 1775477613,
+        "narHash": "sha256-jKHiJwjG86YjypN4rXG4BfjakjXNKYaqkbs8nfZDcOQ=",
         "ref": "master",
-        "rev": "77abc42ec55716a6ef7ff2d5cb1d79a61a45ebc7",
+        "rev": "551cac7d57eb9e3bd1970725f093a5af19762a65",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1304,11 +1304,11 @@
         "noctalia-qs": "noctalia-qs"
       },
       "locked": {
-        "lastModified": 1775438319,
-        "narHash": "sha256-woO1IU6q5x6HGegm9D7y17o/3CvWaj92ZDrjI6deSDQ=",
+        "lastModified": 1775477009,
+        "narHash": "sha256-419iM+ERLiqtkKucG+0PKkpfni6b4RCKDUpy7sgwQb0=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "ef147f24f16f3aaca116cb93c716326b04d37c21",
+        "rev": "40e98f1ad0ee1fb65726ce4b9fd0aa65a6efbe8a",
         "type": "github"
       },
       "original": {
@@ -1774,10 +1774,10 @@
         "treefmt-nix": "treefmt-nix_4"
       },
       "locked": {
-        "lastModified": 1775465739,
-        "narHash": "sha256-HK+nrxKEAD2ADBPDcdWJ4WDYaYRUyYr3GsDIj/SrBwY=",
+        "lastModified": 1775477969,
+        "narHash": "sha256-wO/WJYFyL+3BLeu2ALcIKKoL/XOSrwipQzcc+JngitI=",
         "ref": "refs/heads/main",
-        "rev": "abd2e26f7240857beb1760c70772334287ef8a30",
+        "rev": "1df2758001459d490d201a2b321a97ec25dfaf45",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/wiki.git"
