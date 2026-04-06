@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: install nix
-        uses: NixOS/nix-installer-action@main
+        uses: https://github.com/NixOS/nix-installer-action@main
         with:
           extra-conf: |
             experimental-features = nix-command flakes
