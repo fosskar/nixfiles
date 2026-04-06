@@ -1,0 +1,97 @@
+name: update packages
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+concurrency:
+  group: update-packages
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: codeberg-small
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.TOKEN }}
+      - name: install nix
+        uses: https://github.com/NixOS/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      - name: update packages
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          set -euo pipefail
+
+          branch="automation/update-packages"
+          base="main"
+          api="${{ forgejo.api_url }}/repos/${{ forgejo.repository }}"
+
+          git config user.name "nixfiles-bot"
+          git config user.email "nixfiles-bot@noreply.codeberg.org"
+          git switch -C "$branch"
+
+          for dir in packages/*/; do
+            pkg="$(basename "$dir")"
+
+            if grep -q "updateScript" "$dir/default.nix" 2>/dev/null; then
+              echo ":: $pkg - using nix updateScript"
+              json="$(nix eval --json ".#$pkg.updateScript")" || { echo ":: $pkg - eval failed, skipping"; continue; }
+
+              if [ "$(printf '%s' "$json" | jq -r 'type')" = "array" ]; then
+                mapfile -t cmd < <(printf '%s' "$json" | jq -r '.[]')
+                "${cmd[@]}" -F "$pkg" || echo ":: $pkg - update failed"
+              else
+                script="$(printf '%s' "$json" | jq -r '.')"
+                "$script" || echo ":: $pkg - update failed"
+              fi
+            elif [ -x "$dir/update.sh" ]; then
+              echo ":: $pkg - using update.sh"
+              "$dir/update.sh" || echo ":: $pkg - update.sh failed"
+            else
+              echo ":: $pkg - no updater, skipping"
+            fi
+          done
+
+          nix fmt
+
+          git add packages/
+
+          if git diff --cached --quiet; then
+            echo "no package updates"
+            exit 0
+          fi
+
+          git commit -m "update packages"
+          git push --force-with-lease origin "$branch"
+
+          prs="$(curl -fsS \
+            -H "Authorization: token $TOKEN" \
+            "$api/pulls?state=open")"
+          pr_number="$(printf '%s' "$prs" | jq -r --arg branch "$branch" --arg base "$base" '
+            map(select(.head.ref == $branch and .base.ref == $base))
+            | .[0].number // empty
+          ')"
+
+          if [ -z "$pr_number" ]; then
+            pr_number="$(curl -fsS \
+              -H "Authorization: token $TOKEN" \
+              -H "Content-Type: application/json" \
+              -X POST \
+              -d "$(jq -nc \
+                --arg title 'update packages' \
+                --arg head "$branch" \
+                --arg base "$base" \
+                --arg body 'automated package updates.' \
+                '{title: $title, head: $head, base: $base, body: $body}')" \
+              "$api/pulls" | jq -r '.number')"
+          fi
+
+          curl -sS \
+            -H "Authorization: token $TOKEN" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d '{"Do":"squash","merge_when_checks_succeed":true,"delete_branch_after_merge":true}' \
+            "$api/pulls/$pr_number/merge" || echo ":: automerge request queued or pending"
