@@ -114,7 +114,6 @@
       url = "github:pinpox/opencrow";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
-      inputs.flake-parts.follows = "flake-parts";
     };
 
     buildbot-nix = {
