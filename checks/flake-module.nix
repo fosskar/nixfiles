@@ -1,7 +1,6 @@
 { inputs, ... }:
 {
   imports = [
-    inputs.git-hooks.flakeModule
     inputs.treefmt-nix.flakeModule
   ];
 
@@ -43,22 +42,6 @@
           shfmt.enable = true;
           shellcheck.enable = true;
           yamlfmt.enable = true;
-        };
-      };
-
-      pre-commit = {
-        settings = {
-          excludes = [
-            "flake.lock"
-            "CHANGELOG.md"
-            "LICENSE"
-          ];
-          hooks = {
-            treefmt.enable = true;
-            flake-checker.enable = true;
-            nil.enable = true;
-            detect-private-keys.enable = true;
-          };
         };
       };
 

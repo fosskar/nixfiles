@@ -1,7 +1,6 @@
 _: {
   perSystem =
     {
-      config,
       inputs', # flake-parts provides this (perSystem)
       pkgs,
       ...
@@ -29,7 +28,6 @@ _: {
           name = defaultShellName;
           shellHook = ''
             export name="${defaultShellName}"
-            ${config.pre-commit.installationScript}
           '';
           packages = [ pkgs.hcloud ] ++ scripts;
         };
