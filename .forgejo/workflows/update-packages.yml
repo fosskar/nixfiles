@@ -42,7 +42,11 @@ jobs:
 
               if [ "$(printf '%s' "$json" | jq -r 'type')" = "array" ]; then
                 mapfile -t cmd < <(printf '%s' "$json" | jq -r '.[]')
-                "${cmd[@]}" -F "$pkg" || echo ":: $pkg - update failed"
+                if [[ "${cmd[0]}" == /nix/store/*/bin/nix-update ]]; then
+                  nix shell nixpkgs#nix-update -c nix-update "${cmd[@]:1}" -F "$pkg" || echo ":: $pkg - update failed"
+                else
+                  "${cmd[@]}" -F "$pkg" || echo ":: $pkg - update failed"
+                fi
               else
                 script="$(printf '%s' "$json" | jq -r '.')"
                 "$script" || echo ":: $pkg - update failed"
