@@ -128,6 +128,11 @@ in
     # paperless needs access to shared consume dir
     users.users.paperless.extraGroups = [ "shared" ];
 
+    # ensure consume dir + contents stay paperless:shared
+    systemd.tmpfiles.rules = [
+      "Z /tank/shares/shared/documents/consume 2775 paperless shared -"
+    ];
+
     services.paperless = {
       enable = true;
       address = bindAddress;
