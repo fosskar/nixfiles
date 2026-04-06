@@ -17,6 +17,10 @@
       "wss://nos.lol"
       "wss://relay.damus.io"
       "wss://relay.0xchat.com"
+      "wss://relay.primal.net"
+      "wss://relay.nostr.band"
+      "wss://relay.snort.social"
+      "wss://nostr.wine"
     ];
     displayName = "crow";
     secretCommand = "cat ${config.clan.core.vars.generators.nostr-chat.files."nsec".path}";
