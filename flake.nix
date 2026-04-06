@@ -38,6 +38,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     #nix-cachyos-kernel = {
     #  url = "github:xddxdd/nix-cachyos-kernel";
     #  inputs.nixpkgs.follows = "nixpkgs";
@@ -50,12 +55,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # impermanence.url = "github:nix-community/impermanence";
     preservation.url = "github:nix-community/preservation";
 
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit.follows = "";
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
@@ -73,12 +78,13 @@
     };
 
     # format and lint
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    buildbot-nix = {
+      url = "github:nix-community/buildbot-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -96,15 +102,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
-    nix-citizen = {
-      url = "github:LovingMelody/nix-citizen";
-      # don't follow nixpkgs — nix-citizen's wine-astral needs old wine/base.nix API
-      # (supportFlags parameter removed in nixpkgs unstable 2025-02-24)
-      inputs.nix-gaming.follows = "nix-gaming";
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-    };
 
+    # llm
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -114,11 +113,6 @@
       url = "github:pinpox/opencrow";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
-    };
-
-    buildbot-nix = {
-      url = "github:nix-community/buildbot-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # wm
@@ -131,7 +125,6 @@
       url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
-      inputs.pre-commit-hooks.follows = "";
     };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
@@ -143,6 +136,11 @@
       url = "github:outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.quickshell.follows = "quickshell";
+    };
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -151,19 +149,9 @@
       url = "github:Mic92/noctalia-plugins";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dms = {
-      url = "github:AvengeMedia/DankMaterialShell";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell";
-    };
-
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     wiki = {
-      url = "git+https://tangled.org/fosskar.eu/wiki";
+      url = "git+https://codeberg.org/fosskar/wiki.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
