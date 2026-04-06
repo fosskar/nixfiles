@@ -10,6 +10,8 @@ purpose: help the agent work fast + correctly in this repo without stale assumpt
 - atomic commits only.
 - prefer minimal direct fix over abstractions.
 - explain why, not code-tour.
+- no guessing/hedging in responses (`likely`, `maybe`, `probably`). verify with evidence or state unknown.
+- for external claims: verify in source, cite path, else say unknown.
 - run `nix fmt` after nix edits.
 
 ## 1) first 60s loop (always)
