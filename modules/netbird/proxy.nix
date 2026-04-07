@@ -106,6 +106,7 @@ in
       wantedBy = [ "multi-user.target" ];
 
       environment = {
+        NB_PROXY_LOG_LEVEL = "debug";
         NB_PROXY_DOMAIN = cfg.domain;
         NB_PROXY_MANAGEMENT_ADDRESS = cfg.managementAddress;
         NB_PROXY_ADDRESS = cfg.addr;
@@ -223,6 +224,65 @@ in
         '';
       };
     };
+
+    # crowdsec parser for netbird-proxy debug access log lines
+    # (NB_PROXY_LOG_LEVEL=debug enables per-request `response:` lines
+    # in the journal; this parser extracts them into the http_access-log
+    # event shape so stock http-* scenarios fire)
+    services.crowdsec.localConfig.parsers.s01Parse = lib.mkIf config.services.crowdsec.enable [
+      {
+        onsuccess = "next_stage";
+        filter = "evt.Line.Labels.type == 'netbird-proxy'";
+        name = "nixfiles/netbird-proxy-logs";
+        description = "parse netbird-proxy access log debug lines";
+        nodes = [
+          {
+            grok = {
+              pattern = "%{TIMESTAMP_ISO8601} DEBG %{DATA}middleware.go:%{NUMBER}: response: request_id=%{DATA:request_id} method=%{WORD:method} host=%{HOSTNAME:host} path=%{NOTSPACE:path} status=%{INT:status} duration=%{NOTSPACE:duration} source=%{IP:source_ip} origin=%{DATA:origin} service=%{DATA:service_id} account=%{NOTSPACE:account_id}$";
+              apply_on = "Line.Raw";
+            };
+            statics = [
+              {
+                meta = "log_type";
+                value = "http_access-log";
+              }
+              {
+                meta = "source_ip";
+                expression = "evt.Parsed.source_ip";
+              }
+              {
+                meta = "http_status";
+                expression = "evt.Parsed.status";
+              }
+              {
+                meta = "http_path";
+                expression = "evt.Parsed.path";
+              }
+              {
+                meta = "http_verb";
+                expression = "evt.Parsed.method";
+              }
+              {
+                meta = "http_hostname";
+                expression = "evt.Parsed.host";
+              }
+              {
+                meta = "http_user_agent";
+                value = "-";
+              }
+              {
+                meta = "service";
+                value = "http";
+              }
+              {
+                parsed = "program";
+                value = "netbird-proxy";
+              }
+            ];
+          }
+        ];
+      }
+    ];
 
     # netbird proxy needs zero timeouts for long-lived tunnel connections
     services.traefik.staticConfigOptions = {

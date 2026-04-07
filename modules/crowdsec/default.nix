@@ -86,6 +86,9 @@ in
           prometheus = {
             enabled = true;
             level = "full";
+            # netbird-proxy hardcodes pprof on :6060, avoid conflict
+            listen_addr = "127.0.0.1";
+            listen_port = 6061;
           };
         };
         lapi.credentialsFile = "/var/lib/crowdsec/state/local_api_credentials.yaml";
@@ -124,6 +127,13 @@ in
             labels.type = "traefik";
           }
         ]
+        ++ [
+          {
+            source = "journalctl";
+            journalctl_filter = [ "_SYSTEMD_UNIT=netbird-proxy.service" ];
+            labels.type = "netbird-proxy";
+          }
+        ]
         ++ cfg.acquisitions;
 
         # whitelist clan mesh IPs so they never get banned
@@ -149,7 +159,7 @@ in
     # export crowdsec metrics via telegraf scrape endpoint
     services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
       {
-        urls = [ "http://127.0.0.1:6060/metrics" ];
+        urls = [ "http://127.0.0.1:6061/metrics" ];
       }
     ];
 
