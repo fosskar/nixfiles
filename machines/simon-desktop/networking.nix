@@ -2,22 +2,19 @@
   networking = {
     hostName = "simon-desktop";
 
-    useDHCP = false;
-
-    defaultGateway = {
-      address = "192.168.10.1";
-      interface = "enp14s0";
-    };
-    nameservers = [ "192.168.10.1" ];
-
-    interfaces.enp14s0 = {
-      useDHCP = false;
-      ipv4.addresses = [
-        {
-          address = "192.168.10.100";
-          prefixLength = 24;
-        }
-      ];
+    networkmanager.ensureProfiles.profiles.enp14s0 = {
+      connection = {
+        id = "enp14s0";
+        type = "ethernet";
+        interface-name = "enp14s0";
+        autoconnect = true;
+      };
+      ipv4 = {
+        method = "manual";
+        address1 = "192.168.10.100/24,192.168.10.1";
+        dns = "192.168.10.1;";
+      };
+      ipv6.method = "auto";
     };
   };
 }

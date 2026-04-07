@@ -13,15 +13,32 @@
   ];
 
   networking = {
+    useDHCP = lib.mkDefault false;
+    dhcpcd.enable = lib.mkDefault false;
+    useNetworkd = lib.mkForce false;
+
+    # fallback dns servers (privacy-focused, non-us)
+    nameservers = [
+      # mullvad swedish
+      "194.242.2.2"
+      "2a07:e340::2"
+      # dns.sb germany
+      "45.11.45.11"
+      "185.222.222.222"
+      "2a11::"
+      "2a09::"
+      # quad9 swiss
+      "9.9.9.9"
+      "149.112.112.112"
+      "2620:fe::fe"
+      "2620:fe::9"
+    ];
+
     networkmanager = {
       enable = lib.mkDefault true;
       # use systemd-resolved for DNS (enabled in base/network.nix)
       dns = lib.mkDefault "systemd-resolved";
-      # NM handles wifi only — ethernet is managed by networkd (clan-core default)
-      unmanaged = [
-        "interface-name:en*"
-        "interface-name:eth*"
-      ];
+      # on workstations, let NM manage normal desktop interfaces incl ethernet
       # iwd backend with privacy defaults
       wifi = {
         backend = lib.mkDefault "iwd";
@@ -46,22 +63,7 @@
         RoutePriorityOffset = 300;
       };
     };
-
-    # fallback dns servers (privacy-focused, non-us)
-    nameservers = [
-      # mullvad swedish
-      "194.242.2.2"
-      "2a07:e340::2"
-      # dns.sb germany
-      "45.11.45.11"
-      "185.222.222.222"
-      "2a11::"
-      "2a09::"
-      # quad9 swiss
-      "9.9.9.9"
-      "149.112.112.112"
-      "2620:fe::fe"
-      "2620:fe::9"
-    ];
   };
+
+  systemd.network.enable = lib.mkForce false;
 }
