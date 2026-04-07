@@ -132,10 +132,10 @@ _: {
       {
         "Tools" = [
           {
-            "NX3 Wiki" = {
-              href = "https://wiki.nx3.eu/";
+            "fosskar's bliki" = {
+              href = "https://fosskar.nx3.eu/";
               icon = "mdi-book-open-variant";
-              siteMonitor = "https://wiki.nx3.eu/";
+              siteMonitor = "https://fosskar.nx3.eu/";
             };
           }
         ];
