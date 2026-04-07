@@ -966,11 +966,11 @@
         "lastModified": 1731402384,
         "narHash": "sha256-OwUmrPfEehLDz0fl2ChYLK8FQM2p0G1+EMrGsYEq+6g=",
         "type": "tarball",
-        "url": "https://github.com/IBM/plex/releases/download/@ibm%2Fplex-mono@1.1.0/ibm-plex-mono.zip"
+        "url": "https://github.com/IBM/plex/releases/download/@ibm/plex-mono@1.1.0/ibm-plex-mono.zip"
       },
       "original": {
         "type": "tarball",
-        "url": "https://github.com/IBM/plex/releases/download/@ibm%2Fplex-mono@1.1.0/ibm-plex-mono.zip"
+        "url": "https://github.com/IBM/plex/releases/download/@ibm/plex-mono@1.1.0/ibm-plex-mono.zip"
       }
     },
     "import-tree": {
@@ -1667,11 +1667,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1775460948,
-        "narHash": "sha256-DFwpc2HBSAVDHqOgDvU69gUSGGgjm6jH68UKmbW/3o8=",
+        "lastModified": 1775498872,
+        "narHash": "sha256-vTja+BfA36Jgq7FHNQaZ07rCvGC/M/3WYfuGJo/YN+M=",
         "ref": "refs/heads/master",
-        "rev": "7ad26e44b615bdb89a1db319633564223e2362bf",
-        "revCount": 2170,
+        "rev": "ffd2e00024560272b5b55c4f7faaa5b20fe3cd59",
+        "revCount": 2173,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
       },
