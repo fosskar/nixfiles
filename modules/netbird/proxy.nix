@@ -115,6 +115,10 @@ in
         NB_PROXY_HEALTH_ADDRESS = "localhost:8444";
         NB_PROXY_DEBUG_ENDPOINT_ADDRESS = "localhost:8445";
         NB_PROXY_GEO_DATA_DIR = "${stateDir}/geolocation";
+        # PROXY protocol v2 from traefik tcp passthrough so real client IPs
+        # appear in proxy events (otherwise all sources show as 127.0.0.1)
+        NB_PROXY_PROXY_PROTOCOL = "true";
+        NB_PROXY_TRUSTED_PROXIES = "127.0.0.1/32";
       }
       // lib.optionalAttrs cfg.allowInsecure {
         NB_PROXY_ALLOW_INSECURE = "true";
@@ -285,9 +289,12 @@ in
           tls.passthrough = true;
           priority = 1;
         };
-        services.proxy-tls.loadBalancer.servers = [
-          { address = "127.0.0.1:${toString (lib.toInt (lib.removePrefix ":" cfg.addr))}"; }
-        ];
+        services.proxy-tls.loadBalancer = {
+          proxyProtocol.version = 2;
+          servers = [
+            { address = "127.0.0.1:${toString (lib.toInt (lib.removePrefix ":" cfg.addr))}"; }
+          ];
+        };
       };
     };
 
