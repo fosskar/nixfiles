@@ -114,6 +114,7 @@ in
         NB_PROXY_ACME_CHALLENGE_TYPE = cfg.acmeChallengeType;
         NB_PROXY_HEALTH_ADDRESS = "localhost:8444";
         NB_PROXY_DEBUG_ENDPOINT_ADDRESS = "localhost:8445";
+        NB_PROXY_GEO_DATA_DIR = "${stateDir}/geolocation";
       }
       // lib.optionalAttrs cfg.allowInsecure {
         NB_PROXY_ALLOW_INSECURE = "true";
