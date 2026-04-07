@@ -8,7 +8,7 @@
     ../../modules/arr-stack
     ../../modules/caddy
     ../../modules/borgbackup
-    ../../modules/opencloud
+    #../../modules/opencloud
     ../../modules/nextcloud
     ../../modules/lldap
     ../../modules/authelia
