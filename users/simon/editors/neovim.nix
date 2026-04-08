@@ -4,5 +4,7 @@ _: {
     # now you can use vi, vim, nvim and get always neovim
     viAlias = true;
     vimAlias = true;
+    withRuby = false;
+    withPython3 = false;
   };
 }
