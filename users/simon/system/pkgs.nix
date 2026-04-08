@@ -68,5 +68,7 @@
       #  };
       #})
       libatomic_ops
+
+      lmstudio
     ]);
 }
