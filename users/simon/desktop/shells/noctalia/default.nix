@@ -79,6 +79,12 @@
                   id = "Clock";
                   formatHorizontal = "HH:mm\\ndd.MM.yy";
                 }
+                {
+                  id = "plugin:privacy-indicator";
+                  hideInactive = true;
+                  removeMargins = true;
+                  activeColor = "error";
+                }
               ];
               left = [
                 {
@@ -92,6 +98,12 @@
                 }
                 {
                   id = "SystemMonitor";
+                }
+                {
+                  id = "plugin:c4d277:display-config";
+                }
+                {
+                  id = "plugin:mirror-mirror";
                 }
               ];
               right = [
@@ -132,9 +144,6 @@
                 }
                 {
                   id = "KeepAwake";
-                }
-                {
-                  id = "plugin:c4d277:display-config";
                 }
                 {
                   id = "NotificationHistory";
