@@ -55,6 +55,20 @@ let
     compaction.enabled = true;
   };
   piSettingsFile = pkgs.writeText "pi-settings-overlay.json" (builtins.toJSON piSettings);
+
+  piModels = {
+    providers = {
+      local = {
+        baseUrl = "http://localhost:1234/v1";
+        api = "openai-completions";
+        apiKey = "local";
+        models = [
+          { id = "google/gemma-4-26b-a4b"; }
+        ];
+      };
+    };
+  };
+  piModelsFile = pkgs.writeText "pi-models.json" (builtins.toJSON piModels);
 in
 {
   imports = mylib.scanPaths ./. {
@@ -71,6 +85,7 @@ in
 
   home.file = {
     ".pi/agent/AGENTS.md".source = ../AGENTS.md;
+    ".pi/agent/models.json".source = piModelsFile;
 
   }
   // extensionEntries
