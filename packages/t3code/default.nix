@@ -7,11 +7,11 @@
 }:
 let
   pname = "t3code";
-  version = "0.0.15";
+  version = "0.0.17";
 
   src = fetchurl {
     url = "https://github.com/pingdotgg/t3code/releases/download/v${version}/T3-Code-${version}-x86_64.AppImage";
-    hash = "sha256-Z8y7SWH55+ZC7cRpgo0cdG273rbDiFS3pXQt3up7sDg=";
+    hash = "sha256-uS+o1nRA3R7hn9BaomrdsGVC8UcpPFFRG3a1qGVrs8w=";
   };
 
   extracted = appimageTools.extractType2 { inherit pname version src; };
@@ -22,11 +22,12 @@ appimageTools.wrapAppImage {
   nativeBuildInputs = [ makeWrapper ];
 
   extraInstallCommands = ''
-    install -Dm444 ${extracted}/t3-code-desktop.desktop $out/share/applications/t3code.desktop
+    install -Dm444 ${extracted}/t3code.desktop $out/share/applications/t3code.desktop
     substituteInPlace $out/share/applications/t3code.desktop \
+      --replace-quiet "Exec=AppRun --no-sandbox %U" "Exec=t3code" \
       --replace-quiet "Exec=AppRun" "Exec=t3code"
     cp -r ${extracted}/usr/share/icons $out/share/icons 2>/dev/null || true
-    install -Dm444 ${extracted}/t3-code-desktop.png $out/share/icons/hicolor/256x256/apps/t3-code-desktop.png 2>/dev/null || true
+    install -Dm444 ${extracted}/t3code.png $out/share/icons/hicolor/1024x1024/apps/t3code.png 2>/dev/null || true
 
     wrapProgram $out/bin/t3code \
       --add-flags "--ozone-platform-hint=auto" \
