@@ -185,8 +185,10 @@
           # make pkgs available in perSystem
           _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
 
-          # fallback if clan and my own nixpkgs input are ever different
-          clan.pkgs = inputs'.nixpkgs.legacyPackages;
+          # disabled: clan-core now propagates pkgsFor into nixosConfigurations,
+          # which conflicts with nixpkgs.config set in nixos modules.
+          # not needed anyway since clan-core.inputs.nixpkgs follows our nixpkgs.
+          #clan.pkgs = inputs'.nixpkgs.legacyPackages;
 
           formatter = config.treefmt.build.wrapper;
         };
