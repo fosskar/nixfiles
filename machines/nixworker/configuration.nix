@@ -4,6 +4,7 @@
     ../../modules/filesystems/btrfs.nix
     ../../modules/power
     ../../modules/buildbot
+    ../../modules/radicle
   ]
   ++ (mylib.scanPaths ./. { });
 
