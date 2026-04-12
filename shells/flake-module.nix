@@ -29,7 +29,11 @@ _: {
           shellHook = ''
             export name="${defaultShellName}"
           '';
-          packages = [ pkgs.hcloud ] ++ scripts;
+          packages = [
+            pkgs.hcloud
+            pkgs.radicle-node
+          ]
+          ++ scripts;
         };
 
         terraform = pkgs.mkShellNoCC {
