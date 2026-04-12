@@ -84,8 +84,7 @@ in
       '';
     };
 
-    # disable buildbot's auto-configured nginx; expose directly for netbird reverse proxy
-    services.nginx.enable = lib.mkForce false;
+    # buildbot-nix enables nginx+vhost itself; keep it for radicle explorer too
 
     services.buildbot-master.extraConfig = ''
       c["www"]["port"] = "tcp:8010:interface=0.0.0.0"
