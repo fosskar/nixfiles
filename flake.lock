@@ -1775,10 +1775,10 @@
         "treefmt-nix": "treefmt-nix_4"
       },
       "locked": {
-        "lastModified": 1775982996,
-        "narHash": "sha256-GHp5yVgXOyVAWmaSNJuGTTcDzB9u2CmdPjhjp8WrK9Q=",
+        "lastModified": 1776309118,
+        "narHash": "sha256-1xON0LqK/bvODgtheaEGb95v76jgkATbQVy8aH/w2w8=",
         "ref": "refs/heads/main",
-        "rev": "16db9294420da9d531196870092ede747971db49",
+        "rev": "4d1f4b653c81d646a8b99958e7280726979f9cd2",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/wiki.git"
