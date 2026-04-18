@@ -138,15 +138,5 @@ in
       create.enable = false; # miniflux module creates it
       restore.stopOnRestore = [ "miniflux.service" ];
     };
-
-    # --- persistence ---
-
-    nixfiles.persistence.directories = [
-      {
-        directory = "/var/lib/miniflux";
-        user = "miniflux";
-        group = "miniflux";
-      }
-    ];
   };
 }
