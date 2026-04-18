@@ -27,7 +27,7 @@ buildGoModule {
 
   src = ./live-ocr;
 
-  vendorHash = "sha256-LnpZzn9608YdtLcwlwVE02rgScme9SEITIHxZGrBUyY=";
+  vendorHash = "sha256-DX8txnRmi1CjVTeZKva1uUQgahNirCUpJGbdWKXBhB8=";
 
   nativeBuildInputs = [
     pkg-config
