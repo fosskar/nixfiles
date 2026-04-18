@@ -14,8 +14,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    clan-community = {
+      url = "git+https://git.clan.lol/clan/clan-community?shallow=1";
+      inputs.clan-core.follows = "clan-core";
+    };
+
     clan-core = {
-      url = "git+https://git.clan.lol/clan/clan-core";
+      url = "git+https://git.clan.lol/clan/clan-core?shallow=1";
       #url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
