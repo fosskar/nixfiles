@@ -18,6 +18,7 @@
     ../../modules/agent-desktop
     ../../modules/arbor
     ../../modules/t3code
+    ../../modules/nostr-chat
   ]
   ++ mylib.scanPaths ./. { };
 

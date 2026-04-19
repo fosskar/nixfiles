@@ -1,8 +1,13 @@
-{ inputs, config, ... }:
+{
+  inputs,
+  config,
+  ...
+}:
 {
   imports = [ inputs.noctalia-plugins.nixosModules.nostr-chat ];
 
   clan.core.vars.generators.nostr-chat = {
+    share = true;
     prompts.nsec.description = "nostr private key (nsec or hex)";
     files."nsec" = {
       owner = "simon";
@@ -13,16 +18,8 @@
 
   services.nostr-chat = {
     peerPubkey = "0fa77e8daf14b2007acdf8d65180792321b45504c8c9ec1a59f04ea8a9b3dde1";
-    relays = [
-      "wss://nos.lol"
-      "wss://relay.damus.io"
-      "wss://relay.0xchat.com"
-      "wss://relay.primal.net"
-      "wss://relay.nostr.band"
-      "wss://relay.snort.social"
-      "wss://nostr.wine"
-    ];
-    displayName = "crow";
+    relays = [ "wss://nostr.fosskar.eu" ];
+    displayName = "dexter";
     secretCommand = "cat ${config.clan.core.vars.generators.nostr-chat.files."nsec".path}";
   };
 }
