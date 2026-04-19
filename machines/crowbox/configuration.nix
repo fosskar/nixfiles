@@ -5,6 +5,7 @@
     ../../modules/power
     ../../modules/persistence
     ../../modules/opencrow
+    ../../modules/nostr-relay
   ]
   ++ (mylib.scanPaths ./. { exclude = [ "signal-cli.nix" ]; });
 
