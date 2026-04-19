@@ -6,7 +6,7 @@
     ../../modules/persistence
     ../../modules/opencrow
   ]
-  ++ (mylib.scanPaths ./. { exclude = [ ]; });
+  ++ (mylib.scanPaths ./. { exclude = [ "signal-cli.nix" ]; });
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
