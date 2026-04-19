@@ -22,6 +22,7 @@ in
           x86OnlyPackages = [
             "agent-desktop"
             "arbor"
+            "brave-origin"
             "t3code"
             "voquill"
           ];
