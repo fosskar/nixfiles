@@ -28,29 +28,17 @@ let
     #defaultModel = "claude-opus-4-6";
     #defaultThinkingLevel = "low";
     hideThinkingBlock = true;
-    steeringMode = "all";
     followUpMode = "all";
     theme = "dark";
     quietStartup = true;
     skills = [ "~/.claude/skills" ];
     packages = [
-      #{
-      #  source = "git:github.com/fosskar/pi-pack";
-      #  extensions = [ ];
-      #  skills = [ ];
-      #}
       {
         source = "git:github.com/rytswd/pi-agent-extensions";
-        extensions = [
-          "direnv/index.ts"
-          "fetch/index.ts"
-          "questionnaire/index.ts"
-          "slow-mode/index.ts"
-        ];
       }
-      {
-        source = "git:github.com/nicobailon/pi-powerline-footer";
-      }
+      #{
+      #  source = "git:github.com/nicobailon/pi-powerline-footer";
+      #}
     ];
     compaction.enabled = true;
   };
