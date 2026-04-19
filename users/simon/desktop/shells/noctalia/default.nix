@@ -185,7 +185,6 @@
           wallpaper = {
             enabled = true;
             useWallhaven = true;
-            wallhavenQuery = "nature";
             automationEnabled = false;
           };
 
