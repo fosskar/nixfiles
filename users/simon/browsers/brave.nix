@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    brave
+  home.packages = [
+    pkgs.custom.brave-origin
   ];
 }
