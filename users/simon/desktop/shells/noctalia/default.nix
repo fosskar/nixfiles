@@ -182,6 +182,13 @@
 
           osd.location = "right";
 
+          wallpaper = {
+            enabled = true;
+            useWallhaven = true;
+            wallhavenQuery = "nature";
+            automationEnabled = false;
+          };
+
           sessionMenu = {
             countdownDuration = 1000;
             largeButtonsLayout = "grid";
