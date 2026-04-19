@@ -29,7 +29,7 @@ let
     #defaultThinkingLevel = "low";
     hideThinkingBlock = true;
     followUpMode = "all";
-    theme = "dark";
+    theme = "custom";
     quietStartup = true;
     skills = [ "~/.claude/skills" ];
     packages = [
