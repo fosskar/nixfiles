@@ -33,7 +33,7 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "stirling-pdf" + lib.optionalString isDesktopVariant "-desktop";
-  version = "2.9.2";
+  version = "test";
 
   src = fetchFromGitHub {
     owner = "Stirling-Tools";
