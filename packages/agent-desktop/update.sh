@@ -7,8 +7,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 file="$SCRIPT_DIR/default.nix"
 
 latest="$(curl --fail -s ${GITHUB_TOKEN:+-u ":$GITHUB_TOKEN"} \
-  "https://api.github.com/repos/BaLaurent/agent-desktop/releases/latest" \
-  | jq -r '.tag_name | ltrimstr("v")')"
+  "https://api.github.com/repos/BaLaurent/agent-desktop/releases/latest" |
+  jq -r '.tag_name | ltrimstr("v")')"
 
 if [[ -z $latest || $latest == "null" ]]; then
   echo "could not determine latest agent-desktop version" >&2
@@ -16,7 +16,7 @@ if [[ -z $latest || $latest == "null" ]]; then
 fi
 
 current="$(sed -n 's/.*version = "\([^"]*\)".*/\1/p' "$file" | head -1)"
-if [[ "$current" == "$latest" ]]; then
+if [[ $current == "$latest" ]]; then
   echo ":: agent-desktop already at $latest"
   exit 0
 fi
