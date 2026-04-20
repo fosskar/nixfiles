@@ -5,15 +5,14 @@
   nodejs,
   runCommand,
   makeWrapper,
-  nix-update-script,
 }:
 let
   pname = "agent-desktop";
-  version = "0.13.1";
+  version = "0.14.0";
 
   src = fetchurl {
     url = "https://github.com/BaLaurent/agent-desktop/releases/download/v${version}/agent-desktop-${version}-x86_64.AppImage";
-    hash = "sha256-q0yUyz3Zky6Vg6TpwzMrs+DEKP3/upPgxlRNWscieQ0=";
+    hash = "sha256-SY7yqcJgjZJKzT825WWebCrinQMK8Vb9XSbH6CpFAEM=";
   };
 
   extracted = appimageTools.extractType2 { inherit pname version src; };
@@ -76,14 +75,6 @@ appimageTools.wrapAppImage {
       --add-flags "--use-angle=opengl" \
       --add-flags "--enable-wayland-ime"
   '';
-
-  passthru.updateScript = nix-update-script {
-    extraArgs = [
-      "--url"
-      "https://github.com/BaLaurent/agent-desktop"
-      "--use-github-releases"
-    ];
-  };
 
   meta = {
     description = "open-source desktop client for Claude AI";
