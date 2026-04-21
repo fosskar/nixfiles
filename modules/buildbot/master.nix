@@ -34,8 +34,14 @@ in
 
     workerCores = lib.mkOption {
       type = lib.types.int;
-      default = 32;
-      description = "cores/threads reported in workers.json";
+      default = 16;
+      description = "cores/threads reported in workers.json (= number of buildbot-worker systemd instances spawned)";
+    };
+
+    evalWorkerCount = lib.mkOption {
+      type = lib.types.int;
+      default = 8;
+      description = "nix-eval-jobs --workers; bound concurrent eval subprocesses sharing tarball-cache-v2";
     };
 
     codeberg = {
@@ -94,6 +100,7 @@ in
       enable = true;
       useHTTPS = true;
       inherit (cfg) domain admins buildSystems;
+      inherit (cfg) evalWorkerCount;
 
       workersFile = varsPath.files."workers.json".path;
       authBackend = "gitea";
