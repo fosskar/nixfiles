@@ -20,6 +20,8 @@ in
       description = "personal nix infrastructure";
     };
 
+    #vars.settings.age.postQuantum = true;
+
     #vars.settings.secretStore = "age";
     #vars.settings.recipients.default = [
     #  "age1yubikey1qv60kmnf4u6r09xxvgu8k4srgt9sq4fyh8vy65s77dce656srgadztwdl2r"
