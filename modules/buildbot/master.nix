@@ -35,7 +35,7 @@ in
     workerCores = lib.mkOption {
       type = lib.types.int;
       default = 16;
-      description = "cores/threads reported in workers.json (= number of buildbot-worker systemd instances spawned)";
+      description = "cores field in workers.json; also used as WORKER_COUNT on the worker side";
     };
 
     evalWorkerCount = lib.mkOption {

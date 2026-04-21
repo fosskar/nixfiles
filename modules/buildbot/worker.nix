@@ -25,6 +25,8 @@ in
     services.buildbot-nix.worker = {
       enable = true;
       inherit (cfg) masterUrl;
+      # keep spawn count in sync with master workers.json to avoid auth spam
+      workers = config.nixfiles.buildbot.master.workerCores;
       workerPasswordFile = config.clan.core.vars.generators.buildbot-master.files."worker-password".path;
     };
 
