@@ -88,6 +88,20 @@ in
       description = "internal port where netbird-server listens";
     };
 
+    crowdsec = {
+      enable = lib.mkEnableOption "built-in crowdsec IP reputation stream bouncer (netbird >= 0.69.0)";
+      apiURL = lib.mkOption {
+        type = lib.types.str;
+        default = "http://127.0.0.1:8085";
+        description = "crowdsec LAPI URL";
+      };
+      apiKeyFile = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/crowdsec/netbird-proxy-bouncer.key";
+        description = "path to file containing the bouncer API key (registered by nixfiles.crowdsec.netbirdProxy.enable)";
+      };
+    };
+
   };
 
   config = lib.mkIf cfg.enable {
@@ -101,8 +115,12 @@ in
         "network.target"
         "netbird-server.service"
         "netbird-proxy-token.service"
-      ];
-      requires = [ "netbird-proxy-token.service" ];
+      ]
+      ++ lib.optional cfg.crowdsec.enable "crowdsec-netbird-proxy-bouncer-register.service";
+      requires = [
+        "netbird-proxy-token.service"
+      ]
+      ++ lib.optional cfg.crowdsec.enable "crowdsec-netbird-proxy-bouncer-register.service";
       wantedBy = [ "multi-user.target" ];
 
       environment = {
@@ -123,10 +141,16 @@ in
       }
       // lib.optionalAttrs cfg.allowInsecure {
         NB_PROXY_ALLOW_INSECURE = "true";
+      }
+      // lib.optionalAttrs cfg.crowdsec.enable {
+        NB_PROXY_CROWDSEC_API_URL = cfg.crowdsec.apiURL;
       };
 
       script = ''
         export NB_PROXY_TOKEN=$(cat ${cfg.tokenFile})
+        ${lib.optionalString cfg.crowdsec.enable ''
+          export NB_PROXY_CROWDSEC_API_KEY=$(cat ${cfg.crowdsec.apiKeyFile})
+        ''}
         exec ${lib.getExe cfg.package}
       '';
 

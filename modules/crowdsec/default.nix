@@ -62,6 +62,8 @@ in
     };
 
     traefik.enable = lib.mkEnableOption "traefik bouncer plugin + middleware + log acquisition";
+
+    netbirdProxy.enable = lib.mkEnableOption "register a bouncer for the netbird-proxy built-in crowdsec integration (netbird >= 0.69.0)";
   };
 
   # --- service ---
@@ -207,6 +209,74 @@ in
       StateDirectory = lib.mkForce "crowdsec-firewall-bouncer-register";
       ReadWritePaths = [ "/var/lib/crowdsec" ];
     };
+
+    # netbird-proxy bouncer registration (oneshot)
+    # netbird-proxy reads NB_PROXY_CROWDSEC_API_KEY from this file at startup;
+    # ordering ensures the key exists before netbird-proxy starts
+    systemd.services.crowdsec-netbird-proxy-bouncer-register = lib.mkIf cfg.netbirdProxy.enable (
+      let
+        apiKeyFile = "/var/lib/crowdsec/netbird-proxy-bouncer.key";
+        bouncerName = "netbird-proxy";
+      in
+      {
+        description = "register crowdsec netbird-proxy bouncer";
+        wantedBy = [ "multi-user.target" ];
+        before = [ "netbird-proxy.service" ];
+        after = [ "crowdsec.service" ];
+        wants = [ "crowdsec.service" ];
+        script = ''
+          cscli=${lib.getExe' config.services.crowdsec.package "cscli"}
+          if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
+            if [ -f ${apiKeyFile} ]; then
+              echo "bouncer already registered, key exists"
+              exit 0
+            fi
+            echo "bouncer registered but key missing, re-registering"
+            $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
+          fi
+          rm -f '${apiKeyFile}'
+          if ! $cscli -c ${configFile} bouncers add --output raw -- ${lib.escapeShellArg bouncerName} >${apiKeyFile}; then
+            rm -f '${apiKeyFile}'
+            exit 1
+          fi
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          # must be crowdsec user: cscli needs write access to data_dir
+          # (/var/lib/crowdsec/state/trace), which is 0750 crowdsec:crowdsec
+          User = config.services.crowdsec.user;
+          Group = config.services.crowdsec.group;
+          ReadWritePaths = [ "/var/lib/crowdsec" ];
+          ExecStartPost = "+${pkgs.writeShellScript "fix-netbird-proxy-bouncer-key" ''
+            chgrp netbird /var/lib/crowdsec/netbird-proxy-bouncer.key
+            chmod 0640 /var/lib/crowdsec/netbird-proxy-bouncer.key
+          ''}";
+          LockPersonality = true;
+          PrivateDevices = true;
+          ProcSubset = "pid";
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectProc = "invisible";
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          SystemCallArchitectures = "native";
+          RestrictAddressFamilies = "none";
+          CapabilityBoundingSet = [ "" ];
+          SystemCallFilter = [
+            "@system-service"
+            "~@privileged"
+            "~@resources"
+          ];
+          UMask = "0077";
+        };
+      }
+    );
 
     # traefik bouncer registration (oneshot)
     systemd.services.crowdsec-traefik-bouncer-register = lib.mkIf cfg.traefik.enable (

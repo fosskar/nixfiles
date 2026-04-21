@@ -47,6 +47,7 @@
 
     crowdsec = {
       traefik.enable = true;
+      netbirdProxy.enable = true;
       whitelistClanMesh = true;
     };
     traefik.geoblock.enable = true;
