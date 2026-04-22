@@ -1,4 +1,5 @@
-_: {
+{ self }:
+{
   _class = "clan.service";
   manifest.name = "netbird";
   manifest.description = "self-hosted netbird VPN mesh with relay server and embedded IdP";
@@ -44,7 +45,7 @@ _: {
             encryptionKeyPath = config.clan.core.vars.generators.netbird-server.files."encryption-key".path;
           in
           {
-            imports = [ ../../modules/netbird ];
+            imports = [ self.modules.nixos.netbird ];
 
             # server secrets
             clan.core.vars.generators.netbird-server = {
@@ -152,7 +153,7 @@ _: {
             serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
           in
           {
-            imports = [ ../../modules/netbird ];
+            imports = [ self.modules.nixos.netbirdPersistence ];
 
             config = {
               # setup key secret

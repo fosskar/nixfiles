@@ -1,5 +1,7 @@
 {
+  self,
   mylib,
+  lib,
   config,
   inputs,
   ...
@@ -7,17 +9,12 @@
 {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-    ../../modules/yubikey
-    ../../modules/power
-    ../../modules/gpu
-    ../../modules/cpu
-    ../../modules/lanzaboote
-    ../../modules/fprint
-    ../../modules/filesystems/bcachefs.nix
-    ../../modules/dms
-    ../../modules/niri
-    ../../modules/persistence
-    ../../modules/nostr-chat
+    self.modules.nixos.tuned
+    self.modules.nixos.amdGpu
+    self.modules.nixos.amdCpu
+    self.modules.nixos.lanzaboote
+    self.modules.nixos.bcachefs
+    self.modules.nixos.preservation
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -32,35 +29,20 @@
     deployment.requireExplicitUpdate = true;
   };
 
+  # iGPU: disable rocmPackages.clr.icd + lact (not needed)
+  hardware.amdgpu.opencl.enable = lib.mkForce false;
+  services.lact.enable = lib.mkForce false;
+
+  # scx_lavd crashed (rcu cpu stall) on this machine; use bpfland instead
+  services.scx.scheduler = "scx_bpfland";
+
   nixfiles = {
-    persistence = {
-      enable = true;
+    preservation = {
       rollback = {
         type = "bcachefs";
         subvolume = "@root";
       };
     };
 
-    audio.lowLatency.enable = true;
-
-    cpu.amd.enable = true;
-    gpu.amd = {
-      enable = true;
-      # not needed for iGPU
-      lact.enable = false;
-      opencl.enable = false;
-    };
-    power = {
-      logind.enable = true;
-      powertop.enable = true;
-      suspend-then-shutdown.enable = true;
-      tuned = {
-        enable = true;
-        ppdSupport = true;
-      };
-    };
   };
-
-  # skip nix-gc when on battery
-  systemd.services.nix-gc.unitConfig.ConditionACPower = true;
 }

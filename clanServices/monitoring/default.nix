@@ -1,4 +1,5 @@
-_: {
+{ self }:
+{
   _class = "clan.service";
   manifest.name = "monitoring";
   manifest.description = "lightweight central monitoring via telegraf, victoriametrics, victorialogs, and grafana";
@@ -127,7 +128,13 @@ _: {
                 };
           in
           {
-            imports = [ ../../modules/monitoring ];
+            # server-only modules; telegraf+vector come via client role (all server-tagged machines)
+            imports = with self.modules.nixos; [
+              exporter
+              grafana
+              victoriaLogs
+              victoriaMetrics
+            ];
 
             nixfiles.monitoring = {
               grafana = {
@@ -210,9 +217,9 @@ _: {
             ...
           }:
           {
-            imports = [
-              ../../modules/monitoring/telegraf.nix
-              ../../modules/monitoring/vector.nix
+            imports = with self.modules.nixos; [
+              telegraf
+              vector
             ];
 
             networking.firewall.interfaces.ygg.allowedTCPPorts = lib.mkIf (

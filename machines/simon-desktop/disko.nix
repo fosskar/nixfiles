@@ -34,7 +34,7 @@
                   "nixos"
                   "-f"
                 ];
-                postMountHook = config.nixfiles.persistence.diskoPostMountHook;
+                postMountHook = config.nixfiles.preservation.diskoPostMountHook;
                 subvolumes = {
                   "@root" = {
                     mountpoint = "/";

@@ -1,3 +1,4 @@
-_: {
-  clan.modules.netbird = ./default.nix;
+{ self, ... }:
+{
+  clan.modules.netbird = import ./default.nix { inherit self; };
 }

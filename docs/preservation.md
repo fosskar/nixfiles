@@ -42,8 +42,7 @@ preservation generates pure systemd configuration - no interpreters needed at ru
 ## config
 
 ```nix
-nixfiles.persistence = {
-  enable = true;
+nixfiles.preservation = {
   rollback.type = "btrfs";  # or "zfs", "bcachefs"
   rollback.deviceLabel = "nixos";
   directories = [ "/var/lib/myapp" ];

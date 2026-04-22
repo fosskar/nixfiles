@@ -1,20 +1,22 @@
-{ mylib, ... }:
+{
+  self,
+  mylib,
+  ...
+}:
 {
   imports = [
-    ../../modules/filesystems/btrfs.nix
-    ../../modules/power
-    ../../modules/buildbot
-    ../../modules/radicle
+    self.modules.nixos.btrfs
+    self.modules.nixos.tuned
+    self.modules.nixos.buildbotMaster
+    self.modules.nixos.buildbotWorker
+    self.modules.nixos.radicle
   ]
   ++ (mylib.scanPaths ./. { });
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
   nixfiles = {
-    power.tuned = {
-      enable = true;
-      profile = "server-powersave";
-    };
+    tuned.profile = "server-powersave";
   };
 
   clan.core.settings.machine-id.enable = true;

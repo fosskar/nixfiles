@@ -1,6 +1,7 @@
 {
   self,
   inputs,
+  config,
   ...
 }:
 let
@@ -74,9 +75,8 @@ in
 
         simon-desktop = {
           tags = [
-            "desktop"
-            "home"
             "workstation"
+            "home"
           ];
         };
       };
@@ -345,19 +345,50 @@ in
           };
         };
 
-        server-module = {
+        server-common = {
           module.name = "importer";
           roles.default = {
             tags.server = { };
-            extraModules = [ "${self}/modules/profiles/server" ];
+            extraModules = [
+              inputs.srvos.nixosModules.server
+              inputs.srvos.nixosModules.mixins-terminfo
+              config.flake.modules.nixos.base
+              config.flake.modules.nixos.server
+            ];
           };
         };
 
-        workstation-module = {
+        workstation-common = {
           module.name = "importer";
           roles.default = {
             tags.workstation = { };
-            extraModules = [ "${self}/modules/profiles/workstation" ];
+            extraModules = with config.flake.modules.nixos; [
+              inputs.srvos.nixosModules.desktop
+              inputs.srvos.nixosModules.mixins-terminfo
+              base
+              workstation
+              yubikey
+              yubikeyGpgSsh
+              yubikeyU2f
+              dms
+              niri
+              nostrChat
+            ];
+          };
+        };
+
+        laptop-common = {
+          module.name = "importer";
+          roles.default = {
+            tags.laptop = { };
+            extraModules = with config.flake.modules.nixos; [
+              laptop
+              logind
+              powertop
+              suspendThenShutdown
+              fprint
+              tunedPpd
+            ];
           };
         };
 

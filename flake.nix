@@ -38,6 +38,8 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
+    import-tree.url = "github:denful/import-tree";
+
     srvos = {
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -180,6 +182,8 @@
 
       imports = [
         inputs.clan-core.flakeModules.default
+        inputs.flake-parts.flakeModules.modules
+        (inputs.import-tree ./modules)
       ]
       ++ flakeModules;
 

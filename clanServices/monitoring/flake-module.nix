@@ -1,3 +1,4 @@
-_: {
-  clan.modules.monitoring = ./default.nix;
+{ self, ... }:
+{
+  clan.modules.monitoring = import ./default.nix { inherit self; };
 }

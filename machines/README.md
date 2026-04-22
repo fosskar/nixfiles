@@ -4,13 +4,13 @@ all machines use [preservation](../docs/preservation.md) (ephemeral root, opt-in
 
 ### bootstrap caveat
 
-first install of a new machine **must** be done with persistence **disabled** (`nixfiles.persistence.enable` commented out).
+first install of a new machine **must** be done with preservation **disabled** (do not import the module yet).
 rollback wipes root on every boot, but secrets (sops) are written to root during install — so they get wiped before any service runs.
 
 two-step bootstrap:
 
-1. install with persistence disabled → machine boots, secrets land on root, services start
-2. enable persistence + `clan machines update` → preservation activates, secrets copied to `/persist`, rollback works from boot 2+
+1. install without preservation → machine boots, secrets land on root, services start
+2. import preservation + `clan machines update` → preservation activates, secrets copied to `/persist`, rollback works from boot 2+
 
 ---
 

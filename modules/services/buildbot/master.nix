@@ -1,0 +1,118 @@
+{
+  flake.modules.nixos.buildbotMaster =
+    {
+      config,
+      inputs,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      cfg = config.nixfiles.buildbotMaster;
+      varsPath = config.clan.core.vars.generators.buildbot-master;
+    in
+    {
+      imports = [ inputs.buildbot-nix.nixosModules.buildbot-master ];
+
+      options.nixfiles.buildbotMaster = {
+        domain = lib.mkOption {
+          type = lib.types.str;
+          description = "domain for buildbot web ui";
+        };
+
+        admins = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = "users allowed to control builds";
+        };
+
+        buildSystems = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ pkgs.stdenv.hostPlatform.system ];
+          description = "systems to build for";
+        };
+
+        workerCores = lib.mkOption {
+          type = lib.types.int;
+          default = 16;
+          description = "cores field in workers.json; also used as WORKER_COUNT on the worker side";
+        };
+
+        evalWorkerCount = lib.mkOption {
+          type = lib.types.int;
+          default = 8;
+          description = "nix-eval-jobs --workers";
+        };
+
+        codeberg = {
+          oauthId = lib.mkOption {
+            type = lib.types.str;
+            description = "codeberg oauth2 application client id";
+          };
+
+          topic = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = "build-with-buildbot";
+            description = "codeberg topic to discover repos";
+          };
+
+          repoAllowlist = lib.mkOption {
+            type = lib.types.nullOr (lib.types.listOf lib.types.str);
+            default = null;
+            description = "explicit codeberg repos allowed to build (owner/repo)";
+          };
+        };
+      };
+
+      config = {
+        clan.core.vars.generators.buildbot-master = {
+          prompts.codeberg-token.description = "codeberg api token for buildbot";
+          prompts.codeberg-token.type = "hidden";
+          prompts.oauth-secret.description = "codeberg oauth2 client secret";
+          prompts.oauth-secret.type = "hidden";
+
+          files."worker-password".secret = true;
+          files."workers.json".secret = true;
+          files."webhook-secret".secret = true;
+          files."codeberg-token".secret = true;
+          files."oauth-secret".secret = true;
+
+          runtimeInputs = [ pkgs.openssl ];
+
+          script = ''
+            WORKER_PASS=$(openssl rand -hex 32)
+            echo -n "$WORKER_PASS" > "$out/worker-password"
+            echo "[{\"name\": \"${config.networking.hostName}\", \"pass\": \"$WORKER_PASS\", \"cores\": ${toString cfg.workerCores}}]" > "$out/workers.json"
+            openssl rand -hex 32 > "$out/webhook-secret"
+
+            cp "$prompts/codeberg-token" "$out/codeberg-token"
+            cp "$prompts/oauth-secret" "$out/oauth-secret"
+          '';
+        };
+
+        services.buildbot-master.extraConfig = ''
+          c["www"]["port"] = "tcp:8010:interface=0.0.0.0"
+        '';
+
+        services.buildbot-nix.master = {
+          enable = true;
+          useHTTPS = true;
+          inherit (cfg) domain admins buildSystems;
+          inherit (cfg) evalWorkerCount;
+
+          workersFile = varsPath.files."workers.json".path;
+          authBackend = "gitea";
+
+          gitea = {
+            enable = true;
+            instanceUrl = "https://codeberg.org";
+            tokenFile = varsPath.files."codeberg-token".path;
+            webhookSecretFile = varsPath.files."webhook-secret".path;
+            inherit (cfg.codeberg) oauthId;
+            oauthSecretFile = varsPath.files."oauth-secret".path;
+            inherit (cfg.codeberg) topic repoAllowlist;
+          };
+        };
+      };
+    };
+}

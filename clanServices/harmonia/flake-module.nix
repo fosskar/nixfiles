@@ -1,3 +1,4 @@
-_: {
-  clan.modules.harmonia = ./default.nix;
+{ self, ... }:
+{
+  clan.modules.harmonia = import ./default.nix { inherit self; };
 }

@@ -1,3 +1,4 @@
-_: {
-  clan.modules.remote-builder = ./default.nix;
+{ self, ... }:
+{
+  clan.modules.remote-builder = import ./default.nix { inherit self; };
 }

@@ -1,24 +1,23 @@
 {
+  self,
   mylib,
   config,
   ...
 }:
 {
   imports = [
-    ../../modules/gaming
-    ../../modules/yubikey
-    ../../modules/power
-    ../../modules/gpu
-    ../../modules/cpu
-    ../../modules/filesystems/btrfs.nix
-    ../../modules/virtualization
-    ../../modules/dms
-    ../../modules/niri
-    ../../modules/persistence
-    ../../modules/agent-desktop
-    ../../modules/arbor
-    ../../modules/t3code
-    ../../modules/nostr-chat
+    self.modules.nixos.gaming
+    self.modules.nixos.steam
+    self.modules.nixos.gamemode
+    self.modules.nixos.amdGpu
+    self.modules.nixos.amdCpu
+    self.modules.nixos.btrfs
+    self.modules.nixos.docker
+    self.modules.nixos.podman
+    self.modules.nixos.preservation
+    self.modules.nixos.agentDesktop
+    self.modules.nixos.arbor
+    self.modules.nixos.t3code
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -32,25 +31,12 @@
   services.netbird.ui.enable = false;
 
   nixfiles = {
-    persistence = {
-      enable = true;
+    preservation = {
       rollback = {
         type = "btrfs";
         deviceLabel = "nixos";
       };
     };
 
-    audio.lowLatency.enable = true;
-
-    gpu.amd.enable = true;
-    cpu.amd.enable = true;
-
-    virtualization = {
-      docker.enable = true;
-      podman.enable = true;
-    };
-
-    # gaming.starCitizen.enable = true; # switched to nix-gaming via home-manager
   };
-
 }

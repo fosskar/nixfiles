@@ -1,3 +1,0 @@
-_: {
-  time.timeZone = "UTC";
-}

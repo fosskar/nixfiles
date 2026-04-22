@@ -1,3 +1,4 @@
+{ self }:
 { clanLib, ... }:
 {
   _class = "clan.service";
@@ -26,9 +27,7 @@
             clientMachines = lib.attrNames (roles.client.machines or { });
           in
           {
-            imports = [ ../../modules/remote-builder ];
-
-            nixfiles.remote-builder.server.enable = lib.mkDefault true;
+            imports = [ self.modules.nixos.remoteBuilderServer ];
 
             users.groups.nix = { };
             users.users.nix = {
@@ -74,7 +73,7 @@
             builderName = lib.head builderMachines;
           in
           {
-            imports = [ ../../modules/remote-builder ];
+            imports = [ self.modules.nixos.remoteBuilderClient ];
 
             clan.core.vars.generators.remote-builder = {
               files."id_ed25519" = { };
@@ -85,8 +84,7 @@
               '';
             };
 
-            nixfiles.remote-builder.client = {
-              enable = lib.mkDefault true;
+            nixfiles.remoteBuilderClient = {
               builderHost = lib.mkDefault "${builderName}.${config.clan.core.settings.domain}";
               sshKeyFile = lib.mkDefault config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
             };

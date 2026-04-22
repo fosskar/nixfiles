@@ -101,7 +101,7 @@
             };
 
             # persist rosenpass state
-            nixfiles.persistence.directories = [
+            nixfiles.preservation.directories = [
               "/var/lib/rosenpass"
             ];
           };

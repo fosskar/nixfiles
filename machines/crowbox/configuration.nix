@@ -1,19 +1,22 @@
-{ mylib, ... }:
+{
+  self,
+  mylib,
+  ...
+}:
 {
   imports = [
-    ../../modules/filesystems/btrfs.nix
-    ../../modules/power
-    ../../modules/persistence
-    ../../modules/opencrow
-    ../../modules/nostr-relay
+    self.modules.nixos.btrfs
+    self.modules.nixos.tuned
+    self.modules.nixos.preservation
+    self.modules.nixos.opencrow
+    self.modules.nixos.nostrRelay
   ]
   ++ (mylib.scanPaths ./. { exclude = [ "signal-cli.nix" ]; });
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
   nixfiles = {
-    persistence = {
-      enable = true;
+    preservation = {
       rollback = {
         type = "btrfs";
         deviceLabel = "root";
@@ -23,10 +26,7 @@
       ];
     };
 
-    power.tuned = {
-      enable = true;
-      profile = "server-powersave";
-    };
+    tuned.profile = "server-powersave";
   };
 
   clan.core.settings.machine-id.enable = true;

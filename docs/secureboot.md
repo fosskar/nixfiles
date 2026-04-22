@@ -43,5 +43,5 @@
 ## notes
 
 - `--microsoft` flag required for framework laptops (firmware updates via fwupd/LVFS are MS-signed)
-- keys stored in `/var/lib/sbctl`, persisted via `nixfiles.persistence.directories`
+- keys stored in `/var/lib/sbctl`, persisted via `nixfiles.preservation.directories`
 - lanzaboote replaces systemd-boot, signs kernel + initrd automatically

@@ -138,7 +138,7 @@
             options.mountpoint = "legacy";
             mountpoint = "/persist";
             options."com.sun:auto-snapshot" = "true";
-            postMountHook = config.nixfiles.persistence.diskoPostMountHook;
+            postMountHook = config.nixfiles.preservation.diskoPostMountHook;
           };
           reserved = {
             type = "zfs_fs";

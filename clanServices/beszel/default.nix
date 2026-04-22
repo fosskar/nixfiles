@@ -1,4 +1,5 @@
-_: {
+{ self }:
+{
   _class = "clan.service";
   manifest.name = "beszel";
   manifest.description = "beszel hub + agents with declarative systems config";
@@ -49,9 +50,7 @@ _: {
             };
           in
           {
-            imports = [ ../../modules/beszel/beszel-hub.nix ];
-
-            nixfiles.beszel.hub.enable = lib.mkDefault true;
+            imports = [ self.modules.nixos.beszelHub ];
 
             nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
               {
@@ -63,7 +62,7 @@ _: {
               }
             ];
 
-            nixfiles.gatus.endpoints = lib.mkIf config.nixfiles.gatus.enable [
+            nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
               {
                 name = "Beszel";
                 url = "https://${beszelDomain}";
@@ -120,16 +119,13 @@ _: {
             ...
           }:
           {
-            imports = [ ../../modules/beszel/beszel-agent.nix ];
+            imports = [ self.modules.nixos.beszelAgent ];
 
             networking.firewall.interfaces.ygg.allowedTCPPorts = lib.mkIf (
               !(builtins.elem config.networking.hostName serverMachines)
             ) [ settings.port ];
 
-            nixfiles.beszel.agent = {
-              enable = lib.mkDefault true;
-              port = lib.mkDefault settings.port;
-            };
+            nixfiles.beszelAgent.port = lib.mkDefault settings.port;
 
             services.beszel.agent.environment.KEY_FILE =
               config.clan.core.vars.generators."beszel".files."ssh-public-key".path;

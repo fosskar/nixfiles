@@ -53,7 +53,7 @@
           "--compression=lz4"
           "--background_compression=lz4"
         ];
-        postMountHook = config.nixfiles.persistence.diskoPostMountHook;
+        postMountHook = config.nixfiles.preservation.diskoPostMountHook;
         subvolumes = {
           "@root" = {
             mountpoint = "/";
