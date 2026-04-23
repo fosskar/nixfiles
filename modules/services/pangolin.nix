@@ -171,7 +171,7 @@
           ];
         };
 
-        nixfiles.preservation.directories = [
+        preservation.preserveAt."/persist".directories = [
           {
             directory = "/var/lib/pangolin";
             user = config.systemd.services.pangolin.serviceConfig.User;

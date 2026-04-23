@@ -17,7 +17,7 @@
         };
       };
 
-      nixfiles.preservation.directories = [
+      preservation.preserveAt."/persist".directories = [
         {
           directory = "/var/lib/strfry";
           user = "strfry";

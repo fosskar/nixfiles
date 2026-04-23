@@ -5,55 +5,10 @@
   flake.modules.nixos.traefik =
     { config, lib, ... }:
     let
-      cfg = config.nixfiles.traefik;
+      acmeEmail = "letsencrypt.unpleased904@passmail.net";
+      metricsAddress = "127.0.0.1:8082";
     in
     {
-      options.nixfiles.traefik = {
-        acmeEmail = lib.mkOption {
-          type = lib.types.str;
-          default = config.nixfiles.acme.email or "letsencrypt.unpleased904@passmail.net";
-          description = "email for ACME/letsencrypt certificates";
-        };
-
-        accessLog = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "enable traefik access logging to /var/log/traefik/access.log";
-        };
-
-        metrics = {
-          enable = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description = "enable prometheus metrics endpoint";
-          };
-          address = lib.mkOption {
-            type = lib.types.str;
-            default = "127.0.0.1:8082";
-            description = "metrics entrypoint listen address";
-          };
-        };
-
-        geoblock = {
-          enable = lib.mkEnableOption "traefik geoblock middleware (blocks traffic by country)";
-          blacklistMode = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-            description = "if true, use blockedCountries; if false, use allowedCountries";
-          };
-          allowedCountries = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ "DE" ];
-            description = "ISO 3166-1 alpha-2 country codes to allow (whitelist mode)";
-          };
-          blockedCountries = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ ];
-            description = "ISO 3166-1 alpha-2 country codes to block (blacklist mode)";
-          };
-        };
-      };
-
       config = {
         services.traefik = {
           enable = true;
@@ -71,76 +26,44 @@
               };
               websecure = {
                 address = ":443";
-                http.middlewares = lib.optional cfg.geoblock.enable "geoblock@file";
                 http3 = { };
               };
-            }
-            // lib.optionalAttrs cfg.metrics.enable {
-              metrics.address = cfg.metrics.address;
+              metrics.address = metricsAddress;
             };
 
             certificatesResolvers.letsencrypt.acme = {
-              email = cfg.acmeEmail;
+              email = acmeEmail;
               storage = "/var/lib/traefik/acme.json";
               tlsChallenge = { };
             };
 
-            metrics = lib.mkIf cfg.metrics.enable {
-              prometheus = {
-                entryPoint = "metrics";
-                buckets = [
-                  0.1
-                  0.3
-                  1.2
-                  5.0
-                ];
-                addEntryPointsLabels = true;
-                addRoutersLabels = true;
-                addServicesLabels = true;
-              };
+            metrics.prometheus = {
+              entryPoint = "metrics";
+              buckets = [
+                0.1
+                0.3
+                1.2
+                5.0
+              ];
+              addEntryPointsLabels = true;
+              addRoutersLabels = true;
+              addServicesLabels = true;
             };
 
-            accessLog = lib.mkIf cfg.accessLog {
+            accessLog = {
               filePath = "/var/log/traefik/access.log";
               format = "json";
-            };
-
-            experimental = lib.mkIf cfg.geoblock.enable {
-              plugins.geoblock = {
-                moduleName = "github.com/PascalMinder/geoblock";
-                version = "v0.3.3";
-              };
-            };
-          };
-
-          dynamicConfigOptions.http.middlewares = lib.mkIf cfg.geoblock.enable {
-            geoblock.plugin.geoblock = {
-              allowLocalRequests = true;
-              logLocalRequests = false;
-              logAllowedRequests = false;
-              logApiRequests = false;
-              api = "https://get.geojs.io/v1/ip/country/{ip}";
-              apiTimeoutMs = 750;
-              cacheSize = 25;
-              forceMonthlyUpdate = true;
-              allowUnknownCountries = false;
-              blackListMode = cfg.geoblock.blacklistMode;
-              countries =
-                if cfg.geoblock.blacklistMode then cfg.geoblock.blockedCountries else cfg.geoblock.allowedCountries;
-              addCountryHeader = true;
             };
           };
         };
 
-        services.telegraf.extraConfig.inputs.prometheus =
-          lib.mkIf (config.services.telegraf.enable && cfg.metrics.enable)
-            [
-              {
-                urls = [ "http://${cfg.metrics.address}/metrics" ];
-              }
-            ];
+        services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
+          {
+            urls = [ "http://${metricsAddress}/metrics" ];
+          }
+        ];
 
-        nixfiles.preservation.directories = [
+        preservation.preserveAt."/persist".directories = [
           {
             directory = "/var/lib/traefik";
             user = "traefik";
@@ -150,7 +73,7 @@
 
         systemd.services.traefik.serviceConfig.StateDirectory = "traefik";
 
-        systemd.tmpfiles.rules = lib.mkIf cfg.accessLog [
+        systemd.tmpfiles.rules = [
           "d /var/log/traefik 0755 traefik traefik -"
         ];
 

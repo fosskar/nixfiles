@@ -1,15 +1,6 @@
 {
-  flake.modules.nixos.telegraf =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+  flake.modules.nixos =
     let
-      cfg = config.nixfiles.monitoring.telegraf;
-
-      # available input plugins
       inputConfigs = {
         system = {
           cpu = [
@@ -76,7 +67,6 @@
             }
           ];
         };
-
         postgresql = {
           postgresql = [
             {
@@ -102,110 +92,139 @@
       };
     in
     {
-      # --- options ---
-
-      options.nixfiles.monitoring.telegraf = {
-        enable = lib.mkEnableOption "telegraf monitoring agent";
-
-        listenPort = lib.mkOption {
-          type = lib.types.port;
-          default = 9273;
-          description = "prometheus_client listen port";
-        };
-
-        plugins = lib.mkOption {
-          type = lib.types.listOf (lib.types.enum (builtins.attrNames inputConfigs));
-          default = [
-            "system"
-            "systemd"
-          ];
-          description = "list of telegraf plugins to enable";
-          example = [
-            "system"
-            "zfs"
-            "upsd"
-            "systemd"
-            "sensors"
-            "smart"
-          ];
-        };
-      };
-
-      config = lib.mkIf cfg.enable {
-        # --- service ---
-
-        services = {
-          telegraf = {
-            enable = true;
+      telegraf =
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
+        lib.mkIf config.services.telegraf.enable {
+          services.telegraf = {
             package = pkgs.telegraf;
-
             extraConfig = {
               agent = {
                 interval = "10s";
                 flush_interval = "10s";
               };
 
-              outputs.prometheus_client = [
+              outputs.prometheus_client = lib.mkDefault [
                 {
-                  listen = ":${toString cfg.listenPort}";
+                  listen = ":9273";
                   metric_version = 2;
                 }
               ];
-
-              inputs = lib.mkMerge (map (name: inputConfigs.${name}) cfg.plugins);
             };
           };
+        };
 
-          # postgresql: create telegraf role for monitoring
-          postgresql.ensureUsers = lib.mkIf (builtins.elem "postgresql" cfg.plugins) [
+      telegrafSystem =
+        { config, lib, ... }:
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.system;
+        };
+
+      telegrafSystemd =
+        { config, lib, ... }:
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.systemd;
+        };
+
+      telegrafZfs =
+        { config, lib, ... }:
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.zfs;
+        };
+
+      telegrafUpsd =
+        { config, lib, ... }:
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.upsd;
+        };
+
+      telegrafSensors =
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
+        lib.mkIf config.services.telegraf.enable {
+          services.telegraf.extraConfig.inputs = inputConfigs.sensors;
+          systemd.services.telegraf.path = [ pkgs.lm_sensors ];
+        };
+
+      telegrafSmart =
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
+        lib.mkIf config.services.telegraf.enable {
+          services.telegraf.extraConfig.inputs = inputConfigs.smart;
+
+          services.udev.extraRules = ''
+            KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
+          '';
+
+          systemd.services.telegraf.path = [
+            "/run/wrappers" # for sudo
+            pkgs.smartmontools
+            pkgs.nvme-cli
+          ];
+
+          users.users.telegraf.extraGroups = [
+            "disk"
+            "wheel"
+          ];
+
+          security.sudo-rs.extraRules = [
+            {
+              users = [ "telegraf" ];
+              commands = [
+                {
+                  command = "${pkgs.smartmontools}/bin/smartctl";
+                  options = [ "NOPASSWD" ];
+                }
+                {
+                  command = "${pkgs.nvme-cli}/bin/nvme";
+                  options = [ "NOPASSWD" ];
+                }
+              ];
+            }
+          ];
+        };
+
+      telegrafDocker =
+        { config, lib, ... }:
+        lib.mkIf config.services.telegraf.enable {
+          services.telegraf.extraConfig.inputs = inputConfigs.docker;
+          users.users.telegraf.extraGroups = [ "docker" ];
+        };
+
+      telegrafPostgresql =
+        { config, lib, ... }:
+        lib.mkIf config.services.telegraf.enable {
+          services.telegraf.extraConfig.inputs = inputConfigs.postgresql;
+          services.postgresql.ensureUsers = [
             {
               name = "telegraf";
               ensureDBOwnership = false;
             }
           ];
-
-          # allow disk group to access nvme controller devices (for smart monitoring)
-          udev.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) ''
-            KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
-          '';
         };
 
-        # --- systemd ---
+      telegrafRedis =
+        { config, lib, ... }:
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.redis;
+        };
 
-        systemd.services.telegraf.path = lib.mkMerge [
-          (lib.mkIf (builtins.elem "sensors" cfg.plugins) [ pkgs.lm_sensors ])
-          (lib.mkIf (builtins.elem "smart" cfg.plugins) [
-            "/run/wrappers" # for sudo
-            pkgs.smartmontools
-            pkgs.nvme-cli
-          ])
-        ];
-
-        # telegraf user group memberships
-        users.users.telegraf.extraGroups = lib.mkMerge [
-          (lib.mkIf (builtins.elem "smart" cfg.plugins) [
-            "disk"
-            "wheel"
-          ]) # wheel needed to execute sudo
-          (lib.mkIf (builtins.elem "docker" cfg.plugins) [ "docker" ])
-        ];
-
-        # sudo rules for telegraf to run smartctl/nvme without password
-        security.sudo-rs.extraRules = lib.mkIf (builtins.elem "smart" cfg.plugins) [
-          {
-            users = [ "telegraf" ];
-            commands = [
-              {
-                command = "${pkgs.smartmontools}/bin/smartctl";
-                options = [ "NOPASSWD" ];
-              }
-              {
-                command = "${pkgs.nvme-cli}/bin/nvme";
-                options = [ "NOPASSWD" ];
-              }
-            ];
-          }
-        ];
-      };
+      telegrafX509Cert =
+        { config, lib, ... }:
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.x509_cert;
+        };
     };
 }

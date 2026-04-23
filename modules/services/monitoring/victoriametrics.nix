@@ -6,49 +6,17 @@
       ...
     }:
     let
-      cfg = config.nixfiles.monitoring.victoriametrics;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "vm.${acmeDomain}";
       bindAddress = "127.0.0.1";
-      inherit (cfg) port;
+      port = 8428;
       internalUrl = "http://${bindAddress}:${toString port}";
     in
     {
-      # --- options ---
-
-      options.nixfiles.monitoring.victoriametrics = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "victoriametrics time series database";
-        };
-
-        retentionPeriod = lib.mkOption {
-          type = lib.types.str;
-          default = "3";
-          description = "data retention in months";
-        };
-
-        port = lib.mkOption {
-          type = lib.types.port;
-          default = 8428;
-          description = "victoriametrics listen port";
-        };
-
-        scrapeConfigs = lib.mkOption {
-          type = lib.types.listOf lib.types.attrs;
-          default = [ ];
-          description = "prometheus scrape configs";
-        };
-      };
-
-      config = lib.mkIf cfg.enable {
-        # --- service ---
-
+      config = lib.mkIf config.services.victoriametrics.enable {
         services.victoriametrics = {
-          enable = true;
-          listenAddress = "${bindAddress}:${toString port}";
-          inherit (cfg) retentionPeriod;
+          listenAddress = lib.mkDefault "${bindAddress}:${toString port}";
+          retentionPeriod = lib.mkDefault "3";
 
           extraOptions = [
             "-promscrape.dropOriginalLabels=false"
@@ -56,32 +24,25 @@
             "-enableTCP6"
           ];
 
-          prometheusConfig.scrape_configs =
-            let
-              telegrafCfg = config.nixfiles.monitoring.telegraf;
-              exporterCfg = config.nixfiles.monitoring.exporter;
-            in
-            # self-scrape
+          prometheusConfig.scrape_configs = lib.mkBefore (
             [
               {
                 job_name = "victoriametrics";
                 static_configs = [ { targets = [ config.services.victoriametrics.listenAddress ]; } ];
               }
             ]
-            # telegraf
-            ++ lib.optionals telegrafCfg.enable [
+            ++ lib.optionals config.services.telegraf.enable [
               {
                 job_name = "telegraf";
                 static_configs = [
                   {
-                    targets = [ "127.0.0.1:${toString telegrafCfg.listenPort}" ];
+                    targets = [ "127.0.0.1:9273" ];
                     labels.type = "telegraf";
                   }
                 ];
               }
             ]
-            # zfs exporter
-            ++ lib.optionals exporterCfg.enableZfsExporter [
+            ++ lib.optionals config.services.prometheus.exporters.zfs.enable [
               {
                 job_name = "zfs-exporter";
                 static_configs = [
@@ -89,8 +50,7 @@
                 ];
               }
             ]
-            # node exporter
-            ++ lib.optionals exporterCfg.enableNodeExporter [
+            ++ lib.optionals config.services.prometheus.exporters.node.enable [
               {
                 job_name = "node-exporter";
                 static_configs = [
@@ -98,8 +58,7 @@
                 ];
               }
             ]
-            # extra configs
-            ++ cfg.scrapeConfigs;
+          );
         };
 
         # grafana datasource
@@ -115,32 +74,40 @@
 
         # --- homepage ---
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "VictoriaMetrics";
-            category = "Monitoring";
-            icon = "victoriametrics.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Monitoring" = [
+              {
+                "VictoriaMetrics" = {
+                  href = "https://${serviceDomain}";
+                  icon = "victoriametrics.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
         # --- gatus ---
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "VictoriaMetrics";
             url = internalUrl;
             group = "Monitoring";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
         # --- caddy ---
 
-        nixfiles.caddy.vhosts.vm = {
-          inherit port;
-          proxy-auth = true;
-        };
+        services.caddy.virtualHosts."vm.nx3.eu".extraConfig = ''
+          import authelia
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
       };
     };
 }

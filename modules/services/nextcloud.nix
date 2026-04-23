@@ -7,8 +7,8 @@
       ...
     }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
-      inherit (config.nixfiles.authelia) publicDomain;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "cloud.${acmeDomain}";
       canonicalDomain = if publicDomain != null then "cloud.${publicDomain}" else serviceDomain;
       port = 8009;
@@ -192,25 +192,35 @@
         };
       };
 
-      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
         {
-          name = "Nextcloud";
-          category = "Files";
-          icon = "nextcloud.svg";
-          href = "https://${canonicalDomain}";
-          siteMonitor = "${internalUrl}/status.php";
+          "Files" = [
+            {
+              "Nextcloud" = {
+                href = "https://${canonicalDomain}";
+                icon = "nextcloud.svg";
+                siteMonitor = "${internalUrl}/status.php";
+              };
+            }
+          ];
         }
       ];
 
-      nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Nextcloud";
           url = "https://${canonicalDomain}";
           group = "Files";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
         }
       ];
 
-      nixfiles.caddy.vhosts.cloud.port = port;
+      services.caddy.virtualHosts."cloud.nx3.eu".extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString port}
+      '';
 
       clan.core.postgresql.enable = true;
       clan.core.postgresql.databases.nextcloud = {

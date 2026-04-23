@@ -1,4 +1,4 @@
-{ self }:
+_:
 { clanLib, ... }:
 {
   _class = "clan.service";
@@ -27,7 +27,8 @@
             clientMachines = lib.attrNames (roles.client.machines or { });
           in
           {
-            imports = [ self.modules.nixos.remoteBuilderServer ];
+            nix.settings.max-jobs = lib.mkDefault 16;
+            nix.settings.cores = lib.mkDefault 0;
 
             users.groups.nix = { };
             users.users.nix = {
@@ -73,7 +74,7 @@
             builderName = lib.head builderMachines;
           in
           {
-            imports = [ self.modules.nixos.remoteBuilderClient ];
+            nix.distributedBuilds = lib.mkDefault true;
 
             clan.core.vars.generators.remote-builder = {
               files."id_ed25519" = { };
@@ -84,10 +85,22 @@
               '';
             };
 
-            nixfiles.remoteBuilderClient = {
-              builderHost = lib.mkDefault "${builderName}.${config.clan.core.settings.domain}";
-              sshKeyFile = lib.mkDefault config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
-            };
+            nix.buildMachines = [
+              {
+                hostName = "${builderName}.${config.clan.core.settings.domain}";
+                sshUser = "nix";
+                systems = [ "x86_64-linux" ];
+                maxJobs = 16;
+                speedFactor = 10;
+                protocol = "ssh-ng";
+                supportedFeatures = [
+                  "nixos-test"
+                  "big-parallel"
+                  "kvm"
+                ];
+                sshKey = config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
+              }
+            ];
           };
       };
   };

@@ -7,14 +7,17 @@
       ...
     }:
     let
-      cfg = config.nixfiles.ntfy;
-      acmeDomain = config.nixfiles.caddy.domain;
-      inherit (config.nixfiles.authelia) publicDomain;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "ntfy.${acmeDomain}";
       publicUrl = "https://ntfy.${publicDomain}";
       bindAddress = "0.0.0.0";
       port = 8091;
       internalUrl = "http://${bindAddress}:${toString port}";
+
+      topic = "systemd";
+      cooldown = 300;
+      excludeServices = [ "nixos-rebuild-switch-to-configuration" ];
 
       varsPath = config.clan.core.vars.generators.ntfy;
 
@@ -22,7 +25,7 @@
         SERVICE="$1"
         TOKEN_FILE="${varsPath.files.token.path}"
         COOLDOWN_DIR="/run/systemd-notify-cooldown"
-        COOLDOWN_SECS=${toString cfg.systemd-notify.cooldown}
+        COOLDOWN_SECS=${toString cooldown}
 
         if [ ! -f "$TOKEN_FILE" ]; then
           echo "ntfy token not found, skipping notification"
@@ -45,7 +48,7 @@
         LOGS=$(${pkgs.systemd}/bin/journalctl -u "$SERVICE" -n 15 --no-pager -o cat 2>/dev/null | tail -10)
 
         ${pkgs.curl}/bin/curl -s \
-          -X POST "http://${bindAddress}:${toString port}/${cfg.systemd-notify.topic}" \
+          -X POST "http://${bindAddress}:${toString port}/${topic}" \
           -H "Authorization: Bearer $(cat $TOKEN_FILE)" \
           -H "Title: $SERVICE failed on $HOST" \
           -H "Priority: high" \
@@ -54,26 +57,6 @@
       '';
     in
     {
-      options.nixfiles.ntfy.systemd-notify = {
-        topic = lib.mkOption {
-          type = lib.types.str;
-          default = "systemd";
-          description = "ntfy topic for systemd failure notifications";
-        };
-
-        cooldown = lib.mkOption {
-          type = lib.types.int;
-          default = 300;
-          description = "cooldown in seconds between notifications for the same service";
-        };
-
-        excludeServices = lib.mkOption {
-          type = lib.types.listOf lib.types.str;
-          default = [ "nixos-rebuild-switch-to-configuration" ];
-          description = "services to exclude from failure notifications";
-        };
-      };
-
       config = {
         clan.core.vars.generators.ntfy = {
           prompts.password.description = "ntfy admin password";
@@ -108,27 +91,35 @@
           };
         };
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "ntfy";
-            category = "Monitoring";
-            icon = "ntfy.svg";
-            href = publicUrl;
-            siteMonitor = internalUrl;
+            "Monitoring" = [
+              {
+                "ntfy" = {
+                  href = publicUrl;
+                  icon = "ntfy.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "ntfy";
             url = "https://${serviceDomain}";
             group = "Monitoring";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
-        nixfiles.caddy.vhosts.ntfy = {
-          inherit port;
-        };
+        services.caddy.virtualHosts."ntfy.nx3.eu".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
 
         systemd.services.ntfy-sh.serviceConfig.EnvironmentFile = varsPath.files."env".path;
 
@@ -161,7 +152,7 @@
               OnFailure=
             '';
           }
-        ) cfg.systemd-notify.excludeServices;
+        ) excludeServices;
       };
     };
 }

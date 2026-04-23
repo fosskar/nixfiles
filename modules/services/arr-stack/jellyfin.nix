@@ -7,24 +7,23 @@
       ...
     }:
     let
-      cfg = config.nixfiles.arrStack;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "jellyfin.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 8096;
       internalUrl = "http://${bindAddress}:${toString port}";
     in
     {
-      config = lib.mkIf cfg.jellyfin.enable {
+      config = {
         # --- service ---
 
         services.jellyfin = {
           enable = true;
           openFirewall = false;
           group = "media";
-          hardwareAcceleration = lib.mkIf (cfg.jellyfin.hwAccel.type != null) {
-            inherit (cfg.jellyfin.hwAccel) device;
-            inherit (cfg.jellyfin.hwAccel) type;
+          hardwareAcceleration = {
+            device = "/dev/dri/renderD128";
+            type = "qsv";
           };
         };
 
@@ -41,32 +40,40 @@
 
         # --- homepage ---
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Jellyfin";
-            category = "Media";
-            icon = "jellyfin.png";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Media" = [
+              {
+                "Jellyfin" = {
+                  href = "https://${serviceDomain}";
+                  icon = "jellyfin.png";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
         # --- gatus ---
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Jellyfin";
             url = internalUrl;
             group = "Media";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
         # --- caddy ---
 
         # no proxy-auth - jellyfin has built-in auth
-        nixfiles.caddy.vhosts.jellyfin = {
-          inherit port;
-        };
+        services.caddy.virtualHosts."jellyfin.nx3.eu".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
 
         # --- backup ---
 
@@ -86,7 +93,7 @@
 
         # --- systemd ---
 
-        systemd.services.jellyfin.environment = lib.mkIf (cfg.jellyfin.hwAccel.type == "qsv") {
+        systemd.services.jellyfin.environment = {
           LIBVA_DRIVER_NAME = "iHD";
         };
       };

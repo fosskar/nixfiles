@@ -2,7 +2,7 @@
   flake.modules.nixos.kanidm =
     { config, pkgs, ... }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "auth.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 8443;

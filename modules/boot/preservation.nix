@@ -191,19 +191,13 @@
         else
           { how = "bindmount"; } // f;
 
+      preserveCfg = config.preservation.preserveAt.${cfg.persistPath};
+
       getDirPath = d: if builtins.isString d then d else d.directory or "";
-
-      allPersistDirs = [
-        "/var/lib/nixos"
-        "/var/lib/systemd"
-        "/var/log"
-      ]
-      ++ lib.optional cfg.manageSopsMount "/var/lib/sops-nix"
-      ++ lib.optional cfg.manageAgeMount "/etc/secret-vars"
-      ++ map getDirPath cfg.directories;
-
       getFilePath = f: if builtins.isString f then f else f.file or "";
-      fileParentDirs = map (f: dirOf (getFilePath f)) cfg.files;
+
+      allPersistDirs = map getDirPath preserveCfg.directories;
+      fileParentDirs = map (f: dirOf (getFilePath f)) preserveCfg.files;
 
       installDirs = lib.unique (lib.sort (a: b: a < b) (allPersistDirs ++ fileParentDirs));
 

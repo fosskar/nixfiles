@@ -7,8 +7,8 @@
       ...
     }:
     let
-      cfg = config.nixfiles.authelia;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "auth.${acmeDomain}";
       bindAddress = "0.0.0.0";
       port = 9091;
@@ -21,15 +21,6 @@
       };
     in
     {
-      options.nixfiles.authelia = {
-        publicDomain = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "simonoscar.me";
-          description = "additional public domain for remote access";
-        };
-      };
-
       config = {
         clan.core.vars.generators.authelia = {
           files = {
@@ -94,7 +85,7 @@
 
             totp = {
               disable = false;
-              issuer = if cfg.publicDomain != null then cfg.publicDomain else acmeDomain;
+              issuer = publicDomain;
               algorithm = "sha512";
               digits = 6;
               period = 30;
@@ -122,10 +113,10 @@
                   authelia_url = "https://${serviceDomain}";
                 }
               ]
-              ++ lib.optionals (cfg.publicDomain != null) [
+              ++ [
                 {
-                  domain = cfg.publicDomain;
-                  authelia_url = "https://auth.${cfg.publicDomain}";
+                  domain = publicDomain;
+                  authelia_url = "https://auth.${publicDomain}";
                 }
               ];
             };
@@ -163,27 +154,35 @@
           };
         };
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Authelia";
-            category = "Security";
-            icon = "authelia.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Security" = [
+              {
+                "Authelia" = {
+                  href = "https://${serviceDomain}";
+                  icon = "authelia.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Authelia";
             url = "https://${serviceDomain}";
             group = "Security";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
-        nixfiles.caddy.vhosts.auth = {
-          inherit port;
-        };
+        services.caddy.virtualHosts."auth.nx3.eu".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
 
         clan.core.state.authelia = {
           folders = [ "/var/backup/authelia" ];

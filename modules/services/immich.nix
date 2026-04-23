@@ -7,8 +7,8 @@
       ...
     }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
-      inherit (config.nixfiles.authelia) publicDomain;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "immich.${acmeDomain}";
       bindAddress = "0.0.0.0";
       port = 2283;
@@ -211,32 +211,39 @@
         "video"
       ];
 
-      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
         {
-          name = "Immich";
-          category = "Media";
-          icon = "immich.png";
-          href = "https://${serviceDomain}";
-          siteMonitor = internalUrl;
+          "Media" = [
+            {
+              "Immich" = {
+                href = "https://${serviceDomain}";
+                icon = "immich.png";
+                siteMonitor = internalUrl;
+              };
+            }
+          ];
         }
       ];
 
-      nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Immich";
           url = "https://${serviceDomain}";
           group = "Media";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
         }
       ];
 
-      nixfiles.caddy.vhosts.immich = {
-        inherit port;
-        extraConfig = ''
-          request_body {
-            max_size 50GB
-          }
-        '';
-      };
+      services.caddy.virtualHosts."immich.nx3.eu".extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString port}
+                  request_body {
+                    max_size 50GB
+                  }
+                
+      '';
 
       clan.core.postgresql.enable = true;
       clan.core.postgresql.databases.immich = {

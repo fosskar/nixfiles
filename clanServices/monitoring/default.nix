@@ -136,28 +136,28 @@
               victoriaMetrics
             ];
 
-            nixfiles.monitoring = {
-              grafana = {
-                enable = lib.mkDefault settings.grafana.enable;
-                dashboardsDir = lib.mkDefault serviceDashboardsDir;
-              };
+            services.grafana.enable = lib.mkDefault settings.grafana.enable;
+            services.victorialogs.enable = lib.mkDefault true;
+            services.victoriametrics.enable = lib.mkDefault true;
+            services.telegraf.enable = lib.mkDefault true;
 
-              exporter = {
-                enable = lib.mkDefault settings.exporter.enable;
-                enableZfsExporter = lib.mkDefault settings.exporter.enableZfsExporter;
-              };
+            environment.etc = lib.mkIf config.services.grafana.enable (
+              builtins.listToAttrs (
+                map (file: {
+                  name = "grafana-dashboards/${file}";
+                  value.source = "${serviceDashboardsDir}/${file}";
+                }) (builtins.attrNames (builtins.readDir serviceDashboardsDir))
+              )
+            );
 
-              victorialogs.enable = lib.mkDefault true;
+            services.prometheus.exporters.node.enable = lib.mkDefault settings.exporter.enable;
+            services.prometheus.exporters.zfs.enable = lib.mkDefault settings.exporter.enableZfsExporter;
 
-              victoriametrics = {
-                enable = lib.mkDefault true;
-                retentionPeriod = lib.mkDefault settings.retentionPeriod;
-                scrapeConfigs = lib.mkAfter (
-                  clientScrapeConfigs ++ extraTelegrafScrapeConfig ++ settings.extraScrapeConfigs
-                );
-              };
-
-              telegraf.enable = lib.mkDefault true;
+            services.victoriametrics = {
+              retentionPeriod = lib.mkDefault settings.retentionPeriod;
+              prometheusConfig.scrape_configs = lib.mkAfter (
+                clientScrapeConfigs ++ extraTelegrafScrapeConfig ++ settings.extraScrapeConfigs
+              );
             };
           };
       };
@@ -208,6 +208,18 @@
       }:
       let
         serverMachines = builtins.attrNames (roles.server.machines or { });
+        pluginModules = with self.modules.nixos; {
+          system = telegrafSystem;
+          systemd = telegrafSystemd;
+          zfs = telegrafZfs;
+          upsd = telegrafUpsd;
+          sensors = telegrafSensors;
+          smart = telegrafSmart;
+          docker = telegrafDocker;
+          postgresql = telegrafPostgresql;
+          redis = telegrafRedis;
+          x509_cert = telegrafX509Cert;
+        };
       in
       {
         nixosModule =
@@ -217,24 +229,27 @@
             ...
           }:
           {
-            imports = with self.modules.nixos; [
-              telegraf
-              vector
-            ];
+            imports =
+              (with self.modules.nixos; [
+                telegraf
+                vector
+              ])
+              ++ map (plugin: pluginModules.${plugin}) settings.plugins;
 
             networking.firewall.interfaces.ygg.allowedTCPPorts = lib.mkIf (
               !(builtins.elem config.networking.hostName serverMachines)
             ) [ settings.listenPort ];
 
-            nixfiles.monitoring = {
-              telegraf = {
-                enable = lib.mkDefault true;
-                listenPort = lib.mkDefault settings.listenPort;
-                plugins = lib.mkDefault settings.plugins;
-              };
-
-              vector.enable = lib.mkDefault settings.vector.enable;
+            services.telegraf = {
+              enable = lib.mkDefault true;
+              extraConfig.outputs.prometheus_client = lib.mkForce [
+                {
+                  listen = ":${toString settings.listenPort}";
+                  metric_version = 2;
+                }
+              ];
             };
+            services.vector.enable = lib.mkDefault settings.vector.enable;
           };
       };
   };

@@ -7,8 +7,8 @@
       ...
     }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
-      inherit (config.nixfiles.authelia) publicDomain;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "vault.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 8222;
@@ -98,27 +98,35 @@
         };
       };
 
-      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
         {
-          name = "Vaultwarden";
-          category = "Security";
-          icon = "vaultwarden.svg";
-          href = "https://${serviceDomain}";
-          siteMonitor = internalUrl;
+          "Security" = [
+            {
+              "Vaultwarden" = {
+                href = "https://${serviceDomain}";
+                icon = "vaultwarden.svg";
+                siteMonitor = internalUrl;
+              };
+            }
+          ];
         }
       ];
 
-      nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Vaultwarden";
           url = "https://${serviceDomain}";
           group = "Security";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
         }
       ];
 
-      nixfiles.caddy.vhosts.vault = {
-        inherit port;
-      };
+      services.caddy.virtualHosts."vault.nx3.eu".extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString port}
+      '';
 
       clan.core.postgresql.enable = lib.mkForce true;
       clan.core.postgresql.databases.vaultwarden = {

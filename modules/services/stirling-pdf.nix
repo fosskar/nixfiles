@@ -7,7 +7,7 @@
       ...
     }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "pdf.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 8180;
@@ -26,26 +26,34 @@
         };
       };
 
-      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
         {
-          name = "Stirling PDF";
-          category = "Tools";
-          icon = "stirling-pdf.svg";
-          href = "https://${serviceDomain}";
-          siteMonitor = internalUrl;
+          "Tools" = [
+            {
+              "Stirling PDF" = {
+                href = "https://${serviceDomain}";
+                icon = "stirling-pdf.svg";
+                siteMonitor = internalUrl;
+              };
+            }
+          ];
         }
       ];
 
-      nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Stirling PDF";
           url = "https://${serviceDomain}";
           group = "Tools";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
         }
       ];
 
-      nixfiles.caddy.vhosts.pdf = {
-        inherit port;
-      };
+      services.caddy.virtualHosts."pdf.nx3.eu".extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString port}
+      '';
     };
 }

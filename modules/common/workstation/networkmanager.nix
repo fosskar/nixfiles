@@ -9,7 +9,7 @@
       hardware.wirelessRegulatoryDatabase = true;
 
       # persist networkmanager + iwd state
-      nixfiles.preservation.directories = [
+      preservation.preserveAt."/persist".directories = [
         "/var/lib/NetworkManager"
         "/var/lib/iwd"
       ];

@@ -8,12 +8,15 @@
 {
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
-    self.modules.nixos.borgbackup
     self.modules.nixos.crowdsec
+    self.modules.nixos.crowdsecTraefik
+    self.modules.nixos.crowdsecNetbirdProxy
+    self.modules.nixos.crowdsecClanWhitelist
     self.modules.nixos.btrfs
-    self.modules.nixos.tuned
+    self.modules.nixos.tunedVirtualGuest
     self.modules.nixos.preservation
     self.modules.nixos.traefik
+    self.modules.nixos.traefikGeoblock
   ]
   ++ (mylib.scanPaths ./. { });
 
@@ -33,25 +36,9 @@
         "/var/lib/private"
       ];
     };
-
-    borgbackup = {
-      useSnapshots = true;
-      snapshotType = "btrfs";
-    };
-
-    tuned.profile = "virtual-guest";
-
-    crowdsec = {
-      traefik.enable = true;
-      netbirdProxy.enable = true;
-      whitelistClanMesh = true;
-    };
-    traefik.geoblock.enable = true;
   };
 
-  clan.core = {
-    settings.machine-id.enable = true;
-  };
+  clan.core.settings.machine-id.enable = true;
 
   services.cloud-init = {
     settings = {

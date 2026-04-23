@@ -6,7 +6,7 @@
     };
     networking.firewall.trustedInterfaces = [ "tailscale0" ];
 
-    nixfiles.preservation.directories = [
+    preservation.preserveAt."/persist".directories = [
       "/var/cache/tailscale"
       "/var/lib/tailscale"
     ];

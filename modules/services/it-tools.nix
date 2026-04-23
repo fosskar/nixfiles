@@ -7,33 +7,43 @@
       ...
     }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "tools.${acmeDomain}";
     in
     {
       # --- homepage ---
-      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
         {
-          name = "IT Tools";
-          category = "Tools";
-          icon = "it-tools.svg";
-          href = "https://${serviceDomain}";
-          siteMonitor = "https://${serviceDomain}";
+          "Tools" = [
+            {
+              "IT Tools" = {
+                href = "https://${serviceDomain}";
+                icon = "it-tools.svg";
+                siteMonitor = "https://${serviceDomain}";
+              };
+            }
+          ];
         }
       ];
 
       # --- gatus ---
-      nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "IT Tools";
           url = "https://${serviceDomain}";
           group = "Tools";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
         }
       ];
 
       # --- caddy ---
-      nixfiles.caddy.vhosts.tools = {
-        root = "${pkgs.it-tools}/lib";
-      };
+      services.caddy.virtualHosts."tools.nx3.eu".extraConfig = ''
+        root * ${pkgs.it-tools}/lib
+        file_server
+        try_files {path} {path}.html {path}/ =404
+      '';
     };
 }

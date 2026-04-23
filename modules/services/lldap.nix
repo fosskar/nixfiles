@@ -9,7 +9,7 @@
       ...
     }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "ldap.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 17170;
@@ -73,27 +73,35 @@
         environmentFile = config.clan.core.vars.generators.lldap.files."envfile".path;
       };
 
-      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
         {
-          name = "LLDAP";
-          category = "Security";
-          icon = "lldap.png";
-          href = "https://${serviceDomain}";
-          siteMonitor = internalUrl;
+          "Security" = [
+            {
+              "LLDAP" = {
+                href = "https://${serviceDomain}";
+                icon = "lldap.png";
+                siteMonitor = internalUrl;
+              };
+            }
+          ];
         }
       ];
 
-      nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "LLDAP";
           url = "https://${serviceDomain}";
           group = "Security";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
         }
       ];
 
-      nixfiles.caddy.vhosts.ldap = {
-        inherit port;
-      };
+      services.caddy.virtualHosts."ldap.nx3.eu".extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString port}
+      '';
 
       clan.core.state.lldap = {
         folders = [ "/var/backup/lldap" ];

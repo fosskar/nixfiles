@@ -7,9 +7,9 @@
       ...
     }:
     let
-      cfg = config.nixfiles.opencloud;
-      acmeDomain = config.nixfiles.caddy.domain;
-      inherit (config.nixfiles.authelia) publicDomain;
+      dataDir = config.services.opencloud.environment.STORAGE_USERS_POSIX_ROOT;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "opencloud.${acmeDomain}";
       bindAddress = "0.0.0.0";
       port = 9200;
@@ -65,14 +65,6 @@
       };
     in
     {
-      options.nixfiles.opencloud = {
-        dataDir = lib.mkOption {
-          type = lib.types.str;
-          default = "/tank/apps/opencloud/data";
-          description = "directory for user file storage (posix driver root)";
-        };
-      };
-
       config = {
         clan.core.vars.generators.opencloud = {
           files."admin-password" = { };
@@ -161,7 +153,7 @@
             GRAPH_USERNAME_MATCH = "none";
             WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${oidcDomain}/settings";
 
-            STORAGE_USERS_POSIX_ROOT = cfg.dataDir;
+            STORAGE_USERS_POSIX_ROOT = lib.mkDefault "/tank/apps/opencloud/data";
             STORAGE_USERS_POSIX_WATCH_FS = "true";
             STORAGE_USERS_POSIX_USE_SPACE_GROUPS = "true";
           };
@@ -199,21 +191,29 @@
           };
         };
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "OpenCloud";
-            category = "Files";
-            icon = "https://opencloud.${acmeDomain}/themes/opencloud/assets/favicon.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Files" = [
+              {
+                "OpenCloud" = {
+                  href = "https://${serviceDomain}";
+                  icon = "https://opencloud.${acmeDomain}/themes/opencloud/assets/favicon.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "OpenCloud";
             url = "https://${serviceDomain}";
             group = "Files";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
@@ -235,7 +235,7 @@
           "/var/lib/opencloud"
         ];
 
-        nixfiles.preservation.directories = [
+        preservation.preserveAt."/persist".directories = [
           {
             directory = "/var/lib/opencloud";
             user = "opencloud";
@@ -248,11 +248,11 @@
           }
         ];
 
-        systemd.services.opencloud.serviceConfig.ReadWritePaths = [ cfg.dataDir ];
+        systemd.services.opencloud.serviceConfig.ReadWritePaths = [ dataDir ];
         systemd.services.opencloud.path = [ pkgs.inotify-tools ];
 
         systemd.tmpfiles.settings."10-opencloud-data" = {
-          ${cfg.dataDir}.d = {
+          ${dataDir}.d = {
             user = "opencloud";
             group = "opencloud";
             mode = "0750";
@@ -276,7 +276,7 @@
             Restart = "always";
             RestartSec = 5;
             ExecStart = pkgs.writeShellScript "opencloud-permission-fixer" ''
-              ${pkgs.inotify-tools}/bin/inotifywait -m -r -e create,moved_to --format '%w%f' "${cfg.dataDir}" | while read -r path; do
+              ${pkgs.inotify-tools}/bin/inotifywait -m -r -e create,moved_to --format '%w%f' "${dataDir}" | while read -r path; do
                 if [ -f "$path" ]; then
                   chmod g+rw "$path"
                 elif [ -d "$path" ]; then

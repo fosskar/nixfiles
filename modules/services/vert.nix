@@ -6,51 +6,28 @@
       ...
     }:
     let
-      cfg = config.nixfiles.vert;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "converter.${acmeDomain}";
       bindAddress = "127.0.0.1";
-      inherit (cfg) port;
+      port = 8088;
+      vertdPort = 8089;
       internalUrl = "http://${bindAddress}:${toString port}";
     in
     {
-      # --- options ---
-
-      options.nixfiles.vert = {
-        port = lib.mkOption {
-          type = lib.types.port;
-          default = 8088;
-          description = "port for vert frontend";
-        };
-
-        vertd = {
-          enable = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description = "enable vertd GPU video backend";
-          };
-          port = lib.mkOption {
-            type = lib.types.port;
-            default = 8089;
-            description = "port for vertd backend";
-          };
-        };
-      };
-
       config = {
         # --- service ---
 
         virtualisation.oci-containers.containers.vert = {
           image = "ghcr.io/vert-sh/vert:latest";
-          ports = [ "127.0.0.1:${toString cfg.port}:80" ];
-          environment = lib.mkIf cfg.vertd.enable {
+          ports = [ "127.0.0.1:${toString port}:80" ];
+          environment = {
             PUB_VERTD_URL = "https://vertd.${acmeDomain}";
           };
         };
 
-        virtualisation.oci-containers.containers.vertd = lib.mkIf cfg.vertd.enable {
+        virtualisation.oci-containers.containers.vertd = {
           image = "ghcr.io/vert-sh/vertd:latest";
-          ports = [ "127.0.0.1:${toString cfg.vertd.port}:24153" ];
+          ports = [ "127.0.0.1:${toString vertdPort}:24153" ];
           # gpu passthrough for vaapi
           extraOptions = [
             "--device=/dev/dri/card1"
@@ -60,32 +37,42 @@
 
         # --- homepage ---
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Vert";
-            category = "Tools";
-            icon = "mdi-video-switch";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Tools" = [
+              {
+                "Vert" = {
+                  href = "https://${serviceDomain}";
+                  icon = "mdi-video-switch";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
         # --- gatus ---
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Vert";
             url = "https://${serviceDomain}";
             group = "Tools";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
         # --- caddy ---
 
-        nixfiles.caddy.vhosts.converter = {
-          inherit port;
-        };
-        nixfiles.caddy.vhosts.vertd = lib.mkIf cfg.vertd.enable { inherit (cfg.vertd) port; };
+        services.caddy.virtualHosts."converter.nx3.eu".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
+        services.caddy.virtualHosts."vertd.nx3.eu".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString vertdPort}
+        '';
       };
     };
 }

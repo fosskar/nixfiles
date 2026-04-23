@@ -8,7 +8,6 @@
   imports = [
     self.modules.nixos.arrStack
     self.modules.nixos.caddy
-    self.modules.nixos.borgbackup
     self.modules.nixos.nextcloud
     self.modules.nixos.lldap
     self.modules.nixos.authelia
@@ -21,7 +20,7 @@
     self.modules.nixos.zfs
     self.modules.nixos.intelGpu
     self.modules.nixos.amdCpu
-    self.modules.nixos.tuned
+    self.modules.nixos.tunedServerPowersave
     self.modules.nixos.preservation
     self.modules.nixos.hdIdle
     self.modules.nixos.docker
@@ -62,34 +61,15 @@
       ];
     };
 
-    borgbackup = {
-      folders = [
-        "/tank/apps"
-        "/tank/backup"
-        "/tank/shares"
-      ];
-      useSnapshots = true;
-      snapshotType = "zfs";
-    };
-
-    tuned = {
-      profile = "server-powersave";
-    };
-
-    authelia.publicDomain = "fosskar.eu";
-    arrStack.authelia.enable = true;
-
-    garage.dataDir = "/tank/apps/garage";
-
-    beszelAgent = {
-      sensors = "-nct6798_cputin,-nct6798_auxtin0,-nct6798_auxtin2,-nct6798_auxtin4";
-      filesystem = "/persist";
-      extraFilesystems = "/__Root,/nix__Nix,/boot__Boot,/boot-fallback__BootFallback,/tank__Tank,/tank/apps__Apps,/tank/media__Media,/tank/shares__Shares,/tank/backup__Backup";
-    };
   };
 
-  services.beszel.agent.environment.SMART_DEVICES =
-    "/dev/nvme0,/dev/nvme1,/dev/sda,/dev/sdb,/dev/sdc,/dev/sdd,/dev/sde,/dev/sdf,/dev/sdg";
+  services.garage.settings.data_dir = [
+    {
+      path = "/tank/apps/garage";
+      capacity = "100G";
+    }
+  ];
+
   systemd.services.beszel-agent.unitConfig.RequiresMountsFor = [ "/tank" ];
 
   boot = {

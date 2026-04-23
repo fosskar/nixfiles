@@ -7,31 +7,14 @@
       pkgs,
       ...
     }:
-    let
-      cfg = config.nixfiles.buildbotWorker;
-    in
     {
       imports = [ inputs.buildbot-nix.nixosModules.buildbot-worker ];
-
-      options.nixfiles.buildbotWorker = {
-        masterUrl = lib.mkOption {
-          type = lib.types.str;
-          default = "tcp:host=localhost:port=9989";
-          description = "buildbot master url";
-        };
-
-        workerCores = lib.mkOption {
-          type = lib.types.int;
-          default = 16;
-          description = "worker count (keep in sync with master workers.json)";
-        };
-      };
 
       config = {
         services.buildbot-nix.worker = {
           enable = true;
-          inherit (cfg) masterUrl;
-          workers = cfg.workerCores;
+          masterUrl = lib.mkDefault "tcp:host=localhost:port=9989";
+          workers = lib.mkDefault 16;
           workerPasswordFile = config.clan.core.vars.generators.buildbot-master.files."worker-password".path;
         };
 

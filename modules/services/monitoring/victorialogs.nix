@@ -6,33 +6,12 @@
       ...
     }:
     let
-      cfg = config.nixfiles.monitoring.victorialogs;
-      inherit (cfg) port;
+      port = 9428;
     in
     {
-      # --- options ---
-
-      options.nixfiles.monitoring.victorialogs = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "victorialogs log aggregation";
-        };
-
-        port = lib.mkOption {
-          type = lib.types.port;
-          default = 9428;
-          description = "victorialogs listen port";
-        };
-
-      };
-
-      config = lib.mkIf cfg.enable {
-        # --- service ---
-
+      config = lib.mkIf config.services.victorialogs.enable {
         services.victorialogs = {
-          enable = true;
-          listenAddress = "127.0.0.1:${toString port}";
+          listenAddress = lib.mkDefault "127.0.0.1:${toString port}";
           extraOptions = [ "-enableTCP6" ];
         };
 

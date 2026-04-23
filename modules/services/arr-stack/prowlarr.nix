@@ -7,15 +7,14 @@
       ...
     }:
     let
-      cfg = config.nixfiles.arrStack;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "prowlarr.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 9696;
       internalUrl = "http://${bindAddress}:${toString port}";
     in
     {
-      config = lib.mkIf cfg.prowlarr.enable {
+      config = {
         # --- service ---
 
         services.prowlarr = {
@@ -26,32 +25,40 @@
 
         # --- homepage ---
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Prowlarr";
-            category = "Arr Stack";
-            icon = "prowlarr.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Arr Stack" = [
+              {
+                "Prowlarr" = {
+                  href = "https://${serviceDomain}";
+                  icon = "prowlarr.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
         # --- gatus ---
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Prowlarr";
             url = internalUrl;
             group = "Arr Stack";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
         # --- caddy ---
 
-        nixfiles.caddy.vhosts.prowlarr = {
-          inherit port;
-          proxy-auth = cfg.authelia.enable;
-        };
+        services.caddy.virtualHosts."prowlarr.nx3.eu".extraConfig = ''
+          ${lib.optionalString (config.services.authelia.instances.main.enable or false) "import authelia"}
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
 
         # --- backup ---
 

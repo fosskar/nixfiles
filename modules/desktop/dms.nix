@@ -11,7 +11,7 @@
       };
 
       # persist greeter state (must be writable by greeter user to save memory.json)
-      nixfiles.preservation.directories = [
+      preservation.preserveAt."/persist".directories = [
         {
           directory = "/var/lib/dms-greeter";
           user = "greeter";

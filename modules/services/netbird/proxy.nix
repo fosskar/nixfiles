@@ -16,7 +16,7 @@
 
     let
       cfg = config.services.netbird.server.proxy;
-      hasPreservation = lib.hasAttrByPath [ "nixfiles" "preservation" "directories" ] options;
+      hasPreservation = lib.hasAttrByPath [ "preservation" "preserveAt" ] options;
       serverCfg = config.services.netbird.server;
       dashboardCfg = config.services.netbird.server.dashboard;
       stateDir = "/var/lib/netbird-proxy";
@@ -99,7 +99,7 @@
           apiKeyFile = lib.mkOption {
             type = lib.types.str;
             default = "/var/lib/crowdsec/netbird-proxy-bouncer.key";
-            description = "path to file containing the bouncer API key (registered by nixfiles.crowdsec.netbirdProxy.enable)";
+            description = "path to file containing the bouncer API key";
           };
         };
 
@@ -385,8 +385,8 @@
 
         # --- persistence ---
 
-        nixfiles = lib.optionalAttrs hasPreservation {
-          preservation.directories = [
+        preservation = lib.optionalAttrs hasPreservation {
+          preserveAt."/persist".directories = [
             {
               directory = "/var/lib/netbird-proxy";
               user = "netbird";

@@ -1,16 +1,12 @@
 {
   flake.modules.nixos.arrStack =
     {
-      config,
       lib,
       pkgs,
       ...
     }:
-    let
-      cfg = config.nixfiles.arrStack;
-    in
     {
-      config = lib.mkIf cfg.recyclarr.enable {
+      config = {
         # --- service ---
 
         services.recyclarr = {

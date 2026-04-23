@@ -7,8 +7,8 @@
       ...
     }:
     let
-      acmeDomain = config.nixfiles.caddy.domain;
-      inherit (config.nixfiles.authelia) publicDomain;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "docs.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 28981;
@@ -158,27 +158,35 @@
         };
       };
 
-      nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
         {
-          name = "Paperless";
-          category = "Files";
-          icon = "paperless.png";
-          href = "https://${serviceDomain}";
-          siteMonitor = internalUrl;
+          "Files" = [
+            {
+              "Paperless" = {
+                href = "https://${serviceDomain}";
+                icon = "paperless.png";
+                siteMonitor = internalUrl;
+              };
+            }
+          ];
         }
       ];
 
-      nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Paperless";
           url = "https://${serviceDomain}";
           group = "Files";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
         }
       ];
 
-      nixfiles.caddy.vhosts.docs = {
-        inherit port;
-      };
+      services.caddy.virtualHosts."docs.nx3.eu".extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString port}
+      '';
 
       clan.core.postgresql.enable = true;
       clan.core.postgresql.databases.paperless = {
@@ -192,7 +200,7 @@
         ];
       };
 
-      nixfiles.preservation.directories = [
+      preservation.preserveAt."/persist".directories = [
         {
           directory = config.services.paperless.dataDir;
           user = "paperless";

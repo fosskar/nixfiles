@@ -7,32 +7,15 @@
       ...
     }:
     let
-      cfg = config.nixfiles.monitoring.grafana;
-      acmeDomain = config.nixfiles.caddy.domain;
-      inherit (config.nixfiles.authelia) publicDomain;
+      acmeDomain = "nx3.eu";
+      publicDomain = "fosskar.eu";
       serviceDomain = "grafana.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 3100;
       internalUrl = "http://${bindAddress}:${toString port}";
     in
     {
-      # --- options ---
-
-      options.nixfiles.monitoring.grafana = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "grafana with authelia oidc";
-        };
-
-        dashboardsDir = lib.mkOption {
-          type = lib.types.nullOr lib.types.path;
-          default = null;
-          description = "directory containing grafana dashboard json files";
-        };
-      };
-
-      config = lib.mkIf cfg.enable {
+      config = lib.mkIf config.services.grafana.enable {
         # --- secrets ---
 
         clan.core.vars.generators.grafana = {
@@ -133,18 +116,7 @@
 
         # --- service ---
 
-        # provision dashboards via /etc
-        environment.etc = lib.mkIf (cfg.dashboardsDir != null) (
-          builtins.listToAttrs (
-            map (file: {
-              name = "grafana-dashboards/${file}";
-              value.source = "${cfg.dashboardsDir}/${file}";
-            }) (builtins.attrNames (builtins.readDir cfg.dashboardsDir))
-          )
-        );
-
         services.grafana = {
-          enable = true;
           openFirewall = false;
 
           declarativePlugins = with pkgs.grafanaPlugins; [
@@ -254,31 +226,39 @@
 
         # --- homepage ---
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Grafana";
-            category = "Monitoring";
-            icon = "grafana.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Monitoring" = [
+              {
+                "Grafana" = {
+                  href = "https://${serviceDomain}";
+                  icon = "grafana.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
         # --- gatus ---
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Grafana";
             url = "https://${serviceDomain}";
             group = "Monitoring";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
         # --- caddy ---
 
-        nixfiles.caddy.vhosts.grafana = {
-          inherit port;
-        };
+        services.caddy.virtualHosts."grafana.nx3.eu".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
       };
     };
 }

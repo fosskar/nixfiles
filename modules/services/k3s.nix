@@ -8,7 +8,6 @@
     }:
     let
       inherit (lib)
-        mkEnableOption
         mkIf
         mkOption
         types
@@ -17,8 +16,6 @@
     in
     {
       options.k3s.controlPlane = {
-        enable = mkEnableOption "shared K3s control-plane settings";
-
         clusterInit = mkOption {
           type = types.bool;
           default = false;
@@ -76,7 +73,7 @@
         };
       };
 
-      config = mkIf cfg.enable (
+      config =
         let
           baseFlags = [
             "--data-dir=/var/lib/rancher/k3s"
@@ -104,7 +101,7 @@
           assertions = [
             {
               assertion = cfg.nodeName != null;
-              message = "k3s.controlPlane.nodeName must be set when enabling the control-plane module.";
+              message = "k3s.controlPlane.nodeName must be set.";
             }
           ];
 
@@ -120,7 +117,6 @@
               };
             };
           };
-        }
-      );
+        };
     };
 }

@@ -9,55 +9,31 @@
       ...
     }:
     let
-      cfg = config.nixfiles.garage;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "s3.${acmeDomain}";
       webuiPort = 3909;
       adminPort = 3903;
       s3Port = 3900;
       internalUrl = "http://127.0.0.1:${toString webuiPort}";
+      zone = "dc1";
+      dataEntry = builtins.head config.services.garage.settings.data_dir;
     in
     {
-      options.nixfiles.garage = {
-        dataDir = lib.mkOption {
-          type = lib.types.str;
-          description = "path to garage data directory";
-        };
-
-        capacity = lib.mkOption {
-          type = lib.types.str;
-          default = "100G";
-          description = "storage capacity for this node";
-        };
-
-        s3Region = lib.mkOption {
-          type = lib.types.str;
-          default = config.networking.hostName;
-          description = "S3 region name (defaults to hostname)";
-        };
-
-        zone = lib.mkOption {
-          type = lib.types.str;
-          default = "dc1";
-          description = "zone name for layout assignment";
-        };
-      };
-
       config = {
         services.garage.package = pkgs.garage_2;
 
         services.garage.settings = {
           metadata_dir = "/var/lib/garage/meta";
-          data_dir = [
+          data_dir = lib.mkDefault [
             {
-              path = cfg.dataDir;
-              inherit (cfg) capacity;
+              path = "/var/lib/garage/data";
+              capacity = "100G";
             }
           ];
           replication_factor = 1;
           rpc_bind_addr = "[::]:3901";
           s3_api = {
-            s3_region = cfg.s3Region;
+            s3_region = lib.mkDefault config.networking.hostName;
             api_bind_addr = "[::]:${toString s3Port}";
           };
           admin = {
@@ -65,31 +41,39 @@
           };
         };
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Garage";
-            category = "Infrastructure";
-            icon = "garage.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Infrastructure" = [
+              {
+                "Garage" = {
+                  href = "https://${serviceDomain}";
+                  icon = "garage.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Garage";
             url = internalUrl;
             group = "Infrastructure";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
-        nixfiles.caddy.vhosts.s3 = {
-          port = webuiPort;
-          proxy-auth = true;
-        };
+        services.caddy.virtualHosts."s3.nx3.eu".extraConfig = ''
+          import authelia
+          reverse_proxy 127.0.0.1:${toString webuiPort}
+        '';
 
         systemd.tmpfiles.rules = [
-          "d ${cfg.dataDir} 0770 - - -"
+          "d ${dataEntry.path} 0770 - - -"
         ];
 
         systemd.services.garage-layout-init = {
@@ -128,7 +112,7 @@
               exit 0
             fi
 
-            garage layout assign -z ${lib.escapeShellArg cfg.zone} -c ${lib.escapeShellArg cfg.capacity} "$node_id"
+            garage layout assign -z ${lib.escapeShellArg zone} -c ${lib.escapeShellArg dataEntry.capacity} "$node_id"
 
             version=$(garage layout show 2>/dev/null | grep -oP 'apply --version \K[0-9]+')
             garage layout apply --version "$version"
@@ -145,7 +129,7 @@
             CONFIG_PATH = "/etc/garage.toml";
             API_BASE_URL = "http://localhost:${toString adminPort}";
             S3_ENDPOINT_URL = "http://localhost:${toString s3Port}";
-            S3_REGION = cfg.s3Region;
+            S3_REGION = config.services.garage.settings.s3_api.s3_region;
             PORT = toString webuiPort;
           };
           serviceConfig = {

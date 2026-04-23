@@ -7,5 +7,6 @@
     ./netbird/flake-module.nix
     ./remote-builder/flake-module.nix
     ./rosenpass/flake-module.nix
+    ./snapshot-backup/flake-module.nix
   ];
 }

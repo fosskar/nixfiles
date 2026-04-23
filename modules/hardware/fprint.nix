@@ -22,6 +22,6 @@
           greetd = fprintService null;
         };
 
-      nixfiles.preservation.directories = [ "/var/lib/fprint" ];
+      preservation.preserveAt."/persist".directories = [ "/var/lib/fprint" ];
     };
 }

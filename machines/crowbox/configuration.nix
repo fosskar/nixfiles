@@ -6,7 +6,7 @@
 {
   imports = [
     self.modules.nixos.btrfs
-    self.modules.nixos.tuned
+    self.modules.nixos.tunedServerPowersave
     self.modules.nixos.preservation
     self.modules.nixos.opencrow
     self.modules.nixos.nostrRelay
@@ -25,8 +25,6 @@
         "/root"
       ];
     };
-
-    tuned.profile = "server-powersave";
   };
 
   clan.core.settings.machine-id.enable = true;

@@ -7,15 +7,14 @@
       ...
     }:
     let
-      cfg = config.nixfiles.arrStack;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "seerr.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 5055;
       internalUrl = "http://${bindAddress}:${toString port}";
     in
     {
-      config = lib.mkIf cfg.seerr.enable {
+      config = {
         # --- service ---
 
         services.seerr = {
@@ -28,32 +27,40 @@
 
         # --- homepage ---
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Seerr";
-            category = "Media";
-            icon = "jellyseerr.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Media" = [
+              {
+                "Seerr" = {
+                  href = "https://${serviceDomain}";
+                  icon = "jellyseerr.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
         # --- gatus ---
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Seerr";
             url = internalUrl;
             group = "Media";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
         # --- caddy ---
 
         # no proxy-auth - seerr has built-in auth
-        nixfiles.caddy.vhosts.seerr = {
-          inherit port;
-        };
+        services.caddy.virtualHosts."seerr.nx3.eu".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
 
         # --- backup ---
 

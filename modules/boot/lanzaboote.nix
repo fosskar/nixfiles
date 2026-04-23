@@ -24,6 +24,6 @@
       environment.systemPackages = [ pkgs.sbctl ];
 
       # persist secure boot keys
-      nixfiles.preservation.directories = [ pkiBundle ];
+      preservation.preserveAt."/persist".directories = [ pkiBundle ];
     };
 }

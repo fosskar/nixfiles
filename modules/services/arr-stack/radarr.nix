@@ -7,15 +7,14 @@
       ...
     }:
     let
-      cfg = config.nixfiles.arrStack;
-      acmeDomain = config.nixfiles.caddy.domain;
+      acmeDomain = "nx3.eu";
       serviceDomain = "radarr.${acmeDomain}";
       bindAddress = "127.0.0.1";
       port = 7878;
       internalUrl = "http://${bindAddress}:${toString port}";
     in
     {
-      config = lib.mkIf cfg.radarr.enable {
+      config = {
         # --- service ---
 
         services.radarr = {
@@ -27,32 +26,40 @@
 
         # --- homepage ---
 
-        nixfiles.homepage.entries = lib.mkIf config.services.homepage-dashboard.enable [
+        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
           {
-            name = "Radarr";
-            category = "Arr Stack";
-            icon = "radarr.svg";
-            href = "https://${serviceDomain}";
-            siteMonitor = internalUrl;
+            "Arr Stack" = [
+              {
+                "Radarr" = {
+                  href = "https://${serviceDomain}";
+                  icon = "radarr.svg";
+                  siteMonitor = internalUrl;
+                };
+              }
+            ];
           }
         ];
 
         # --- gatus ---
 
-        nixfiles.gatus.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Radarr";
             url = internalUrl;
             group = "Arr Stack";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+            alerts = [ { type = "ntfy"; } ];
           }
         ];
 
         # --- caddy ---
 
-        nixfiles.caddy.vhosts.radarr = {
-          inherit port;
-          proxy-auth = cfg.authelia.enable;
-        };
+        services.caddy.virtualHosts."radarr.nx3.eu".extraConfig = ''
+          ${lib.optionalString (config.services.authelia.instances.main.enable or false) "import authelia"}
+          reverse_proxy 127.0.0.1:${toString port}
+        '';
 
         # --- backup ---
 

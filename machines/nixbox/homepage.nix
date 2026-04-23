@@ -1,7 +1,7 @@
 _: {
-  nixfiles.homepage = {
+  services.homepage-dashboard = {
     # layout ordering and column config
-    layout = [
+    settings.layout = [
       {
         Network = {
           header = true;
@@ -59,7 +59,7 @@ _: {
     ];
 
     # services on other machines — can't auto-register cross-machine
-    manualServices = [
+    services = [
       {
         "Network" = [
           {

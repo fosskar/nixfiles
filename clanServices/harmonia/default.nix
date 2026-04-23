@@ -1,4 +1,4 @@
-{ self }:
+_:
 { lib, ... }:
 let
   inherit (lib) attrNames flip;
@@ -46,7 +46,7 @@ in
             ...
           }:
           {
-            imports = [ self.modules.nixos.harmonia ] ++ [ (varsForInstance instanceName pkgs) ];
+            imports = [ (varsForInstance instanceName pkgs) ];
 
             clan.core.vars.generators."harmonia-private" = {
               dependencies = [ "harmonia" ];
@@ -56,10 +56,16 @@ in
               '';
             };
 
-            nixfiles.harmonia = {
-              port = lib.mkDefault settings.port;
-              signKeyPaths = [ config.clan.core.vars.generators."harmonia-private".files.sign-key.path ];
+            services.harmonia.cache = {
+              enable = true;
+              settings.bind = "[::]:${toString settings.port}";
+              signKeyPaths = [
+                config.clan.core.vars.generators."harmonia-private".files.sign-key.path
+              ];
             };
+
+            nix.settings.allowed-users = lib.mkAfter [ "harmonia" ];
+            networking.firewall.allowedTCPPorts = [ settings.port ];
           };
       };
   };

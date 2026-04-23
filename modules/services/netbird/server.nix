@@ -10,7 +10,7 @@
 
     let
       cfg = config.services.netbird.server;
-      hasPreservation = lib.hasAttrByPath [ "nixfiles" "preservation" "directories" ] options;
+      hasPreservation = lib.hasAttrByPath [ "preservation" "preserveAt" ] options;
       stateDir = "/var/lib/netbird-server";
       settingsFormat = pkgs.formats.yaml { };
       # config without secrets — secrets injected at runtime
@@ -153,8 +153,8 @@
 
         # --- persistence ---
 
-        nixfiles = lib.optionalAttrs hasPreservation {
-          preservation.directories = [
+        preservation = lib.optionalAttrs hasPreservation {
+          preserveAt."/persist".directories = [
             {
               directory = "/var/lib/netbird-server";
               user = "netbird";
