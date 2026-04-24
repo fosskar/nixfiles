@@ -10,7 +10,7 @@ jobs:
   update:
     runs-on: codeberg-small
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.TOKEN }}

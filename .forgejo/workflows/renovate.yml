@@ -10,7 +10,7 @@ jobs:
   renovate:
     runs-on: codeberg-small
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: install nix
         uses: https://github.com/NixOS/nix-installer-action@main
         with:
