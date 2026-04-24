@@ -12,7 +12,7 @@
     self.modules.nixos.opencrow
     self.modules.nixos.nostrRelay
   ]
-  ++ (mylib.scanPaths ./. { exclude = [ "signal-cli.nix" ]; });
+  ++ (mylib.scanPaths ./. { });
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
