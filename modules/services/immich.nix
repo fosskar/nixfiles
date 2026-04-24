@@ -52,7 +52,7 @@
                     buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.openvino ];
                   });
               openvino = pyPrev.openvino.overrideAttrs (_: {
-                doInstallCheck = false;
+                pythonImportsCheck = [ ];
               });
             };
           };
