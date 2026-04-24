@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.gamemode =
+  flake.modules.nixos.gaming =
     { config, pkgs, ... }:
     {
       users.groups.gamemode.members = config.users.groups.wheel.members;

@@ -7,8 +7,12 @@
 {
   imports = [
     self.modules.nixos.gaming
-    self.modules.nixos.steam
-    self.modules.nixos.gamemode
+    self.modules.nixos.dmsGreeter
+    self.modules.nixos.nostrChat
+    self.modules.nixos.hyprland
+    self.modules.nixos.betaflight
+    self.modules.nixos.wooting
+    self.modules.nixos.arctisNovaProWireless
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.btrfs

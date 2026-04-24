@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.dms =
+  flake.modules.nixos.dmsGreeter =
     { inputs, ... }:
     {
       imports = [ inputs.dms.nixosModules.greeter ];

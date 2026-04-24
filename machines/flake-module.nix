@@ -381,9 +381,7 @@ in
               yubikey
               yubikeyGpgSsh
               yubikeyU2f
-              dms
               niri
-              nostrChat
             ];
           };
         };

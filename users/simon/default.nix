@@ -1,12 +1,13 @@
 {
   lib,
   pkgs,
+  inputs,
   mylib,
   ...
 }:
 {
   home-manager.users.simon = {
-    imports = mylib.scanPaths ./. { };
+    imports = [ inputs.self.modules.homeManager.hyprland ] ++ mylib.scanPaths ./. { };
 
     config = {
       home = {
