@@ -158,9 +158,9 @@
         };
       };
 
-      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-        {
-          "Files" = [
+      services.homepage-dashboard.serviceGroups."Files" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
             {
               "Paperless" = {
                 href = "https://${serviceDomain}";
@@ -169,8 +169,6 @@
               };
             }
           ];
-        }
-      ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {

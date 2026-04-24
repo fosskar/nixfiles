@@ -116,9 +116,9 @@ _: {
               port = beszelPort;
             };
 
-            services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-              {
-                "Monitoring" = [
+            services.homepage-dashboard.serviceGroups."Monitoring" =
+              lib.mkIf config.services.homepage-dashboard.enable
+                [
                   {
                     "Beszel" = {
                       href = "https://${beszelDomain}";
@@ -127,8 +127,6 @@ _: {
                     };
                   }
                 ];
-              }
-            ];
 
             services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
               {

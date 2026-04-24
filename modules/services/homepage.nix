@@ -1,8 +1,18 @@
 {
   flake.modules.nixos.homepage =
-    { config, ... }:
+    { config, lib, ... }:
+    let
+      cfg = config.services.homepage-dashboard;
+      serviceEntry = lib.types.attrsOf (lib.types.attrsOf lib.types.anything);
+    in
     {
-      services.homepage-dashboard = {
+      options.services.homepage-dashboard.serviceGroups = lib.mkOption {
+        type = lib.types.attrsOf (lib.types.listOf serviceEntry);
+        default = { };
+        description = "homepage services keyed by group, rendered into services.yaml once.";
+      };
+
+      config.services.homepage-dashboard = {
         enable = true;
         listenPort = 8082;
         openFirewall = false;
@@ -20,9 +30,11 @@
         };
 
         customJS = "";
+
+        services = lib.mapAttrsToList (name: services: { ${name} = services; }) cfg.serviceGroups;
       };
 
-      services.caddy.virtualHosts."home.nx3.eu".extraConfig = ''
+      config.services.caddy.virtualHosts."home.nx3.eu".extraConfig = ''
         reverse_proxy 127.0.0.1:${toString config.services.homepage-dashboard.listenPort}
       '';
     };

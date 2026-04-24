@@ -192,9 +192,9 @@
         };
       };
 
-      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-        {
-          "Files" = [
+      services.homepage-dashboard.serviceGroups."Files" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
             {
               "Nextcloud" = {
                 href = "https://${canonicalDomain}";
@@ -203,8 +203,6 @@
               };
             }
           ];
-        }
-      ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {

@@ -226,9 +226,9 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-          {
-            "Monitoring" = [
+        services.homepage-dashboard.serviceGroups."Monitoring" =
+          lib.mkIf config.services.homepage-dashboard.enable
+            [
               {
                 "Grafana" = {
                   href = "https://${serviceDomain}";
@@ -237,8 +237,6 @@
                 };
               }
             ];
-          }
-        ];
 
         # --- gatus ---
 

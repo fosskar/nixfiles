@@ -59,112 +59,102 @@ _: {
     ];
 
     # services on other machines — can't auto-register cross-machine
-    services = [
-      {
-        "Network" = [
-          {
-            "OpenWrt Router" = {
-              href = "https://192.168.10.1";
-              icon = "openwrt.svg";
-              siteMonitor = "https://192.168.10.1";
-            };
-          }
-          {
-            "OpenWrt AP" = {
-              href = "https://192.168.10.2";
-              icon = "openwrt.svg";
-              siteMonitor = "https://192.168.10.2";
-            };
-          }
-          {
-            "AdGuard Home" = {
-              href = "http://192.168.10.1:8080";
-              icon = "adguard-home.svg";
-              siteMonitor = "http://192.168.10.1:8080";
-            };
-          }
-          {
-            "NetBird" = {
-              href = "https://nb.fosskar.eu";
-              icon = "netbird.svg";
-              siteMonitor = "https://nb.fosskar.eu";
-            };
-          }
-        ];
-      }
-      {
-        "Infrastructure" = [
-          {
-            "JetKVM HA" = {
-              href = "http://jetkvm-ha.lan";
-              icon = "mdi-console";
-              siteMonitor = "http://192.168.10.30";
-            };
-          }
-          {
-            "ASRock Rack BMC" = {
-              href = "https://192.168.10.114";
-              icon = "mdi-server-network";
-              siteMonitor = "https://192.168.10.114";
-            };
-          }
-          {
-            "HP Drucker" = {
-              href = "http://192.168.10.153";
-              icon = "mdi-printer";
-              siteMonitor = "http://192.168.10.153";
-            };
-          }
-        ];
-      }
-      {
-        "AI / LLM" = [
-          {
-            "Ollama" = {
-              description = "local llm inference engine";
-              href = "http://127.0.0.1:11434";
-              icon = "ollama.png";
-              siteMonitor = "http://127.0.0.1:11434";
-            };
-          }
-        ];
-      }
-      {
-        "Tools" = [
-          {
-            "fosskar's bliki" = {
-              href = "https://fosskar.nx3.eu/";
-              icon = "mdi-book-open-variant";
-              siteMonitor = "https://fosskar.nx3.eu/";
-            };
-          }
-        ];
-      }
-      {
-        "Automation" = [
-          {
-            "Buildbot" = {
-              href = "https://buildbot.fosskar.eu/";
-              icon = "buildbot.svg";
-              siteMonitor = "https://buildbot.fosskar.eu/";
-            };
-          }
-          {
-            "Home Assistant" = {
-              href = "https://ha.fosskar.eu";
-              icon = "home-assistant.svg";
-              siteMonitor = "http://192.168.10.30";
-            };
-          }
-          {
-            "Syncthing" = {
-              href = "http://127.0.0.1:8384";
-              icon = "syncthing.svg";
-            };
-          }
-        ];
-      }
-    ];
+    serviceGroups = {
+      "Network" = [
+        {
+          "OpenWrt Router" = {
+            href = "https://192.168.10.1";
+            icon = "openwrt.svg";
+            siteMonitor = "https://192.168.10.1";
+          };
+        }
+        {
+          "OpenWrt AP" = {
+            href = "https://192.168.10.2";
+            icon = "openwrt.svg";
+            siteMonitor = "https://192.168.10.2";
+          };
+        }
+        {
+          "AdGuard Home" = {
+            href = "http://192.168.10.1:8080";
+            icon = "adguard-home.svg";
+            siteMonitor = "http://192.168.10.1:8080";
+          };
+        }
+        {
+          "NetBird" = {
+            href = "https://nb.fosskar.eu";
+            icon = "netbird.svg";
+            siteMonitor = "https://nb.fosskar.eu";
+          };
+        }
+      ];
+      "Infrastructure" = [
+        {
+          "JetKVM HA" = {
+            href = "http://jetkvm-ha.lan";
+            icon = "mdi-console";
+            siteMonitor = "http://192.168.10.30";
+          };
+        }
+        {
+          "ASRock Rack BMC" = {
+            href = "https://192.168.10.114";
+            icon = "mdi-server-network";
+            siteMonitor = "https://192.168.10.114";
+          };
+        }
+        {
+          "HP Drucker" = {
+            href = "http://192.168.10.153";
+            icon = "mdi-printer";
+            siteMonitor = "http://192.168.10.153";
+          };
+        }
+      ];
+      "AI / LLM" = [
+        {
+          "Ollama" = {
+            description = "local llm inference engine";
+            href = "http://127.0.0.1:11434";
+            icon = "ollama.png";
+            siteMonitor = "http://127.0.0.1:11434";
+          };
+        }
+      ];
+      "Tools" = [
+        {
+          "fosskar's bliki" = {
+            href = "https://fosskar.nx3.eu/";
+            icon = "mdi-book-open-variant";
+            siteMonitor = "https://fosskar.nx3.eu/";
+          };
+        }
+      ];
+      "Automation" = [
+        {
+          "Buildbot" = {
+            href = "https://buildbot.fosskar.eu/";
+            icon = "buildbot.svg";
+            siteMonitor = "https://buildbot.fosskar.eu/";
+          };
+        }
+        {
+          "Home Assistant" = {
+            href = "https://ha.fosskar.eu";
+            icon = "home-assistant.svg";
+            siteMonitor = "http://192.168.10.30";
+          };
+        }
+        {
+          "Syncthing" = {
+            href = "http://127.0.0.1:8384";
+            icon = "syncthing.svg";
+          };
+        }
+      ];
+    };
 
     bookmarks = [
       {

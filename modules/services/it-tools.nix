@@ -12,9 +12,9 @@
     in
     {
       # --- homepage ---
-      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-        {
-          "Tools" = [
+      services.homepage-dashboard.serviceGroups."Tools" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
             {
               "IT Tools" = {
                 href = "https://${serviceDomain}";
@@ -23,8 +23,6 @@
               };
             }
           ];
-        }
-      ];
 
       # --- gatus ---
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [

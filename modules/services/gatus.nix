@@ -54,9 +54,9 @@
         reverse_proxy 127.0.0.1:${toString port}
       '';
 
-      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-        {
-          "Monitoring" = [
+      services.homepage-dashboard.serviceGroups."Monitoring" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
             {
               "Gatus" = {
                 href = "https://gatus.nx3.eu";
@@ -65,7 +65,5 @@
               };
             }
           ];
-        }
-      ];
     };
 }

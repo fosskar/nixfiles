@@ -211,9 +211,9 @@
         "video"
       ];
 
-      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-        {
-          "Media" = [
+      services.homepage-dashboard.serviceGroups."Media" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
             {
               "Immich" = {
                 href = "https://${serviceDomain}";
@@ -222,8 +222,6 @@
               };
             }
           ];
-        }
-      ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {

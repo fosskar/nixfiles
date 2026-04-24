@@ -98,9 +98,9 @@
         };
       };
 
-      services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-        {
-          "Security" = [
+      services.homepage-dashboard.serviceGroups."Security" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
             {
               "Vaultwarden" = {
                 href = "https://${serviceDomain}";
@@ -109,8 +109,6 @@
               };
             }
           ];
-        }
-      ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {

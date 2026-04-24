@@ -41,9 +41,9 @@
           };
         };
 
-        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-          {
-            "Infrastructure" = [
+        services.homepage-dashboard.serviceGroups."Infrastructure" =
+          lib.mkIf config.services.homepage-dashboard.enable
+            [
               {
                 "Garage" = {
                   href = "https://${serviceDomain}";
@@ -52,8 +52,6 @@
                 };
               }
             ];
-          }
-        ];
 
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {

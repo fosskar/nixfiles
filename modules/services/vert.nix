@@ -37,9 +37,9 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-          {
-            "Tools" = [
+        services.homepage-dashboard.serviceGroups."Tools" =
+          lib.mkIf config.services.homepage-dashboard.enable
+            [
               {
                 "Vert" = {
                   href = "https://${serviceDomain}";
@@ -48,8 +48,6 @@
                 };
               }
             ];
-          }
-        ];
 
         # --- gatus ---
 

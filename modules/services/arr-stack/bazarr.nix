@@ -28,9 +28,9 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-          {
-            "Arr Stack" = [
+        services.homepage-dashboard.serviceGroups."Arr Stack" =
+          lib.mkIf config.services.homepage-dashboard.enable
+            [
               {
                 "Bazarr" = {
                   href = "https://${serviceDomain}";
@@ -39,8 +39,6 @@
                 };
               }
             ];
-          }
-        ];
 
         # --- gatus ---
 

@@ -27,9 +27,9 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-          {
-            "Media" = [
+        services.homepage-dashboard.serviceGroups."Media" =
+          lib.mkIf config.services.homepage-dashboard.enable
+            [
               {
                 "Seerr" = {
                   href = "https://${serviceDomain}";
@@ -38,8 +38,6 @@
                 };
               }
             ];
-          }
-        ];
 
         # --- gatus ---
 

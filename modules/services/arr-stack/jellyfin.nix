@@ -40,9 +40,9 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.services = lib.mkIf config.services.homepage-dashboard.enable [
-          {
-            "Media" = [
+        services.homepage-dashboard.serviceGroups."Media" =
+          lib.mkIf config.services.homepage-dashboard.enable
+            [
               {
                 "Jellyfin" = {
                   href = "https://${serviceDomain}";
@@ -51,8 +51,6 @@
                 };
               }
             ];
-          }
-        ];
 
         # --- gatus ---
 
