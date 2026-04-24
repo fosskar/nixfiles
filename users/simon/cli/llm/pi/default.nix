@@ -20,7 +20,7 @@ let
     name: _: lib.nameValuePair ".pi/agent/skills/${name}" { source = ./skills/${name}; }
   ) (lib.filterAttrs (_: type: type == "directory") skillDirs);
 
-  # declarative pi settings — source of truth in nixfiles.
+  # declarative pi settings.
   # merged on top of existing local settings.json (or deployed 1:1 if none exists).
   piSettings = {
     lastChangelogVersion = "99.99.99";

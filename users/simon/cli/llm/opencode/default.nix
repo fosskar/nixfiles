@@ -48,7 +48,7 @@
             };
             options = {
               nixos = {
-                expr = "(builtins.getFlake \"/home/simon/code/nixfiles\").nixosConfigurations.nixfiles.options";
+                expr = "(builtins.getFlake \"/home/simon/code/nixfiles\").nixosConfigurations.simon-desktop.options";
               };
               home-manager = {
                 expr = "(builtins.getFlake \"/home/simon/code/nixfiles\").homeConfigurations.simon.options";
