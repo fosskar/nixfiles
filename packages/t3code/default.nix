@@ -14,20 +14,19 @@ let
     hash = "sha256-glYnF8UA5s4rrpUJuvk4HlQtyMikbckIkmMIhnJugO4=";
   };
 
-  extracted = appimageTools.extractType2 { inherit pname version src; };
+  appimageContents = appimageTools.extractType2 { inherit pname version src; };
 in
-appimageTools.wrapAppImage {
-  inherit pname version;
-  src = extracted;
+appimageTools.wrapType2 {
+  inherit pname version src;
   nativeBuildInputs = [ makeWrapper ];
 
   extraInstallCommands = ''
-    install -Dm444 ${extracted}/t3code.desktop $out/share/applications/t3code.desktop
+    install -Dm444 ${appimageContents}/t3code.desktop $out/share/applications/t3code.desktop
     substituteInPlace $out/share/applications/t3code.desktop \
       --replace-quiet "Exec=AppRun --no-sandbox %U" "Exec=t3code" \
       --replace-quiet "Exec=AppRun" "Exec=t3code"
-    cp -r ${extracted}/usr/share/icons $out/share/icons 2>/dev/null || true
-    install -Dm444 ${extracted}/t3code.png $out/share/icons/hicolor/1024x1024/apps/t3code.png 2>/dev/null || true
+    cp -r ${appimageContents}/usr/share/icons $out/share/icons 2>/dev/null || true
+    install -Dm444 ${appimageContents}/t3code.png $out/share/icons/hicolor/1024x1024/apps/t3code.png 2>/dev/null || true
 
     wrapProgram $out/bin/t3code \
       --add-flags "--ozone-platform-hint=auto" \
