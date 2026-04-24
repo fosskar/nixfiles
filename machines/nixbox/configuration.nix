@@ -26,6 +26,8 @@
     self.modules.nixos.docker
     self.modules.nixos.vert
     self.modules.nixos.homepage
+    self.modules.nixos.ollama
+    self.modules.nixos.ups
     self.modules.nixos.gatus
     self.modules.nixos.ntfy
     self.modules.nixos.garage
