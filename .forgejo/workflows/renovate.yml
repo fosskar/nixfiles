@@ -22,5 +22,6 @@ jobs:
           RENOVATE_ENDPOINT: ${{ forgejo.server_url }}
           RENOVATE_REPOSITORIES: ${{ forgejo.repository }}
           RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_GITHUB_COM_TOKEN: ${{ secrets.RENOVATE_GITHUB_COM_TOKEN }}
           LOG_LEVEL: info
         run: nix run nixpkgs#renovate
