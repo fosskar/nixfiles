@@ -2,6 +2,7 @@
   flake.modules.nixos.caddy =
     {
       config,
+      domains,
       pkgs,
       ...
     }:
@@ -38,7 +39,7 @@
             }
           }
         '';
-        virtualHosts."*.nx3.eu".extraConfig = "";
+        virtualHosts."*.${domains.local}".extraConfig = "";
       };
 
       networking.firewall = {

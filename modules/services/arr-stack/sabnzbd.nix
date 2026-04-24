@@ -2,17 +2,18 @@
   flake.modules.nixos.arrStack =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
       mediaRoot = "/tank/media";
-      acmeDomain = "nx3.eu";
-      serviceDomain = "sabnzbd.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8085;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "sabnzbd";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8085;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       config = {
@@ -39,8 +40,8 @@
           secretFiles = [ config.clan.core.vars.generators.sabnzbd.files.secret.path ];
           settings = {
             misc = {
-              inherit port;
-              host_whitelist = "nixbox, sabnzbd.nx3.eu";
+              port = listenPort;
+              host_whitelist = "nixbox, ${localHost}";
               download_dir = "${mediaRoot}/downloads/incomplete";
               complete_dir = "${mediaRoot}/downloads/complete";
               permissions = "770";
@@ -70,9 +71,9 @@
             [
               {
                 "SABnzbd" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "sabnzbd.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -82,7 +83,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "SABnzbd";
-            url = internalUrl;
+            url = listenUrl;
             group = "Arr Stack";
             enabled = true;
             interval = "5m";
@@ -93,9 +94,9 @@
 
         # --- caddy ---
 
-        services.caddy.virtualHosts."sabnzbd.nx3.eu".extraConfig = ''
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
           ${lib.optionalString (config.services.authelia.instances.main.enable or false) "import authelia"}
-          reverse_proxy 127.0.0.1:${toString port}
+          reverse_proxy ${listenUrl}
         '';
 
         # --- backup ---

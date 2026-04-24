@@ -1,8 +1,13 @@
 {
   flake.modules.nixos.acme =
-    { config, lib, ... }:
+    {
+      config,
+      domains,
+      lib,
+      ...
+    }:
     let
-      domain = "nx3.eu";
+      domain = domains.local;
     in
     {
       security.acme = {

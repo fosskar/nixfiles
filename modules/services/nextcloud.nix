@@ -2,19 +2,18 @@
   flake.modules.nixos.nextcloud =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "cloud.${acmeDomain}";
-      canonicalDomain = if publicDomain != null then "cloud.${publicDomain}" else serviceDomain;
-      port = 8009;
-      internalUrl = "http://127.0.0.1:${toString port}";
-      oidcDomain = if publicDomain != null then publicDomain else acmeDomain;
-      oidcIssuerUrl = "https://auth.${oidcDomain}";
+      serviceName = "cloud";
+      localHost = "${serviceName}.${domains.local}";
+      publicHost = "${serviceName}.${domains.public}";
+      listenPort = 8009;
+      listenUrl = "http://127.0.0.1:${toString listenPort}";
+      oidcIssuerUrl = "https://auth.${domains.public}";
     in
     {
       clan.core.vars.generators.nextcloud = {
@@ -60,8 +59,8 @@
           public = false;
           consent_mode = "implicit";
           redirect_uris = [
-            "https://${canonicalDomain}/apps/user_oidc/code"
-            "https://${serviceDomain}/apps/user_oidc/code"
+            "https://${publicHost}/apps/user_oidc/code"
+            "https://${localHost}/apps/user_oidc/code"
           ];
           scopes = [
             "openid"
@@ -75,13 +74,13 @@
         }
       ];
 
-      services.nginx.defaultHTTPListenPort = port;
-      services.nginx.virtualHosts.${canonicalDomain} = {
-        serverAliases = [ serviceDomain ];
+      services.nginx.defaultHTTPListenPort = listenPort;
+      services.nginx.virtualHosts.${publicHost} = {
+        serverAliases = [ localHost ];
         listen = lib.mkForce [
           {
             addr = "0.0.0.0";
-            inherit port;
+            port = listenPort;
           }
         ];
         extraConfig = ''
@@ -95,7 +94,7 @@
         enable = true;
         package = pkgs.nextcloud33;
         datadir = "/tank/apps/nextcloud";
-        hostName = canonicalDomain;
+        hostName = publicHost;
         https = false;
         autoUpdateApps.enable = false;
         appstoreEnable = false;
@@ -109,7 +108,7 @@
         notify_push = {
           enable = true;
           bendDomainToLocalhost = false;
-          nextcloudUrl = "http://${serviceDomain}:${toString port}";
+          nextcloudUrl = "http://${localHost}:${toString listenPort}";
         };
 
         database.createLocally = true;
@@ -155,15 +154,15 @@
 
         settings = {
           overwriteprotocol = "https";
-          "overwrite.cli.url" = "https://${canonicalDomain}";
+          "overwrite.cli.url" = "https://${publicHost}";
           trusted_proxies = [
             "127.0.0.1"
             "192.168.10.200"
             "100.64.0.0/10"
           ];
           trusted_domains = [
-            canonicalDomain
-            serviceDomain
+            publicHost
+            localHost
           ];
 
           default_phone_region = "DE";
@@ -197,9 +196,9 @@
           [
             {
               "Nextcloud" = {
-                href = "https://${canonicalDomain}";
+                href = "https://${publicHost}";
                 icon = "nextcloud.svg";
-                siteMonitor = "${internalUrl}/status.php";
+                siteMonitor = "${listenUrl}/status.php";
               };
             }
           ];
@@ -207,7 +206,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Nextcloud";
-          url = "https://${canonicalDomain}";
+          url = "https://${publicHost}";
           group = "Files";
           enabled = true;
           interval = "5m";
@@ -216,8 +215,8 @@
         }
       ];
 
-      services.caddy.virtualHosts."cloud.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
 
       clan.core.postgresql.enable = true;
@@ -305,7 +304,7 @@
             "$occ" files_external:create /shared local null::null -c datadir=/tank/shares/shared >/dev/null || true
           fi
 
-          "$occ" config:app:set notify_push base_endpoint --value="https://${canonicalDomain}/push"
+          "$occ" config:app:set notify_push base_endpoint --value="https://${publicHost}/push"
         '';
       };
     };

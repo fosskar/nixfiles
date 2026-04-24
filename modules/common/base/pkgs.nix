@@ -19,6 +19,7 @@
           unzip
           ripgrep
           pciutils
+          nvme-cli
         ];
       };
     };

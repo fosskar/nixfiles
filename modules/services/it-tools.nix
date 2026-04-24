@@ -2,13 +2,14 @@
   flake.modules.nixos.itTools =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "tools.${acmeDomain}";
+      serviceName = "tools";
+      localHost = "${serviceName}.${domains.local}";
     in
     {
       # --- homepage ---
@@ -17,9 +18,9 @@
           [
             {
               "IT Tools" = {
-                href = "https://${serviceDomain}";
+                href = "https://${localHost}";
                 icon = "it-tools.svg";
-                siteMonitor = "https://${serviceDomain}";
+                siteMonitor = "https://${localHost}";
               };
             }
           ];
@@ -28,7 +29,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "IT Tools";
-          url = "https://${serviceDomain}";
+          url = "https://${localHost}";
           group = "Tools";
           enabled = true;
           interval = "5m";
@@ -38,7 +39,7 @@
       ];
 
       # --- caddy ---
-      services.caddy.virtualHosts."tools.nx3.eu".extraConfig = ''
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
         root * ${pkgs.it-tools}/lib
         file_server
         try_files {path} {path}.html {path}/ =404

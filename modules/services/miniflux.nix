@@ -2,17 +2,17 @@
   flake.modules.nixos.miniflux =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "feed.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8787;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "feed";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8787;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       clan.core.vars.generators.miniflux = {
@@ -54,7 +54,7 @@
           }\" }}";
           public = false;
           consent_mode = "implicit";
-          redirect_uris = [ "https://${serviceDomain}/oauth2/oidc/callback" ];
+          redirect_uris = [ "https://${localHost}/oauth2/oidc/callback" ];
           scopes = [
             "openid"
             "profile"
@@ -73,14 +73,14 @@
         adminCredentialsFile = config.clan.core.vars.generators.miniflux.files."credentials".path;
 
         config = {
-          LISTEN_ADDR = "${bindAddress}:${toString port}";
-          BASE_URL = "https://${serviceDomain}";
+          LISTEN_ADDR = "${listenAddress}:${toString listenPort}";
+          BASE_URL = "https://${localHost}";
           CLEANUP_FREQUENCY_HOURS = "48";
 
           OAUTH2_PROVIDER = "oidc";
           OAUTH2_CLIENT_ID = "miniflux";
-          OAUTH2_REDIRECT_URL = "https://${serviceDomain}/oauth2/oidc/callback";
-          OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://auth.${publicDomain}";
+          OAUTH2_REDIRECT_URL = "https://${localHost}/oauth2/oidc/callback";
+          OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://auth.${domains.public}";
           OAUTH2_USER_CREATION = "1";
         };
       };
@@ -90,9 +90,9 @@
           [
             {
               "Miniflux" = {
-                href = "https://${serviceDomain}";
+                href = "https://${localHost}";
                 icon = "miniflux.svg";
-                siteMonitor = internalUrl;
+                siteMonitor = listenUrl;
               };
             }
           ];
@@ -100,7 +100,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Miniflux";
-          url = "https://${serviceDomain}";
+          url = "https://${localHost}";
           group = "Media";
           enabled = true;
           interval = "5m";
@@ -109,8 +109,8 @@
         }
       ];
 
-      services.caddy.virtualHosts."feed.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
 
       clan.core.postgresql.enable = true;

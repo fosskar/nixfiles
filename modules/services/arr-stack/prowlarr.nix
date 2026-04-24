@@ -2,16 +2,17 @@
   flake.modules.nixos.arrStack =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "prowlarr.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 9696;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "prowlarr";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 9696;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       config = {
@@ -20,7 +21,7 @@
         services.prowlarr = {
           enable = true;
           openFirewall = false;
-          settings.server.port = port;
+          settings.server.port = listenPort;
         };
 
         # --- homepage ---
@@ -30,9 +31,9 @@
             [
               {
                 "Prowlarr" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "prowlarr.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -42,7 +43,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Prowlarr";
-            url = internalUrl;
+            url = listenUrl;
             group = "Arr Stack";
             enabled = true;
             interval = "5m";
@@ -53,9 +54,9 @@
 
         # --- caddy ---
 
-        services.caddy.virtualHosts."prowlarr.nx3.eu".extraConfig = ''
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
           ${lib.optionalString (config.services.authelia.instances.main.enable or false) "import authelia"}
-          reverse_proxy 127.0.0.1:${toString port}
+          reverse_proxy ${listenUrl}
         '';
 
         # --- backup ---

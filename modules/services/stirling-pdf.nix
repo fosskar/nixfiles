@@ -2,23 +2,24 @@
   flake.modules.nixos.stirlingPdf =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "pdf.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8180;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "pdf";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8180;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       services.stirling-pdf = {
         enable = true;
         package = pkgs.custom.stirling-pdf;
         environment = {
-          SERVER_PORT = toString port;
+          SERVER_PORT = toString listenPort;
           SYSTEM_ENABLEANALYTICS = "false";
           SECURITY_ENABLELOGIN = "false";
           JAVA_TOOL_OPTIONS = "-Xmx512m";
@@ -31,9 +32,9 @@
           [
             {
               "Stirling PDF" = {
-                href = "https://${serviceDomain}";
+                href = "https://${localHost}";
                 icon = "stirling-pdf.svg";
-                siteMonitor = internalUrl;
+                siteMonitor = listenUrl;
               };
             }
           ];
@@ -41,7 +42,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Stirling PDF";
-          url = "https://${serviceDomain}";
+          url = "https://${localHost}";
           group = "Tools";
           enabled = true;
           interval = "5m";
@@ -50,8 +51,8 @@
         }
       ];
 
-      services.caddy.virtualHosts."pdf.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
     };
 }

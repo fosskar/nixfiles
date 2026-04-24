@@ -2,17 +2,18 @@
   flake.modules.nixos.authelia =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "auth.${acmeDomain}";
-      bindAddress = "0.0.0.0";
-      port = 9091;
-      internalUrl = "http://127.0.0.1:${toString port}";
+      serviceName = "auth";
+      localHost = "${serviceName}.${domains.local}";
+      publicHost = "${serviceName}.${domains.public}";
+      listenAddress = "0.0.0.0";
+      listenPort = 9091;
+      listenUrl = "http://127.0.0.1:${toString listenPort}";
 
       secretsPermission = {
         secret = true;
@@ -46,7 +47,7 @@
             pwgen -s 32 1 | tr -d '\n' > "$out/lldap-password"
 
             authelia crypto certificate rsa generate \
-              --common-name "${serviceDomain}" \
+              --common-name "${localHost}" \
               --bits 4096 \
               --file.private-key jwks-private-key \
               --file.certificate jwks-certificate \
@@ -85,14 +86,14 @@
 
             totp = {
               disable = false;
-              issuer = publicDomain;
+              issuer = domains.public;
               algorithm = "sha512";
               digits = 6;
               period = 30;
               skew = 1;
             };
 
-            server.address = "tcp://${bindAddress}:${toString port}";
+            server.address = "tcp://${listenAddress}:${toString listenPort}";
 
             authentication_backend.ldap = {
               implementation = "lldap";
@@ -109,14 +110,14 @@
               remember_me = "1M";
               cookies = [
                 {
-                  domain = acmeDomain;
-                  authelia_url = "https://${serviceDomain}";
+                  domain = domains.local;
+                  authelia_url = "https://${localHost}";
                 }
               ]
               ++ [
                 {
-                  domain = publicDomain;
-                  authelia_url = "https://auth.${publicDomain}";
+                  domain = domains.public;
+                  authelia_url = "https://${publicHost}";
                 }
               ];
             };
@@ -131,7 +132,7 @@
               default_policy = "two_factor";
               rules = [
                 {
-                  domain = [ "*.${acmeDomain}" ];
+                  domain = [ "*.${domains.local}" ];
                   policy = "one_factor";
                 }
               ];
@@ -159,9 +160,9 @@
             [
               {
                 "Authelia" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "authelia.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -169,7 +170,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Authelia";
-            url = "https://${serviceDomain}";
+            url = "https://${localHost}";
             group = "Security";
             enabled = true;
             interval = "5m";
@@ -178,8 +179,8 @@
           }
         ];
 
-        services.caddy.virtualHosts."auth.nx3.eu".extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString port}
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          reverse_proxy ${listenUrl}
         '';
 
         clan.core.state.authelia = {

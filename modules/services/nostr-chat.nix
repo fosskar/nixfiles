@@ -1,6 +1,11 @@
 {
   flake.modules.nixos.nostrChat =
-    { inputs, config, ... }:
+    {
+      config,
+      domains,
+      inputs,
+      ...
+    }:
     {
       imports = [ inputs.noctalia-plugins.nixosModules.nostr-chat ];
 
@@ -16,7 +21,7 @@
 
       services.nostr-chat = {
         peerPubkey = "0fa77e8daf14b2007acdf8d65180792321b45504c8c9ec1a59f04ea8a9b3dde1";
-        relays = [ "wss://nostr.fosskar.eu" ];
+        relays = [ "wss://nostr.${domains.public}" ];
         displayName = "dexter";
         secretCommand = "cat ${config.clan.core.vars.generators.nostr-chat.files."nsec".path}";
       };

@@ -2,16 +2,17 @@
   flake.modules.nixos.arrStack =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "bazarr.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 6767;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "bazarr";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 6767;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       config = {
@@ -21,7 +22,7 @@
           enable = true;
           openFirewall = false;
           group = "media";
-          listenPort = port;
+          inherit listenPort;
         };
 
         systemd.services.bazarr.serviceConfig.UMask = "0027";
@@ -33,9 +34,9 @@
             [
               {
                 "Bazarr" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "bazarr.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -45,7 +46,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Bazarr";
-            url = internalUrl;
+            url = listenUrl;
             group = "Arr Stack";
             enabled = true;
             interval = "5m";
@@ -56,9 +57,9 @@
 
         # --- caddy ---
 
-        services.caddy.virtualHosts."bazarr.nx3.eu".extraConfig = ''
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
           ${lib.optionalString (config.services.authelia.instances.main.enable or false) "import authelia"}
-          reverse_proxy 127.0.0.1:${toString port}
+          reverse_proxy ${listenUrl}
         '';
 
         # --- backup ---

@@ -4,17 +4,19 @@
   flake.modules.nixos.garage =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "s3.${acmeDomain}";
-      webuiPort = 3909;
+      serviceName = "s3";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 3909;
       adminPort = 3903;
       s3Port = 3900;
-      internalUrl = "http://127.0.0.1:${toString webuiPort}";
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
       zone = "dc1";
       dataEntry = builtins.head config.services.garage.settings.data_dir;
     in
@@ -46,9 +48,9 @@
             [
               {
                 "Garage" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "garage.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -56,7 +58,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Garage";
-            url = internalUrl;
+            url = listenUrl;
             group = "Infrastructure";
             enabled = true;
             interval = "5m";
@@ -65,9 +67,9 @@
           }
         ];
 
-        services.caddy.virtualHosts."s3.nx3.eu".extraConfig = ''
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
           import authelia
-          reverse_proxy 127.0.0.1:${toString webuiPort}
+          reverse_proxy ${listenUrl}
         '';
 
         systemd.tmpfiles.rules = [
@@ -128,7 +130,7 @@
             API_BASE_URL = "http://localhost:${toString adminPort}";
             S3_ENDPOINT_URL = "http://localhost:${toString s3Port}";
             S3_REGION = config.services.garage.settings.s3_api.s3_region;
-            PORT = toString webuiPort;
+            PORT = toString listenPort;
           };
           serviceConfig = {
             Restart = "always";

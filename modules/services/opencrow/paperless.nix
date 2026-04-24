@@ -1,6 +1,9 @@
 {
   flake.modules.nixos.opencrow =
-    { config, ... }:
+    { config, domains, ... }:
+    let
+      paperlessHost = "docs.${domains.local}";
+    in
     {
       clan.core.vars.generators.opencrow-paperless = {
         files.api-token.secret = true;
@@ -17,7 +20,7 @@
       };
 
       services.opencrow.environment = {
-        PAPERLESS_URL = "https://docs.nx3.eu";
+        PAPERLESS_URL = "https://${paperlessHost}";
       };
     };
 }

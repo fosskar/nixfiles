@@ -81,10 +81,10 @@
             }
           ];
         };
-        x509_cert = {
+        x509_cert = domains: {
           x509_cert = [
             {
-              sources = [ "https://nx3.eu:443" ];
+              sources = [ "https://${domains.local}:443" ];
               timeout = "5s";
             }
           ];
@@ -222,9 +222,16 @@
         };
 
       telegrafX509Cert =
-        { config, lib, ... }:
         {
-          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.x509_cert;
+          config,
+          domains,
+          lib,
+          ...
+        }:
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable (
+            inputConfigs.x509_cert domains
+          );
         };
     };
 }

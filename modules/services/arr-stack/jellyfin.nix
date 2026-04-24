@@ -2,16 +2,17 @@
   flake.modules.nixos.arrStack =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "jellyfin.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8096;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "jellyfin";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8096;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       config = {
@@ -45,9 +46,9 @@
             [
               {
                 "Jellyfin" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "jellyfin.png";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -57,7 +58,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Jellyfin";
-            url = internalUrl;
+            url = listenUrl;
             group = "Media";
             enabled = true;
             interval = "5m";
@@ -69,8 +70,8 @@
         # --- caddy ---
 
         # no proxy-auth - jellyfin has built-in auth
-        services.caddy.virtualHosts."jellyfin.nx3.eu".extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString port}
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          reverse_proxy ${listenUrl}
         '';
 
         # --- backup ---

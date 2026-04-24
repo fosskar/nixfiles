@@ -2,21 +2,24 @@
   flake.modules.nixos.gatus =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      port = 8700;
-      bindAddress = "127.0.0.1";
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "gatus";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8700;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       services.gatus = {
         enable = true;
         environmentFile = config.clan.core.vars.generators.ntfy.files."token-env".path;
         settings = {
-          web.port = port;
+          web.port = listenPort;
           storage = {
             type = "sqlite";
             path = "/var/lib/gatus/gatus.db";
@@ -50,8 +53,8 @@
         '';
       };
 
-      services.caddy.virtualHosts."gatus.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
 
       services.homepage-dashboard.serviceGroups."Monitoring" =
@@ -59,9 +62,9 @@
           [
             {
               "Gatus" = {
-                href = "https://gatus.nx3.eu";
+                href = "https://${localHost}";
                 icon = "gatus.svg";
-                siteMonitor = internalUrl;
+                siteMonitor = listenUrl;
               };
             }
           ];

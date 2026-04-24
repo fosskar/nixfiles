@@ -1,9 +1,10 @@
 {
   flake.modules.nixos.opencrow =
     {
+      config,
+      domains,
       inputs,
       pkgs,
-      config,
       ...
     }:
     let
@@ -86,8 +87,8 @@
       services.opencrow = commonInstance // {
         environment = commonInstance.environment // {
           OPENCROW_BACKEND = "nostr";
-          OPENCROW_NOSTR_RELAYS = "wss://nostr.fosskar.eu";
-          OPENCROW_NOSTR_DM_RELAYS = "wss://nostr.fosskar.eu";
+          OPENCROW_NOSTR_RELAYS = "wss://nostr.${domains.public}";
+          OPENCROW_NOSTR_DM_RELAYS = "wss://nostr.${domains.public}";
           OPENCROW_NOSTR_PRIVATE_KEY_FILE = "%d/nostr-private-key";
           OPENCROW_NOSTR_ALLOWED_USERS = "npub16le4pxhfvy04jwcp9rhw3ustkwt7sm0jydgq4lr3qderycrlm8ysjxmufc";
           OPENCROW_NOSTR_NAME = "dexter";

@@ -2,17 +2,17 @@
   flake.modules.nixos.vaultwarden =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "vault.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8222;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "vault";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8222;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       clan.core.vars.generators.vaultwarden = {
@@ -56,7 +56,7 @@
           consent_mode = "implicit";
           require_pkce = true;
           pkce_challenge_method = "S256";
-          redirect_uris = [ "https://${serviceDomain}/identity/connect/oidc-signin" ];
+          redirect_uris = [ "https://${localHost}/identity/connect/oidc-signin" ];
           scopes = [
             "openid"
             "offline_access"
@@ -79,9 +79,9 @@
         environmentFile = config.clan.core.vars.generators.vaultwarden.files."sso.env".path;
 
         config = {
-          DOMAIN = "https://${serviceDomain}";
-          ROCKET_ADDRESS = bindAddress;
-          ROCKET_PORT = port;
+          DOMAIN = "https://${localHost}";
+          ROCKET_ADDRESS = listenAddress;
+          ROCKET_PORT = listenPort;
 
           SIGNUPS_ALLOWED = false;
           INVITATIONS_ALLOWED = true;
@@ -91,7 +91,7 @@
           SSO_CLIENT_ID = "vaultwarden";
           SSO_ENABLED = true;
           SSO_ONLY = false;
-          SSO_AUTHORITY = "https://auth.${publicDomain}";
+          SSO_AUTHORITY = "https://auth.${domains.public}";
 
           # decouple vaultwarden session from sso token lifetime
           SSO_AUTH_ONLY_NOT_SESSION = true;
@@ -103,9 +103,9 @@
           [
             {
               "Vaultwarden" = {
-                href = "https://${serviceDomain}";
+                href = "https://${localHost}";
                 icon = "vaultwarden.svg";
-                siteMonitor = internalUrl;
+                siteMonitor = listenUrl;
               };
             }
           ];
@@ -113,7 +113,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Vaultwarden";
-          url = "https://${serviceDomain}";
+          url = "https://${localHost}";
           group = "Security";
           enabled = true;
           interval = "5m";
@@ -122,8 +122,8 @@
         }
       ];
 
-      services.caddy.virtualHosts."vault.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
 
       clan.core.postgresql.enable = lib.mkForce true;

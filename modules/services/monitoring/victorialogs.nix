@@ -6,12 +6,13 @@
       ...
     }:
     let
-      port = 9428;
+      listenAddress = "127.0.0.1";
+      listenPort = 9428;
     in
     {
       config = lib.mkIf config.services.victorialogs.enable {
         services.victorialogs = {
-          listenAddress = lib.mkDefault "127.0.0.1:${toString port}";
+          listenAddress = lib.mkDefault "${listenAddress}:${toString listenPort}";
           extraOptions = [ "-enableTCP6" ];
         };
 

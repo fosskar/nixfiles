@@ -1,13 +1,18 @@
 {
   flake.modules.nixos.kanidm =
-    { config, pkgs, ... }:
+    {
+      config,
+      domains,
+      pkgs,
+      ...
+    }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "auth.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8443;
-      internalUrl = "https://${bindAddress}:${toString port}";
-      acmeCertDir = config.security.acme.certs.${acmeDomain}.directory;
+      serviceName = "auth";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8443;
+      listenUrl = "https://${listenAddress}:${toString listenPort}";
+      acmeCertDir = config.security.acme.certs.${domains.local}.directory;
     in
     {
       clan.core.vars.generators.kanidm = {
@@ -34,10 +39,10 @@
         package = pkgs.kanidmWithSecretProvisioning_1_8;
 
         serverSettings = {
-          origin = "https://${serviceDomain}";
-          domain = acmeDomain;
-          bindaddress = "${bindAddress}:${toString port}";
-          ldapbindaddress = "${bindAddress}:3636";
+          origin = "https://${localHost}";
+          domain = domains.local;
+          bindaddress = "${listenAddress}:${toString listenPort}";
+          ldapbindaddress = "${listenAddress}:3636";
 
           tls_chain = "${acmeCertDir}/fullchain.pem";
           tls_key = "${acmeCertDir}/key.pem";
@@ -51,8 +56,8 @@
         };
       };
 
-      services.caddy.virtualHosts.${serviceDomain}.extraConfig = ''
-        reverse_proxy ${internalUrl}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
     };
 }

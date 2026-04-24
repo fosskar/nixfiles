@@ -30,7 +30,12 @@
       type = "btrfs";
       deviceLabel = "root";
     };
-    preserveAt."/persist".directories = [ "/var/lib/private" ];
+    preserveAt."/persist".directories = [
+      {
+        directory = "/var/lib/private";
+        mode = "0700";
+      }
+    ];
   };
 
   clan.core.settings.machine-id.enable = true;

@@ -2,20 +2,21 @@
   flake.modules.nixos.victoriaMetrics =
     {
       config,
+      domains,
       lib,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "vm.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8428;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "vm";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8428;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       config = lib.mkIf config.services.victoriametrics.enable {
         services.victoriametrics = {
-          listenAddress = lib.mkDefault "${bindAddress}:${toString port}";
+          listenAddress = lib.mkDefault "${listenAddress}:${toString listenPort}";
           retentionPeriod = lib.mkDefault "3";
 
           extraOptions = [
@@ -79,9 +80,9 @@
             [
               {
                 "VictoriaMetrics" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "victoriametrics.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -91,7 +92,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "VictoriaMetrics";
-            url = internalUrl;
+            url = listenUrl;
             group = "Monitoring";
             enabled = true;
             interval = "5m";
@@ -102,9 +103,9 @@
 
         # --- caddy ---
 
-        services.caddy.virtualHosts."vm.nx3.eu".extraConfig = ''
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
           import authelia
-          reverse_proxy 127.0.0.1:${toString port}
+          reverse_proxy ${listenUrl}
         '';
       };
     };

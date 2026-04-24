@@ -2,32 +2,32 @@
   flake.modules.nixos.opencloud =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
       dataDir = config.services.opencloud.environment.STORAGE_USERS_POSIX_ROOT;
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "opencloud.${acmeDomain}";
-      bindAddress = "0.0.0.0";
-      port = 9200;
-      internalUrl = "http://127.0.0.1:${toString port}";
-      oidcDomain = if publicDomain != null then publicDomain else acmeDomain;
-      oidcIssuerUrl = "https://auth.${oidcDomain}";
+      serviceName = "opencloud";
+      localHost = "${serviceName}.${domains.local}";
+      publicHost = "${serviceName}.${domains.public}";
+      listenAddress = "0.0.0.0";
+      listenPort = 9200;
+      listenUrl = "http://127.0.0.1:${toString listenPort}";
+      oidcIssuerUrl = "https://auth.${domains.public}";
 
-      publicDomainUris = lib.optionals (publicDomain != null) [
-        "https://opencloud.${publicDomain}/"
-        "https://opencloud.${publicDomain}/oidc-callback.html"
-        "https://opencloud.${publicDomain}/oidc-silent-redirect.html"
-        "https://opencloud.${publicDomain}/web-oidc-callback"
+      publicHostUris = [
+        "https://${publicHost}/"
+        "https://${publicHost}/oidc-callback.html"
+        "https://${publicHost}/oidc-silent-redirect.html"
+        "https://${publicHost}/web-oidc-callback"
       ];
 
       oidcOrigins = [
-        "https://auth.${acmeDomain}"
-      ]
-      ++ lib.optionals (publicDomain != null) [ "https://auth.${publicDomain}" ];
+        "https://auth.${domains.local}"
+        "https://auth.${domains.public}"
+      ];
 
       settingsFormat = pkgs.formats.yaml { };
 
@@ -91,12 +91,12 @@
               client_id = "web";
               client_name = "OpenCloud Web";
               redirect_uris = [
-                "https://${serviceDomain}/"
-                "https://${serviceDomain}/oidc-callback.html"
-                "https://${serviceDomain}/oidc-silent-redirect.html"
-                "https://${serviceDomain}/web-oidc-callback"
+                "https://${localHost}/"
+                "https://${localHost}/oidc-callback.html"
+                "https://${localHost}/oidc-silent-redirect.html"
+                "https://${localHost}/web-oidc-callback"
               ]
-              ++ publicDomainUris;
+              ++ publicHostUris;
             }
           )
           (
@@ -130,9 +130,9 @@
 
         services.opencloud = {
           enable = true;
-          url = "https://${serviceDomain}";
-          address = bindAddress;
-          inherit port;
+          url = "https://${localHost}";
+          address = listenAddress;
+          port = listenPort;
 
           environment = {
             PROXY_TLS = "false";
@@ -151,7 +151,7 @@
             PROXY_USER_OIDC_CLAIM = "sub";
             PROXY_USER_CS3_CLAIM = "username";
             GRAPH_USERNAME_MATCH = "none";
-            WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${oidcDomain}/settings";
+            WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${domains.public}/settings";
 
             STORAGE_USERS_POSIX_ROOT = lib.mkDefault "/tank/apps/opencloud/data";
             STORAGE_USERS_POSIX_WATCH_FS = "true";
@@ -196,9 +196,9 @@
             [
               {
                 "OpenCloud" = {
-                  href = "https://${serviceDomain}";
-                  icon = "https://opencloud.${acmeDomain}/themes/opencloud/assets/favicon.svg";
-                  siteMonitor = internalUrl;
+                  href = "https://${localHost}";
+                  icon = "https://${localHost}/themes/opencloud/assets/favicon.svg";
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -206,7 +206,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "OpenCloud";
-            url = "https://${serviceDomain}";
+            url = "https://${localHost}";
             group = "Files";
             enabled = true;
             interval = "5m";
@@ -215,8 +215,8 @@
           }
         ];
 
-        services.caddy.virtualHosts."${serviceDomain}".extraConfig = ''
-          reverse_proxy ${internalUrl} {
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          reverse_proxy ${listenUrl} {
             flush_interval -1
             transport http {
               read_timeout 3600s

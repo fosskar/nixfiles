@@ -2,17 +2,18 @@
   flake.modules.nixos.immich =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "immich.${acmeDomain}";
-      bindAddress = "0.0.0.0";
-      port = 2283;
-      internalUrl = "http://127.0.0.1:${toString port}";
+      serviceName = "immich";
+      localHost = "${serviceName}.${domains.local}";
+      publicHost = "${serviceName}.${domains.public}";
+      listenAddress = "0.0.0.0";
+      listenPort = 2283;
+      listenUrl = "http://127.0.0.1:${toString listenPort}";
 
       # immich with openvino ML acceleration (inlined from old openvino.nix helper)
       immichPackage =
@@ -122,10 +123,10 @@
           consent_mode = "implicit";
           token_endpoint_auth_method = "client_secret_post";
           redirect_uris = [
-            "https://${serviceDomain}/auth/login"
-            "https://${serviceDomain}/user-settings"
-            "https://immich.${publicDomain}/auth/login"
-            "https://immich.${publicDomain}/user-settings"
+            "https://${localHost}/auth/login"
+            "https://${localHost}/user-settings"
+            "https://${publicHost}/auth/login"
+            "https://${publicHost}/user-settings"
             "app.immich:///oauth-callback"
           ];
           scopes = [
@@ -141,8 +142,8 @@
       services.immich = {
         enable = true;
         package = immichPackage;
-        host = bindAddress;
-        inherit port;
+        host = listenAddress;
+        port = listenPort;
         mediaLocation = "/tank/apps/immich";
         secretsFile = config.clan.core.vars.generators.immich.files."db-password.env".path;
 
@@ -175,7 +176,7 @@
 
         settings = {
           server = {
-            externalDomain = "https://${serviceDomain}";
+            externalDomain = "https://${localHost}";
             loginPageMessage = "henlo";
           };
           newVersionCheck.enabled = false;
@@ -199,7 +200,7 @@
             buttonText = "Login with Authelia";
             clientId = "immich";
             clientSecret._secret = config.clan.core.vars.generators.immich.files."oauth-client-secret".path;
-            issuerUrl = "https://auth.${publicDomain}/.well-known/openid-configuration";
+            issuerUrl = "https://auth.${domains.public}/.well-known/openid-configuration";
             scope = "openid profile email groups";
             roleClaim = "immich_role";
           };
@@ -216,9 +217,9 @@
           [
             {
               "Immich" = {
-                href = "https://${serviceDomain}";
+                href = "https://${localHost}";
                 icon = "immich.png";
-                siteMonitor = internalUrl;
+                siteMonitor = listenUrl;
               };
             }
           ];
@@ -226,7 +227,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Immich";
-          url = "https://${serviceDomain}";
+          url = "https://${localHost}";
           group = "Media";
           enabled = true;
           interval = "5m";
@@ -235,8 +236,8 @@
         }
       ];
 
-      services.caddy.virtualHosts."immich.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
                   request_body {
                     max_size 50GB
                   }

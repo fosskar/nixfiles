@@ -2,17 +2,17 @@
   flake.modules.nixos.paperless =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "docs.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 28981;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "docs";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 28981;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       clan.core.vars.generators.paperless = {
@@ -59,7 +59,7 @@
                   "client_id": "paperless",
                   "secret": $secret,
                   "settings": {
-                    "server_url": "https://auth.${publicDomain}",
+                    "server_url": "https://auth.${domains.public}",
                     "token_auth_method": "client_secret_basic"
                   }
                 }]
@@ -80,7 +80,7 @@
           consent_mode = "implicit";
           require_pkce = true;
           pkce_challenge_method = "S256";
-          redirect_uris = [ "https://${serviceDomain}/accounts/oidc/authelia/login/callback/" ];
+          redirect_uris = [ "https://${localHost}/accounts/oidc/authelia/login/callback/" ];
           scopes = [
             "openid"
             "profile"
@@ -108,9 +108,9 @@
 
       services.paperless = {
         enable = true;
-        address = bindAddress;
-        inherit port;
-        domain = serviceDomain;
+        address = listenAddress;
+        port = listenPort;
+        domain = localHost;
 
         mediaDir = "/tank/apps/paperless/media";
         consumptionDir = "/tank/shares/shared/documents/consume";
@@ -125,7 +125,7 @@
         settings = {
           PAPERLESS_ADMIN_USER = "admin";
           PAPERLESS_OCR_LANGUAGE = "deu+eng";
-          PAPERLESS_LOGOUT_REDIRECT_URL = "https://auth.${publicDomain}/logout";
+          PAPERLESS_LOGOUT_REDIRECT_URL = "https://auth.${domains.public}/logout";
           PAPERLESS_TIME_ZONE = "Europe/Berlin";
           PAPERLESS_DATE_ORDER = "DMY";
           PAPERLESS_TRUSTED_PROXIES = "138.201.155.21,127.0.0.1";
@@ -163,9 +163,9 @@
           [
             {
               "Paperless" = {
-                href = "https://${serviceDomain}";
+                href = "https://${localHost}";
                 icon = "paperless.png";
-                siteMonitor = internalUrl;
+                siteMonitor = listenUrl;
               };
             }
           ];
@@ -173,7 +173,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Paperless";
-          url = "https://${serviceDomain}";
+          url = "https://${localHost}";
           group = "Files";
           enabled = true;
           interval = "5m";
@@ -182,8 +182,8 @@
         }
       ];
 
-      services.caddy.virtualHosts."docs.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
 
       clan.core.postgresql.enable = true;

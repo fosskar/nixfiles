@@ -2,18 +2,18 @@
   flake.modules.nixos.ntfy =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "ntfy.${acmeDomain}";
-      publicUrl = "https://ntfy.${publicDomain}";
-      bindAddress = "0.0.0.0";
-      port = 8091;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "ntfy";
+      localHost = "${serviceName}.${domains.local}";
+      publicHost = "${serviceName}.${domains.public}";
+      listenAddress = "0.0.0.0";
+      listenPort = 8091;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
 
       topic = "systemd";
       cooldown = 300;
@@ -48,7 +48,7 @@
         LOGS=$(${pkgs.systemd}/bin/journalctl -u "$SERVICE" -n 15 --no-pager -o cat 2>/dev/null | tail -10)
 
         ${pkgs.curl}/bin/curl -s \
-          -X POST "http://${bindAddress}:${toString port}/${topic}" \
+          -X POST "${listenUrl}/${topic}" \
           -H "Authorization: Bearer $(cat $TOKEN_FILE)" \
           -H "Title: $SERVICE failed on $HOST" \
           -H "Priority: high" \
@@ -83,8 +83,8 @@
         services.ntfy-sh = {
           enable = true;
           settings = {
-            base-url = "https://${serviceDomain}";
-            listen-http = "${bindAddress}:${toString port}";
+            base-url = "https://${localHost}";
+            listen-http = "${listenAddress}:${toString listenPort}";
             behind-proxy = true;
             auth-default-access = "deny-all";
             enable-login = true;
@@ -96,9 +96,9 @@
             [
               {
                 "ntfy" = {
-                  href = publicUrl;
+                  href = "https://${publicHost}";
                   icon = "ntfy.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -106,7 +106,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "ntfy";
-            url = "https://${serviceDomain}";
+            url = "https://${localHost}";
             group = "Monitoring";
             enabled = true;
             interval = "5m";
@@ -115,8 +115,8 @@
           }
         ];
 
-        services.caddy.virtualHosts."ntfy.nx3.eu".extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString port}
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          reverse_proxy ${listenUrl}
         '';
 
         systemd.services.ntfy-sh.serviceConfig.EnvironmentFile = varsPath.files."env".path;

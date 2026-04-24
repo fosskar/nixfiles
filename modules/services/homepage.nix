@@ -1,7 +1,18 @@
 {
   flake.modules.nixos.homepage =
-    { config, lib, ... }:
+    {
+      config,
+      domains,
+      lib,
+      ...
+    }:
     let
+      serviceName = "home";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8082;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
+
       cfg = config.services.homepage-dashboard;
       serviceEntry = lib.types.attrsOf (lib.types.attrsOf lib.types.anything);
     in
@@ -14,9 +25,9 @@
 
       config.services.homepage-dashboard = {
         enable = true;
-        listenPort = 8082;
+        inherit listenPort;
         openFirewall = false;
-        allowedHosts = "home.nx3.eu";
+        allowedHosts = localHost;
 
         settings = {
           title = "home-lab dashboard";
@@ -34,8 +45,8 @@
         services = lib.mapAttrsToList (name: services: { ${name} = services; }) cfg.serviceGroups;
       };
 
-      config.services.caddy.virtualHosts."home.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString config.services.homepage-dashboard.listenPort}
+      config.services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
     };
 }

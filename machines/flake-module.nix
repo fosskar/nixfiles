@@ -13,6 +13,11 @@ in
     inherit self;
     specialArgs = {
       inherit inputs mylib;
+
+      domains = {
+        local = "nx3.eu";
+        public = "fosskar.eu";
+      };
     };
 
     meta = {

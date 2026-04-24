@@ -4,16 +4,17 @@
   flake.modules.nixos.lldap =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "ldap.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 17170;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "ldap";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 17170;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       clan.core.vars.generators.lldap = {
@@ -58,11 +59,11 @@
         settings = {
           ldap_base_dn = "dc=nixbox,dc=local";
           ldap_host = "127.0.0.1";
-          ldap_port = 3890;
+          ldap_listenPort = 3890;
 
-          http_host = bindAddress;
-          http_port = port;
-          http_url = "https://${serviceDomain}";
+          http_host = listenAddress;
+          http_port = listenPort;
+          http_url = "https://${localHost}";
 
           force_ldap_user_pass_reset = "always";
 
@@ -78,9 +79,9 @@
           [
             {
               "LLDAP" = {
-                href = "https://${serviceDomain}";
+                href = "https://${localHost}";
                 icon = "lldap.png";
-                siteMonitor = internalUrl;
+                siteMonitor = listenUrl;
               };
             }
           ];
@@ -88,7 +89,7 @@
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "LLDAP";
-          url = "https://${serviceDomain}";
+          url = "https://${localHost}";
           group = "Security";
           enabled = true;
           interval = "5m";
@@ -97,8 +98,8 @@
         }
       ];
 
-      services.caddy.virtualHosts."ldap.nx3.eu".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString port}
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl}
       '';
 
       clan.core.state.lldap = {

@@ -1,14 +1,15 @@
 {
   flake.modules.nixos.nostrRelay =
     let
-      port = 7777;
+      listenAddress = "0.0.0.0";
+      listenPort = 7777;
     in
     {
       services.strfry = {
         enable = true;
         settings.relay = {
-          bind = "0.0.0.0";
-          inherit port;
+          bind = listenAddress;
+          port = listenPort;
           info = {
             name = "crowbox relay";
             description = "personal nostr relay";

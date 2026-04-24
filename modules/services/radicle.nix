@@ -2,17 +2,20 @@
   flake.modules.nixos.radicle =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
+      serviceName = "radicle";
+      publicHost = "${serviceName}.${domains.public}";
       explorerPort = 8090;
 
       explorer = pkgs.radicle-explorer.withConfig {
         preferredSeeds = [
           {
-            hostname = "radicle.fosskar.eu";
+            hostname = publicHost;
             port = 443;
             scheme = "https";
           }

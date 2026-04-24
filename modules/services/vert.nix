@@ -2,16 +2,18 @@
   flake.modules.nixos.vert =
     {
       config,
+      domains,
       lib,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      serviceDomain = "converter.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 8088;
+      serviceName = "converter";
+      localHost = "${serviceName}.${domains.local}";
+      vertdHost = "vertd.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 8088;
       vertdPort = 8089;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       config = {
@@ -19,9 +21,9 @@
 
         virtualisation.oci-containers.containers.vert = {
           image = "ghcr.io/vert-sh/vert:latest";
-          ports = [ "127.0.0.1:${toString port}:80" ];
+          ports = [ "127.0.0.1:${toString listenPort}:80" ];
           environment = {
-            PUB_VERTD_URL = "https://vertd.${acmeDomain}";
+            PUB_VERTD_URL = "https://${vertdHost}";
           };
         };
 
@@ -42,9 +44,9 @@
             [
               {
                 "Vert" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "mdi-video-switch";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -54,7 +56,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Vert";
-            url = "https://${serviceDomain}";
+            url = "https://${localHost}";
             group = "Tools";
             enabled = true;
             interval = "5m";
@@ -65,10 +67,10 @@
 
         # --- caddy ---
 
-        services.caddy.virtualHosts."converter.nx3.eu".extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString port}
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          reverse_proxy ${listenUrl}
         '';
-        services.caddy.virtualHosts."vertd.nx3.eu".extraConfig = ''
+        services.caddy.virtualHosts.${vertdHost}.extraConfig = ''
           reverse_proxy 127.0.0.1:${toString vertdPort}
         '';
       };

@@ -2,17 +2,17 @@
   flake.modules.nixos.grafana =
     {
       config,
+      domains,
       lib,
       pkgs,
       ...
     }:
     let
-      acmeDomain = "nx3.eu";
-      publicDomain = "fosskar.eu";
-      serviceDomain = "grafana.${acmeDomain}";
-      bindAddress = "127.0.0.1";
-      port = 3100;
-      internalUrl = "http://${bindAddress}:${toString port}";
+      serviceName = "grafana";
+      localHost = "${serviceName}.${domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 3100;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
       config = lib.mkIf config.services.grafana.enable {
@@ -94,7 +94,7 @@
             require_pkce = true;
             pkce_challenge_method = "S256";
             redirect_uris = [
-              "https://${serviceDomain}/login/generic_oauth"
+              "https://${localHost}/login/generic_oauth"
             ];
             scopes = [
               "openid"
@@ -140,10 +140,10 @@
 
           settings = {
             server = {
-              http_addr = bindAddress;
-              http_port = port;
-              domain = serviceDomain;
-              root_url = "https://${serviceDomain}";
+              http_addr = listenAddress;
+              http_port = listenPort;
+              domain = localHost;
+              root_url = "https://${localHost}";
               enable_gzip = true;
             };
 
@@ -166,7 +166,7 @@
               password = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-password".path}}";
               from_address = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-email".path}}";
               from_name = "grafana";
-              ehlo_identity = serviceDomain;
+              ehlo_identity = localHost;
               startTLS_policy = "MandatoryStartTLS";
             };
 
@@ -193,10 +193,10 @@
                 config.clan.core.vars.generators.grafana.files."oauth-client-secret".path
               }}";
               scopes = "openid profile email groups offline_access";
-              auth_url = "https://auth.${publicDomain}/api/oidc/authorization";
-              token_url = "https://auth.${publicDomain}/api/oidc/token";
-              api_url = "https://auth.${publicDomain}/api/oidc/userinfo";
-              signout_redirect_url = "https://auth.${publicDomain}/logout";
+              auth_url = "https://auth.${domains.public}/api/oidc/authorization";
+              token_url = "https://auth.${domains.public}/api/oidc/token";
+              api_url = "https://auth.${domains.public}/api/oidc/userinfo";
+              signout_redirect_url = "https://auth.${domains.public}/logout";
               use_pkce = true;
               login_attribute_path = "preferred_username";
               name_attribute_path = "name";
@@ -231,9 +231,9 @@
             [
               {
                 "Grafana" = {
-                  href = "https://${serviceDomain}";
+                  href = "https://${localHost}";
                   icon = "grafana.svg";
-                  siteMonitor = internalUrl;
+                  siteMonitor = listenUrl;
                 };
               }
             ];
@@ -243,7 +243,7 @@
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
           {
             name = "Grafana";
-            url = "https://${serviceDomain}";
+            url = "https://${localHost}";
             group = "Monitoring";
             enabled = true;
             interval = "5m";
@@ -254,8 +254,8 @@
 
         # --- caddy ---
 
-        services.caddy.virtualHosts."grafana.nx3.eu".extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString port}
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          reverse_proxy ${listenUrl}
         '';
       };
     };
