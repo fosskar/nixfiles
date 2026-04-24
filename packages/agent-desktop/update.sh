@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p curl gnused nix jq python3
+#!nix-shell -i bash -p curl gnused nix jq
 # shellcheck shell=bash
 set -euo pipefail
 
@@ -24,15 +24,38 @@ fi
 url="https://github.com/BaLaurent/agent-desktop/releases/download/v${latest}/agent-desktop-${latest}-x86_64.AppImage"
 hash="$(nix-hash --to-sri --type sha256 "$(nix-prefetch-url --type sha256 "$url")")"
 
-python3 - "$file" "$latest" "$hash" <<'PY'
-import re, sys
-path, version, hash_ = sys.argv[1], sys.argv[2], sys.argv[3]
-s = open(path).read()
-s = re.sub(r'(\n  version = ")[^"]+(";)', r'\g<1>' + version + r'\g<2>', s, count=1)
-s = re.sub(
-    r'(url = "https://github\.com/BaLaurent/agent-desktop/releases/download/[^"]+";\s*hash = ")[^"]+(")',
-    r'\g<1>' + hash_ + r'\g<2>',
-    s, count=1,
-)
-open(path, 'w').write(s)
-PY
+tmp="$(mktemp)"
+version_done=0
+hash_next=0
+hash_done=0
+
+while IFS= read -r line; do
+  if [[ $version_done -eq 0 && $line =~ ^[[:space:]]*version[[:space:]]*= ]]; then
+    printf '  version = "%s";\n' "$latest" >>"$tmp"
+    version_done=1
+    continue
+  fi
+
+  if [[ $line == *'url = "https://github.com/BaLaurent/agent-desktop/releases/download/'* ]]; then
+    printf '    url = "https://github.com/BaLaurent/agent-desktop/releases/download/v${version}/agent-desktop-${version}-x86_64.AppImage";\n' >>"$tmp"
+    hash_next=1
+    continue
+  fi
+
+  if [[ $hash_next -eq 1 && $hash_done -eq 0 && $line =~ ^[[:space:]]*hash[[:space:]]*= ]]; then
+    printf '    hash = "%s";\n' "$hash" >>"$tmp"
+    hash_done=1
+    hash_next=0
+    continue
+  fi
+
+  printf '%s\n' "$line" >>"$tmp"
+done <"$file"
+
+if [[ $version_done -ne 1 || $hash_done -ne 1 ]]; then
+  echo "failed to update agent-desktop version/hash in $file" >&2
+  rm -f "$tmp"
+  exit 1
+fi
+
+mv "$tmp" "$file"
