@@ -1,15 +1,3 @@
-# persistence module using preservation
-#
-# bootstrap note:
-#   first install MUST be done with persistence DISABLED (import removed).
-#   rollback wipes root on every boot, but secrets (sops) are written to
-#   root during install — so they get wiped before any service runs.
-#   /persist dirs exist but are empty on first boot.
-#
-#   two-step bootstrap:
-#     1. install without importing persistence → machine boots, secrets land on root
-#     2. import persistence + `clan machines update` → preservation activates,
-#        secrets get copied to /persist, rollback works from boot 2+
 {
   flake.modules.nixos.preservation =
     {
@@ -19,7 +7,7 @@
       ...
     }:
     let
-      cfg = config.nixfiles.preservation;
+      cfg = config.preservation;
 
       # find bcachefs partition from disko config
       findBcachefsPartition = lib.pipe (config.disko.devices.disk or { }) [
@@ -181,17 +169,9 @@
         in
         { how = "bindmount"; } // withMode;
 
-      toPreservationFile =
-        f:
-        if builtins.isString f then
-          {
-            file = f;
-            how = "bindmount";
-          }
-        else
-          { how = "bindmount"; } // f;
+      persistPath = "/persist";
 
-      preserveCfg = config.preservation.preserveAt.${cfg.persistPath};
+      preserveCfg = config.preservation.preserveAt.${persistPath};
 
       getDirPath = d: if builtins.isString d then d else d.directory or "";
       getFilePath = f: if builtins.isString f then f else f.file or "";
@@ -206,7 +186,7 @@
     {
       imports = [ inputs.preservation.nixosModules.preservation ];
 
-      options.nixfiles.preservation = {
+      options.preservation = {
         rollback = {
           type = lib.mkOption {
             type = lib.types.enum [
@@ -259,75 +239,40 @@
           };
         };
 
-        persistPath = lib.mkOption {
-          type = lib.types.str;
-          default = "/persist";
-          description = "path to persistent storage";
-        };
-
-        manageSopsMount = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "whether to manage /var/lib/sops-nix as a bind mount";
-        };
-
-        manageAgeMount = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "whether to manage /etc/secret-vars as a bind mount (age vars backend)";
-        };
-
-        directories = lib.mkOption {
-          type = lib.types.listOf (lib.types.either lib.types.str (lib.types.attrsOf lib.types.anything));
-          default = [ ];
-          description = "directories to persist";
-        };
-
-        files = lib.mkOption {
-          type = lib.types.listOf (lib.types.either lib.types.str (lib.types.attrsOf lib.types.anything));
-          default = [ ];
-          description = "files to persist";
-        };
-
-        diskoPostMountHook = lib.mkOption {
-          type = lib.types.lines;
-          default = "";
-          description = "shell commands for disko postMountHook to pre-create persistent dirs during fresh install";
-        };
       };
 
       config = {
         assertions = [
           {
             assertion = cfg.rollback.type != "zfs" || cfg.rollback.dataset != null;
-            message = "nixfiles.preservation.rollback.dataset must be set when type is 'zfs'";
+            message = "preservation.rollback.dataset must be set when type is 'zfs'";
           }
           {
             assertion = cfg.rollback.type != "zfs" || cfg.rollback.poolImportService != null;
-            message = "nixfiles.preservation.rollback.poolImportService must be set when type is 'zfs'";
+            message = "preservation.rollback.poolImportService must be set when type is 'zfs'";
           }
           {
             assertion = cfg.rollback.type != "btrfs" || cfg.rollback.deviceLabel != null;
-            message = "nixfiles.preservation.rollback.deviceLabel must be set when type is 'btrfs'";
+            message = "preservation.rollback.deviceLabel must be set when type is 'btrfs'";
           }
           {
             assertion = cfg.rollback.type != "bcachefs" || effectivePartLabel != null;
-            message = "nixfiles.preservation.rollback.partLabel must be set (or disko must have a bcachefs partition)";
+            message = "preservation.rollback.partLabel must be set (or disko must have a bcachefs partition)";
           }
         ];
 
         boot.initrd.systemd.services = lib.mkIf (rollbackService != null) rollbackService;
 
-        fileSystems.${cfg.persistPath}.neededForBoot = true;
+        fileSystems.${persistPath}.neededForBoot = true;
 
-        nixfiles.preservation.diskoPostMountHook = lib.concatStringsSep "\n" (
+        _module.args.preservationDiskoPostMountHook = lib.concatStringsSep "\n" (
           [ "# pre-create persistent directories for fresh install" ]
           ++ map (
             dir:
             let
               needsChmod = dir == "/var/lib/private";
-              mkdirCmd = "mkdir -p ${mountPoint}${cfg.persistPath}${dir}";
-              chmodCmd = lib.optionalString needsChmod " && chmod 0700 ${mountPoint}${cfg.persistPath}${dir}";
+              mkdirCmd = "mkdir -p ${mountPoint}${persistPath}${dir}";
+              chmodCmd = lib.optionalString needsChmod " && chmod 0700 ${mountPoint}${persistPath}${dir}";
             in
             mkdirCmd + chmodCmd
           ) installDirs
@@ -342,33 +287,30 @@
         # point userborn at persistent storage so passwd/group/shadow survive
         # ephemeral root. userborn creates /etc symlinks automatically.
         services.userborn.passwordFilesLocation = lib.mkIf (config.services.userborn.enable or false
-        ) "${cfg.persistPath}/etc";
+        ) "${persistPath}/etc";
 
         preservation = {
           enable = true;
 
-          preserveAt.${cfg.persistPath} = {
+          preserveAt.${persistPath} = {
             directories =
-              map toPreservationDir (
-                [
-                  "/var/lib/nixos"
-                  "/var/lib/systemd"
-                  "/var/log"
-                ]
-                ++ cfg.directories
-              )
-              ++ lib.optional cfg.manageSopsMount {
+              map toPreservationDir [
+                "/var/lib/nixos"
+                "/var/lib/systemd"
+                "/var/log"
+              ]
+              ++ lib.optional true {
                 directory = "/var/lib/sops-nix";
                 how = "bindmount";
                 inInitrd = true;
               }
-              ++ lib.optional cfg.manageAgeMount {
+              ++ lib.optional true {
                 directory = "/etc/secret-vars";
                 how = "bindmount";
                 inInitrd = true;
               };
 
-            files = map toPreservationFile cfg.files ++ [
+            files = [
               {
                 file = "/etc/machine-id";
                 how = "symlink";

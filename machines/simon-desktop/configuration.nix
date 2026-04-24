@@ -30,13 +30,8 @@
   # nixpkgs netbird ui wrapper currently fails on desktop file exec replacement
   services.netbird.ui.enable = false;
 
-  nixfiles = {
-    preservation = {
-      rollback = {
-        type = "btrfs";
-        deviceLabel = "nixos";
-      };
-    };
-
+  preservation.rollback = {
+    type = "btrfs";
+    deviceLabel = "nixos";
   };
 }

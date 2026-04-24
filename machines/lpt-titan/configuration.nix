@@ -36,13 +36,8 @@
   # scx_lavd crashed (rcu cpu stall) on this machine; use bpfland instead
   services.scx.scheduler = "scx_bpfland";
 
-  nixfiles = {
-    preservation = {
-      rollback = {
-        type = "bcachefs";
-        subvolume = "@root";
-      };
-    };
-
+  preservation.rollback = {
+    type = "bcachefs";
+    subvolume = "@root";
   };
 }

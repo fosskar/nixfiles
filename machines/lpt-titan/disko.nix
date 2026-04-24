@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, preservationDiskoPostMountHook, ... }:
 {
   # bcachefs disk encryption password
   # prompts during `clan vars generate`, deploys to /run/partitioning-secrets/ during install
@@ -53,7 +53,7 @@
           "--compression=lz4"
           "--background_compression=lz4"
         ];
-        postMountHook = config.nixfiles.preservation.diskoPostMountHook;
+        postMountHook = preservationDiskoPostMountHook;
         subvolumes = {
           "@root" = {
             mountpoint = "/";

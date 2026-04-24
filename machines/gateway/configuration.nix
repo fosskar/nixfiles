@@ -25,17 +25,12 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  nixfiles = {
-    preservation = {
-      rollback = {
-        type = "btrfs";
-        deviceLabel = "root";
-      };
-      directories = [
-        "/var/log"
-        "/var/lib/private"
-      ];
+  preservation = {
+    rollback = {
+      type = "btrfs";
+      deviceLabel = "root";
     };
+    preserveAt."/persist".directories = [ "/var/lib/private" ];
   };
 
   clan.core.settings.machine-id.enable = true;

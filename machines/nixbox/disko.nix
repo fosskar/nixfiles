@@ -1,4 +1,4 @@
-{ config, ... }:
+{ preservationDiskoPostMountHook, ... }:
 {
   disko.devices = {
     disk = {
@@ -138,7 +138,7 @@
             options.mountpoint = "legacy";
             mountpoint = "/persist";
             options."com.sun:auto-snapshot" = "true";
-            postMountHook = config.nixfiles.preservation.diskoPostMountHook;
+            postMountHook = preservationDiskoPostMountHook;
           };
           reserved = {
             type = "zfs_fs";

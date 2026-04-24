@@ -47,20 +47,16 @@
 
   clan.core.settings.machine-id.enable = true;
 
-  nixfiles = {
-    preservation = {
-      rollback = {
-        type = "zfs";
-        dataset = "znixos/root";
-        poolImportService = "zfs-import-znixos.service";
-      };
-      directories = [
-        "/var/log"
-        "/var/cache"
-        "/var/lib"
-      ];
+  preservation = {
+    rollback = {
+      type = "zfs";
+      dataset = "znixos/root";
+      poolImportService = "zfs-import-znixos.service";
     };
-
+    preserveAt."/persist".directories = [
+      "/var/cache"
+      "/var/lib"
+    ];
   };
 
   services.garage.settings.data_dir = [
