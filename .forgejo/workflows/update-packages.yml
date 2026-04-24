@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   update:
-    runs-on: codeberg-small
+    runs-on: codeberg-medium
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
@@ -79,11 +79,6 @@ jobs:
 
             if git diff --cached --quiet; then
               echo ":: $pkg - no update"
-              continue
-            fi
-
-            if ! nix build ".#$pkg" --no-link -L; then
-              echo ":: $pkg - build failed, skipping"
               continue
             fi
 
