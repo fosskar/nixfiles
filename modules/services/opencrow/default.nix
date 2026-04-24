@@ -10,13 +10,14 @@
       commonInstance = {
         enable = true;
 
+        package = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.opencrow;
         piPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
         skills.web = "${config.services.opencrow.package}/share/opencrow/skills/web";
 
         extensions = {
-          memory = true;
-          reminders = true;
+          memory = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.extension-memory;
+          reminders = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.extension-reminders;
           pi-to-pi = ./extensions/pi-to-PI.ts;
         };
 
