@@ -12,7 +12,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "typescript": "^6.0.0",
     "typescript-language-server": "^5.0.0"
   }
