@@ -2,11 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
+    ":automergeRequireAllStatusChecks",
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     ":configMigration",
     "abandonments:recommended",
-    "security:minimumReleaseAgeNpm"
+    "security:minimumReleaseAgeNpm",
+    "security:openssf-scorecard",
+    ":rebaseStalePrs",
+    ":prImmediately"
   ],
   "dependencyDashboard": true,
   "automerge": true,
