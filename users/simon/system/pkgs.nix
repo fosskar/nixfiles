@@ -1,7 +1,5 @@
 {
   pkgs,
-  config,
-  lib,
   ...
 }:
 {
@@ -32,9 +30,6 @@
 
       # audio
       #teamspeak3
-    ]
-    ++ lib.optionals (config.nixfiles.machineType == "desktop") [
-      teamspeak6-client
     ]
     ++ (with pkgs; [
 

@@ -8,26 +8,6 @@
   home-manager.users.simon = {
     imports = mylib.scanPaths ./. { };
 
-    options.nixfiles = {
-      machineType = lib.mkOption {
-        type = lib.types.enum [
-          "desktop"
-          "laptop"
-        ];
-        description = "machine type (desktop or laptop)";
-      };
-
-      quickshell = lib.mkOption {
-        type = lib.types.enum [
-          "dms"
-          "noctalia"
-          "none"
-        ];
-        default = "noctalia";
-        description = "quickshell-based shell for desktop widgets";
-      };
-    };
-
     config = {
       home = {
         username = "simon";

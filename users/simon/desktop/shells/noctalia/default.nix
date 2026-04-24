@@ -8,7 +8,7 @@
 {
   imports = [ inputs.noctalia.homeModules.default ] ++ mylib.scanPaths ./. { };
 
-  config = lib.mkIf (config.nixfiles.quickshell == "noctalia") (
+  config =
     let
       t = config.theme;
     in
@@ -225,6 +225,5 @@
           };
         };
       };
-    }
-  );
+    };
 }

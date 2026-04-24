@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   inputs,
   pkgs,
   ...
@@ -57,7 +56,7 @@ in
     inputs.dms.homeModules.default
   ];
 
-  config = lib.mkIf (config.nixfiles.quickshell == "dms") {
+  config = {
     # symlink settings.json directly - force overwrites on each rebuild
     # (GUI changes won't persist - see github.com/AvengeMedia/DankMaterialShell/issues/1180)
     xdg.configFile."DankMaterialShell/settings.json" = {

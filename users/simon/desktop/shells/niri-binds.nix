@@ -1,17 +1,5 @@
-{
-  config,
-  lib,
-  inputs,
-  pkgs,
-  ...
-}:
+{ lib, pkgs, ... }:
 let
-  inherit (config.nixfiles) quickshell;
-  isDms = quickshell == "dms";
-  isNoctalia = quickshell == "noctalia";
-
-  dms-pkg = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
-
   noctalia =
     cmd:
     [
@@ -21,189 +9,79 @@ let
     ]
     ++ (pkgs.lib.splitString " " cmd);
 
-  # key → { title?, locked?, dms = { t, a, args? }, noctalia = { t, a } }
   shellBinds = {
     "Mod+Space" = {
       title = "Toggle Launcher";
-      dms = {
-        t = "spotlight";
-        a = "toggle";
-      };
-      noctalia = {
-        t = "launcher";
-        a = "toggle";
-      };
+      t = "launcher";
+      a = "toggle";
     };
     "Mod+B" = {
       title = "Toggle Clipboard";
-      dms = {
-        t = "clipboard";
-        a = "toggle";
-      };
-      noctalia = {
-        t = "launcher";
-        a = "clipboard";
-      };
+      t = "launcher";
+      a = "clipboard";
     };
     "Mod+G" = {
       title = "Toggle Power Menu";
-      dms = {
-        t = "plugin:nostr-chat";
-        a = "toggle";
-      };
-      noctalia = {
-        t = "plugin:nostr-chat";
-        a = "toggle";
-      };
+      t = "plugin:nostr-chat";
+      a = "toggle";
     };
     "Mod+X" = {
       title = "Toggle Power Menu";
-      dms = {
-        t = "powermenu";
-        a = "toggle";
-      };
-      noctalia = {
-        t = "sessionMenu";
-        a = "toggle";
-      };
+      t = "sessionMenu";
+      a = "toggle";
     };
     "Mod+Shift+L" = {
       title = "Lock Screen";
-      dms = {
-        t = "lock";
-        a = "lock";
-      };
-      noctalia = {
-        t = "lockScreen";
-        a = "lock";
-      };
+      t = "lockScreen";
+      a = "lock";
     };
     "Mod+N" = {
       title = "Toggle Notifications";
-      dms = {
-        t = "notepad";
-        a = "toggle";
-      };
-      noctalia = {
-        t = "notifications";
-        a = "toggleHistory";
-      };
+      t = "notifications";
+      a = "toggleHistory";
     };
     "Mod+M" = {
       title = "Toggle Control Center";
-      dms = {
-        t = "processlist";
-        a = "toggle";
-      };
-      noctalia = {
-        t = "controlCenter";
-        a = "toggle";
-      };
+      t = "controlCenter";
+      a = "toggle";
     };
     "XF86AudioRaiseVolume" = {
       locked = true;
-      dms = {
-        t = "audio";
-        a = "increment";
-        args = [ "5" ];
-      };
-      noctalia = {
-        t = "volume";
-        a = "increase";
-      };
+      t = "volume";
+      a = "increase";
     };
     "XF86AudioLowerVolume" = {
       locked = true;
-      dms = {
-        t = "audio";
-        a = "decrement";
-        args = [ "5" ];
-      };
-      noctalia = {
-        t = "volume";
-        a = "decrease";
-      };
+      t = "volume";
+      a = "decrease";
     };
     "XF86AudioMute" = {
       locked = true;
-      dms = {
-        t = "audio";
-        a = "mute";
-      };
-      noctalia = {
-        t = "volume";
-        a = "muteOutput";
-      };
+      t = "volume";
+      a = "muteOutput";
     };
     "XF86AudioMicMute" = {
       locked = true;
-      dms = {
-        t = "audio";
-        a = "micmute";
-      };
-      noctalia = {
-        t = "volume";
-        a = "muteInput";
-      };
+      t = "volume";
+      a = "muteInput";
     };
     "XF86MonBrightnessUp" = {
       locked = true;
-      dms = {
-        t = "brightness";
-        a = "increment";
-        args = [
-          "10"
-          "backlight:amdgpu_bl1"
-        ];
-      };
-      noctalia = {
-        t = "brightness";
-        a = "increase";
-      };
+      t = "brightness";
+      a = "increase";
     };
     "XF86MonBrightnessDown" = {
       locked = true;
-      dms = {
-        t = "brightness";
-        a = "decrement";
-        args = [
-          "10"
-          "backlight:amdgpu_bl1"
-        ];
-      };
-      noctalia = {
-        t = "brightness";
-        a = "decrease";
-      };
+      t = "brightness";
+      a = "decrease";
     };
   };
-
-  mkAction =
-    bind:
-    if isDms then
-      {
-        spawn = [
-          "qs"
-          "ipc"
-          "--any-display"
-          "-p"
-          "${dms-pkg}/share/quickshell/dms"
-          "call"
-          bind.dms.t
-          bind.dms.a
-        ]
-        ++ (bind.dms.args or [ ]);
-      }
-    else if isNoctalia then
-      { spawn = noctalia "${bind.noctalia.t} ${bind.noctalia.a}"; }
-    else
-      { spawn = [ "true" ]; };
 in
-lib.mkIf (quickshell != "none") {
+{
   programs.niri.settings.binds = lib.mapAttrs (
     _: bind:
     {
-      action = mkAction bind;
+      action.spawn = noctalia "${bind.t} ${bind.a}";
     }
     // lib.optionalAttrs (bind ? title) { hotkey-overlay.title = bind.title; }
     // lib.optionalAttrs (bind.locked or false) { allow-when-locked = true; }
