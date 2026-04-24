@@ -1,0 +1,26 @@
+name: renovate
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+concurrency:
+  group: renovate
+  cancel-in-progress: false
+jobs:
+  renovate:
+    runs-on: codeberg-small
+    steps:
+      - uses: actions/checkout@v4
+      - name: install nix
+        uses: https://github.com/NixOS/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      - name: renovate
+        env:
+          RENOVATE_PLATFORM: forgejo
+          RENOVATE_ENDPOINT: ${{ forgejo.server_url }}
+          RENOVATE_REPOSITORIES: ${{ forgejo.repository }}
+          RENOVATE_TOKEN: ${{ secrets.TOKEN }}
+          LOG_LEVEL: info
+        run: nix run nixpkgs#renovate
