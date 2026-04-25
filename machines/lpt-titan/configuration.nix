@@ -8,7 +8,6 @@
 {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-    self.modules.nixos.tuned
     self.modules.nixos.dmsGreeter
     self.modules.nixos.nostrChat
     self.modules.nixos.amdGpu

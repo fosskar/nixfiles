@@ -1,9 +1,5 @@
-{ config, ... }:
-let
-  inherit (config.flake.modules.nixos) yubikey;
-in
 {
-  flake.modules.nixos.yubikeyU2f =
+  flake.modules.nixos.yubikey =
     {
       lib,
       config,
@@ -11,8 +7,6 @@ in
       ...
     }:
     {
-      imports = [ yubikey ];
-
       clan.core.vars.generators.u2f-keys = {
         share = true;
         files.keys = {

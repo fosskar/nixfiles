@@ -360,11 +360,10 @@ in
           module.name = "importer";
           roles.default = {
             tags.server = { };
-            extraModules = [
+            extraModules = with config.flake.modules.nixos; [
               inputs.srvos.nixosModules.server
-              inputs.srvos.nixosModules.mixins-terminfo
-              config.flake.modules.nixos.base
-              config.flake.modules.nixos.server
+              base
+              server
             ];
           };
         };
@@ -375,12 +374,9 @@ in
             tags.workstation = { };
             extraModules = with config.flake.modules.nixos; [
               inputs.srvos.nixosModules.desktop
-              inputs.srvos.nixosModules.mixins-terminfo
               base
               workstation
               yubikey
-              yubikeyGpgSsh
-              yubikeyU2f
               niri
             ];
           };
@@ -391,12 +387,8 @@ in
           roles.default = {
             tags.laptop = { };
             extraModules = with config.flake.modules.nixos; [
-              laptop
-              logind
-              powertop
-              suspendThenShutdown
+              laptopPower
               fprint
-              tunedPpd
             ];
           };
         };

@@ -1,8 +1,5 @@
-{ config, ... }:
 {
-  flake.modules.nixos.yubikeyGpgSsh = {
-    imports = [ config.flake.modules.nixos.yubikey ];
-
+  flake.modules.nixos.yubikey = {
     # public keys published via clan vars (generator does nothing; values persist)
     clan.core.vars.generators.yubikey = {
       share = true;
