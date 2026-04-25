@@ -351,14 +351,19 @@ in
           };
         };
 
+        metadata = {
+          module.name = "importer";
+          roles.default = {
+            tags.all = { };
+            extraModules = [ config.flake.modules.generic.domains ];
+          };
+        };
+
         base-common = {
           module.name = "importer";
           roles.default = {
             tags.nixos = { };
-            extraModules = [
-              config.flake.modules.generic.domains
-              config.flake.modules.nixos.base
-            ];
+            extraModules = [ config.flake.modules.nixos.base ];
           };
         };
 
