@@ -15,6 +15,8 @@
           net = [ { } ];
           system = [ { } ];
           processes = [ { } ];
+          kernel_vmstat = [ { } ];
+          internal = [ { } ];
         };
         zfs = {
           zfs = [
@@ -51,7 +53,8 @@
         smart = {
           smart = [
             {
-              use_sudo = true;
+              path_smartctl = "/run/wrappers/bin/smartctl-telegraf";
+              path_nvme = "/run/wrappers/bin/nvme-telegraf";
               attributes = true;
               nocheck = "standby"; # skip disks in standby (default, won't wake sleeping disks)
             }
@@ -104,8 +107,8 @@
             package = pkgs.telegraf;
             extraConfig = {
               agent = {
-                interval = "10s";
-                flush_interval = "10s";
+                interval = "30s";
+                flush_interval = "30s";
               };
 
               outputs.prometheus_client = lib.mkDefault [
@@ -119,9 +122,30 @@
         };
 
       telegrafSystem =
-        { config, lib, ... }:
         {
-          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.system;
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
+        let
+          ipv6DadCheck = pkgs.writeShellScript "ipv6-dad-check" ''
+            ${pkgs.iproute2}/bin/ip --json addr | \
+              ${pkgs.jq}/bin/jq -r 'map(.addr_info) | flatten(1) | map(select(.dadfailed == true)) | map(.local) | @text "ipv6_dad_failures count=\(length)i"'
+          '';
+        in
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable (
+            inputConfigs.system
+            // {
+              exec = [
+                {
+                  commands = [ ipv6DadCheck ];
+                  data_format = "influx";
+                }
+              ];
+            }
+          );
         };
 
       telegrafSystemd =
@@ -131,9 +155,36 @@
         };
 
       telegrafZfs =
-        { config, lib, ... }:
         {
-          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable inputConfigs.zfs;
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
+        let
+          zpoolHealth = pkgs.writeScript "zpool-health" ''
+            #!${pkgs.gawk}/bin/awk -f
+            BEGIN {
+              while ("${config.boot.zfs.package}/bin/zpool status" | getline) {
+                if ($1 ~ /pool:/) { printf "zpool_status,name=%s ", $2 }
+                if ($1 ~ /state:/) { printf "state=\"%s\",", $2 }
+                if ($1 ~ /errors:/) {
+                  if (index($2, "No")) printf "errors=0i\n"; else printf "errors=%di\n", $2
+                }
+              }
+            }
+          '';
+        in
+        {
+          services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable (
+            inputConfigs.zfs
+            // {
+              exec = lib.optional (config.boot.supportedFilesystems.zfs or false) {
+                commands = [ zpoolHealth ];
+                data_format = "influx";
+              };
+            }
+          );
         };
 
       telegrafUpsd =
@@ -168,32 +219,20 @@
             KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
           '';
 
-          systemd.services.telegraf.path = [
-            "/run/wrappers" # for sudo
-            pkgs.smartmontools
-            pkgs.nvme-cli
-          ];
-
-          users.users.telegraf.extraGroups = [
-            "disk"
-            "wheel"
-          ];
-
-          security.sudo-rs.extraRules = [
-            {
-              users = [ "telegraf" ];
-              commands = [
-                {
-                  command = "${pkgs.smartmontools}/bin/smartctl";
-                  options = [ "NOPASSWD" ];
-                }
-                {
-                  command = "${pkgs.nvme-cli}/bin/nvme";
-                  options = [ "NOPASSWD" ];
-                }
-              ];
-            }
-          ];
+          security.wrappers = {
+            smartctl-telegraf = {
+              owner = "telegraf";
+              group = "telegraf";
+              capabilities = "cap_sys_admin,cap_dac_override,cap_sys_rawio+ep";
+              source = "${pkgs.smartmontools}/bin/smartctl";
+            };
+            nvme-telegraf = {
+              owner = "telegraf";
+              group = "telegraf";
+              capabilities = "cap_sys_admin,cap_dac_override,cap_sys_rawio+ep";
+              source = "${pkgs.nvme-cli}/bin/nvme";
+            };
+          };
         };
 
       telegrafDocker =
