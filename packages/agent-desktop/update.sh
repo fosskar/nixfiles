@@ -37,7 +37,7 @@ while IFS= read -r line; do
   fi
 
   if [[ $line == *'url = "https://github.com/BaLaurent/agent-desktop/releases/download/'* ]]; then
-    printf '    url = "https://github.com/BaLaurent/agent-desktop/releases/download/v${version}/agent-desktop-${version}-x86_64.AppImage";\n' >>"$tmp"
+    printf '    url = "https://github.com/BaLaurent/agent-desktop/releases/download/v%s/agent-desktop-%s-x86_64.AppImage";\n' '${version}' '${version}' >>"$tmp"
     hash_next=1
     continue
   fi
