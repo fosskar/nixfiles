@@ -45,8 +45,6 @@
     ];
   };
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   clan.core.settings.machine-id.enable = true;
 
   preservation = {

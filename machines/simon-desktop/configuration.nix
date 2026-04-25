@@ -25,8 +25,6 @@
   ]
   ++ mylib.scanPaths ./. { };
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
 
   clan.core.settings.machine-id.enable = true;

@@ -23,8 +23,6 @@
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   preservation = {
     rollback = {
       type = "btrfs";

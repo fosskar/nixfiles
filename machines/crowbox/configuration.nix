@@ -14,8 +14,6 @@
   ]
   ++ (mylib.scanPaths ./. { });
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   preservation = {
     rollback = {
       type = "btrfs";

@@ -20,8 +20,6 @@
   ]
   ++ mylib.scanPaths ./. { };
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   networking.hostName = "lpt-titan";
 
   programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
