@@ -2,6 +2,8 @@
 
 bootable iso/vm images for installation and recovery.
 
+images are flake packages defined in `images/flake-module.nix`. they are not machine configs; they reuse nixos modules to build installers and rescue environments.
+
 ## build
 
 ```bash

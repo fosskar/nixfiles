@@ -2,6 +2,10 @@
 
 all machines use [preservation](../docs/preservation.md) (ephemeral root, opt-in state persistence).
 
+## configuration model
+
+machine configs are composition edges for the [dendritic pattern](https://github.com/mightyiam/dendritic), with feature/aspect modules exposed through `flake.modules.*` and assembled per host through imports and clan inventory. see the [dendritic wiki](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki) for the design background.
+
 ### bootstrap caveat
 
 first install of a new machine **must** be done with preservation **disabled** (do not import the module yet).
@@ -166,10 +170,10 @@ all services run as `media` group with umask 0027
 
 ### networking
 
-| service  | notes                             |
-| -------- | --------------------------------- |
-| newt     | pangolin tunnel client to gateway |
-| homepage | dashboard at home.nx3.eu          |
+| service  | notes                              |
+| -------- | ---------------------------------- |
+| netbird  | mesh vpn client and routing server |
+| homepage | dashboard at home.nx3.eu           |
 
 ### backup
 
@@ -212,21 +216,23 @@ other machines offload builds here via `nix.buildMachines` (remote builder).
 
 ## gateway
 
-hetzner vps cx22 - reverse proxy and tunnel server
+hetzner vps cx22 - reverse proxy and vpn edge
 
 ### services
 
-| service  | domain              | notes                                 |
-| -------- | ------------------- | ------------------------------------- |
-| pangolin | pangolin.fosskar.eu | tunnel server, traefik ingress        |
-| crowdsec | -                   | intrusion detection, nftables bouncer |
+| service   | domain                     | notes                                      |
+| --------- | -------------------------- | ------------------------------------------ |
+| netbird   | nb.fosskar.eu              | management, signal, relay, dashboard       |
+| traefik   | fosskar.eu / \*.fosskar.eu | tls ingress and netbird proxy routing      |
+| crowdsec  | -                          | intrusion detection, nftables bouncer      |
+| wireguard | -                          | clan wireguard controller and peer gateway |
 
-**pangolin config:**
+**edge config:**
 
-- base domain: fosskar.eu
-- geoblock (blacklist): RU, CN, HK, IR, KP, BY, BR, US, VN, IN, ID, PK
-- maxmind geoip enabled
-- crowdsec integration with traefik bouncer
+- public service domain: nb.fosskar.eu
+- netbird proxy base domain: fosskar.eu
+- geoblock middleware on traefik
+- crowdsec integration with traefik and netbird-proxy bouncers
 
 **crowdsec collections:**
 

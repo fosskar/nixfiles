@@ -1,6 +1,8 @@
 # openwrt
 
 declarative openwrt config management via nix → UCI → SSH.
+this sits outside the nixos machine graph: nix evaluates typed device modules, renders UCI batch commands, then deploys them over SSH.
+
 inspired by [Mic92/dotfiles/openwrt](https://github.com/Mic92/dotfiles/tree/main/openwrt).
 
 ## commands

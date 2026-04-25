@@ -1,7 +1,8 @@
 # gateway security architecture
 
-hetzner cloud VPS exposed to the public internet. runs netbird server (mesh VPN),
-wireguard controller, and monitoring. three defense layers protect inbound traffic.
+hetzner cloud VPS and public edge for `fosskar.eu`. runs traefik ingress, netbird control plane/proxy, crowdsec remediation, and wireguard/netbird endpoints. backend services either bind locally or arrive over netbird tunnels from internal machines.
+
+three defense layers protect inbound traffic before requests reach services.
 
 ## how a request reaches a service
 

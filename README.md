@@ -2,12 +2,12 @@
   <img src="docs/logo/logo.svg" width="300px" alt="nixfiles logo"/>
 </p>
 
-personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/).
+personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). modules follow the [dendritic pattern](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki), using `flake.modules.*` as the public module api and machine/clan imports as the composition edge.
 
 ## features
 
+- [dendritic pattern](https://github.com/mightyiam/dendritic) - feature/aspect-oriented module structure inspired by the [dendritic wiki](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki)
 - [clan-core](https://docs.clan.lol/) - machine management, secrets (sops-nix/age), disk partitioning (disko), services (clanServices)
-
 - [flake-parts](https://github.com/hercules-ci/flake-parts) - modular flake framework
 - [preservation](https://github.com/nix-community/preservation) - opt-in state persistence
 - [home-manager](https://github.com/nix-community/home-manager) - user environment
