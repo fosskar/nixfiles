@@ -33,6 +33,12 @@
     };
   };
 
+  systemd.network.networks = {
+    # clan sets multicastdns on these defaults without a match section.
+    "99-ethernet-default-dhcp".enable = false;
+    "99-wireless-client-dhcp".enable = false;
+  };
+
   # disable WoL on all ethernet interfaces
   systemd.network.links."10-disable-wol" = {
     matchConfig.OriginalName = "en*";
