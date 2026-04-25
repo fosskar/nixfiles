@@ -82,7 +82,7 @@ jobs:
               continue
             fi
 
-            git commit -m "update $pkg"
+            git commit -m "update pkgs $pkg"
             git push --force-with-lease origin "$branch"
 
             prs="$(curl -fsS \
