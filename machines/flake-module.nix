@@ -35,7 +35,7 @@ in
 
     inventory = {
       machines = {
-        crowbox = {
+        "crowbox" = {
           tags = [
             "server"
             "home"
@@ -43,21 +43,21 @@ in
           ];
         };
 
-        nixbox = {
+        "nixbox" = {
           tags = [
             "server"
             "home"
           ];
         };
 
-        gateway = {
+        "gateway" = {
           tags = [
             "server"
             "hetzner"
           ];
         };
 
-        lpt-titan = {
+        "lpt-titan" = {
           tags = [
             "laptop"
             "home"
@@ -65,7 +65,7 @@ in
           ];
         };
 
-        nixworker = {
+        "nixworker" = {
           tags = [
             "server"
             "home"
@@ -73,7 +73,7 @@ in
           ];
         };
 
-        simon-desktop = {
+        "simon-desktop" = {
           tags = [
             "workstation"
             "home"
@@ -135,8 +135,8 @@ in
           };
 
           roles.default = {
-            machines.simon-desktop = { };
-            machines.lpt-titan = { };
+            machines."simon-desktop" = { };
+            machines."lpt-titan" = { };
             settings = {
               user = "simon";
               share = true;
@@ -270,8 +270,8 @@ in
         #};
 
         netbird = {
-          module.input = "self";
           module.name = "netbird";
+          module.input = "self";
 
           roles.server.machines."gateway".settings = {
             domain = "nb.fosskar.eu";
@@ -287,16 +287,17 @@ in
         wireguard = {
           module.name = "wireguard";
           module.input = "clan-core";
+
           roles.controller.machines."gateway".settings = {
             endpoint = "138.201.155.21";
             port = 51820; # default
           };
           roles.peer.machines = {
-            nixbox.settings = { };
-            simon-desktop.settings = { };
-            lpt-titan.settings = { };
-            crowbox.settings = { };
-            nixworker.settings = { };
+            "nixbox".settings = { };
+            "simon-desktop".settings = { };
+            "lpt-titan".settings = { };
+            "crowbox".settings = { };
+            "nixworker".settings = { };
           };
         };
 
@@ -318,12 +319,12 @@ in
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
           roles.default.machines = {
-            crowbox.settings.host = "192.168.10.240";
-            gateway.settings.host = "138.201.155.21";
-            nixbox.settings.host = "192.168.10.200";
-            nixworker.settings.host = "192.168.10.210";
-            simon-desktop.settings.host = "192.168.10.100";
-            lpt-titan.settings.host = "192.168.10.150";
+            "crowbox".settings.host = "192.168.10.240";
+            "gateway".settings.host = "138.201.155.21";
+            "nixbox".settings.host = "192.168.10.200";
+            "nixworker".settings.host = "192.168.10.210";
+            "simon-desktop".settings.host = "192.168.10.100";
+            "lpt-titan".settings.host = "192.168.10.150";
           };
         };
 
@@ -333,8 +334,8 @@ in
             input = "clan-core";
           };
           roles.peer = {
-            machines.simon-desktop = { };
-            machines.lpt-titan = { };
+            machines."simon-desktop" = { };
+            machines."lpt-titan" = { };
             settings = {
               folders = {
                 # add folders here, e.g.:
@@ -407,11 +408,9 @@ in
             name = "wifi";
             input = "clan-core";
           };
-          roles.default.machines.lpt-titan = {
+          roles.default.machines."lpt-titan" = {
             settings.networks = {
               home = { };
-              # add more networks as needed, e.g.:
-              # mobile = { autoConnect = false; };
             };
           };
         };
@@ -422,13 +421,13 @@ in
             input = "self";
           };
           roles = {
-            builder.machines.nixworker = { };
+            builder.machines."nixworker" = { };
             client.machines = {
-              simon-desktop = { };
-              lpt-titan = { };
-              nixbox = { };
-              crowbox = { };
-              gateway = { };
+              "simon-desktop" = { };
+              "lpt-titan" = { };
+              "nixbox" = { };
+              "crowbox" = { };
+              "gateway" = { };
             };
           };
         };
@@ -439,13 +438,13 @@ in
             input = "self";
           };
           roles = {
-            server.machines.nixworker = { };
+            server.machines."nixworker" = { };
             client.machines = {
-              simon-desktop = { };
-              lpt-titan = { };
-              nixbox = { };
-              crowbox = { };
-              gateway = { };
+              "simon-desktop" = { };
+              "lpt-titan" = { };
+              "nixbox" = { };
+              "crowbox" = { };
+              "gateway" = { };
             };
           };
         };
@@ -480,11 +479,11 @@ in
             input = "self";
           };
           roles.client.machines = {
-            gateway.settings = {
+            "gateway".settings = {
               snapshotType = "btrfs";
               folders = [ "/persist" ];
             };
-            nixbox.settings = {
+            "nixbox".settings = {
               snapshotType = "zfs";
               folders = [
                 "/tank/apps"
