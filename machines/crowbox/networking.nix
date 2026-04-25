@@ -1,7 +1,5 @@
 {
   networking = {
-    hostName = "crowbox";
-
     useDHCP = false;
     defaultGateway = {
       address = "192.168.10.1";

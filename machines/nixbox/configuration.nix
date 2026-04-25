@@ -45,8 +45,6 @@
     ];
   };
 
-  clan.core.settings.machine-id.enable = true;
-
   preservation = {
     rollback = {
       type = "zfs";

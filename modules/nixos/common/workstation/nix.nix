@@ -42,6 +42,7 @@
       # nh - nix helper for desktop users
       programs.nh = {
         enable = lib.mkDefault true;
+        flake = lib.mkDefault "${config.users.users.simon.home}/code/nixfiles";
         clean = {
           enable = lib.mkDefault true;
           extraArgs = lib.mkDefault "--keep 5 --keep-since 3d";

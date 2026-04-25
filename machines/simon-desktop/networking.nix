@@ -1,12 +1,9 @@
 {
   networking = {
-    hostName = "simon-desktop";
-
-    networkmanager.ensureProfiles.profiles.enp14s0 = {
+    networkmanager.ensureProfiles.profiles."lan" = {
       connection = {
-        id = "enp14s0";
+        id = "lan";
         type = "ethernet";
-        interface-name = "enp14s0";
         autoconnect = true;
       };
       ipv4 = {

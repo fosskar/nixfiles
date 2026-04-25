@@ -36,8 +36,6 @@
     ];
   };
 
-  clan.core.settings.machine-id.enable = true;
-
   services.cloud-init = {
     settings = {
       preserve_hostname = true;

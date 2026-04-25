@@ -1,7 +1,5 @@
 {
   networking = {
-    hostName = "nixworker";
-
     useDHCP = false;
     nameservers = [ "192.168.10.1" ];
     defaultGateway = {

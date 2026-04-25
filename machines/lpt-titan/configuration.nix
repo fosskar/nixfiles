@@ -2,7 +2,6 @@
   self,
   mylib,
   lib,
-  config,
   inputs,
   ...
 }:
@@ -19,15 +18,6 @@
     self.modules.nixos.preservation
   ]
   ++ mylib.scanPaths ./. { };
-
-  networking.hostName = "lpt-titan";
-
-  programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
-
-  clan.core = {
-    settings.machine-id.enable = true;
-    deployment.requireExplicitUpdate = true;
-  };
 
   # iGPU: disable rocmPackages.clr.icd + lact (not needed)
   hardware.amdgpu.opencl.enable = lib.mkForce false;

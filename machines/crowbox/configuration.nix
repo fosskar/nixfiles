@@ -34,7 +34,5 @@
     "net.ipv6.conf.wlan0.use_tempaddr" = lib.mkForce null;
   };
 
-  clan.core.settings.machine-id.enable = true;
-
   srvos.boot.consoles = [ "tty0" ];
 }

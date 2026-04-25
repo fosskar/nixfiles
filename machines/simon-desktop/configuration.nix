@@ -1,7 +1,6 @@
 {
   self,
   mylib,
-  config,
   ...
 }:
 {
@@ -24,13 +23,6 @@
     self.modules.nixos.t3code
   ]
   ++ mylib.scanPaths ./. { };
-
-  programs.nh.flake = "${config.users.users.simon.home}/code/nixfiles";
-
-  clan.core.settings.machine-id.enable = true;
-
-  # nixpkgs netbird ui wrapper currently fails on desktop file exec replacement
-  services.netbird.ui.enable = false;
 
   preservation.rollback = {
     type = "btrfs";

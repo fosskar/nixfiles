@@ -1,7 +1,6 @@
 { pkgs, ... }:
 {
   networking = {
-    hostName = "nixbox";
     hostId = "25e85037"; # zfs requires unique hostId
 
     useDHCP = false;
