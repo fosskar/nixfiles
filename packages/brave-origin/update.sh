@@ -11,8 +11,15 @@ releaseJson="$(
     map(
       select(.prerelease)
       | .tag_name as $tag
+      | ($tag | ltrimstr("v")) as $version
       | .assets as $assets
-      | select(any($assets[]?.name; . == ("brave-origin-nightly_" + ($tag | ltrimstr("v")) + "_amd64.deb")))
+      | select(
+          all([
+            "brave-origin-nightly_\($version)_amd64.deb",
+            "brave-origin-v\($version)-darwin-arm64.zip",
+            "brave-origin-v\($version)-darwin-x64.zip"
+          ][]; . as $name | any($assets[]?.name; . == $name))
+        )
     )
     | first
   ' <<<"$releasesJson"
