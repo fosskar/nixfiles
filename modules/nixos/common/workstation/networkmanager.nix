@@ -57,7 +57,8 @@
           General = {
             AddressRandomization = "network";
             AddressRandomizationRange = "full";
-            EnableNetworkConfiguration = true;
+            # keep ip config in NetworkManager so ensureProfiles can set static addresses
+            EnableNetworkConfiguration = false;
             RoamRetryInterval = 15;
           };
           Network = {
