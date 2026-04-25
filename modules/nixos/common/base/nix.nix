@@ -22,6 +22,10 @@
           experimental-features = [
             "nix-command"
             "flakes"
+            "fetch-closure"
+          ]
+          ++ lib.optionals (lib.versionAtLeast (lib.versions.majorMinor config.nix.package.version) "2.29") [
+            "blake3-hashes"
           ];
 
           accept-flake-config = lib.mkDefault false;

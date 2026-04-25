@@ -27,8 +27,20 @@ _:
             clientMachines = lib.attrNames (roles.client.machines or { });
           in
           {
-            nix.settings.max-jobs = lib.mkDefault 16;
-            nix.settings.cores = lib.mkDefault 0;
+            nix.settings = {
+              max-jobs = lib.mkDefault 16;
+              cores = lib.mkDefault 0;
+              experimental-features = lib.mkAfter [
+                "auto-allocate-uids"
+                "cgroups"
+                "recursive-nix"
+              ];
+              auto-allocate-uids = lib.mkDefault true;
+              system-features = lib.mkAfter [
+                "uid-range"
+                "recursive-nix"
+              ];
+            };
 
             users.groups.nix = { };
             users.users.nix = {
@@ -97,6 +109,8 @@ _:
                   "nixos-test"
                   "big-parallel"
                   "kvm"
+                  "uid-range"
+                  "recursive-nix"
                 ];
                 sshKey = config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
               }
