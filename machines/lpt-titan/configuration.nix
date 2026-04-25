@@ -19,8 +19,6 @@
   ]
   ++ mylib.scanPaths ./. { };
 
-  # iGPU: disable rocmPackages.clr.icd + lact (not needed)
-  hardware.amdgpu.opencl.enable = lib.mkForce false;
   services.lact.enable = lib.mkForce false;
 
   # scx_lavd crashed (rcu cpu stall) on this machine; use bpfland instead
