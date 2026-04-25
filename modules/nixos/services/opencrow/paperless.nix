@@ -1,8 +1,8 @@
 {
   flake.modules.nixos.opencrow =
-    { config, domains, ... }:
+    { config, ... }:
     let
-      paperlessHost = "docs.${domains.local}";
+      paperlessHost = "docs.${config.domains.local}";
     in
     {
       clan.core.vars.generators.opencrow-paperless = {

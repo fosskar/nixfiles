@@ -2,14 +2,13 @@
   flake.modules.nixos.arrStack =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "jellyfin";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8096;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

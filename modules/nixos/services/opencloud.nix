@@ -2,7 +2,6 @@
   flake.modules.nixos.opencloud =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
@@ -10,12 +9,12 @@
     let
       dataDir = config.services.opencloud.environment.STORAGE_USERS_POSIX_ROOT;
       serviceName = "opencloud";
-      localHost = "${serviceName}.${domains.local}";
-      publicHost = "${serviceName}.${domains.public}";
+      localHost = "${serviceName}.${config.domains.local}";
+      publicHost = "${serviceName}.${config.domains.public}";
       listenAddress = "0.0.0.0";
       listenPort = 9200;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
-      oidcIssuerUrl = "https://auth.${domains.public}";
+      oidcIssuerUrl = "https://auth.${config.domains.public}";
 
       publicHostUris = [
         "https://${publicHost}/"
@@ -25,8 +24,8 @@
       ];
 
       oidcOrigins = [
-        "https://auth.${domains.local}"
-        "https://auth.${domains.public}"
+        "https://auth.${config.domains.local}"
+        "https://auth.${config.domains.public}"
       ];
 
       settingsFormat = pkgs.formats.yaml { };
@@ -151,7 +150,7 @@
             PROXY_USER_OIDC_CLAIM = "sub";
             PROXY_USER_CS3_CLAIM = "username";
             GRAPH_USERNAME_MATCH = "none";
-            WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${domains.public}/settings";
+            WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${config.domains.public}/settings";
 
             STORAGE_USERS_POSIX_ROOT = lib.mkDefault "/tank/apps/opencloud/data";
             STORAGE_USERS_POSIX_WATCH_FS = "true";

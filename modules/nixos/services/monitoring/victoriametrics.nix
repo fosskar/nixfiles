@@ -2,13 +2,12 @@
   flake.modules.nixos.victoriaMetrics =
     {
       config,
-      domains,
       lib,
       ...
     }:
     let
       serviceName = "vm";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8428;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

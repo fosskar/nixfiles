@@ -4,14 +4,13 @@
   flake.modules.nixos.garage =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "s3";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 3909;
       adminPort = 3903;

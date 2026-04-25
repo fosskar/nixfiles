@@ -2,13 +2,12 @@
   flake.modules.nixos.homepage =
     {
       config,
-      domains,
       lib,
       ...
     }:
     let
       serviceName = "home";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8082;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

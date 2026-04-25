@@ -2,15 +2,14 @@
   flake.modules.nixos.ntfy =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "ntfy";
-      localHost = "${serviceName}.${domains.local}";
-      publicHost = "${serviceName}.${domains.public}";
+      localHost = "${serviceName}.${config.domains.local}";
+      publicHost = "${serviceName}.${config.domains.public}";
       listenAddress = "0.0.0.0";
       listenPort = 8091;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

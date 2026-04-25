@@ -13,11 +13,6 @@ in
     inherit self;
     specialArgs = {
       inherit inputs mylib;
-
-      domains = {
-        local = "nx3.eu";
-        public = "fosskar.eu";
-      };
     };
 
     meta = {
@@ -356,13 +351,23 @@ in
           };
         };
 
+        base-common = {
+          module.name = "importer";
+          roles.default = {
+            tags.nixos = { };
+            extraModules = [
+              config.flake.modules.generic.domains
+              config.flake.modules.nixos.base
+            ];
+          };
+        };
+
         server-common = {
           module.name = "importer";
           roles.default = {
             tags.server = { };
             extraModules = with config.flake.modules.nixos; [
               inputs.srvos.nixosModules.server
-              base
               server
             ];
           };
@@ -374,7 +379,6 @@ in
             tags.workstation = { };
             extraModules = with config.flake.modules.nixos; [
               inputs.srvos.nixosModules.desktop
-              base
               workstation
               yubikey
               niri

@@ -2,14 +2,13 @@
   flake.modules.nixos.radicle =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "radicle";
-      publicHost = "${serviceName}.${domains.public}";
+      publicHost = "${serviceName}.${config.domains.public}";
       explorerPort = 8090;
 
       explorer = pkgs.radicle-explorer.withConfig {

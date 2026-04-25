@@ -2,14 +2,13 @@
   flake.modules.nixos.arrStack =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "sonarr";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8989;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

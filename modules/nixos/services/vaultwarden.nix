@@ -2,14 +2,13 @@
   flake.modules.nixos.vaultwarden =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "vault";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8222;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
@@ -91,7 +90,7 @@
           SSO_CLIENT_ID = "vaultwarden";
           SSO_ENABLED = true;
           SSO_ONLY = false;
-          SSO_AUTHORITY = "https://auth.${domains.public}";
+          SSO_AUTHORITY = "https://auth.${config.domains.public}";
 
           # decouple vaultwarden session from sso token lifetime
           SSO_AUTH_ONLY_NOT_SESSION = true;

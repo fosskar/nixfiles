@@ -2,12 +2,11 @@
   flake.modules.nixos.acme =
     {
       config,
-      domains,
       lib,
       ...
     }:
     let
-      domain = domains.local;
+      domain = config.domains.local;
     in
     {
       security.acme = {

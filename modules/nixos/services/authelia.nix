@@ -2,15 +2,14 @@
   flake.modules.nixos.authelia =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "auth";
-      localHost = "${serviceName}.${domains.local}";
-      publicHost = "${serviceName}.${domains.public}";
+      localHost = "${serviceName}.${config.domains.local}";
+      publicHost = "${serviceName}.${config.domains.public}";
       listenAddress = "0.0.0.0";
       listenPort = 9091;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
@@ -86,7 +85,7 @@
 
             totp = {
               disable = false;
-              issuer = domains.public;
+              issuer = config.domains.public;
               algorithm = "sha512";
               digits = 6;
               period = 30;
@@ -110,13 +109,13 @@
               remember_me = "1M";
               cookies = [
                 {
-                  domain = domains.local;
+                  domain = config.domains.local;
                   authelia_url = "https://${localHost}";
                 }
               ]
               ++ [
                 {
-                  domain = domains.public;
+                  domain = config.domains.public;
                   authelia_url = "https://${publicHost}";
                 }
               ];
@@ -132,7 +131,7 @@
               default_policy = "two_factor";
               rules = [
                 {
-                  domain = [ "*.${domains.local}" ];
+                  domain = [ "*.${config.domains.local}" ];
                   policy = "one_factor";
                 }
               ];

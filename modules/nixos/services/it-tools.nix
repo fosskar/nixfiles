@@ -2,14 +2,13 @@
   flake.modules.nixos.itTools =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "tools";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
     in
     {
       # --- homepage ---

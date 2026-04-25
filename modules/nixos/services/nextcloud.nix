@@ -2,18 +2,17 @@
   flake.modules.nixos.nextcloud =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "cloud";
-      localHost = "${serviceName}.${domains.local}";
-      publicHost = "${serviceName}.${domains.public}";
+      localHost = "${serviceName}.${config.domains.local}";
+      publicHost = "${serviceName}.${config.domains.public}";
       listenPort = 8009;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
-      oidcIssuerUrl = "https://auth.${domains.public}";
+      oidcIssuerUrl = "https://auth.${config.domains.public}";
     in
     {
       clan.core.vars.generators.nextcloud = {

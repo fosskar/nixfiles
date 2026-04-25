@@ -2,14 +2,13 @@
   flake.modules.nixos.vert =
     {
       config,
-      domains,
       lib,
       ...
     }:
     let
       serviceName = "converter";
-      localHost = "${serviceName}.${domains.local}";
-      vertdHost = "vertd.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
+      vertdHost = "vertd.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8088;
       vertdPort = 8089;

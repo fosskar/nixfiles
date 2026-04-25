@@ -2,14 +2,13 @@
   flake.modules.nixos.grafana =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "grafana";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 3100;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
@@ -193,10 +192,10 @@
                 config.clan.core.vars.generators.grafana.files."oauth-client-secret".path
               }}";
               scopes = "openid profile email groups offline_access";
-              auth_url = "https://auth.${domains.public}/api/oidc/authorization";
-              token_url = "https://auth.${domains.public}/api/oidc/token";
-              api_url = "https://auth.${domains.public}/api/oidc/userinfo";
-              signout_redirect_url = "https://auth.${domains.public}/logout";
+              auth_url = "https://auth.${config.domains.public}/api/oidc/authorization";
+              token_url = "https://auth.${config.domains.public}/api/oidc/token";
+              api_url = "https://auth.${config.domains.public}/api/oidc/userinfo";
+              signout_redirect_url = "https://auth.${config.domains.public}/logout";
               use_pkce = true;
               login_attribute_path = "preferred_username";
               name_attribute_path = "name";

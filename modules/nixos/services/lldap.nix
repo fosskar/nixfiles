@@ -4,14 +4,13 @@
   flake.modules.nixos.lldap =
     {
       config,
-      domains,
       lib,
       pkgs,
       ...
     }:
     let
       serviceName = "ldap";
-      localHost = "${serviceName}.${domains.local}";
+      localHost = "${serviceName}.${config.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 17170;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

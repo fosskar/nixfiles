@@ -261,15 +261,10 @@
         };
 
       telegrafX509Cert =
-        {
-          config,
-          domains,
-          lib,
-          ...
-        }:
+        { config, lib, ... }:
         {
           services.telegraf.extraConfig.inputs = lib.mkIf config.services.telegraf.enable (
-            inputConfigs.x509_cert domains
+            inputConfigs.x509_cert config.domains
           );
         };
     };
