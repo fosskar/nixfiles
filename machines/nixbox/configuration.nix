@@ -32,6 +32,7 @@
     self.modules.nixos.ntfy
     self.modules.nixos.garage
     self.modules.nixos.miniflux
+    self.modules.nixos.wiki
   ]
   ++ (mylib.scanPaths ./. {
     exclude = [
