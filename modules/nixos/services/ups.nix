@@ -47,5 +47,13 @@
           ];
         };
       };
+
+      systemd.services.upsdrv = {
+        unitConfig.StartLimitIntervalSec = 0;
+        serviceConfig = {
+          Restart = "on-failure";
+          RestartSec = "10s";
+        };
+      };
     };
 }
