@@ -35,4 +35,6 @@
   };
 
   clan.core.settings.machine-id.enable = true;
+
+  srvos.boot.consoles = [ "tty0" ];
 }
