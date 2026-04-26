@@ -69,7 +69,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "cs_info_gauge{machine=\"$machine\"}",
+          "expr": "cs_info_gauge{machine=~\"$machine\"}",
           "legendFormat": "{{version}}",
           "refId": "A"
         }
@@ -135,7 +135,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "sum(cs_active_decisions_gauge{machine=\"$machine\"})",
+          "expr": "sum(cs_active_decisions_gauge{machine=~\"$machine\"})",
           "legendFormat": "Total",
           "refId": "A"
         }
@@ -189,7 +189,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "sum(cs_active_decisions_gauge{machine=\"$machine\", origin=\"CAPI\"})",
+          "expr": "sum(cs_active_decisions_gauge{machine=~\"$machine\", origin=\"CAPI\"})",
           "legendFormat": "CAPI",
           "refId": "A"
         }
@@ -243,7 +243,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "sum(cs_active_decisions_gauge{machine=\"$machine\", origin=\"crowdsec\"})",
+          "expr": "sum(cs_active_decisions_gauge{machine=~\"$machine\", origin=\"crowdsec\"})",
           "legendFormat": "LAPI",
           "refId": "A"
         }
@@ -302,7 +302,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(cs_active_decisions_gauge{machine=\"$machine\", origin=\"crowdsec\"}) / sum(cs_active_decisions_gauge{machine=\"$machine\"}) * 100",
+          "expr": "sum(cs_active_decisions_gauge{machine=~\"$machine\", origin=\"crowdsec\"}) / sum(cs_active_decisions_gauge{machine=~\"$machine\"}) * 100",
           "legendFormat": "Lines",
           "range": true,
           "refId": "A"
@@ -357,7 +357,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "sum(increase(cs_filesource_hits_total_counter{machine=\"$machine\"}[$__range]))",
+          "expr": "sum(increase(cs_filesource_hits_total_counter{machine=~\"$machine\"}[$__range]))",
           "legendFormat": "Lines",
           "refId": "A"
         }
@@ -412,7 +412,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(increase(cs_journalctlsource_hits_total_counter{machine=\"$machine\"}[$__range]))",
+          "expr": "sum(increase(cs_journalctlsource_hits_total_counter{machine=~\"$machine\"}[$__range]))",
           "legendFormat": "Lines",
           "range": true,
           "refId": "A"
@@ -467,7 +467,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "sum(increase(cs_alerts_gauge{machine=\"$machine\"}[$__range]))",
+          "expr": "sum(increase(cs_alerts_gauge{machine=~\"$machine\"}[$__range]))",
           "legendFormat": "Alerts",
           "refId": "A"
         }
@@ -528,7 +528,7 @@
         {
           "editorMode": "code",
           "exemplar": false,
-          "expr": "cs_active_decisions_gauge{machine=\"$machine\", origin=\"CAPI\"}",
+          "expr": "cs_active_decisions_gauge{machine=~\"$machine\", origin=\"CAPI\"}",
           "format": "time_series",
           "instant": false,
           "legendFormat": "{{reason}}",
@@ -590,7 +590,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "cs_active_decisions_gauge{machine=\"$machine\", origin=\"crowdsec\"}",
+          "expr": "cs_active_decisions_gauge{machine=~\"$machine\", origin=\"crowdsec\"}",
           "format": "time_series",
           "legendFormat": "{{reason}}",
           "range": true,
@@ -679,7 +679,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "cs_buckets_gauge{machine=\"$machine\"}",
+          "expr": "cs_buckets_gauge{machine=~\"$machine\"}",
           "legendFormat": "{{name}}",
           "refId": "A"
         }
@@ -766,7 +766,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "rate(cs_lapi_bouncer_requests_total_counter{machine=\"$machine\"}[5m])",
+          "expr": "rate(cs_lapi_bouncer_requests_total_counter{machine=~\"$machine\"}[5m])",
           "legendFormat": "{{bouncer}}",
           "refId": "A"
         }
@@ -782,21 +782,23 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "gateway",
-          "value": "gateway"
-        },
+        "current": {},
         "datasource": "VictoriaMetrics",
         "definition": "label_values(cs_info_gauge, machine)",
         "includeAll": false,
-        "label": "Machine",
+        "label": "machine",
         "name": "machine",
         "options": [],
-        "query": "label_values(cs_info_gauge, machine)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(cs_info_gauge, machine)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
         "refresh": 1,
         "regex": "",
         "sort": 1,
-        "type": "query"
+        "type": "query",
+        "multi": false
       }
     ]
   },

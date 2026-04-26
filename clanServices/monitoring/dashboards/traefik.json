@@ -67,7 +67,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_requests_total_counter{machine=\"$machine\",protocol=~\"$protocol\"}[$__range]))",
+          "expr": "sum(increase(traefik_entrypoint_requests_total_counter{machine=~\"$machine\",protocol=~\"$protocol\"}[$__range]))",
           "legendFormat": "Requests",
           "refId": "A"
         }
@@ -121,7 +121,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(traefik_open_connections_gauge{machine=\"$machine\"})",
+          "expr": "sum(traefik_open_connections_gauge{machine=~\"$machine\"})",
           "legendFormat": "Connections",
           "refId": "A"
         }
@@ -235,7 +235,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "(traefik_tls_certs_not_after_gauge{machine=\"$machine\"} - time()) / 86400",
+          "expr": "(traefik_tls_certs_not_after_gauge{machine=~\"$machine\"} - time()) / 86400",
           "format": "table",
           "instant": true,
           "legendFormat": "{{sans}}",
@@ -379,7 +379,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[$__range])) by (protocol, code)",
+          "expr": "sum(increase(traefik_entrypoint_requests_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[$__range])) by (protocol, code)",
           "legendFormat": "{{protocol}} {{code}}",
           "refId": "A"
         }
@@ -436,7 +436,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total_counter{machine=\"$machine\",protocol=~\"$protocol\"}[$__range])) by (service)",
+          "expr": "sum(increase(traefik_service_requests_total_counter{machine=~\"$machine\",protocol=~\"$protocol\"}[$__range])) by (service)",
           "legendFormat": "{{service}}",
           "refId": "A"
         }
@@ -583,7 +583,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m])) by (protocol, code)",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m])) by (protocol, code)",
           "legendFormat": "{{protocol}} {{code}}",
           "refId": "A"
         }
@@ -669,7 +669,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m])) by (entrypoint)",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m])) by (entrypoint)",
           "legendFormat": "{{entrypoint}}",
           "refId": "A"
         }
@@ -755,7 +755,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "topk(10, sum(rate(traefik_service_requests_total_counter{machine=\"$machine\",protocol=~\"$protocol\"}[5m])) by (service))",
+          "expr": "topk(10, sum(rate(traefik_service_requests_total_counter{machine=~\"$machine\",protocol=~\"$protocol\"}[5m])) by (service))",
           "legendFormat": "{{service}}",
           "refId": "A"
         }
@@ -872,12 +872,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_bytes_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m]))",
+          "expr": "sum(rate(traefik_entrypoint_requests_bytes_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m]))",
           "legendFormat": "in",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(traefik_entrypoint_responses_bytes_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m]))",
+          "expr": "sum(rate(traefik_entrypoint_responses_bytes_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[5m]))",
           "legendFormat": "out",
           "refId": "B"
         }
@@ -963,7 +963,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\",code=\"403\"}[5m])) or on() vector(0)",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\",code=\"403\"}[5m])) or on() vector(0)",
           "legendFormat": "403",
           "refId": "A"
         }
@@ -1049,7 +1049,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\",code=~\"5..\"}[5m])) or on() vector(0)",
+          "expr": "sum(rate(traefik_entrypoint_requests_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\",code=~\"5..\"}[5m])) or on() vector(0)",
           "legendFormat": "5xx",
           "refId": "A"
         }
@@ -1103,7 +1103,7 @@
       "pluginVersion": "",
       "targets": [
         {
-          "expr": "sum by (protocol, code) (increase(traefik_entrypoint_requests_total_counter{machine=\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[$__range]))",
+          "expr": "sum by (protocol, code) (increase(traefik_entrypoint_requests_total_counter{machine=~\"$machine\",entrypoint=~\"web|websecure\",protocol=~\"$protocol\"}[$__range]))",
           "legendFormat": "{{protocol}} {{code}}",
           "refId": "A"
         }
@@ -1119,45 +1119,45 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "gateway",
-          "value": "gateway"
-        },
+        "current": {},
         "definition": "label_values(traefik_config_reloads_total_counter, machine)",
         "includeAll": false,
-        "label": "Machine",
+        "label": "machine",
         "name": "machine",
         "options": [],
         "query": {
+          "qryType": 1,
           "query": "label_values(traefik_config_reloads_total_counter, machine)",
-          "refId": "A"
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
         "regex": "",
         "regexApplyTo": "value",
         "sort": 1,
-        "type": "query"
+        "type": "query",
+        "datasource": "VictoriaMetrics",
+        "multi": false
       },
       {
-        "allValue": ".*",
         "current": {
           "text": "All",
           "value": ".*"
         },
-        "definition": "label_values(traefik_entrypoint_requests_total_counter{machine=\"$machine\"}, protocol)",
+        "definition": "label_values(traefik_entrypoint_requests_total_counter{machine=~\"$machine\"}, protocol)",
         "includeAll": true,
         "label": "Protocol",
         "name": "protocol",
         "options": [],
         "query": {
-          "query": "label_values(traefik_entrypoint_requests_total_counter{machine=\"$machine\"}, protocol)",
+          "query": "label_values(traefik_entrypoint_requests_total_counter{machine=~\"$machine\"}, protocol)",
           "refId": "A"
         },
         "refresh": 1,
         "regex": "",
         "regexApplyTo": "value",
         "sort": 1,
-        "type": "query"
+        "type": "query",
+        "allValue": ".*"
       }
     ]
   },

@@ -28,16 +28,14 @@
             [
               {
                 job_name = "victoriametrics";
-                static_configs = [ { targets = [ config.services.victoriametrics.listenAddress ]; } ];
-              }
-            ]
-            ++ lib.optionals config.services.telegraf.enable [
-              {
-                job_name = "telegraf";
                 static_configs = [
                   {
-                    targets = [ "127.0.0.1:9273" ];
-                    labels.type = "telegraf";
+                    targets = [ config.services.victoriametrics.listenAddress ];
+                    labels = {
+                      machine = config.networking.hostName;
+                      source = "local";
+                      type = "victoriametrics";
+                    };
                   }
                 ];
               }
@@ -46,7 +44,14 @@
               {
                 job_name = "zfs-exporter";
                 static_configs = [
-                  { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}" ]; }
+                  {
+                    targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}" ];
+                    labels = {
+                      machine = config.networking.hostName;
+                      source = "local";
+                      type = "zfs-exporter";
+                    };
+                  }
                 ];
               }
             ]
@@ -54,7 +59,14 @@
               {
                 job_name = "node-exporter";
                 static_configs = [
-                  { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ]; }
+                  {
+                    targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
+                    labels = {
+                      machine = config.networking.hostName;
+                      source = "local";
+                      type = "node-exporter";
+                    };
+                  }
                 ];
               }
             ]

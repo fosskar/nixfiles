@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "eaton ellipse pro ups monitoring via telegraf upsd plugin",
+  "description": "UPS monitoring via Telegraf NUT/upsd input",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -70,7 +70,7 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "exemplar": false,
-          "expr": "upsd_battery_charge_percent{ups_name=~\"$ups\"}",
+          "expr": "upsd_battery_charge_percent{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -129,7 +129,7 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "exemplar": false,
-          "expr": "upsd_battery_charge_percent{ups_name=~\"$ups\"}",
+          "expr": "upsd_battery_charge_percent{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -208,7 +208,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_status_flags{ups_name=~\"$ups\"}",
+          "expr": "upsd_status_flags{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "status",
           "range": true,
           "refId": "A"
@@ -273,7 +273,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_battery_charge_percent{ups_name=~\"$ups\"}",
+          "expr": "upsd_battery_charge_percent{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "battery",
           "range": true,
           "refId": "A"
@@ -338,7 +338,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_load_percent{ups_name=~\"$ups\"}",
+          "expr": "upsd_load_percent{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "load",
           "range": true,
           "refId": "A"
@@ -403,7 +403,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_time_left_ns{ups_name=~\"$ups\"} / 1e9 / 60",
+          "expr": "upsd_time_left_ns{machine=~\"$machine\",ups_name=~\"$ups\"} / 1e9 / 60",
           "legendFormat": "runtime",
           "range": true,
           "refId": "A"
@@ -460,7 +460,7 @@
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
           "exemplar": false,
-          "expr": "upsd_battery_charge_percent{ups_name=~\"$ups\"}",
+          "expr": "upsd_battery_charge_percent{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -519,7 +519,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_real_power{ups_name=~\"$ups\"}",
+          "expr": "upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "power",
           "range": true,
           "refId": "A"
@@ -576,7 +576,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_real_power{ups_name=~\"$ups\"}",
+          "expr": "upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "avg power",
           "range": true,
           "refId": "A"
@@ -633,7 +633,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_real_power{ups_name=~\"$ups\"}",
+          "expr": "upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "max power",
           "range": true,
           "refId": "A"
@@ -690,7 +690,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_input_transfer_low{ups_name=~\"$ups\"}",
+          "expr": "upsd_input_transfer_low{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "low",
           "range": true,
           "refId": "A"
@@ -747,7 +747,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_input_transfer_high{ups_name=~\"$ups\"}",
+          "expr": "upsd_input_transfer_high{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "high",
           "range": true,
           "refId": "A"
@@ -812,7 +812,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_input_voltage{ups_name=~\"$ups\"}",
+          "expr": "upsd_input_voltage{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "input",
           "range": true,
           "refId": "A"
@@ -877,7 +877,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_output_voltage{ups_name=~\"$ups\"}",
+          "expr": "upsd_output_voltage{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "output",
           "range": true,
           "refId": "A"
@@ -942,7 +942,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_input_frequency{ups_name=~\"$ups\"}",
+          "expr": "upsd_input_frequency{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "frequency",
           "range": true,
           "refId": "A"
@@ -1065,7 +1065,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_load_percent{ups_name=~\"$ups\"}",
+          "expr": "upsd_load_percent{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "load %",
           "range": true,
           "refId": "A"
@@ -1073,7 +1073,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_real_power{ups_name=~\"$ups\"}",
+          "expr": "upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "hide": false,
           "legendFormat": "watts",
           "range": true,
@@ -1164,7 +1164,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_input_voltage{ups_name=~\"$ups\"}",
+          "expr": "upsd_input_voltage{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "input voltage",
           "range": true,
           "refId": "A"
@@ -1172,7 +1172,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_output_voltage{ups_name=~\"$ups\"}",
+          "expr": "upsd_output_voltage{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "hide": false,
           "legendFormat": "output voltage",
           "range": true,
@@ -1279,7 +1279,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_battery_charge_percent{ups_name=~\"$ups\"}",
+          "expr": "upsd_battery_charge_percent{machine=~\"$machine\",ups_name=~\"$ups\"}",
           "legendFormat": "battery %",
           "range": true,
           "refId": "A"
@@ -1287,7 +1287,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "upsd_time_left_ns{ups_name=~\"$ups\"} / 1e9 / 60",
+          "expr": "upsd_time_left_ns{machine=~\"$machine\",ups_name=~\"$ups\"} / 1e9 / 60",
           "hide": false,
           "legendFormat": "runtime (min)",
           "range": true,
@@ -1468,7 +1468,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "avg_over_time(upsd_real_power{ups_name=~\"$ups\"}[1h]) / 1000 * 24 * $cost_kwh",
+          "expr": "avg_over_time(upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}[1h]) / 1000 * 24 * $cost_kwh",
           "legendFormat": "daily cost (1h avg)",
           "range": true,
           "refId": "A"
@@ -1526,7 +1526,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "avg_over_time(upsd_real_power{ups_name=~\"$ups\"}[24h]) / 1000 * 24 * $cost_kwh",
+          "expr": "avg_over_time(upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}[24h]) / 1000 * 24 * $cost_kwh",
           "legendFormat": "daily",
           "range": true,
           "refId": "A"
@@ -1584,7 +1584,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "avg_over_time(upsd_real_power{ups_name=~\"$ups\"}[30d]) / 1000 * 24 * 30 * $cost_kwh",
+          "expr": "avg_over_time(upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}[30d]) / 1000 * 24 * 30 * $cost_kwh",
           "legendFormat": "monthly",
           "range": true,
           "refId": "A"
@@ -1642,7 +1642,7 @@
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "avg_over_time(upsd_real_power{ups_name=~\"$ups\"}[30d]) / 1000 * 24 * 365 * $cost_kwh",
+          "expr": "avg_over_time(upsd_real_power{machine=~\"$machine\",ups_name=~\"$ups\"}[30d]) / 1000 * 24 * 365 * $cost_kwh",
           "legendFormat": "yearly",
           "range": true,
           "refId": "A"
@@ -1655,23 +1655,38 @@
   "preload": false,
   "refresh": "auto",
   "schemaVersion": 42,
-  "tags": ["ups", "telegraf", "eaton"],
+  "tags": ["ups", "nut", "telegraf"],
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "eaton-ellipse",
-          "value": "eaton-ellipse"
-        },
+        "current": {},
         "datasource": "VictoriaMetrics",
-        "definition": "label_values(upsd_battery_charge_percent, ups_name)",
+        "definition": "label_values(upsd_battery_charge_percent, machine)",
+        "includeAll": false,
+        "label": "machine",
+        "multi": false,
+        "name": "machine",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(upsd_battery_charge_percent, machine)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": "VictoriaMetrics",
+        "definition": "label_values(upsd_battery_charge_percent{machine=~\"$machine\"}, ups_name)",
         "includeAll": false,
         "label": "ups",
         "name": "ups",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(upsd_battery_charge_percent, ups_name)",
+          "query": "label_values(upsd_battery_charge_percent{machine=~\"$machine\"}, ups_name)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,

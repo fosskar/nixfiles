@@ -39,22 +39,22 @@
             description = "extra victoriametrics scrape configs";
           };
 
-          dashboardsDir = lib.mkOption {
+          extraDashboardsDir = lib.mkOption {
             type = lib.types.nullOr lib.types.path;
             default = null;
-            description = "grafana dashboards directory for provisioning";
+            description = "extra grafana dashboards directory for provisioning";
           };
 
-          exporter.enable = lib.mkOption {
+          exporter.node.enable = lib.mkOption {
             type = lib.types.bool;
-            default = false;
-            description = "enable local prometheus exporters on monitoring server";
+            default = true;
+            description = "enable node exporter on monitoring server";
           };
 
-          exporter.enableZfsExporter = lib.mkOption {
+          exporter.zfs.enable = lib.mkOption {
             type = lib.types.bool;
-            default = false;
-            description = "enable zfs exporter on monitoring server";
+            default = true;
+            description = "enable zfs exporter on monitoring server when zfs is enabled";
           };
         };
       };
@@ -70,10 +70,11 @@
           {
             config,
             lib,
-            pkgs,
             ...
           }:
           let
+            serverMachines = lib.attrNames (roles.server.machines or { });
+            serverMachineCount = lib.length serverMachines;
             clientMachines = lib.attrNames (roles.client.machines or { });
 
             clientScrapeConfigs = map (
@@ -82,7 +83,9 @@
                 clientSettings = (roles.client.machines.${machine} or { }).settings or { };
                 port = clientSettings.listenPort or 9273;
                 host =
-                  if (clientSettings.host or null) != null then
+                  if machine == config.networking.hostName then
+                    "127.0.0.1"
+                  else if (clientSettings.host or null) != null then
                     clientSettings.host
                   else
                     "${machine}.${config.clan.core.settings.domain}";
@@ -100,40 +103,50 @@
                   }
                 ];
               }
-            ) (builtins.filter (machine: machine != config.networking.hostName) clientMachines);
+            ) clientMachines;
 
+            targetMachine = target: lib.head (lib.splitString "." (lib.head (lib.splitString ":" target)));
             extraTelegrafScrapeConfig = lib.optional (settings.extraTelegrafTargets != [ ]) {
-              job_name = "openwrt-telegraf";
-              static_configs = [
-                {
-                  targets = settings.extraTelegrafTargets;
-                  labels = {
-                    type = "telegraf";
-                    source = "external";
-                  };
-                }
-              ];
+              job_name = "external-telegraf";
+              static_configs = map (target: {
+                targets = [ target ];
+                labels = {
+                  type = "telegraf";
+                  source = "external";
+                  target = targetMachine target;
+                };
+              }) settings.extraTelegrafTargets;
             };
 
-            serviceDashboardsDir =
-              if settings.dashboardsDir == null then
-                ./dashboards
-              else
-                pkgs.symlinkJoin {
-                  name = "monitoring-dashboards";
-                  paths = [
-                    ./dashboards
-                    settings.dashboardsDir
-                  ];
-                };
+            baseDashboardsDir = ./dashboards;
+            dashboardEnabled = {
+              "ups.json" = config.power.ups.enable && (config.power.ups.upsd.enable or false);
+            };
+            baseDashboardFiles = lib.filter (file: dashboardEnabled.${file} or true) (
+              builtins.attrNames (builtins.readDir baseDashboardsDir)
+            );
+            extraDashboardFiles = lib.optionals (settings.extraDashboardsDir != null) (
+              builtins.attrNames (builtins.readDir settings.extraDashboardsDir)
+            );
+            mkDashboard = dir: file: {
+              name = "grafana-dashboards/${file}";
+              value.source = "${dir}/${file}";
+            };
           in
           {
-            # server-only modules; telegraf+vector come via client role (all server-tagged machines)
+            # server-only modules; telegraf comes via client role (all server-tagged machines)
             imports = with self.modules.nixos; [
               exporter
               grafana
               victoriaLogs
               victoriaMetrics
+            ];
+
+            assertions = [
+              {
+                assertion = serverMachineCount == 1;
+                message = "monitoring requires exactly one server machine, got ${toString serverMachineCount}";
+              }
             ];
 
             services.grafana.enable = lib.mkDefault settings.grafana.enable;
@@ -143,15 +156,15 @@
 
             environment.etc = lib.mkIf config.services.grafana.enable (
               builtins.listToAttrs (
-                map (file: {
-                  name = "grafana-dashboards/${file}";
-                  value.source = "${serviceDashboardsDir}/${file}";
-                }) (builtins.attrNames (builtins.readDir serviceDashboardsDir))
+                (map (mkDashboard baseDashboardsDir) baseDashboardFiles)
+                ++ (map (mkDashboard settings.extraDashboardsDir) extraDashboardFiles)
               )
             );
 
-            services.prometheus.exporters.node.enable = lib.mkDefault settings.exporter.enable;
-            services.prometheus.exporters.zfs.enable = lib.mkDefault settings.exporter.enableZfsExporter;
+            services.prometheus.exporters.node.enable = lib.mkDefault settings.exporter.node.enable;
+            services.prometheus.exporters.zfs.enable = lib.mkDefault (
+              settings.exporter.zfs.enable && (config.boot.supportedFilesystems.zfs or false)
+            );
 
             services.victoriametrics = {
               retentionPeriod = lib.mkDefault settings.retentionPeriod;
@@ -182,21 +195,6 @@
             description = "override scrape host for this client (default: <machine>.<clan-domain>)";
           };
 
-          plugins = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [
-              "system"
-              "systemd"
-            ];
-            description = "telegraf input plugins";
-          };
-
-          vector.enable = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-            description = "enable vector shipper on this client";
-          };
-
         };
       };
 
@@ -208,18 +206,7 @@
       }:
       let
         serverMachines = builtins.attrNames (roles.server.machines or { });
-        pluginModules = with self.modules.nixos; {
-          system = telegrafSystem;
-          systemd = telegrafSystemd;
-          zfs = telegrafZfs;
-          upsd = telegrafUpsd;
-          sensors = telegrafSensors;
-          smart = telegrafSmart;
-          docker = telegrafDocker;
-          postgresql = telegrafPostgresql;
-          redis = telegrafRedis;
-          x509_cert = telegrafX509Cert;
-        };
+        serverMachineCount = builtins.length serverMachines;
       in
       {
         nixosModule =
@@ -229,12 +216,16 @@
             ...
           }:
           {
-            imports =
-              (with self.modules.nixos; [
-                telegraf
-                vector
-              ])
-              ++ map (plugin: pluginModules.${plugin}) settings.plugins;
+            imports = with self.modules.nixos; [
+              telegraf
+            ];
+
+            assertions = [
+              {
+                assertion = serverMachineCount == 1;
+                message = "monitoring requires exactly one server machine, got ${toString serverMachineCount}";
+              }
+            ];
 
             networking.firewall.interfaces.ygg.allowedTCPPorts = lib.mkIf (
               !(builtins.elem config.networking.hostName serverMachines)
@@ -249,7 +240,6 @@
                 }
               ];
             };
-            services.vector.enable = lib.mkDefault settings.vector.enable;
           };
       };
   };

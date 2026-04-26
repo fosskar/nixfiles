@@ -30,8 +30,8 @@
       },
       "id": 1,
       "panels": [],
-      "repeat": "host",
-      "title": "${host}",
+      "repeat": "machine",
+      "title": "${machine}",
       "type": "row"
     },
     {
@@ -81,7 +81,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(mem_available{host=\"$host\"})",
+          "expr": "max(mem_available{machine=~\"$machine\"})",
           "legendFormat": "",
           "range": true,
           "refId": "A"
@@ -147,7 +147,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(mem_used_percent{host=\"$host\"})",
+          "expr": "max(mem_used_percent{machine=~\"$machine\"})",
           "legendFormat": "",
           "range": true,
           "refId": "A"
@@ -170,16 +170,16 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "red",
                 "value": null
               },
               {
                 "color": "#EAB839",
-                "value": 75
+                "value": 10
               },
               {
-                "color": "red",
-                "value": 90
+                "color": "green",
+                "value": 25
               }
             ]
           },
@@ -213,7 +213,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(cpu_usage_idle{host=\"$host\",cpu=\"cpu-total\"})",
+          "expr": "max(cpu_usage_idle{machine=~\"$machine\",cpu=\"cpu-total\"})",
           "legendFormat": "",
           "range": true,
           "refId": "A"
@@ -279,7 +279,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(100 - cpu_usage_idle{host=\"$host\",cpu=\"cpu-total\"})",
+          "expr": "max(100 - cpu_usage_idle{machine=~\"$machine\",cpu=\"cpu-total\"})",
           "legendFormat": "",
           "range": true,
           "refId": "A"
@@ -287,6 +287,145 @@
       ],
       "title": "cpu usage",
       "type": "stat"
+    },
+    {
+      "datasource": "VictoriaMetrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "active",
+                  "color": "semi-dark-green",
+                  "index": 0
+                },
+                "1": {
+                  "text": "reloading",
+                  "color": "semi-dark-blue",
+                  "index": 1
+                },
+                "2": {
+                  "text": "inactive",
+                  "color": "#535353",
+                  "index": 2
+                },
+                "3": {
+                  "text": "failed",
+                  "color": "semi-dark-red",
+                  "index": 3
+                },
+                "4": {
+                  "text": "activating",
+                  "color": "semi-dark-yellow",
+                  "index": 4
+                },
+                "5": {
+                  "text": "deactivating",
+                  "color": "semi-dark-orange",
+                  "index": 5
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "state"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "enablePagination": false,
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "state"
+          }
+        ]
+      },
+      "pluginVersion": "12.4.0",
+      "targets": [
+        {
+          "datasource": "VictoriaMetrics",
+          "editorMode": "code",
+          "expr": "label_replace(systemd_units_active_code{machine=~\"$machine\"}, \"service\", \"$1\", \"name\", \"(.*)\\\\.service\")",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "service health",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["service", "active", "sub", "Value"]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "Value": "state",
+              "active": "active",
+              "service": "service",
+              "sub": "substate"
+            }
+          }
+        }
+      ],
+      "type": "table",
+      "description": "current state of monitored NixOS services, sorted with non-active states first"
     }
   ],
   "preload": false,
@@ -301,19 +440,20 @@
           "value": ["$__all"]
         },
         "datasource": "VictoriaMetrics",
-        "definition": "label_values(mem_available, host)",
+        "definition": "label_values(mem_available, machine)",
         "includeAll": true,
         "multi": true,
-        "name": "host",
+        "name": "machine",
         "options": [],
         "query": {
-          "query": "label_values(mem_available, host)",
+          "query": "label_values(mem_available, machine)",
           "refId": "A"
         },
         "refresh": 1,
         "regex": "",
         "sort": 1,
-        "type": "query"
+        "type": "query",
+        "hide": 2
       }
     ]
   },
@@ -325,5 +465,5 @@
   "timezone": "browser",
   "title": "Machines",
   "uid": "machines",
-  "version": 2
+  "version": 5
 }

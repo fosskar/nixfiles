@@ -130,7 +130,7 @@
                 name = "nixos";
                 orgId = 1;
                 type = "file";
-                disableDeletion = true;
+                disableDeletion = false;
                 editable = true;
                 options.path = "/etc/grafana-dashboards";
               }

@@ -82,7 +82,7 @@ in
       };
 
       instances = {
-        # core / access
+        ## core / access
 
         metadata = {
           module.name = "importer";
@@ -210,7 +210,7 @@ in
           };
         };
 
-        # networking
+        ## networking
 
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
@@ -318,7 +318,7 @@ in
           };
         };
 
-        # workstation / user-facing
+        ## workstation / user-facing
 
         wifi = {
           module = {
@@ -340,31 +340,31 @@ in
           roles.default.tags.workstation = { };
         };
 
-        syncthing = {
-          module = {
-            name = "syncthing";
-            input = "clan-core";
-          };
-          roles.peer = {
-            machines."simon-desktop" = { };
-            machines."lpt-titan" = { };
-            settings = {
-              folders = {
-                # add folders here, e.g.:
-                documents = {
-                  path = "/home/simon/documents";
-                  type = "sendreceive";
-                };
-                #zen-browser = {
-                #  path = "/home/simon/.zen";
-                #  type = "sendreceive";
-                #};
-              };
-            };
-          };
-        };
+        #syncthing = {
+        #  module = {
+        #    name = "syncthing";
+        #    input = "clan-core";
+        #  };
+        #  roles.peer = {
+        #    machines."simon-desktop" = { };
+        #    machines."lpt-titan" = { };
+        #    settings = {
+        #      folders = {
+        #        # add folders here, e.g.:
+        #        documents = {
+        #          path = "/home/simon/documents";
+        #          type = "sendreceive";
+        #        };
+        #        #zen-browser = {
+        #        #  path = "/home/simon/.zen";
+        #        #  type = "sendreceive";
+        #        #};
+        #      };
+        #    };
+        #  };
+        #};
 
-        # monitoring
+        ## monitoring
 
         monitoring = {
           module = {
@@ -373,14 +373,7 @@ in
           };
 
           roles = {
-            client.tags = [ "server" ];
-
             server.machines."nixbox".settings = {
-              dashboardsDir = ./nixbox/dashboards;
-              exporter = {
-                enable = true;
-                enableZfsExporter = true;
-              };
               extraTelegrafTargets = [ "openwrt.lan:9273" ];
               extraScrapeConfigs = [
                 {
@@ -394,18 +387,7 @@ in
                 }
               ];
             };
-
-            # nixbox has richer local telemetry needs
-            client.machines."nixbox".settings.plugins = [
-              "system"
-              "systemd"
-              "zfs"
-              "upsd"
-              "sensors"
-              "smart"
-              "postgresql"
-            ];
-
+            client.tags = [ "server" ];
           };
         };
 
