@@ -2,30 +2,25 @@
 {
   disko.devices = {
     disk = {
-      # optane drive 1 (16gb) - primary boot + slog
-      optane1 = {
+      "optane1" = {
         type = "disk";
         device = "/dev/disk/by-id/nvme-INTEL_MEMPEK1J016GA_PHBT83620341016N";
         content = {
           type = "gpt";
           partitions = {
-            esp = {
+            "esp" = {
               size = "1G";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [
-                  "defaults"
-                  "umask=0077"
-                ];
+                mountOptions = [ "umask=0077" ];
               };
             };
-            slog = {
+            "slog" = {
               size = "100%";
               type = "BF01";
-              # slog for tank pool (added manually, documented here)
               content = {
                 type = "zfs";
                 pool = "tank";
@@ -34,31 +29,25 @@
           };
         };
       };
-
-      # optane drive 2 (16gb) - fallback boot + slog mirror
-      optane2 = {
+      "optane2" = {
         type = "disk";
         device = "/dev/disk/by-id/nvme-INTEL_MEMPEK1J016GA_PHBT836304CV016N";
         content = {
           type = "gpt";
           partitions = {
-            esp = {
+            "esp" = {
               size = "1G";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot-fallback";
-                mountOptions = [
-                  "defaults"
-                  "umask=0077"
-                ];
+                mountOptions = [ "umask=0077" ];
               };
             };
-            slog = {
+            "slog" = {
               size = "100%";
               type = "BF01";
-              # slog mirror for tank pool (added manually, documented here)
               content = {
                 type = "zfs";
                 pool = "tank";
@@ -69,7 +58,7 @@
       };
 
       # flash ssd 1 (1tb)
-      flash1 = {
+      "flash1" = {
         type = "disk";
         device = "/dev/disk/by-id/ata-KINGSTON_SEDC600M960G_50026B768755993B";
         content = {
@@ -87,13 +76,13 @@
       };
 
       # flash ssd 2 (1tb) - mirror
-      flash2 = {
+      "flash2" = {
         type = "disk";
         device = "/dev/disk/by-id/ata-KINGSTON_SEDC600M960G_50026B7687522C31";
         content = {
           type = "gpt";
           partitions = {
-            zfs = {
+            "zfs" = {
               size = "100%";
               content = {
                 type = "zfs";
@@ -105,7 +94,7 @@
       };
     };
 
-    zpool = {
+    "zpool" = {
       znixos = {
         type = "zpool";
         mode = "mirror";
@@ -120,27 +109,27 @@
           mountpoint = "none";
         };
         datasets = {
-          root = {
+          "root" = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/";
             options."com.sun:auto-snapshot" = "false";
             postCreateHook = "zfs snapshot znixos/root@blank";
           };
-          nix = {
+          "nix" = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/nix";
             options."com.sun:auto-snapshot" = "false";
           };
-          persist = {
+          "persist" = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/persist";
             options."com.sun:auto-snapshot" = "true";
             postMountHook = preservationDiskoPostMountHook;
           };
-          reserved = {
+          "reserved" = {
             type = "zfs_fs";
             options = {
               mountpoint = "none";

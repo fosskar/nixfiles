@@ -1,20 +1,34 @@
-{ preservationDiskoPostMountHook, ... }:
 {
+  self,
+  preservationDiskoPostMountHook,
+  ...
+}:
+{
+  imports = [
+    self.modules.nixos.btrfs
+    self.modules.nixos.preservation
+  ];
+
+  preservation.rollback = {
+    type = "btrfs";
+    deviceLabel = "root";
+  };
+
   disko.devices = {
-    disk.main = {
+    disk."main" = {
       type = "disk";
       device = "/dev/sda";
       content = {
         type = "gpt";
         partitions = {
-          boot = {
+          "boot" = {
             size = "1M";
             type = "EF02";
             priority = 1;
           };
-          ESP = {
-            size = "1G";
+          "ESP" = {
             type = "EF00";
+            size = "1G";
             content = {
               type = "filesystem";
               format = "vfat";
@@ -22,15 +36,14 @@
               mountOptions = [ "umask=0077" ];
             };
           };
-          root = {
+          "root" = {
             size = "100%";
             label = "root";
             content = {
               type = "btrfs";
               extraArgs = [
-                "-L"
-                "root"
-                "-f"
+                "--force"
+                "--label root"
               ];
               postMountHook = preservationDiskoPostMountHook;
               subvolumes = {
@@ -39,7 +52,6 @@
                   mountOptions = [
                     "compress=zstd"
                     "noatime"
-                    "discard"
                   ];
                 };
                 "@nix" = {
@@ -47,7 +59,6 @@
                   mountOptions = [
                     "compress=zstd"
                     "noatime"
-                    "discard"
                   ];
                 };
                 "@persist" = {
@@ -55,7 +66,6 @@
                   mountOptions = [
                     "compress=zstd"
                     "noatime"
-                    "discard"
                   ];
                 };
               };

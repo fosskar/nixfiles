@@ -13,8 +13,6 @@
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.lanzaboote
-    self.modules.nixos.bcachefs
-    self.modules.nixos.preservation
   ]
   ++ mylib.scanPaths ./. { };
 
@@ -23,8 +21,4 @@
   # scx_lavd crashed (rcu cpu stall) on this machine; use bpfland instead
   services.scx.scheduler = "scx_bpfland";
 
-  preservation.rollback = {
-    type = "bcachefs";
-    subvolume = "@root";
-  };
 }

@@ -12,9 +12,7 @@
     self.modules.nixos.crowdsecTraefik
     self.modules.nixos.crowdsecNetbirdProxy
     self.modules.nixos.crowdsecClanWhitelist
-    self.modules.nixos.btrfs
     self.modules.nixos.tunedVirtualGuest
-    self.modules.nixos.preservation
     self.modules.nixos.traefik
     self.modules.nixos.traefikGeoblock
   ]
@@ -23,18 +21,12 @@
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression
 
-  preservation = {
-    rollback = {
-      type = "btrfs";
-      deviceLabel = "root";
-    };
-    preserveAt."/persist".directories = [
-      {
-        directory = "/var/lib/private";
-        mode = "0700";
-      }
-    ];
-  };
+  preservation.preserveAt."/persist".directories = [
+    {
+      directory = "/var/lib/private";
+      mode = "0700";
+    }
+  ];
 
   services.cloud-init = {
     settings = {

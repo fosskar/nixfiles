@@ -1,73 +1,65 @@
-# disko config for nvme with btrfs + preservation
 { preservationDiskoPostMountHook, ... }:
 {
   disko.devices = {
-    disk = {
-      main = {
-        type = "disk";
-        device = "/dev/nvme0n1"; # Adjust this to your actual NVMe device
-        content = {
-          type = "gpt";
-          partitions = {
-            # Boot partition - 1GB like in the example
-            ESP = {
-              label = "boot";
-              size = "1G";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [
-                  "defaults"
-                  "umask=0027"
-                ];
-              };
+    disk."main" = {
+      type = "disk";
+      device = "/dev/nvme0n1";
+      content = {
+        type = "gpt";
+        partitions = {
+          #"boot" = {
+          #  size = "1M";
+          #  type = "EF02"; # for grub MBR
+          #  priority = 1;
+          #};
+          "ESP" = {
+            type = "EF00";
+            size = "1G";
+            label = "boot";
+            content = {
+              type = "filesystem";
+              format = "vfat";
+              mountpoint = "/boot";
+              mountOptions = [ "umask=0077" ];
             };
-            # Main BTRFS partition (no encryption)
-            root = {
-              size = "100%";
-              content = {
-                type = "btrfs";
-                extraArgs = [
-                  "-L"
-                  "nixos"
-                  "-f"
-                ];
-                postMountHook = preservationDiskoPostMountHook;
-                subvolumes = {
-                  "@root" = {
-                    mountpoint = "/";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                      "discard=async"
-                    ];
-                  };
-                  "@home" = {
-                    mountpoint = "/home";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                      "discard=async"
-                    ];
-                  };
-                  "@nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                      "discard=async"
-                    ];
-                  };
-                  "@persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                      "discard=async"
-                    ];
-                  };
+          };
+          "root" = {
+            size = "100%";
+            content = {
+              type = "btrfs";
+              extraArgs = [
+                "--force"
+                "--label nixos"
+              ];
+              postMountHook = preservationDiskoPostMountHook;
+              subvolumes = {
+                "@root" = {
+                  mountpoint = "/";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                  ];
+                };
+                "@home" = {
+                  mountpoint = "/home";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                  ];
+                };
+                "@nix" = {
+                  mountpoint = "/nix";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                  ];
+                };
+                "@persist" = {
+                  mountpoint = "/persist";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                  ];
                 };
               };
             };

@@ -7,10 +7,15 @@
       content = {
         type = "gpt";
         partitions = {
-          ESP = {
-            label = "boot";
-            size = "1G";
+          #"boot" = {
+          #  size = "1M";
+          #  type = "EF02"; # for grub MBR
+          #  priority = 1;
+          #};
+          "ESP" = {
             type = "EF00";
+            size = "1G";
+            label = "boot";
             content = {
               type = "filesystem";
               format = "vfat";
@@ -24,9 +29,8 @@
             content = {
               type = "btrfs";
               extraArgs = [
-                "-L"
-                "root"
-                "-f"
+                "--force"
+                "--label root"
               ];
               postMountHook = preservationDiskoPostMountHook;
               subvolumes = {
