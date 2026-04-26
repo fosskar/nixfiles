@@ -198,6 +198,7 @@
 
               services.netbird = {
                 enable = true;
+                ui.enable = false;
                 package = pkgs.custom.netbird-client;
                 useRoutingFeatures = settings.routingFeatures;
                 clients.default = {
