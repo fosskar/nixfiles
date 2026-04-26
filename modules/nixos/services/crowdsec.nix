@@ -255,7 +255,10 @@
             }
           ];
 
-          services.netbird.server.proxy.crowdsec.enable = true;
+          services.netbird.server.proxy = {
+            logLevel = "debug"; # needed for netbird-proxy access log parsing
+            crowdsec.enable = true;
+          };
 
           systemd.services.crowdsec-netbird-proxy-bouncer-register = {
             description = "register crowdsec netbird-proxy bouncer";
