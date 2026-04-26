@@ -7,6 +7,9 @@ create atomic commit(s). do NOT move bookmarks. do NOT push.
 rules:
 
 - one logical change per commit.
+- atomic means coherent and easy to review/revert, not maximal splitting.
+- if small changes belong to the same task, keep them together.
+- split only when changes are unrelated or would be easier to review/revert separately.
 - commit msg: lowercase, concise, imperative.
 - focus msg on why.
 - no conventional commit prefixes.
@@ -23,7 +26,7 @@ flow:
 1. inspect
    - `jj status`
    - `jj diff --stat`
-2. if mixed changes, split by logical file groups
+2. if changes are clearly unrelated, split by logical file groups
    - `jj split -m "<msg>" -- <paths...>`
 3. commit remaining change
    - `jj commit -m "<msg>"`
