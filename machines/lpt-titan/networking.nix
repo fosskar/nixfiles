@@ -1,5 +1,7 @@
 {
   networking.networkmanager.ensureProfiles.profiles."home" = {
+    connection.autoconnect-priority = 100;
+
     ipv4 = {
       method = "manual";
       address1 = "192.168.10.150/24,192.168.10.1";
