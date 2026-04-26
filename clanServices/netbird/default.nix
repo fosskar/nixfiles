@@ -1,10 +1,28 @@
 { self }:
 {
+  clanLib,
+  config,
+  lib,
+  ...
+}:
+{
   _class = "clan.service";
   manifest.name = "netbird";
   manifest.description = "self-hosted netbird VPN mesh with relay server and embedded IdP";
   manifest.readme = "netbird mesh VPN with management, signal, relay, and dashboard";
   manifest.categories = [ "Network" ];
+  manifest.exports.out = [
+    "networking"
+    "peer"
+  ];
+
+  exports = lib.mapAttrs' (instanceName: _: {
+    name = clanLib.buildScopeKey {
+      inherit instanceName;
+      serviceName = config.manifest.name;
+    };
+    value.networking.priority = 900;
+  }) config.instances;
 
   roles.server = {
     description = "runs netbird management, signal, relay, dashboard, and reverse proxy on a public VPS";
@@ -136,9 +154,23 @@
         settings,
         roles,
         machine,
+        mkExports,
         ...
       }:
+      let
+        # get the server domain from the server role
+        serverMachines = lib.attrNames (roles.server.machines or { });
+        serverName = lib.head serverMachines;
+        serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
+        isServerMachine = builtins.elem machine.name serverMachines;
+      in
       {
+        exports = mkExports {
+          peer.hosts = [
+            { plain = "${machine.name}.${serverSettings.domain}"; }
+          ];
+        };
+
         nixosModule =
           {
             config,
@@ -146,13 +178,6 @@
             pkgs,
             ...
           }:
-          let
-            # get the server domain from the server role
-            serverMachines = lib.attrNames (roles.server.machines or { });
-            serverName = lib.head serverMachines;
-            serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
-            isServerMachine = builtins.elem machine.name serverMachines;
-          in
           {
             imports = [ self.modules.nixos.netbirdPersistence ];
 
