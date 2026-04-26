@@ -286,37 +286,37 @@ in
         # TODO: re-enable when clan networking fallback is fixed
         # see: https://git.clan.lol/clan/clan-core/issues/6964
         # dm-dns exports break networks_from_flake() (KeyError: 'peer')
-        #data-mesher = {
-        #  module = {
-        #    name = "data-mesher";
-        #    input = "clan-core";
-        #  };
-        #  roles.default = {
-        #    tags.all = { };
-        #    settings = {
-        #      interfaces = [
-        #        "ygg"
-        #        "wireguard"
-        #      ];
-        #    };
-        #  };
-        #  roles.bootstrap.machines = {
-        #    nixbox = { };
-        #    gateway = { };
-        #  };
-        #};
+        data-mesher = {
+          module = {
+            name = "data-mesher";
+            input = "clan-core";
+          };
+          roles.default = {
+            tags.all = { };
+            settings = {
+              interfaces = [
+                "ygg"
+                "wireguard"
+              ];
+            };
+          };
+          roles.bootstrap.machines = {
+            nixbox = { };
+            gateway = { };
+          };
+        };
 
-        #dm-dns = {
-        #  module = {
-        #    name = "dm-dns";
-        #    input = "clan-core";
-        #  };
-        #  roles.default.tags.all = { };
-        #  roles.push.machines = {
-        #    nixbox = { };
-        #    gateway = { };
-        #  };
-        #};
+        dm-dns = {
+          module = {
+            name = "dm-dns";
+            input = "clan-core";
+          };
+          roles.default.tags.all = { };
+          roles.push.machines = {
+            nixbox = { };
+            gateway = { };
+          };
+        };
 
         # workstation / user-facing
 
