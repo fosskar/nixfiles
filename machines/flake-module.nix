@@ -332,6 +332,14 @@ in
           };
         };
 
+        localsend = {
+          module = {
+            name = "localsend";
+            input = "clan-community";
+          };
+          roles.default.tags.workstation = { };
+        };
+
         syncthing = {
           module = {
             name = "syncthing";
