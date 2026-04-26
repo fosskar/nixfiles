@@ -82,6 +82,59 @@ in
       };
 
       instances = {
+        # core / access
+
+        metadata = {
+          module.name = "importer";
+          roles.default = {
+            tags.all = { };
+            extraModules = [ config.flake.modules.generic.domains ];
+          };
+        };
+
+        base-common = {
+          module.name = "importer";
+          roles.default = {
+            tags.nixos = { };
+            extraModules = [ config.flake.modules.nixos.base ];
+          };
+        };
+
+        server-common = {
+          module.name = "importer";
+          roles.default = {
+            tags.server = { };
+            extraModules = with config.flake.modules.nixos; [
+              inputs.srvos.nixosModules.server
+              server
+            ];
+          };
+        };
+
+        workstation-common = {
+          module.name = "importer";
+          roles.default = {
+            tags.workstation = { };
+            extraModules = with config.flake.modules.nixos; [
+              inputs.srvos.nixosModules.desktop
+              workstation
+              yubikey
+              niri
+            ];
+          };
+        };
+
+        laptop-common = {
+          module.name = "importer";
+          roles.default = {
+            tags.laptop = { };
+            extraModules = with config.flake.modules.nixos; [
+              laptopPower
+              fprint
+            ];
+          };
+        };
+
         emergency-access = {
           module = {
             name = "emergency-access";
@@ -149,6 +202,162 @@ in
           };
         };
 
+        clan-cache = {
+          roles.default.tags.all = { };
+          module = {
+            name = "trusted-nix-caches";
+            input = "clan-core";
+          };
+        };
+
+        # networking
+
+        # export IPs so yggdrasil peers via explicit connection (no multicast)
+        internet = {
+          roles.default.machines = {
+            "crowbox".settings.host = "192.168.10.240";
+            "gateway".settings.host = "138.201.155.21";
+            "nixbox".settings.host = "192.168.10.200";
+            "nixworker".settings.host = "192.168.10.210";
+            "simon-desktop".settings.host = "192.168.10.100";
+            "lpt-titan".settings.host = "192.168.10.150";
+          };
+        };
+
+        wireguard = {
+          module.name = "wireguard";
+          module.input = "clan-core";
+
+          roles.controller.machines."gateway".settings = {
+            endpoint = "138.201.155.21";
+            port = 51820; # default
+          };
+          roles.peer.machines = {
+            "nixbox".settings = { };
+            "simon-desktop".settings = { };
+            "lpt-titan".settings = { };
+            "crowbox".settings = { };
+            "nixworker".settings = { };
+          };
+        };
+
+        yggdrasil = {
+          roles.default.tags.all = { };
+        };
+
+        netbird = {
+          module.name = "netbird";
+          module.input = "self";
+
+          roles.server.machines."gateway".settings = {
+            domain = "nb.fosskar.eu";
+            proxyDomain = "fosskar.eu";
+            port = 51821;
+          };
+          roles.client = {
+            tags.all = { };
+            machines."nixbox".settings.routingFeatures = "server";
+          };
+        };
+
+        tor = {
+          roles.server.tags.nixos = { };
+        };
+
+        #mycelium = {
+        #  roles.peer.tags.all = { };
+        #};
+
+        #rosenpass = {
+        #  module.name = "rosenpass";
+        #  module.input = "self";
+        #  roles.peer.machines = {
+        #    gateway.settings = {
+        #      listenPort = 9999;
+        #      endpoint = "138.201.155.21:9999";
+        #    };
+        #    nixbox.settings = { };
+        #    simon-desktop.settings = { };
+        #    lpt-titan.settings = { };
+        #    crowbox.settings = { };
+        #  };
+        #};
+
+        # TODO: re-enable when clan networking fallback is fixed
+        # see: https://git.clan.lol/clan/clan-core/issues/6964
+        # dm-dns exports break networks_from_flake() (KeyError: 'peer')
+        #data-mesher = {
+        #  module = {
+        #    name = "data-mesher";
+        #    input = "clan-core";
+        #  };
+        #  roles.default = {
+        #    tags.all = { };
+        #    settings = {
+        #      interfaces = [
+        #        "ygg"
+        #        "wireguard"
+        #      ];
+        #    };
+        #  };
+        #  roles.bootstrap.machines = {
+        #    nixbox = { };
+        #    gateway = { };
+        #  };
+        #};
+
+        #dm-dns = {
+        #  module = {
+        #    name = "dm-dns";
+        #    input = "clan-core";
+        #  };
+        #  roles.default.tags.all = { };
+        #  roles.push.machines = {
+        #    nixbox = { };
+        #    gateway = { };
+        #  };
+        #};
+
+        # workstation / user-facing
+
+        wifi = {
+          module = {
+            name = "wifi";
+            input = "clan-core";
+          };
+          roles.default.machines."lpt-titan" = {
+            settings.networks = {
+              home = { };
+            };
+          };
+        };
+
+        syncthing = {
+          module = {
+            name = "syncthing";
+            input = "clan-core";
+          };
+          roles.peer = {
+            machines."simon-desktop" = { };
+            machines."lpt-titan" = { };
+            settings = {
+              folders = {
+                # add folders here, e.g.:
+                documents = {
+                  path = "/home/simon/documents";
+                  type = "sendreceive";
+                };
+                #zen-browser = {
+                #  path = "/home/simon/.zen";
+                #  type = "sendreceive";
+                #};
+              };
+            };
+          };
+        };
+
+        # monitoring
+
         monitoring = {
           module = {
             name = "monitoring";
@@ -210,209 +419,10 @@ in
           };
         };
 
-        clan-cache = {
-          roles.default.tags.all = { };
-          module = {
-            name = "trusted-nix-caches";
-            input = "clan-core";
-          };
-        };
+        # infra / storage / build
 
         garage = {
           roles.default.machines."nixbox" = { };
-        };
-
-        #mycelium = {
-        #  roles.peer.tags.all = { };
-        #};
-
-        yggdrasil = {
-          roles.default.tags.all = { };
-        };
-
-        tor = {
-          roles.server.tags.nixos = { };
-        };
-
-        # TODO: re-enable when clan networking fallback is fixed
-        # see: https://git.clan.lol/clan/clan-core/issues/6964
-        # dm-dns exports break networks_from_flake() (KeyError: 'peer')
-        #data-mesher = {
-        #  module = {
-        #    name = "data-mesher";
-        #    input = "clan-core";
-        #  };
-        #  roles.default = {
-        #    tags.all = { };
-        #    settings = {
-        #      interfaces = [
-        #        "ygg"
-        #        "wireguard"
-        #      ];
-        #    };
-        #  };
-        #  roles.bootstrap.machines = {
-        #    nixbox = { };
-        #    gateway = { };
-        #  };
-        #};
-
-        #dm-dns = {
-        #  module = {
-        #    name = "dm-dns";
-        #    input = "clan-core";
-        #  };
-        #  roles.default.tags.all = { };
-        #  roles.push.machines = {
-        #    nixbox = { };
-        #    gateway = { };
-        #  };
-        #};
-
-        netbird = {
-          module.name = "netbird";
-          module.input = "self";
-
-          roles.server.machines."gateway".settings = {
-            domain = "nb.fosskar.eu";
-            proxyDomain = "fosskar.eu";
-            port = 51821;
-          };
-          roles.client = {
-            tags.all = { };
-            machines."nixbox".settings.routingFeatures = "server";
-          };
-        };
-
-        wireguard = {
-          module.name = "wireguard";
-          module.input = "clan-core";
-
-          roles.controller.machines."gateway".settings = {
-            endpoint = "138.201.155.21";
-            port = 51820; # default
-          };
-          roles.peer.machines = {
-            "nixbox".settings = { };
-            "simon-desktop".settings = { };
-            "lpt-titan".settings = { };
-            "crowbox".settings = { };
-            "nixworker".settings = { };
-          };
-        };
-
-        #rosenpass = {
-        #  module.name = "rosenpass";
-        #  module.input = "self";
-        #  roles.peer.machines = {
-        #    gateway.settings = {
-        #      listenPort = 9999;
-        #      endpoint = "138.201.155.21:9999";
-        #    };
-        #    nixbox.settings = { };
-        #    simon-desktop.settings = { };
-        #    lpt-titan.settings = { };
-        #    crowbox.settings = { };
-        #  };
-        #};
-
-        # export IPs so yggdrasil peers via explicit connection (no multicast)
-        internet = {
-          roles.default.machines = {
-            "crowbox".settings.host = "192.168.10.240";
-            "gateway".settings.host = "138.201.155.21";
-            "nixbox".settings.host = "192.168.10.200";
-            "nixworker".settings.host = "192.168.10.210";
-            "simon-desktop".settings.host = "192.168.10.100";
-            "lpt-titan".settings.host = "192.168.10.150";
-          };
-        };
-
-        syncthing = {
-          module = {
-            name = "syncthing";
-            input = "clan-core";
-          };
-          roles.peer = {
-            machines."simon-desktop" = { };
-            machines."lpt-titan" = { };
-            settings = {
-              folders = {
-                # add folders here, e.g.:
-                documents = {
-                  path = "/home/simon/documents";
-                  type = "sendreceive";
-                };
-                #zen-browser = {
-                #  path = "/home/simon/.zen";
-                #  type = "sendreceive";
-                #};
-              };
-            };
-          };
-        };
-
-        metadata = {
-          module.name = "importer";
-          roles.default = {
-            tags.all = { };
-            extraModules = [ config.flake.modules.generic.domains ];
-          };
-        };
-
-        base-common = {
-          module.name = "importer";
-          roles.default = {
-            tags.nixos = { };
-            extraModules = [ config.flake.modules.nixos.base ];
-          };
-        };
-
-        server-common = {
-          module.name = "importer";
-          roles.default = {
-            tags.server = { };
-            extraModules = with config.flake.modules.nixos; [
-              inputs.srvos.nixosModules.server
-              server
-            ];
-          };
-        };
-
-        workstation-common = {
-          module.name = "importer";
-          roles.default = {
-            tags.workstation = { };
-            extraModules = with config.flake.modules.nixos; [
-              inputs.srvos.nixosModules.desktop
-              workstation
-              yubikey
-              niri
-            ];
-          };
-        };
-
-        laptop-common = {
-          module.name = "importer";
-          roles.default = {
-            tags.laptop = { };
-            extraModules = with config.flake.modules.nixos; [
-              laptopPower
-              fprint
-            ];
-          };
-        };
-
-        wifi = {
-          module = {
-            name = "wifi";
-            input = "clan-core";
-          };
-          roles.default.machines."lpt-titan" = {
-            settings.networks = {
-              home = { };
-            };
-          };
         };
 
         remote-builder = {
@@ -472,6 +482,8 @@ in
             client.tags.all = { };
           };
         };
+
+        # backups
 
         snapshot-backup = {
           module = {
@@ -540,6 +552,7 @@ in
             server.machines = { };
           };
         };
+
       };
     };
   };
