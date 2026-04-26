@@ -76,7 +76,6 @@
       systemd-boot.enable = false;
       grub = {
         enable = true;
-        device = "nodev";
         mirroredBoots = [
           {
             devices = [ "nodev" ];
