@@ -241,6 +241,24 @@
                 serviceConfig = {
                   Restart = "on-failure";
                   RestartSec = "10s";
+                }
+                # on hosts that run netbird-server locally, After=/Wants= only
+                # guarantees the unit was started, not that the gRPC mgmt api on
+                # 127.0.0.1:8081 is accepting connections. probe TCP readiness
+                # before letting `netbird up` race the listener and 403.
+                # remote-mgmt hosts hit the public proxy which is up well before
+                # this unit runs, so the probe is unnecessary there.
+                // lib.optionalAttrs isServerMachine {
+                  ExecStartPre = pkgs.writeShellScript "wait-netbird-mgmt" ''
+                    for _ in $(seq 1 60); do
+                      if ${pkgs.bash}/bin/bash -c '(echo > /dev/tcp/127.0.0.1/8081) 2>/dev/null'; then
+                        exit 0
+                      fi
+                      sleep 0.5
+                    done
+                    # don't hard-fail; let Restart=on-failure handle it.
+                    exit 0
+                  '';
                 };
                 environment = {
                   HOME = "/var/lib/netbird";
