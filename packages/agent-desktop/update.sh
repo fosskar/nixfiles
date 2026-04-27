@@ -6,7 +6,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 file="$SCRIPT_DIR/default.nix"
 
-latest="$(curl --fail -s ${GITHUB_TOKEN:+-u ":$GITHUB_TOKEN"} \
+# prefer RENOVATE_GITHUB_COM_TOKEN (set in ci) > GITHUB_TOKEN (only useful if it's actually a github pat)
+gh_token="${RENOVATE_GITHUB_COM_TOKEN:-${GITHUB_TOKEN:-}}"
+
+latest="$(curl --fail -s ${gh_token:+-u ":$gh_token"} \
   "https://api.github.com/repos/BaLaurent/agent-desktop/releases/latest" |
   jq -r '.tag_name | ltrimstr("v")')"
 

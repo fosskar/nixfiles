@@ -22,6 +22,7 @@ jobs:
       - name: update packages
         env:
           TOKEN: ${{ secrets.TOKEN }}
+          RENOVATE_GITHUB_COM_TOKEN: ${{ secrets.RENOVATE_GITHUB_COM_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -55,7 +56,10 @@ jobs:
               fi
             elif [ -x "$dir/update.sh" ]; then
               echo ":: $pkg - using update.sh"
-              "$dir/update.sh"
+              # forgejo injects a codeberg GITHUB_TOKEN; drop it so update scripts
+              # that hit api.github.com don't basic-auth with a non-github token (=> 401).
+              # scripts pick up RENOVATE_GITHUB_COM_TOKEN for github auth (rate limits).
+              env -u GITHUB_TOKEN "$dir/update.sh"
             else
               echo ":: $pkg - no updater, skipping"
             fi

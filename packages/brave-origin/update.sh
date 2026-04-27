@@ -4,7 +4,10 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-releasesJson="$(curl --fail -s ${GITHUB_TOKEN:+-u ":$GITHUB_TOKEN"} "https://api.github.com/repos/brave/brave-browser/releases?per_page=20")"
+# prefer RENOVATE_GITHUB_COM_TOKEN (set in ci) > GITHUB_TOKEN (only useful if it's actually a github pat)
+gh_token="${RENOVATE_GITHUB_COM_TOKEN:-${GITHUB_TOKEN:-}}"
+
+releasesJson="$(curl --fail -s ${gh_token:+-u ":$gh_token"} "https://api.github.com/repos/brave/brave-browser/releases?per_page=20")"
 
 releaseJson="$(
   jq -c '
