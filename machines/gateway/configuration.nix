@@ -21,6 +21,11 @@
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression
 
+  # kvm guest has no hwmon — disable telegraf sensors input to silence
+  # recurring `inputs.sensors` plugin errors.
+  services.telegraf.sensors.enable = false;
+  services.telegraf.smart.enable = false;
+
   preservation.preserveAt."/persist".directories = [
     {
       directory = "/var/lib/private";

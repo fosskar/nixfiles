@@ -140,6 +140,16 @@
         description = "enable telegraf smart input and privileged smartctl/nvme wrappers";
       };
 
+      options.services.telegraf.sensors.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          enable telegraf lm-sensors input. disable on hosts without
+          /sys/class/hwmon (e.g. KVM/cloud VMs) to avoid recurring
+          `inputs.sensors` plugin errors.
+        '';
+      };
+
       config = lib.mkIf cfg.enable {
         services.telegraf = {
           package = pkgs.telegraf;
@@ -152,7 +162,7 @@
             inputs = lib.mkMerge [
               inputConfigs.system
               inputConfigs.systemd
-              inputConfigs.sensors
+              (lib.mkIf config.services.telegraf.sensors.enable inputConfigs.sensors)
               {
                 exec = [
                   {
