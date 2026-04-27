@@ -6,6 +6,7 @@
 {
   imports = [
     self.modules.nixos.btrfs
+    self.modules.nixos.systemdBoot
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.buildbotMaster
     self.modules.nixos.buildbotWorker

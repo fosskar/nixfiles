@@ -3,6 +3,9 @@
     { lib, ... }:
     {
       # srvos sets: initrd.systemd.enable, tmp.cleanOnBoot
+      # bootloader is not chosen here: each machine imports either
+      # self.modules.nixos.grub, self.modules.nixos.systemdBoot, or
+      # self.modules.nixos.lanzaboote.
 
       boot = {
         initrd.availableKernelModules = [
@@ -17,18 +20,6 @@
         loader = {
           timeout = lib.mkDefault 0;
           generationsDir.copyKernels = true;
-          grub = {
-            enable = lib.mkDefault false;
-            copyKernels = lib.mkDefault true;
-            efiSupport = lib.mkDefault true;
-            efiInstallAsRemovable = lib.mkDefault true;
-            splashImage = null;
-            memtest86.enable = lib.mkDefault false;
-          };
-          systemd-boot = {
-            enable = lib.mkDefault true;
-            editor = lib.mkDefault false;
-          };
         };
       };
     };

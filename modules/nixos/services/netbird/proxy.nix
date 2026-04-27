@@ -20,6 +20,9 @@
       serverCfg = config.services.netbird.server;
       dashboardCfg = config.services.netbird.server.dashboard;
       stateDir = "/var/lib/netbird-proxy";
+      configFile = (pkgs.formats.yaml { }).generate "crowdsec.yaml" config.services.crowdsec.settings.general;
+      apiKeyFile = cfg.crowdsec.apiKeyFile;
+      bouncerName = "netbird-proxy";
     in
     {
       # --- options ---
@@ -104,7 +107,11 @@
         };
 
         crowdsec = {
-          enable = lib.mkEnableOption "built-in crowdsec IP reputation stream bouncer (netbird >= 0.69.0)";
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "enable built-in crowdsec IP reputation stream bouncer (netbird >= 0.69.0)";
+          };
           apiURL = lib.mkOption {
             type = lib.types.str;
             default = "http://127.0.0.1:8085";
@@ -121,7 +128,74 @@
 
       config = lib.mkIf cfg.enable {
 
+        services.netbird.server.proxy.logLevel = lib.mkIf cfg.crowdsec.enable (lib.mkDefault "debug");
+
+        services.crowdsec.localConfig.acquisitions = lib.mkIf cfg.crowdsec.enable [
+          {
+            source = "journalctl";
+            journalctl_filter = [ "_SYSTEMD_UNIT=netbird-proxy.service" ];
+            labels.type = "netbird-proxy";
+          }
+        ];
+
         # --- systemd ---
+
+        systemd.services.crowdsec-netbird-proxy-bouncer-register = lib.mkIf cfg.crowdsec.enable {
+          description = "register crowdsec netbird-proxy bouncer";
+          wantedBy = [ "multi-user.target" ];
+          before = [ "netbird-proxy.service" ];
+          after = [ "crowdsec.service" ];
+          wants = [ "crowdsec.service" ];
+          script = ''
+            cscli=${lib.getExe' config.services.crowdsec.package "cscli"}
+            if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
+              if [ -f ${apiKeyFile} ]; then
+                echo "bouncer already registered, key exists"
+                exit 0
+              fi
+              echo "bouncer registered but key missing, re-registering"
+              $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
+            fi
+            rm -f '${apiKeyFile}'
+            if ! $cscli -c ${configFile} bouncers add --output raw -- ${lib.escapeShellArg bouncerName} >${apiKeyFile}; then
+              rm -f '${apiKeyFile}'
+              exit 1
+            fi
+          '';
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            User = config.services.crowdsec.user;
+            Group = config.services.crowdsec.group;
+            ReadWritePaths = [ "/var/lib/crowdsec" ];
+            ExecStartPost = "+${pkgs.writeShellScript "fix-netbird-proxy-bouncer-key" ''
+              chgrp netbird /var/lib/crowdsec/netbird-proxy-bouncer.key
+              chmod 0640 /var/lib/crowdsec/netbird-proxy-bouncer.key
+            ''}";
+            LockPersonality = true;
+            PrivateDevices = true;
+            ProcSubset = "pid";
+            ProtectClock = true;
+            ProtectControlGroups = true;
+            ProtectHome = true;
+            ProtectHostname = true;
+            ProtectKernelLogs = true;
+            ProtectKernelModules = true;
+            ProtectKernelTunables = true;
+            ProtectProc = "invisible";
+            RestrictNamespaces = true;
+            RestrictRealtime = true;
+            SystemCallArchitectures = "native";
+            RestrictAddressFamilies = "none";
+            CapabilityBoundingSet = [ "" ];
+            SystemCallFilter = [
+              "@system-service"
+              "~@privileged"
+              "~@resources"
+            ];
+            UMask = "0077";
+          };
+        };
 
         systemd.services.netbird-proxy = {
           description = "netbird reverse proxy";
@@ -278,7 +352,7 @@
         # in the journal; this parser extracts them into the http_access-log
         # event shape so stock http-* scenarios fire)
         services.crowdsec.localConfig.parsers.s01Parse =
-          lib.mkIf (cfg.crowdsec.enable && config.services.crowdsec.enable)
+          lib.mkIf cfg.crowdsec.enable
             [
               {
                 onsuccess = "next_stage";

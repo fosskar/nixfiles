@@ -18,6 +18,7 @@
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf
     self.modules.nixos.zfs
+    self.modules.nixos.grub
     self.modules.nixos.intelGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.tunedServerPowersave
@@ -73,9 +74,7 @@
       "kvm-amd"
     ];
     loader = {
-      systemd-boot.enable = false;
       grub = {
-        enable = true;
         mirroredBoots = [
           {
             devices = [ "nodev" ];

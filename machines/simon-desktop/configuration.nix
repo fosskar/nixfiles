@@ -15,6 +15,7 @@
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.btrfs
+    self.modules.nixos.systemdBoot
     self.modules.nixos.docker
     self.modules.nixos.podman
     self.modules.nixos.preservation

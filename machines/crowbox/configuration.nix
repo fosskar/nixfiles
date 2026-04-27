@@ -7,6 +7,7 @@
 {
   imports = [
     self.modules.nixos.btrfs
+    self.modules.nixos.systemdBoot
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.preservation
     self.modules.nixos.opencrow

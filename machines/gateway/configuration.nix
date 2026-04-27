@@ -12,6 +12,7 @@
     self.modules.nixos.crowdsecTraefik
     self.modules.nixos.crowdsecNetbirdProxy
     self.modules.nixos.crowdsecClanWhitelist
+    self.modules.nixos.grub
     self.modules.nixos.tunedVirtualGuest
     self.modules.nixos.traefik
     self.modules.nixos.traefikGeoblock
@@ -45,10 +46,4 @@
     };
   };
 
-  boot = {
-    loader = {
-      systemd-boot.enable = false;
-      grub.enable = true;
-    };
-  };
 }
