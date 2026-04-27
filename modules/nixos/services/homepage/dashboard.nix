@@ -142,6 +142,13 @@
             };
           }
           {
+            "Radicle" = {
+              href = "https://radicle.fosskar.eu/";
+              icon = "mdi-source-branch";
+              siteMonitor = "https://radicle.fosskar.eu/";
+            };
+          }
+          {
             "Home Assistant" = {
               href = "https://ha.fosskar.eu";
               icon = "home-assistant.svg";
