@@ -16,6 +16,8 @@ jobs:
       - name: update flake inputs
         env:
           GITEA_TOKEN: ${{ secrets.TOKEN }}
+          NIX_CONFIG: |
+            access-tokens = github.com=${{ secrets.RENOVATE_GITHUB_COM_TOKEN }}
         run: |
           nix run \
             "github:Mic92/update-flake-inputs-gitea" -- \
