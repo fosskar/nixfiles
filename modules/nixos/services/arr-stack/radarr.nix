@@ -24,6 +24,10 @@
           settings.server.port = listenPort;
         };
 
+        # preserve group-write on created files/dirs so other media-group
+        # services (bazarr) can write subtitles into per-movie subdirs.
+        systemd.services.radarr.serviceConfig.UMask = lib.mkForce "0002";
+
         # --- homepage ---
 
         services.homepage-dashboard.serviceGroups."Arr Stack" =
