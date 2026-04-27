@@ -20,6 +20,7 @@
           ripgrep
           pciutils
           nvme-cli
+          smartmontools
         ];
       };
     };
