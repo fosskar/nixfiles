@@ -17,12 +17,10 @@
     self.modules.nixos.paperlessSamba
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf
-    self.modules.nixos.zfs
     self.modules.nixos.grub
     self.modules.nixos.intelGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.tunedServerPowersave
-    self.modules.nixos.preservation
     self.modules.nixos.hdIdle
     self.modules.nixos.docker
     self.modules.nixos.vert
@@ -35,29 +33,16 @@
     self.modules.nixos.miniflux
     self.modules.nixos.wiki
   ]
-  ++ (mylib.scanPaths ./. {
-    exclude = [
-      "dashboards"
-    ];
-  });
+  ++ (mylib.scanPaths ./. { });
 
-  environment = {
-    systemPackages = [
-      pkgs.ipmitool
-    ];
-  };
+  environment.systemPackages = [
+    pkgs.ipmitool
+  ];
 
-  preservation = {
-    rollback = {
-      type = "zfs";
-      dataset = "znixos/root";
-      poolImportService = "zfs-import-znixos.service";
-    };
-    preserveAt."/persist".directories = [
-      "/var/cache"
-      "/var/lib"
-    ];
-  };
+  preservation.preserveAt."/persist".directories = [
+    "/var/cache"
+    "/var/lib"
+  ];
 
   services.garage.settings.data_dir = [
     {

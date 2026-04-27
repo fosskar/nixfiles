@@ -14,19 +14,12 @@
     self.modules.nixos.arctisNovaProWireless
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
-    self.modules.nixos.btrfs
     self.modules.nixos.systemdBoot
     self.modules.nixos.docker
     self.modules.nixos.podman
-    self.modules.nixos.preservation
     self.modules.nixos.agentDesktop
     self.modules.nixos.arbor
     self.modules.nixos.t3code
   ]
   ++ mylib.scanPaths ./. { };
-
-  preservation.rollback = {
-    type = "btrfs";
-    deviceLabel = "nixos";
-  };
 }

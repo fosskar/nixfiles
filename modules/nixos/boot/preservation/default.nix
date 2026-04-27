@@ -54,7 +54,11 @@ in
               "none"
             ];
             default = "none";
-            description = "filesystem type for rollback";
+            description = ''
+              filesystem type for rollback. auto-derived from the
+              fsType of `/` (btrfs/zfs/bcachefs); set explicitly to
+              "none" to disable rollback on a supported filesystem.
+            '';
           };
 
           dataset = lib.mkOption {
@@ -99,6 +103,17 @@ in
       };
 
       config = {
+        preservation.rollback.type =
+          let
+            rootFsType = config.fileSystems."/".fsType or null;
+          in
+          lib.mkDefault (
+            if rootFsType == "btrfs" || rootFsType == "zfs" || rootFsType == "bcachefs" then
+              rootFsType
+            else
+              "none"
+          );
+
         assertions = [
           {
             assertion = cfg.rollback.type != "zfs" || cfg.rollback.dataset != null;

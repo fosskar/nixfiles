@@ -19,10 +19,7 @@
     files.password.neededFor = "partitioning";
   };
 
-  preservation.rollback = {
-    type = "bcachefs";
-    subvolume = "@root";
-  };
+  preservation.rollback.subvolume = "@root";
 
   disko.devices = {
     disk."main" = {

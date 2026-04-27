@@ -6,22 +6,12 @@
 }:
 {
   imports = [
-    self.modules.nixos.btrfs
     self.modules.nixos.systemdBoot
     self.modules.nixos.tunedServerPowersave
-    self.modules.nixos.preservation
     self.modules.nixos.opencrow
     self.modules.nixos.nostrRelay
   ]
   ++ (mylib.scanPaths ./. { });
-
-  preservation = {
-    rollback = {
-      type = "btrfs";
-      deviceLabel = "root";
-    };
-    preserveAt."/persist".directories = [ "/root" ];
-  };
 
   boot.kernel.sysctl = {
     # crowbox has nftables, not iptables bridge filtering. avoid br_netfilter warning.

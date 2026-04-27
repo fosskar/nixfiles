@@ -1,5 +1,16 @@
-{ preservationDiskoPostMountHook, ... }:
 {
+  self,
+  preservationDiskoPostMountHook,
+  ...
+}:
+{
+  imports = [
+    self.modules.nixos.btrfs
+    self.modules.nixos.preservation
+  ];
+
+  preservation.rollback.deviceLabel = "root";
+
   disko.devices = {
     disk.main = {
       type = "disk";

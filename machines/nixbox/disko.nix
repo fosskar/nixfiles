@@ -1,5 +1,19 @@
-{ preservationDiskoPostMountHook, ... }:
 {
+  self,
+  preservationDiskoPostMountHook,
+  ...
+}:
+{
+  imports = [
+    self.modules.nixos.zfs
+    self.modules.nixos.preservation
+  ];
+
+  preservation.rollback = {
+    dataset = "znixos/root";
+    poolImportService = "zfs-import-znixos.service";
+  };
+
   disko.devices = {
     disk = {
       "optane1" = {

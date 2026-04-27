@@ -9,10 +9,7 @@
     self.modules.nixos.preservation
   ];
 
-  preservation.rollback = {
-    type = "btrfs";
-    deviceLabel = "root";
-  };
+  preservation.rollback.deviceLabel = "root";
 
   disko.devices = {
     disk."main" = {
