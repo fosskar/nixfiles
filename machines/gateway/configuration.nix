@@ -10,7 +10,6 @@
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     self.modules.nixos.crowdsec
     self.modules.nixos.crowdsecTraefik
-    self.modules.nixos.crowdsecNetbirdProxy
     self.modules.nixos.crowdsecClanWhitelist
     self.modules.nixos.grub
     self.modules.nixos.tunedVirtualGuest
@@ -45,5 +44,4 @@
       ];
     };
   };
-
 }

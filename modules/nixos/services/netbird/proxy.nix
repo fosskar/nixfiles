@@ -20,8 +20,10 @@
       serverCfg = config.services.netbird.server;
       dashboardCfg = config.services.netbird.server.dashboard;
       stateDir = "/var/lib/netbird-proxy";
-      configFile = (pkgs.formats.yaml { }).generate "crowdsec.yaml" config.services.crowdsec.settings.general;
-      apiKeyFile = cfg.crowdsec.apiKeyFile;
+      configFile =
+        (pkgs.formats.yaml { }).generate "crowdsec.yaml"
+          config.services.crowdsec.settings.general;
+      inherit (cfg.crowdsec) apiKeyFile;
       bouncerName = "netbird-proxy";
     in
     {
@@ -169,8 +171,8 @@
             Group = config.services.crowdsec.group;
             ReadWritePaths = [ "/var/lib/crowdsec" ];
             ExecStartPost = "+${pkgs.writeShellScript "fix-netbird-proxy-bouncer-key" ''
-              chgrp netbird /var/lib/crowdsec/netbird-proxy-bouncer.key
-              chmod 0640 /var/lib/crowdsec/netbird-proxy-bouncer.key
+              chgrp netbird ${apiKeyFile}
+              chmod 0640 ${apiKeyFile}
             ''}";
             LockPersonality = true;
             PrivateDevices = true;
@@ -351,62 +353,60 @@
         # (NB_PROXY_LOG_LEVEL=debug enables per-request `response:` lines
         # in the journal; this parser extracts them into the http_access-log
         # event shape so stock http-* scenarios fire)
-        services.crowdsec.localConfig.parsers.s01Parse =
-          lib.mkIf cfg.crowdsec.enable
-            [
+        services.crowdsec.localConfig.parsers.s01Parse = lib.mkIf cfg.crowdsec.enable [
+          {
+            onsuccess = "next_stage";
+            filter = "evt.Line.Labels.type == 'netbird-proxy'";
+            name = "nixfiles/netbird-proxy-logs";
+            description = "parse netbird-proxy access log debug lines";
+            nodes = [
               {
-                onsuccess = "next_stage";
-                filter = "evt.Line.Labels.type == 'netbird-proxy'";
-                name = "nixfiles/netbird-proxy-logs";
-                description = "parse netbird-proxy access log debug lines";
-                nodes = [
+                grok = {
+                  pattern = "%{TIMESTAMP_ISO8601} DEBG %{DATA}middleware.go:%{NUMBER}: response: request_id=%{DATA:request_id} method=%{WORD:method} host=%{HOSTNAME:host} path=%{NOTSPACE:path} status=%{INT:status} duration=%{NOTSPACE:duration} source=%{IP:source_ip} origin=%{DATA:origin} service=%{DATA:service_id} account=%{NOTSPACE:account_id}$";
+                  apply_on = "Line.Raw";
+                };
+                statics = [
                   {
-                    grok = {
-                      pattern = "%{TIMESTAMP_ISO8601} DEBG %{DATA}middleware.go:%{NUMBER}: response: request_id=%{DATA:request_id} method=%{WORD:method} host=%{HOSTNAME:host} path=%{NOTSPACE:path} status=%{INT:status} duration=%{NOTSPACE:duration} source=%{IP:source_ip} origin=%{DATA:origin} service=%{DATA:service_id} account=%{NOTSPACE:account_id}$";
-                      apply_on = "Line.Raw";
-                    };
-                    statics = [
-                      {
-                        meta = "log_type";
-                        value = "http_access-log";
-                      }
-                      {
-                        meta = "source_ip";
-                        expression = "evt.Parsed.source_ip";
-                      }
-                      {
-                        meta = "http_status";
-                        expression = "evt.Parsed.status";
-                      }
-                      {
-                        meta = "http_path";
-                        expression = "evt.Parsed.path";
-                      }
-                      {
-                        meta = "http_verb";
-                        expression = "evt.Parsed.method";
-                      }
-                      {
-                        meta = "http_hostname";
-                        expression = "evt.Parsed.host";
-                      }
-                      {
-                        meta = "http_user_agent";
-                        value = "-";
-                      }
-                      {
-                        meta = "service";
-                        value = "http";
-                      }
-                      {
-                        parsed = "program";
-                        value = "netbird-proxy";
-                      }
-                    ];
+                    meta = "log_type";
+                    value = "http_access-log";
+                  }
+                  {
+                    meta = "source_ip";
+                    expression = "evt.Parsed.source_ip";
+                  }
+                  {
+                    meta = "http_status";
+                    expression = "evt.Parsed.status";
+                  }
+                  {
+                    meta = "http_path";
+                    expression = "evt.Parsed.path";
+                  }
+                  {
+                    meta = "http_verb";
+                    expression = "evt.Parsed.method";
+                  }
+                  {
+                    meta = "http_hostname";
+                    expression = "evt.Parsed.host";
+                  }
+                  {
+                    meta = "http_user_agent";
+                    value = "-";
+                  }
+                  {
+                    meta = "service";
+                    value = "http";
+                  }
+                  {
+                    parsed = "program";
+                    value = "netbird-proxy";
                   }
                 ];
               }
             ];
+          }
+        ];
 
         # netbird proxy needs zero timeouts for long-lived tunnel connections
         services.traefik.staticConfigOptions = {
