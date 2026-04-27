@@ -14,6 +14,23 @@
     poolImportService = "zfs-import-znixos.service";
   };
 
+  boot = {
+    # mirror grub install across both ESPs declared below.
+    loader.grub.mirroredBoots = [
+      {
+        devices = [ "nodev" ];
+        path = "/boot";
+      }
+      {
+        devices = [ "nodev" ];
+        path = "/boot-fallback";
+      }
+    ];
+    # tank pool members (flash1/flash2 + optane slogs) are declared below;
+    # extraPools imports it at boot since disko only manages the root pool.
+    zfs.extraPools = [ "tank" ];
+  };
+
   disko.devices = {
     disk = {
       "optane1" = {

@@ -53,25 +53,8 @@
 
   systemd.services.beszel-agent.unitConfig.RequiresMountsFor = [ "/tank" ];
 
-  boot = {
-    kernelModules = [
-      "nct6775"
-      "kvm-amd"
-    ];
-    loader = {
-      grub = {
-        mirroredBoots = [
-          {
-            devices = [ "nodev" ];
-            path = "/boot";
-          }
-          {
-            devices = [ "nodev" ];
-            path = "/boot-fallback";
-          }
-        ];
-      };
-    };
-    zfs.extraPools = [ "tank" ];
-  };
+  boot.kernelModules = [
+    "nct6775"
+    "kvm-amd"
+  ];
 }
