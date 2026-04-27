@@ -13,12 +13,12 @@
       nodePort = 8776;
       cfg = config.services.radicle;
 
-      # canonical public seeds, queried from each node's /api/v1/node.
-      # NIDs rotate occasionally; verify if peering breaks.
+      # canonical public seeds. domains migrated from radicle.xyz in 2025
+      # (see https://radicle.dev/blog). NIDs unchanged.
       bootstrapSeeds = [
-        "z6MkrLMMsiPWUcNPHcRajuMi9mDfYckSoJyPwwnknocNYPm7@iris.radicle.xyz:58776"
-        "z6MksmpU5b1dS7oaqF2bHXhQi1DWy2hB7Mh9CuN7y1DN6QSz@seed.radicle.xyz:58776"
-        "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@rosa.radicle.xyz:58776"
+        "z6MkrLMMsiPWUcNPHcRajuMi9mDfYckSoJyPwwnknocNYPm7@iris.radicle.network:58776"
+        "z6MksmpU5b1dS7oaqF2bHXhQi1DWy2hB7Mh9CuN7y1DN6QSz@seed.radicle.dev:58776"
+        "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@rosa.radicle.network:58776"
       ];
 
       explorer = pkgs.radicle-explorer.withConfig {
