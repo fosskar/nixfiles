@@ -251,7 +251,7 @@ in
 
           roles.server.machines."gateway".settings = {
             domain = "nb.fosskar.eu";
-            proxyDomain = "fosskar.eu";
+            proxyDomain = "proxy.fosskar.eu";
             port = 51821;
           };
           roles.client = {
