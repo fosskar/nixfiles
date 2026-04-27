@@ -199,6 +199,16 @@
           };
         };
 
+        # if traefik is colocated and tcp-passthrough-ing :443 to netbird-proxy
+        # :8443 (see traefik dynamic config below), order traefik after the
+        # proxy so it doesn't log `connect: connection refused 127.0.0.1:8443`
+        # at boot until netbird-proxy comes up. soft dependency — use Wants=
+        # so traefik still starts if proxy is masked.
+        systemd.services.traefik = lib.mkIf config.services.traefik.enable {
+          after = [ "netbird-proxy.service" ];
+          wants = [ "netbird-proxy.service" ];
+        };
+
         systemd.services.netbird-proxy = {
           description = "netbird reverse proxy";
           documentation = [ "https://docs.netbird.io/manage/reverse-proxy" ];
@@ -225,6 +235,12 @@
             NB_PROXY_HEALTH_ADDRESS = "localhost:8444";
             NB_PROXY_DEBUG_ENDPOINT_ADDRESS = "localhost:8445";
             NB_PROXY_GEO_DATA_DIR = "${stateDir}/geolocation";
+            # netbird-proxy embeds the netbird client which defaults to
+            # /var/lib/netbird/ for state.json, active_profile.json, etc.
+            # that dir is owned by the root-running netbird daemon, so the
+            # proxy (running as netbird:netbird) can't write there. redirect
+            # the embedded client's state into our own StateDirectory.
+            NB_STATE_DIR = stateDir;
             # PROXY protocol v2 from traefik tcp passthrough so real client IPs
             # appear in proxy events (otherwise all sources show as 127.0.0.1)
             NB_PROXY_PROXY_PROTOCOL = "true";
