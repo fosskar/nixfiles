@@ -1,8 +1,22 @@
 {
   flake.modules.nixos.ups =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       environment.systemPackages = [ pkgs.nut ];
+
+      # nut config files don't need to be world-readable; silences upsd
+      # "world readable" warning. upsmon.conf and upsd.users already 0400.
+      environment.etc = {
+        "nut/nut.conf".mode = lib.mkForce "0640";
+        "nut/ups.conf".mode = lib.mkForce "0640";
+        "nut/upsd.conf".mode = lib.mkForce "0640";
+        "nut/upssched.conf".mode = lib.mkForce "0640";
+      };
 
       clan.core.vars.generators.ups = {
         files.password.secret = true;
