@@ -144,12 +144,6 @@ in
           ) installDirs
         );
 
-        # clan.core.settings.machine-id creates /etc/machine-id in the nix store,
-        # causing systemd to mount a tmpfs overlay (for writability), which breaks
-        # nix-optimise (EXDEV cross-device link). disable store-based file and let
-        # preservation handle it via symlink. clan's kernel cmdline still works.
-        environment.etc.machine-id.enable = lib.mkForce false;
-
         # point userborn at persistent storage so passwd/group/shadow survive
         # ephemeral root. userborn creates /etc symlinks automatically.
         services.userborn.passwordFilesLocation = lib.mkIf (config.services.userborn.enable or false
