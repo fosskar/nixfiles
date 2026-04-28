@@ -7,6 +7,7 @@
 
   cargo,
   cargo-tauri,
+  go-task,
   gradle_8,
   makeBinaryWrapper,
   nodejs,
@@ -33,13 +34,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "stirling-pdf" + lib.optionalString isDesktopVariant "-desktop";
-  version = "test";
+  version = "2.10.0";
 
   src = fetchFromGitHub {
     owner = "Stirling-Tools";
     repo = "Stirling-PDF";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-SMamqG9JICXUXC5z/T3zjIRI+NjhXlhC7B7TYwUhOWY=";
+    hash = "sha256-eq0KtPyALx7XZb7cZU8zU44pIqk6v37uPfSbQRLcGJ8=";
   };
 
   patches = [
@@ -53,7 +54,7 @@ stdenv.mkDerivation (finalAttrs: {
     name = "${finalAttrs.pname}-${finalAttrs.version}-npm-deps";
     inherit (finalAttrs) src patches;
     postPatch = "cd ${finalAttrs.npmRoot}";
-    hash = "sha256-MfrKt3LXhdVPbFvK2E4+pFD41bJGAlLtEcyfC6pj4ps=";
+    hash = "sha256-eU8laJhyFqRek2rth2GPdhlZj505JJH92Kh6xvnBg3Q=";
   };
 
   cargoRoot = "frontend/src-tauri";
@@ -100,6 +101,7 @@ stdenv.mkDerivation (finalAttrs: {
     makeBinaryWrapper
   ]
   ++ lib.optionals (buildWithFrontend || isDesktopVariant) [
+    go-task # gradle :stirling-pdf:npmBuild invokes `task frontend:build`
     nodejs
     npmHooks.npmConfigHook
   ]
