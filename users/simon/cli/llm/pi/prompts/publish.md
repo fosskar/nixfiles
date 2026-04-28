@@ -1,35 +1,48 @@
 ---
-description: publish local commits to remote with jj
+description: publish committed work to remote (default origin)
+argument-hint: "[remote]"
 ---
 
-publish committed work. move `main` to latest non-empty commit. push only `main`.
+publish committed work to remote `${1:-origin}`. `origin` is source of truth. push only `main`.
 
-rules:
+remote rules:
 
-- do not include uncommitted file changes in publish.
-- fetch first, always.
-- rebase local stack onto latest `main` before moving bookmark.
-- keep it simple.
+- remote defaults to `origin`; accepted values: `origin` or `rad`.
+- always fetch/rebase from `origin`; never fetch/rebase from `rad`.
+- if target remote is not configured, stop and report; do not invent remote config.
+- if target remote is `rad`, verify radicle node is running before push and run `rad sync` after push.
+
+preconditions:
+
+- `@` must be clean; stop if there are uncommitted changes.
+- `@-` must be non-empty; stop if empty.
 
 flow:
 
 1. inspect
    - `jj status`
-   - `jj log -r 'main | main@origin | @ | @-' -n 20`
-2. fetch remote
-   - `jj git fetch`
-3. rebase current stack onto updated main
-   - `jj rebase -d main`
+   - `jj log -r 'main | main@${1:-origin} | @ | @-' -n 20`
+2. fetch source of truth
+   - `jj git fetch --remote origin`
+3. rebase current stack onto origin main
+   - `jj rebase -d main@origin`
 4. move local main to latest non-empty local commit
    - `jj bookmark set main -r @-`
-5. push only main
-   - `jj git push --bookmark main`
-6. verify
+5. rad only: verify node is running
+   - `rad node status`
+   - if `rad node status` shows node is not running, stop and tell user to run `rad node start` first.
+6. push only main
+   - `jj git push --remote ${1:-origin} --bookmark main`
+7. rad only: sync radicle state to seeds
+   - `rad sync`
+8. verify
    - `jj status`
-   - `jj log -r 'main | main@origin | @ | @-' -n 20`
+   - `jj log -r 'main | main@${1:-origin} | @ | @-' -n 20`
 
 guardrails:
 
 - never set `main` to `@` when `@` is empty.
-- no `jj restore`, `git restore`, `git checkout --`.
-- if push rejects, run: fetch -> rebase -d main -> push again.
+- on push reject:
+  - `origin`: refetch origin, `jj rebase -d main@origin`, push again once.
+  - `rad`: stop and report — rad should not diverge from origin. do not force.
+- do not run `rad node start`; it is password protected and must be run by user.
