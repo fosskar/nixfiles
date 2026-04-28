@@ -8,6 +8,44 @@ jobs:
     runs-on: codeberg-medium
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: cleanup stale update branches
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          set -euo pipefail
+          api="${{ forgejo.api_url }}/repos/${{ forgejo.repository }}"
+
+          # collect head refs of all open PRs (paginated)
+          open_heads="$(
+            page=1
+            while :; do
+              resp="$(curl -fsS -H "Authorization: token $TOKEN" "$api/pulls?state=open&limit=50&page=$page")"
+              n="$(printf '%s' "$resp" | jq 'length')"
+              [ "$n" -eq 0 ] && break
+              printf '%s' "$resp" | jq -r '.[].head.ref'
+              page=$((page+1))
+            done | sort -u
+          )"
+
+          # delete update-* branches that have no open PR (paginated)
+          page=1
+          while :; do
+            resp="$(curl -fsS -H "Authorization: token $TOKEN" "$api/branches?limit=50&page=$page")"
+            n="$(printf '%s' "$resp" | jq 'length')"
+            [ "$n" -eq 0 ] && break
+            while IFS= read -r b; do
+              [ -z "$b" ] && continue
+              if grep -qx "$b" <<<"$open_heads"; then
+                echo "keep   $b (open PR)"
+              else
+                echo "delete $b (stale, no open PR)"
+                curl -fsS -X DELETE -H "Authorization: token $TOKEN" "$api/branches/$b" \
+                  && echo "  ok" \
+                  || echo "  delete failed"
+              fi
+            done < <(printf '%s' "$resp" | jq -r '.[].name | select(startswith("update-"))')
+            page=$((page+1))
+          done
       - name: install nix
         uses: https://github.com/NixOS/nix-installer-action@6b8548fe06acfb0155a50ab5d561accb215764cc # main
         with:
