@@ -8,6 +8,8 @@
       ...
     }:
     let
+      serviceName = "buildbot";
+      publicHost = "${serviceName}.${config.domains.public}";
       workerCores = 16;
       varsPath = config.clan.core.vars.generators.buildbot-master;
     in
@@ -16,16 +18,26 @@
 
       config = {
         clan.core.vars.generators.buildbot-master = {
-          prompts.codeberg-token.description = "codeberg api token for buildbot";
-          prompts.codeberg-token.type = "hidden";
-          prompts.oauth-secret.description = "codeberg oauth2 client secret";
-          prompts.oauth-secret.type = "hidden";
+          prompts.codeberg-token = {
+            description = "codeberg api token for buildbot";
+            type = "hidden";
+            persist = true;
+          };
+          prompts.oauth-secret = {
+            description = "codeberg oauth2 client secret";
+            type = "hidden";
+            persist = true;
+          };
+          prompts.oauth-id = {
+            description = "codeberg oauth2 client id (uuid)";
+            persist = true;
+          };
+          # oauth-id is not sensitive; keep it in the repo as a public var
+          files."oauth-id".secret = false;
 
           files."worker-password".secret = true;
           files."workers.json".secret = true;
           files."webhook-secret".secret = true;
-          files."codeberg-token".secret = true;
-          files."oauth-secret".secret = true;
 
           runtimeInputs = [ pkgs.openssl ];
 
@@ -34,21 +46,17 @@
             echo -n "$WORKER_PASS" > "$out/worker-password"
             echo "[{\"name\": \"${config.networking.hostName}\", \"pass\": \"$WORKER_PASS\", \"cores\": ${toString workerCores}}]" > "$out/workers.json"
             openssl rand -hex 32 > "$out/webhook-secret"
-
-            cp "$prompts/codeberg-token" "$out/codeberg-token"
-            cp "$prompts/oauth-secret" "$out/oauth-secret"
           '';
         };
-
-        services.buildbot-master.extraConfig = ''
-          c["www"]["port"] = "tcp:8010:interface=0.0.0.0"
-        '';
 
         services.buildbot-nix.master = {
           enable = true;
           useHTTPS = true;
+          domain = publicHost;
+          admins = [ "fosskar" ];
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
           evalWorkerCount = lib.mkDefault 8;
+          cacheFailedBuilds = true;
 
           workersFile = varsPath.files."workers.json".path;
           authBackend = "gitea";
@@ -59,7 +67,7 @@
             tokenFile = varsPath.files."codeberg-token".path;
             webhookSecretFile = varsPath.files."webhook-secret".path;
             oauthSecretFile = varsPath.files."oauth-secret".path;
-            topic = lib.mkDefault "build-with-buildbot";
+            oauthId = varsPath.files."oauth-id".value;
           };
         };
       };
