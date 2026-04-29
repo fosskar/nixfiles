@@ -76,7 +76,6 @@
     },
     "buildbot-nix": {
       "inputs": {
-        "flake-parts": "flake-parts",
         "hercules-ci-effects": "hercules-ci-effects",
         "nixpkgs": [
           "nixpkgs"
@@ -84,11 +83,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1777184952,
-        "narHash": "sha256-i+2vWeCydljTb6OHZuGL3l/9YCD0SbM+j9RlhsQmaxk=",
+        "lastModified": 1777374248,
+        "narHash": "sha256-ZjMVL93D+shoXwjvby22eReS79juQBnVvR64N1NDTDA=",
         "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "46cb08dffdd9b7856cb69a1f82bc679e5374b33e",
+        "rev": "5ca06fe10f60f52c5a0b481978aeacf8c0b7c9ee",
         "type": "github"
       },
       "original": {
@@ -376,6 +375,7 @@
       "inputs": {
         "nixpkgs-lib": [
           "buildbot-nix",
+          "hercules-ci-effects",
           "nixpkgs"
         ]
       },
@@ -388,9 +388,8 @@
         "type": "github"
       },
       "original": {
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "type": "github"
+        "id": "flake-parts",
+        "type": "indirect"
       }
     },
     "flake-parts_2": {
@@ -609,10 +608,7 @@
     },
     "hercules-ci-effects": {
       "inputs": {
-        "flake-parts": [
-          "buildbot-nix",
-          "flake-parts"
-        ],
+        "flake-parts": "flake-parts",
         "nixpkgs": [
           "buildbot-nix",
           "nixpkgs"
