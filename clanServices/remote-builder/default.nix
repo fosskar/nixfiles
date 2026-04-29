@@ -24,7 +24,12 @@ _:
             ...
           }:
           let
-            clientMachines = lib.attrNames (roles.client.machines or { });
+            builderMachines = roles.builder.machines or { };
+            # exclude builders from authorized client keys (builders not
+            # offload to themselves)
+            clientMachines = lib.filter (m: !(builderMachines ? ${m})) (
+              lib.attrNames (roles.client.machines or { })
+            );
           in
           {
             nix.settings = {
@@ -71,6 +76,7 @@ _:
     perInstance =
       {
         roles,
+        machine,
         ...
       }:
       {
@@ -82,23 +88,25 @@ _:
             ...
           }:
           let
-            builderMachines = lib.attrNames (roles.builder.machines or { });
-            builderName = lib.head builderMachines;
+            builderMachines = roles.builder.machines or { };
+            builderNames = lib.attrNames builderMachines;
+            # if machine is also builder, skip client config (no self-offload)
+            isBuilder = builderMachines ? ${machine.name};
           in
           {
-            nix.distributedBuilds = lib.mkDefault true;
+            config = lib.mkIf (!isBuilder) {
+              nix.distributedBuilds = lib.mkDefault true;
 
-            clan.core.vars.generators.remote-builder = {
-              files."id_ed25519" = { };
-              files."id_ed25519.pub".secret = false;
-              runtimeInputs = [ pkgs.openssh ];
-              script = ''
-                ssh-keygen -t ed25519 -N "" -f "$out/id_ed25519" -q
-              '';
-            };
+              clan.core.vars.generators.remote-builder = {
+                files."id_ed25519" = { };
+                files."id_ed25519.pub".secret = false;
+                runtimeInputs = [ pkgs.openssh ];
+                script = ''
+                  ssh-keygen -t ed25519 -N "" -f "$out/id_ed25519" -q
+                '';
+              };
 
-            nix.buildMachines = [
-              {
+              nix.buildMachines = map (builderName: {
                 hostName = "${builderName}.${config.clan.core.settings.domain}";
                 sshUser = "nix";
                 systems = [ "x86_64-linux" ];
@@ -113,8 +121,8 @@ _:
                   "recursive-nix"
                 ];
                 sshKey = config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
-              }
-            ];
+              }) builderNames;
+            };
           };
       };
   };

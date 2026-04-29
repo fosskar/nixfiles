@@ -203,11 +203,11 @@ in
         };
 
         clan-cache = {
-          roles.default.tags.all = { };
           module = {
             name = "trusted-nix-caches";
             input = "clan-core";
           };
+          roles.default.tags.all = { };
         };
 
         ## networking
@@ -262,6 +262,11 @@ in
 
         tor = {
           roles.server.tags.nixos = { };
+        };
+
+        iroh-ssh = {
+          module.name = "p2p-ssh-iroh";
+          roles.server.tags.server = { };
         };
 
         #mycelium = {
@@ -387,7 +392,7 @@ in
                 }
               ];
             };
-            client.tags = [ "server" ];
+            client.tags.server = { };
           };
         };
 
@@ -396,20 +401,19 @@ in
             name = "beszel";
             input = "self";
           };
-
           roles = {
-            client.tags = [ "server" ];
+            server.machines."nixbox" = { };
+            client.tags.server = { };
             client.machines."nixbox".settings = {
               sensors = "-nct6798_cputin,-nct6798_auxtin0,-nct6798_auxtin2,-nct6798_auxtin4";
               filesystem = "/persist";
               extraFilesystems = "/__Root,/nix__Nix,/boot__Boot,/boot-fallback__BootFallback,/tank__Tank,/tank/apps__Apps,/tank/media__Media,/tank/shares__Shares,/tank/backup__Backup";
               smartDevices = "/dev/nvme0,/dev/nvme1,/dev/sda,/dev/sdb,/dev/sdc,/dev/sdd,/dev/sde,/dev/sdf,/dev/sdg";
             };
-            server.machines."nixbox" = { };
           };
         };
 
-        # infra / storage / build
+        ## infra / storage / build
 
         garage = {
           roles.default.machines."nixbox" = { };
@@ -422,13 +426,8 @@ in
           };
           roles = {
             builder.machines."nixworker" = { };
-            client.machines = {
-              "simon-desktop" = { };
-              "lpt-titan" = { };
-              "nixbox" = { };
-              "crowbox" = { };
-              "gateway" = { };
-            };
+            # service no-ops client config on builder machines
+            client.tags.all = { };
           };
         };
 
@@ -439,13 +438,7 @@ in
           };
           roles = {
             server.machines."nixworker" = { };
-            client.machines = {
-              "simon-desktop" = { };
-              "lpt-titan" = { };
-              "nixbox" = { };
-              "crowbox" = { };
-              "gateway" = { };
-            };
+            client.tags.all = { };
           };
         };
 
