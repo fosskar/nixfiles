@@ -4,7 +4,6 @@
       config,
       inputs,
       lib,
-      pkgs,
       ...
     }:
     {
@@ -16,30 +15,6 @@
           masterUrl = lib.mkDefault "tcp:host=localhost:port=9989";
           workers = lib.mkDefault 16;
           workerPasswordFile = config.clan.core.vars.generators.buildbot-master.files."worker-password".path;
-        };
-
-        clan.core.vars.generators.buildbot-worker-ssh = {
-          files."id_ed25519" = {
-            owner = "buildbot-worker";
-            group = "buildbot-worker";
-            mode = "0600";
-          };
-          files."id_ed25519.pub".secret = false;
-          runtimeInputs = [ pkgs.openssh ];
-          script = ''
-            ssh-keygen -t ed25519 -N "" -C buildbot-worker -f "$out/id_ed25519"
-          '';
-        };
-
-        systemd.tmpfiles.settings."10-buildbot-worker-ssh" = {
-          "/var/lib/buildbot-worker/.ssh".d = {
-            user = "buildbot-worker";
-            group = "buildbot-worker";
-            mode = "0700";
-          };
-          "/var/lib/buildbot-worker/.ssh/id_ed25519"."L+" = {
-            argument = config.clan.core.vars.generators.buildbot-worker-ssh.files."id_ed25519".path;
-          };
         };
       };
     };
