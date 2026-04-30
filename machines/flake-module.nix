@@ -442,6 +442,17 @@ in
           };
         };
 
+        niks3 = {
+          module = {
+            name = "niks3";
+            input = "self";
+          };
+          roles = {
+            server.machines."nixworker" = { };
+            client.tags.all = { };
+          };
+        };
+
         ncps = {
           module = {
             name = "ncps";
