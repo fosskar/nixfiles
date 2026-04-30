@@ -285,8 +285,9 @@ in
             };
 
             # ----- buildbot-nix postBuildStep upload -----
+            # disabled: nix post-build-hook already uploads local buildbot builds.
             services.buildbot-nix.master.niks3 = lib.mkIf config.services.buildbot-nix.master.enable {
-              enable = true;
+              enable = false;
               serverUrl = "http://127.0.0.1:${toString niks3Port}";
               authTokenFile = varsGarage.files.api-token.path;
               package = niks3Pkgs.niks3;
@@ -322,7 +323,7 @@ in
                 dotDomain = if domain != null then ".${domain}" else "";
               in
               flip map (attrNames roles.server.machines) (
-                machineName: "http://${machineName}${dotDomain}:3902?priority=20"
+                machineName: "http://${machineName}${dotDomain}:3902?priority=1"
               );
 
             nix.settings.trusted-public-keys = [

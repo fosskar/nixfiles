@@ -94,7 +94,7 @@ in
                 machineName:
                 "http://${machineName}${dotDomain}:${
                   toString roles.server.machines.${machineName}.settings.port
-                }?priority=15"
+                }?priority=3"
               );
 
             nix.settings.trusted-public-keys = [
