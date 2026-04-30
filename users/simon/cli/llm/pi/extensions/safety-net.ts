@@ -9,6 +9,7 @@ import * as path from "node:path";
 type Rule = { re: RegExp; tag: string };
 
 const NEVER: Rule[] = [
+  { re: /\bclan\s+vars\b/, tag: "clan vars (never)" },
   { re: /\bjj\s+restore\b/, tag: "jj restore" },
   { re: /\bgit\s+restore\b/, tag: "git restore" },
   { re: /\bgit\s+checkout\s+(\S+\s+)?--\s/, tag: "git checkout --" },
