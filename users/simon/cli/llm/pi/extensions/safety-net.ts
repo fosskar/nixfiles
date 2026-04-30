@@ -62,6 +62,12 @@ const SENSITIVE_WRITES = [
   /tee\s+.*\.env(?!\.example)(\b|$)/,
 ];
 
+// strip single- and double-quoted strings so rules don't match inside
+// argument values (e.g. commit messages, here-strings).
+function stripQuoted(cmd: string): string {
+  return cmd.replace(/'[^']*'/g, "''").replace(/"(?:[^"\\]|\\.)*"/g, '""');
+}
+
 function match(rules: Rule[], text: string): string[] {
   return rules.filter((r) => r.re.test(text)).map((r) => r.tag);
 }
@@ -96,19 +102,20 @@ export default function (pi: ExtensionAPI) {
     // bash commands
     if (event.toolName === "bash") {
       const cmd = event.input.command as string;
+      const scan = stripQuoted(cmd);
 
-      const blocked = match(NEVER, cmd);
+      const blocked = match(NEVER, scan);
       if (blocked.length) {
         ctx.hasUI && ctx.ui.notify(`🚫 ${blocked.join(", ")}`, "warning");
         return { block: true, reason: blocked.join(", ") };
       }
 
-      if (SENSITIVE_WRITES.some((re) => re.test(cmd))) {
+      if (SENSITIVE_WRITES.some((re) => re.test(scan))) {
         ctx.hasUI && ctx.ui.notify("🚫 write to sensitive path", "warning");
         return { block: true, reason: "write to sensitive path" };
       }
 
-      const needs_ok = match(ASK, cmd);
+      const needs_ok = match(ASK, scan);
       if (needs_ok.length) {
         const summary = needs_ok.join(", ");
         if (!ctx.hasUI) {
