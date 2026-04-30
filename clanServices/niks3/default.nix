@@ -63,6 +63,8 @@ in
             clan.core.vars.generators."niks3-private" = {
               dependencies = [ "niks3" ];
               files.sign-key.secret = true;
+              files.sign-key.owner = "niks3";
+              files.sign-key.group = "niks3";
               script = "cp $in/niks3/sign-key $out/sign-key";
             };
 
@@ -72,6 +74,8 @@ in
               files.admin_token.secret = true;
               files.metrics_token.secret = true;
               files.api-token.secret = true;
+              files.api-token.owner = "niks3";
+              files.api-token.group = "niks3";
               runtimeInputs = [ pkgs.openssl ];
               script = ''
                 openssl rand -hex 32 > "$out/rpc_secret"
@@ -268,6 +272,7 @@ in
             clan.core.postgresql.enable = true;
             clan.core.postgresql.databases.niks3 = {
               create.enable = true;
+              create.options.OWNER = "niks3";
               restore.stopOnRestore = [ "niks3.service" ];
             };
             clan.core.postgresql.users.niks3 = { };
