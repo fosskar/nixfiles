@@ -7,6 +7,7 @@
   perSystem =
     {
       lib,
+      pkgs,
       self',
       system,
       ...
@@ -50,14 +51,34 @@
 
       checks =
         let
-          nixosMachines =
-            lib.mapAttrs'
-              (name: machine: lib.nameValuePair "nixos-${name}" machine.config.system.build.toplevel)
-              (
-                lib.filterAttrs (
-                  _: machine: machine.pkgs.stdenv.hostPlatform.system == system
-                ) inputs.self.nixosConfigurations
-              );
+          machinesPerSystem = {
+            x86_64-linux = [
+              "crowbox"
+              "gateway"
+              "lpt-titan"
+              "nixbox"
+              "nixworker"
+              "simon-desktop"
+            ];
+          };
+
+          listedMachines = lib.sort lib.lessThan (lib.concatLists (lib.attrValues machinesPerSystem));
+          actualMachines = lib.sort lib.lessThan (lib.attrNames inputs.self.nixosConfigurations);
+          machinesPerSystemCheck = pkgs.runCommand "machines-per-system-check" { } ''
+            ${lib.optionalString (listedMachines != actualMachines) ''
+              echo "machinesPerSystem out of sync with nixosConfigurations:"
+              echo "  listed: ${lib.concatStringsSep " " listedMachines}"
+              echo "  actual: ${lib.concatStringsSep " " actualMachines}"
+              exit 1
+            ''}
+            touch $out
+          '';
+
+          nixosMachines = lib.mapAttrs' (name: lib.nameValuePair "nixos-${name}") (
+            lib.genAttrs (machinesPerSystem.${system} or [ ]) (
+              name: inputs.self.nixosConfigurations.${name}.config.system.build.toplevel
+            )
+          );
 
           packages = lib.mapAttrs' (name: pkg: lib.nameValuePair "package-${name}" pkg) (
             self'.packages or { }
@@ -71,6 +92,12 @@
             name: home: lib.nameValuePair "home-${name}" home.activation-script
           ) ((self'.legacyPackages or { }).homeConfigurations or { });
         in
-        nixosMachines // packages // devShells // homeConfigurations;
+        {
+          inherit machinesPerSystemCheck;
+        }
+        // nixosMachines
+        // packages
+        // devShells
+        // homeConfigurations;
     };
 }
