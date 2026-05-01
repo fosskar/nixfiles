@@ -57,6 +57,11 @@
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
           evalWorkerCount = lib.mkDefault 8;
           cacheFailedBuilds = true;
+          branches.giteaMq = {
+            matchGlob = "gitea-mq/*";
+            registerGCRoots = false;
+            updateOutputs = false;
+          };
 
           workersFile = varsPath.files."workers.json".path;
           authBackend = "gitea";
