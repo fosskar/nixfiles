@@ -10,7 +10,7 @@
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.buildbotMaster
     self.modules.nixos.buildbotWorker
-    self.modules.nixos.giteaMq
+    #self.modules.nixos.giteaMq
     self.modules.nixos.radicle
   ]
   ++ (mylib.scanPaths ./. { });
