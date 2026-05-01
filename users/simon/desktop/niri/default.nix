@@ -144,7 +144,7 @@ in
         spawn = "ghostty";
       };
       "Mod+E".action = {
-        spawn = "yazi";
+        spawn = "warp-terminal";
       };
       "Mod+W".action = {
         spawn = "zen-beta";
