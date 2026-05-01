@@ -3,7 +3,7 @@
   ...
 }:
 {
-  home.packages = with pkgs; [
-    warp-terminal
+  home.packages = [
+    pkgs.custom.warp-terminal
   ];
 }
