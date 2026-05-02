@@ -794,11 +794,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1777752370,
-        "narHash": "sha256-5McRjIeO/LO4XfEjdxewZP/zr8YsY6VasKZxG+h2lQs=",
+        "lastModified": 1777754489,
+        "narHash": "sha256-tNOF32bo6ei/S0ORmqre3+LiXBWPQpoa0S5AczD609c=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "5202ab22f53c3298d599dbae0781037a1b1184d7",
+        "rev": "fe17cea39ed9e001b61035e8edbbf2f12871659b",
         "type": "github"
       },
       "original": {
@@ -1395,10 +1395,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1777752340,
-        "narHash": "sha256-cN5qWLzaqQkHAxcOhc7LFqxpBgqJB1DtCyVh1GNV/ng=",
+        "lastModified": 1777755958,
+        "narHash": "sha256-qOY3F3EgIzzoZev4ee5QK49BihWFOICQXD2mD+P50GI=",
         "ref": "master",
-        "rev": "f7418c9beecba49340917c1cfea9c03ceaf1c86b",
+        "rev": "c6cbdcf76656a1f1cd293a0b23602773cd91a078",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1981,10 +1981,10 @@
         "treefmt-nix": "treefmt-nix_6"
       },
       "locked": {
-        "lastModified": 1777752656,
-        "narHash": "sha256-GXCvOfAC+0aDCfaYuRCEOObAJWYvpQdlxxvp//AHpqk=",
+        "lastModified": 1777753511,
+        "narHash": "sha256-qXv/hWefFJ8KVBvzkGcnsi+FucWZ5y04cnQbRao2bBo=",
         "ref": "refs/heads/main",
-        "rev": "ad9f7128d5764936b85e74c6e6b65219157de1ab",
+        "rev": "5205c7f4cecc2b20b96b5d7339914b59882dd52e",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/wiki.git"
