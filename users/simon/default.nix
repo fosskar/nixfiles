@@ -7,7 +7,11 @@
 }:
 {
   home-manager.users.simon = {
-    imports = [ inputs.self.modules.homeManager.hyprland ] ++ mylib.scanPaths ./. { };
+    imports = [
+      inputs.self.modules.homeManager.hyprland
+      inputs.self.modules.homeManager.warpTerminal
+    ]
+    ++ mylib.scanPaths ./. { };
 
     config = {
       home = {
