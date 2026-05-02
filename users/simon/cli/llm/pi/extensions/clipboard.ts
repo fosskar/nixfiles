@@ -1,5 +1,5 @@
 // clipboard extension — copies text via OSC52 escape sequence
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
 export default function (pi: ExtensionAPI) {

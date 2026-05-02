@@ -8,10 +8,7 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { createServer, type Server } from "node:http";
 import { exec } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from "node:path";
 const SKETCH_HTML = readFileSync(join(__dirname, "sketch.html"), "utf-8");
 
 function openBrowser(url: string): void {
@@ -127,8 +124,8 @@ export default function (pi: ExtensionAPI) {
   // pending sketch base64 to attach to the next user message
   let pendingSketch: string | null = null;
 
-  // clear pending sketch on session switch
-  pi.on("session_switch", async () => {
+  // clear pending sketch on session shutdown/switch/reload
+  pi.on("session_shutdown", async () => {
     pendingSketch = null;
   });
 
@@ -141,10 +138,7 @@ export default function (pi: ExtensionAPI) {
 
     // send as user message with image + user's text, then mark as handled
     pi.sendUserMessage([
-      {
-        type: "image",
-        source: { type: "base64", mediaType: "image/png", data: imageData },
-      },
+      { type: "image", data: imageData, mimeType: "image/png" },
       { type: "text", text: event.text || "Here's my sketch:" },
     ]);
 
@@ -176,6 +170,7 @@ export default function (pi: ExtensionAPI) {
                 theme.fg("dim", "press Escape to cancel"),
               ];
             },
+            invalidate() {},
             handleInput(data: string) {
               if (data === "\x1b" || data === "\x1b\x1b") {
                 server.close();
@@ -190,7 +185,7 @@ export default function (pi: ExtensionAPI) {
         pendingSketch = imageBase64;
         ctx.ui.notify(
           "sketch ready — type your prompt and it'll be attached",
-          "success",
+          "info",
         );
         ctx.ui.setEditorText("describe what's in this sketch:");
       } else {

@@ -132,10 +132,10 @@ function exec(
     });
     let stdout = "";
     let stderr = "";
-    proc.stdout.on("data", (d) => {
+    proc.stdout?.on("data", (d) => {
       stdout += d.toString();
     });
-    proc.stderr.on("data", (d) => {
+    proc.stderr?.on("data", (d) => {
       stderr += d.toString();
     });
     proc.on("close", (code) => resolve({ stdout, stderr, code: code ?? 0 }));
@@ -145,7 +145,7 @@ function exec(
       if (options.signal.aborted) onAbort();
       else options.signal.addEventListener("abort", onAbort, { once: true });
     }
-    if (options.input !== undefined) {
+    if (options.input !== undefined && proc.stdin) {
       proc.stdin.write(options.input);
       proc.stdin.end();
     }
@@ -996,7 +996,7 @@ export default function (pi: ExtensionAPI) {
         );
         return;
       }
-      ctx.ui.notify("✅ preflight ok — both models reachable", "success");
+      ctx.ui.notify("✅ preflight ok — both models reachable", "info");
 
       const vcs = detectVcs(ctx.cwd);
       const ts = new Date().toISOString().replace(/[:.]/g, "-");
@@ -1296,8 +1296,6 @@ export default function (pi: ExtensionAPI) {
           phase = `turn ${turn} — ${activeSide} active`;
           sideState[activeSide].status = "running";
           sideState[activeSide].turns = 0;
-          sideState[activeSide].lastTool = undefined;
-          sideState[activeSide].lastText = "";
           refreshWidget();
 
           const diffSelf = await getDiff(activeWs, ctx.cwd);
@@ -1371,7 +1369,7 @@ export default function (pi: ExtensionAPI) {
           ctx.ui.notify(
             `turn ${turn}: ${activeSide} → ${r.verdict}${r.verdictReason ? ` (${r.verdictReason})` : ""}` +
               ` [${r.turnsUsed} turns${fmtCost(r.cost)}]`,
-            r.verdict === "stable" ? "success" : "info",
+            "info",
           );
 
           activeSide = otherSide;
@@ -1391,7 +1389,7 @@ export default function (pi: ExtensionAPI) {
         if (converged) {
           ctx.ui.notify(
             `✅ converged after ${turn} turn(s)${totalCost > 0 ? `. total cost: $${totalCost.toFixed(4)}` : ""}`,
-            "success",
+            "info",
           );
           // when both consecutive turns are "stable", A's workspace holds the
           // most recently endorsed version (A speaks first; B then sees A's
@@ -1433,10 +1431,7 @@ export default function (pi: ExtensionAPI) {
         if (apply) {
           const ok = await applyWorkspace(chosen, ctx.cwd, ctx);
           if (ok)
-            ctx.ui.notify(
-              `✅ applied solution ${chosenSide} to cwd`,
-              "success",
-            );
+            ctx.ui.notify(`✅ applied solution ${chosenSide} to cwd`, "info");
         } else {
           ctx.ui.notify(
             `not applied. workspaces preserved at ${baseTmp}`,

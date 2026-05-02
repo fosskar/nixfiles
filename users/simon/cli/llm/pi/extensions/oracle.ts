@@ -6,7 +6,12 @@
  * /oracle -f file.ts <prompt>   - include file(s) in context
  */
 
-import { complete, type UserMessage, type Model } from "@mariozechner/pi-ai";
+import {
+  complete,
+  type Api,
+  type UserMessage,
+  type Model,
+} from "@mariozechner/pi-ai";
 import type {
   ExtensionAPI,
   ExtensionContext,
@@ -25,8 +30,9 @@ interface AvailableModel {
   provider: string;
   modelId: string;
   name: string;
-  model: Model;
+  model: Model<Api>;
   apiKey: string;
+  headers?: Record<string, string>;
 }
 
 /**
@@ -234,15 +240,16 @@ async function getAvailableModels(
     // skip current model — we want a different opinion
     if (ctx.model && model.id === ctx.model.id) continue;
 
-    const apiKey = await ctx.modelRegistry.getApiKey(model);
-    if (!apiKey) continue;
+    const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
+    if (!auth.ok) continue;
 
     models.push({
       provider: model.provider,
       modelId: model.id,
       name: model.name ?? model.id,
       model,
-      apiKey,
+      apiKey: auth.apiKey ?? "",
+      headers: auth.headers,
     });
   }
 
@@ -338,7 +345,10 @@ export default function (pi: ExtensionAPI) {
   // custom renderer for oracle responses
   pi.registerMessageRenderer("oracle-response", (message, options, theme) => {
     const { expanded } = options;
-    const details = message.details || {};
+    const details = (message.details || {}) as {
+      modelName?: string;
+      files?: string[];
+    };
 
     let text = theme.fg(
       "accent",
@@ -346,8 +356,9 @@ export default function (pi: ExtensionAPI) {
     );
     text += message.content;
 
-    if (expanded && details.files?.length > 0) {
-      text += "\n\n" + theme.fg("dim", `Files: ${details.files.join(", ")}`);
+    const files = details.files ?? [];
+    if (expanded && files.length > 0) {
+      text += "\n\n" + theme.fg("dim", `Files: ${files.join(", ")}`);
     }
 
     return new Text(text, 0, 0);
@@ -424,7 +435,7 @@ Your job is to:
 Focus on being helpful and providing a fresh perspective.`,
           messages: [userMessage],
         },
-        { apiKey: model.apiKey, signal: loader.signal },
+        { apiKey: model.apiKey, headers: model.headers, signal: loader.signal },
       );
 
       if (response.stopReason === "aborted") return null;
@@ -480,7 +491,7 @@ Focus on being helpful and providing a fresh perspective.`,
         prompt,
       },
     });
-    ctx.ui.notify("oracle response added to context", "success");
+    ctx.ui.notify("oracle response added to context", "info");
   } else {
     ctx.ui.notify("oracle response discarded", "info");
   }

@@ -143,7 +143,7 @@ export default function (pi: ExtensionAPI) {
           ),
         );
 
-        const items: SelectItem[] = files.map((f) => {
+        const items: SelectItem[] = files.map((f, index) => {
           let sc: string;
           switch (f.status) {
             case "M":
@@ -161,7 +161,7 @@ export default function (pi: ExtensionAPI) {
             default:
               sc = theme.fg("dim", f.status);
           }
-          return { value: f, label: `${sc} ${f.file}` };
+          return { value: String(index), label: `${sc} ${f.file}` };
         });
 
         const visibleRows = Math.min(items.length, 15);
@@ -175,7 +175,12 @@ export default function (pi: ExtensionAPI) {
           noMatch: (t) => theme.fg("warning", t),
         });
         selectList.onSelect = (item) => {
-          void openDiff(item.value as FileInfo).finally(() => done());
+          const file = files[Number(item.value)];
+          if (!file) {
+            done();
+            return;
+          }
+          void openDiff(file).finally(() => done());
         };
         selectList.onCancel = () => done();
         selectList.onSelectionChange = (item) => {
