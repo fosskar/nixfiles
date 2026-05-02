@@ -1,21 +1,14 @@
 ---
-description: publish committed work to remote (default origin)
-argument-hint: "[remote]"
+description: publish committed work to origin and rad
 ---
 
-publish committed work to target remote. `origin` is source of truth. push only `main`.
-
-argument:
-
-- target remote is `$1`; if blank, use `origin`.
-- accepted values: `origin` or `rad`.
-- when running commands, replace `<target-remote>` with selected target.
+publish committed work to `origin` and `rad`. `origin` is source of truth. push only `main`.
 
 remote rules:
 
 - always fetch/rebase from `origin`; never fetch/rebase from `rad`.
-- if target remote is not configured, stop and report; do not invent remote config.
-- if target remote is `rad`, ensure radicle node is running before push (`rad node start`) and run `rad sync` after push.
+- if `origin` or `rad` is not configured, stop and report; do not invent remote config.
+- ensure radicle node is running before push to `rad` (`rad node start`) and run `rad sync` after push.
 
 preconditions:
 
@@ -26,26 +19,29 @@ flow:
 
 1. inspect
    - `jj status`
-   - `jj log -r 'main | main@<target-remote> | @ | @-' -n 20`
+   - `jj log -r 'main | main@origin | main@rad | @ | @-' -n 20`
+   - `jj git remote list`
 2. fetch source of truth
    - `jj git fetch --remote origin`
 3. rebase current stack onto origin main
    - `jj rebase -d main@origin`
 4. move local main to latest non-empty local commit
    - `jj bookmark set main -r @-`
-5. rad only: ensure node is running
+5. ensure radicle node is running
    - `rad node start` (idempotent: no-op if already running).
-6. push only main
-   - `jj git push --remote <target-remote> --bookmark main`
-7. rad only: sync radicle state to seeds
+6. push only main to origin
+   - `jj git push --remote origin --bookmark main`
+7. push only main to rad
+   - `jj git push --remote rad --bookmark main`
+8. sync radicle state to seeds
    - `rad sync`
-8. verify
+9. verify
    - `jj status`
-   - `jj log -r 'main | main@<target-remote> | @ | @-' -n 20`
+   - `jj log -r 'main | main@origin | main@rad | @ | @-' -n 20`
 
 guardrails:
 
 - never set `main` to `@` when `@` is empty.
 - on push reject:
-  - `origin`: refetch origin, `jj rebase -d main@origin`, push again once.
+  - `origin`: refetch origin, `jj rebase -d main@origin`, push origin again once, then continue to rad only if origin succeeds.
   - `rad`: stop and report — rad should not diverge from origin. do not force.
