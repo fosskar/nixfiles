@@ -482,11 +482,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775087534,
-        "narHash": "sha256-91qqW8lhL7TLwgQWijoGBbiD4t7/q75KTi8NxjVmSmA=",
+        "lastModified": 1777678872,
+        "narHash": "sha256-EPIFsulyon7Z1vLQq5Fk64GR8L7cQsT+IPhcsukVbgk=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "3107b77cd68437b9a76194f0f7f9c55f2329ca5b",
+        "rev": "5250617bffd85403b14dbf43c3870e7f255d2c16",
         "type": "github"
       },
       "original": {
@@ -1981,10 +1981,10 @@
         "treefmt-nix": "treefmt-nix_6"
       },
       "locked": {
-        "lastModified": 1777597454,
-        "narHash": "sha256-F3moQ94YtSSc5i9CrKP8rPvMYg/YGZTNiYbxTqHOJys=",
+        "lastModified": 1777683797,
+        "narHash": "sha256-CH5qRj9AzNuQb7Yg7J4YTZdXw/QRg0Po+tiJs5aaYUQ=",
         "ref": "refs/heads/main",
-        "rev": "1bc25bfd6507da8c63361880b2b3fef2411f0765",
+        "rev": "43015e2ce377beaeb998de7c83f390e74dc0afef",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/wiki.git"
