@@ -1,3 +1,7 @@
+{ config, ... }:
+let
+  t = config.theme;
+in
 {
   programs.warp-terminal = {
     enable = true;
@@ -6,14 +10,11 @@
         text = {
           notebook_font_size = 14.0;
           font_size = 13.0;
+          font_name = t.monospaceFont;
         };
         themes = {
           theme = "adeberry";
           system_theme = false;
-          selected_system_themes = {
-            dark = "adeberry";
-            light = "light";
-          };
         };
         vertical_tabs = {
           primary_info = "command";
@@ -41,7 +42,7 @@
           is_any_ai_enabled = false;
           other = {
             show_conversation_history = false;
-            show_agent_notifications = true;
+            show_agent_notifications = false;
           };
         };
       };
@@ -59,14 +60,14 @@
         show_global_search = true;
         show_project_explorer = true;
         show_code_review_button = true;
-        auto_open_code_review_pane_on_first_agent_change = true;
+        auto_open_code_review_pane_on_first_agent_change = false;
         open_file_editor = "system_default";
       };
 
       notifications = {
         toast_duration_secs = 8;
         preferences = {
-          is_agent_task_completed_enabled = true;
+          is_agent_task_completed_enabled = false;
           is_long_running_enabled = true;
           is_needs_attention_enabled = true;
           is_password_prompt_enabled = true;

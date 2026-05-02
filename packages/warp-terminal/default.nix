@@ -19,6 +19,7 @@
   vulkan-loader,
   wayland,
   xdg-utils,
+  zenity,
   libx11,
   libxcb,
   libxcursor,
@@ -50,6 +51,11 @@ let
     zlib
   ]
   ++ lib.optionals waylandSupport [ wayland ];
+
+  runtimePrograms = [
+    xdg-utils
+    zenity
+  ];
 
   warpProtoApis = fetchFromGitHub {
     owner = "warpdotdev";
@@ -192,7 +198,7 @@ rustPlatform.buildRustPackage {
   buildPhase = ''
     runHook preBuild
 
-    cargo build -p warp --profile release-lto --bin stable --features release_bundle,crash_reporting,gui,nld_improvements --locked
+    cargo build -p warp --profile release-lto --bin stable --bin generate_settings_schema --features release_bundle,crash_reporting,gui,nld_improvements --locked
 
     runHook postBuild
   '';
@@ -202,10 +208,14 @@ rustPlatform.buildRustPackage {
 
     install -Dm755 target/release-lto/stable $out/opt/warpdotdev/warp-terminal/warp
 
-    script/prepare_bundled_resources \
+    SKIP_SETTINGS_SCHEMA=1 script/prepare_bundled_resources \
       $out/opt/warpdotdev/warp-terminal/resources \
       stable \
       release-lto
+
+    target/release-lto/generate_settings_schema \
+      --channel stable \
+      $out/opt/warpdotdev/warp-terminal/resources/settings_schema.json
 
     install -Dm644 app/channels/stable/dev.warp.Warp.desktop \
       $out/share/applications/dev.warp.Warp.desktop
@@ -220,6 +230,7 @@ rustPlatform.buildRustPackage {
 
     makeWrapper $out/opt/warpdotdev/warp-terminal/warp $out/bin/warp-terminal \
       --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeDependencies} \
+      --prefix PATH : ${lib.makeBinPath runtimePrograms} \
       ${lib.optionalString waylandSupport "--set WARP_ENABLE_WAYLAND 1"}
 
     runHook postInstall

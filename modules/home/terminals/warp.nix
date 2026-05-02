@@ -9,6 +9,7 @@
     let
       cfg = config.programs.warp-terminal;
       toml = pkgs.formats.toml { };
+      yaml = pkgs.formats.yaml { };
       tabConfigFileName = name: if lib.hasSuffix ".toml" name then name else "${name}.toml";
       defaultTabConfigPath =
         name: "${config.xdg.dataHome}/warp-terminal/tab_configs/${tabConfigFileName name}";
@@ -39,6 +40,12 @@
           description = "tab configs written to ~/.local/share/warp-terminal/tab_configs/<name>.toml.";
         };
 
+        themes = lib.mkOption {
+          type = lib.types.attrsOf yaml.type;
+          default = { };
+          description = "themes written to ~/.warp/themes/<name>.yaml.";
+        };
+
         defaultTabConfig = lib.mkOption {
           type = lib.types.nullOr lib.types.str;
           default = null;
@@ -52,6 +59,13 @@
         xdg.configFile."warp-terminal/settings.toml" = lib.mkIf (settings != { }) {
           source = toml.generate "warp-settings.toml" settings;
         };
+
+        home.file = lib.mapAttrs' (
+          name: value:
+          lib.nameValuePair ".warp/themes/${name}.yaml" {
+            source = yaml.generate "warp-theme-${name}.yaml" value;
+          }
+        ) cfg.themes;
 
         xdg.dataFile = lib.mapAttrs' (
           name: value:
