@@ -4,10 +4,6 @@
   ...
 }:
 {
-  home.sessionVariables = {
-    GTK_THEME = config.gtk.theme.name;
-  };
-
   gtk = {
     enable = true;
     font = {

@@ -15,20 +15,28 @@
               "hyprland"
               "gtk"
             ];
-            # "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-            "org.freedesktop.impl.portal.Secret" = [ "kwallet" ];
+            "org.freedesktop.impl.portal.Secret" = [
+              "kwallet"
+              "gnome-keyring"
+            ];
           };
           niri = {
             default = [
-              "gtk"
               "gnome"
+              "gtk"
             ];
-            "org.freedesktop.impl.portal.Secret" = [ "kwallet" ];
+            "org.freedesktop.impl.portal.Access" = [ "gtk" ];
+            "org.freedesktop.impl.portal.Notification" = [ "gtk" ];
+            "org.freedesktop.impl.portal.Secret" = [
+              "kwallet"
+              "gnome-keyring"
+            ];
           };
         };
         extraPortals = with pkgs; [
           xdg-desktop-portal-gtk
           xdg-desktop-portal-gnome
+          kdePackages.kwallet
         ];
       };
     };

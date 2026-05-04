@@ -28,6 +28,8 @@
 
       obsidian
 
+      nautilus
+
       # audio
       #teamspeak3
     ]
