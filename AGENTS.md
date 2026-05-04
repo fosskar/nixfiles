@@ -198,6 +198,7 @@ if user says "commit and push":
 - grafana oidc role mapping needs `groups` in `id_token`
 - tuned has nixpkgs bug workaround (`ppd.conf` issue)
 - netbird is custom module set in this repo
+- netbird reverse proxy has two modes: permanent dashboard/API peer targets need the service reachable on the peer's NetBird interface (bind `0.0.0.0` or NetBird IP), while `netbird expose` can expose local `127.0.0.1` services through a peer-created ephemeral tunnel
 - remote-builder: `sshUser = "nix"` needs a real shell on builder (nologin breaks `ssh-ng`)
 - remote-builder proof cmd: `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`
 - harmonia option path is `services.harmonia.cache.*` (old `services.harmonia.*` is renamed)
