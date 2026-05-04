@@ -125,6 +125,7 @@
             calendar
             contacts
             groupfolders
+            tasks
             ;
           news = pkgs.fetchNextcloudApp {
             appName = "news";
