@@ -15,6 +15,7 @@
     self.modules.nixos.itTools
     self.modules.nixos.paperless
     self.modules.nixos.paperlessSamba
+    self.modules.nixos.paperlessNextcloud
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf
     self.modules.nixos.grub
