@@ -58,14 +58,12 @@
           redirect_uris = [ "https://${localHost}/identity/connect/oidc-signin" ];
           scopes = [
             "openid"
-            "offline_access"
             "profile"
             "email"
           ];
           response_types = [ "code" ];
           grant_types = [
             "authorization_code"
-            "refresh_token"
           ];
           token_endpoint_auth_method = "client_secret_basic";
         }

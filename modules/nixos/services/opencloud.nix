@@ -38,12 +38,10 @@
           "profile"
           "email"
           "groups"
-          "offline_access"
         ];
         response_types = [ "code" ];
         grant_types = [
           "authorization_code"
-          "refresh_token"
         ];
         token_endpoint_auth_method = "none";
       };
@@ -176,7 +174,7 @@
             web.web.config.oidc = {
               authority = oidcIssuerUrl;
               client_id = "web";
-              scope = "openid profile email groups offline_access";
+              scope = "openid profile email groups";
             };
           };
         };

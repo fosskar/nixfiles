@@ -100,12 +100,10 @@
               "profile"
               "email"
               "groups"
-              "offline_access"
             ];
             response_types = [ "code" ];
             grant_types = [
               "authorization_code"
-              "refresh_token"
             ];
             token_endpoint_auth_method = "client_secret_post";
             id_token_signed_response_alg = "RS256";
@@ -183,7 +181,7 @@
             "auth.generic_oauth" = {
               enabled = true;
               name = "Authelia";
-              use_refresh_token = true;
+              use_refresh_token = false;
               icon = "signin";
               #allow_sign_up = true;
               #auto_login = true;
@@ -191,7 +189,7 @@
               client_secret = "$__file{${
                 config.clan.core.vars.generators.grafana.files."oauth-client-secret".path
               }}";
-              scopes = "openid profile email groups offline_access";
+              scopes = "openid profile email groups";
               auth_url = "https://auth.${config.domains.public}/api/oidc/authorization";
               token_url = "https://auth.${config.domains.public}/api/oidc/token";
               api_url = "https://auth.${config.domains.public}/api/oidc/userinfo";
