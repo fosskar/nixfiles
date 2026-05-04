@@ -23,7 +23,7 @@ _: {
           let
             clientMachines = lib.attrNames (roles.client.machines or { });
             beszelPort = 8090;
-            beszelDomain = "beszel.nx3.eu";
+            beszelDomain = "beszel.${config.domains.local}";
 
             beszelClientSystems = map (
               machine:
@@ -114,6 +114,7 @@ _: {
               enable = true;
               host = "127.0.0.1";
               port = beszelPort;
+              environment.APP_URL = "https://${beszelDomain}";
             };
 
             services.homepage-dashboard.serviceGroups."Monitoring" =
@@ -140,7 +141,7 @@ _: {
               }
             ];
 
-            services.caddy.virtualHosts."beszel.nx3.eu".extraConfig = ''
+            services.caddy.virtualHosts.${beszelDomain}.extraConfig = ''
               reverse_proxy 127.0.0.1:${toString beszelPort}
             '';
 
