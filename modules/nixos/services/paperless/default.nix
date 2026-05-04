@@ -12,6 +12,7 @@
       listenAddress = "127.0.0.1";
       listenPort = 28981;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+
     in
     {
       clan.core.vars.generators.paperless = {
@@ -77,6 +78,7 @@
           }\" }}";
           public = false;
           consent_mode = "implicit";
+          authorization_policy = "users";
           require_pkce = true;
           pkce_challenge_method = "S256";
           redirect_uris = [ "https://${localHost}/accounts/oidc/authelia/login/callback/" ];
@@ -128,6 +130,7 @@
           PAPERLESS_TIME_ZONE = "Europe/Berlin";
           PAPERLESS_DATE_ORDER = "DMY";
           PAPERLESS_TRUSTED_PROXIES = "138.201.155.21,127.0.0.1";
+          PAPERLESS_ARCHIVE_FILE_GENERATION = "always";
 
           PAPERLESS_TASK_WORKERS = 2;
           PAPERLESS_WEBSERVER_WORKERS = 2;
