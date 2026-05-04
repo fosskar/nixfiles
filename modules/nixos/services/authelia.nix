@@ -80,7 +80,9 @@
               disable = false;
               enable_passkey_login = true;
               experimental_enable_passkey_uv_two_factors = true;
+              experimental_enable_passkey_upgrade = true;
               display_name = "Authelia";
+              selection_criteria.discoverability = "required";
             };
 
             totp = {
