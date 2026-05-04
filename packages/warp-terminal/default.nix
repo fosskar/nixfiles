@@ -238,6 +238,8 @@ rustPlatform.buildRustPackage {
 
   doCheck = false;
 
+  passthru.updateScript = ./update.sh;
+
   meta = {
     description = "agentic development environment, born out of the terminal";
     homepage = "https://github.com/warpdotdev/warp";
