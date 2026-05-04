@@ -105,7 +105,7 @@
             grant_types = [
               "authorization_code"
             ];
-            token_endpoint_auth_method = "client_secret_post";
+            token_endpoint_auth_method = "client_secret_basic";
             id_token_signed_response_alg = "RS256";
             claims_policy = "grafana_groups";
           }
@@ -190,10 +190,11 @@
                 config.clan.core.vars.generators.grafana.files."oauth-client-secret".path
               }}";
               scopes = "openid profile email groups";
-              auth_url = "https://auth.${config.domains.public}/api/oidc/authorization";
-              token_url = "https://auth.${config.domains.public}/api/oidc/token";
-              api_url = "https://auth.${config.domains.public}/api/oidc/userinfo";
-              signout_redirect_url = "https://auth.${config.domains.public}/logout";
+              auth_url = "https://auth.${config.domains.local}/api/oidc/authorization";
+              token_url = "https://auth.${config.domains.local}/api/oidc/token";
+              api_url = "https://auth.${config.domains.local}/api/oidc/userinfo";
+              signout_redirect_url = "https://auth.${config.domains.local}/logout";
+              auth_style = "InHeader";
               use_pkce = true;
               login_attribute_path = "preferred_username";
               name_attribute_path = "name";
