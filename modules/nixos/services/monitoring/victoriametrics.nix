@@ -11,6 +11,7 @@
       listenAddress = "127.0.0.1";
       listenPort = 8428;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+      autheliaEnabled = config.services.authelia.instances.main.enable or false;
     in
     {
       config = lib.mkIf config.services.victoriametrics.enable {
@@ -118,6 +119,20 @@
           import authelia
           reverse_proxy ${listenUrl}
         '';
+
+        services.authelia.instances.main.settings.access_control.rules = lib.mkIf autheliaEnabled (
+          lib.mkBefore [
+            {
+              domain = [ localHost ];
+              subject = [ "group:admin" ];
+              policy = "one_factor";
+            }
+            {
+              domain = [ localHost ];
+              policy = "deny";
+            }
+          ]
+        );
       };
     };
 }

@@ -47,6 +47,7 @@ _: {
             beszelConfigYml = (pkgs.formats.yaml { }).generate "beszel-config.yml" {
               systems = beszelClientSystems;
             };
+
           in
           {
             clan.core.vars.generators.beszel-oidc = {
@@ -92,8 +93,8 @@ _: {
                   config.clan.core.vars.generators.beszel-oidc.files."oauth-client-secret-hash".path
                 }\" }}";
                 public = false;
-                authorization_policy = "two_factor";
                 consent_mode = "implicit";
+                authorization_policy = "admins";
                 require_pkce = true;
                 pkce_challenge_method = "S256";
                 redirect_uris = [ "https://${beszelDomain}/api/oauth2-redirect" ];

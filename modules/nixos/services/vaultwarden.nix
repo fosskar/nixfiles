@@ -12,6 +12,7 @@
       listenAddress = "127.0.0.1";
       listenPort = 8222;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+
     in
     {
       clan.core.vars.generators.vaultwarden = {
@@ -53,6 +54,7 @@
           }\" }}";
           public = false;
           consent_mode = "implicit";
+          authorization_policy = "users";
           require_pkce = true;
           pkce_challenge_method = "S256";
           redirect_uris = [ "https://${localHost}/identity/connect/oidc-signin" ];
@@ -62,9 +64,7 @@
             "email"
           ];
           response_types = [ "code" ];
-          grant_types = [
-            "authorization_code"
-          ];
+          grant_types = [ "authorization_code" ];
           token_endpoint_auth_method = "client_secret_basic";
         }
       ];

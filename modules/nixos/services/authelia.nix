@@ -106,8 +106,8 @@
             session = {
               name = "authelia_session";
               same_site = "lax";
-              expiration = "1h";
-              inactivity = "5m";
+              expiration = "1w";
+              inactivity = "1d";
               remember_me = "1M";
               cookies = [
                 {
@@ -125,21 +125,47 @@
 
             regulation = {
               max_retries = 3;
-              find_time = "2m";
-              ban_time = "5m";
+              find_time = "1h";
+              ban_time = "1h";
             };
 
             access_control = {
               default_policy = "two_factor";
-              rules = [
+              rules = lib.mkAfter [
                 {
                   domain = [ "*.${config.domains.local}" ];
+                  subject = [ "group:user" ];
                   policy = "one_factor";
                 }
               ];
             };
 
             definitions.user_attributes.immich_role.expression = ''"admin" in groups ? "admin" : "user"'';
+
+            identity_providers.oidc.authorization_policies = {
+              users = {
+                default_policy = "deny";
+                rules = [
+                  {
+                    policy = "two_factor";
+                    subject = [
+                      "group:user"
+                      "group:admin"
+                    ];
+                  }
+                ];
+              };
+
+              admins = {
+                default_policy = "deny";
+                rules = [
+                  {
+                    policy = "two_factor";
+                    subject = [ "group:admin" ];
+                  }
+                ];
+              };
+            };
 
             identity_providers.oidc.claims_policies.immich_policy.custom_claims.immich_role.attribute =
               "immich_role";
@@ -181,6 +207,7 @@
         ];
 
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          header Strict-Transport-Security "max-age=31536000; includeSubDomains"
           reverse_proxy ${listenUrl}
         '';
 

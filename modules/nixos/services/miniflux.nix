@@ -12,6 +12,7 @@
       listenAddress = "127.0.0.1";
       listenPort = 8787;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+
     in
     {
       clan.core.vars.generators.miniflux = {
@@ -53,6 +54,7 @@
           }\" }}";
           public = false;
           consent_mode = "implicit";
+          authorization_policy = "users";
           redirect_uris = [ "https://${localHost}/oauth2/oidc/callback" ];
           scopes = [
             "openid"

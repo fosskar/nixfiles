@@ -120,6 +120,7 @@
           }\" }}";
           public = false;
           consent_mode = "implicit";
+          authorization_policy = "users";
           token_endpoint_auth_method = "client_secret_post";
           redirect_uris = [
             "https://${localHost}/auth/login"
@@ -134,6 +135,8 @@
             "email"
             "groups"
           ];
+          response_types = [ "code" ];
+          grant_types = [ "authorization_code" ];
           claims_policy = "immich_policy";
         }
       ];

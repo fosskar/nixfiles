@@ -33,6 +33,7 @@
       commonClientConfig = {
         public = true;
         consent_mode = "implicit";
+        authorization_policy = "users";
         scopes = [
           "openid"
           "profile"
@@ -143,7 +144,7 @@
 
             PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD = "none";
             PROXY_OIDC_USERINFO_CACHE_TTL = "10m";
-            GRAPH_ASSIGN_DEFAULT_USER_ROLE = "true";
+            GRAPH_ASSIGN_DEFAULT_USER_ROLE = "false";
             GRAPH_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
             PROXY_USER_OIDC_CLAIM = "sub";
             PROXY_USER_CS3_CLAIM = "username";
@@ -158,7 +159,22 @@
           settings = {
             proxy = {
               oidc.rewrite_well_known = true;
-              role_assignment.driver = "default";
+              role_assignment = {
+                driver = "oidc";
+                oidc_role_mapper = {
+                  role_claim = "groups";
+                  role_mapping = [
+                    {
+                      role_name = "admin";
+                      claim_value = "admin";
+                    }
+                    {
+                      role_name = "user";
+                      claim_value = "user";
+                    }
+                  ];
+                };
+              };
               additional_policies = [
                 {
                   name = "default";

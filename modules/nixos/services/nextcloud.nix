@@ -13,6 +13,7 @@
       listenPort = 8009;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
       oidcIssuerUrl = "https://auth.${config.domains.public}";
+
     in
     {
       clan.core.vars.generators.nextcloud = {
@@ -57,6 +58,7 @@
           }\" }}";
           public = false;
           consent_mode = "implicit";
+          authorization_policy = "users";
           redirect_uris = [
             "https://${publicHost}/apps/user_oidc/code"
             "https://${localHost}/apps/user_oidc/code"

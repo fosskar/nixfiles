@@ -17,6 +17,7 @@
       s3Port = 3900;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
       zone = "dc1";
+      autheliaEnabled = config.services.authelia.instances.main.enable or false;
       dataEntry = builtins.head config.services.garage.settings.data_dir;
     in
     {
@@ -70,6 +71,20 @@
           import authelia
           reverse_proxy ${listenUrl}
         '';
+
+        services.authelia.instances.main.settings.access_control.rules = lib.mkIf autheliaEnabled (
+          lib.mkBefore [
+            {
+              domain = [ localHost ];
+              subject = [ "group:admin" ];
+              policy = "one_factor";
+            }
+            {
+              domain = [ localHost ];
+              policy = "deny";
+            }
+          ]
+        );
 
         systemd.tmpfiles.rules = [
           "d ${dataEntry.path} 0770 - - -"

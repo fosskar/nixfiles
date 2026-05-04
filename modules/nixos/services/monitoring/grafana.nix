@@ -12,6 +12,7 @@
       listenAddress = "127.0.0.1";
       listenPort = 3100;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+
     in
     {
       config = lib.mkIf config.services.grafana.enable {
@@ -90,6 +91,7 @@
             }\" }}";
             public = false;
             consent_mode = "implicit";
+            authorization_policy = "admins";
             require_pkce = true;
             pkce_challenge_method = "S256";
             redirect_uris = [
@@ -102,9 +104,7 @@
               "groups"
             ];
             response_types = [ "code" ];
-            grant_types = [
-              "authorization_code"
-            ];
+            grant_types = [ "authorization_code" ];
             token_endpoint_auth_method = "client_secret_basic";
             id_token_signed_response_alg = "RS256";
             claims_policy = "grafana_groups";
@@ -178,12 +178,19 @@
               login_maximum_lifetime_duration = "30d";
             };
 
+            "auth.anonymous" = {
+              enabled = true;
+              org_name = "Main Org.";
+              org_role = "Viewer";
+              hide_version = true;
+            };
+
             "auth.generic_oauth" = {
               enabled = true;
               name = "Authelia";
               use_refresh_token = false;
               icon = "signin";
-              #allow_sign_up = true;
+              allow_sign_up = true;
               #auto_login = true;
               client_id = "grafana";
               client_secret = "$__file{${
@@ -200,10 +207,10 @@
               name_attribute_path = "name";
               groups_attribute_path = "groups";
               role_attribute_path = builtins.concatStringsSep " || " [
-                "contains(groups, 'admin') && 'Admin'"
-                "'Editor'"
+                "contains(groups, 'admin') && 'GrafanaAdmin'"
+                "'None'"
               ];
-              role_attribute_strict = false;
+              role_attribute_strict = true;
               allow_assign_grafana_admin = true;
               skip_org_role_sync = false;
             };

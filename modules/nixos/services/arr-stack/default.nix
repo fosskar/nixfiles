@@ -20,43 +20,45 @@
           "d ${mediaRoot}/downloads/complete 0775 root media -"
         ];
 
-        services.authelia.instances.main.settings.access_control.rules = lib.mkIf autheliaEnabled [
-          {
-            domain = [
-              "sonarr.*"
-              "radarr.*"
-              "prowlarr.*"
-              "bazarr.*"
-              "sabnzbd.*"
-            ];
-            policy = "bypass";
-            resources = [
-              "^/api.*"
-              "^/feed.*"
-            ];
-          }
-          {
-            domain = [
-              "sonarr.*"
-              "radarr.*"
-              "prowlarr.*"
-              "bazarr.*"
-              "sabnzbd.*"
-            ];
-            subject = [ "group:admin" ];
-            policy = "one_factor";
-          }
-          {
-            domain = [
-              "sonarr.*"
-              "radarr.*"
-              "prowlarr.*"
-              "bazarr.*"
-              "sabnzbd.*"
-            ];
-            policy = "deny";
-          }
-        ];
+        services.authelia.instances.main.settings.access_control.rules = lib.mkIf autheliaEnabled (
+          lib.mkBefore [
+            {
+              domain = [
+                "sonarr.*"
+                "radarr.*"
+                "prowlarr.*"
+                "bazarr.*"
+                "sabnzbd.*"
+              ];
+              policy = "bypass";
+              resources = [
+                "^/api.*"
+                "^/feed.*"
+              ];
+            }
+            {
+              domain = [
+                "sonarr.*"
+                "radarr.*"
+                "prowlarr.*"
+                "bazarr.*"
+                "sabnzbd.*"
+              ];
+              subject = [ "group:admin" ];
+              policy = "one_factor";
+            }
+            {
+              domain = [
+                "sonarr.*"
+                "radarr.*"
+                "prowlarr.*"
+                "bazarr.*"
+                "sabnzbd.*"
+              ];
+              policy = "deny";
+            }
+          ]
+        );
       };
     };
 }
