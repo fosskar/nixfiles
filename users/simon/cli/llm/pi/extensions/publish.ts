@@ -149,14 +149,22 @@ export default function (pi: ExtensionAPI) {
         }
 
         ctx.ui.setWidget(widget, undefined);
-        ctx.ui.notify(
-          `published ${isJj ? "jj" : "git"}${ref ? ` ${ref}` : ""}`,
-          "success",
-        );
+        const summary = `published ${isJj ? "jj" : "git"}${ref ? ` ${ref}` : ""}`;
+        pi.sendMessage({
+          customType: "publish",
+          display: true,
+          content: [summary, "", ...log].join("\n"),
+        });
+        ctx.ui.notify(summary, "success");
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         log.push(`failed: ${message.split("\n", 1)[0]}`);
         show();
+        pi.sendMessage({
+          customType: "publish",
+          display: true,
+          content: ["publish failed", "", ...log].join("\n"),
+        });
         ctx.ui.notify(message, "error");
       }
     },
