@@ -1,10 +1,43 @@
 { config, ... }:
 let
   t = config.theme;
+  themeFileName = "grey-teal";
+  themeName = "Grey Teal";
 in
 {
   programs.warp-terminal = {
     enable = true;
+    themes.${themeFileName} = {
+      name = themeName;
+      accent = t.primary;
+      cursor = t.primary;
+      background = t.bg;
+      foreground = t.fg;
+      details = "darker";
+      terminal_colors = {
+        normal = {
+          black = t.bgLight;
+          red = t.error;
+          inherit (t.term) green;
+          yellow = t.warning;
+          inherit (t.term) blue;
+          inherit (t.term) magenta;
+          cyan = t.secondary;
+          white = t.fg;
+        };
+        bright = {
+          black = t.fgDim;
+          red = t.error;
+          inherit (t.term) green;
+          yellow = t.warning;
+          inherit (t.term) blue;
+          inherit (t.term) magenta;
+          cyan = t.secondary;
+          white = "#FFFFFF";
+        };
+      };
+    };
+
     settings = {
       appearance = {
         text = {
@@ -13,7 +46,10 @@ in
           font_name = t.monospaceFont;
         };
         themes = {
-          theme = "adeberry";
+          theme.custom = {
+            name = themeName;
+            path = "${config.xdg.dataHome}/warp-terminal/themes/${themeFileName}.yaml";
+          };
           system_theme = false;
         };
         vertical_tabs = {

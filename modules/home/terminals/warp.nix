@@ -43,7 +43,7 @@
         themes = lib.mkOption {
           type = lib.types.attrsOf yaml.type;
           default = { };
-          description = "themes written to ~/.warp/themes/<name>.yaml.";
+          description = "themes written to ~/.local/share/warp-terminal/themes/<name>.yaml.";
         };
 
         defaultTabConfig = lib.mkOption {
@@ -60,19 +60,20 @@
           source = toml.generate "warp-settings.toml" settings;
         };
 
-        home.file = lib.mapAttrs' (
-          name: value:
-          lib.nameValuePair ".warp/themes/${name}.yaml" {
-            source = yaml.generate "warp-theme-${name}.yaml" value;
-          }
-        ) cfg.themes;
-
-        xdg.dataFile = lib.mapAttrs' (
-          name: value:
-          lib.nameValuePair "warp-terminal/tab_configs/${tabConfigFileName name}" {
-            source = toml.generate "warp-tab-config-${tabConfigFileName name}" value;
-          }
-        ) cfg.tabConfigs;
+        xdg.dataFile =
+          (lib.mapAttrs' (
+            name: value:
+            lib.nameValuePair "warp-terminal/themes/${name}.yaml" {
+              source = yaml.generate "warp-theme-${name}.yaml" value;
+              force = true;
+            }
+          ) cfg.themes)
+          // (lib.mapAttrs' (
+            name: value:
+            lib.nameValuePair "warp-terminal/tab_configs/${tabConfigFileName name}" {
+              source = toml.generate "warp-tab-config-${tabConfigFileName name}" value;
+            }
+          ) cfg.tabConfigs);
       };
     };
 }
