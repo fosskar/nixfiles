@@ -1,0 +1,28 @@
+---
+description: commit current work with jj
+---
+
+commit current jj working copy quickly. do NOT move bookmarks. do NOT push.
+
+rules:
+
+- optimize for speed.
+- default to one commit for the current task.
+- split only when changes are obviously unrelated from `jj status` / `jj diff --stat`.
+- do not do deep archaeology.
+- run extra inspection only when needed to avoid a bad commit.
+- commit msg: lowercase, concise, imperative, no conventional prefixes.
+- docs-only commit msg starts with `docs:`.
+
+flow:
+
+1. inspect: `jj status` and `jj diff --stat`
+2. if obviously unrelated changes exist, split once by path: `jj split -m "<msg>" -- <paths...>`
+3. commit remaining work: `jj commit -m "<msg>"`
+4. verify once: `jj status`
+
+guardrails:
+
+- no bookmark moves.
+- no push.
+- no `jj restore`, `git restore`, `git checkout --`.
