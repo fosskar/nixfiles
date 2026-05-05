@@ -38,8 +38,8 @@ let
 
       # backgrounds & content
       selectedBg = "bgLightest";
-      userMessageBg = "bgLight";
-      userMessageText = "";
+      userMessageBg = "bgLightest";
+      userMessageText = "fg";
       customMessageBg = "bgLighter";
       customMessageText = "";
       customMessageLabel = "secondary";
