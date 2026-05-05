@@ -1,16 +1,17 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
 const STYLE = `
-style:
-- explain why the change exists, not every file touched.
-- imperative mood.
-- concise, lowercase, no conventional commit prefixes.
-- use scope prefixes only when they add clarity, like docs:, vars:, or a component name.
-- subject: imperative summary. body: short paragraph explaining why and any non-obvious tradeoffs. omit body for trivial mechanical changes (typo fixes, formatting, lockfile bumps).
+create commit(s) for the current work.
 
-use the provided context. inspect the diff only when status/log is not enough to choose the commit message or split.
-
-split only when the working copy covers clearly unrelated concerns. otherwise keep related multi-file changes together.
+rules:
+- default to one commit for the current task.
+- one logical change per commit, but atomic means coherent and easy to review/revert, not maximal splitting.
+- split only when changes are unrelated or would be easier to review/revert separately.
+- use the preloaded status, stat, and diff as the primary context. run extra inspection only when it improves the commit split or message.
+- commit msg: lowercase, concise, imperative.
+- focus msg on why, using the diff for concrete context.
+- no conventional commit prefixes.
+- keep it KISS.
 `.trim();
 
 const JJ_MECHANICS = `
@@ -63,16 +64,28 @@ export default function (pi: ExtensionAPI) {
       const logArgs = isJj
         ? ["log", "--limit", "5", "--no-graph"]
         : ["log", "--oneline", "-5"];
+      const statArgs = isJj ? ["diff", "--stat"] : ["diff", "--stat", "HEAD"];
+      const diffArgs = isJj ? ["diff", "--git"] : ["diff", "HEAD"];
 
-      const [status, log] = await Promise.all([
+      const [status, log, stat, diff] = await Promise.all([
         pi.exec(name, statusArgs, { cwd, timeout: 5000 }),
         pi.exec(name, logArgs, { cwd, timeout: 5000 }),
+        pi.exec(name, statArgs, { cwd, timeout: 10000 }),
+        pi.exec(name, diffArgs, { cwd, timeout: 15000 }),
       ]);
 
       if (status.code !== 0) {
         ctx.ui.notify(`${name} status failed: ${status.stderr}`, "error");
         return;
       }
+
+      const DIFF_CAP = 200_000;
+      const rawDiff = diff.code === 0 ? diff.stdout : diff.stderr;
+      const diffBody =
+        rawDiff.length > DIFF_CAP
+          ? rawDiff.slice(0, DIFF_CAP) +
+            `\n\n[truncated: diff was ${rawDiff.length} bytes, showing first ${DIFF_CAP}]`
+          : rawDiff;
 
       const prompt = [
         `commit the current ${name} repository.`,
@@ -88,6 +101,11 @@ export default function (pi: ExtensionAPI) {
           `${name} ${logArgs.join(" ")}`,
           log.code === 0 ? log.stdout : log.stderr,
         ),
+        block(
+          `${name} ${statArgs.join(" ")}`,
+          stat.code === 0 ? stat.stdout : stat.stderr,
+        ),
+        block(`${name} ${diffArgs.join(" ")}`, diffBody),
       ].join("\n\n");
 
       pi.sendUserMessage(`${prompt}\n\n${context}`, { deliverAs: "followUp" });
