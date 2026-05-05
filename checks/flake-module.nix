@@ -38,6 +38,15 @@
           "vars/*"
           "**/vars/*"
         ];
+        settings.formatter.flake-edit = {
+          command = pkgs.flake-edit;
+          options = [
+            "--non-interactive"
+            "--no-lock"
+            "follow"
+          ];
+          includes = [ "flake.nix" ];
+        };
         programs = {
           nixfmt.enable = true;
           prettier.enable = true;

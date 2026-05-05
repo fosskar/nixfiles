@@ -17,6 +17,10 @@
     clan-community = {
       url = "git+https://git.clan.lol/clan/clan-community?shallow=1";
       inputs.clan-core.follows = "clan-core";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     clan-core = {
@@ -76,7 +80,6 @@
       url = "git+https://tangled.org/tangled.org/core";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-compat.follows = "";
-      inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";
     };
 
     sops-nix = {
@@ -93,11 +96,14 @@
     buildbot-nix = {
       url = "github:nix-community/buildbot-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     niks3 = {
       url = "github:Mic92/niks3";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     gitea-mq.url = "github:Mic92/gitea-mq";
@@ -124,6 +130,8 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
     };
     opencrow = {
       url = "github:pinpox/opencrow";
@@ -145,6 +153,8 @@
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
     };
 
     # quickshell
@@ -169,6 +179,9 @@
     wiki = {
       url = "git+https://codeberg.org/fosskar/wiki.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
   };
