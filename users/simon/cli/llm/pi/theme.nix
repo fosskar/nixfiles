@@ -21,6 +21,9 @@ let
       inherit (t.term) green;
       inherit (t.term) blue;
       inherit (t.term) magenta;
+      toolPendingSurface = "#2A2618";
+      toolSuccessSurface = "#1B2A20";
+      toolErrorSurface = "#2A1B1B";
     };
     colors = {
       # core ui
@@ -43,9 +46,9 @@ let
       customMessageBg = "bgLighter";
       customMessageText = "";
       customMessageLabel = "secondary";
-      toolPendingBg = "bgLight";
-      toolSuccessBg = "bgLight";
-      toolErrorBg = "bgLight";
+      toolPendingBg = "toolPendingSurface";
+      toolSuccessBg = "toolSuccessSurface";
+      toolErrorBg = "toolErrorSurface";
       toolTitle = "primary";
       toolOutput = "fg";
 
