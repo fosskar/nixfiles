@@ -6,7 +6,7 @@ style:
 - imperative mood.
 - concise, lowercase, no conventional commit prefixes.
 - use scope prefixes only when they add clarity, like docs:, vars:, or a component name.
-- default to one-line messages; add a body only for useful rationale, caveats, or multi-part changes.
+- subject: imperative summary. body: short paragraph explaining why and any non-obvious tradeoffs. omit body for trivial mechanical changes (typo fixes, formatting, lockfile bumps).
 
 use the provided context. inspect the diff only when status/log is not enough to choose the commit message or split.
 
