@@ -1,190 +1,17 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
-type Backend = "jj" | "git";
+const remotes = ["origin", "rad"];
+const widget = "publish";
 
-type ExecResult = Awaited<ReturnType<ExtensionAPI["exec"]>>;
+class PublishError extends Error {}
 
-const REMOTES = ["origin", "rad"];
-
-function remoteNames(output: string): Set<string> {
+function names(output: string): Set<string> {
   return new Set(
     output
       .split("\n")
-      .map((line) => line.trim().split(/\s+/, 1)[0])
+      .map((l) => l.trim().split(/\s+/, 1)[0])
       .filter(Boolean),
   );
-}
-
-function isJjClean(output: string): boolean {
-  return output.includes("The working copy has no changes.");
-}
-
-function formatFailure(command: string, result: ExecResult): string {
-  return [
-    `${command} failed with exit code ${result.code}`,
-    result.stdout.trim() ? `stdout:\n${result.stdout.trim()}` : undefined,
-    result.stderr.trim() ? `stderr:\n${result.stderr.trim()}` : undefined,
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-}
-
-async function detectBackend(
-  pi: ExtensionAPI,
-  cwd: string,
-): Promise<Backend | undefined> {
-  const jj = await pi.exec("jj", ["root"], { cwd, timeout: 5000 });
-  if (jj.code === 0) return "jj";
-
-  const git = await pi.exec("git", ["rev-parse", "--show-toplevel"], {
-    cwd,
-    timeout: 5000,
-  });
-  if (git.code === 0) return "git";
-
-  return undefined;
-}
-
-async function run(
-  pi: ExtensionAPI,
-  cwd: string,
-  command: string,
-  args: string[],
-): Promise<ExecResult> {
-  return pi.exec(command, args, { cwd, timeout: 120000 });
-}
-
-async function mustRun(
-  pi: ExtensionAPI,
-  cwd: string,
-  command: string,
-  args: string[],
-): Promise<string | undefined> {
-  const result = await run(pi, cwd, command, args);
-  if (result.code === 0) return undefined;
-  return formatFailure([command, ...args].join(" "), result);
-}
-
-async function publishJj(
-  pi: ExtensionAPI,
-  cwd: string,
-  bookmark: string,
-): Promise<string | undefined> {
-  const status = await run(pi, cwd, "jj", ["status"]);
-  if (status.code !== 0) return formatFailure("jj status", status);
-  if (!isJjClean(status.stdout)) return "working copy has uncommitted changes";
-
-  const nonEmptyParent = await run(pi, cwd, "jj", [
-    "log",
-    "-r",
-    "@- & ~empty()",
-    "--no-graph",
-    "--limit",
-    "1",
-  ]);
-  if (nonEmptyParent.code !== 0 || !nonEmptyParent.stdout.trim()) {
-    return "@- is empty; not moving a bookmark to an empty change";
-  }
-
-  const remoteList = await run(pi, cwd, "jj", ["git", "remote", "list"]);
-  if (remoteList.code !== 0)
-    return formatFailure("jj git remote list", remoteList);
-
-  const remotes = remoteNames(remoteList.stdout);
-  if (!remotes.has("origin")) return "origin remote is not configured";
-  const pushRemotes = REMOTES.filter((remote) => remotes.has(remote));
-
-  let failure = await mustRun(pi, cwd, "jj", [
-    "git",
-    "fetch",
-    "--remote",
-    "origin",
-  ]);
-  if (failure) return failure;
-
-  const remoteBookmark = await run(pi, cwd, "jj", [
-    "log",
-    "-r",
-    `${bookmark}@origin`,
-    "--no-graph",
-    "--limit",
-    "1",
-  ]);
-  if (remoteBookmark.code === 0 && remoteBookmark.stdout.trim()) {
-    failure = await mustRun(pi, cwd, "jj", [
-      "rebase",
-      "-d",
-      `${bookmark}@origin`,
-    ]);
-    if (failure) return failure;
-  }
-
-  failure = await mustRun(pi, cwd, "jj", [
-    "bookmark",
-    "set",
-    bookmark,
-    "-r",
-    "@-",
-  ]);
-  if (failure) return failure;
-
-  if (pushRemotes.includes("rad")) {
-    failure = await mustRun(pi, cwd, "rad", ["node", "start"]);
-    if (failure) return failure;
-  }
-
-  for (const remote of pushRemotes) {
-    failure = await mustRun(pi, cwd, "jj", [
-      "git",
-      "push",
-      "--remote",
-      remote,
-      "--bookmark",
-      bookmark,
-    ]);
-    if (failure) return failure;
-  }
-
-  if (pushRemotes.includes("rad")) {
-    failure = await mustRun(pi, cwd, "rad", ["sync"]);
-    if (failure) return failure;
-  }
-
-  const verify = await run(pi, cwd, "jj", ["status"]);
-  if (verify.code !== 0) return formatFailure("jj status", verify);
-  return undefined;
-}
-
-async function publishGit(
-  pi: ExtensionAPI,
-  cwd: string,
-  ref: string | undefined,
-): Promise<string | undefined> {
-  const status = await run(pi, cwd, "git", ["status", "--porcelain"]);
-  if (status.code !== 0) return formatFailure("git status --porcelain", status);
-  if (status.stdout.trim()) return "working tree has uncommitted changes";
-
-  const remoteList = await run(pi, cwd, "git", ["remote"]);
-  if (remoteList.code !== 0) return formatFailure("git remote", remoteList);
-
-  const remotes = remoteNames(remoteList.stdout);
-  if (!remotes.has("origin")) return "origin remote is not configured";
-
-  if (!ref) {
-    const failure = await mustRun(pi, cwd, "git", ["push"]);
-    if (failure) return failure;
-  }
-
-  for (const remote of ref
-    ? REMOTES.filter((remote) => remotes.has(remote))
-    : []) {
-    const failure = await mustRun(pi, cwd, "git", ["push", remote, ref]);
-    if (failure) return failure;
-  }
-
-  const verify = await run(pi, cwd, "git", ["status", "--short"]);
-  if (verify.code !== 0) return formatFailure("git status --short", verify);
-  return undefined;
 }
 
 export default function (pi: ExtensionAPI) {
@@ -192,26 +19,137 @@ export default function (pi: ExtensionAPI) {
     description: "publish current branch/bookmark",
     handler: async (args, ctx) => {
       const ref = args.trim() || undefined;
-      const backend = await detectBackend(pi, ctx.cwd);
-      if (!backend) {
-        ctx.ui.notify("not a jj or git repo", "error");
-        return;
+      const log: string[] = [];
+      const show = () =>
+        ctx.ui.setWidget(widget, ["publish", ...log.slice(-12)]);
+
+      const run = async (cmd: string, argv: string[]) => {
+        const line = [cmd, ...argv].join(" ");
+        log.push(`$ ${line}`);
+        show();
+        const result = await pi.exec(cmd, argv, {
+          cwd: ctx.cwd,
+          timeout: 120000,
+        });
+        log.push(result.code === 0 ? `✓ ${line}` : `✗ ${line}`);
+        show();
+        return result;
+      };
+      const must = async (cmd: string, argv: string[]) => {
+        const result = await run(cmd, argv);
+        if (result.code !== 0) {
+          const tail = (result.stderr.trim() || result.stdout.trim())
+            .split("\n")
+            .slice(-3)
+            .join("\n");
+          throw new PublishError(
+            `${[cmd, ...argv].join(" ")} failed (${result.code})\n${tail}`,
+          );
+        }
+        return result;
+      };
+
+      show();
+
+      try {
+        const isJj =
+          (await pi.exec("jj", ["root"], { cwd: ctx.cwd, timeout: 5000 }))
+            .code === 0;
+        const isGit =
+          !isJj &&
+          (
+            await pi.exec("git", ["rev-parse", "--show-toplevel"], {
+              cwd: ctx.cwd,
+              timeout: 5000,
+            })
+          ).code === 0;
+        if (!isJj && !isGit) throw new PublishError("not a jj or git repo");
+        log.push(`backend: ${isJj ? "jj" : "git"}`);
+        show();
+
+        if (isJj) {
+          const bookmark = ref ?? "main";
+          const status = await must("jj", ["status"]);
+          if (!status.stdout.includes("The working copy has no changes."))
+            throw new PublishError("working copy has uncommitted changes");
+
+          const parent = await must("jj", [
+            "log",
+            "-r",
+            "@- & ~empty()",
+            "--no-graph",
+            "--limit",
+            "1",
+          ]);
+          if (!parent.stdout.trim())
+            throw new PublishError(
+              "@- is empty; not moving a bookmark to an empty change",
+            );
+
+          const rs = names(
+            (await must("jj", ["git", "remote", "list"])).stdout,
+          );
+          if (!rs.has("origin"))
+            throw new PublishError("origin remote is not configured");
+
+          await must("jj", ["git", "fetch", "--remote", "origin"]);
+
+          const remoteBookmark = await run("jj", [
+            "log",
+            "-r",
+            `${bookmark}@origin`,
+            "--no-graph",
+            "--limit",
+            "1",
+          ]);
+          if (remoteBookmark.code === 0 && remoteBookmark.stdout.trim()) {
+            await must("jj", ["rebase", "-d", `${bookmark}@origin`]);
+          }
+
+          await must("jj", ["bookmark", "set", bookmark, "-r", "@-"]);
+          if (rs.has("rad")) await must("rad", ["node", "start"]);
+          for (const remote of remotes.filter((r) => rs.has(r))) {
+            await must("jj", [
+              "git",
+              "push",
+              "--remote",
+              remote,
+              "--bookmark",
+              bookmark,
+            ]);
+          }
+          if (rs.has("rad")) await must("rad", ["sync"]);
+          await must("jj", ["status"]);
+        } else {
+          const status = await must("git", ["status", "--porcelain"]);
+          if (status.stdout.trim())
+            throw new PublishError("working tree has uncommitted changes");
+
+          const rs = names((await must("git", ["remote"])).stdout);
+          if (!rs.has("origin"))
+            throw new PublishError("origin remote is not configured");
+
+          if (ref) {
+            for (const remote of remotes.filter((r) => rs.has(r))) {
+              await must("git", ["push", remote, ref]);
+            }
+          } else {
+            await must("git", ["push"]);
+          }
+          await must("git", ["status", "--short"]);
+        }
+
+        log.push(
+          `done: published ${isJj ? "jj" : "git"}${ref ? ` ${ref}` : ""}`,
+        );
+        show();
+        ctx.ui.notify("published", "success");
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        log.push(`failed: ${message.split("\n", 1)[0]}`);
+        show();
+        ctx.ui.notify(message, "error");
       }
-
-      const failure =
-        backend === "jj"
-          ? await publishJj(pi, ctx.cwd, ref ?? "main")
-          : await publishGit(pi, ctx.cwd, ref);
-
-      if (failure) {
-        ctx.ui.notify(failure, "error");
-        return;
-      }
-
-      ctx.ui.notify(
-        ref ? `published ${backend} ${ref}` : `published ${backend}`,
-        "success",
-      );
     },
   });
 }
