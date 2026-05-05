@@ -38,9 +38,9 @@ const BACKENDS: Backend[] = [
     mechanics: `
 mechanics:
 - use jj commands.
-- commit with jj commit.
-- do not move bookmarks.
-- do not push.
+- commit with jj commit so the completed change becomes @- and @ is empty.
+- do not move bookmarks; /publish handles bookmarks.
+- do not push; /publish handles publishing.
 - do not use jj restore, git restore, or git checkout --.
 - verify with jj status after committing.
 `.trim(),
@@ -59,7 +59,7 @@ mechanics:
 - commit staged changes if any exist.
 - if nothing is staged, stage all changes with git add -A.
 - if staged and unstaged changes both exist, preserve staging; include unstaged or untracked files only when they belong to the same change.
-- do not push.
+- do not push; /publish handles publishing.
 - do not use git restore or git checkout --.
 - verify with git status after committing.
 `.trim(),
