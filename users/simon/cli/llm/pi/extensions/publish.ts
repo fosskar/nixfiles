@@ -25,13 +25,22 @@ export default function (pi: ExtensionAPI) {
 
       const run = async (cmd: string, argv: string[]) => {
         const line = [cmd, ...argv].join(" ");
-        log.push(`$ ${line}`);
+        log.push(`… ${line}`);
         show();
         const result = await pi.exec(cmd, argv, {
           cwd: ctx.cwd,
           timeout: 120000,
         });
-        log.push(result.code === 0 ? `✓ ${line}` : `✗ ${line}`);
+        log[log.length - 1] = result.code === 0 ? `✓ ${line}` : `✗ ${line}`;
+        if (result.code !== 0 && result.stderr.trim()) {
+          log.push(
+            ...result.stderr
+              .trim()
+              .split("\n")
+              .slice(-3)
+              .map((l) => `  ${l}`),
+          );
+        }
         show();
         return result;
       };
@@ -139,11 +148,11 @@ export default function (pi: ExtensionAPI) {
           await must("git", ["status", "--short"]);
         }
 
-        log.push(
-          `done: published ${isJj ? "jj" : "git"}${ref ? ` ${ref}` : ""}`,
+        ctx.ui.setWidget(widget, undefined);
+        ctx.ui.notify(
+          `published ${isJj ? "jj" : "git"}${ref ? ` ${ref}` : ""}`,
+          "success",
         );
-        show();
-        ctx.ui.notify("published", "success");
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         log.push(`failed: ${message.split("\n", 1)[0]}`);
