@@ -154,11 +154,6 @@ in
               authorizedKeys = {
                 simon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE";
               };
-            };
-          };
-          roles.client = {
-            tags.all = { };
-            settings = {
               certificate.searchDomains = [
                 "lan"
                 "local"
@@ -166,6 +161,7 @@ in
               ];
             };
           };
+          roles.client.tags.all = { };
         };
 
         root-user = {
@@ -288,40 +284,38 @@ in
         #  };
         #};
 
-        # TODO: re-enable when clan networking fallback is fixed
-        # see: https://git.clan.lol/clan/clan-core/issues/6964
-        # dm-dns exports break networks_from_flake() (KeyError: 'peer')
-        data-mesher = {
-          module = {
-            name = "data-mesher";
-            input = "clan-core";
-          };
-          roles.default = {
-            tags.all = { };
-            settings = {
-              interfaces = [
-                "ygg"
-                "wireguard"
-              ];
-            };
-          };
-          roles.bootstrap.machines = {
-            nixbox = { };
-            gateway = { };
-          };
-        };
+        # disabled until statelessdns or endpoint exports make this useful.
+        # data-mesher = {
+        #   module = {
+        #     name = "data-mesher";
+        #     input = "clan-core";
+        #   };
+        #   roles.default = {
+        #     tags.all = { };
+        #     settings = {
+        #       interfaces = [
+        #         "ygg"
+        #         "wireguard"
+        #       ];
+        #     };
+        #   };
+        #   roles.bootstrap.machines = {
+        #     nixbox = { };
+        #     gateway = { };
+        #   };
+        # };
 
-        dm-dns = {
-          module = {
-            name = "dm-dns";
-            input = "clan-core";
-          };
-          roles.default.tags.all = { };
-          roles.push.machines = {
-            nixbox = { };
-            gateway = { };
-          };
-        };
+        # dm-dns = {
+        #   module = {
+        #     name = "dm-dns";
+        #     input = "clan-core";
+        #   };
+        #   roles.default.tags.all = { };
+        #   roles.push.machines = {
+        #     nixbox = { };
+        #     gateway = { };
+        #   };
+        # };
 
         ## workstation / user-facing
 
