@@ -144,9 +144,6 @@
                   hidePassive = true;
                 }
                 {
-                  id = "plugin:model-usage";
-                }
-                {
                   id = "Microphone";
                 }
                 {
