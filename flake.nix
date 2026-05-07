@@ -1,13 +1,6 @@
 {
   description = "simonoscr's flake";
 
-  nixConfig = {
-    extra-substituters = [ "https://nix-on-droid.cachix.org" ];
-    extra-trusted-public-keys = [
-      "nix-on-droid.cachix.org-1:56snoMJTXmDRC1Ei24CmKoUqvHJ9XCp+nidK7qkMQrU="
-    ];
-  };
-
   inputs = {
     # nixpkgs
     nixpkgs.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=nixos-unstable";
@@ -19,12 +12,6 @@
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nix-on-droid = {
-      url = "github:nix-community/nix-on-droid";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
 
     clan-community = {
@@ -236,15 +223,6 @@
 
           formatter = config.treefmt.build.wrapper;
         };
-
-      flake.nixOnDroidConfigurations.pixel8 = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
-        pkgs = import inputs.nixpkgs {
-          system = "aarch64-linux";
-          overlays = [ inputs.nix-on-droid.overlays.default ];
-        };
-        modules = [ ./machines/pixel8/nix-on-droid.nix ];
-        home-manager-path = inputs.home-manager.outPath;
-      };
 
       # --- service inventory ---
       # auto-generated from caddy vhosts: nix eval .#serviceSummary --json | jq
