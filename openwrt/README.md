@@ -41,6 +41,7 @@ options not declared within a section fall back to openwrt built-in defaults.
 | ------------------------ | -------------- | -------- | -------------------------------------------------------- |
 | `host`                   | string         | required | device IP (SSH target)                                   |
 | `packages`               | list of string | `[]`     | packages to install via apk                              |
+| `externalPackages`       | list           | `[]`     | packages to install outside official feeds               |
 | `removePackages`         | list of string | `[]`     | packages to remove (runs before install)                 |
 | `authorizedKeys`         | list of string | `[]`     | SSH public keys for /etc/dropbear                        |
 | `files`                  | attrsOf path   | `{}`     | files to push (key = remote path, val = local)           |

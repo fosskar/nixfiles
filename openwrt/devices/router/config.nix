@@ -36,6 +36,13 @@
     "wpad-basic-wolfssl" # gets replaced by full wpad-wolfssl package, because some options missing that needed by DAWN
   ];
 
+  externalPackages = [
+    {
+      name = "beszel-agent";
+      installCommand = "wget -qO- https://github.com/vernette/beszel-agent-openwrt/raw/master/install.sh | sh";
+    }
+  ];
+
   files = {
     "/etc/unbound/unbound_srv.conf" = ./files/unbound_srv.conf;
     "/etc/unbound/unbound_ext.conf" = ./files/unbound_ext.conf;
@@ -51,7 +58,6 @@
         login_check_for_upgrades = "1";
       };
 
-      # install: sh <(wget -qO- https://github.com/vernette/beszel-agent-openwrt/raw/master/install.sh)
       beszel-agent.agent = {
         _type = "agent";
         enabled = "1";

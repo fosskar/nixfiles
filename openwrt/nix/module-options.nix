@@ -19,6 +19,30 @@
       description = "packages to ensure installed via apk";
     };
 
+    externalPackages = lib.mkOption {
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            name = lib.mkOption {
+              type = lib.types.str;
+              description = "package name used for idempotency checks";
+            };
+            checkCommand = lib.mkOption {
+              type = lib.types.str;
+              default = "";
+              description = "remote shell command that succeeds when the package is installed";
+            };
+            installCommand = lib.mkOption {
+              type = lib.types.str;
+              description = "remote shell command that installs the package";
+            };
+          };
+        }
+      );
+      default = [ ];
+      description = "packages to ensure installed outside official OpenWrt feeds";
+    };
+
     disableServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
