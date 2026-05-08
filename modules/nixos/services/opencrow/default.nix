@@ -7,6 +7,8 @@
       ...
     }:
     let
+      localRelayUrl = "ws://127.0.0.1:${toString config.services.strfry.settings.relay.port}";
+
       commonInstance = {
         enable = true;
 
@@ -18,14 +20,22 @@
         extensions = {
           memory = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.extension-memory;
           reminders = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.extension-reminders;
-          pi-to-pi = ./extensions/pi-to-PI.ts;
         };
 
         environment = {
           TZ = "Europe/Berlin";
-          OPENCROW_PI_PROVIDER = "anthropic";
-          OPENCROW_PI_MODEL = "claude-sonnet-4-6";
+          OPENCROW_PI_PROVIDER = "llama-cpp";
+          OPENCROW_PI_MODEL = "gemma4-e4b";
           OPENCROW_SOUL_FILE = "${./soul.md}";
+        };
+
+        piModels = {
+          providers.llama-cpp = {
+            baseUrl = "https://llama-cpp.${config.domains.local}/v1";
+            api = "openai-completions";
+            apiKey = "dummy";
+            models = [ { id = "gemma4-e4b"; } ];
+          };
         };
 
         extraPackages = with pkgs; [
@@ -37,6 +47,7 @@
           hurl
           jq
           less
+          lynx
           openssh
           ripgrep
           tree
@@ -73,8 +84,8 @@
         script = ''
           sk=$(nak key generate)
           pk=$(nak key public "$sk")
-          echo -n "$sk" > "$out/nostr-private-key"
-          echo -n "$pk" > "$out/nostr-public-key"
+          echo -n "$(nak encode nsec "$sk")" > "$out/nostr-private-key"
+          echo -n "$(nak encode npub "$pk")" > "$out/nostr-public-key"
         '';
       };
 
@@ -86,8 +97,7 @@
       services.opencrow = commonInstance // {
         environment = commonInstance.environment // {
           OPENCROW_BACKEND = "nostr";
-          OPENCROW_NOSTR_RELAYS = "wss://nostr.${config.domains.public}";
-          OPENCROW_NOSTR_DM_RELAYS = "wss://nostr.${config.domains.public}";
+          OPENCROW_NOSTR_RELAYS = localRelayUrl;
           OPENCROW_NOSTR_PRIVATE_KEY_FILE = "%d/nostr-private-key";
           OPENCROW_NOSTR_ALLOWED_USERS = "npub16le4pxhfvy04jwcp9rhw3ustkwt7sm0jydgq4lr3qderycrlm8ysjxmufc";
           OPENCROW_NOSTR_NAME = "dexter";

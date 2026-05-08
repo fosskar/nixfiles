@@ -14,6 +14,7 @@
     self.modules.nixos.lldap
     self.modules.nixos.authelia
     self.modules.nixos.immich
+    self.modules.nixos.llamaCpp
     self.modules.nixos.itTools
     self.modules.nixos.paperless
     self.modules.nixos.paperlessSamba
@@ -27,7 +28,6 @@
     self.modules.nixos.hdIdle
     self.modules.nixos.podman
     self.modules.nixos.homepage
-    self.modules.nixos.ollama
     self.modules.nixos.ups
     self.modules.nixos.gatus
     self.modules.nixos.ntfy
