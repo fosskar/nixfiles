@@ -34,13 +34,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "stirling-pdf" + lib.optionalString isDesktopVariant "-desktop";
-  version = "2.10.0";
+  version = "2.10.1";
 
   src = fetchFromGitHub {
     owner = "Stirling-Tools";
     repo = "Stirling-PDF";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-eq0KtPyALx7XZb7cZU8zU44pIqk6v37uPfSbQRLcGJ8=";
+    hash = "sha256-Qod8x8aB6qDxbRTE5rWUoqVka5kizfXJAWkKo5lhnFQ=";
   };
 
   patches = [
@@ -54,7 +54,7 @@ stdenv.mkDerivation (finalAttrs: {
     name = "${finalAttrs.pname}-${finalAttrs.version}-npm-deps";
     inherit (finalAttrs) src patches;
     postPatch = "cd ${finalAttrs.npmRoot}";
-    hash = "sha256-eU8laJhyFqRek2rth2GPdhlZj505JJH92Kh6xvnBg3Q=";
+    hash = "sha256-y+mviHatwhdIGCOKir1nnG/0Zm8oSoLKW345tU9upls=";
   };
 
   cargoRoot = "frontend/src-tauri";
@@ -68,7 +68,7 @@ stdenv.mkDerivation (finalAttrs: {
       patches
       cargoRoot
       ;
-    hash = "sha256-t6TBUsfOadn3KNLxva6iajlhg21dFqxgH962e1bIRLI=";
+    hash = "sha256-oKHNxRGxlEVH/ipWl80gi3WUYS6IvSrfWMUnN8lg1rA=";
   };
 
   mitmCache = gradle.fetchDeps {
