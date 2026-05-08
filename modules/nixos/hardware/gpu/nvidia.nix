@@ -18,6 +18,12 @@
       users.groups.video.members = config.users.groups.wheel.members;
 
       hardware.nvidia = {
+        #package = config.boot.kernelPackages.nvidiaPackages.stable; # Default
+        package = config.boot.kernelPackages.nvidiaPackages.beta;
+        #package = config.boot.kernelPackages.nvidiaPackages.production;
+
+        # Data center GPUs startin from Blackwell must use open-source modules
+        # proprietary modules are no longer supported
         open = true;
         modesetting.enable = true;
         nvidiaPersistenced = true;
