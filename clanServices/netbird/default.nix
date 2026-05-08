@@ -43,6 +43,11 @@
             default = 51820;
             description = "wireguard listen port for all clients";
           };
+          proxyTCPPorts = lib.mkOption {
+            type = lib.types.listOf lib.types.port;
+            default = [ ];
+            description = "additional public tcp ports exposed by netbird tcp services";
+          };
         };
       };
 
@@ -119,6 +124,7 @@
               enable = true;
               package = pkgs.custom.netbird-proxy;
               domain = settings.proxyDomain;
+              publicTCPPorts = settings.proxyTCPPorts;
               managementAddress = "http://127.0.0.1:8081";
               addr = ":8443";
               tokenFile = "/var/lib/netbird-server/proxy-token";

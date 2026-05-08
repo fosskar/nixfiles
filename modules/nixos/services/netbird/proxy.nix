@@ -84,6 +84,12 @@
           description = "ACME challenge type";
         };
 
+        publicTCPPorts = lib.mkOption {
+          type = lib.types.listOf lib.types.port;
+          default = [ ];
+          description = "additional public tcp ports exposed by netbird tcp services";
+        };
+
         certDir = lib.mkOption {
           type = lib.types.str;
           default = "${stateDir}/certs";
@@ -131,6 +137,8 @@
       config = lib.mkIf cfg.enable {
 
         services.netbird.server.proxy.logLevel = lib.mkIf cfg.crowdsec.enable (lib.mkDefault "debug");
+
+        networking.firewall.allowedTCPPorts = cfg.publicTCPPorts;
 
         services.crowdsec.localConfig.acquisitions = lib.mkIf cfg.crowdsec.enable [
           {

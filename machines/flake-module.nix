@@ -248,6 +248,7 @@ in
           roles.server.machines."gateway".settings = {
             domain = "nb.fosskar.eu";
             proxyDomain = "proxy.fosskar.eu";
+            proxyTCPPorts = [ 8776 ];
             port = 51821;
           };
           roles.client = {
