@@ -1,33 +1,63 @@
 {
   flake.modules.nixos.ollama =
-    { pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      serviceName = "ollama";
+      localHost = "${serviceName}.${config.domains.local}";
+      listenAddress = "127.0.0.1";
+      listenPort = 11434;
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
+    in
     {
       services.ollama = {
         enable = true;
-        package = pkgs.ollama-vulkan;
-        environmentVariables = {
-          # opencl configuration
-          OCL_ICD_VENDORS = "/run/opengl-driver/etc/OpenCL/vendors";
-          VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json";
-          LIBVA_DRIVER_NAME = "iHD";
-
-          # ollama intel gpu settings
-          OLLAMA_NUM_GPU = "99"; # 48 or 24 ?
-          OLLAMA_INTEL_GPU = "true";
-          OLLAMA_VULKAN = "1";
-        };
-        host = "127.0.0.1";
+        package = pkgs.ollama-cuda;
+        host = listenAddress;
+        port = listenPort;
         openFirewall = false;
+        environmentVariables.OLLAMA_ORIGINS = "http://${localHost},https://${localHost},app://*,zed://*";
 
         loadModels = [
           # llm
-          "deepseek-r1:7b"
-          "qwen3:8b"
-          "gemma3:4b"
 
           # vision
           "minicpm-v:8b"
         ];
       };
+
+      services.homepage-dashboard.serviceGroups."AI" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
+            {
+              "Ollama" = {
+                href = "https://${localHost}";
+                icon = "ollama.png";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
+
+      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        {
+          name = "Ollama";
+          url = "${listenUrl}/api/tags";
+          group = "AI";
+          enabled = true;
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+          alerts = [ { type = "ntfy"; } ];
+        }
+      ];
+
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy ${listenUrl} {
+          header_up Host {upstream_hostport}
+        }
+      '';
     };
 }

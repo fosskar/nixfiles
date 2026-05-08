@@ -14,6 +14,8 @@
           "force-user=nextcloud"
           "force-group=nextcloud"
           "perms=0000:u=rD"
+          "x-systemd.after=zfs-mount.service"
+          "x-systemd.requires=zfs-mount.service"
           "x-systemd.requires-mounts-for=${archiveDir}"
         ];
       };

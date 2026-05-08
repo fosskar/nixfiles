@@ -48,7 +48,10 @@
           includes = [ "flake.nix" ];
         };
         programs = {
-          nixfmt.enable = true;
+          nixfmt = {
+            enable = true;
+            package = pkgs.nixfmt-rs;
+          };
           prettier.enable = true;
           deadnix.enable = true;
           statix.enable = true;

@@ -239,7 +239,6 @@ _: {
             services.beszel.agent = {
               enable = true;
               extraPath = [
-                pkgs.intel-gpu-tools
                 pkgs.smartmontools
               ];
               environment = {
@@ -255,6 +254,9 @@ _: {
               }
               // lib.optionalAttrs (settings.smartDevices != "") {
                 SMART_DEVICES = settings.smartDevices;
+              }
+              // lib.optionalAttrs config.virtualisation.podman.enable {
+                DOCKER_HOST = "unix:///run/podman/podman.sock";
               };
             };
 
@@ -265,7 +267,8 @@ _: {
                 "disk"
                 "video"
                 "render"
-              ];
+              ]
+              ++ lib.optionals config.virtualisation.podman.enable [ "podman" ];
               PrivateDevices = lib.mkForce false;
               PrivateUsers = lib.mkForce false;
               NoNewPrivileges = lib.mkForce false;

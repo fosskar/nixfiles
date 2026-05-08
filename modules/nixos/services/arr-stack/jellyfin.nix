@@ -21,9 +21,23 @@
           enable = true;
           openFirewall = false;
           group = "media";
+          forceEncodingConfig = true;
           hardwareAcceleration = {
-            device = "/dev/dri/renderD128";
-            type = "qsv";
+            enable = true;
+            device = "/dev/nvidia0";
+            type = "nvenc";
+          };
+          transcoding = {
+            deleteSegments = false;
+            enableHardwareEncoding = true;
+            hardwareDecodingCodecs = {
+              h264 = true;
+              hevc = true;
+              vc1 = true;
+              vp9 = true;
+              av1 = true;
+              hevc10bit = true;
+            };
           };
         };
 
@@ -91,9 +105,12 @@
 
         # --- systemd ---
 
-        systemd.services.jellyfin.environment = {
-          LIBVA_DRIVER_NAME = "iHD";
-        };
+        systemd.services.jellyfin.serviceConfig.DeviceAllow = [
+          "/dev/nvidiactl rw"
+          "/dev/nvidia-modeset rw"
+          "/dev/nvidia-uvm rw"
+          "/dev/nvidia-uvm-tools rw"
+        ];
       };
     };
 }

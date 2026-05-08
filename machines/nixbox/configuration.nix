@@ -1,5 +1,6 @@
 {
   self,
+  lib,
   mylib,
   pkgs,
   ...
@@ -8,6 +9,7 @@
   imports = [
     self.modules.nixos.arrStack
     self.modules.nixos.caddy
+    self.modules.nixos.convertx
     self.modules.nixos.nextcloud
     self.modules.nixos.lldap
     self.modules.nixos.authelia
@@ -19,12 +21,11 @@
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf
     self.modules.nixos.grub
-    self.modules.nixos.intelGpu
+    self.modules.nixos.nvidiaGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.hdIdle
-    self.modules.nixos.docker
-    self.modules.nixos.vert
+    self.modules.nixos.podman
     self.modules.nixos.homepage
     self.modules.nixos.ollama
     self.modules.nixos.ups
@@ -52,7 +53,30 @@
     }
   ];
 
-  systemd.services.beszel-agent.unitConfig.RequiresMountsFor = [ "/tank" ];
+  systemd.services =
+    lib.genAttrs
+      [
+        "beszel-agent"
+        "garage"
+        "garage-layout-init"
+        "garage-webui"
+        "nextcloud-cron"
+        "nextcloud-notify_push"
+        "nextcloud-notify_push_setup"
+        "nextcloud-oidc-bootstrap"
+        "nextcloud-setup"
+        "nextcloud-update-db"
+        "paperless-consumer"
+        "paperless-scheduler"
+        "paperless-task-queue"
+        "paperless-web"
+        "phpfpm-nextcloud"
+      ]
+      (_: {
+        after = [ "zfs-mount.service" ];
+        requires = [ "zfs-mount.service" ];
+        unitConfig.RequiresMountsFor = [ "/tank" ];
+      });
 
   boot.kernelModules = [
     "nct6775"

@@ -14,68 +14,24 @@
       listenPort = 2283;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
 
-      # immich with openvino ML acceleration (inlined from old openvino.nix helper)
-      immichPackage =
-        let
-          onnxruntime =
-            (pkgs.onnxruntime.override {
-              python3Packages = pkgs.python312Packages;
-            }).overrideAttrs
-              (oldAttrs: {
-                buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.openvino ];
-
-                nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ pkgs.patchelf ];
-
-                cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
-                  (lib.cmakeBool "onnxruntime_USE_OPENVINO" true)
-                  (lib.cmakeFeature "OpenVINO_DIR" "${pkgs.openvino}/runtime/cmake")
-                ];
-
-                postFixup = (oldAttrs.postFixup or "") + ''
-                  provider="''${!outputLib}/lib/libonnxruntime_providers_openvino.so"
-                  if [ -e "$provider" ]; then
-                    patchelf --add-rpath "${pkgs.openvino}/runtime/lib/intel64" "$provider"
-                  fi
-                '';
-
-                doCheck = false;
-              });
-
-          python312 = pkgs.python312.override {
-            packageOverrides = _pyFinal: pyPrev: {
-              onnxruntime =
-                (pyPrev.onnxruntime.override {
-                  inherit onnxruntime;
-                }).overrideAttrs
-                  (oldAttrs: {
-                    buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.openvino ];
-                  });
-              openvino = pyPrev.openvino.overrideAttrs (_: {
-                pythonImportsCheck = [ ];
-              });
+      python312 = pkgs.python312.override {
+        packageOverrides = pyFinal: pyPrev: {
+          onnxruntime = pyPrev.onnxruntime.override {
+            onnxruntime = pkgs.onnxruntime.override {
+              cudaSupport = true;
+              python3Packages = pyFinal;
             };
           };
+        };
+      };
 
-          machineLearning =
-            (pkgs.immich-machine-learning.override {
-              python3 = python312;
-            }).overrideAttrs
-              (_: {
-                doCheck = false;
-              });
+      machineLearning = pkgs.immich-machine-learning.override {
+        python3 = python312;
+      };
 
-          immich = pkgs.immich.override {
-            immich-machine-learning = machineLearning;
-          };
-        in
-        immich.overrideAttrs (oldAttrs: {
-          passthru = oldAttrs.passthru // {
-            machine-learning = oldAttrs.passthru.machine-learning.overrideAttrs (_: {
-              doCheck = false;
-              doInstallCheck = false;
-            });
-          };
-        });
+      immichPackage = pkgs.immich.override {
+        immich-machine-learning = machineLearning;
+      };
     in
     {
       clan.core.vars.generators.immich = {
@@ -151,8 +107,6 @@
 
         openFirewall = false;
 
-        accelerationDevices = [ "/dev/dri/renderD128" ];
-
         database = {
           enable = true;
           createDB = true;
@@ -160,19 +114,22 @@
 
         redis.enable = true;
 
+        # `null` will give access to all devices.
+        # You may want to restrict this by using something like `[ "/dev/dri/renderD128" ]`
+        accelerationDevices = [
+          "/dev/nvidia0"
+          "/dev/nvidiactl"
+          "/dev/nvidia-uvm"
+          "/dev/nvidia-uvm-tools"
+        ];
+
         machine-learning = {
           enable = true;
           environment = {
-            OCL_ICD_VENDORS = "/run/opengl-driver/etc/OpenCL/vendors";
-
             LD_LIBRARY_PATH = builtins.concatStringsSep ":" [
-              "${pkgs.openvino}/runtime/lib/intel64"
-              "${pkgs.python312Packages.openvino}/lib"
-              "${pkgs.python312Packages.openvino}/lib/python3.12/site-packages/openvino"
+              "${python312.pkgs.onnxruntime}/lib"
+              "${python312.pkgs.onnxruntime}/${python312.sitePackages}/onnxruntime/capi"
             ];
-
-            MPLCONFIGDIR = "/var/cache/immich-machine-learning";
-            TRANSFORMERS_CACHE = "/var/cache/immich-machine-learning";
           };
         };
 
@@ -185,7 +142,7 @@
 
           passwordLogin.enabled = true;
 
-          ffmpeg.accel = "qsv";
+          ffmpeg.accel = "nvenc";
 
           library = {
             scan = {
@@ -240,10 +197,9 @@
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
         reverse_proxy ${listenUrl}
-                  request_body {
-                    max_size 50GB
-                  }
-                
+        request_body {
+          max_size 50GB
+        }
       '';
 
       clan.core.postgresql.enable = true;
@@ -253,29 +209,6 @@
           "immich-server.service"
           "immich-machine-learning.service"
           "redis-immich.service"
-        ];
-      };
-
-      systemd = {
-        services = {
-          immich-server = {
-            serviceConfig = {
-              PrivateDevices = lib.mkForce false;
-              DeviceAllow = [
-                "/dev/dri/card1 rw"
-                "/dev/dri/renderD128 rw"
-              ];
-            };
-          };
-          immich-machine-learning = {
-            serviceConfig = {
-              PrivateDevices = lib.mkForce false;
-              DeviceAllow = [ "/dev/dri/renderD128 rw" ];
-            };
-          };
-        };
-        tmpfiles.rules = [
-          "d /var/cache/immich-machine-learning 0755 immich immich -"
         ];
       };
 

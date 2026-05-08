@@ -114,16 +114,6 @@
             };
           }
         ];
-        "AI / LLM" = [
-          {
-            "Ollama" = {
-              description = "local llm inference engine";
-              href = "http://127.0.0.1:11434";
-              icon = "ollama.png";
-              siteMonitor = "http://127.0.0.1:11434";
-            };
-          }
-        ];
         "Tools" = [
           {
             "fosskar's bliki" = {
