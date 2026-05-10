@@ -4,8 +4,8 @@
     {
       environment.systemPackages = [
         (pkgs.writeShellScriptBin "bx" ''
-          if [ -z "''${BRAVE_SEARCH_API_KEY:-}" ] && [ -r /run/secrets/vars/brave-search/api-key ]; then
-            BRAVE_SEARCH_API_KEY="$(cat /run/secrets/vars/brave-search/api-key)"
+          if [ -z "''${BRAVE_SEARCH_API_KEY:-}" ] && [ -r /run/secrets/vars/brave-search/env ]; then
+            . /run/secrets/vars/brave-search/env
             export BRAVE_SEARCH_API_KEY
           fi
 
@@ -21,7 +21,11 @@
           persist = true;
         };
         files.api-key.secret = true;
-        files.env.secret = true;
+        files.env = {
+          secret = true;
+          group = "users";
+          mode = "0440";
+        };
         script = ''
           cp "$prompts/api-key" "$out/api-key"
           echo "BRAVE_SEARCH_API_KEY=$(cat "$prompts/api-key")" > "$out/env"
