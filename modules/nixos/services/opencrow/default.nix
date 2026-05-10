@@ -25,7 +25,7 @@
         environment = {
           TZ = "Europe/Berlin";
           OPENCROW_PI_PROVIDER = "llama-cpp";
-          OPENCROW_PI_MODEL = "gemma4-e4b";
+          OPENCROW_PI_MODEL = "granite4.1-8b";
           OPENCROW_SOUL_FILE = "${./soul.md}";
         };
 
@@ -34,7 +34,7 @@
             baseUrl = "https://llama-cpp.${config.domains.local}/v1";
             api = "openai-completions";
             apiKey = "dummy";
-            models = [ { id = "gemma4-e4b"; } ];
+            models = [ { id = "granite4.1-8b"; } ];
           };
         };
 
