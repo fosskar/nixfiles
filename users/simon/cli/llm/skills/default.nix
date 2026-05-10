@@ -26,6 +26,7 @@ let
       }) skillTargetDirs
     ) ownSkillNames
   );
+
 in
 {
   imports = [ inputs.mics-skills.homeModules.default ];

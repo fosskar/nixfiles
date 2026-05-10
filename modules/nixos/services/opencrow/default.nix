@@ -19,6 +19,7 @@
 
         skills = {
           web = "${config.services.opencrow.package}/share/opencrow/skills/web";
+          brave-search = ../../../../users/simon/cli/llm/skills/brave-search;
           osm = ./skills/osm;
           paperless = ./skills/paperless;
           calendar-cli = "${micsSkills.calendar-cli}/share/skills/calendar-cli";
@@ -34,6 +35,8 @@
 
         credentialFiles."paperless-api-token" =
           config.clan.core.vars.generators.opencrow-paperless.files.api-token.path;
+
+        environmentFiles = [ config.clan.core.vars.generators.brave-search.files.env.path ];
 
         environment = {
           TZ = "Europe/Berlin";
@@ -58,6 +61,7 @@
           micsSkills.tasker-cli
         ]
         ++ (with pkgs; [
+          brave-search-cli
           coreutils
           curl
           fd

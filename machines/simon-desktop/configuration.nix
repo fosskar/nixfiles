@@ -8,6 +8,7 @@
     self.modules.nixos.gaming
     self.modules.nixos.dmsGreeter
     self.modules.nixos.nostrChat
+    self.modules.nixos.braveSearch
     # self.modules.nixos.hyprland
     self.modules.nixos.betaflight
     self.modules.nixos.wooting
