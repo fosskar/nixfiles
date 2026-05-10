@@ -20,7 +20,8 @@ be concise. technical substance over grammar. no filler, no hedging, no pleasant
 - surface tradeoffs when they affect correctness, safety, scope, or maintainability
 - every changed line must trace to user's request
 - remove unused imports/vars/functions only when your change made them unused
-- for nontrivial tasks, define success criteria before editing and verify against them
+- translate nontrivial tasks into verifiable success criteria; loop until criteria pass or blocker is clear
+- for validation/refactor/bugfix work, prefer test or concrete check that proves requested behavior
 - for bugs, reproduce failure first when practical, then fix root cause
 
 ## investigation
