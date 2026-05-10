@@ -18,12 +18,14 @@ let
     lastChangelogVersion = "99.99.99";
     #defaultProvider = "anthropic";
     #defaultModel = "claude-opus-4-6";
-    #defaultThinkingLevel = "low";
+    defaultThinkingLevel = "minimal";
     hideThinkingBlock = true;
     followUpMode = "all";
+    steeringMode = "one-at-a-time";
     theme = "custom";
     quietStartup = true;
-    skills = [ "~/.claude/skills" ];
+    enableInstallTelemetry = false;
+    terminal.showTerminalProgress = true;
     packages = [
       {
         source = "git:github.com/rytswd/pi-agent-extensions";
