@@ -1,0 +1,20 @@
+diff --git a/netstack2/http_handler.go b/netstack2/http_handler.go
+index 694c928..cd7ef02 100644
+--- a/netstack2/http_handler.go
++++ b/netstack2/http_handler.go
+@@ -127,6 +127,15 @@ type httpConnCtx struct {
+ 	isTLS bool // true when the conn was wrapped with tls.Server
+ }
+ 
++func (c *httpConnCtx) ConnectionState() tls.ConnectionState {
++	if tlsConn, ok := c.Conn.(interface {
++		ConnectionState() tls.ConnectionState
++	}); ok {
++		return tlsConn.ConnectionState()
++	}
++	return tls.ConnectionState{}
++}
++
+ // connCtxKey is the unexported context key used to store a *SubnetRule on the
+ // per-connection context created by http.Server.ConnContext.
+ type connCtxKey struct{}

@@ -7,16 +7,18 @@
 }:
 buildGoModule rec {
   pname = "newt";
-  version = "1.12.4";
+  version = "1.12.5";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "newt";
     tag = version;
-    hash = "sha256-wYLnuKIU+wcCxF57cdfepTVm52btfdrveQ8Y+R9flMo=";
+    hash = "sha256-MBch8Zj+2jsHJTkFR/HJoZk35ZVAbdbkZAaf6pqUZCU=";
   };
 
   vendorHash = "sha256-WfIK+Q8WQ372NzLw6DRapv1nYPduShi4KnVJBPk0Oz0=";
+
+  patches = [ ./fix-http-conn-ctx-connection-state.patch ];
 
   nativeInstallCheckInputs = [ versionCheckHook ];
 
