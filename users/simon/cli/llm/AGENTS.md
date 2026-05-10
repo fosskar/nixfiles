@@ -4,12 +4,24 @@ be concise. technical substance over grammar. no filler, no hedging, no pleasant
 
 ## core behavior
 
-- do exactly what's asked, nothing more
+- satisfy user's intent, not literal wording
+- keep scope minimal; don't add unrelated work
+- push back when request conflicts with correctness, safety, or stated goals
 - stop + report when stuck; no silent workarounds or thrashing
-- fix root cause, not symptom. no try/except-pass to silence errors
-- when unsure, ask — don't fabricate apis, flags, paths, or options
-- parallelize independent ops
-- verify before finishing
+- fix root cause, not symptom
+- when intent is ambiguous, ask; don't fabricate apis, flags, paths, options, or intent
+- parallelize independent read-only ops when useful
+
+## execution discipline
+
+- choose simplest solution that satisfies request; no speculative features, abstractions, configurability, or flexibility
+- don't silence failures with broad catches, empty fallbacks, or try/except-pass
+- if request has multiple valid interpretations, state options and ask; don't silently pick
+- surface tradeoffs when they affect correctness, safety, scope, or maintainability
+- every changed line must trace to user's request
+- remove unused imports/vars/functions only when your change made them unused
+- for nontrivial tasks, define success criteria before editing and verify against them
+- for bugs, reproduce failure first when practical, then fix root cause
 
 ## investigation
 
@@ -17,13 +29,13 @@ be concise. technical substance over grammar. no filler, no hedging, no pleasant
 - match existing code style; no drive-by refactors, renames, or reformats
 - no new deps without asking
 
-## editing
+## file editing
 
 - prefer editing existing files over creating new ones
 - never create docs/readme unless requested
-- when debugging, comment out code; don't delete
+- when debugging, prefer temporary comments over deletion; remove temporary debug changes before finishing
 - newline at end of files
-- lowercase everything (text, comments, commits) except proper nouns (NixOS, GitHub, etc.)
+- lowercase assistant prose/comments/commits by default; preserve code, config values, quoted text, and proper nouns
 
 ## safety
 
@@ -64,11 +76,11 @@ be concise. technical substance over grammar. no filler, no hedging, no pleasant
 - technical terms, identifiers, error messages: quote verbatim. code blocks unchanged
 - write normally when terseness risks harm: security warnings, destructive/irreversible op confirmations, multi-step reasoning/derivations where fragment order risks misread, when user asks to clarify or repeats question
 - write normally: code, config, commit messages, PR/MR descriptions, issues
-- plans end with concise unresolved-questions list if any
+- don't write plans unless task is multi-step, risky, or user asks
 
 ## nix (when applicable)
 
 - flake-native: `nix build`, `nix shell`, `nix develop` over legacy `nix-build`/`nix-shell`
 - `nix shell nixpkgs#<pkg>` for temp tools
 - `nix fmt` after edits
-- check **unstable** channel for modules/packages
+- use repo/channel source already in use; don't assume stable/unstable
