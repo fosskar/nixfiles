@@ -11,14 +11,6 @@ let
   extensionEntries = lib.mapAttrs' (
     name: _: lib.nameValuePair ".pi/agent/extensions/${name}" { source = ./extensions/${name}; }
   ) extensionFiles;
-  promptFiles = builtins.readDir ./prompts;
-  promptEntries = lib.mapAttrs' (
-    name: _: lib.nameValuePair ".pi/agent/prompts/${name}" { source = ./prompts/${name}; }
-  ) promptFiles;
-  skillDirs = builtins.readDir ./skills;
-  skillEntries = lib.mapAttrs' (
-    name: _: lib.nameValuePair ".pi/agent/skills/${name}" { source = ./skills/${name}; }
-  ) (lib.filterAttrs (_: type: type == "directory") skillDirs);
 
   # declarative pi settings.
   # merged on top of existing local settings.json (or deployed 1:1 if none exists).
@@ -62,8 +54,6 @@ in
   imports = mylib.scanPaths ./. {
     exclude = [
       "extensions"
-      "prompts"
-      "skills"
     ];
   };
 
@@ -76,10 +66,7 @@ in
     ".pi/agent/models.json".source = piModelsFile;
 
   }
-  // extensionEntries
-  // promptEntries
-  // skillEntries;
-
+  // extensionEntries;
   # deploy or merge pi settings.json
   home.activation.piSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     settings="$HOME/.pi/agent/settings.json"

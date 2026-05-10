@@ -1076,6 +1076,29 @@
         "url": "https://cdn.jsdelivr.net/npm/mermaid@11.12.3/dist/mermaid.min.js"
       }
     },
+    "mics-skills": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777376325,
+        "narHash": "sha256-RPd2P5WKW2ffhLufFRaP6M7MSXGsQLxxbIPnOSp0pfM=",
+        "owner": "Mic92",
+        "repo": "mics-skills",
+        "rev": "c70c79317587ba1962e6cdca84bc665fe73918e4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "mics-skills",
+        "type": "github"
+      }
+    },
     "niks3": {
       "inputs": {
         "flake-parts": [
@@ -1505,6 +1528,7 @@
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
         "llm-agents": "llm-agents",
+        "mics-skills": "mics-skills",
         "niks3": "niks3",
         "niri-flake": "niri-flake",
         "nix-gaming": "nix-gaming",

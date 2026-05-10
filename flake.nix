@@ -106,9 +106,11 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
-    gitea-mq.url = "github:Mic92/gitea-mq";
-    gitea-mq.inputs.nixpkgs.follows = "nixpkgs";
-    gitea-mq.inputs.treefmt-nix.follows = "treefmt-nix";
+    gitea-mq = {
+      url = "github:Mic92/gitea-mq";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
 
     # browser
     zen-browser = {
@@ -135,6 +137,11 @@
     };
     opencrow = {
       url = "github:pinpox/opencrow";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
+    mics-skills = {
+      url = "github:Mic92/mics-skills";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };

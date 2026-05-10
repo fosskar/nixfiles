@@ -1,7 +1,7 @@
 { pkgs, inputs, ... }:
 {
   programs.gemini-cli = {
-    enable = true;
+    enable = false;
     package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli;
   };
 }
