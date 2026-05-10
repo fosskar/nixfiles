@@ -4,7 +4,7 @@
  * image is injected into the next user message automatically
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { createServer, type Server } from "node:http";
 import { exec } from "node:child_process";
 import { readFileSync } from "node:fs";

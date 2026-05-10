@@ -18,17 +18,17 @@ import { spawn } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { Message } from "@mariozechner/pi-ai";
+import type { Message } from "@earendil-works/pi-ai";
 import {
   Container,
   SelectList,
   type SelectItem,
   Text,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import type {
   ExtensionAPI,
   ExtensionContext,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 
 // ---- config ----
 
@@ -1047,7 +1047,7 @@ export default function (pi: ExtensionAPI) {
       const renderWidget = (
         _tui: any,
         theme: any,
-      ): import("@mariozechner/pi-tui").Component => {
+      ): import("@earendil-works/pi-tui").Component => {
         const container = new Container();
         container.addChild(
           new Text(

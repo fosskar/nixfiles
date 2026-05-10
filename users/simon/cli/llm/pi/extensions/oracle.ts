@@ -11,18 +11,18 @@ import {
   type Api,
   type UserMessage,
   type Model,
-} from "@mariozechner/pi-ai";
+} from "@earendil-works/pi-ai";
 import type {
   ExtensionAPI,
   ExtensionContext,
   SessionEntry,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 import {
   BorderedLoader,
   convertToLlm,
   serializeConversation,
-} from "@mariozechner/pi-coding-agent";
-import { Text, matchesKey, visibleWidth } from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-coding-agent";
+import { Text, matchesKey, visibleWidth } from "@earendil-works/pi-tui";
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";
 

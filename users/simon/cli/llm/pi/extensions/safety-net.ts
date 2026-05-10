@@ -3,7 +3,7 @@
  * toggle via /safety-net. status bar shows "" when active.
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import * as path from "node:path";
 
 type Rule = { re: RegExp; tag: string };

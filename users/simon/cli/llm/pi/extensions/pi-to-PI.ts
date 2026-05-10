@@ -1,4 +1,4 @@
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 // Replaces standalone lowercase "pi" with "PI" in the system prompt.
 // Uses lookbehind/lookahead so paths like ~/.pi/ and pi-coding-agent are untouched.
