@@ -49,6 +49,11 @@
         "p8023" # Novell raw IEEE 802.3
         "can" # Controller Area Network
         "atm" # ATM
+
+        # dirtyfrag mitigations
+        "esp4"
+        "esp6"
+        "rxrpc"
       ];
     };
   };
