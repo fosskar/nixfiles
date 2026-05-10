@@ -8,6 +8,8 @@
     }:
     let
       localRelayUrl = "ws://127.0.0.1:${toString config.services.strfry.settings.relay.port}";
+      paperlessHost = "docs.${config.domains.local}";
+      micsSkills = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
 
       commonInstance = {
         enable = true;
@@ -15,18 +17,29 @@
         package = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.opencrow;
         piPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
-        skills.web = "${config.services.opencrow.package}/share/opencrow/skills/web";
+        skills = {
+          web = "${config.services.opencrow.package}/share/opencrow/skills/web";
+          osm = ./skills/osm;
+          paperless = ./skills/paperless;
+          calendar-cli = "${micsSkills.calendar-cli}/share/skills/calendar-cli";
+          db-cli = "${micsSkills.db-cli}/share/skills/db-cli";
+          gmaps-cli = "${micsSkills.gmaps-cli}/share/skills/gmaps-cli";
+          tasker-cli = "${micsSkills.tasker-cli}/share/skills/tasker-cli";
+        };
 
         extensions = {
           memory = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.extension-memory;
           reminders = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.extension-reminders;
         };
 
+        credentialFiles."paperless-api-token" =
+          config.clan.core.vars.generators.opencrow-paperless.files.api-token.path;
+
         environment = {
           TZ = "Europe/Berlin";
+          PAPERLESS_URL = "https://${paperlessHost}";
           OPENCROW_PI_PROVIDER = "llama-cpp";
-          OPENCROW_PI_MODEL = "granite4.1-8b";
-          OPENCROW_SOUL_FILE = "${./soul.md}";
+          OPENCROW_PI_MODEL = "qwen3.6-27b";
         };
 
         piModels = {
@@ -34,11 +47,17 @@
             baseUrl = "https://llama-cpp.${config.domains.local}/v1";
             api = "openai-completions";
             apiKey = "dummy";
-            models = [ { id = "granite4.1-8b"; } ];
+            models = [ { id = "qwen3.6-27b"; } ];
           };
         };
 
-        extraPackages = with pkgs; [
+        extraPackages = [
+          micsSkills.calendar-cli
+          micsSkills.db-cli
+          micsSkills.gmaps-cli
+          micsSkills.tasker-cli
+        ]
+        ++ (with pkgs; [
           coreutils
           curl
           fd
@@ -57,7 +76,7 @@
           wget
           yq-go
           zip
-        ];
+        ]);
       };
 
       mkContainer = name: uid: {
@@ -97,6 +116,7 @@
       services.opencrow = commonInstance // {
         environment = commonInstance.environment // {
           OPENCROW_BACKEND = "nostr";
+          OPENCROW_SOUL_FILE = "${./soul-dexter.md}";
           OPENCROW_NOSTR_RELAYS = localRelayUrl;
           OPENCROW_NOSTR_PRIVATE_KEY_FILE = "%d/nostr-private-key";
           OPENCROW_NOSTR_ALLOWED_USERS = "npub16le4pxhfvy04jwcp9rhw3ustkwt7sm0jydgq4lr3qderycrlm8ysjxmufc";
@@ -105,14 +125,16 @@
           OPENCROW_NOSTR_ABOUT = "henlo";
         };
 
-        credentialFiles."nostr-private-key" =
-          config.clan.core.vars.generators.opencrow.files.nostr-private-key.path;
+        credentialFiles = commonInstance.credentialFiles // {
+          "nostr-private-key" = config.clan.core.vars.generators.opencrow.files.nostr-private-key.path;
+        };
 
         instances.signal = commonInstance // {
           environment = commonInstance.environment // {
             OPENCROW_BACKEND = "signal";
+            OPENCROW_SOUL_FILE = "${./soul-gismo.md}";
             OPENCROW_SIGNAL_ACCOUNT = "+4915251840217";
-            OPENCROW_ALLOWED_USERS = "dcca284c-5b24-4eba-8e40-bb9649c1502c";
+            OPENCROW_ALLOWED_USERS = "dcca284c-5b24-4eba-8e40-bb9649c1502c,c4c7789f-f5e0-4340-bb57-ffb4e412bbd9";
           };
         };
       };
