@@ -11,6 +11,14 @@
       paperlessHost = "docs.${config.domains.local}";
       micsSkills = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
 
+      kagiConfig = pkgs.writeText "kagi-config.json" (
+        builtins.toJSON {
+          password_command = "cat /run/credentials/opencrow.service/kagi-session-link";
+          timeout = 30;
+          max_retries = 5;
+        }
+      );
+
       commonInstance = {
         enable = true;
 
@@ -19,13 +27,13 @@
 
         skills = {
           web = "${config.services.opencrow.package}/share/opencrow/skills/web";
-          brave-search = ../../../../users/simon/cli/llm/skills/brave-search;
           osm = ./skills/osm;
           paperless = ./skills/paperless;
           calendar-cli = "${micsSkills.calendar-cli}/share/skills/calendar-cli";
           db-cli = "${micsSkills.db-cli}/share/skills/db-cli";
           gmaps-cli = "${micsSkills.gmaps-cli}/share/skills/gmaps-cli";
           tasker-cli = "${micsSkills.tasker-cli}/share/skills/tasker-cli";
+          kagi-search = "${micsSkills.kagi-search}/share/skills/kagi-search";
         };
 
         extensions = {
@@ -33,16 +41,18 @@
           reminders = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system}.extension-reminders;
         };
 
-        credentialFiles."paperless-api-token" =
-          config.clan.core.vars.generators.opencrow-paperless.files.api-token.path;
-
-        environmentFiles = [ config.clan.core.vars.generators.brave-search.files.env.path ];
+        credentialFiles = {
+          "paperless-api-token" = config.clan.core.vars.generators.opencrow-paperless.files.api-token.path;
+          "kagi-session-link" = config.clan.core.vars.generators.opencrow-kagi.files.session-link.path;
+        };
 
         environment = {
           TZ = "Europe/Berlin";
+
           PAPERLESS_URL = "https://${paperlessHost}";
+
           OPENCROW_PI_PROVIDER = "llama-cpp";
-          OPENCROW_PI_MODEL = "qwen3.6-27b";
+          OPENCROW_PI_MODEL = "qwen3.6-35b-a3b";
         };
 
         piModels = {
@@ -50,7 +60,7 @@
             baseUrl = "https://llama-cpp.${config.domains.local}/v1";
             api = "openai-completions";
             apiKey = "dummy";
-            models = [ { id = "qwen3.6-27b"; } ];
+            models = [ { id = "qwen3.6-35b-a3b"; } ];
           };
         };
 
@@ -59,9 +69,9 @@
           micsSkills.db-cli
           micsSkills.gmaps-cli
           micsSkills.tasker-cli
+          micsSkills.kagi-search
         ]
         ++ (with pkgs; [
-          brave-search-cli
           coreutils
           curl
           fd
@@ -91,12 +101,22 @@
           };
           systemd.tmpfiles.rules = [
             "d /var/lib/${name}/.config 0750 opencrow opencrow -"
+            "d /var/lib/${name}/.config/kagi 0750 opencrow opencrow -"
+            "L+ /var/lib/${name}/.config/kagi/config.json - - - - ${kagiConfig}"
           ];
         };
       };
     in
     {
       imports = [ inputs.opencrow.nixosModules.default ];
+
+      clan.core.vars.generators.opencrow-kagi = {
+        files.session-link.secret = true;
+        prompts.session-link.description = "Kagi session link for opencrow kagi-search skill";
+        script = ''
+          cp "$prompts/session-link" "$out/session-link"
+        '';
+      };
 
       clan.core.vars.generators.opencrow = {
         files.nostr-private-key.secret = true;

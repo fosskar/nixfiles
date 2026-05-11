@@ -8,7 +8,6 @@
     self.modules.nixos.systemdBoot
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.opencrow
-    self.modules.nixos.braveSearch
     self.modules.nixos.nostrRelay
   ]
   ++ (mylib.scanPaths ./. { });

@@ -7,6 +7,16 @@
 }:
 
 let
+  kagiSessionLink = pkgs.writeShellScript "kagi-session-link" ''
+    set -euo pipefail
+
+    ${pkgs.proton-pass-cli}/bin/pass-cli item view \
+      --vault-name Personal \
+      --item-title "Kagi" \
+      --field "session link" \
+      --output human
+  '';
+
   skillTargetDirs =
     lib.optionals (config.home.activation ? piSettings) [ ".pi/agent/skills" ]
     ++ lib.optionals (config.programs.claude-code.enable or false) [ ".claude/skills" ]
@@ -33,6 +43,12 @@ in
 
   home.file = ownSkillEntries;
 
+  xdg.configFile."kagi/config.json".text = builtins.toJSON {
+    password_command = toString kagiSessionLink;
+    timeout = 30;
+    max_retries = 5;
+  };
+
   programs.mics-skills = {
     enable = true;
     package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
@@ -43,6 +59,7 @@ in
       "context7-cli"
       "db-cli"
       "gmaps-cli"
+      "kagi-search"
     ];
   };
 }

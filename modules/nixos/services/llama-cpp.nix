@@ -51,6 +51,23 @@
             min-p = 0.00;
             reasoning = "off";
           };
+          qwen3_6-35b-a3b = {
+            hf-repo = "unsloth/Qwen3.6-35B-A3B-GGUF";
+            hf-file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";
+            alias = "qwen3.6-35b-a3b";
+            jinja = "on";
+            ctx-size = 32768;
+            parallel = 1;
+            temp = 0.7;
+            top-p = 0.8;
+            top-k = 20;
+            presence-penalty = 1.5;
+            min-p = 0.00;
+            reasoning = "off";
+            flash-attn = "on";
+            cache-type-k = "q4_0";
+            cache-type-v = "q4_0";
+          };
         };
         extraFlags = [
           "--n-gpu-layers"
