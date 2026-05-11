@@ -135,7 +135,7 @@
       inputs.systems.follows = "systems";
     };
     opencrow = {
-      url = "github:pinpox/opencrow";
+      url = "github:fosskar/opencrow";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
