@@ -554,11 +554,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778444552,
-        "narHash": "sha256-f18pIiR9q/p1vHY93gmAum7aHhQOG49oGvAB9+lptRo=",
+        "lastModified": 1778501066,
+        "narHash": "sha256-T0vB/D3DqGGe+ent3+3jDTIFl2SeXcga3FMcI6AxiMU=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "dcebe66f958673729896eec2de4abfd86ef22d21",
+        "rev": "c0729fa3f060008080b2124fd0c3b9285d53b393",
         "type": "github"
       },
       "original": {
@@ -1038,11 +1038,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778460912,
-        "narHash": "sha256-9yjpzyewHNJathJ3aRrYUl1EtuA3iCqocatK1ZSIHKM=",
+        "lastModified": 1778496347,
+        "narHash": "sha256-Vi70F3OtYCWoB6WL1KiolLwoebAAg944xEf/0w2QcNI=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "448947fdd159045412e51c3e21c25df56cc27094",
+        "rev": "7e8e807710a35f325f92d2b7871e9a960a89d6b3",
         "type": "github"
       },
       "original": {
@@ -1214,11 +1214,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778385157,
-        "narHash": "sha256-H6R0DT0u8VNM5T4qJNQfgpGJpqAa2GAbaBCz8J9DmEw=",
+        "lastModified": 1778472037,
+        "narHash": "sha256-xfPeBx1TbKA7ojotBSAyTLXuUEB2Rsa8rJQCLKnC3CI=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "a1f7cac97f04e6ac27398edddd4ea09fbe83e329",
+        "rev": "bee7613d3a497ebd5db999cb7bf0fa9d7be7100a",
         "type": "github"
       },
       "original": {
@@ -1294,10 +1294,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1778467210,
-        "narHash": "sha256-yBNMaV/jRO3ruPIzxYl6k0B49jr2PxH3IsLIHTCKtv4=",
+        "lastModified": 1778501775,
+        "narHash": "sha256-2/W52gNurCpcDq9w+YiLjpyfgBcfW9XGYZR+hHnIhfA=",
         "ref": "master",
-        "rev": "d1ebff6bf2f9e3c8e36c606a17009c11f9573fe6",
+        "rev": "dbd63a13f9092ed127e5f68260948f9a03eb1f62",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1481,11 +1481,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778222427,
-        "narHash": "sha256-6GFiP611nEJvtm+m03sMyfaVIJ9QOCi//hS+PPKyyPA=",
+        "lastModified": 1778488696,
+        "narHash": "sha256-QSWgYuZUCNUJ/cxmaq83WkcT7lHQDDfsPVgH+96kIl0=",
         "owner": "outfoxxed",
         "repo": "quickshell",
-        "rev": "d1760ed1f31c02a95b37a9bf4084129c829ebe7f",
+        "rev": "7d1c9a9c6721606b129829134d6f614f015621e2",
         "type": "github"
       },
       "original": {
@@ -1687,11 +1687,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1778394106,
-        "narHash": "sha256-z/IaSibX+c+NH7nQxwEAhkZm2N34Lg7GDzaX9Obz1jA=",
+        "lastModified": 1778499885,
+        "narHash": "sha256-A71p6jEopeHk8jlxutwnBvhNHOEyEv24pTinHRb2jKU=",
         "ref": "refs/heads/master",
-        "rev": "4eb8cf9a5d230233c033e26dd225444d7ef991df",
-        "revCount": 2376,
+        "rev": "d2c5a62482901fc5c2b7a29a42542c2ab12f97aa",
+        "revCount": 2399,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
       },
