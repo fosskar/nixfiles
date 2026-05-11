@@ -30,6 +30,8 @@
 
       nautilus
 
+      ausweisapp
+
       # audio
       #teamspeak3
     ]
