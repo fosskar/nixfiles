@@ -159,6 +159,8 @@
             OPENCROW_SOUL_FILE = "${./soul-gismo.md}";
             OPENCROW_SIGNAL_ACCOUNT = "+4915251840217";
             OPENCROW_ALLOWED_USERS = "dcca284c-5b24-4eba-8e40-bb9649c1502c,c4c7789f-f5e0-4340-bb57-ffb4e412bbd9";
+            OPENCROW_PI_PROVIDER = "openai-codex";
+            OPENCROW_PI_MODEL = "gpt-5.5";
           };
         };
       };
