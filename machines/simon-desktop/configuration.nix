@@ -8,8 +8,6 @@
     self.modules.nixos.gaming
     self.modules.nixos.dmsGreeter
     self.modules.nixos.nostrChat
-    self.modules.nixos.braveSearch
-    # self.modules.nixos.hyprland
     self.modules.nixos.betaflight
     self.modules.nixos.wooting
     self.modules.nixos.arctisNovaProWireless
@@ -20,6 +18,7 @@
     self.modules.nixos.podman
     self.modules.nixos.agentDesktop
     self.modules.nixos.arbor
+    self.modules.nixos.limux
     self.modules.nixos.t3code
   ]
   ++ mylib.scanPaths ./. { };
