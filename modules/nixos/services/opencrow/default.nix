@@ -135,6 +135,21 @@
       users.groups.opencrow.gid = 2000;
       users.groups.opencrow-signal.gid = 2001;
 
+      preservation.preserveAt."/persist".directories = [
+        {
+          directory = "/var/lib/opencrow";
+          user = "opencrow";
+          group = "opencrow";
+          mode = "0750";
+        }
+        {
+          directory = "/var/lib/opencrow-signal";
+          user = "2001";
+          group = "opencrow-signal";
+          mode = "0750";
+        }
+      ];
+
       containers = mkContainer "opencrow" 2000 // mkContainer "opencrow-signal" 2001;
 
       services.opencrow = commonInstance // {
