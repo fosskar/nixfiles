@@ -14,7 +14,7 @@ err() {
 
 latest_tag() {
   curl -fsSL 'https://api.github.com/repos/warpdotdev/warp/releases?per_page=100' |
-    jq -r '[.[].tag_name | select(endswith(".stable_00"))][0] // empty'
+    jq -r '[.[].tag_name | select(endswith(".preview_00"))][0] // empty'
 }
 
 prefetch_github() {
@@ -93,7 +93,7 @@ replace_cargo_hash "$cargo_hash"
   nix fmt
 )
 
-echo "warp-terminal updated to $version"
+echo "warp-terminal updated to preview $version"
 
 if [[ $build_status -eq 0 ]]; then
   echo "warning: build succeeded while cargoHash was fake; verify cargoHash manually" >&2

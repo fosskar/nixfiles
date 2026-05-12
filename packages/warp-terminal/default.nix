@@ -30,7 +30,7 @@
 
 let
   pname = "warp-terminal";
-  version = "0.2026.05.06.09.12.stable_00";
+  version = "0.2026.05.06.09.13.preview_00";
 
   tag = "v${version}";
   linuxArch = if stdenv.hostPlatform.system == "x86_64-linux" then "x86_64" else "aarch64";
@@ -72,7 +72,7 @@ let
   };
 
   warpChannelConfig = writeShellScriptBin "warp-channel-config" ''
-    channel=stable
+    channel=preview
     while [ "$#" -gt 0 ]; do
       case "$1" in
         --channel)
@@ -198,7 +198,7 @@ rustPlatform.buildRustPackage {
   buildPhase = ''
     runHook preBuild
 
-    cargo build -p warp --profile release-lto --bin stable --bin generate_settings_schema --features release_bundle,crash_reporting,gui,nld_improvements --locked
+    cargo build -p warp --profile release-lto --bin preview --bin generate_settings_schema --features release_bundle,crash_reporting,gui,nld_improvements,preview_channel --locked
 
     runHook postBuild
   '';
@@ -206,25 +206,25 @@ rustPlatform.buildRustPackage {
   installPhase = ''
     runHook preInstall
 
-    install -Dm755 target/release-lto/stable $out/opt/warpdotdev/warp-terminal/warp
+    install -Dm755 target/release-lto/preview $out/opt/warpdotdev/warp-terminal/warp
 
     SKIP_SETTINGS_SCHEMA=1 script/prepare_bundled_resources \
       $out/opt/warpdotdev/warp-terminal/resources \
-      stable \
+      preview \
       release-lto
 
     target/release-lto/generate_settings_schema \
-      --channel stable \
+      --channel preview \
       $out/opt/warpdotdev/warp-terminal/resources/settings_schema.json
 
-    install -Dm644 app/channels/stable/dev.warp.Warp.desktop \
-      $out/share/applications/dev.warp.Warp.desktop
+    install -Dm644 app/channels/preview/dev.warp.WarpPreview.desktop \
+      $out/share/applications/dev.warp.WarpPreview.desktop
 
     for size in 16x16 32x32 64x64 128x128 256x256 512x512; do
-      icon=app/channels/stable/icon/no-padding/$size.png
+      icon=app/channels/preview/icon/no-padding/$size.png
       if [ -f "$icon" ]; then
         install -Dm644 "$icon" \
-          $out/share/icons/hicolor/$size/apps/dev.warp.Warp.png
+          $out/share/icons/hicolor/$size/apps/dev.warp.WarpPreview.png
       fi
     done
 
