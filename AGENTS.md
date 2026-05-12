@@ -1,6 +1,6 @@
 # nixfiles agent playbook
 
-purpose: help the agent work fast + correctly in this repo without stale assumptions.
+purpose: help agents work fast + correctly in this repo without stale assumptions.
 
 ## 0) hard rules
 
@@ -9,66 +9,86 @@ purpose: help the agent work fast + correctly in this repo without stale assumpt
   - do not run: `clan machines update`, `reboot`, `systemctl restart`, destructive migrations.
 - atomic commits only.
 - prefer minimal direct fix over abstractions.
+- existing text/pattern is evidence, not justification; keep it only if it still serves current repo/task.
 - explain why, not code-tour.
 - no guessing/hedging in responses (`likely`, `maybe`, `probably`). verify with evidence or state unknown.
 - for external claims: verify in source, cite path, else say unknown.
 - run `nix fmt` after nix edits.
 
-## 1) first 60s loop (always)
+## 1) initial repo check
+
+run before non-trivial repo changes:
 
 ```bash
 jj status
 jj diff --stat
-rg "imports|scanPaths" machines
-rg "inventory =|instances =|roles\\.|tags\\." machines/flake-module.nix
+rg "imports|scanPaths|self\.modules|config\.flake\.modules" machines modules clanServices users
+rg "inventory =|instances =|roles\.|tags\." machines/flake-module.nix
 ```
 
-if task touches option/service:
+if task touches option/service/module:
 
 ```bash
-rg "<option|service|module>" machines modules users
+rg "<option|service|module|domain>" machines modules clanServices users docs
 ```
 
-## 2) source-of-truth index (volatile stuff)
+do not run clan/deploy/network commands as default orientation. use them only when task explicitly touches clan inventory, vars, deployment, or runtime networking; prefer local `rg`/`nix eval` first.
 
-never trust memory for these.
+## 2) core concepts
 
-- machine wiring, tags, clan instances, role ownership:
-  - `machines/flake-module.nix`
-- what a machine actually runs:
-  - `machines/<machine>/configuration.nix`
-  - plus files pulled by `mylib.scanPaths` in that machine dir
-- networking topology/endpoints:
-  - `machines/flake-module.nix` (`instances.internet`, networking instances)
-  - `modules/networking/` + machine-local networking files
-- reverse proxy/front door:
-  - `modules/caddy/`, `modules/nginx/`, `modules/traefik/`
-  - then check imports per machine
-- home-manager behavior:
-  - `users/simon/`
-  - `machines/<machine>/home/default.nix`
-- vars/secrets shape:
-  - `vars/`
-  - generator defs in modules
-  - `machines/flake-module.nix`
+### dendritic / flake-parts module model
 
-## 3) repo map
+repo uses dendritic-style composition: feature modules export aspect modules through `flake.modules.*`; machines and clan roles select those aspects through imports.
 
-- `machines/` per-host nixos config
-- `machines/flake-module.nix` clan inventory + service wiring + deploy metadata
-- `modules/` reusable nixos modules (`nixfiles.*` namespace)
-- `modules/profiles/` base profile modules by tag
-- `users/simon/` home-manager config
-- `lib/` helpers (`scanPaths`, `scanFlakeModules`)
-- `vars/` clan vars (generated, encrypted where needed)
+- feature module: flake-parts module that defines one or more `flake.modules.*` entries and any related flake wiring.
+- aspect module: module for one configuration class, e.g. `flake.modules.nixos.<name>`, `flake.modules.homeManager.<name>`, `flake.modules.generic.<name>`.
+- simple aspect: independent aspect imported directly where needed.
+- multi-context aspect: main aspect also wires a nested context, e.g. a nixos aspect importing/wiring home-manager.
+- inheritance aspect: aspect imports parent aspects, then extends or overrides them.
+- conditional aspect: aspect content is conditional; imports stay unconditional.
+- collector aspect: one aspect collects contributions from other feature modules. this is distinct from a broad role/profile feature.
+- composition edge: place that chooses aspects for a concrete target, mainly host imports and clan role imports.
+- import is the primary enable mechanism; do not add `nixfiles.*` wrapper options unless current code already defines them.
 
-## 4) machine list (stable ids)
+### repo mapping
 
-- `simon-desktop`
-- `lpt-titan`
-- `nixbox`
-- `gateway`
-- `crowbox`
+- `modules/{nixos,home,generic}/`: feature modules and aspect definitions.
+- `machines/<machine>/configuration.nix`: host composition edge.
+- `machines/flake-module.nix`: clan inventory plus role composition edge.
+- `clanServices/`: clan service feature modules and role wiring.
+- `users/simon/`: home-manager user composition.
+
+### clan model
+
+clan owns machine inventory, tags, secrets/vars, and service role assignment. host files own host-local composition and hardware/storage details.
+
+- inventory and tags decide which clan roles apply to which machines.
+- clan `instances` wire roles to machines/tags and can inject extra nixos modules.
+- `clanServices/` defines reusable clan service modules, role modules, peer wiring, and vars.
+- secrets should use `clan.core.vars.generators` when possible.
+- deployment/runtime clan commands are not discovery commands; prefer reading/evaluating local nix first.
+
+## 3) investigation rules
+
+agents know their tools; this section defines what must be proven before editing.
+
+- before changing a module, prove where its aspect is exported, where it is imported, and whether multiple files contribute to the same aspect.
+- before changing a machine, inspect host imports plus files included by `scanPaths`.
+- before changing clan behavior, inspect inventory instance, role settings, target tags/machines, and related `clanServices` module.
+- before changing service/front-door behavior, inspect service module plus reverse proxy vhost/route definitions.
+- before changing persistence, inspect `preservation.preserveAt."/persist"` users and rollback module.
+- prefer local repo search/eval for discovery. use clan/runtime/network commands only when task needs runtime state or user explicitly asks.
+
+## 5) machines and access
+
+machine ids are source-of-truth in `machines/flake-module.nix`; do not hardcode a list here.
+
+discover:
+
+```bash
+nix eval .#clan.inventory.machines --json | jq 'keys'
+fd -td -d1 . machines
+```
 
 ssh patterns:
 
@@ -78,51 +98,54 @@ ssh <machine>.lan
 ssh root@<ip>
 ```
 
-## 5) task routing cheatsheet
+## 6) task routing cheatsheet
 
 - change service behavior globally:
-  - edit `modules/<service>/...`
-  - verify machines importing it
-- change only one host:
-  - edit `machines/<host>/configuration.nix` or host-local file loaded via scanpaths
+  - edit/export relevant `modules/nixos/services/<service>.nix` or submodule
+  - verify host/clan imports using `rg "self.modules.nixos.<name>|config.flake.modules.nixos.<name>"`
+- change one host:
+  - edit `machines/<host>/configuration.nix` or host-local file loaded via `scanPaths`
+- change common role behavior:
+  - edit aggregate module in `modules/nixos/common/{base,server,workstation}/`
+  - verify clan importer roles in `machines/flake-module.nix`
 - change clan role assignment/service ownership:
   - edit instance block in `machines/flake-module.nix`
+- change clan service implementation:
+  - edit `clanServices/<service>/default.nix`
+  - edit `clanServices/<service>/flake-module.nix` for service module wiring
 - debug option conflict:
   - `rg` all setters, then `nix eval` exact option
-- add module tree-wide:
-  - import module where needed (import means enabled unless submodule pattern)
+- add reusable module:
+  - create under matching aspect tree in `modules/`
+  - export through `flake.modules.<class>.<name>`
+  - import it from machine/clan composition edge; import means enabled unless module defines its own `enable`
 
-## 6) module patterns
+## 7) module patterns
 
-- `mylib.scanPaths ./. { }` auto imports directory nix files
-- `mylib.scanFlakeModules ./.` auto discovers `flake-module.nix`
-- default rule: import => enabled
-- exception: modules with submodules use `enable` flags on children
-
-examples:
-
-```nix
-nixfiles.monitoring.telegraf.enable = true;
-nixfiles.gaming.steam.enable = true;
-nixfiles.virtualization.docker.enable = true;
-```
+- `mylib.scanPaths ./. { }` auto-imports directory nix files.
+- `mylib.scanFlakeModules ./.` auto-discovers `flake-module.nix` files.
+- module files under `modules/` usually assign `flake.modules.<class>.<name> = ...`.
+- same exported module name can be extended by multiple files; grep all definitions before editing collectors like `base`, `server`, `workstation`, `gaming`, `arrStack`, `homepage`.
+- default rule: import => enabled.
+- exception: modules with explicit `enable` options or upstream services still need those options.
+- prefer upstream option namespaces (`services.*`, `programs.*`, `users.*`, `preservation.*`, `clan.core.*`) over repo-specific wrappers.
 
 override tools:
 
 - `lib.mkDefault` for soft defaults
-- `lib.mkForce` for conflicts
+- `lib.mkForce` for real conflicts only
 - avoid adding new options unless user asked; hardcode sane defaults first
 
-## 7) vars/secrets
+## 8) vars/secrets
 
-- prefer clan vars generators for service secrets
-- manual secret path: `sops.secrets."<name>"`
+- prefer clan vars generators for service secrets.
 - generator naming rule:
   - generator name = service
-  - file name = secret
-  - use `generators.<service>.files."<file>"`
+  - file name = secret/env filename
+  - use `clan.core.vars.generators.<service>.files."<file>"`
+- manual secret path only when already in use for that service.
 
-template:
+example:
 
 ```nix
 clan.core.vars.generators.myservice = {
@@ -133,11 +156,11 @@ clan.core.vars.generators.myservice = {
 };
 ```
 
-## 8) verify proportionally
+## 9) verify proportionally
 
-- docs/text only: no build
-- simple value change in existing option: `nix eval` target option
-- structural/module/import/package changes: build touched machine(s)
+- docs/text only: no build.
+- simple value change in existing option: `nix eval` target option.
+- structural/module/import/package changes: build touched machine(s).
 
 commands:
 
@@ -146,7 +169,7 @@ nix eval .#nixosConfigurations.<machine>.config.<option> --json
 nix build .#nixosConfigurations.<machine>.config.system.build.toplevel
 ```
 
-## 9) debugging quick cmds
+## 10) debugging quick cmds
 
 ```bash
 journalctl -u <service> -f
@@ -154,9 +177,9 @@ systemctl status <service>
 nix log <store-path>
 ```
 
-## 10) vcs (jj only)
+## 11) vcs
 
-ignore git internals. use jj.
+use jj, not git porcelain.
 
 never run:
 
@@ -179,34 +202,34 @@ jj git push
 
 if user says "commit and push":
 
-- include full working copy scope unless user narrows
-- split atomically by logical change
-- move `main` then push
-- do not reconfirm explicit imperative command
+- include full working copy scope unless user narrows.
+- split atomically by logical change.
+- move `main` then push.
+- do not reconfirm explicit imperative command.
 
-## 11) nix/dev env notes
+## 12) nix/dev env notes
 
-- prefer flake-native commands (`nix build`, `nix shell`, `nix develop`)
-- temporary tool: `nix shell nixpkgs#<pkg>`
-- format nix: `nix fmt`
+- prefer flake-native commands (`nix build`, `nix shell`, `nix develop`).
+- temporary tool: `nix shell nixpkgs#<pkg>`.
+- format nix: `nix fmt`.
 
-## 12) sharp edges / quirks (worth remembering)
+## 13) sharp edges / quirks
 
-- persistence: root is ephemeral; persist explicit dirs only (`docs/preservation.md`)
-- zfs machines: keep `networking.hostId` stable
-- immich: ml/runtime overrides in module; recheck on nixpkgs/immich bumps
-- grafana oidc role mapping needs `groups` in `id_token`
-- tuned has nixpkgs bug workaround (`ppd.conf` issue)
-- netbird is custom module set in this repo
-- netbird reverse proxy has two modes: permanent dashboard/API peer targets need the service reachable on the peer's NetBird interface (bind `0.0.0.0` or NetBird IP), while `netbird expose` can expose local `127.0.0.1` services through a peer-created ephemeral tunnel
-- remote-builder: `sshUser = "nix"` needs a real shell on builder (nologin breaks `ssh-ng`)
-- remote-builder proof cmd: `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`
-- harmonia option path is `services.harmonia.cache.*` (old `services.harmonia.*` is renamed)
-- do not force `--build-host localhost` in shell wrappers
+- preservation: root is ephemeral; persist explicit dirs/files only (`docs/preservation.md`).
+- first install with preservation disabled; enable after secrets have landed (`machines/README.md`).
+- zfs machines: keep `networking.hostId` stable.
+- grafana oidc role mapping needs `groups` in `id_token`.
+- tuned has nixpkgs bug workaround (`ppd.conf` issue).
+- netbird is custom module set in this repo.
+- netbird reverse proxy has two modes: permanent dashboard/API peer targets need service reachable on peer NetBird interface (bind `0.0.0.0` or NetBird IP); `netbird expose` can expose local `127.0.0.1` services through peer-created ephemeral tunnel.
+- remote-builder: `sshUser = "nix"` needs real shell on builder; nologin breaks `ssh-ng`.
+- remote-builder proof cmd: `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`.
+- harmonia option path is `services.harmonia.cache.*`.
+- do not force `--build-host localhost` in shell wrappers.
 
-## 13) pre-finish checklist
+## 14) pre-finish checklist
 
-- `nix fmt`
-- verify proportionally (eval/build based on change type)
-- track newly created files if any (`jj file track <path>`)
-- do not deploy/restart/update remote machines unless explicitly asked
+- `nix fmt` after nix edits.
+- verify proportionally.
+- track newly created files if any (`jj file track <path>`).
+- do not deploy/restart/update remote machines unless explicitly asked.

@@ -41,14 +41,41 @@ preservation generates pure systemd configuration - no interpreters needed at ru
 
 ## config
 
+import the repo module, then use the upstream preservation option tree:
+
 ```nix
-nixfiles.preservation = {
-  rollback.type = "btrfs";  # or "zfs", "bcachefs"
-  rollback.deviceLabel = "nixos";
-  directories = [ "/var/lib/myapp" ];
-  files = [ "/etc/myconfig" ];
-};
+{
+  imports = [ self.modules.nixos.preservation ];
+
+  preservation = {
+    rollback = {
+      type = "btrfs"; # or "zfs", "bcachefs", "none"
+      deviceLabel = "nixos";
+    };
+
+    preserveAt."/persist" = {
+      directories = [
+        {
+          directory = "/var/lib/myapp";
+          how = "bindmount";
+          user = "myapp";
+          group = "myapp";
+        }
+      ];
+
+      files = [
+        {
+          file = "/etc/myconfig";
+          how = "symlink";
+          createLinkTarget = true;
+        }
+      ];
+    };
+  };
+}
 ```
+
+repo-local rollback options live under `preservation.rollback.*`. persisted files and directories live under upstream `preservation.preserveAt."/persist"`.
 
 note: preservation requires `boot.initrd.systemd.enable = true`.
 
