@@ -470,7 +470,7 @@
               # dashboard catch-all (lowest HTTP priority)
               netbird-dashboard = {
                 rule = "Host(`${serverCfg.domain}`)";
-                service = "netbird-dashboard";
+                service = lib.mkDefault "netbird-dashboard";
                 entryPoints = [ "websecure" ];
                 tls.certResolver = "letsencrypt";
                 priority = 1;

@@ -70,7 +70,7 @@
               serverName = "radicle";
               listen = [
                 {
-                  addr = "0.0.0.0";
+                  addr = "127.0.0.1";
                   port = explorerPort;
                 }
               ];
@@ -143,6 +143,14 @@
             proxyPass = "http://127.0.0.1:${toString config.services.radicle.httpd.listenPort}";
             recommendedProxySettings = true;
           };
+        };
+
+        services.anubis.instances.radicle.settings = {
+          TARGET = "http://127.0.0.1:${toString explorerPort}";
+          BIND = "0.0.0.0:8098";
+          BIND_NETWORK = "tcp";
+          METRICS_BIND = "127.0.0.1:8099";
+          METRICS_BIND_NETWORK = "tcp";
         };
 
         networking.firewall.allowedTCPPorts = [ explorerPort ];

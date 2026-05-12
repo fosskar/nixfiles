@@ -10,6 +10,8 @@
     let
       toStringEnv = value: if lib.isBool value then lib.boolToString value else toString value;
       cfg = config.services.netbird.server.dashboard;
+      proxyCfg = config.services.netbird.server.proxy;
+      serverCfg = config.services.netbird.server;
     in
 
     {
@@ -139,6 +141,27 @@
 
                 cp -R build $out
               '';
+        };
+
+        services.anubis.instances.netbird-dashboard.settings = {
+          TARGET = "http://127.0.0.1:${toString proxyCfg.dashboardPort}";
+          BIND = "127.0.0.1:8098";
+          BIND_NETWORK = "tcp";
+          METRICS_BIND = "127.0.0.1:8099";
+          METRICS_BIND_NETWORK = "tcp";
+        };
+
+        services.traefik.dynamicConfigOptions.http = {
+          routers.netbird-dashboard = {
+            rule = "Host(`${serverCfg.domain}`)";
+            service = "anubis-netbird-dashboard";
+            entryPoints = [ "websecure" ];
+            tls.certResolver = "letsencrypt";
+            priority = 1;
+          };
+          services.anubis-netbird-dashboard.loadBalancer.servers = [
+            { url = "http://${config.services.anubis.instances.netbird-dashboard.settings.BIND}"; }
+          ];
         };
 
       };
