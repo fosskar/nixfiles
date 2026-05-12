@@ -1,7 +1,7 @@
 {
   lib,
   pkgs,
-  inputs,
+  self,
   mylib,
   ...
 }:
@@ -9,7 +9,8 @@
   home-manager.users.simon = {
     imports = [
       # inputs.self.modules.homeManager.hyprland
-      inputs.self.modules.homeManager.warpTerminal
+      self.modules.homeManager.hunk
+      self.modules.homeManager.warpTerminal
     ]
     ++ mylib.scanPaths ./. { };
 

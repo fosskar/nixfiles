@@ -31,6 +31,7 @@
 
         extraSpecialArgs = {
           inherit inputs;
+          inherit (inputs) self;
           mylib = import "${inputs.self}/lib" {
             inherit lib;
             inherit (inputs) self;
