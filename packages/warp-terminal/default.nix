@@ -30,7 +30,7 @@
 
 let
   pname = "warp-terminal";
-  version = "0.2026.04.29.08.56.stable_00";
+  version = "0.2026.05.06.09.12.stable_00";
 
   tag = "v${version}";
   linuxArch = if stdenv.hostPlatform.system == "x86_64-linux" then "x86_64" else "aarch64";
@@ -60,8 +60,8 @@ let
   warpProtoApis = fetchFromGitHub {
     owner = "warpdotdev";
     repo = "warp-proto-apis";
-    rev = "78a78f21a75432bf0141e396fb318bf1694e47f0";
-    hash = "sha256-8bB/tCLIzRCofMK1rYCe8bizUr1U4A6f6uVeckJJKI4=";
+    rev = "02997b8fc6a468783642d93bf1bfa89fb7f42502";
+    hash = "sha256-VN7G7V8JHQpMkujogXqEAPYnMKa3wUbpG872tNTY0sw=";
   };
 
   warpWorkflows = fetchFromGitHub {
@@ -136,10 +136,10 @@ rustPlatform.buildRustPackage {
     owner = "warpdotdev";
     repo = "warp";
     rev = tag;
-    hash = "sha256-ChtFrQGd4ha2DFb/gv8lIy0tyygoo3eoaY2hjL6dBIo=";
+    hash = "sha256-xq8ENCzB1PGUNQ+9BdF1AJhS0U6aABR4FoSgyX/4D20=";
   };
 
-  cargoHash = "sha256-TzYSC82HVRhCxBHLmHw8BIZ4hJKCZfp+s/mfbeAjdQ4=";
+  cargoHash = "sha256-GgOEc1IMUK3nSX0eftFnzs8eQAZeGMXl9WYPCipGuls=";
 
   nativeBuildInputs = [
     cargo-about

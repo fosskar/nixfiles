@@ -13,7 +13,8 @@ err() {
 }
 
 latest_tag() {
-  curl -fsSL https://api.github.com/repos/warpdotdev/warp/releases/latest | jq -r .tag_name
+  curl -fsSL 'https://api.github.com/repos/warpdotdev/warp/releases?per_page=100' |
+    jq -r '[.[].tag_name | select(endswith(".stable_00"))][0] // empty'
 }
 
 prefetch_github() {
