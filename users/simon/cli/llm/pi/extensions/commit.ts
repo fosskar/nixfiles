@@ -8,10 +8,11 @@ rules:
 - one logical change per commit, but atomic means coherent and easy to review/revert, not maximal splitting.
 - split only when changes are unrelated or would be easier to review/revert separately.
 - use the preloaded status, stat, and diff as the primary context. run extra inspection only when it improves the commit split or message.
-- commit msg: lowercase, concise, imperative.
-- focus msg on why, using the diff for concrete context.
+- commit message: lowercase, concise, imperative.
+- commit messages should focus on the why rather than the what.
+- add a commit body if it is nice to have an explanation for the why.
 - no conventional commit prefixes.
-- keep it KISS.
+- keep the commit process KISS: do not overcomplicate splitting or atomicity.
 `.trim();
 
 const JJ_MECHANICS = `
