@@ -10,17 +10,28 @@
     let
       cfg = config.services.telegraf;
 
+      enabledNixosServiceNames = lib.attrNames (
+        lib.filterAttrs (_: value: value) (
+          lib.mapAttrs (
+            name: value:
+            builtins.hasAttr "enable" options.services."${name}"
+            && builtins.hasAttr "default" options.services."${name}".enable
+            && options.services."${name}".enable.default != value.enable
+            && value.enable
+          ) config.services
+        )
+      );
+
+      matchesNixosServiceName =
+        unitName: serviceName:
+        unitName == serviceName
+        || lib.hasPrefix "${serviceName}-" unitName
+        || lib.hasSuffix "-${serviceName}" unitName
+        || lib.hasInfix "-${serviceName}-" unitName;
+
       enabledNixosSystemdServices = builtins.map (name: "${name}.service") (
-        lib.attrNames (
-          lib.filterAttrs (_: value: value) (
-            lib.mapAttrs (
-              name: value:
-              builtins.hasAttr "enable" options.services."${name}"
-              && builtins.hasAttr "default" options.services."${name}".enable
-              && options.services."${name}".enable.default != value.enable
-              && value.enable
-            ) config.services
-          )
+        lib.filter (unitName: lib.any (matchesNixosServiceName unitName) enabledNixosServiceNames) (
+          lib.attrNames config.systemd.services
         )
       );
 

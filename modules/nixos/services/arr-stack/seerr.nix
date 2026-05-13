@@ -49,7 +49,7 @@
             enabled = true;
             interval = "5m";
             conditions = [ "[STATUS] == 200" ];
-            alerts = [ { type = "ntfy"; } ];
+            alerts = [ { type = "email"; } ];
           }
         ];
 

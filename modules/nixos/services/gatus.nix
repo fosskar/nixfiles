@@ -16,18 +16,19 @@
     {
       services.gatus = {
         enable = true;
-        environmentFile = config.clan.core.vars.generators.ntfy.files."token-env".path;
         settings = {
           web.port = listenPort;
           storage = {
             type = "sqlite";
             path = "/var/lib/gatus/gatus.db";
           };
-          alerting.ntfy = {
-            topic = "gatus";
-            url = "http://127.0.0.1:8091";
-            token = "$NTFY_TOKEN";
-            priority = 4;
+          alerting.email = {
+            from = "$SMTP_FROM";
+            username = "$SMTP_USER";
+            password = "$SMTP_PASSWORD";
+            host = "$SMTP_HOST";
+            port = "$SMTP_PORT";
+            to = "gatus@nx3.eu";
             default-alert = {
               enabled = true;
               failure-threshold = 2;
@@ -55,6 +56,9 @@
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
         reverse_proxy ${listenUrl}
       '';
+
+      systemd.services.gatus.serviceConfig.EnvironmentFile =
+        config.clan.core.vars.generators.smtp.files."smtp-env".path;
 
       services.homepage-dashboard.serviceGroups."Monitoring" =
         lib.mkIf config.services.homepage-dashboard.enable

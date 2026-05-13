@@ -221,12 +221,7 @@
 
         services.grafana.provision.alerting.contactPoints.settings = {
           apiVersion = 1;
-          deleteContactPoints = [
-            #{
-            #  orgId = 1;
-            #  uid = "ntfy";
-            #}
-          ];
+          deleteContactPoints = [ ];
         };
 
         # --- homepage ---
@@ -253,7 +248,7 @@
             enabled = true;
             interval = "5m";
             conditions = [ "[STATUS] == 200" ];
-            alerts = [ { type = "ntfy"; } ];
+            alerts = [ { type = "email"; } ];
           }
         ];
 
