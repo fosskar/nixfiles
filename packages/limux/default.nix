@@ -13,11 +13,11 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "limux";
-  version = "0.1.14";
+  version = "0.1.16";
 
   src = fetchurl {
     url = "https://github.com/am-will/limux/releases/download/v${finalAttrs.version}/limux-${finalAttrs.version}-linux-x86_64.tar.gz";
-    hash = "sha256-jPDHMIc7JlVf3IecqZejJjEyjnGPmFaUWDdaNitqaEY=";
+    hash = "sha256-TSWa/bDaUWdaqpg1euZXa6cqGqGJSTcrC5B3tPTO1M8=";
   };
 
   nativeBuildInputs = [
