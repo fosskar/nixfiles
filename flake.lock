@@ -214,10 +214,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1778617387,
-        "narHash": "sha256-3BrkGrRBmOiBsZn2UB27UY56AqBHhedEUSs8Uilgwug=",
+        "lastModified": 1778665369,
+        "narHash": "sha256-cnhFxWSgtA2s7veLzwaqSu9F0M60jMrKCMgtJ4C20c8=",
         "ref": "refs/heads/main",
-        "rev": "5b6ec6adcf7107097d6c01b5526c9bf8aad54469",
+        "rev": "62e3870d4aefcf59ee980da7ec3c102a2a80f696",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -235,6 +235,21 @@
         "owner": "ipetkov",
         "repo": "crane",
         "rev": "d459c1350e96ce1a7e3859c513ef5e9869d67d6f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
+    "crane_2": {
+      "locked": {
+        "lastModified": 1769737823,
+        "narHash": "sha256-DrBaNpZ+sJ4stXm+0nBX7zqZT9t9P22zbk6m5YhQxS4=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "b2f45c3830aa96b7456a4c4bc327d04d7a43e1ba",
         "type": "github"
       },
       "original": {
@@ -1117,11 +1132,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778633980,
-        "narHash": "sha256-qm7IrMlSwnQ83APPtVqGBpDH1lRHt3WNDtAONXSTd08=",
+        "lastModified": 1778650849,
+        "narHash": "sha256-rGb5Lywt3gMaWaVBLlWNTgypCWjiekuYG0i39Q6qusY=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "b21a698b14c88701dfb4162570c6fcd2804bbae3",
+        "rev": "63eaec5890d3dfab83d7fdee5a2dd2bad06e165b",
         "type": "github"
       },
       "original": {
@@ -1293,11 +1308,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778557409,
-        "narHash": "sha256-XRRPJzkGiaolgNt67kh9yzN46OSc9gJoob0XpbklNxA=",
+        "lastModified": 1778644418,
+        "narHash": "sha256-vqrq47aFxuIUojdWlNqaQ4TEtIiNR9rI9eSZHzPaUYQ=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "d2dd291c8866510d3d9f34140dfc051b4e1a1b90",
+        "rev": "4b98e5ed48e1973c54a535310573238c81c6fb76",
         "type": "github"
       },
       "original": {
@@ -1373,10 +1388,10 @@
     },
     "nixpkgs-git": {
       "locked": {
-        "lastModified": 1778637657,
-        "narHash": "sha256-7y4V/VTFxBSnwPHlIyaTzoDCzOhc/i1vnJmwilfpmD4=",
+        "lastModified": 1778664490,
+        "narHash": "sha256-AHXBYnqvoAa49kSW6ypaZVMHvIKwy7AaH5Sfy3JGMh8=",
         "ref": "master",
-        "rev": "54402b393940b01e061a866ac1448bd209425501",
+        "rev": "29c8cdc8cd1f4146962a5d11923afaa32f72f632",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1418,6 +1433,22 @@
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1769789167,
+        "narHash": "sha256-kKB3bqYJU5nzYeIROI82Ef9VtTbu4uA3YydSk/Bioa8=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "62c8382960464ceb98ea593cb8321a2cf8f9e3e5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "noctalia": {
@@ -1624,6 +1655,7 @@
         "tangled": "tangled",
         "treefmt-nix": "treefmt-nix_3",
         "wiki": "wiki",
+        "zed": "zed",
         "zen-browser": "zen-browser"
       }
     },
@@ -1657,6 +1689,27 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "rev": "dbba5f888c82ef3ce594c451c33ac2474eb80847",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rust-overlay_2": {
+      "inputs": {
+        "nixpkgs": [
+          "zed",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777346187,
+        "narHash": "sha256-oVxyGjpiIsrXhWTJVUOs38fZQkLjd0nZGOY9K7Kfot8=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "146e7bf7569b8288f24d41d806b9f584f7cfd5b5",
         "type": "github"
       },
       "original": {
@@ -1797,11 +1850,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1778611127,
-        "narHash": "sha256-sjYTG0GcMiO1kkZlHB6O52VfJgyPfwlUnuvlnDAKtww=",
+        "lastModified": 1778660643,
+        "narHash": "sha256-5yDrc5IqgRD+4LjDswvlXZLAKXKHzeH84TAZaKjU+kg=",
         "ref": "refs/heads/master",
-        "rev": "ba18ec20d332069db4e1c187f28191fb0d9ef2ed",
-        "revCount": 2433,
+        "rev": "c144db76318f33a73e004f8706196e5564e2f5e7",
+        "revCount": 2434,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
       },
@@ -1975,6 +2028,29 @@
       "original": {
         "owner": "Supreeeme",
         "repo": "xwayland-satellite",
+        "type": "github"
+      }
+    },
+    "zed": {
+      "inputs": {
+        "crane": "crane_2",
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": "nixpkgs_2",
+        "rust-overlay": "rust-overlay_2"
+      },
+      "locked": {
+        "lastModified": 1778664949,
+        "narHash": "sha256-IDZRDQHHtTM1FQFWQC3OtugUe4A7qFFELM5x8K33mbU=",
+        "owner": "zed-industries",
+        "repo": "zed",
+        "rev": "495f8ba717fe7838b6713684d9a2891f51ca95be",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zed-industries",
+        "repo": "zed",
         "type": "github"
       }
     },

@@ -43,6 +43,11 @@
           options = [
             "--non-interactive"
             "--no-lock"
+            "--config"
+            "${pkgs.writeText "flake-edit.toml" ''
+              [follow]
+              ignore = ["zed.nixpkgs"]
+            ''}"
             "follow"
           ];
           includes = [ "flake.nix" ];

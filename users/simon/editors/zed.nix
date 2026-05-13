@@ -1,11 +1,13 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }:
 {
   programs.zed-editor = {
     enable = true;
+    package = inputs.zed.packages.${pkgs.stdenv.hostPlatform.system}.default;
     installRemoteServer = true;
     extraPackages = with pkgs; [
       nil

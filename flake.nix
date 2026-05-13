@@ -112,6 +112,11 @@
     };
 
     # browser
+    zed = {
+      url = "github:zed-industries/zed";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake/beta";
       #url = "github:0xc000022070/zen-browser-flake";
