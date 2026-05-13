@@ -113,13 +113,6 @@
         diagnostics = false;
         metrics = false;
       };
-      language_models = {
-        openai_compatible = {
-          llama-cpp = {
-            api_url = "https://llama-cpp.nx3.eu/v1";
-          };
-        };
-      };
       auto_update = false;
       file_scan_exclusions = [
         "**/.direnv"
