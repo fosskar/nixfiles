@@ -59,7 +59,7 @@ in
           view_mode = "compact";
           compact_subtitle = "working_directory";
         };
-        window.override_opacity = 100;
+        window.override_opacity = 80;
       };
 
       privacy = {

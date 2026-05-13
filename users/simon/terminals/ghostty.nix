@@ -44,6 +44,7 @@ in
       font-family = config.theme.fonts.mono;
       font-size = 10;
       copy-on-select = false;
+      background-opacity = 0.7;
       window-padding-x = 4;
       window-padding-y = 4;
       window-padding-balance = true;

@@ -1,5 +1,7 @@
 {
   config,
+  inputs,
+  lib,
   mylib,
   pkgs,
   ...
@@ -14,6 +16,43 @@ in
     pkgs.wl-clipboard
     pkgs.custom.live-ocr
   ];
+
+  xdg.configFile.niri-config.source =
+    let
+      inherit (inputs.niri-flake.lib.internal) validated-config-for;
+      inherit (config.programs.niri) finalConfig package;
+    in
+    lib.mkForce (
+      validated-config-for pkgs package ''
+        ${finalConfig}
+
+        window-rule {
+          background-effect {
+            blur true
+            xray false
+          }
+
+          popups {
+            background-effect {
+              blur true
+            }
+          }
+        }
+
+        layer-rule {
+          match namespace="^noctalia-(background|launcher-overlay|dock)-.*$"
+          background-effect {
+            xray false
+          }
+
+          popups {
+            background-effect {
+              blur true
+            }
+          }
+        }
+      ''
+    );
 
   programs.niri.settings = {
     workspaces = {

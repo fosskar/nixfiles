@@ -119,15 +119,16 @@
                 id = "zed";
                 enabled = true;
               }
-              {
-                id = "zen-browser";
-                enabled = true;
-              }
             ];
           };
 
+          ui = {
+            panelBackgroundOpacity = 0.6;
+            translucentWidgets = true;
+          };
+
           bar = {
-            backgroundOpacity = 1;
+            backgroundOpacity = 0.6;
             showCapsule = false;
             widgets = {
               center = [
@@ -223,6 +224,7 @@
             showScreenCorners = true;
             forceBlackScreenCorners = true;
             compactLockScreen = true;
+            lockScreenBlur = 0.5;
           };
 
           location = {
