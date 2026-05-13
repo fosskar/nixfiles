@@ -9,30 +9,30 @@ in
     enable = true;
     themes.${themeFileName} = {
       name = themeName;
-      accent = t.primary;
-      cursor = t.primary;
-      background = t.bg;
-      foreground = t.fg;
+      accent = t.dark.accent.primary;
+      cursor = t.dark.accent.primary;
+      background = t.dark.bg.base;
+      foreground = t.dark.fg.base;
       details = "darker";
       terminal_colors = {
         normal = {
-          black = t.bgLight;
-          red = t.error;
-          inherit (t.term) green;
-          yellow = t.warning;
-          inherit (t.term) blue;
-          inherit (t.term) magenta;
-          cyan = t.secondary;
-          white = t.fg;
+          black = t.dark.bg.surface;
+          red = t.dark.semantic.error;
+          green = t.ansi.normal.green;
+          yellow = t.dark.semantic.warning;
+          blue = t.ansi.normal.blue;
+          magenta = t.ansi.normal.magenta;
+          cyan = t.ansi.normal.cyan;
+          white = t.dark.fg.base;
         };
         bright = {
-          black = t.fgDim;
-          red = t.error;
-          inherit (t.term) green;
-          yellow = t.warning;
-          inherit (t.term) blue;
-          inherit (t.term) magenta;
-          cyan = t.secondary;
+          black = t.dark.fg.dim;
+          red = t.dark.semantic.error;
+          green = t.ansi.normal.green;
+          yellow = t.dark.semantic.warning;
+          blue = t.ansi.normal.blue;
+          magenta = t.ansi.normal.magenta;
+          cyan = t.ansi.normal.cyan;
           white = "#FFFFFF";
         };
       };
@@ -43,7 +43,7 @@ in
         text = {
           notebook_font_size = 14.0;
           font_size = 13.0;
-          font_name = t.monospaceFont;
+          font_name = t.fonts.mono;
         };
         themes = {
           theme.custom = {

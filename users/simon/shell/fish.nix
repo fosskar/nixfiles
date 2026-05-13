@@ -3,6 +3,12 @@ _: {
   #   ${pkgs.fish}/bin/fish -c "tide configure --auto --style=Lean --prompt_colors='True color' --show_time=No --lean_prompt_height='Two lines' --prompt_connection=Solid --prompt_connection_andor_frame_color=Dark --prompt_spacing=Sparse --icons='Few icons' --transient=No"
   # '';
 
+  xdg.configFile."fish/completions/clan.fish".text = ''
+    complete -c clan -f
+    complete -c clan -n __fish_use_subcommand -a "show init backups b templates flash ssh secrets vars va machines m select se network net state st"
+    complete -c clan -s h -l help
+  '';
+
   programs.fish = {
     enable = true;
 
@@ -58,7 +64,6 @@ _: {
 
     interactiveShellInit = ''
       set fish_greeting
-      set fish_color_command green
     '';
   };
 }

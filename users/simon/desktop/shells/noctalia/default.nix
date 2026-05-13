@@ -13,47 +13,42 @@
       t = config.theme;
     in
     {
-      #xdg.configFile."noctalia/pam/password.conf".text = ''
-      #  auth sufficient pam_fprintd.so max-tries=1
-      #  auth required pam_unix.so
-      #'';
-
       xdg.configFile."noctalia/colorschemes/grey-teal/grey-teal.json".text = builtins.toJSON {
         dark = {
-          mPrimary = t.primary;
-          mOnPrimary = t.bg;
-          mSecondary = t.secondary;
-          mOnSecondary = t.bg;
-          mTertiary = t.info;
-          mOnTertiary = t.bg;
-          mError = t.error;
-          mOnError = t.bg;
-          mSurface = t.bg;
-          mOnSurface = t.fg;
-          mHover = t.primary;
-          mOnHover = t.bg;
-          mSurfaceVariant = t.bgLight;
-          mOnSurfaceVariant = t.fgMuted;
-          mOutline = t.fgDim;
-          mShadow = t.bg;
+          mPrimary = t.dark.accent.primary;
+          mOnPrimary = t.dark.bg.base;
+          mSecondary = t.dark.semantic.warning;
+          mOnSecondary = t.dark.bg.base;
+          mTertiary = t.ansi.normal.blue;
+          mOnTertiary = t.dark.bg.base;
+          mError = t.dark.semantic.error;
+          mOnError = t.dark.bg.base;
+          mSurface = t.dark.bg.base;
+          mOnSurface = t.dark.fg.base;
+          mHover = t.dark.accent.primary;
+          mOnHover = t.dark.bg.base;
+          mSurfaceVariant = t.dark.bg.surface;
+          mOnSurfaceVariant = t.dark.fg.muted;
+          mOutline = t.dark.fg.dim;
+          mShadow = t.dark.bg.base;
         };
         light = {
-          mPrimary = t.light.primary;
-          mOnPrimary = t.light.bg;
-          mSecondary = t.secondary;
-          mOnSecondary = t.light.bg;
-          mTertiary = t.info;
-          mOnTertiary = t.light.bg;
-          mError = t.light.error;
-          mOnError = t.light.bg;
-          mSurface = t.light.bg;
-          mOnSurface = t.light.fg;
-          mHover = t.light.primary;
-          mOnHover = t.light.bg;
-          mSurfaceVariant = t.light.bgDark;
-          mOnSurfaceVariant = t.light.fgMuted;
-          mOutline = t.light.outline;
-          mShadow = t.light.bgDarkest;
+          mPrimary = t.light.accent.primary;
+          mOnPrimary = t.light.bg.base;
+          mSecondary = t.light.semantic.warning;
+          mOnSecondary = t.light.bg.base;
+          mTertiary = t.ansi.normal.blue;
+          mOnTertiary = t.light.bg.base;
+          mError = t.light.semantic.error;
+          mOnError = t.light.bg.base;
+          mSurface = t.light.bg.base;
+          mOnSurface = t.light.fg.base;
+          mHover = t.light.accent.primary;
+          mOnHover = t.light.bg.base;
+          mSurfaceVariant = t.light.bg.surface;
+          mOnSurfaceVariant = t.light.fg.muted;
+          mOutline = t.light.fg.dim;
+          mShadow = t.light.bg.overlay;
         };
       };
 
@@ -99,6 +94,36 @@
           };
           appLauncher = {
             terminalCommand = "ghostty -e";
+          };
+
+          templates = {
+            enableUserTheming = true;
+            activeTemplates = [
+              {
+                id = "btop";
+                enabled = true;
+              }
+              {
+                id = "gtk";
+                enabled = true;
+              }
+              {
+                id = "yazi";
+                enabled = true;
+              }
+              {
+                id = "zathura";
+                enabled = true;
+              }
+              {
+                id = "zed";
+                enabled = true;
+              }
+              {
+                id = "zen-browser";
+                enabled = true;
+              }
+            ];
           };
 
           bar = {

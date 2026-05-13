@@ -62,13 +62,20 @@
       #  "editor.active_line.background" = "#00000042";
       #  "scrollbar.track.background" = "#00000000";
       #};
+
+      feature_flags = {
+        "agent-panel-terminal" = "on";
+      };
       colorize_brackets = true;
+      edit_predictions = {
+        provider = "copilot";
+      };
       icon_theme = "Material Icon Theme";
       base_keymap = "VSCode";
       #vim_mode = true;
-      buffer_font_family = config.theme.monospaceFont;
+      buffer_font_family = config.theme.fonts.mono;
       buffer_line_height = "standard";
-      ui_font_family = config.theme.font;
+      ui_font_family = config.theme.fonts.sans;
       confirm_quit = true;
       show_whitespaces = "boundary";
       calls = {
@@ -88,6 +95,9 @@
       collaboration_panel = {
         button = false;
       };
+      project_panel = {
+        dock = "right";
+      };
       autosave = {
         after_delay = {
           milliseconds = 2000;
@@ -102,6 +112,13 @@
       telemetry = {
         diagnostics = false;
         metrics = false;
+      };
+      language_models = {
+        openai_compatible = {
+          llama-cpp = {
+            api_url = "https://llama-cpp.nx3.eu/v1";
+          };
+        };
       };
       auto_update = false;
       file_scan_exclusions = [
@@ -139,7 +156,7 @@
         #env = {
         #  EDITOR = "zeditor";
         #};
-        dock = "right";
+        dock = "bottom";
         font_size = 14;
       };
       file_types = {

@@ -1,6 +1,6 @@
 { lib, ... }:
 let
-  color =
+  strOption =
     default:
     lib.mkOption {
       type = lib.types.str;
@@ -9,51 +9,91 @@ let
 in
 {
   options.theme = {
-    # fonts
-    font = color "Inter";
-    monospaceFont = color "CommitMono Nerd Font Propo";
-
-    # backgrounds
-    bg = color "#181818";
-    bgLight = color "#1E1E1E";
-    bgLighter = color "#232323";
-    bgLightest = color "#282828";
-
-    # foregrounds
-    fg = color "#CCCCCC";
-    fgMuted = color "#9D9D9D";
-    fgDim = color "#616161";
-
-    # accents
-    primary = color "#16A085";
-    primaryDark = color "#0E6655";
-    secondary = color "#1ABC9C";
-
-    # semantic
-    error = color "#F85149";
-    warning = color "#FFA000";
-    info = color "#1ABC9C";
-
-    # terminal palette (ANSI colors)
-    term = {
-      green = color "#73C991";
-      blue = color "#6796E6";
-      magenta = color "#C586C0";
+    fonts = {
+      sans = strOption "Inter";
+      mono = strOption "CommitMono Nerd Font Propo";
     };
 
-    # light theme variants
+    dark = {
+      bg = {
+        base = strOption "#202020";
+        surface = strOption "#282828";
+        elevated = strOption "#181818";
+        overlay = strOption "#303030";
+      };
+
+      fg = {
+        base = strOption "#CCCCCC";
+        muted = strOption "#9D9D9D";
+        dim = strOption "#616161";
+        inverse = strOption "#FFFFFF";
+      };
+
+      accent = {
+        primary = strOption "#16A085";
+        secondary = strOption "#C79A3A";
+        tertiary = strOption "#6796E6";
+      };
+
+      semantic = {
+        success = strOption "#73C991";
+        error = strOption "#F07167";
+        warning = strOption "#C79A3A";
+        info = strOption "#6796E6";
+      };
+    };
+
     light = {
-      bg = color "#FAFAFA";
-      bgDark = color "#F5F5F5";
-      bgDarker = color "#EEEEEE";
-      bgDarkest = color "#E0E0E0";
-      fg = color "#181818";
-      fgMuted = color "#616161";
-      outline = color "#B0BEC5";
-      primary = color "#0E6655";
-      primaryContainer = color "#A3E4D7";
-      error = color "#D32F2F";
-      warning = color "#F57C00";
+      bg = {
+        base = strOption "#FAFAFA";
+        surface = strOption "#F2F2F2";
+        elevated = strOption "#EAEAEA";
+        overlay = strOption "#E0E0E0";
+      };
+
+      fg = {
+        base = strOption "#181818";
+        muted = strOption "#616161";
+        dim = strOption "#9D9D9D";
+        inverse = strOption "#FFFFFF";
+      };
+
+      accent = {
+        primary = strOption "#16A085";
+        secondary = strOption "#C79A3A";
+        tertiary = strOption "#6796E6";
+      };
+
+      semantic = {
+        success = strOption "#73C991";
+        error = strOption "#F07167";
+        warning = strOption "#C79A3A";
+        info = strOption "#6796E6";
+      };
+    };
+
+    ansi = {
+      normal = {
+        black = strOption "#181818";
+        red = strOption "#F07167";
+        green = strOption "#73C991";
+        yellow = strOption "#C79A3A";
+        blue = strOption "#6796E6";
+        magenta = strOption "#C586C0";
+        cyan = strOption "#1ABC9C";
+        white = strOption "#CCCCCC";
+      };
+
+      bright = {
+        black = strOption "#616161";
+        red = strOption "#F07167";
+        green = strOption "#73C991";
+        yellow = strOption "#C79A3A";
+        blue = strOption "#6796E6";
+        magenta = strOption "#C586C0";
+        cyan = strOption "#1ABC9C";
+        white = strOption "#FFFFFF";
+      };
     };
   };
 }

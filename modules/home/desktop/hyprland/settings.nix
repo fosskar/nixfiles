@@ -67,7 +67,7 @@
             float_switch_override_focus = 1;
           };
           misc = {
-            font_family = config.theme.font;
+            font_family = config.theme.fonts.sans;
             disable_hyprland_logo = true;
             disable_splash_rendering = true;
             force_default_wallpaper = 0;

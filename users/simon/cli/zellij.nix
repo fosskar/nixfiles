@@ -8,17 +8,17 @@ in
     settings = {
       theme = "custom";
       themes.custom = {
-        inherit (t) bg;
-        inherit (t) fg;
-        red = t.error;
-        inherit (t.term) green;
-        inherit (t.term) blue;
-        yellow = t.warning;
-        inherit (t.term) magenta;
-        orange = t.warning;
-        cyan = t.secondary;
-        black = t.bg;
-        white = t.fg;
+        bg = t.dark.bg.base;
+        fg = t.dark.fg.base;
+        red = t.dark.semantic.error;
+        green = t.ansi.normal.green;
+        blue = t.ansi.normal.blue;
+        yellow = t.dark.semantic.warning;
+        magenta = t.ansi.normal.magenta;
+        orange = t.dark.semantic.warning;
+        cyan = t.ansi.normal.cyan;
+        black = t.dark.bg.base;
+        white = t.dark.fg.base;
       };
       pane_frames = false;
       default_layout = "compact";

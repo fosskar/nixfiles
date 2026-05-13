@@ -55,8 +55,8 @@ in
 
       focus-ring = {
         width = 2;
-        active.color = theme.primary;
-        inactive.color = theme.fgDim;
+        active.color = theme.dark.accent.primary;
+        inactive.color = theme.dark.fg.dim;
       };
 
       shadow = {
@@ -67,7 +67,7 @@ in
           x = 0.0;
           y = 3.0;
         };
-        color = "${theme.bg}70";
+        color = "${theme.dark.bg.base}70";
       };
     };
 
@@ -80,7 +80,7 @@ in
     };
 
     overview = {
-      backdrop-color = theme.bgLighter;
+      backdrop-color = theme.dark.bg.elevated;
     };
 
     window-rules = [
