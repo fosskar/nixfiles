@@ -9,7 +9,19 @@
   home-manager.users.simon = {
     imports = [
       # inputs.self.modules.homeManager.hyprland
+      self.modules.homeManager.bash
+      self.modules.homeManager.bat
+      self.modules.homeManager.btop
+      self.modules.homeManager.dircolors
+      self.modules.homeManager.direnv
+      self.modules.homeManager.editorconfig
+      self.modules.homeManager.fzf
       self.modules.homeManager.hunk
+      self.modules.homeManager.neovim
+      self.modules.homeManager.nixIndex
+      self.modules.homeManager.ripgrep
+      self.modules.homeManager.shellIntegration
+      self.modules.homeManager.tmux
       self.modules.homeManager.warpTerminal
     ]
     ++ mylib.scanPaths ./. { };
