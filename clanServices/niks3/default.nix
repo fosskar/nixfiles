@@ -280,12 +280,7 @@ in
             # ----- system-wide post-build-hook upload -----
             services.niks3-auto-upload = {
               enable = true;
-              package = niks3Pkgs.niks3-hook.overrideAttrs (old: {
-                postPatch = (old.postPatch or "") + ''
-                  substituteInPlace client/upload.go \
-                    --replace-fail 'if pathInfo.Deriver != nil && *pathInfo.Deriver != "" {' 'if false && pathInfo.Deriver != nil && *pathInfo.Deriver != "" {'
-                '';
-              });
+              package = niks3Pkgs.niks3-hook;
               serverUrl = "http://127.0.0.1:${toString niks3Port}";
               authTokenFile = varsGarage.files.api-token.path;
             };
