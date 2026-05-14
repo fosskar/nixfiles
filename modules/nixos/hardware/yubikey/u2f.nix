@@ -47,6 +47,8 @@
         greetd.u2fAuth = lib.mkDefault true;
       };
 
-      environment.systemPackages = [ pkgs.yubioath-flutter ];
+      environment.systemPackages = [
+        pkgs.yubioath-flutter
+      ];
     };
 }

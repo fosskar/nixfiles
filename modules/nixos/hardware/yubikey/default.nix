@@ -9,7 +9,9 @@
       users.groups.pcscd.members = config.users.groups.wheel.members;
 
       # udev rules
-      services.udev.packages = [ pkgs.yubikey-personalization ];
+      services.udev.packages = [
+        pkgs.yubikey-personalization
+      ];
 
       environment.systemPackages = with pkgs; [
         yubikey-manager
