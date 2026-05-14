@@ -3,6 +3,8 @@
   lib,
   inputs,
   mylib,
+  osConfig,
+  pkgs,
   ...
 }:
 {
@@ -11,15 +13,18 @@
   config =
     let
       t = config.theme;
+      lockSecrets = pkgs.writeShellScript "lock-secrets" ''
+        ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
+      '';
     in
     {
       xdg.configFile."noctalia/colorschemes/grey-teal/grey-teal.json".text = builtins.toJSON {
         dark = {
           mPrimary = t.dark.accent.primary;
           mOnPrimary = t.dark.bg.base;
-          mSecondary = t.dark.semantic.warning;
+          mSecondary = t.dark.accent.secondary;
           mOnSecondary = t.dark.bg.base;
-          mTertiary = t.ansi.normal.blue;
+          mTertiary = t.dark.accent.tertiary;
           mOnTertiary = t.dark.bg.base;
           mError = t.dark.semantic.error;
           mOnError = t.dark.bg.base;
@@ -31,13 +36,41 @@
           mOnSurfaceVariant = t.dark.fg.muted;
           mOutline = t.dark.fg.dim;
           mShadow = t.dark.bg.base;
+          terminal = {
+            background = t.dark.bg.base;
+            foreground = t.dark.fg.base;
+            cursor = t.dark.fg.base;
+            cursorText = t.dark.bg.base;
+            selectionBackground = t.dark.fg.base;
+            selectionForeground = t.dark.bg.base;
+            normal = {
+              black = t.ansi.normal.black;
+              red = t.ansi.normal.red;
+              green = t.ansi.normal.green;
+              yellow = t.ansi.normal.yellow;
+              blue = t.ansi.normal.blue;
+              magenta = t.ansi.normal.magenta;
+              cyan = t.ansi.normal.cyan;
+              white = t.ansi.normal.white;
+            };
+            bright = {
+              black = t.ansi.bright.black;
+              red = t.ansi.bright.red;
+              green = t.ansi.bright.green;
+              yellow = t.ansi.bright.yellow;
+              blue = t.ansi.bright.blue;
+              magenta = t.ansi.bright.magenta;
+              cyan = t.ansi.bright.cyan;
+              white = t.ansi.bright.white;
+            };
+          };
         };
         light = {
           mPrimary = t.light.accent.primary;
           mOnPrimary = t.light.bg.base;
-          mSecondary = t.light.semantic.warning;
+          mSecondary = t.light.accent.secondary;
           mOnSecondary = t.light.bg.base;
-          mTertiary = t.ansi.normal.blue;
+          mTertiary = t.light.accent.tertiary;
           mOnTertiary = t.light.bg.base;
           mError = t.light.semantic.error;
           mOnError = t.light.bg.base;
@@ -49,6 +82,34 @@
           mOnSurfaceVariant = t.light.fg.muted;
           mOutline = t.light.fg.dim;
           mShadow = t.light.bg.overlay;
+          terminal = {
+            background = t.light.bg.base;
+            foreground = t.light.fg.base;
+            cursor = t.light.fg.base;
+            cursorText = t.light.bg.base;
+            selectionBackground = t.light.fg.base;
+            selectionForeground = t.light.bg.base;
+            normal = {
+              black = t.light.bg.base;
+              red = t.ansi.normal.red;
+              green = t.ansi.normal.green;
+              yellow = t.ansi.normal.yellow;
+              blue = t.ansi.normal.blue;
+              magenta = t.ansi.normal.magenta;
+              cyan = t.ansi.normal.cyan;
+              white = t.light.fg.base;
+            };
+            bright = {
+              black = t.light.bg.overlay;
+              red = t.ansi.bright.red;
+              green = t.ansi.bright.green;
+              yellow = t.ansi.bright.yellow;
+              blue = t.ansi.bright.blue;
+              magenta = t.ansi.bright.magenta;
+              cyan = t.ansi.bright.cyan;
+              white = t.dark.bg.elevated;
+            };
+          };
         };
       };
 
@@ -123,12 +184,12 @@
           };
 
           ui = {
-            panelBackgroundOpacity = 0.6;
+            panelBackgroundOpacity = 0.7;
             translucentWidgets = true;
           };
 
           bar = {
-            backgroundOpacity = 0.6;
+            backgroundOpacity = 0.7;
             showCapsule = false;
             widgets = {
               center = [
@@ -221,10 +282,20 @@
           };
 
           general = {
+            autoStartAuth = true;
+            allowPasswordWithFprintd = osConfig.services.fprintd.enable or false;
+            lockOnSuspend = true;
             showScreenCorners = true;
             forceBlackScreenCorners = true;
             compactLockScreen = true;
             lockScreenBlur = 0.5;
+          };
+
+          hooks = {
+            enabled = true;
+            startup = "noctalia-shell ipc call lockScreen lock";
+            screenLock = toString lockSecrets;
+            screenUnlock = "kwallet-tpm-unlock $HOME/.config/kwallet-tpm/password.cred";
           };
 
           location = {

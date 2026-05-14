@@ -36,9 +36,8 @@ in
     ];
     userSettings = {
       theme = {
-        mode = "system";
-        light = "VSCode Dark Modern";
-        dark = "VSCode Dark Modern";
+        light = "Noctalia Light Transparent";
+        dark = "Noctalia Dark Transparent";
       };
       # transparent window; niri provides blur through its window-rule.
       # `blurred` asks Zed/GPUI to use a Wayland blur protocol, which niri does not expose here.
@@ -51,15 +50,11 @@ in
         "panel.background" = "#00000000";
         "tab_bar.background" = "#00000000";
       };
-      feature_flags = {
-        "agent-panel-terminal" = "on";
-      };
       colorize_brackets = true;
       edit_predictions = {
         provider = "copilot";
       };
       icon_theme = "Material Icon Theme";
-      base_keymap = "VSCode";
       #vim_mode = true;
       buffer_font_family = config.theme.fonts.mono;
       buffer_line_height = "standard";
@@ -68,12 +63,10 @@ in
       show_whitespaces = "boundary";
       calls = {
         mute_on_join = true;
-        share_on_join = false;
       };
       soft_wrap = "editor_width";
       restore_on_startup = "last_workspace";
       indent_guides = {
-        line_width = 1;
         active_line_width = 2;
         coloring = "indent_aware";
       };
@@ -82,9 +75,6 @@ in
       };
       collaboration_panel = {
         button = false;
-      };
-      project_panel = {
-        dock = "right";
       };
       autosave = {
         after_delay = {
@@ -137,7 +127,6 @@ in
         #env = {
         #  EDITOR = "zeditor";
         #};
-        dock = "bottom";
         font_size = 14;
       };
       file_types = {
@@ -188,7 +177,6 @@ in
           "**/.vscode/**/*.json"
         ];
         "Plain Text" = [ "txt" ];
-        "Shell Script" = [ ".env.*" ];
         TOML = [
           "uv.lock"
           "Cargo.toml"

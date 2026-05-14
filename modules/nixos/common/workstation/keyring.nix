@@ -116,19 +116,33 @@
 
       security.pam.services.greetd.kwallet.enable = false;
 
-      systemd.user.services.kwallet-tpm-unlock = {
-        description = "unlock kwallet using tpm-sealed credentials";
-        after = [
-          "dbus.socket"
-          "graphical-session.target"
-        ];
-        wantedBy = [ "graphical-session.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${kwallet-tpm-unlock}/bin/kwallet-tpm-unlock %h/.config/kwallet-tpm/password.cred";
-          Restart = "on-failure";
-          RestartSec = 2;
-          RestartMode = "direct";
+      systemd.user.services = {
+        kwallet-tpm-unlock = {
+          description = "unlock kwallet using tpm-sealed credentials";
+          after = [
+            "dbus.socket"
+            "graphical-session.target"
+          ];
+          wantedBy = [ "graphical-session.target" ];
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${kwallet-tpm-unlock}/bin/kwallet-tpm-unlock %h/.config/kwallet-tpm/password.cred";
+            Restart = "on-failure";
+            RestartSec = 2;
+            RestartMode = "direct";
+          };
+        };
+
+        lock-secrets-on-suspend = {
+          description = "lock secrets before suspend";
+          before = [ "sleep.target" ];
+          wantedBy = [ "sleep.target" ];
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = pkgs.writeShellScript "lock-secrets" ''
+              ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
+            '';
+          };
         };
       };
     };
