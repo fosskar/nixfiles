@@ -1,18 +1,15 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const STYLE = `
-create commit(s) for the current work.
+commit the changes using this style:
 
-rules:
-- default to one commit for the current task.
-- one logical change per commit, but atomic means coherent and easy to review/revert, not maximal splitting.
-- split only when changes are unrelated or would be easier to review/revert separately.
-- use the preloaded status, stat, and diff as the primary context. run extra inspection only when it improves the commit split or message.
-- commit message: lowercase, concise, imperative.
-- commit messages should focus on the why rather than the what.
-- add a commit body if it is nice to have an explanation for the why.
-- no conventional commit prefixes.
-- keep the commit process KISS: do not overcomplicate splitting or atomicity.
+- when writing commit messages focus on the why rather than the what.
+- imperative mood.
+- concise, no conventional commit prefixes.
+- optionally use a context prefix when it adds clarity, e.g. "niks3:", "desktop:", "services:".
+- use paragraphs instead of bullet points in commit bodies.
+
+if the changes cover multiple unrelated concerns, split them into separate logical commits rather than one large commit.
 `.trim();
 
 const JJ_MECHANICS = `
