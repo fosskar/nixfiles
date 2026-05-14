@@ -19,6 +19,7 @@
         owner = "authelia-main";
         group = "authelia-main";
       };
+      smtpEnabled = config.clan.core.vars.generators ? smtp;
     in
     {
       config = {
@@ -107,7 +108,7 @@
               name = "authelia_session";
               same_site = "lax";
               expiration = "1w";
-              inactivity = "1d";
+              inactivity = "1w";
               remember_me = "1M";
               cookies = [
                 {
@@ -178,9 +179,29 @@
 
             storage.local.path = "/var/lib/authelia-main/db.sqlite3";
 
-            notifier.filesystem.filename = "/var/lib/authelia-main/notifications.txt";
+            notifier = lib.mkMerge [
+              (lib.mkIf smtpEnabled {
+                smtp = {
+                  address = ''submission://{{ env "SMTP_HOST" }}:{{ env "SMTP_PORT" }}'';
+                  username = ''{{ env "SMTP_USER" }}'';
+                  password = ''{{ env "SMTP_PASSWORD" }}'';
+                  sender = ''Authelia <{{ env "SMTP_FROM" }}>'';
+                  identifier = config.networking.hostName;
+                  subject = "[Authelia] {title}";
+                  startup_check_address = ''{{ env "SMTP_FROM" }}'';
+                };
+              })
+              (lib.mkIf (!smtpEnabled) {
+                # notifier.filesystem.filename = "/var/lib/authelia-main/notifications.txt";
+                filesystem.filename = "/var/lib/authelia-main/notifications.txt";
+              })
+            ];
           };
         };
+
+        systemd.services.authelia-main.serviceConfig.EnvironmentFile =
+          lib.mkIf smtpEnabled
+            config.clan.core.vars.generators.smtp.files."smtp-env".path;
 
         services.homepage-dashboard.serviceGroups."Security" =
           lib.mkIf config.services.homepage-dashboard.enable

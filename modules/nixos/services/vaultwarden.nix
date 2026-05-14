@@ -84,6 +84,11 @@
           INVITATIONS_ALLOWED = true;
           SHOW_PASSWORD_HINT = false;
 
+          USE_SENDMAIL = true;
+          SENDMAIL_COMMAND = "/run/wrappers/bin/sendmail";
+          SMTP_FROM = "noreply@nx3.eu";
+          SMTP_FROM_NAME = "Vaultwarden";
+
           SSO_PKCE = true;
           SSO_CLIENT_ID = "vaultwarden";
           SSO_ENABLED = true;

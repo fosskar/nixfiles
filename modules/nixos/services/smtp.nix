@@ -21,8 +21,10 @@
             SMTP_HOST=${smtpHost}
             SMTP_PORT=${toString smtpPort}
             SMTP_USER=${smtpUser}
+            SMTP_USERNAME=${smtpUser}
             SMTP_FROM=${smtpFrom}
             SMTP_PASSWORD=$PASSWORD
+            SMTP_SECURITY=starttls
             EOF
           '';
         };

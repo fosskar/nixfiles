@@ -170,6 +170,11 @@
           default_phone_region = "DE";
           maintenance_window_start = 3;
 
+          mail_smtpmode = "sendmail";
+          mail_sendmailmode = "pipe";
+          mail_from_address = "noreply";
+          mail_domain = "nx3.eu";
+
           enabledPreviewProviders = [
             "OC\\Preview\\BMP"
             "OC\\Preview\\GIF"

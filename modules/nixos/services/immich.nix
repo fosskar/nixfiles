@@ -152,6 +152,20 @@
             watch.enabled = true;
           };
 
+          notifications.smtp = {
+            enabled = true;
+            from = "Immich <noreply@nx3.eu>";
+            replyTo = "noreply@nx3.eu";
+            transport = {
+              ignoreCert = false;
+              host = "smtp.protonmail.ch";
+              port = 587;
+              secure = false;
+              username = "noreply@nx3.eu";
+              password._secret = config.clan.core.vars.generators.smtp.files.password.path;
+            };
+          };
+
           oauth = {
             enabled = true;
             autoRegister = true;
