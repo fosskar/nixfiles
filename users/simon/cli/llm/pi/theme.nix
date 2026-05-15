@@ -3,12 +3,13 @@ let
   t = config.theme;
   piTheme = {
     "$schema" =
-      "https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";
+      "https://raw.githubusercontent.com/earendil-works/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";
     name = "custom";
     vars = {
       primary = t.dark.accent.primary;
       primaryDark = t.dark.bg.overlay;
       secondary = t.ansi.normal.cyan;
+      terminalDefault = "";
       bg = t.dark.bg.base;
       bgLight = t.dark.bg.surface;
       bgLighter = t.dark.bg.elevated;
@@ -40,7 +41,7 @@ let
       thinkingText = "fgMuted";
 
       # backgrounds & content
-      selectedBg = "bgLightest";
+      selectedBg = "terminalDefault";
       userMessageBg = "bgLightest";
       userMessageText = "fg";
       customMessageBg = "bgLighter";
