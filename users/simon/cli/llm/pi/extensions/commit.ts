@@ -3,10 +3,12 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 const STYLE = `
 commit the changes using this style:
 
-- when writing commit messages focus on the why rather than the what.
-- imperative mood.
-- concise, no conventional commit prefixes.
-- optionally use a context prefix when it adds clarity, e.g. "niks3:", "desktop:", "services:".
+- when writing commit messages focus on the why rather than the what, but state routine mechanical updates directly.
+- use imperative mood.
+- use a context prefix for scoped changes.
+- omit the context prefix only when the change is repository-wide or no clear scope exists.
+- use repo/domain terminology from the diff and recent history.
+- keep the subject concise.
 - use paragraphs instead of bullet points in commit bodies.
 
 if the changes cover multiple unrelated concerns, split them into separate logical commits rather than one large commit.
