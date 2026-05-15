@@ -30,6 +30,13 @@ be concise. technical substance over grammar. no filler, no hedging, no pleasant
 - match existing code style; no drive-by refactors, renames, or reformats
 - no new deps without asking
 
+## terminology
+
+Use repository terminology consistently in explanations, commit messages, PR text, and docs.
+Before naming concepts, prefer terms already used in module names, option names, file paths, docs, and existing commits.
+Do not invent synonyms for repo concepts. If two terms appear to describe the same thing, ask or state the ambiguity before choosing.
+For commit messages, use exact service/module/option names where possible.
+
 ## file editing
 
 - prefer editing existing files over creating new ones
