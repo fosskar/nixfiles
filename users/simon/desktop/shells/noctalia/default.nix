@@ -312,6 +312,8 @@
             enabled = true;
             useWallhaven = true;
             automationEnabled = false;
+            overviewEnabled = true;
+            overviewBlur = 0.4;
           };
 
           sessionMenu = {
