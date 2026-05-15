@@ -35,24 +35,64 @@ in
       "vscode-dark-modern"
     ];
     userSettings = {
-      theme = {
-        light = "Noctalia Light Transparent";
-        dark = "Noctalia Dark Transparent";
-      };
+      theme = "VSCode Dark Modern";
       # transparent window; niri provides blur through its window-rule.
       # `blurred` asks Zed/GPUI to use a Wayland blur protocol, which niri does not expose here.
       "experimental.theme_overrides" = {
         "background.appearance" = "transparent";
-        "background" = "${t.dark.bg.base}CC";
-        "editor.background" = "#00000000";
-        "editor.gutter.background" = "#00000000";
-        "terminal.background" = "#00000000";
-        "panel.background" = "#00000000";
-        "tab_bar.background" = "#00000000";
+        "background" = "${t.dark.bg.base}CC"; # window base
+
+        "panel.background" = "#00000000"; # panels: project, agent, sidebar content
+        "status_bar.background" = "${t.dark.bg.base}CC"; # bottom bar
+        "title_bar.background" = "${t.dark.bg.base}CC"; # top bar and sidebar/threads header
+        "title_bar.inactive_background" = "${t.dark.bg.base}CC"; # when Zed is not focused
+        "editor.background" = "#00000040"; # code area
+        "editor.gutter.background" = "#00000040"; # line number gutter
+        "elevated_surface.background" = "${t.dark.bg.base}D9"; # right-click popups
+        "ghost_element.background" = "#00000033"; # contrast behind buttons/areas
+        "tab_bar.background" = "#00000033"; # tab bars
+        "tab.active_background" = "#00000000"; # active tab
+        "tab.inactive_background" = "#00000040"; # inactive tabs
+        "terminal.ansi.background" = "#00000000"; # terminal ANSI default background
+        "terminal.background" = "#00000000"; # terminal pane background
+        "toolbar.background" = "#00000033"; # breadcrumbs/toolbars
+
+        "error" = t.dark.semantic.error;
+        "warning" = t.dark.semantic.warning;
+        "success" = t.dark.semantic.success;
+        "text.accent" = t.dark.accent.primary;
       };
       colorize_brackets = true;
+      bottom_dock_layout = "left_aligned";
       edit_predictions = {
         provider = "copilot";
+        allow_data_collection = "no";
+      };
+      agent = {
+        enable_feedback = false;
+        play_sound_when_agent_done = "always";
+        show_turn_stats = true;
+        thinking_display = "always_collapsed";
+      };
+      agent_servers = {
+        claude-acp = {
+          type = "registry";
+        };
+        codex-acp = {
+          type = "registry";
+        };
+        opencode = {
+          type = "registry";
+        };
+        pi-acp = {
+          type = "registry";
+        };
+        amp-acp = {
+          type = "registry";
+        };
+        factory-droid = {
+          type = "registry";
+        };
       };
       icon_theme = "Material Icon Theme";
       #vim_mode = true;
@@ -65,6 +105,7 @@ in
         mute_on_join = true;
       };
       soft_wrap = "editor_width";
+      semantic_tokens = "combined";
       restore_on_startup = "last_workspace";
       indent_guides = {
         active_line_width = 2;
@@ -76,6 +117,18 @@ in
       collaboration_panel = {
         button = false;
       };
+      project_panel = {
+        entry_spacing = "standard";
+        indent_size = 15;
+        diagnostic_badges = true;
+        git_status_indicator = true;
+        drag_and_drop = false;
+      };
+      git_panel = {
+        tree_view = true;
+        file_icons = true;
+        show_count_badge = true;
+      };
       autosave = {
         after_delay = {
           milliseconds = 2000;
@@ -85,11 +138,26 @@ in
         git_status = true;
         file_icons = true;
         show_diagnostics = "all";
+        show_pinned_tabs_in_separate_row = true;
+      };
+      preview_tabs = {
+        enable_preview_from_file_finder = true;
       };
       tab_size = 2;
       telemetry = {
         diagnostics = false;
         metrics = false;
+      };
+      diagnostics = {
+        inline = {
+          enabled = true;
+        };
+      };
+      status_bar = {
+        line_endings_button = true;
+      };
+      title_bar = {
+        button_layout = "standard";
       };
       auto_update = false;
       file_scan_exclusions = [
@@ -128,6 +196,10 @@ in
         #  EDITOR = "zeditor";
         #};
         font_size = 14;
+        show_count_badge = true;
+        toolbar = {
+          breadcrumbs = true;
+        };
       };
       file_types = {
         Ansible = [
