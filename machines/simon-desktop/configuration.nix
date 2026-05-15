@@ -17,7 +17,6 @@
     self.modules.nixos.docker
     self.modules.nixos.podman
     self.modules.nixos.agentDesktop
-    self.modules.nixos.cliProxyApi
     self.modules.nixos.arbor
     self.modules.nixos.limux
     self.modules.nixos.t3code
