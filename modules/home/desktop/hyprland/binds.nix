@@ -2,14 +2,9 @@
   flake.modules.homeManager.hyprland =
     {
       config,
-      inputs,
-      pkgs,
       ...
     }:
     let
-      dms-pkg = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      dmsCall = "qs ipc --any-display -p ${dms-pkg}/share/quickshell/dms call";
-
       arr = [
         1
         2
@@ -108,14 +103,6 @@
           # misc
           "ALT, Tab, focuscurrentorlast,"
 
-          # dankmaterialshell (aligned with niri shell-binds.nix)
-          "SUPER, B, exec, ${dmsCall} clipboard toggle"
-          "SUPER, N, exec, ${dmsCall} notepad toggle"
-          "SUPER SHIFT, L, exec, ${dmsCall} lock lock"
-          "SUPER, X, exec, ${dmsCall} powermenu toggle"
-          "SUPER, M, exec, ${dmsCall} processlist toggle"
-          "SUPER, Tab, exec, ${dmsCall} hypr toggleOverview"
-
           # global shortcuts/keybinds/hotkeys
           ", F9, pass, class:^(TeamSpeak 3)$"
           ", F10, pass, class:^(TeamSpeak 3)$"
@@ -125,22 +112,9 @@
 
         # keyboard hotkeys
         bindle = [
-          # dankmaterialshell audio/brightness (aligned with niri shell-binds.nix)
-          ", XF86AudioRaiseVolume, exec, ${dmsCall} audio increment 5"
-          ", XF86AudioLowerVolume, exec, ${dmsCall} audio decrement 5"
-          ", XF86AudioMute, exec, ${dmsCall} audio mute"
-          ", XF86AudioMicMute, exec, ${dmsCall} audio micmute"
-          ", XF86MonBrightnessUp, exec, ${dmsCall} brightness increment 10 backlight:amdgpu_bl1"
-          ", XF86MonBrightnessDown, exec, ${dmsCall} brightness decrement 10 backlight:amdgpu_bl1"
-
           ", XF86AudioPlay, exec, playerctl --player=spotify,firefox play-pause"
           ", XF86AudioPrev, exec, playerctl --player=spotify,firefox previous"
           ", XF86AudioNext, exec, playerctl --player=spotify,firefox next"
-        ];
-
-        bindr = [
-          # launcher (aligned with niri: Mod+Space)
-          "SUPER, Space, exec, ${dmsCall} spotlight toggle"
         ];
 
         bindm = [

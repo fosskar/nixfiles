@@ -1,16 +1,12 @@
 {
   flake.modules.homeManager.hyprlandPlugins =
-    { pkgs, inputs, ... }:
+    { pkgs, ... }:
     {
       wayland.windowManager.hyprland = {
-        plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
-          csgo-vulkan-fix
+        plugins = [
+          pkgs.hyprlandPlugins.csgo-vulkan-fix
           #  #hyprscrolling
         ];
-
-        #plugins = [
-        #  pkgs.hyprlandPlugins.csgo-vulkan-fix
-        #];
 
         settings = {
           plugin = {
