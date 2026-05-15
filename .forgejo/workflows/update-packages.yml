@@ -29,9 +29,60 @@ jobs:
           base="main"
           api="${{ forgejo.api_url }}/repos/${{ forgejo.repository }}"
 
+          api_call() {
+            local method="$1"
+            local url="$2"
+            local data="${3:-}"
+            local headers body status retry_after
+
+            headers="$(mktemp)"
+            body="$(mktemp)"
+            trap 'rm -f "$headers" "$body"' RETURN
+
+            for delay in 5 15 45 120; do
+              if [ -n "$data" ]; then
+                status="$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' \
+                  -H "Authorization: token $TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -X "$method" \
+                  -d "$data" \
+                  "$url")"
+              else
+                status="$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' \
+                  -H "Authorization: token $TOKEN" \
+                  -X "$method" \
+                  "$url")"
+              fi
+
+              if [ "$status" -lt 400 ]; then
+                cat "$body"
+                return 0
+              fi
+
+              if [ "$status" = 429 ]; then
+                echo ":: api rate limited: $method $url" >&2
+                cat "$headers" >&2
+                retry_after="$(awk 'tolower($1) == "retry-after:" { print $2 }' "$headers" | tr -d '\r' | tail -n1)"
+                sleep "${retry_after:-$delay}"
+                continue
+              fi
+
+              echo ":: api error $status: $method $url" >&2
+              cat "$headers" >&2
+              cat "$body" >&2
+              return 1
+            done
+
+            echo ":: api error: retries exhausted: $method $url" >&2
+            cat "$body" >&2
+            return 1
+          }
+
           git config user.name "nixfiles-bot"
           git config user.email "nixfiles-bot@noreply.codeberg.org"
           git fetch origin "$base"
+
+          prs="$(api_call GET "$api/pulls?state=open&limit=50")"
 
           update_package() {
             local pkg="$1"
@@ -89,32 +140,24 @@ jobs:
             git commit -m "update pkgs $pkg"
             git push --force-with-lease origin "$branch"
 
-            prs="$(curl -fsS \
-              -H "Authorization: token $TOKEN" \
-              "$api/pulls?state=open")"
             pr_number="$(printf '%s' "$prs" | jq -r --arg branch "$branch" --arg base "$base" '
               map(select(.head.ref == $branch and .base.ref == $base))
               | .[0].number // empty
             ')"
 
             if [ -z "$pr_number" ]; then
-              pr_number="$(curl -fsS \
-                -H "Authorization: token $TOKEN" \
-                -H "Content-Type: application/json" \
-                -X POST \
-                -d "$(jq -nc \
-                  --arg title "update $pkg" \
-                  --arg head "$branch" \
-                  --arg base "$base" \
-                  --arg body "automated package update for $pkg." \
-                  '{title: $title, head: $head, base: $base, body: $body}')" \
-                "$api/pulls" | jq -r '.number')"
+              pr="$(api_call POST "$api/pulls" "$(jq -nc \
+                --arg title "update $pkg" \
+                --arg head "$branch" \
+                --arg base "$base" \
+                --arg body "automated package update for $pkg." \
+                '{title: $title, head: $head, base: $base, body: $body}')")"
+              pr_number="$(printf '%s' "$pr" | jq -r '.number')"
+              prs="$(printf '%s' "$prs" | jq --argjson pr "$pr" '. + [$pr]')"
             fi
 
-            curl -sS \
-              -H "Authorization: token $TOKEN" \
-              -H "Content-Type: application/json" \
-              -X POST \
-              -d '{"Do":"squash","merge_when_checks_succeed":true,"delete_branch_after_merge":true}' \
-              "$api/pulls/$pr_number/merge" || echo ":: automerge request queued or pending"
+            api_call POST \
+              "$api/pulls/$pr_number/merge" \
+              '{"Do":"squash","merge_when_checks_succeed":true,"delete_branch_after_merge":true}' \
+              >/dev/null || echo ":: automerge request queued or pending"
           done
