@@ -1,8 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 {
   home.packages =
     with pkgs;
@@ -70,6 +66,5 @@
       libatomic_ops
 
       lmstudio
-      inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cli-proxy-api
     ]);
 }

@@ -14,6 +14,7 @@
     self.modules.nixos.amdCpu
     self.modules.nixos.lanzaboote
     self.modules.nixos.agentDesktop
+    self.modules.nixos.cliProxyApi
     self.modules.nixos.arbor
     self.modules.nixos.t3code
   ]
