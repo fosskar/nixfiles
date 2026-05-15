@@ -195,6 +195,9 @@ in
         #env = {
         #  EDITOR = "zeditor";
         #};
+        scrollbar = {
+          show = "never";
+        };
         font_size = 14;
         show_count_badge = true;
         toolbar = {
