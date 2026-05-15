@@ -8,11 +8,9 @@
 {
   home-manager.users.simon = {
     imports = [
-      # inputs.self.modules.homeManager.hyprland
       self.modules.homeManager.bash
       self.modules.homeManager.bat
       self.modules.homeManager.btop
-      self.modules.homeManager.cliProxyApi
       self.modules.homeManager.dircolors
       self.modules.homeManager.direnv
       self.modules.homeManager.editorconfig

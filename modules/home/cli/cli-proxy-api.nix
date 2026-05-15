@@ -2,6 +2,12 @@
   flake.modules.homeManager.cliProxyApi =
     { inputs, pkgs, ... }:
     let
+      package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cli-proxy-api;
+
+      cli-proxy-api = pkgs.writeShellScriptBin "cli-proxy-api" ''
+        exec ${package}/bin/cli-proxy-api -config "$HOME/.cli-proxy-api/config.yaml" "$@"
+      '';
+
       configFile = (pkgs.formats.yaml { }).generate "cli-proxy-api-config.yaml" {
         host = "127.0.0.1";
         port = 8317;
@@ -11,9 +17,7 @@
       };
     in
     {
-      home.packages = [
-        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cli-proxy-api
-      ];
+      home.packages = [ cli-proxy-api ];
 
       home.file.".cli-proxy-api/config.yaml".source = configFile;
 
@@ -24,9 +28,7 @@
         };
 
         Service = {
-          ExecStart = "${
-            inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cli-proxy-api
-          }/bin/cli-proxy-api -config %h/.cli-proxy-api/config.yaml";
+          ExecStart = "${package}/bin/cli-proxy-api -config %h/.cli-proxy-api/config.yaml";
           Restart = "on-failure";
           RestartSec = 5;
 
