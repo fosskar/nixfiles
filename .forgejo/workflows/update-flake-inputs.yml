@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   update:
-    runs-on: codeberg-medium
+    runs-on: nixworker
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: cleanup stale update branches
@@ -46,11 +46,6 @@ jobs:
             done < <(printf '%s' "$resp" | jq -r '.[].name | select(startswith("update-"))')
             page=$((page+1))
           done
-      - name: install nix
-        uses: https://github.com/NixOS/nix-installer-action@6b8548fe06acfb0155a50ab5d561accb215764cc # main
-        with:
-          extra-conf: |
-            experimental-features = nix-command flakes
       - name: update flake inputs
         env:
           GITEA_TOKEN: ${{ secrets.TOKEN }}

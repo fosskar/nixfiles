@@ -8,14 +8,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   renovate:
-    runs-on: codeberg-small
+    runs-on: nixworker
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - name: install nix
-        uses: https://github.com/NixOS/nix-installer-action@6b8548fe06acfb0155a50ab5d561accb215764cc # main
-        with:
-          extra-conf: |
-            experimental-features = nix-command flakes
       - name: renovate
         env:
           RENOVATE_PLATFORM: forgejo
