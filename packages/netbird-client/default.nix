@@ -7,13 +7,13 @@
 }:
 buildGoModule (finalAttrs: {
   pname = "netbird-client";
-  version = "0.71.0";
+  version = "0.71.1";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "netbird";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-2O2382nVL07tmXNqkW1BDwKX0SCU6qDRmYwTZugxEWk=";
+    hash = "sha256-xU2P4COLufGdFrit8+IRn96FT1IJKGQ97R9eGv5cjqU=";
   };
 
   vendorHash = "sha256-NeZuj9o2yu5di+6jbNqCnAw0fI55GA5Otmr77c08QFc=";
