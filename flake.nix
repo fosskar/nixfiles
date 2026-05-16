@@ -164,6 +164,10 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    noctalia-v5 = {
+      url = "github:noctalia-dev/noctalia-shell/v5";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     noctalia-plugins = {
       url = "github:Mic92/noctalia-plugins";
       inputs.nixpkgs.follows = "nixpkgs";

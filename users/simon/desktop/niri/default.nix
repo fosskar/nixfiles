@@ -126,7 +126,12 @@ in
         }
 
         layer-rule {
-          match namespace="^noctalia-(background|launcher-overlay|dock)-.*$"
+          match namespace="^noctalia-backdrop"
+          place-within-backdrop true
+        }
+
+        layer-rule {
+          match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel|background|launcher-overlay)(-.*)?$"
           background-effect {
             xray false
           }
@@ -137,6 +142,10 @@ in
             }
           }
         }
+
+        // combined v4/v5 Noctalia namespaces:
+        // v5: ^noctalia-(bar-[^\"]+|notification|dock|panel)$
+        // v4: ^noctalia-(background|launcher-overlay|dock)-.*$
       ''
     );
 

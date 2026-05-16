@@ -22,6 +22,7 @@
       self.modules.homeManager.shellIntegration
       self.modules.homeManager.tmux
       self.modules.homeManager.warpTerminal
+      self.modules.homeManager.noctalia-v5
     ]
     ++ mylib.scanPaths ./. { };
 
