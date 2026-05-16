@@ -1,5 +1,5 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i bash -p curl gnused nix jq
+#!/usr/bin/env nix
+#!nix shell nixpkgs#bash nixpkgs#curl nixpkgs#gnused nixpkgs#nix nixpkgs#jq -c bash
 # shellcheck shell=bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"

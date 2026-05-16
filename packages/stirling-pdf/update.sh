@@ -1,5 +1,5 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i bash -p nix-update nix
+#!/usr/bin/env nix
+#!nix shell nixpkgs#bash nixpkgs#nix-update nixpkgs#nix -c bash
 # shellcheck shell=bash
 set -euo pipefail
 

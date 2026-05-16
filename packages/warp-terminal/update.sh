@@ -1,5 +1,5 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i bash -p bash cacert curl jq nix perl gnugrep --pure
+#!/usr/bin/env nix
+#!nix shell nixpkgs#bash nixpkgs#cacert nixpkgs#curl nixpkgs#jq nixpkgs#nix nixpkgs#perl nixpkgs#gnugrep -c bash
 #shellcheck shell=bash
 set -euo pipefail
 
