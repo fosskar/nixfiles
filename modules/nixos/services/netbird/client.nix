@@ -37,8 +37,8 @@
 
           # netbird manages /etc/ssh/ssh_config.d/99-netbird.conf dynamically
           # for `netbird ssh` peer proxying. hardened mode keeps /etc read-only,
-          # so allow only the upstream-owned ssh config drop-in directory.
-          systemd.services.netbird.serviceConfig.ReadWritePaths = [ "/etc/ssh/ssh_config.d" ];
+          # so allow writes below the existing ssh config directory.
+          systemd.services.netbird.serviceConfig.ReadWritePaths = [ "/etc/ssh" ];
 
           # the login script already checks NeedsLogin status before acting,
           # so the state.json guard is unnecessary and prevents re-auth on expired sessions
