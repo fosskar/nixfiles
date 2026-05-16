@@ -28,6 +28,7 @@ const ASK: Rule[] = [
   { re: /\breboot\b/, tag: "reboot" },
   { re: /\bsystemctl\s+(restart|stop|disable)\b/, tag: "systemctl" },
   { re: /\bsudo\b/, tag: "sudo" },
+  { re: /\bsetfacl\b/, tag: "setfacl" },
   // file destruction
   { re: /\brm\s+(-[^\s]*r|--recursive)/, tag: "recursive rm" },
   { re: /\bchmod\b.*777/, tag: "chmod 777" },
