@@ -3,7 +3,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 const STYLE = `
 commit the changes using this style:
 
-- when writing commit messages focus on the why rather than the what, but state routine mechanical updates directly.
+- subject: what changed. body: why/tradeoffs. state routine mechanical updates directly.
 - use imperative mood.
 - use a context prefix for scoped changes.
 - omit the context prefix only when the change is repository-wide or no clear scope exists.
