@@ -1,17 +1,8 @@
-# netbird composite: disables old nixpkgs modules + aggregates sub-modules
-{ config, ... }:
+# netbird server stack is contributed by server.nix, dashboard.nix, and proxy.nix.
 {
-  flake.modules.nixos.netbird = {
-    imports = with config.flake.modules.nixos; [
-      netbirdDashboard
-      netbirdPersistence
-      netbirdProxy
-      netbirdServer
-    ];
-    disabledModules = [
-      "services/networking/netbird/server.nix"
-      "services/networking/netbird/management.nix"
-      "services/networking/netbird/signal.nix"
-    ];
-  };
+  flake.modules.nixos.netbirdServerStack.disabledModules = [
+    "services/networking/netbird/server.nix"
+    "services/networking/netbird/management.nix"
+    "services/networking/netbird/signal.nix"
+  ];
 }

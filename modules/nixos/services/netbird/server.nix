@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.netbirdServer = # netbird server (management + signal + relay + stun + embedded IdP)
+  flake.modules.nixos.netbirdServerStack = # netbird server (management + signal + relay + stun + embedded IdP)
     {
       config,
       lib,

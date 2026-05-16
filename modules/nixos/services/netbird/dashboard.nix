@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.netbirdDashboard =
+  flake.modules.nixos.netbirdServerStack =
     {
       config,
       lib,
@@ -10,7 +10,6 @@
     let
       toStringEnv = value: if lib.isBool value then lib.boolToString value else toString value;
       cfg = config.services.netbird.server.dashboard;
-      proxyCfg = config.services.netbird.server.proxy;
       serverCfg = config.services.netbird.server;
     in
 
@@ -25,6 +24,12 @@
         managementServer = lib.mkOption {
           type = lib.types.str;
           description = "The address of the management server, used for the API endpoints.";
+        };
+
+        port = lib.mkOption {
+          type = lib.types.port;
+          default = 8080;
+          description = "internal port where nginx serves the dashboard";
         };
 
         settings = lib.mkOption {
@@ -143,8 +148,29 @@
               '';
         };
 
+        services.nginx = {
+          enable = true;
+          virtualHosts.netbird-dashboard = {
+            listen = [
+              {
+                addr = "127.0.0.1";
+                inherit (cfg) port;
+              }
+            ];
+            root = cfg.finalDrv;
+            locations."/" = {
+              tryFiles = "$uri $uri.html $uri/ /index.html";
+              extraConfig = ''
+                add_header X-Content-Type-Options "nosniff" always;
+                add_header X-Frame-Options "DENY" always;
+                add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+              '';
+            };
+          };
+        };
+
         services.anubis.instances.netbird-dashboard.settings = {
-          TARGET = "http://127.0.0.1:${toString proxyCfg.dashboardPort}";
+          TARGET = "http://127.0.0.1:${toString cfg.port}";
           BIND = "127.0.0.1:8098";
           BIND_NETWORK = "tcp";
           METRICS_BIND = "127.0.0.1:8099";

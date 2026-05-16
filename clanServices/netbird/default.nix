@@ -68,7 +68,7 @@
             encryptionKeyPath = config.clan.core.vars.generators.netbird-server.files."encryption-key".path;
           in
           {
-            imports = [ self.modules.nixos.netbird ];
+            imports = [ self.modules.nixos.netbirdServerStack ];
 
             # server secrets
             clan.core.vars.generators.netbird-server = {
@@ -185,7 +185,7 @@
             ...
           }:
           {
-            imports = [ self.modules.nixos.netbirdPersistence ];
+            imports = [ self.modules.nixos.netbirdClient ];
 
             config = {
               # setup key secret
@@ -203,17 +203,9 @@
               };
 
               services.netbird = {
-                enable = true;
-                ui.enable = false;
-                package = pkgs.custom.netbird-client;
                 useRoutingFeatures = settings.routingFeatures;
                 clients.default = {
                   port = serverSettings.port or 51820;
-                  # netbird >=0.66 logs profile-manager warnings without HOME/XDG
-                  environment = {
-                    HOME = "/var/lib/netbird";
-                    XDG_CONFIG_HOME = "/var/lib/netbird";
-                  };
                   login = {
                     enable = true;
                     setupKeyFile = config.clan.core.vars.generators.netbird-client.files."setup-key".path;
@@ -266,14 +258,7 @@
                     exit 0
                   '';
                 };
-                environment = {
-                  HOME = "/var/lib/netbird";
-                  XDG_CONFIG_HOME = "/var/lib/netbird";
-                };
               };
-
-              # trust netbird interface — netbird handles access control
-              networking.firewall.trustedInterfaces = [ "wt0" ];
 
             };
           };

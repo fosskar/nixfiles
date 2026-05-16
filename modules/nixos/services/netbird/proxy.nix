@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.netbirdProxy = # netbird reverse proxy
+  flake.modules.nixos.netbirdServerStack = # netbird reverse proxy
     # when enabled, sets up:
     # - traefik routes for dashboard/API/gRPC + TLS passthrough for proxy
     # - nginx to serve dashboard static files on internal port
@@ -18,7 +18,6 @@
       cfg = config.services.netbird.server.proxy;
       hasPreservation = lib.hasAttrByPath [ "preservation" "preserveAt" ] options;
       serverCfg = config.services.netbird.server;
-      dashboardCfg = config.services.netbird.server.dashboard;
       stateDir = "/var/lib/netbird-proxy";
       configFile =
         (pkgs.formats.yaml { }).generate "crowdsec.yaml"
@@ -100,12 +99,6 @@
           type = lib.types.bool;
           default = false;
           description = "allow insecure (non-TLS) gRPC connection to management server";
-        };
-
-        dashboardPort = lib.mkOption {
-          type = lib.types.port;
-          default = 8080;
-          description = "internal port where nginx serves the dashboard";
         };
 
         serverPort = lib.mkOption {
@@ -349,30 +342,6 @@
           '';
         };
 
-        # --- nginx ---
-
-        services.nginx = lib.mkIf dashboardCfg.enable {
-          enable = true;
-          defaultHTTPListenPort = cfg.dashboardPort;
-          virtualHosts.dashboard = {
-            listen = [
-              {
-                addr = "127.0.0.1";
-                port = cfg.dashboardPort;
-              }
-            ];
-            root = dashboardCfg.finalDrv;
-            locations."/".tryFiles = "$uri $uri.html $uri/ =404";
-            extraConfig = ''
-              error_page 404 /404.html;
-              add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-              add_header X-Content-Type-Options "nosniff" always;
-              add_header X-Frame-Options "DENY" always;
-              add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-            '';
-          };
-        };
-
         # crowdsec parser for netbird-proxy debug access log lines
         # (NB_PROXY_LOG_LEVEL=debug enables per-request `response:` lines
         # in the journal; this parser extracts them into the http_access-log
@@ -467,19 +436,13 @@
                 tls.certResolver = "letsencrypt";
                 priority = 100;
               };
-              # dashboard catch-all (lowest HTTP priority)
-              netbird-dashboard = {
-                rule = "Host(`${serverCfg.domain}`)";
-                service = lib.mkDefault "netbird-dashboard";
-                entryPoints = [ "websecure" ];
-                tls.certResolver = "letsencrypt";
-                priority = 1;
-              };
+              # Dashboard catch-all is defined in dashboard.nix so it can point
+              # at Anubis when dashboard protection is enabled:
+              # traefik -> anubis -> nginx -> static dashboard.
             };
             services = {
-              netbird-dashboard.loadBalancer.servers = [
-                { url = "http://127.0.0.1:${toString cfg.dashboardPort}"; }
-              ];
+              # Dashboard service is defined in dashboard.nix for the same
+              # reason as the dashboard router above.
               netbird-server.loadBalancer.servers = [
                 { url = "http://127.0.0.1:${toString cfg.serverPort}"; }
               ];
