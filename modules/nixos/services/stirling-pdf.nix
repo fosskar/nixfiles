@@ -3,7 +3,6 @@
     {
       config,
       lib,
-      pkgs,
       ...
     }:
     let
@@ -16,7 +15,6 @@
     {
       services.stirling-pdf = {
         enable = true;
-        package = pkgs.custom.stirling-pdf;
         environment = {
           SERVER_PORT = toString listenPort;
           SYSTEM_ENABLEANALYTICS = "false";

@@ -35,18 +35,11 @@ in
                 }
               );
 
-          # extra args to pass to specific packages
-          extraArgs = {
-            stirling-pdf = {
-              isDesktopVariant = false;
-            };
-          };
-
           # convert to attrset of callPackage calls
           packagesAttrset = lib.listToAttrs (
             map (path: {
               name = baseNameOf path;
-              value = pkgs.callPackage path (extraArgs.${baseNameOf path} or { });
+              value = pkgs.callPackage path { };
             }) packageDirs
           );
         in
