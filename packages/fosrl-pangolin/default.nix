@@ -47,17 +47,19 @@ buildNpmPackage (finalAttrs: {
   # Replace the googleapis.com Inter font with a local copy from Nixpkgs.
   # Based on pkgs.nextjs-ollama-llm-ui.
   postPatch = ''
-            substituteInPlace src/app/layout.tsx --replace-fail \
-              '{ Inter } from "next/font/google"' \
-              'localFont from "next/font/local"'
+    if grep -q 'next/font/google' src/app/layout.tsx; then
+      substituteInPlace src/app/layout.tsx --replace-fail \
+        '{ Inter } from "next/font/google"' \
+        'localFont from "next/font/local"'
 
-            substituteInPlace src/app/layout.tsx --replace-fail \
-              'const inter = Inter({
+      substituteInPlace src/app/layout.tsx --replace-fail \
+        'const inter = Inter({
         subsets: ["latin"]
     });' \
-              'const inter = localFont({ src: "./Inter.ttf" });'
+        'const inter = localFont({ src: "./Inter.ttf" });'
 
-            cp "${inter}/share/fonts/truetype/InterVariable.ttf" src/app/Inter.ttf
+      cp "${inter}/share/fonts/truetype/InterVariable.ttf" src/app/Inter.ttf
+    fi
   '';
 
   preBuild = ''
