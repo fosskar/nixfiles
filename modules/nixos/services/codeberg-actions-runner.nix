@@ -2,6 +2,7 @@
   flake.modules.nixos.codebergActionsRunner =
     { config, pkgs, ... }:
     let
+      runnerUid = 980;
       runnerConfig = (pkgs.formats.yaml { }).generate "forgejo-runner-config.yaml" {
         log = {
           level = "info";
@@ -44,6 +45,15 @@
         '';
       };
 
+      users.users.forgejo-runner = {
+        isSystemUser = true;
+        group = "forgejo-runner";
+        uid = runnerUid;
+      };
+      users.groups.forgejo-runner.gid = runnerUid;
+
+      nix.settings.allowed-users = [ "forgejo-runner" ];
+
       containers.codeberg-actions-runner = {
         autoStart = true;
         ephemeral = false;
@@ -67,14 +77,18 @@
             users.users.forgejo-runner = {
               isSystemUser = true;
               group = "forgejo-runner";
+              uid = runnerUid;
               home = "/var/lib/forgejo-runner";
             };
-            users.groups.forgejo-runner = { };
+            users.groups.forgejo-runner.gid = runnerUid;
 
-            nix.settings.experimental-features = [
-              "nix-command"
-              "flakes"
-            ];
+            nix = {
+              nixPath = [ "nixpkgs=${pkgs.path}" ];
+              settings.experimental-features = [
+                "nix-command"
+                "flakes"
+              ];
+            };
 
             systemd.services.forgejo-runner = {
               description = "Forgejo Actions Runner";
