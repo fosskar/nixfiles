@@ -3,9 +3,8 @@
 #shellcheck shell=bash
 set -euo pipefail
 
-pkg_dir=$(cd "$(dirname "$0")" && pwd)
-repo_root=$(cd "$pkg_dir/../.." && pwd)
-package_file="$pkg_dir/default.nix"
+repo_root=${FLAKE_ROOT:-$PWD}
+package_file="$repo_root/packages/warp-terminal/default.nix"
 
 err() {
   echo "$*" >&2
