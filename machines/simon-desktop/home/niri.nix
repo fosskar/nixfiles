@@ -22,9 +22,30 @@ _: {
           { app-id = "^Element$"; }
           { app-id = "^element$"; }
           { app-id = "^io\\.element\\.desktop$"; }
+          # Element reports `electron` as app-id here; keep specific IDs for builds that set them correctly.
+          {
+            app-id = "^electron$";
+            title = ".*Element.*";
+          }
           { app-id = "^steam$"; }
         ];
         open-on-workspace = "2";
+      }
+      {
+        matches = [
+          { app-id = "^dev\\.zed\\.Zed(-Nightly)?$"; }
+        ];
+        default-column-width = {
+          fixed = 1800;
+        };
+      }
+      {
+        matches = [
+          { app-id = "^zen-beta$"; }
+        ];
+        default-column-width = {
+          fixed = 1700;
+        };
       }
     ];
 
