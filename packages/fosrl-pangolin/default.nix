@@ -27,16 +27,16 @@ let
 in
 buildNpmPackage (finalAttrs: {
   pname = "pangolin";
-  version = "1.17.1";
+  version = "1.18.4";
 
   src = fetchFromGitHub {
     owner = "fosrl";
     repo = "pangolin";
     tag = finalAttrs.version;
-    hash = "sha256-V1yOSFN2g5MHPIXF/UFymgXrfN5tE99cuIFnWpdCVCA=";
+    hash = "sha256-b8fXjjsPAN8KI0jxshGJGJSLcRTG5x8bBwlZjxKOdP0=";
   };
 
-  npmDepsHash = "sha256-DyPfylne9Ku7sEUNN0LLlN0EOnCjcklsh+F6YP+rXv4=";
+  npmDepsHash = "sha256-+qsHvytwAIbbNYpgNT6I7lekpxY0mUWcWGA9dT6rbtc=";
   npmFlags = [ "--legacy-peer-deps" ];
 
   nativeBuildInputs = [
