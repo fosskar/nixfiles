@@ -31,6 +31,7 @@
           "**/LICENSE"
           "flake.lock"
           "**/flake.lock"
+          "**/facter.json"
           "result"
           "**/result"
           "sops/secrets/*"
