@@ -57,10 +57,10 @@ in
         "terminal.background" = "#00000000"; # terminal pane background
         "toolbar.background" = "#00000033"; # breadcrumbs/toolbars
 
-        "error" = t.dark.semantic.error;
-        "warning" = t.dark.semantic.warning;
-        "success" = t.dark.semantic.success;
-        "text.accent" = t.dark.accent.primary;
+        "error" = "${t.dark.semantic.error}40";
+        "warning" = "${t.dark.semantic.warning}40";
+        "success" = "${t.dark.semantic.success}40";
+        "text.accent" = "${t.dark.accent.primary}40";
       };
       colorize_brackets = true;
       bottom_dock_layout = "left_aligned";
