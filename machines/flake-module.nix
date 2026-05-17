@@ -96,7 +96,10 @@ in
           module.name = "importer";
           roles.default = {
             tags.nixos = { };
-            extraModules = [ config.flake.modules.nixos.base ];
+            extraModules = with config.flake.modules.nixos; [
+              base
+              clanMachineId
+            ];
           };
         };
 
@@ -118,6 +121,7 @@ in
             extraModules = with config.flake.modules.nixos; [
               inputs.srvos.nixosModules.desktop
               workstation
+              nixAccessTokens
               yubikey
               niri
             ];
@@ -129,7 +133,7 @@ in
           roles.default = {
             tags.laptop = { };
             extraModules = with config.flake.modules.nixos; [
-              laptopPower
+              laptop
               fprint
             ];
           };
@@ -325,7 +329,8 @@ in
             name = "wifi";
             input = "clan-core";
           };
-          roles.default.machines."lpt-titan" = {
+          roles.default = {
+            tags.laptop = { };
             settings.networks = {
               home = { };
             };

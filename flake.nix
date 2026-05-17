@@ -199,6 +199,8 @@
 
       systems = import inputs.systems;
 
+      flake.lib = mylib;
+
       imports = [
         inputs.clan-core.flakeModules.default
         inputs.flake-parts.flakeModules.modules

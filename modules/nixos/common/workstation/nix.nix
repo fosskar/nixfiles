@@ -15,20 +15,6 @@
         }
       ];
 
-      clan.core.vars.generators.nix-access-tokens = {
-        files.tokens.secret = true;
-        prompts.tokens = {
-          description = "nix access-tokens line (e.g. access-tokens = github.com=ghp_...)";
-          type = "multiline";
-          persist = true;
-        };
-        script = "cat $prompts/tokens > $out/tokens";
-      };
-
-      nix.extraOptions = ''
-        !include ${config.clan.core.vars.generators.nix-access-tokens.files.tokens.path}
-      '';
-
       # cross-build for aarch64 (e.g. nix-on-droid)
       boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 

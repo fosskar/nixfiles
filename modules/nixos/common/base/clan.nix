@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.base =
+  flake.modules.nixos.clanMachineId =
     { lib, ... }:
     {
       clan.core.settings.machine-id.enable = true;
