@@ -1,20 +1,33 @@
 {
-  flake.modules.nixos.base = _: {
-    security = {
-      # disables hibernation as side effect
-      protectKernelImage = true;
+  flake.modules.nixos.base =
+    { lib, ... }:
+    {
+      security = {
+        # disables hibernation as side effect
+        protectKernelImage = true;
 
-      # Breaks virtd, wireguard, iptables and many more features by
-      # disallowing them from loading modules during runtime. You may
-      # enable this module if you wish, but do make sure that the
-      # necessary modules are loaded declaratively before doing so.
-      # Failing to add those modules may result in an unbootable system!
-      lockKernelModules = false;
+        # Breaks virtd, wireguard, iptables and many more features by
+        # disallowing them from loading modules during runtime. You may
+        # enable this module if you wish, but do make sure that the
+        # necessary modules are loaded declaratively before doing so.
+        # Failing to add those modules may result in an unbootable system!
+        lockKernelModules = false;
 
-      # User namespaces are required for sandboxing
-      allowUserNamespaces = true;
+        # User namespaces are required for sandboxing
+        allowUserNamespaces = true;
 
-      allowSimultaneousMultithreading = true;
+        allowSimultaneousMultithreading = true;
+
+        lsm = lib.mkForce [
+          "landlock"
+          "lockdown"
+          "yama"
+          "integrity"
+          "apparmor"
+          "bpf"
+          "tomoyo"
+          "selinux"
+        ];
+      };
     };
-  };
 }

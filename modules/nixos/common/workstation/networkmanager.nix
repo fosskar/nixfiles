@@ -3,16 +3,10 @@
     { lib, config, ... }:
     {
       # add wheel users to networkmanager group
-      users.groups.networkmanager.members = config.users.groups.wheel.members;
+      users.groups.networkmanager.members = lib.mkAfter config.users.groups.wheel.members;
 
       # wireless regulatory database
       hardware.wirelessRegulatoryDatabase = true;
-
-      # persist networkmanager + iwd state
-      preservation.preserveAt."/persist".directories = [
-        "/var/lib/NetworkManager"
-        "/var/lib/iwd"
-      ];
 
       networking = {
         useDHCP = lib.mkDefault false;

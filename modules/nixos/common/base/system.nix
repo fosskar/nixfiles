@@ -8,8 +8,10 @@
       ];
 
       services.journald.extraConfig = ''
-        SystemMaxUse=100M
-        RuntimeMaxUse=50M
+        SystemMaxUse=500M
+        SystemKeepFree=1G
+        SystemMaxFileSize=50M
+        MaxRetentionSec=1week
       '';
 
       environment = {

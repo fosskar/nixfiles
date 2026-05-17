@@ -1,8 +1,8 @@
 {
-  flake.modules.nixos.yubikey =
+  flake.modules.nixos.yubikeyU2f =
     {
-      lib,
       config,
+      lib,
       pkgs,
       ...
     }:

@@ -20,6 +20,8 @@
     self.modules.nixos.arbor
     self.modules.nixos.limux
     self.modules.nixos.t3code
+    self.modules.nixos.yubikeyGpgSsh
+    self.modules.nixos.yubikeyU2f
   ]
   ++ mylib.scanPaths ./. { };
 }

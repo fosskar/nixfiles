@@ -13,11 +13,13 @@
           lsof
           gitMinimal
           jq
+          openssl
           tcpdump
           nmap
           wget
           unzip
           ripgrep
+          yq-go
           pciutils
           nvme-cli
           smartmontools

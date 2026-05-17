@@ -21,9 +21,6 @@
         # ignore access time (atime) updates on files
         "rootflags=noatime"
 
-        # linux security modules
-        "lsm=landlock,lockdown,yama,integrity,apparmor,bpf,tomoyo,selinux"
-
         # additional integrity auditing messages
         "integrity_audit=1"
 

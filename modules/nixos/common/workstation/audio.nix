@@ -13,7 +13,7 @@
     in
     {
       config = {
-        users.groups.audio.members = config.users.groups.wheel.members;
+        users.groups.audio.members = lib.mkAfter config.users.groups.wheel.members;
 
         services = {
           udev.extraRules = ''

@@ -1,9 +1,9 @@
 {
   flake.modules.nixos.betaflight =
-    { config, ... }:
+    { config, lib, ... }:
     {
       # add wheel users to plugdev group for Betaflight DFU
-      users.groups.plugdev.members = config.users.groups.wheel.members;
+      users.groups.plugdev.members = lib.mkAfter config.users.groups.wheel.members;
 
       services.udev.extraRules = ''
         # betaflight fpv rules - DFU (internal bootloader for STM32 and AT32 MCUs)

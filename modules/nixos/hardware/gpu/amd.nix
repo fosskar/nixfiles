@@ -29,7 +29,7 @@
         radeontop
       ];
 
-      users.groups.video.members = config.users.groups.wheel.members;
+      users.groups.video.members = lib.mkAfter config.users.groups.wheel.members;
 
       services.xserver.videoDrivers = [ "modesetting" ];
 

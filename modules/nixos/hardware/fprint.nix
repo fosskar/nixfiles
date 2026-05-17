@@ -22,6 +22,5 @@
           greetd = fprintService null;
         };
 
-      preservation.preserveAt."/persist".directories = [ "/var/lib/fprint" ];
     };
 }

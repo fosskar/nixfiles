@@ -12,6 +12,7 @@
       listenAddress = "127.0.0.1";
       listenPort = 3100;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+      smtpEnabled = config.clan.core.vars.generators ? smtp;
 
     in
     {
@@ -19,16 +20,6 @@
         # --- secrets ---
 
         clan.core.vars.generators.grafana = {
-          prompts.smtp-email = {
-            description = "gmail address for grafana smtp sender/login";
-            persist = true;
-          };
-          prompts.smtp-password = {
-            description = "gmail app password for grafana smtp";
-            type = "hidden";
-            persist = true;
-          };
-
           files."admin-password" = {
             owner = "grafana";
             group = "grafana";
@@ -41,15 +32,6 @@
             owner = "grafana";
             group = "grafana";
           };
-          files."smtp-email" = {
-            owner = "grafana";
-            group = "grafana";
-          };
-          files."smtp-password" = {
-            owner = "grafana";
-            group = "grafana";
-          };
-
           files."oauth-client-secret-hash" = {
             owner = "authelia-main";
             group = "authelia-main";
@@ -64,15 +46,10 @@
             ADMIN_PASSWORD=$(openssl rand -hex 32)
             SECRET=$(pwgen -s 64 1)
             SECRET_KEY=$(openssl rand -hex 32)
-            SMTP_EMAIL=$(cat "$prompts/smtp-email")
-            SMTP_PASSWORD=$(cat "$prompts/smtp-password")
-
             echo -n "$ADMIN_PASSWORD" > "$out/admin-password"
             authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
             echo -n "$SECRET" > "$out/oauth-client-secret"
             echo -n "$SECRET_KEY" > "$out/secret-key"
-            echo -n "$SMTP_EMAIL" > "$out/smtp-email"
-            echo -n "$SMTP_PASSWORD" > "$out/smtp-password"
           '';
         };
 
@@ -112,6 +89,10 @@
         ];
 
         # --- service ---
+
+        systemd.services.grafana.serviceConfig.EnvironmentFile = lib.mkIf smtpEnabled [
+          config.clan.core.vars.generators.smtp.files."smtp-env".path
+        ];
 
         services.grafana = {
           openFirewall = false;
@@ -156,12 +137,12 @@
               secret_key = "$__file{${config.clan.core.vars.generators.grafana.files."secret-key".path}}";
             };
 
-            smtp = {
+            smtp = lib.mkIf smtpEnabled {
               enabled = true;
-              host = "smtp.gmail.com:587";
-              user = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-email".path}}";
-              password = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-password".path}}";
-              from_address = "$__file{${config.clan.core.vars.generators.grafana.files."smtp-email".path}}";
+              host = "$__env{SMTP_HOST}:$__env{SMTP_PORT}";
+              user = "$__env{SMTP_USER}";
+              password = "$__env{SMTP_PASSWORD}";
+              from_address = "$__env{SMTP_FROM}";
               from_name = "grafana";
               ehlo_identity = localHost;
               startTLS_policy = "MandatoryStartTLS";

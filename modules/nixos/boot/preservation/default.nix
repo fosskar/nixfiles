@@ -8,6 +8,7 @@ in
       config,
       lib,
       inputs,
+      options,
       ...
     }:
     let
@@ -154,11 +155,25 @@ in
 
           preserveAt.${persistPath} = {
             directories =
-              map toPreservationDir [
-                "/var/lib/nixos"
-                "/var/lib/systemd"
-                "/var/log"
-              ]
+              map toPreservationDir (
+                [
+                  "/var/lib/nixos"
+                  "/var/lib/systemd"
+                  "/var/log"
+                ]
+                ++ lib.optional config.networking.networkmanager.enable "/var/lib/NetworkManager"
+                ++ lib.optional (
+                  (config.networking.wireless.iwd.enable or false)
+                  || (
+                    config.networking.networkmanager.enable && config.networking.networkmanager.wifi.backend == "iwd"
+                  )
+                ) "/var/lib/iwd"
+                ++ lib.optional config.hardware.bluetooth.enable "/var/lib/bluetooth"
+                ++ lib.optional config.services.fprintd.enable "/var/lib/fprint"
+                ++ lib.optional (
+                  (lib.hasAttrByPath [ "boot" "lanzaboote" "enable" ] options) && config.boot.lanzaboote.enable
+                ) config.boot.lanzaboote.pkiBundle
+              )
               ++ lib.optional true {
                 directory = "/var/lib/sops-nix";
                 how = "bindmount";

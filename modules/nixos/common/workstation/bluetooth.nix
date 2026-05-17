@@ -1,22 +1,17 @@
 {
   flake.modules.nixos.workstation =
-    {
-      lib,
-      options,
-      ...
-    }:
-    let
-      hasPreservation = lib.hasAttrByPath [ "preservation" "preserveAt" ] options;
-    in
+    { lib, pkgs, ... }:
     {
       hardware.bluetooth = {
         enable = lib.mkDefault true;
+        package = pkgs.bluez5-experimental;
         powerOnBoot = lib.mkDefault false;
-        settings.General.Experimental = lib.mkDefault true;
+        settings.General = {
+          JustWorksRepairing = "always";
+          Experimental = true;
+        };
       };
 
-      preservation = lib.optionalAttrs hasPreservation {
-        preserveAt."/persist".directories = [ "/var/lib/bluetooth" ];
-      };
+      services.blueman.enable = true;
     };
 }

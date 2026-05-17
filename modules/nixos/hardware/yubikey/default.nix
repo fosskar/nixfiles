@@ -1,12 +1,17 @@
 {
   flake.modules.nixos.yubikey =
-    { pkgs, config, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       # smartcard support
       services.pcscd.enable = true;
 
       # add wheel users to pcscd group
-      users.groups.pcscd.members = config.users.groups.wheel.members;
+      users.groups.pcscd.members = lib.mkAfter config.users.groups.wheel.members;
 
       # udev rules
       services.udev.packages = [

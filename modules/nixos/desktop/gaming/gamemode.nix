@@ -1,8 +1,13 @@
 {
   flake.modules.nixos.gaming =
-    { config, pkgs, ... }:
     {
-      users.groups.gamemode.members = config.users.groups.wheel.members;
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    {
+      users.groups.gamemode.members = lib.mkAfter config.users.groups.wheel.members;
 
       programs.gamemode = {
         enable = true;

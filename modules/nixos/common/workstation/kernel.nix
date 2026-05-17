@@ -16,7 +16,6 @@
 
           # verbose boot - show systemd status
           "boot.shell_on_fail"
-          "loglevel=4"
 
           # disable legacy serial port probing - no real serial ports on modern workstations
           "8250.nr_uarts=0"

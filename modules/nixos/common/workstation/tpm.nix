@@ -7,6 +7,8 @@
       ...
     }:
     {
+      boot.initrd.systemd.tpm2.enable = lib.mkDefault true;
+
       security.tpm2 = {
         enable = lib.mkDefault true;
         applyUdevRules = lib.mkDefault true;
@@ -16,7 +18,7 @@
       };
 
       # add wheel users to tss group for TPM access
-      users.groups.tss.members = config.users.groups.wheel.members;
+      users.groups.tss.members = lib.mkAfter config.users.groups.wheel.members;
 
       environment.systemPackages = lib.mkIf config.security.tpm2.enable [
         pkgs.tpm2-tools

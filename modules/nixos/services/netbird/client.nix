@@ -32,7 +32,8 @@
           systemd.services.netbird.path = [ pkgs.shadow ];
 
           users.groups = lib.mapAttrs' (
-            _name: client: lib.nameValuePair client.user.group { members = config.users.groups.wheel.members; }
+            _name: client:
+            lib.nameValuePair client.user.group { members = lib.mkAfter config.users.groups.wheel.members; }
           ) config.services.netbird.clients;
 
           # netbird manages /etc/ssh/ssh_config.d/99-netbird.conf dynamically

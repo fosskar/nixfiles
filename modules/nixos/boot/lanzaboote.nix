@@ -13,7 +13,15 @@
       imports = [ inputs.lanzaboote.nixosModules.lanzaboote ];
 
       boot = {
-        loader.systemd-boot.enable = lib.mkForce false;
+        loader = {
+          efi.canTouchEfiVariables = lib.mkDefault true;
+          systemd-boot = {
+            enable = lib.mkForce false;
+            configurationLimit = lib.mkDefault 20;
+            consoleMode = lib.mkDefault "max";
+            editor = lib.mkDefault false;
+          };
+        };
         bootspec.enable = true;
         lanzaboote = {
           enable = true;
@@ -23,7 +31,5 @@
 
       environment.systemPackages = [ pkgs.sbctl ];
 
-      # persist secure boot keys
-      preservation.preserveAt."/persist".directories = [ pkiBundle ];
     };
 }

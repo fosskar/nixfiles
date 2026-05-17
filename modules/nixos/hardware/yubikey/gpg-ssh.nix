@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.yubikey =
+  flake.modules.nixos.yubikeyGpgSsh =
     { pkgs, ... }:
     {
       # public keys published via clan vars (generator does nothing; values persist)
