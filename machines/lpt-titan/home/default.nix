@@ -1,8 +1,13 @@
 {
   mylib,
+  self,
   ...
 }:
 {
-  # laptop-specific home-manager config
-  home-manager.users.simon.imports = mylib.scanPaths ./. { };
+  home-manager.users.simon = {
+    imports = [
+      self.modules.homeManager.noctalia-v5
+    ]
+    ++ mylib.scanPaths ./. { };
+  };
 }

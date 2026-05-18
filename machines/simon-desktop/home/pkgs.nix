@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
   home.packages = [
-    pkgs.custom.brave-origin
+    pkgs.teamspeak6-client
   ];
 }

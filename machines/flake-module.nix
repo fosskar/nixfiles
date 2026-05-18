@@ -120,6 +120,7 @@ in
             tags.workstation = { };
             extraModules = with config.flake.modules.nixos; [
               inputs.srvos.nixosModules.desktop
+              homeManager
               workstation
               nixAccessTokens
               yubikey

@@ -1,12 +1,14 @@
 {
   mylib,
-  pkgs,
+  self,
   ...
 }:
 {
-  # desktop-specific home-manager config
   home-manager.users.simon = {
-    imports = mylib.scanPaths ./. { };
-    home.packages = [ pkgs.teamspeak6-client ];
+    imports = [
+      self.modules.homeManager.gaming
+      self.modules.homeManager.noctalia
+    ]
+    ++ mylib.scanPaths ./. { };
   };
 }

@@ -10,19 +10,23 @@
     imports = [
       self.modules.homeManager.bash
       self.modules.homeManager.bat
+      self.modules.homeManager.brave
       self.modules.homeManager.btop
       self.modules.homeManager.dircolors
       self.modules.homeManager.direnv
       self.modules.homeManager.editorconfig
       self.modules.homeManager.fzf
       self.modules.homeManager.hunk
+      self.modules.homeManager.ladybird
       self.modules.homeManager.neovim
+      self.modules.homeManager.niri
       self.modules.homeManager.nixIndex
       self.modules.homeManager.ripgrep
       self.modules.homeManager.shellIntegration
+      self.modules.homeManager.theme
       self.modules.homeManager.tmux
       self.modules.homeManager.warpTerminal
-      self.modules.homeManager.noctalia-v5
+      self.modules.homeManager.zen
     ]
     ++ mylib.scanPaths ./. { };
 
