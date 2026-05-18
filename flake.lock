@@ -926,23 +926,6 @@
         "url": "https://github.com/NixOS/nixpkgs"
       }
     },
-    "nixpkgs-git": {
-      "locked": {
-        "lastModified": 1779166884,
-        "narHash": "sha256-9VsEDdtgj5xVvmenuGkgLXqpiEAHFTgKyrb60IlXkJE=",
-        "ref": "master",
-        "rev": "f23bab7757705942a1a113db4453570bbe1362be",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/NixOS/nixpkgs"
-      },
-      "original": {
-        "ref": "master",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/NixOS/nixpkgs"
-      }
-    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1769909678,
@@ -1157,7 +1140,6 @@
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-git": "nixpkgs-git",
         "nixpkgs-stable": "nixpkgs-stable",
         "noctalia": "noctalia",
         "noctalia-plugins": "noctalia-plugins",
