@@ -672,11 +672,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779168826,
-        "narHash": "sha256-zXzOobPq0wLFjtwgqQ0AP1rlpxHMFVF48ShkCIl6ze0=",
+        "lastModified": 1779169598,
+        "narHash": "sha256-kDqwhShM5QO23wtV19ABgMK7tERiAH9SG9Tq78QkL8Y=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "62211259de34f873d42135ee69ccb2f3b4b77a09",
+        "rev": "66fdac12b5c15aa5c6161d9890e09b378a775cc2",
         "type": "github"
       },
       "original": {
@@ -1045,11 +1045,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779079850,
-        "narHash": "sha256-eIav2DdAI218VHu15+u/uaH37YEop/Z0FSUrMIuMQnw=",
+        "lastModified": 1779166189,
+        "narHash": "sha256-Ta5wmCYoR84O2USJBKtQ2IgnNZNL4aLMZMuKb0XjOUM=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "cce114125f7d0063c234060772507d73ee2198e4",
+        "rev": "2a94e7f5aeae08885d452ca62b42bab34abdfc84",
         "type": "github"
       },
       "original": {
@@ -1497,11 +1497,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1779051016,
-        "narHash": "sha256-jqnM4PVkPmwkxBcnrBjigUIY1q6p/okluJGcybRz1J8=",
+        "lastModified": 1779149764,
+        "narHash": "sha256-HV+T5lD9sBl6UP0WvOEv1dlxFDgWOT/gFHecTn+/Qcs=",
         "owner": "zed-industries",
         "repo": "zed",
-        "rev": "f2df3f9e18fa3bbbdab20086bd98395c97a46116",
+        "rev": "8ca194d833a4d2e9a3f3c43f84e806a36c3839c4",
         "type": "github"
       },
       "original": {
