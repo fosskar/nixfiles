@@ -8,11 +8,11 @@
 }:
 let
   pname = "agent-desktop";
-  version = "0.16.0";
+  version = "0.16.1";
 
   src = fetchurl {
     url = "https://github.com/BaLaurent/agent-desktop/releases/download/v${version}/agent-desktop-${version}-x86_64.AppImage";
-    hash = "sha256-gNUUfYP45geXzTH02qlVltR44/5RH7DRxdEOI6XrBoY=";
+    hash = "sha256-7hL99Wp9V8XQP6/1EJwLLuo6GGgRA6CUMpteQ57tigU=";
   };
 
   extracted = appimageTools.extractType2 { inherit pname version src; };
