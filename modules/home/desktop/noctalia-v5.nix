@@ -16,6 +16,70 @@
         ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
       '';
 
+      noctalia =
+        cmd:
+        [
+          (lib.getExe cfg.package)
+          "msg"
+        ]
+        ++ (lib.splitString " " cmd);
+
+      shellBinds = {
+        "Mod+Space" = {
+          title = "Toggle Launcher";
+          cmd = "panel-toggle launcher";
+        };
+        "Mod+B" = {
+          title = "Toggle Clipboard";
+          cmd = "panel-toggle clipboard";
+        };
+        "Mod+X" = {
+          title = "Toggle Power Menu";
+          cmd = "panel-toggle session";
+        };
+        "Mod+Shift+L" = {
+          title = "Lock Screen";
+          cmd = "screen-lock";
+        };
+        "Mod+M" = {
+          title = "Toggle Control Center";
+          cmd = "panel-toggle control-center";
+        };
+        "XF86AudioRaiseVolume" = {
+          locked = true;
+          cmd = "volume-up";
+        };
+        "XF86AudioLowerVolume" = {
+          locked = true;
+          cmd = "volume-down";
+        };
+        "XF86AudioMute" = {
+          locked = true;
+          cmd = "volume-mute";
+        };
+        "XF86AudioMicMute" = {
+          locked = true;
+          cmd = "mic-mute";
+        };
+        "XF86MonBrightnessUp" = {
+          locked = true;
+          cmd = "brightness-up";
+        };
+        "XF86MonBrightnessDown" = {
+          locked = true;
+          cmd = "brightness-down";
+        };
+      };
+
+      shellNiriBinds = lib.mapAttrs (
+        _: bind:
+        {
+          action.spawn = noctalia bind.cmd;
+        }
+        // lib.optionalAttrs (bind ? title) { hotkey-overlay.title = bind.title; }
+        // lib.optionalAttrs (bind.locked or false) { allow-when-locked = true; }
+      ) shellBinds;
+
       mkPalette = mode: ansiNormalBlack: ansiNormalWhite: ansiBrightBlack: ansiBrightWhite: {
         mPrimary = mode.accent.primary;
         mOnPrimary = mode.bg.base;
@@ -92,6 +156,8 @@
 
       config = lib.mkMerge [
         {
+          programs.niri.settings.binds = shellNiriBinds;
+
           programs.noctalia-v5 = {
             enable = lib.mkDefault true;
 
