@@ -203,6 +203,25 @@ in
           };
         };
 
+        workspace-user = {
+          module = {
+            name = "users";
+            input = "clan-core";
+          };
+
+          roles.default = {
+            machines."nixworker" = { };
+            settings = {
+              user = "workspace";
+              groups = [ "wheel" ];
+              openssh.authorizedKeys.keys = [
+                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE"
+              ];
+            };
+            extraModules = [ "${self}/users/workspace" ];
+          };
+        };
+
         clan-cache = {
           module = {
             name = "trusted-nix-caches";

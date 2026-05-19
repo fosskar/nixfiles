@@ -63,6 +63,12 @@ in
         "text.accent" = "${t.dark.accent.primary}40";
       };
       colorize_brackets = true;
+      ssh_connections = [
+        {
+          host = "workspace@nixworker.s";
+          upload_binary_over_ssh = true;
+        }
+      ];
       bottom_dock_layout = "left_aligned";
       edit_predictions = {
         provider = "copilot";

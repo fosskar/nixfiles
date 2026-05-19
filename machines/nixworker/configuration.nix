@@ -13,11 +13,11 @@
     self.modules.nixos.codebergActionsRunner
     #self.modules.nixos.giteaMq
     self.modules.nixos.radicle
+    self.modules.nixos.homeManager
   ]
   ++ (mylib.scanPaths ./. { });
 
   srvos.boot.consoles = [ "tty0" ];
 
-  # zed remote server binary runs over ssh; nix-ld helps with dynamic linker deps.
   programs.nix-ld.enable = true;
 }
