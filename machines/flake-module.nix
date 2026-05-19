@@ -495,6 +495,8 @@ in
 
         # backups
 
+        # creates filesystem snapshots and exposes those snapshot paths as clan.core.state;
+        # clan-core borgbackup consumes the state and performs the actual backup.
         snapshot-backup = {
           module = {
             name = "snapshot-backup";
