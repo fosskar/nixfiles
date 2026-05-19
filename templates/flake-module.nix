@@ -1,5 +1,10 @@
 _: {
   flake.templates = {
+    clanService = {
+      description = "Clan service template";
+      path = ./clanService;
+    };
+
     devshell = {
       description = "Flake devshell template";
       path = ./devshell;
