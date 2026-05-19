@@ -60,13 +60,17 @@
         };
 
         # disable if nh.clean is enabled (it handles gc instead)
-        gc.automatic = lib.mkDefault (!(config.programs.nh.clean.enable or false));
+        gc = {
+          automatic = lib.mkDefault (!(config.programs.nh.clean.enable or false));
+          options = lib.mkDefault "--delete-older-than 15d";
+        };
       };
 
       # --- gcroots cleanup ---
-      # nh handles profile/generation gc, but stale automatic gcroots
-      # (from nix-build, nix develop, etc.) and broken symlinks accumulate
-      # separately. clean them weekly.
+      # gc only removes store paths after roots are gone. stale automatic
+      # gcroots, stale temproots, and broken symlinks can accumulate
+      # independently of profile/generation cleanup (`nix.gc` or `nh clean`).
+      # clean them weekly.
       systemd.timers.nix-cleanup-gcroots = {
         timerConfig = {
           OnCalendar = [ "weekly" ];
