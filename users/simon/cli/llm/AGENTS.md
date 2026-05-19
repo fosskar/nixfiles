@@ -62,6 +62,12 @@ For commit messages, use exact service/module/option names where possible.
 - atomic commits: one logical change per commit
 - never amend or rewrite pushed commits without permission
 
+## commit messages
+
+use linux-kernel style commit messages, but without tags/trailers.
+prefer repo terminology for the area prefix.
+add body when useful.
+
 ## tools
 
 - search: `rg` over `grep`, `fd` over `find`

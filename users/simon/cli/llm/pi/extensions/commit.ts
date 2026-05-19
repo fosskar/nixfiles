@@ -1,17 +1,11 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const STYLE = `
-commit the changes using this style:
+commit using Linux-kernel style, but without tags/trailers.
+prefer repo terminology for the area prefix.
+body only when useful.
 
-- subject: what changed. body: why/tradeoffs. state routine mechanical updates directly.
-- use imperative mood.
-- use a context prefix for scoped changes.
-- omit the context prefix only when the change is repository-wide or no clear scope exists.
-- use repo/domain terminology from the diff and recent history.
-- keep the subject concise.
-- use paragraphs instead of bullet points in commit bodies.
-
-if the changes cover multiple unrelated concerns, split them into separate logical commits rather than one large commit.
+split unrelated concerns into separate commits.
 `.trim();
 
 const JJ_MECHANICS = `
