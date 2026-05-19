@@ -181,10 +181,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1779099548,
-        "narHash": "sha256-uzG6cCKysVEpK0wn1zx9WrVPFhTulLBQ8YncySvdPFk=",
+        "lastModified": 1779200218,
+        "narHash": "sha256-Covgvu+065Y8yOghWhwKLT9n22gR/Wb7RxMAoJKmhkI=",
         "ref": "refs/heads/main",
-        "rev": "20127fd75780f16c7b55e1a5f7e9b42a5740b99e",
+        "rev": "15802bf73eba5db5276e010003b294390cafd7e3",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -501,11 +501,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779157263,
-        "narHash": "sha256-VbiyZkRf8/qr7ObmlyfOHJsNAW5tyZ4MB1+cUwAwdrw=",
+        "lastModified": 1779202205,
+        "narHash": "sha256-UFt7q51IIhBzo1L+4MqNNljIrMOtrrjiT4vrOmz+wDA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "866412a19866b4a8e32d2306a118040afa2b840c",
+        "rev": "16663cb13826d6aa519fb8c622460e3ce2a04dc1",
         "type": "github"
       },
       "original": {
@@ -546,11 +546,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779163265,
-        "narHash": "sha256-8NyV5qnQDxE6TZQ83TYVda+ZhxggHFmpo/mpx+ka1R4=",
+        "lastModified": 1779203095,
+        "narHash": "sha256-gFxtOs+1fwMDxLGy6tnjsS76aqpQ5K+MfwhwQwDyE4Q=",
         "owner": "modem-dev",
         "repo": "hunk",
-        "rev": "dc0cd32eb65f8ec68c5af6824fbc86e71a3b4e8b",
+        "rev": "73bf7136f6fba5dbb198d23e62023eacbc14a419",
         "type": "github"
       },
       "original": {
@@ -1045,11 +1045,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779166189,
-        "narHash": "sha256-Ta5wmCYoR84O2USJBKtQ2IgnNZNL4aLMZMuKb0XjOUM=",
+        "lastModified": 1779205210,
+        "narHash": "sha256-FkOqDSLv7K5PKYp3RNmGzxhhWDmQCubEKj2BLRryq/Y=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "2a94e7f5aeae08885d452ca62b42bab34abdfc84",
+        "rev": "931c37c309dc2216bd110b10944c587b28e12408",
         "type": "github"
       },
       "original": {
@@ -1347,11 +1347,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1779107769,
-        "narHash": "sha256-OosE/V8tfetBa8179iN9B5HZiTFbKtSaSfKuqBMZaew=",
+        "lastModified": 1779201325,
+        "narHash": "sha256-bqPvfJ7z3HvBxv78cLczeB8N72D7YlxZgpwhhqAO/Ng=",
         "ref": "refs/heads/master",
-        "rev": "8fdcf82cd13f61e11789c14a0013e85fcfc64cfb",
-        "revCount": 2472,
+        "rev": "886425c7c3a7734baa848c2f1072f162179ede41",
+        "revCount": 2485,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
       },
@@ -1497,11 +1497,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1779149764,
-        "narHash": "sha256-HV+T5lD9sBl6UP0WvOEv1dlxFDgWOT/gFHecTn+/Qcs=",
+        "lastModified": 1779206194,
+        "narHash": "sha256-QYmWAPv9gGkvYpODto51eq5UoyPSv/p98gBuoeCnIsE=",
         "owner": "zed-industries",
         "repo": "zed",
-        "rev": "8ca194d833a4d2e9a3f3c43f84e806a36c3839c4",
+        "rev": "ae47ec9ac088483119b286bbc3e27c95afd88d27",
         "type": "github"
       },
       "original": {
