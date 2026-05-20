@@ -191,9 +191,6 @@
           "Mod+T".action = {
             spawn = "ghostty";
           };
-          "Mod+E".action = {
-            spawn = "warp-terminal";
-          };
           "Mod+W".action = {
             spawn = "zen-beta";
           };
