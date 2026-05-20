@@ -138,6 +138,7 @@
             imports = with self.modules.nixos; [
               exporter
               grafana
+              journaldUpload
               victoriaLogs
               victoriaMetrics
             ];
@@ -150,9 +151,18 @@
             ];
 
             services.grafana.enable = lib.mkDefault settings.grafana.enable;
-            services.victorialogs.enable = lib.mkDefault true;
+            services.victorialogs = {
+              enable = lib.mkDefault true;
+              listenAddress = lib.mkForce "0.0.0.0:9428";
+            };
             services.victoriametrics.enable = lib.mkDefault true;
             services.telegraf.enable = lib.mkDefault true;
+            services.journald.upload = {
+              enable = lib.mkDefault true;
+              settings.Upload.URL = lib.mkDefault "http://127.0.0.1:9428/insert/journald";
+            };
+
+            networking.firewall.interfaces.ygg.allowedTCPPorts = [ 9428 ];
 
             environment.etc = lib.mkIf config.services.grafana.enable (
               builtins.listToAttrs (
@@ -217,6 +227,7 @@
           }:
           {
             imports = with self.modules.nixos; [
+              journaldUpload
               telegraf
             ];
 
@@ -230,6 +241,11 @@
             networking.firewall.interfaces.ygg.allowedTCPPorts = lib.mkIf (
               !(builtins.elem config.networking.hostName serverMachines)
             ) [ settings.listenPort ];
+
+            services.journald.upload = lib.mkIf (!(builtins.elem config.networking.hostName serverMachines)) {
+              enable = lib.mkDefault true;
+              settings.Upload.URL = lib.mkDefault "http://${builtins.head serverMachines}.${config.clan.core.settings.domain}:9428/insert/journald";
+            };
 
             services.telegraf = {
               enable = lib.mkDefault true;

@@ -8,6 +8,11 @@
     let
       listenAddress = "127.0.0.1";
       listenPort = 9428;
+      grafanaListenAddress =
+        if lib.hasPrefix "0.0.0.0:" config.services.victorialogs.listenAddress then
+          "127.0.0.1:${toString listenPort}"
+        else
+          config.services.victorialogs.listenAddress;
     in
     {
       config = lib.mkIf config.services.victorialogs.enable {
@@ -22,7 +27,7 @@
             name = "VictoriaLogs";
             type = "victoriametrics-logs-datasource";
             access = "proxy";
-            url = "http://${config.services.victorialogs.listenAddress}";
+            url = "http://${grafanaListenAddress}";
           }
         ];
       };

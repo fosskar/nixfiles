@@ -426,12 +426,50 @@
       ],
       "type": "table",
       "description": "current state of monitored NixOS services, sorted with non-active states first"
+    },
+    {
+      "datasource": "VictoriaLogs",
+      "description": "recent error-level journal entries for the selected machine from VictoriaLogs",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 7,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "12.4.0",
+      "targets": [
+        {
+          "datasource": "VictoriaLogs",
+          "editorMode": "code",
+          "expr": "{_HOSTNAME=\"$machine\"} AND level:error",
+          "maxLines": 100,
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "error logs",
+      "type": "logs"
     }
   ],
   "preload": false,
   "refresh": "30s",
   "schemaVersion": 42,
-  "tags": ["machines", "telegraf"],
+  "tags": ["machines", "telegraf", "victorialogs"],
   "templating": {
     "list": [
       {
@@ -465,5 +503,5 @@
   "timezone": "browser",
   "title": "Machines",
   "uid": "machines",
-  "version": 5
+  "version": 6
 }
