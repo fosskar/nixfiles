@@ -3,7 +3,7 @@ module live-ocr
 go 1.25.0
 
 require (
-	gioui.org v0.9.0
+	gioui.org v0.10.0
 	github.com/otiai10/gosseract/v2 v2.4.1
 )
 
@@ -13,6 +13,7 @@ require (
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
 	golang.org/x/exp/shiny v0.0.0-20260410095643-746e56fc9e2f // indirect
 	golang.org/x/image v0.39.0 // indirect
+	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
 	golang.org/x/text v0.36.0 // indirect
 )

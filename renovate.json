@@ -22,6 +22,20 @@
     {
       "matchFileNames": ["templates/**"],
       "groupName": "template dependencies"
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchFileNames": ["packages/live-ocr/live-ocr/go.mod"],
+      "postUpdateOptions": ["gomodTidy"],
+      "postUpgradeTasks": {
+        "commands": ["bash packages/live-ocr/update-vendor-hash.sh"],
+        "fileFilters": [
+          "packages/live-ocr/default.nix",
+          "packages/live-ocr/live-ocr/go.mod",
+          "packages/live-ocr/live-ocr/go.sum"
+        ],
+        "executionMode": "branch"
+      }
     }
   ],
   "nix": {

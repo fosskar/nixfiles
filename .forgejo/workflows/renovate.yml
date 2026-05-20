@@ -18,5 +18,6 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ forgejo.repository }}
           RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
           RENOVATE_GITHUB_COM_TOKEN: ${{ secrets.RENOVATE_GITHUB_COM_TOKEN }}
+          RENOVATE_ALLOWED_COMMANDS: '["^bash packages/live-ocr/update-vendor-hash\\.sh$"]'
           LOG_LEVEL: info
         run: nix run nixpkgs#renovate
