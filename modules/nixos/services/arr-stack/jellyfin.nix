@@ -28,7 +28,7 @@
             type = "nvenc";
           };
           transcoding = {
-            deleteSegments = false;
+            deleteSegments = true;
             enableHardwareEncoding = true;
             hardwareDecodingCodecs = {
               h264 = true;
@@ -50,6 +50,10 @@
           jellyfin
           jellyfin-web
           jellyfin-ffmpeg
+        ];
+
+        systemd.tmpfiles.rules = [
+          "d /dev/shm/jellyfin-transcodes 0750 jellyfin media -"
         ];
 
         # --- homepage ---
