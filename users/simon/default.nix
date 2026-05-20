@@ -36,6 +36,7 @@
       self.modules.homeManager.tmux
       self.modules.homeManager.udiskie
       self.modules.homeManager.wezterm
+      self.modules.homeManager.yazi
       self.modules.homeManager.zathura
       self.modules.homeManager.zellij
       self.modules.homeManager.zen
