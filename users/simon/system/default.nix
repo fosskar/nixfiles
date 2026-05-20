@@ -14,11 +14,7 @@
       # 16 20 22 24 28 32 40 48 56 64 72 80 88 96
       size = 20;
       gtk.enable = true;
-      x11.enable = false;
-      hyprcursor = {
-        enable = true;
-        size = 20;
-      };
+      x11.enable = true;
     };
   };
 }
