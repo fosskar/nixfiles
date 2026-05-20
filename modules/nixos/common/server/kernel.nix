@@ -16,17 +16,8 @@
         # Disable debugfs which exposes sensitive information about the kernel
         "debugfs=off"
 
-        # slub_debug=FZP removed - was exposing kernel addresses
-
-        # ignore access time (atime) updates on files
-        "rootflags=noatime"
-
         # additional integrity auditing messages
         "integrity_audit=1"
-
-        # vm.swappiness handled by base/zram.nix
-
-        # note: module.sig_enforce and lockdown skipped (breaks VMs)
       ];
 
       blacklistedKernelModules = [

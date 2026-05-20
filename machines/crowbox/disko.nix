@@ -49,7 +49,6 @@
                   mountpoint = "/";
                   mountOptions = [
                     "compress=zstd"
-                    "noatime"
                     "discard=async"
                   ];
                 };
@@ -57,7 +56,6 @@
                   mountpoint = "/nix";
                   mountOptions = [
                     "compress=zstd"
-                    "noatime"
                     "discard=async"
                   ];
                 };
@@ -65,7 +63,6 @@
                   mountpoint = "/persist";
                   mountOptions = [
                     "compress=zstd"
-                    "noatime"
                     "discard=async"
                   ];
                 };

@@ -135,7 +135,6 @@
         };
         rootFsOptions = {
           compression = "zstd";
-          atime = "off";
           acltype = "posixacl";
           mountpoint = "none";
         };

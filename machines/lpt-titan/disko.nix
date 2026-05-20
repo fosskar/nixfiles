@@ -67,19 +67,19 @@
         subvolumes = {
           "@root" = {
             mountpoint = "/";
-            mountOptions = [ "noatime" ];
+            mountOptions = [ ];
           };
           "@home" = {
             mountpoint = "/home";
-            mountOptions = [ "noatime" ];
+            mountOptions = [ ];
           };
           "@nix" = {
             mountpoint = "/nix";
-            mountOptions = [ "noatime" ];
+            mountOptions = [ ];
           };
           "@persist" = {
             mountpoint = "/persist";
-            mountOptions = [ "noatime" ];
+            mountOptions = [ ];
           };
         };
       };
