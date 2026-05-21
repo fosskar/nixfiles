@@ -13,6 +13,7 @@
       publicHost = "${serviceName}.${config.domains.public}";
       listenAddress = "0.0.0.0";
       listenPort = 9200;
+      webListenPort = 9201;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
       oidcIssuerUrl = "https://auth.${config.domains.public}";
 
@@ -43,6 +44,7 @@
         response_types = [ "code" ];
         grant_types = [
           "authorization_code"
+          "refresh_token"
         ];
         token_endpoint_auth_method = "none";
       };
@@ -65,10 +67,19 @@
     {
       config = {
         clan.core.vars.generators.opencloud = {
-          files."admin-password" = { };
+          files = {
+            "admin-password" = { };
+            "envfile" = {
+              secret = true;
+              owner = "opencloud";
+              group = "opencloud";
+            };
+          };
           runtimeInputs = [ pkgs.pwgen ];
           script = ''
-            pwgen -s 32 1 | tr -d '\n' > "$out/admin-password"
+            password=$(pwgen -s 32 1 | tr -d '\n')
+            printf "%s" "$password" > "$out/admin-password"
+            printf "ADMIN_PASSWORD=%s\nIDM_ADMIN_PASSWORD=%s\n" "$password" "$password" > "$out/envfile"
           '';
         };
 
@@ -134,6 +145,7 @@
 
           environment = {
             PROXY_TLS = "false";
+            WEB_HTTP_ADDR = "127.0.0.1:${toString webListenPort}";
             OC_INSECURE = "true";
             OC_LOG_LEVEL = "warn";
             PROXY_CSP_CONFIG_FILE_LOCATION = "${settingsFormat.generate "csp.yaml" cspConfig}";
@@ -144,7 +156,7 @@
 
             PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD = "none";
             PROXY_OIDC_USERINFO_CACHE_TTL = "10m";
-            GRAPH_ASSIGN_DEFAULT_USER_ROLE = "false";
+            GRAPH_ASSIGN_DEFAULT_USER_ROLE = "true";
             GRAPH_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
             PROXY_USER_OIDC_CLAIM = "sub";
             PROXY_USER_CS3_CLAIM = "username";
@@ -159,22 +171,6 @@
           settings = {
             proxy = {
               oidc.rewrite_well_known = true;
-              role_assignment = {
-                driver = "oidc";
-                oidc_role_mapper = {
-                  role_claim = "groups";
-                  role_mapping = [
-                    {
-                      role_name = "admin";
-                      claim_value = "admin";
-                    }
-                    {
-                      role_name = "user";
-                      claim_value = "user";
-                    }
-                  ];
-                };
-              };
               additional_policies = [
                 {
                   name = "default";
@@ -192,15 +188,6 @@
               client_id = "web";
               scope = "openid profile email groups";
             };
-          };
-        };
-
-        services.radicale = {
-          enable = true;
-          settings = {
-            server.hosts = [ "127.0.0.1:5232" ];
-            auth.type = "http_x_remote_user";
-            storage.filesystem_folder = "/var/lib/radicale/collections";
           };
         };
 
@@ -241,10 +228,7 @@
           }
         '';
 
-        clan.core.state.radicale.folders = [
-          "/var/lib/radicale"
-          "/var/lib/opencloud"
-        ];
+        clan.core.state.opencloud.folders = [ "/var/lib/opencloud" ];
 
         preservation.preserveAt."/persist".directories = [
           {
@@ -252,12 +236,10 @@
             user = "opencloud";
             group = "opencloud";
           }
-          {
-            directory = "/var/lib/radicale";
-            user = "radicale";
-            group = "radicale";
-          }
         ];
+
+        systemd.services.opencloud-init-config.serviceConfig.EnvironmentFile =
+          config.clan.core.vars.generators.opencloud.files."envfile".path;
 
         systemd.services.opencloud.serviceConfig.ReadWritePaths = [ dataDir ];
         systemd.services.opencloud.path = [ pkgs.inotify-tools ];

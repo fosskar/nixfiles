@@ -11,6 +11,8 @@
     self.modules.nixos.caddy
     self.modules.nixos.convertx
     self.modules.nixos.nextcloud
+    self.modules.nixos.opencloud
+    self.modules.nixos.radicale
     self.modules.nixos.lldap
     self.modules.nixos.authelia
     self.modules.nixos.immich
@@ -68,6 +70,8 @@
         "nextcloud-oidc-bootstrap"
         "nextcloud-setup"
         "nextcloud-update-db"
+        "opencloud"
+        "opencloud-permission-fixer"
         "paperless-consumer"
         "paperless-scheduler"
         "paperless-task-queue"
