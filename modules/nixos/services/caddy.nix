@@ -9,10 +9,12 @@
       clan.core.vars.generators.caddy = {
         prompts."desec_token" = {
           description = "deSEC API token for ACME dns-01 challenge";
-          type = "hidden";
           persist = true;
         };
-        files."envfile" = { };
+        files."envfile" = {
+          owner = config.services.caddy.user;
+          group = config.services.caddy.group;
+        };
         script = ''
           echo "DESEC_TOKEN=$(cat "$prompts/desec_token")" > "$out/envfile"
         '';
