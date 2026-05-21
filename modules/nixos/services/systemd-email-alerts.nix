@@ -11,7 +11,9 @@
       from = "noreply@nx3.eu";
       to = "${config.networking.hostName}@nx3.eu";
       cooldown = 300;
+      alertDelay = 300;
       excludeServices = [ "nixos-rebuild-switch-to-configuration" ];
+      extraAlertedServices = config.services.systemdEmailAlerts.extraServices;
 
       enabledNixosServiceNames = lib.attrNames (
         lib.filterAttrs (_: value: value) (
@@ -33,8 +35,11 @@
         || lib.hasInfix "-${serviceName}-" unitName;
 
       alertedSystemdServices = lib.subtractLists excludeServices (
-        lib.filter (unitName: lib.any (matchesNixosServiceName unitName) enabledNixosServiceNames) (
-          lib.attrNames config.systemd.services
+        lib.unique (
+          extraAlertedServices
+          ++ lib.filter (unitName: lib.any (matchesNixosServiceName unitName) enabledNixosServiceNames) (
+            lib.attrNames config.systemd.services
+          )
         )
       );
 
@@ -42,6 +47,13 @@
         SERVICE="$1"
         COOLDOWN_DIR="/run/systemd-email-alert-cooldown"
         COOLDOWN_SECS=${toString cooldown}
+        ALERT_DELAY_SECS=${toString alertDelay}
+
+        ${pkgs.coreutils}/bin/sleep "$ALERT_DELAY_SECS"
+        if ! ${pkgs.systemd}/bin/systemctl is-failed --quiet "$SERVICE"; then
+          echo "service recovered before alert delay: $SERVICE"
+          exit 0
+        fi
 
         ${pkgs.coreutils}/bin/mkdir -p "$COOLDOWN_DIR"
         COOLDOWN_FILE="$COOLDOWN_DIR/$SERVICE"
@@ -70,11 +82,22 @@
       '';
     in
     {
+      options.services.systemdEmailAlerts.extraServices = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = ''
+          additional systemd service unit names (without `.service`) to alert on.
+          use for services whose nixos option has `enable.default = true` and are
+          therefore not detected by the opted-in heuristic.
+        '';
+      };
+
       config = lib.mkIf config.programs.msmtp.enable {
         systemd.services."notify-email@" = {
           description = "send email for failed service %i";
           serviceConfig = {
             Type = "oneshot";
+            TimeoutStartSec = "6min";
             ExecStart = "${notifyScript} %i";
           };
           unitConfig.OnFailure = lib.mkForce [ ];
