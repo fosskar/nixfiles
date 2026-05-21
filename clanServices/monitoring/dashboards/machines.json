@@ -36,110 +36,37 @@
     },
     {
       "datasource": "VictoriaMetrics",
+      "description": "memory used as percentage of total",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 0,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.4.0",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "max(mem_available{machine=~\"$machine\"})",
-          "legendFormat": "",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "memory available",
-      "type": "stat"
-    },
-    {
-      "datasource": "VictoriaMetrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
           "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 75
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
+              { "color": "green", "value": null },
+              { "color": "#EAB839", "value": 75 },
+              { "color": "red", "value": 90 }
             ]
           },
           "unit": "percent"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 1
-      },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 1 },
       "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
@@ -153,73 +80,76 @@
           "refId": "A"
         }
       ],
-      "title": "memory usage",
+      "title": "memory used",
       "type": "stat"
     },
     {
       "datasource": "VictoriaMetrics",
+      "description": "memory used / total",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "mappings": [],
-          "max": 100,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
-            "steps": [
+            "steps": [{ "color": "text", "value": null }]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "used" },
+            "properties": [
               {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 10
-              },
-              {
-                "color": "green",
-                "value": 25
+                "id": "color",
+                "value": { "mode": "fixed", "fixedColor": "orange" }
               }
             ]
           },
-          "unit": "percent"
-        },
-        "overrides": []
+          {
+            "matcher": { "id": "byName", "options": "total" },
+            "properties": [
+              {
+                "id": "color",
+                "value": { "mode": "fixed", "fixedColor": "blue" }
+              }
+            ]
+          }
+        ]
       },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 12,
-        "y": 1
-      },
-      "id": 4,
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "id": 2,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "textMode": "value_and_name",
+        "wideLayout": false
       },
       "pluginVersion": "12.4.0",
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(cpu_usage_idle{machine=~\"$machine\",cpu=\"cpu-total\"})",
-          "legendFormat": "",
+          "expr": "max(mem_used{machine=~\"$machine\"})",
+          "legendFormat": "used",
           "range": true,
           "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "max(mem_total{machine=~\"$machine\"})",
+          "legendFormat": "total",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "cpu available",
+      "title": "",
       "type": "stat"
     },
     {
@@ -253,29 +183,23 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 18,
-        "y": 1
-      },
+      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 5 },
       "id": 5,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
-        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
       "pluginVersion": "12.4.0",
+      "description": "cpu used as percentage (100 - idle)",
       "targets": [
         {
           "editorMode": "code",
@@ -285,7 +209,7 @@
           "refId": "A"
         }
       ],
-      "title": "cpu usage",
+      "title": "cpu used",
       "type": "stat"
     },
     {
@@ -302,43 +226,7 @@
             },
             "inspect": false
           },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "active",
-                  "color": "semi-dark-green",
-                  "index": 0
-                },
-                "1": {
-                  "text": "reloading",
-                  "color": "semi-dark-blue",
-                  "index": 1
-                },
-                "2": {
-                  "text": "inactive",
-                  "color": "#535353",
-                  "index": 2
-                },
-                "3": {
-                  "text": "failed",
-                  "color": "semi-dark-red",
-                  "index": 3
-                },
-                "4": {
-                  "text": "activating",
-                  "color": "semi-dark-yellow",
-                  "index": 4
-                },
-                "5": {
-                  "text": "deactivating",
-                  "color": "semi-dark-orange",
-                  "index": 5
-                }
-              }
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -351,26 +239,62 @@
         },
         "overrides": [
           {
-            "matcher": {
-              "id": "byName",
-              "options": "state"
-            },
+            "matcher": { "id": "byName", "options": "state" },
             "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-text" } },
               {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "color-text"
-                }
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "active": {
+                        "text": "active",
+                        "color": "semi-dark-green",
+                        "index": 0
+                      },
+                      "reloading": {
+                        "text": "reloading",
+                        "color": "semi-dark-blue",
+                        "index": 1
+                      },
+                      "inactive": {
+                        "text": "inactive",
+                        "color": "#535353",
+                        "index": 2
+                      },
+                      "failed": {
+                        "text": "failed",
+                        "color": "semi-dark-red",
+                        "index": 3
+                      },
+                      "activating": {
+                        "text": "activating",
+                        "color": "semi-dark-yellow",
+                        "index": 4
+                      },
+                      "deactivating": {
+                        "text": "deactivating",
+                        "color": "semi-dark-orange",
+                        "index": 5
+                      }
+                    }
+                  }
+                ]
               }
             ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "priority" },
+            "properties": [{ "id": "custom.hidden", "value": true }]
           }
         ]
       },
       "gridPos": {
         "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 5
+        "w": 12,
+        "x": 12,
+        "y": 1
       },
       "id": 6,
       "options": {
@@ -383,19 +307,14 @@
           "show": false
         },
         "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "state"
-          }
-        ]
+        "sortBy": [{ "desc": true, "displayName": "priority" }]
       },
       "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": "VictoriaMetrics",
           "editorMode": "code",
-          "expr": "label_replace(systemd_units_active_code{machine=~\"$machine\"}, \"service\", \"$1\", \"name\", \"(.*)\\\\.service\")",
+          "expr": "label_replace(6*(systemd_units_active_code{machine=~\"$machine\"} == bool 3) + 5*(systemd_units_active_code{machine=~\"$machine\"} == bool 4) + 4*(systemd_units_active_code{machine=~\"$machine\"} == bool 5) + 3*(systemd_units_active_code{machine=~\"$machine\"} == bool 1) + 2*(systemd_units_active_code{machine=~\"$machine\"} == bool 0) + 1*(systemd_units_active_code{machine=~\"$machine\"} == bool 2), \"service\", \"$1\", \"name\", \"(.*)\\\\.service\")",
           "format": "table",
           "instant": true,
           "range": false,
@@ -409,15 +328,16 @@
           "options": {
             "include": {
               "names": ["service", "active", "sub", "Value"]
-            }
+            },
+            "byVariable": false
           }
         },
         {
           "id": "organize",
           "options": {
             "renameByName": {
-              "Value": "state",
-              "active": "active",
+              "Value": "priority",
+              "active": "state",
               "service": "service",
               "sub": "substate"
             }
@@ -428,7 +348,10 @@
       "description": "current state of monitored NixOS services, sorted with non-active states first"
     },
     {
-      "datasource": "VictoriaLogs",
+      "datasource": {
+        "type": "victoriametrics-logs-datasource",
+        "uid": "PD775F2863313E6C7"
+      },
       "description": "recent error-level journal entries for the selected machine from VictoriaLogs",
       "fieldConfig": {
         "defaults": {},
@@ -438,7 +361,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 9
       },
       "id": 7,
       "options": {
@@ -454,9 +377,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "datasource": "VictoriaLogs",
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "PD775F2863313E6C7"
+          },
           "editorMode": "code",
-          "expr": "{_HOSTNAME=\"$machine\"} AND level:error",
+          "expr": "{_HOSTNAME=~\"$machine\"} AND level:error AND NOT SYSLOG_IDENTIFIER:dbus-broker-launch",
           "maxLines": 100,
           "queryType": "instant",
           "refId": "A"

@@ -23,8 +23,6 @@
 
   # kvm guest has no hwmon — disable telegraf sensors input to silence
   # recurring `inputs.sensors` plugin errors.
-  services.telegraf.sensors.enable = false;
-  services.telegraf.smart.enable = false;
 
   preservation.preserveAt."/persist".directories = [
     {

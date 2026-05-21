@@ -3,128 +3,22 @@
     {
       config,
       lib,
-      options,
       pkgs,
       ...
     }:
     let
       cfg = config.services.telegraf;
 
-      enabledNixosServiceNames = lib.attrNames (
-        lib.filterAttrs (_: value: value) (
-          lib.mapAttrs (
-            name: value:
-            builtins.hasAttr "enable" options.services."${name}"
-            && builtins.hasAttr "default" options.services."${name}".enable
-            && options.services."${name}".enable.default != value.enable
-            && value.enable
-          ) config.services
-        )
-      );
-
-      matchesNixosServiceName =
-        unitName: serviceName:
-        unitName == serviceName
-        || lib.hasPrefix "${serviceName}-" unitName
-        || lib.hasSuffix "-${serviceName}" unitName
-        || lib.hasInfix "-${serviceName}-" unitName;
-
-      enabledNixosSystemdServices = builtins.map (name: "${name}.service") (
-        lib.filter (unitName: lib.any (matchesNixosServiceName unitName) enabledNixosServiceNames) (
-          lib.attrNames config.systemd.services
-        )
-      );
-
-      systemdUnitPattern =
-        if enabledNixosSystemdServices == [ ] then
-          "__no_nixos_services__.service"
-        else
-          lib.concatStringsSep " " enabledNixosSystemdServices;
-
-      inputConfigs = {
-        system = {
-          cpu = [
-            {
-              percpu = true;
-              totalcpu = true;
-            }
-          ];
-          mem = [ { } ];
-          disk = [ { } ];
-          diskio = [ { } ];
-          net = [ { } ];
-          system = [ { } ];
-          processes = [ { } ];
-          kernel_vmstat = [ { } ];
-          internal = [ { } ];
-        };
-
-        systemd = {
-          systemd_units = [
-            {
-              pattern = systemdUnitPattern;
-              unittype = "service";
-            }
-          ];
-        };
-
-        sensors = {
-          sensors = [ { } ];
-        };
-
-        zfs = {
-          zfs = [
-            {
-              poolMetrics = true;
-              kstatMetrics = [
-                "abdstats"
-                "arcstats"
-                "dbufcachestats"
-                "dnodestats"
-                "dmu_tx"
-                "fm"
-                "vdev_mirror_stats"
-                "zfetchstats"
-                "zil"
-              ];
-            }
-          ];
-        };
-
-        upsd = {
-          upsd = [
-            {
-              server = "127.0.0.1";
-              port = 3493;
-            }
-          ];
-        };
-
-        postgresql = {
-          postgresql = [
-            {
-              address = "host=/run/postgresql user=telegraf dbname=postgres sslmode=disable";
-            }
-          ];
-        };
-
-        smart = {
-          smart = [
-            {
-              path_smartctl = "/run/wrappers/bin/smartctl-telegraf";
-              path_nvme = "/run/wrappers/bin/nvme-telegraf";
-              attributes = true;
-              nocheck = "standby"; # skip disks in standby, do not wake sleeping disks
-            }
-          ];
-        };
-      };
-
       zfsEnabled = config.boot.supportedFilesystems.zfs or false;
+      ext4Enabled = lib.any (fs: fs.fsType == "ext4") (lib.attrValues config.fileSystems);
+      mdraidEnabled = config.boot.swraid.enable or false;
       upsdEnabled = config.power.ups.enable && (config.power.ups.upsd.enable or false);
       postgresqlEnabled = config.services.postgresql.enable;
       redisServers = lib.filterAttrs (_: server: server.enable) config.services.redis.servers;
       redisEnabled = redisServers != { };
+      redisSocketServers = lib.filterAttrs (_: server: server.port == 0) redisServers;
+
+      isVM = lib.any (m: m == "xen-blkfront" || m == "virtio_console") config.boot.initrd.kernelModules;
 
       ipv6DadCheck = pkgs.writeShellScript "ipv6-dad-check" ''
         ${pkgs.iproute2}/bin/ip --json addr | \
@@ -145,65 +39,120 @@
       '';
     in
     {
-      options.services.telegraf.smart.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "enable telegraf smart input and privileged smartctl/nvme wrappers";
-      };
-
-      options.services.telegraf.sensors.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = ''
-          enable telegraf lm-sensors input. disable on hosts without
-          /sys/class/hwmon (e.g. KVM/cloud VMs) to avoid recurring
-          `inputs.sensors` plugin errors.
-        '';
-      };
-
       config = lib.mkIf cfg.enable {
         services.telegraf = {
-          package = pkgs.telegraf;
           extraConfig = {
             agent = {
               interval = "30s";
               flush_interval = "30s";
             };
 
-            inputs = lib.mkMerge [
-              inputConfigs.system
-              inputConfigs.systemd
-              (lib.mkIf config.services.telegraf.sensors.enable inputConfigs.sensors)
-              {
-                exec = [
-                  {
-                    commands = [ ipv6DadCheck ];
-                    data_format = "influx";
-                  }
-                ]
-                ++ lib.optional zfsEnabled {
-                  commands = [ zpoolHealth ];
+            inputs = {
+              cpu = [ { } ];
+              mem = [ { } ];
+              swap = [ { } ];
+              disk = [
+                {
+                  tagdrop = {
+                    fstype = [
+                      "tmpfs"
+                      "ramfs"
+                      "devtmpfs"
+                      "devfs"
+                      "iso9660"
+                      "overlay"
+                      "aufs"
+                      "squashfs"
+                      "efivarfs"
+                    ];
+                    device = [
+                      "rpc_pipefs"
+                      "lxcfs"
+                      "nsfs"
+                      "borgfs"
+                    ];
+                  };
+                }
+              ];
+              diskio = [ { } ];
+              net = [ { } ];
+              system = [ { } ];
+              processes = [ { } ];
+              kernel_vmstat = [ { } ];
+              internal = [ { } ];
+
+              systemd_units = { };
+
+              mdstat = lib.mkIf mdraidEnabled { };
+
+              file = lib.mkIf ext4Enabled [
+                {
+                  name_override = "ext4_errors";
+                  files = [ "/sys/fs/ext4/*/errors_count" ];
+                  data_format = "value";
+                }
+              ];
+
+              sensors = lib.mkIf (!isVM) [ { } ];
+
+              smart = lib.mkIf (!isVM) [
+                {
+                  path_smartctl = "/run/wrappers/bin/smartctl-telegraf";
+                  path_nvme = "/run/wrappers/bin/nvme-telegraf";
+                  attributes = true;
+                  nocheck = "standby"; # skip disks in standby, do not wake sleeping disks
+                }
+              ];
+
+              zfs = lib.mkIf zfsEnabled [
+                {
+                  poolMetrics = true;
+                  kstatMetrics = [
+                    "abdstats"
+                    "arcstats"
+                    "dbufcachestats"
+                    "dnodestats"
+                    "dmu_tx"
+                    "fm"
+                    "vdev_mirror_stats"
+                    "zfetchstats"
+                    "zil"
+                  ];
+                }
+              ];
+
+              upsd = lib.mkIf upsdEnabled [
+                {
+                  server = "127.0.0.1";
+                  port = 3493;
+                }
+              ];
+
+              postgresql = lib.mkIf postgresqlEnabled [
+                {
+                  address = "host=/run/postgresql user=telegraf dbname=postgres sslmode=disable";
+                }
+              ];
+
+              redis = lib.mkIf redisEnabled [
+                {
+                  servers = lib.mapAttrsToList (
+                    _: server:
+                    if server.port != 0 then
+                      "tcp://${server.bind}:${toString server.port}"
+                    else
+                      "unix://${server.unixSocket}"
+                  ) redisServers;
+                }
+              ];
+
+              exec = [
+                {
+                  commands = [ ipv6DadCheck ] ++ lib.optional zfsEnabled zpoolHealth;
                   data_format = "influx";
-                };
-              }
-              (lib.mkIf zfsEnabled inputConfigs.zfs)
-              (lib.mkIf upsdEnabled inputConfigs.upsd)
-              (lib.mkIf postgresqlEnabled inputConfigs.postgresql)
-              (lib.mkIf redisEnabled {
-                redis = [
-                  {
-                    servers = lib.mapAttrsToList (
-                      _: server:
-                      if server.port != 0 then
-                        "tcp://${server.bind}:${toString server.port}"
-                      else
-                        "unix://${server.unixSocket}"
-                    ) redisServers;
-                  }
-                ];
-              })
-              (lib.mkIf cfg.smart.enable inputConfigs.smart)
-            ];
+                }
+              ];
+            };
 
             outputs.prometheus_client = lib.mkDefault [
               {
@@ -214,7 +163,7 @@
           };
         };
 
-        systemd.services.telegraf.path = [ pkgs.lm_sensors ];
+        systemd.services.telegraf.path = lib.optional (!isVM) pkgs.lm_sensors;
 
         services.postgresql.ensureUsers = lib.mkIf postgresqlEnabled [
           {
@@ -223,15 +172,11 @@
           }
         ];
 
-        users.users.telegraf.extraGroups = lib.mkIf redisEnabled (
-          lib.unique (map (server: server.group) (lib.attrValues redisServers))
+        users.users.telegraf.extraGroups = lib.mkIf (redisSocketServers != { }) (
+          lib.unique (map (server: server.group) (lib.attrValues redisSocketServers))
         );
 
-        services.udev.extraRules = lib.mkIf cfg.smart.enable ''
-          KERNEL=="nvme[0-9]*", GROUP="disk", MODE="0660"
-        '';
-
-        security.wrappers = lib.mkIf cfg.smart.enable {
+        security.wrappers = lib.mkIf (!isVM) {
           smartctl-telegraf = {
             owner = "telegraf";
             group = "telegraf";
