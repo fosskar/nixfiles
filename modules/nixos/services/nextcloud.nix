@@ -35,9 +35,9 @@
           };
         };
 
-        runtimeInputs = with pkgs; [
-          pwgen
-          authelia
+        runtimeInputs = [
+          pkgs.pwgen
+          pkgs.authelia
         ];
         script = ''
           pwgen -s 32 1 | tr -d '\n' > "$out/admin-password"

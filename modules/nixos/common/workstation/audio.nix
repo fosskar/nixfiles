@@ -146,10 +146,10 @@
           pulseaudio.enable = lib.mkForce false;
         };
 
-        environment.systemPackages = with pkgs; [
-          pwvucontrol
-          playerctl
-          pamixer
+        environment.systemPackages = [
+          pkgs.pwvucontrol
+          pkgs.playerctl
+          pkgs.pamixer
         ];
       };
     };

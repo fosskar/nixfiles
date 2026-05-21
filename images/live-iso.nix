@@ -5,7 +5,6 @@
   modulesPath,
   ...
 }:
-with lib;
 let
   hostName = "nixos";
 in
@@ -26,30 +25,30 @@ in
     makeEfiBootable = true;
     makeUsbBootable = true;
     appendToMenuLabel = " live";
-    squashfsCompression = mkDefault "zstd";
+    squashfsCompression = lib.mkDefault "zstd";
   };
 
   documentation = {
-    enable = mkForce false;
-    man.enable = mkForce false;
-    doc.enable = mkForce false;
-    nixos.enable = mkForce false;
+    enable = lib.mkForce false;
+    man.enable = lib.mkForce false;
+    doc.enable = lib.mkForce false;
+    nixos.enable = lib.mkForce false;
   };
 
   nixpkgs = {
-    hostPlatform = mkDefault "x86_64-linux";
+    hostPlatform = lib.mkDefault "x86_64-linux";
     config.allowUnfree = true;
   };
 
   # so i can use my config directly
 
   services = {
-    openssh.settings.PermitRootLogin = mkForce "yes";
+    openssh.settings.PermitRootLogin = lib.mkForce "yes";
   };
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    supportedFilesystems = mkForce [
+    supportedFilesystems = lib.mkForce [
       "btrfs"
       "reiserfs"
       "vfat"
@@ -58,7 +57,7 @@ in
       "ntfs"
       "cifs"
     ];
-    loader.grub.memtest86.enable = mkForce false;
+    loader.grub.memtest86.enable = lib.mkForce false;
     # Make the installer more likely to succeed in low memory
     # environments.  The kernel's overcommit heustistics bite us
     # fairly often, preventing processes such as nix-worker or
@@ -75,34 +74,34 @@ in
   };
 
   environment = {
-    systemPackages = with pkgs; [
-      neovim
-      git
+    systemPackages = [
+      pkgs.neovim
+      pkgs.git
 
-      testdisk # useful for repairing boot problems
-      ms-sys # for writing Microsoft boot sectors / MBRs
-      efibootmgr
-      efivar
-      parted
-      gptfdisk
-      ddrescue
-      ccrypt
-      cryptsetup # needed for dm-crypt volumes
+      pkgs.testdisk # useful for repairing boot problems
+      pkgs.ms-sys # for writing Microsoft boot sectors / MBRs
+      pkgs.efibootmgr
+      pkgs.efivar
+      pkgs.parted
+      pkgs.gptfdisk
+      pkgs.ddrescue
+      pkgs.ccrypt
+      pkgs.cryptsetup # needed for dm-crypt volumes
 
       # Some networking tools.
-      fuse
-      fuse3
-      sshfs-fuse
-      socat
-      screen
-      tcpdump
+      pkgs.fuse
+      pkgs.fuse3
+      pkgs.sshfs-fuse
+      pkgs.socat
+      pkgs.screen
+      pkgs.tcpdump
 
       # Hardware-related tools.
-      sdparm
-      hdparm
-      pciutils
-      usbutils
-      nvme-cli
+      pkgs.sdparm
+      pkgs.hdparm
+      pkgs.pciutils
+      pkgs.usbutils
+      pkgs.nvme-cli
     ];
     # Tell the Nix evaluator to garbage collect more aggressively.
     # This is desirable in memory-constrained environments that don't
@@ -115,20 +114,20 @@ in
     extraUsers.root.password = "nixos";
   };
 
-  swapDevices = mkImageMediaOverride [ ];
-  fileSystems = mkImageMediaOverride config.lib.isoFileSystems;
+  swapDevices = lib.mkImageMediaOverride [ ];
+  fileSystems = lib.mkImageMediaOverride config.lib.isoFileSystems;
 
   system = {
-    stateVersion = version;
+    stateVersion = lib.version;
     # To speed up installation a little bit, include the complete
     # stdenv in the Nix store on the CD.
-    extraDependencies = with pkgs; [
-      stdenv
-      stdenvNoCC # for runCommand
-      busybox
-      jq # for closureInfo
+    extraDependencies = [
+      pkgs.stdenv
+      pkgs.stdenvNoCC # for runCommand
+      pkgs.busybox
+      pkgs.jq # for closureInfo
       # For boot.initrd.systemd
-      makeInitrdNGTool
+      pkgs.makeInitrdNGTool
     ];
   };
 }

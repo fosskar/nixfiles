@@ -35,10 +35,10 @@
           };
         };
 
-        runtimeInputs = with pkgs; [
-          pwgen
-          authelia
-          jq
+        runtimeInputs = [
+          pkgs.pwgen
+          pkgs.authelia
+          pkgs.jq
         ];
         script = ''
           SECRET=$(pwgen -s 64 1)

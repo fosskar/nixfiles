@@ -95,19 +95,19 @@
               wantedBy = [ "multi-user.target" ];
               after = [ "network-online.target" ];
               wants = [ "network-online.target" ];
-              path = with pkgs; [
-                bash
-                coreutils
-                curl
-                forgejo-runner
-                gawk
-                git
-                gnused
-                jq
-                nix
-                nodejs
-                openssh
-                wget
+              path = [
+                pkgs.bash
+                pkgs.coreutils
+                pkgs.curl
+                pkgs.forgejo-runner
+                pkgs.gawk
+                pkgs.git
+                pkgs.gnused
+                pkgs.jq
+                pkgs.nix
+                pkgs.nodejs
+                pkgs.openssh
+                pkgs.wget
               ];
               serviceConfig = {
                 LoadCredential = [

@@ -71,26 +71,26 @@
           micsSkills.tasker-cli
           micsSkills.kagi-search
         ]
-        ++ (with pkgs; [
-          coreutils
-          curl
-          fd
-          file
-          git
-          hurl
-          jq
-          less
-          lynx
-          openssh
-          ripgrep
-          tree
-          unzip
-          python3
-          w3m
-          wget
-          yq-go
-          zip
-        ]);
+        ++ [
+          pkgs.coreutils
+          pkgs.curl
+          pkgs.fd
+          pkgs.file
+          pkgs.git
+          pkgs.hurl
+          pkgs.jq
+          pkgs.less
+          pkgs.lynx
+          pkgs.openssh
+          pkgs.ripgrep
+          pkgs.tree
+          pkgs.unzip
+          pkgs.python3
+          pkgs.w3m
+          pkgs.wget
+          pkgs.yq-go
+          pkgs.zip
+        ];
       };
 
       mkContainer = name: uid: {
@@ -122,7 +122,7 @@
         files.nostr-private-key.secret = true;
         files.nostr-public-key.secret = false;
 
-        runtimeInputs = with pkgs; [ nak ];
+        runtimeInputs = [ pkgs.nak ];
 
         script = ''
           sk=$(nak key generate)

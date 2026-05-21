@@ -33,10 +33,10 @@
             ];
           };
         };
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-gtk
-          xdg-desktop-portal-gnome
-          kdePackages.kwallet
+        extraPortals = [
+          pkgs.xdg-desktop-portal-gtk
+          pkgs.xdg-desktop-portal-gnome
+          pkgs.kdePackages.kwallet
         ];
       };
     };

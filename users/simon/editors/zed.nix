@@ -12,10 +12,10 @@ in
     enable = true;
     package = inputs.zed.packages.${pkgs.stdenv.hostPlatform.system}.default;
     installRemoteServer = true;
-    extraPackages = with pkgs; [
-      nil
-      nixd
-      nixfmt
+    extraPackages = [
+      pkgs.nil
+      pkgs.nixd
+      pkgs.nixfmt
     ];
     extensions = [
       "ansible"

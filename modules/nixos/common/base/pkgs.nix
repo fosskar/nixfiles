@@ -4,25 +4,25 @@
     {
       environment = {
         defaultPackages = lib.mkForce [ ]; # no extra default packages are installed
-        systemPackages = with pkgs; [
-          coreutils
-          curl
-          dnsutils
-          fd
-          findutils
-          lsof
-          gitMinimal
-          jq
-          openssl
-          tcpdump
-          nmap
-          wget
-          unzip
-          ripgrep
-          yq-go
-          pciutils
-          nvme-cli
-          smartmontools
+        systemPackages = [
+          pkgs.coreutils
+          pkgs.curl
+          pkgs.dnsutils
+          pkgs.fd
+          pkgs.findutils
+          pkgs.lsof
+          pkgs.gitMinimal
+          pkgs.jq
+          pkgs.openssl
+          pkgs.tcpdump
+          pkgs.nmap
+          pkgs.wget
+          pkgs.unzip
+          pkgs.ripgrep
+          pkgs.yq-go
+          pkgs.pciutils
+          pkgs.nvme-cli
+          pkgs.smartmontools
         ];
       };
     };

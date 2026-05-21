@@ -34,10 +34,10 @@
             "storage-encryption-key" = secretsPermission;
           };
 
-          runtimeInputs = with pkgs; [
-            authelia
-            pwgen
-            openssl
+          runtimeInputs = [
+            pkgs.authelia
+            pkgs.pwgen
+            pkgs.openssl
           ];
           script = ''
             pwgen -s 64 1 | tr -d '\n' > "$out/jwt-secret"

@@ -3,15 +3,14 @@
   lib,
   ...
 }:
-with lib;
 
 let
   cfg = config.module;
 in
 {
   options.module = {
-    enable = mkEnableOption "Enable module";
+    enable = lib.mkEnableOption "Enable module";
   };
 
-  config = mkIf cfg.enable { };
+  config = lib.mkIf cfg.enable { };
 }

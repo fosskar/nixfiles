@@ -3,8 +3,8 @@ _: {
     { pkgs, ... }:
     {
 
-      home.packages = with pkgs; [
-        kdePackages.qt6ct
+      home.packages = [
+        pkgs.kdePackages.qt6ct
       ];
 
       qt = {

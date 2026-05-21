@@ -135,12 +135,12 @@
           in
           {
             # server-only modules; telegraf comes via client role (all server-tagged machines)
-            imports = with self.modules.nixos; [
-              exporter
-              grafana
-              journaldUpload
-              victoriaLogs
-              victoriaMetrics
+            imports = [
+              self.modules.nixos.exporter
+              self.modules.nixos.grafana
+              self.modules.nixos.journaldUpload
+              self.modules.nixos.victoriaLogs
+              self.modules.nixos.victoriaMetrics
             ];
 
             assertions = [
@@ -226,9 +226,9 @@
             ...
           }:
           {
-            imports = with self.modules.nixos; [
-              journaldUpload
-              telegraf
+            imports = [
+              self.modules.nixos.journaldUpload
+              self.modules.nixos.telegraf
             ];
 
             assertions = [

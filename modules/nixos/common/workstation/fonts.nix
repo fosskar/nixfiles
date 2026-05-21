@@ -36,22 +36,22 @@
             style = lib.mkDefault "full";
           };
         };
-        packages = with pkgs; [
-          inter
-          dejavu_fonts
-          liberation_ttf
-          noto-fonts
-          noto-fonts-cjk-sans
-          noto-fonts-color-emoji
+        packages = [
+          pkgs.inter
+          pkgs.dejavu_fonts
+          pkgs.liberation_ttf
+          pkgs.noto-fonts
+          pkgs.noto-fonts-cjk-sans
+          pkgs.noto-fonts-color-emoji
           #openmoji-color
           #openmoji-black
-          roboto
-          material-icons
-          material-design-icons
-          nerd-fonts.commit-mono
-          nerd-fonts.jetbrains-mono
-          nerd-fonts.symbols-only
-          nerd-fonts.zed-mono
+          pkgs.roboto
+          pkgs.material-icons
+          pkgs.material-design-icons
+          pkgs.nerd-fonts.commit-mono
+          pkgs.nerd-fonts.jetbrains-mono
+          pkgs.nerd-fonts.symbols-only
+          pkgs.nerd-fonts.zed-mono
         ];
       };
     };

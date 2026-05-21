@@ -16,11 +16,11 @@
 
       hardware.graphics.enable = true;
 
-      environment.systemPackages = with pkgs; [
-        clinfo
-        vulkan-tools
-        libva-utils
-        nvtopPackages.nvidia
+      environment.systemPackages = [
+        pkgs.clinfo
+        pkgs.vulkan-tools
+        pkgs.libva-utils
+        pkgs.nvtopPackages.nvidia
       ];
 
       users.groups.video.members = lib.mkAfter config.users.groups.wheel.members;

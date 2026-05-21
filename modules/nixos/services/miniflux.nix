@@ -25,9 +25,9 @@
           "credentials" = { };
         };
 
-        runtimeInputs = with pkgs; [
-          pwgen
-          authelia
+        runtimeInputs = [
+          pkgs.pwgen
+          pkgs.authelia
         ];
         script = ''
           # oauth secret

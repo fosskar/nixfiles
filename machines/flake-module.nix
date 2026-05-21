@@ -96,9 +96,9 @@ in
           module.name = "importer";
           roles.default = {
             tags.nixos = { };
-            extraModules = with config.flake.modules.nixos; [
-              base
-              clanMachineId
+            extraModules = [
+              config.flake.modules.nixos.base
+              config.flake.modules.nixos.clanMachineId
             ];
           };
         };
@@ -107,9 +107,9 @@ in
           module.name = "importer";
           roles.default = {
             tags.server = { };
-            extraModules = with config.flake.modules.nixos; [
+            extraModules = [
               inputs.srvos.nixosModules.server
-              server
+              config.flake.modules.nixos.server
             ];
           };
         };
@@ -118,13 +118,13 @@ in
           module.name = "importer";
           roles.default = {
             tags.workstation = { };
-            extraModules = with config.flake.modules.nixos; [
+            extraModules = [
               inputs.srvos.nixosModules.desktop
-              homeManager
-              workstation
-              nixAccessTokens
-              yubikey
-              niri
+              config.flake.modules.nixos.homeManager
+              config.flake.modules.nixos.workstation
+              config.flake.modules.nixos.nixAccessTokens
+              config.flake.modules.nixos.yubikey
+              config.flake.modules.nixos.niri
             ];
           };
         };
@@ -133,9 +133,9 @@ in
           module.name = "importer";
           roles.default = {
             tags.laptop = { };
-            extraModules = with config.flake.modules.nixos; [
-              laptop
-              fprint
+            extraModules = [
+              config.flake.modules.nixos.laptop
+              config.flake.modules.nixos.fprint
             ];
           };
         };

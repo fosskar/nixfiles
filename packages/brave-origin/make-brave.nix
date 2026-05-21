@@ -305,9 +305,9 @@ stdenv.mkDerivation {
       chew up your bandwidth, and invade your privacy. Brave lets you
       contribute to your favorite creators automatically.
     '';
-    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
     license = lib.licenses.mpl20;
-    maintainers = with lib.maintainers; [ WitteShadovv ];
+    maintainers = [ lib.maintainers.WitteShadovv ];
     platforms = builtins.attrNames archives;
     mainProgram = "brave-origin";
   };

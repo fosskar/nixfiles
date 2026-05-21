@@ -10,19 +10,19 @@
       hardware.graphics = {
         enable = true;
         enable32Bit = true;
-        extraPackages = with pkgs; [
-          intel-media-driver
-          intel-compute-runtime
-          vpl-gpu-rt
+        extraPackages = [
+          pkgs.intel-media-driver
+          pkgs.intel-compute-runtime
+          pkgs.vpl-gpu-rt
         ];
       };
 
-      environment.systemPackages = with pkgs; [
-        clinfo
-        vulkan-tools
-        mesa-demos
-        libva-utils
-        nvtopPackages.intel
+      environment.systemPackages = [
+        pkgs.clinfo
+        pkgs.vulkan-tools
+        pkgs.mesa-demos
+        pkgs.libva-utils
+        pkgs.nvtopPackages.intel
       ];
 
       users.groups.video.members = lib.mkAfter config.users.groups.wheel.members;

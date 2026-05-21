@@ -2,16 +2,16 @@ _: {
   flake.modules.homeManager.k9s =
     { pkgs, ... }:
     {
-      home.packages = with pkgs; [
-        helmfile
-        kubecolor
-        kubectl
-        kubectx
-        kubelogin
-        kubernetes-helm
-        kubeseal
-        talosctl
-        clusterctl
+      home.packages = [
+        pkgs.helmfile
+        pkgs.kubecolor
+        pkgs.kubectl
+        pkgs.kubectx
+        pkgs.kubelogin
+        pkgs.kubernetes-helm
+        pkgs.kubeseal
+        pkgs.talosctl
+        pkgs.clusterctl
       ];
 
       programs.k9s = {

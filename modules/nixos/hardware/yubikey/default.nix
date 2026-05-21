@@ -18,10 +18,10 @@
         pkgs.yubikey-personalization
       ];
 
-      environment.systemPackages = with pkgs; [
-        yubikey-manager
-        yubikey-personalization
-        age-plugin-yubikey
+      environment.systemPackages = [
+        pkgs.yubikey-manager
+        pkgs.yubikey-personalization
+        pkgs.age-plugin-yubikey
       ];
     };
 }

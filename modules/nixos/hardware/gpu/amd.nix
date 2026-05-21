@@ -21,12 +21,12 @@
         };
       };
 
-      environment.systemPackages = with pkgs; [
-        clinfo
-        vulkan-tools
-        mesa-demos
-        libva-utils
-        radeontop
+      environment.systemPackages = [
+        pkgs.clinfo
+        pkgs.vulkan-tools
+        pkgs.mesa-demos
+        pkgs.libva-utils
+        pkgs.radeontop
       ];
 
       users.groups.video.members = lib.mkAfter config.users.groups.wheel.members;

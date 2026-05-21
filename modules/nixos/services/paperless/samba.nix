@@ -14,7 +14,7 @@
     {
       clan.core.vars.generators.samba-printer = {
         files."password" = { };
-        runtimeInputs = with pkgs; [ pwgen ];
+        runtimeInputs = [ pkgs.pwgen ];
         script = ''
           pwgen -s 32 1 | tr -d '\n' > "$out/password"
         '';

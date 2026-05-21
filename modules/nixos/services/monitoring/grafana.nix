@@ -37,10 +37,10 @@
             group = "authelia-main";
           };
 
-          runtimeInputs = with pkgs; [
-            pwgen
-            openssl
-            authelia
+          runtimeInputs = [
+            pkgs.pwgen
+            pkgs.openssl
+            pkgs.authelia
           ];
           script = ''
             ADMIN_PASSWORD=$(openssl rand -hex 32)
@@ -97,9 +97,9 @@
         services.grafana = {
           openFirewall = false;
 
-          declarativePlugins = with pkgs.grafanaPlugins; [
-            victoriametrics-metrics-datasource
-            victoriametrics-logs-datasource
+          declarativePlugins = [
+            pkgs.grafanaPlugins.victoriametrics-metrics-datasource
+            pkgs.grafanaPlugins.victoriametrics-logs-datasource
           ];
 
           provision.dashboards.settings = {

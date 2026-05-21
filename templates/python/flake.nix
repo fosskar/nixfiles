@@ -36,20 +36,18 @@
         in
         {
           default = pkgs.${system}.mkShellNoCC {
-            packages = with pkgs.${system}; [
+            packages = [
               (mkPoetryEnv { projectDir = self; })
-              poetry
-              (python3.withPackages (
-                ps: with ps; [
-                  flake8
-                  ipython
-                  mypy
-                  pip
-                  pytest
-                ]
-              ))
-              black
-              ruff
+              pkgs.${system}.poetry
+              (pkgs.${system}.python3.withPackages (ps: [
+                ps.flake8
+                ps.ipython
+                ps.mypy
+                ps.pip
+                ps.pytest
+              ]))
+              pkgs.${system}.black
+              pkgs.${system}.ruff
             ];
           };
         }
