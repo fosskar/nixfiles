@@ -61,4 +61,5 @@
       nix.channels = { };
     };
   };
+  users.users.simon.shell = pkgs.fish;
 }

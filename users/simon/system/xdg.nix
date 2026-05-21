@@ -9,18 +9,19 @@ let
   # only enable portal in home-manager if not already managed by nixos
   nixosManagesPortal = osConfig != null && osConfig.xdg.portal.enable or false;
 
-  #browser = [ "firefox.desktop" ];
   browser = [ "zen-beta.desktop" ];
-  zathura = [ "zathura" ];
-  fileManager = [ "yazi" ];
-  editor = [ "zeditor" ];
+  pdf = [ "org.pwmt.zathura.desktop" ];
+  fileManager = [ "org.gnome.Nautilus.desktop" ];
+  editor = [ "dev.zed.Zed-Nightly.desktop" ];
+  imageViewer = [ "imv.desktop" ];
+  mediaPlayer = [ "mpv.desktop" ];
 
   associations = {
     "text/html" = browser;
     "text/xml" = browser;
     "text/plain" = editor;
     "application/json" = editor;
-    "application/pdf" = zathura;
+    "application/pdf" = pdf;
     "application/xml" = browser;
     "application/xhtml+xml" = browser;
     "application/xhtml_xml" = browser;
@@ -42,13 +43,13 @@ let
 
     "inode/directory" = fileManager;
 
-    "audio/*" = [ "mpv.desktop" ];
-    "video/*" = [ "mpv.desktop" ];
-    "image/*" = [ "imv.desktop" ];
-    "image/gif" = [ "imv.desktop" ];
-    "image/jpeg" = [ "imv.desktop" ];
-    "image/png" = [ "imv.desktop" ];
-    "image/webp" = [ "imv.desktop" ];
+    "audio/*" = mediaPlayer;
+    "video/*" = mediaPlayer;
+    "image/*" = imageViewer;
+    "image/gif" = imageViewer;
+    "image/jpeg" = imageViewer;
+    "image/png" = imageViewer;
+    "image/webp" = imageViewer;
 
     "x-scheme-handler/spotify" = [ "spotify.desktop" ];
     "x-scheme-handler/discord" = [ "WebCord.desktop" ];
@@ -57,21 +58,13 @@ in
 {
   xdg = {
     enable = true;
-    cacheHome = "${config.home.homeDirectory}/.cache";
-    configHome = "${config.home.homeDirectory}/.config";
-    dataHome = "${config.home.homeDirectory}/.local/share";
-    stateHome = "${config.home.homeDirectory}/.local/state";
 
     userDirs = {
       enable = true;
       setSessionVariables = true;
-
       createDirectories = true;
 
       # disable unused home dirs
-      download = "${config.home.homeDirectory}/downloads";
-      documents = "${config.home.homeDirectory}/documents";
-      pictures = "${config.home.homeDirectory}/pictures";
       videos = null;
       desktop = null;
       publicShare = null;
@@ -82,7 +75,6 @@ in
         SCREENSHOTS = "${config.xdg.userDirs.pictures}/screenshots";
       };
     };
-    #configFile."gtk.css".force = true;
 
     mimeApps = {
       enable = true;
@@ -92,18 +84,16 @@ in
     # fallback portal config for standalone home-manager (without nixos)
     portal = lib.mkMerge [
       (lib.mkIf nixosManagesPortal {
-        enable = lib.mkForce false;
+        enable = false;
       })
       (lib.mkIf (!nixosManagesPortal) {
         enable = true;
         xdgOpenUsePortal = true;
         config = {
-          common = {
-            default = [
-              "gtk"
-              "gnome"
-            ];
-          };
+          common.default = [
+            "gtk"
+            "gnome"
+          ];
           hyprland = {
             default = [
               "hyprland"
@@ -119,12 +109,8 @@ in
               "gnome"
               "gtk"
             ];
-            "org.freedesktop.impl.portal.Access" = [
-              "gtk"
-            ];
-            "org.freedesktop.impl.portal.Notification" = [
-              "gtk"
-            ];
+            "org.freedesktop.impl.portal.Access" = [ "gtk" ];
+            "org.freedesktop.impl.portal.Notification" = [ "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [
               "kwallet"
               "gnome-keyring"
