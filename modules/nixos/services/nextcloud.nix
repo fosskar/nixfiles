@@ -2,6 +2,7 @@
   flake.modules.nixos.nextcloud =
     {
       config,
+      inputs,
       lib,
       pkgs,
       ...
@@ -13,6 +14,7 @@
       listenPort = 8009;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
       oidcIssuerUrl = "https://auth.${config.domains.public}";
+      nixfilesPackages = inputs.self.packages.${pkgs.stdenv.hostPlatform.system};
 
     in
     {
@@ -127,13 +129,7 @@
             groupfolders
             tasks
             ;
-          news = pkgs.fetchNextcloudApp {
-            appName = "news";
-            appVersion = "28.0.0-rc.2";
-            license = "agpl3Plus";
-            sha512 = "3l23683j88sa7k4kmyk3bx55nx737m9l93hlbf4m882jlydhaxv0p0n5aj107089hf4y5fsjc04apzwl7d4qclcbvpasmcppil4j2rc";
-            url = "https://github.com/nextcloud/news/releases/download/28.0.0-rc.2/news.tar.gz";
-          };
+          news = nixfilesPackages.nextcloud-news;
         };
         extraAppsEnable = true;
 
