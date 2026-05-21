@@ -47,25 +47,42 @@ _:
               ];
             };
 
-            users.groups.nix = { };
-            users.users.nix = {
-              isSystemUser = true;
-              group = "nix";
-              home = "/var/empty";
-              createHome = false;
+            nix.gc = {
+              automatic = true;
+              dates = "*:45";
+              options = ''--max-freed "$((128 * 1024**3 - 1024 * $(df -P -k /nix/store | tail -n 1 | ${pkgs.gawk}/bin/awk '{ print $4 }')))"'';
+              randomizedDelaySec = "1800";
+            };
+
+            security.pam.loginLimits = [
+              {
+                domain = "nix-remote-builder";
+                item = "nofile";
+                type = "-";
+                value = "20480";
+              }
+            ];
+
+            services.openssh.settings.MaxStartups = 100;
+
+            users.users.nix-remote-builder = {
+              isNormalUser = true;
+              group = "nogroup";
               shell = pkgs.bashInteractive;
               openssh.authorizedKeys.keys = map (
                 machine:
-                clanLib.getPublicValue {
-                  flake = config.clan.core.settings.directory;
-                  inherit machine;
-                  generator = "remote-builder";
-                  file = "id_ed25519.pub";
-                }
+                ''restrict,command="nix-daemon --stdio" ${
+                  clanLib.getPublicValue {
+                    flake = config.clan.core.settings.directory;
+                    inherit machine;
+                    generator = "remote-builder";
+                    file = "id_ed25519.pub";
+                  }
+                }''
               ) clientMachines;
             };
 
-            nix.settings.trusted-users = lib.mkAfter [ "nix" ];
+            nix.settings.trusted-users = [ "nix-remote-builder" ];
           };
       };
   };
@@ -108,7 +125,7 @@ _:
 
               nix.buildMachines = map (builderName: {
                 hostName = "${builderName}.${config.clan.core.settings.domain}";
-                sshUser = "nix";
+                sshUser = "nix-remote-builder";
                 systems = [ "x86_64-linux" ];
                 maxJobs = 16;
                 speedFactor = 10;
