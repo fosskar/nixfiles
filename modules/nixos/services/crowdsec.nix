@@ -101,9 +101,13 @@
             }
           ];
 
-          systemd.services.crowdsec-firewall-bouncer-register.serviceConfig = {
-            StateDirectory = lib.mkForce "crowdsec-firewall-bouncer-register";
-            ReadWritePaths = [ "/var/lib/crowdsec" ];
+          systemd.services = {
+            crowdsec-update-hub.serviceConfig.ExecStartPost = lib.mkForce "+systemctl reload crowdsec.service";
+
+            crowdsec-firewall-bouncer-register.serviceConfig = {
+              StateDirectory = lib.mkForce "crowdsec-firewall-bouncer-register";
+              ReadWritePaths = [ "/var/lib/crowdsec" ];
+            };
           };
         };
 
