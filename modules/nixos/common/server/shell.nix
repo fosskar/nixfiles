@@ -7,11 +7,8 @@
 
       # servers use system zsh with full completion (no home-manager)
       programs.zsh = {
-        interactiveShellInit = ''
-          # auto-start zellij on ssh login
-          if [[ -z "$ZELLIJ" && -n "$SSH_TTY" ]]; then
-            zellij attach -c default
-          fi
+        promptInit = ''
+          PROMPT='%B%F{red}%n@%m%f%b:%F{blue}%~%f %# '
         '';
         enableGlobalCompInit = true;
         enableCompletion = true;
