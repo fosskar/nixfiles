@@ -314,22 +314,29 @@ in
       }:
       {
         nixosModule =
-          { config, pkgs, ... }:
+          {
+            config,
+            pkgs,
+            lib,
+            ...
+          }:
           {
             imports = [ (varsForInstance instanceName pkgs) ];
 
-            nix.settings.substituters =
-              let
-                inherit (config.clan.core.settings) domain;
-                dotDomain = if domain != null then ".${domain}" else "";
-              in
-              flip map (attrNames roles.server.machines) (
-                machineName: "http://${machineName}${dotDomain}:3902?priority=1"
-              );
+            nix.settings = lib.mkIf (!(builtins.hasAttr config.networking.hostName roles.server.machines)) {
+              substituters =
+                let
+                  inherit (config.clan.core.settings) domain;
+                  dotDomain = if domain != null then ".${domain}" else "";
+                in
+                flip map (attrNames roles.server.machines) (
+                  machineName: "http://${machineName}${dotDomain}:3902?priority=1"
+                );
 
-            nix.settings.trusted-public-keys = [
-              config.clan.core.vars.generators."niks3".files.pub-key.value
-            ];
+              trusted-public-keys = [
+                config.clan.core.vars.generators."niks3".files.pub-key.value
+              ];
+            };
           };
       };
   };

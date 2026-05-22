@@ -81,25 +81,32 @@ in
       }:
       {
         nixosModule =
-          { config, pkgs, ... }:
+          {
+            config,
+            pkgs,
+            lib,
+            ...
+          }:
           {
             imports = [ (varsForInstance instanceName pkgs) ];
 
-            nix.settings.substituters =
-              let
-                inherit (config.clan.core.settings) domain;
-                dotDomain = if domain != null then ".${domain}" else "";
-              in
-              flip map (attrNames roles.server.machines) (
-                machineName:
-                "http://${machineName}${dotDomain}:${
-                  toString roles.server.machines.${machineName}.settings.port
-                }?priority=3"
-              );
+            nix.settings = lib.mkIf (!(builtins.hasAttr config.networking.hostName roles.server.machines)) {
+              substituters =
+                let
+                  inherit (config.clan.core.settings) domain;
+                  dotDomain = if domain != null then ".${domain}" else "";
+                in
+                flip map (attrNames roles.server.machines) (
+                  machineName:
+                  "http://${machineName}${dotDomain}:${
+                    toString roles.server.machines.${machineName}.settings.port
+                  }?priority=3"
+                );
 
-            nix.settings.trusted-public-keys = [
-              config.clan.core.vars.generators."harmonia".files.pub-key.value
-            ];
+              trusted-public-keys = [
+                config.clan.core.vars.generators."harmonia".files.pub-key.value
+              ];
+            };
           };
       };
   };
