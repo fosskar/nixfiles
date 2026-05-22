@@ -57,6 +57,15 @@ export default function (pi: ExtensionAPI) {
         }
         return result;
       };
+      const mustRadSync = async (argv: string[]) => {
+        const result = await must("rad", ["sync", ...argv]);
+        const output = [result.stdout, result.stderr].join("\n");
+        if (output.includes("✗ Error:") || output.includes("Error:")) {
+          const tail = output.trim().split("\n").slice(-3).join("\n");
+          throw new PublishError(`rad sync ${argv.join(" ")} failed\n${tail}`);
+        }
+        return result;
+      };
 
       show();
 
@@ -116,7 +125,10 @@ export default function (pi: ExtensionAPI) {
           }
 
           await must("jj", ["bookmark", "set", bookmark, "-r", "@-"]);
-          if (rs.has("rad")) await must("rad", ["node", "start"]);
+          if (rs.has("rad")) {
+            await must("rad", ["node", "start"]);
+            await mustRadSync(["--fetch"]);
+          }
           for (const remote of remotes.filter((r) => rs.has(r))) {
             await must("jj", [
               "git",
@@ -127,7 +139,7 @@ export default function (pi: ExtensionAPI) {
               bookmark,
             ]);
           }
-          if (rs.has("rad")) await must("rad", ["sync"]);
+          if (rs.has("rad")) await mustRadSync(["--announce"]);
           await must("jj", ["status"]);
         } else {
           const status = await must("git", ["status", "--porcelain"]);
