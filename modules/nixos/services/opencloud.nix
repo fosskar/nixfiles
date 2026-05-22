@@ -75,11 +75,17 @@
               group = "opencloud";
             };
           };
-          runtimeInputs = [ pkgs.pwgen ];
+          runtimeInputs = [
+            pkgs.pwgen
+            pkgs.util-linux
+          ];
           script = ''
             password=$(pwgen -s 32 1 | tr -d '\n')
+            service_account_id=$(uuidgen)
+            service_account_secret=$(pwgen -s 32 1 | tr -d '\n')
             printf "%s" "$password" > "$out/admin-password"
-            printf "ADMIN_PASSWORD=%s\nIDM_ADMIN_PASSWORD=%s\n" "$password" "$password" > "$out/envfile"
+            printf "ADMIN_PASSWORD=%s\nIDM_ADMIN_PASSWORD=%s\nOC_SERVICE_ACCOUNT_ID=%s\nOC_SERVICE_ACCOUNT_SECRET=%s\n" \
+              "$password" "$password" "$service_account_id" "$service_account_secret" > "$out/envfile"
           '';
         };
 
@@ -137,10 +143,19 @@
           )
         ];
 
+        services.tika = {
+          enable = true;
+          enableOcr = true;
+          listenAddress = "127.0.0.1";
+          port = 9998;
+        };
+
         services.opencloud = {
           enable = true;
+          package = pkgs.custom.opencloud;
           url = "https://${localHost}";
           address = listenAddress;
+          environmentFile = config.clan.core.vars.generators.opencloud.files."envfile".path;
           port = listenPort;
 
           environment = {
@@ -156,16 +171,20 @@
 
             PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD = "none";
             PROXY_OIDC_USERINFO_CACHE_TTL = "10m";
-            GRAPH_ASSIGN_DEFAULT_USER_ROLE = "true";
             GRAPH_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
             PROXY_USER_OIDC_CLAIM = "sub";
-            PROXY_USER_CS3_CLAIM = "username";
+            PROXY_USER_CS3_CLAIM = "userid";
             GRAPH_USERNAME_MATCH = "none";
             WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${config.domains.public}/settings";
 
             STORAGE_USERS_POSIX_ROOT = lib.mkDefault "/tank/apps/opencloud/data";
             STORAGE_USERS_POSIX_WATCH_FS = "true";
             STORAGE_USERS_POSIX_USE_SPACE_GROUPS = "true";
+
+            SEARCH_EXTRACTOR_TYPE = "tika";
+            SEARCH_EXTRACTOR_TIKA_TIKA_URL = "http://127.0.0.1:${toString config.services.tika.port}";
+            SEARCH_EVENTS_NUM_CONSUMERS = "2";
+            FRONTEND_FULL_TEXT_SEARCH_ENABLED = "true";
           };
 
           settings = {
@@ -238,11 +257,12 @@
           }
         ];
 
-        systemd.services.opencloud-init-config.serviceConfig.EnvironmentFile =
-          config.clan.core.vars.generators.opencloud.files."envfile".path;
-
-        systemd.services.opencloud.serviceConfig.ReadWritePaths = [ dataDir ];
-        systemd.services.opencloud.path = [ pkgs.inotify-tools ];
+        systemd.services.opencloud = {
+          after = [ "tika.service" ];
+          wants = [ "tika.service" ];
+          serviceConfig.ReadWritePaths = [ dataDir ];
+          path = [ pkgs.inotify-tools ];
+        };
 
         systemd.tmpfiles.settings."10-opencloud-data" = {
           ${dataDir}.d = {
