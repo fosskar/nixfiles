@@ -73,6 +73,7 @@
         "nextcloud-update-db"
         "opencloud"
         "opencloud-permission-fixer"
+        "papra"
         "paperless-consumer"
         "paperless-scheduler"
         "paperless-task-queue"
