@@ -85,6 +85,7 @@
               externalAddresses = [ "seed.fosskar.eu:${toString nodePort}" ];
               alias = "radicle.fosskar.eu";
               connect = bootstrapSeeds;
+              fetch.signedReferences.featureLevel.minimum = "parent";
             };
             web.pinned.repositories = cfg.seedRepositories;
           };

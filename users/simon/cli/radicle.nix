@@ -5,6 +5,7 @@
     settings = {
       node = {
         alias = "fosskar";
+        fetch.signedReferences.featureLevel.minimum = "parent";
       };
       preferredSeeds = [
         "z6Mkuo44bkXzzYZsiR8x5PftuNaybCCxL7magvUTh76VBCLa@seed.fosskar.eu:8776"
