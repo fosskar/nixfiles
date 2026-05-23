@@ -109,11 +109,11 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
-    # browser
-    zed = {
-      url = "github:zed-industries/zed";
-      inputs.flake-parts.follows = "flake-parts";
-    };
+    # browser nightly
+    #zed-nightly = {
+    #  url = "github:zed-industries/zed";
+    #  inputs.flake-parts.follows = "flake-parts";
+    #};
 
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake/beta";

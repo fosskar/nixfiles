@@ -1,7 +1,6 @@
 {
   pkgs,
   config,
-  inputs,
   ...
 }:
 let
@@ -10,7 +9,7 @@ in
 {
   programs.zed-editor = {
     enable = true;
-    package = inputs.zed.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    #package = inputs.zed.packages.${pkgs.stdenv.hostPlatform.system}.default;
     installRemoteServer = true;
     extraPackages = [
       pkgs.nil
