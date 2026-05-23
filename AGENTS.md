@@ -49,8 +49,10 @@ repo uses dendritic-style composition: feature modules export aspect modules thr
 - inheritance aspect: aspect imports parent aspects, then extends or overrides them.
 - conditional aspect: aspect content is conditional; imports stay unconditional.
 - collector aspect: one aspect collects contributions from other feature modules. this is distinct from a broad role/profile feature.
+- feature-owned integration: service/app-specific glue lives in the feature module that needs it, not in the module it integrates with.
 - composition edge: place that chooses aspects for a concrete target, mainly host imports and clan role imports.
 - import is the primary enable mechanism; do not add `nixfiles.*` wrapper options unless current code already defines them.
+- make feature modules self-contained: if a feature needs homepage entries, gatus checks, reverse proxy routes, desktop shortcuts, window rules, or related glue, define that glue in the feature module and guard it on the integrated service being enabled when needed.
 
 ### repo mapping
 
