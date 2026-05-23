@@ -35,14 +35,6 @@ in
 
     inventory = {
       machines = {
-        "crowbox" = {
-          tags = [
-            "server"
-            "home"
-            "ai"
-          ];
-        };
-
         "nixbox" = {
           tags = [
             "server"
@@ -235,7 +227,6 @@ in
         # export IPs so yggdrasil peers via explicit connection (no multicast)
         internet = {
           roles.default.machines = {
-            "crowbox".settings.host = "192.168.10.240";
             "gateway".settings.host = "138.201.155.21";
             "nixbox".settings.host = "192.168.10.200";
             "nixworker".settings.host = "192.168.10.210";
@@ -256,7 +247,6 @@ in
             "nixbox".settings = { };
             "simon-desktop".settings = { };
             "lpt-titan".settings = { };
-            "crowbox".settings = { };
             "nixworker".settings = { };
           };
         };
@@ -305,7 +295,6 @@ in
         #    nixbox.settings = { };
         #    simon-desktop.settings = { };
         #    lpt-titan.settings = { };
-        #    crowbox.settings = { };
         #  };
         #};
 

@@ -71,7 +71,6 @@
         let
           machinesPerSystem = {
             x86_64-linux = [
-              "crowbox"
               "gateway"
               "lpt-titan"
               "nixbox"
