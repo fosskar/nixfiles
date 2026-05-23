@@ -23,6 +23,14 @@
         ]
         ++ (lib.splitString " " cmd);
 
+      lockAtStartup = pkgs.writeShellScript "noctalia-lock-at-startup" ''
+        for _ in {1..100}; do
+          ${lib.getExe cfg.package} msg screen-lock && exit 0
+          sleep 0.1
+        done
+        exit 1
+      '';
+
       shellBinds = {
         "Mod+Space" = {
           title = "Toggle Launcher";
@@ -139,7 +147,25 @@
       imports = [ inputs.noctalia-v5.homeModules.default ];
 
       config = {
-        programs.niri.settings.binds = shellNiriBinds;
+        home.packages = [ pkgs.ddcutil ];
+
+        programs.niri.settings = {
+          binds = shellNiriBinds;
+          spawn-at-startup = [ { sh = toString lockAtStartup; } ];
+          window-rules = [
+            {
+              matches = [ { app-id = "dev.noctalia.Noctalia.Settings"; } ];
+              open-floating = true;
+              default-column-width = {
+                fixed = 1080;
+              };
+              default-window-height = {
+                fixed = 920;
+              };
+            }
+          ];
+          debug.honor-xdg-activation-with-invalid-serial = true;
+        };
 
         programs.noctalia = {
           enable = lib.mkDefault true;
@@ -159,6 +185,8 @@
               panel = {
                 background_blur = true;
                 transparency_mode = "soft";
+                open_near_click_control_center = true;
+                session_placement = "centered";
               };
             };
 
@@ -174,11 +202,18 @@
               custom_palette = "grey-teal";
               templates = {
                 enable_builtin_templates = true;
-                enable_community_templates = false;
+                enable_community_templates = true;
                 builtin_ids = [
+                  "niri"
+                  "qt"
+                  "gtk4"
                   "btop"
                   "gtk3"
-                  "gtk4"
+                  "wezterm"
+                ];
+                community_ids = [
+                  "zathura"
+                  "yazi"
                 ];
               };
             };
@@ -194,22 +229,32 @@
                 attach_panels = true;
                 capsule = false;
                 margin_ends = 10;
+                margin_edge = 5;
+                widget_spacing = 10;
                 start = [
                   "control-center"
                   "workspaces"
+                  "disk"
+                  "ram"
                   "cpu"
+                  "cpu-temp"
+                  "gpu-temp"
                 ];
-                center = [ "clock" ];
+                center = [
+                  "clock"
+                  "weather"
+                ];
                 end = [
                   "tray"
+                  "tray-volume-spacer"
                   "input-volume"
-                  "volume"
+                  "output-volume"
+                  "brightness"
                   "network"
                   "bluetooth"
                   "battery"
-                  "power_profiles"
-                  "caffeine"
                   "notifications"
+                  "caffeine"
                   "session"
                 ];
               };
@@ -220,21 +265,52 @@
             };
 
             widget = {
-              clock.format = "{:%H:%M}\\n{:%d.%m.%y}";
+              clock = {
+                anchor = true;
+                format = "{:%H:%M}\\n{:%d.%m.%y}";
+              };
               workspaces = {
                 display = "name";
                 hide_when_empty = true;
+                empty_color = "on_surface_variant";
+              };
+              disk = {
+                type = "sysmon";
+                stat = "disk_pct";
+              };
+              ram = {
+                type = "sysmon";
+                stat = "ram_pct";
               };
               cpu = {
                 type = "sysmon";
                 stat = "cpu_usage";
               };
+              cpu-temp = {
+                type = "sysmon";
+                stat = "cpu_temp";
+              };
+              gpu-temp = {
+                type = "sysmon";
+                stat = "gpu_temp";
+              };
               input-volume = {
                 type = "volume";
                 device = "input";
               };
+              output-volume = {
+                type = "volume";
+                device = "output";
+              };
+              brightness.show_label = false;
+              tray-volume-spacer = {
+                type = "spacer";
+                length = 20;
+              };
               tray.drawer = false;
+              network.show_label = false;
               notifications.hide_when_no_unread = false;
+              session.color = "error";
             };
 
             dock.enabled = false;
@@ -244,17 +320,24 @@
               screen-off = {
                 enabled = true;
                 timeout = 300;
-                command = "noctalia:dpms-off";
-                resume_command = "noctalia:dpms-on";
+                action = "screen_off";
               };
               lock = {
                 enabled = true;
                 timeout = 1800;
-                command = "noctalia:screen-lock";
+                action = "lock";
+              };
+              suspend = {
+                enabled = true;
+                timeout = 3600;
+                action = "suspend";
+                lock_before_suspend = true;
               };
             };
 
             system.monitor.enabled = true;
+
+            wallpaper.directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
 
             weather = {
               enabled = true;
@@ -275,7 +358,6 @@
             };
 
             hooks = {
-              started = "noctalia msg screen-lock";
               session_locked = toString lockSecrets;
               session_unlocked = "kwallet-tpm-unlock $HOME/.config/kwallet-tpm/password.cred";
             };
