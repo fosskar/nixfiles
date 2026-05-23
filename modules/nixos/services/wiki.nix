@@ -1,6 +1,12 @@
 {
   flake.modules.nixos.wiki =
-    { inputs, pkgs, ... }:
+    {
+      config,
+      inputs,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       port = 8086;
     in
@@ -14,6 +20,18 @@
         listen = "127.0.0.1:${toString port}";
         root = inputs.wiki.packages.${pkgs.stdenv.hostPlatform.system}.default;
       };
+
+      services.homepage-dashboard.serviceGroups."Tools" =
+        lib.mkIf config.services.homepage-dashboard.enable
+          [
+            {
+              "fosskar's bliki" = {
+                href = "https://fosskar.nx3.eu/";
+                icon = "mdi-book-open-variant";
+                siteMonitor = "https://fosskar.nx3.eu/";
+              };
+            }
+          ];
 
       services.anubis.instances.bliki.settings = {
         TARGET = "http://127.0.0.1:${toString port}";

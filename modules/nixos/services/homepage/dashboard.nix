@@ -114,15 +114,6 @@
             };
           }
         ];
-        "Tools" = [
-          {
-            "fosskar's bliki" = {
-              href = "https://fosskar.nx3.eu/";
-              icon = "mdi-book-open-variant";
-              siteMonitor = "https://fosskar.nx3.eu/";
-            };
-          }
-        ];
         "Automation" = [
           {
             "Buildbot" = {
