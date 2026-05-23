@@ -13,11 +13,11 @@ _: {
           }
           {
             criteria = "HDMI-A-2";
-            mode = "1920x1080@239.761Hz";
+            mode = "1920x1080@119.982Hz";
             position = "3440,-450";
             scale = 1.0;
             transform = "270";
-            adaptiveSync = true;
+            adaptiveSync = false;
           }
         ];
       }
