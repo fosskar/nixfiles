@@ -14,7 +14,7 @@
         applyUdevRules = lib.mkDefault true;
         abrmd.enable = lib.mkDefault true;
         tctiEnvironment.enable = lib.mkDefault true;
-        pkcs11.enable = lib.mkDefault true;
+        pkcs11.enable = lib.mkDefault false;
       };
 
       # add wheel users to tss group for TPM access

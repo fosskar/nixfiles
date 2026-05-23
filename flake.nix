@@ -18,7 +18,6 @@
       inputs.clan-core.follows = "clan-core";
       inputs.flake-parts.follows = "flake-parts";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.systems.follows = "systems";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
