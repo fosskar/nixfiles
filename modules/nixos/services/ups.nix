@@ -62,11 +62,35 @@
         };
       };
 
-      systemd.services.upsdrv = {
-        unitConfig.StartLimitIntervalSec = 0;
-        serviceConfig = {
-          Restart = "on-failure";
-          RestartSec = "10s";
+      systemd.services = {
+        upsdrv = {
+          after = lib.mkForce [ ];
+          before = [
+            "upsd.service"
+            "upsmon.service"
+          ];
+          unitConfig.StartLimitIntervalSec = 0;
+          serviceConfig = {
+            Restart = "on-failure";
+            RestartSec = "10s";
+          };
+        };
+
+        upsd = {
+          after = lib.mkForce [
+            "network.target"
+            "upsdrv.service"
+          ];
+          requires = [ "upsdrv.service" ];
+          before = [ "upsmon.service" ];
+        };
+
+        upsmon = {
+          after = lib.mkForce [
+            "network.target"
+            "upsd.service"
+          ];
+          requires = [ "upsd.service" ];
         };
       };
     };
