@@ -11,7 +11,7 @@
           bind = listenAddress;
           port = listenPort;
           info = {
-            name = "crowbox relay";
+            name = "personal relay";
             description = "personal nostr relay";
           };
           logging.invalidEvents = false;

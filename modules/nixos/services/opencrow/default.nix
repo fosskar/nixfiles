@@ -8,7 +8,7 @@
     }:
     let
       localRelayUrl = "ws://127.0.0.1:${toString config.services.strfry.settings.relay.port}";
-      paperlessHost = "docs.${config.domains.local}";
+      paperlessUrl = "http://127.0.0.1:${toString config.services.paperless.port}";
       micsSkills = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
 
       kagiConfig = pkgs.writeText "kagi-config.json" (
@@ -49,7 +49,7 @@
         environment = {
           TZ = "Europe/Berlin";
 
-          PAPERLESS_URL = "https://${paperlessHost}";
+          PAPERLESS_URL = paperlessUrl;
 
           OPENCROW_PI_PROVIDER = "llama-cpp";
           OPENCROW_PI_MODEL = "qwen3.6-35b-a3b";
@@ -57,7 +57,7 @@
 
         piModels = {
           providers.llama-cpp = {
-            baseUrl = "https://llama-cpp.${config.domains.local}/v1";
+            baseUrl = "http://${config.services.llama-cpp.host}:${toString config.services.llama-cpp.port}/v1";
             api = "openai-completions";
             apiKey = "dummy";
             models = [ { id = "qwen3.6-35b-a3b"; } ];

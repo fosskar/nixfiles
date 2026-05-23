@@ -11,7 +11,9 @@
     self.modules.nixos.caddy
     self.modules.nixos.convertx
     self.modules.nixos.nextcloud
+    self.modules.nixos.opencrow
     self.modules.nixos.opencloud
+    self.modules.nixos.nostrRelay
     self.modules.nixos.radicale
     self.modules.nixos.lldap
     self.modules.nixos.authelia
