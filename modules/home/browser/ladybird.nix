@@ -1,10 +1,8 @@
 _: {
-  flake.modules.homeManager.ladybird =
-    { pkgs, ... }:
-    {
-      home.packages = [
-        # Disabled while nixpkgs ladybird fails to build with mismatched ICU/libjxl deps.
-        # pkgs.ladybird
-      ];
-    };
+  flake.modules.homeManager.ladybird = _: {
+    home.packages = [
+      # Disabled while nixpkgs ladybird fails to build with mismatched ICU/libjxl deps.
+      # pkgs.ladybird
+    ];
+  };
 }
