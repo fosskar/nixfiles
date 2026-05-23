@@ -138,7 +138,7 @@
       preservation.preserveAt."/persist".directories = [
         {
           directory = "/var/lib/opencrow";
-          user = "opencrow";
+          user = "2000";
           group = "opencrow";
           mode = "0750";
         }
