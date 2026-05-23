@@ -232,6 +232,11 @@
         ];
       };
 
+      systemd.services.nextcloud-setup = {
+        after = [ "redis-nextcloud.service" ];
+        requires = [ "redis-nextcloud.service" ];
+      };
+
       systemd.services.nextcloud-oidc-bootstrap = {
         description = "bootstrap nextcloud user_oidc provider";
         after = [ "nextcloud-setup.service" ];
