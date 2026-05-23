@@ -21,7 +21,7 @@
       self.modules.homeManager.gtk
       self.modules.homeManager.hunk
       self.modules.homeManager.k9s
-      self.modules.homeManager.ladybird
+      #self.modules.homeManager.ladybird
       self.modules.homeManager.mpv
       self.modules.homeManager.neovim
       self.modules.homeManager.niri
