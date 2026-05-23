@@ -169,9 +169,8 @@
                 app-id = "^zen-beta$|^firefox$|^brave$";
                 title = "^Picture-in-Picture$";
               }
-              { app-id = "^Pinentry-gtk$"; }
-              { app-id = "^xdg-desktop-portal-gtk"; }
-              { app-id = "^hyprpolkitagent$"; }
+              { app-id = "^Pinentry-.*$"; }
+              { app-id = "^xdg-desktop-portal-.*$"; }
               { title = "^Open Files$"; }
               { title = "^File Upload$"; }
               { title = "^File Operation Progress$"; }
@@ -190,15 +189,6 @@
           # program launches
           "Mod+T".action = {
             spawn = "ghostty";
-          };
-          "Mod+W".action = {
-            spawn = "zen-beta";
-          };
-          "Mod+Z".action = {
-            spawn = "zeditor";
-          };
-          "Mod+P".action = {
-            spawn = "ts3client";
           };
           "Mod+D".action = {
             spawn = "webcord";

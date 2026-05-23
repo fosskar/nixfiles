@@ -7,6 +7,8 @@ let
   t = config.theme;
 in
 {
+  programs.niri.settings.binds."Mod+Z".action.spawn = "zeditor";
+
   programs.zed-editor = {
     enable = true;
     #package = inputs.zed.packages.${pkgs.stdenv.hostPlatform.system}.default;

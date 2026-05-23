@@ -8,6 +8,8 @@
         #inputs.zen-browser.homeModules.twilight
       ];
 
+      programs.niri.settings.binds."Mod+W".action.spawn = "zen-beta";
+
       programs.zen-browser = {
         enable = true;
         nativeMessagingHosts = [ pkgs.firefoxpwa ];
