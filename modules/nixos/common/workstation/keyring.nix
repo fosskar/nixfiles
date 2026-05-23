@@ -100,7 +100,6 @@
       # security.pam.services = {
       #   login.enableGnomeKeyring = lib.mkDefault true;
       #   greetd.enableGnomeKeyring = lib.mkIf config.services.greetd.enable true;
-      #   hyprlock.enableGnomeKeyring = lib.mkIf config.programs.hyprlock.enable true;
       #   cosmic-greeter.enableGnomeKeyring = lib.mkIf config.services.displayManager.cosmic-greeter.enable true;
       # };
 

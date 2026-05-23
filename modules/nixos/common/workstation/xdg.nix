@@ -10,16 +10,6 @@
             "gtk"
             "gnome"
           ];
-          hyprland = {
-            default = [
-              "hyprland"
-              "gtk"
-            ];
-            "org.freedesktop.impl.portal.Secret" = [
-              "kwallet"
-              "gnome-keyring"
-            ];
-          };
           niri = {
             default = [
               "gnome"
