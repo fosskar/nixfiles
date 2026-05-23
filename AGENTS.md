@@ -9,6 +9,8 @@ purpose: help agents work fast + correctly in this repo without stale assumption
   - do not run: `clan machines update`, `reboot`, `systemctl restart`, destructive migrations.
 - atomic commits only.
 - prefer minimal direct fix over abstractions.
+- do not introduce unnecessary `let ... in` bindings or other local abstractions for single-use values.
+- avoid Nix `with` expressions; prefer explicit attribute references.
 - existing text/pattern is evidence, not justification; keep it only if it still serves current repo/task.
 - explain why, not code-tour.
 - no guessing/hedging in responses (`likely`, `maybe`, `probably`). verify with evidence or state unknown.
