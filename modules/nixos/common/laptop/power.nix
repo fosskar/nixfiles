@@ -6,7 +6,6 @@
       imports = [
         config.flake.modules.nixos.logind
         config.flake.modules.nixos.powertop
-        config.flake.modules.nixos.suspendThenShutdown
         config.flake.modules.nixos.tunedPpd
         config.flake.modules.nixos.upower
       ];
