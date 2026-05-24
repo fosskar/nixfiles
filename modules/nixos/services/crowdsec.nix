@@ -102,7 +102,7 @@
           ];
 
           systemd.services = {
-            crowdsec-update-hub.serviceConfig.ExecStartPost = lib.mkForce "+systemctl reload crowdsec.service";
+            crowdsec-update-hub.serviceConfig.ExecStartPost = lib.mkForce "+systemctl restart crowdsec.service";
 
             crowdsec-firewall-bouncer-register.serviceConfig = {
               StateDirectory = lib.mkForce "crowdsec-firewall-bouncer-register";
