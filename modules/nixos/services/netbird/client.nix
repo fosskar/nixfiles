@@ -19,7 +19,7 @@
             clients.default = {
               name = lib.mkDefault "netbird";
               interface = lib.mkDefault "wt0";
-              hardened = lib.mkDefault true;
+              hardened = lib.mkDefault false;
               port = lib.mkDefault 51820;
               # netbird >=0.66 logs profile-manager warnings without HOME/XDG
               environment = {
@@ -31,15 +31,29 @@
 
           systemd.services.netbird.path = [ pkgs.shadow ];
 
+          systemd.services.netbird.serviceConfig =
+            lib.mkIf (!config.services.netbird.clients.default.hardened)
+              {
+                PrivateTmp = true;
+                ProtectSystem = "strict";
+                ProtectHome = false;
+                NoNewPrivileges = false;
+                LockPersonality = true;
+                RestrictRealtime = true;
+                SystemCallArchitectures = "native";
+                ReadWritePaths = [
+                  "/etc/ssh"
+                  "/home"
+                  "/var/lib/lastlog"
+                  config.services.netbird.clients.default.dir.state
+                  config.services.netbird.clients.default.dir.runtime
+                ];
+              };
+
           users.groups = lib.mapAttrs' (
             _name: client:
             lib.nameValuePair client.user.group { members = lib.mkAfter config.users.groups.wheel.members; }
           ) config.services.netbird.clients;
-
-          # netbird manages /etc/ssh/ssh_config.d/99-netbird.conf dynamically
-          # for `netbird ssh` peer proxying. hardened mode keeps /etc read-only,
-          # so allow writes below the existing ssh config directory.
-          systemd.services.netbird.serviceConfig.ReadWritePaths = [ "/etc/ssh" ];
 
           # the login script already checks NeedsLogin status before acting,
           # so the state.json guard is unnecessary and prevents re-auth on expired sessions

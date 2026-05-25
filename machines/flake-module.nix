@@ -269,6 +269,7 @@ in
             tags.all = { };
             machines."nixbox".settings.routingFeatures = "server";
           };
+          roles.sshServer.tags.server = { };
         };
 
         tor = {

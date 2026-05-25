@@ -134,6 +134,28 @@
       };
   };
 
+  roles.sshServer = {
+    description = "enables NetBird SSH server on a peer";
+    interface =
+      { lib, ... }:
+      {
+        options = {
+          disableAuth = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "disable JWT auth for NetBird SSH and rely on NetBird ACLs";
+          };
+          enableSftp = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "enable SFTP for NetBird SSH";
+          };
+        };
+      };
+
+    perInstance = _: { };
+  };
+
   roles.client = {
     description = "connects to the netbird mesh network";
     interface =
@@ -169,6 +191,12 @@
         serverName = lib.head serverMachines;
         serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
         isServerMachine = builtins.elem machine.name serverMachines;
+        sshSettings = (roles.sshServer.machines.${machine.name} or { }).settings or null;
+        sshArgs = lib.optionals (sshSettings != null) (
+          [ "--allow-server-ssh" ]
+          ++ lib.optionals sshSettings.disableAuth [ "--disable-ssh-auth" ]
+          ++ lib.optionals sshSettings.enableSftp [ "--enable-ssh-sftp" ]
+        );
       in
       {
         exports = mkExports {
@@ -226,6 +254,29 @@
               # the login script already checks NeedsLogin status before acting,
               # so the state.json guard is unnecessary and prevents re-auth on expired sessions
               systemd.services.netbird-login = {
+                script = lib.mkForce ''
+                  set -x
+
+                  get_status() {
+                    ${config.services.netbird.clients.default.wrapper}/bin/netbird status 2>&1 || :
+                  }
+
+                  main() {
+                    # grep for `: Connected` as well, as `Connected` appears other
+                    # places even when not connected, and before NeedsLogin
+                    until get_status | grep --quiet ': Connected\|NeedsLogin' ; do
+                      sleep 1
+                    done
+
+                    if get_status | grep --quiet 'NeedsLogin' || ${lib.boolToString (sshArgs != [ ])}; then
+                      # setup key is in $NB_SETUP_KEY_FILE, and is
+                      # automatically picked up by the cli
+                      ${config.services.netbird.clients.default.wrapper}/bin/netbird up ${lib.escapeShellArgs sshArgs}
+                    fi
+                  }
+
+                  main "$@"
+                '';
                 after = lib.optionals isServerMachine [
                   "netbird-server.service"
                 ];
