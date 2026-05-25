@@ -18,6 +18,8 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("publish", {
     description: "publish current branch/bookmark",
     handler: async (args, ctx) => {
+      await ctx.waitForIdle();
+
       const ref = args.trim() || undefined;
       const log: string[] = [];
       const show = () =>

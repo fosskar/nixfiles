@@ -37,6 +37,8 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("commit", {
     description: "commit with preloaded vcs context",
     handler: async (_args, ctx) => {
+      await ctx.waitForIdle();
+
       const cwd = ctx.cwd;
       const isJj =
         (await pi.exec("jj", ["root"], { cwd, timeout: 5000 })).code === 0;

@@ -138,7 +138,10 @@ export default function (pi: ExtensionAPI) {
 
     // send as user message with image + user's text, then mark as handled
     pi.sendUserMessage([
-      { type: "image", data: imageData, mimeType: "image/png" },
+      {
+        type: "image",
+        source: { type: "base64", mediaType: "image/png", data: imageData },
+      },
       { type: "text", text: event.text || "Here's my sketch:" },
     ]);
 

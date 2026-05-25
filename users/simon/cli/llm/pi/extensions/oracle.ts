@@ -260,6 +260,8 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("oracle", {
     description: "Get a second opinion from another AI model",
     handler: async (args, ctx) => {
+      await ctx.waitForIdle();
+
       if (!ctx.hasUI) {
         ctx.ui.notify("oracle requires interactive mode", "error");
         return;
