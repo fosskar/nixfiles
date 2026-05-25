@@ -8,7 +8,10 @@
       services.tuned = {
         ppdSupport = lib.mkForce true;
         settings.dynamic_tuning = true;
-        ppdSettings.battery.balanced = "laptop-battery-powersave";
+        ppdSettings = {
+          battery.balanced = "laptop-battery-powersave";
+          profiles.performance = "latency-performance";
+        };
       };
     };
 }
