@@ -10,7 +10,10 @@
         };
       };
 
-      systemd.services.tuned.restartTriggers = [ "balanced" ];
+      systemd.services = {
+        tuned.restartTriggers = [ "balanced" ];
+        tuned-ppd.enable = lib.mkIf (!(config.services.tuned.ppdSupport or false)) false;
+      };
 
       services.tlp.enable = lib.mkForce false;
     };
