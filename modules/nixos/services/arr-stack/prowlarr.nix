@@ -20,7 +20,16 @@
         services.prowlarr = {
           enable = true;
           openFirewall = false;
-          settings.server.port = listenPort;
+          settings = {
+            auth = lib.mkIf (config.services.authelia.instances.main.enable or false) {
+              method = "External";
+              required = "Enabled";
+            };
+            server = {
+              bindaddress = listenAddress;
+              port = listenPort;
+            };
+          };
         };
 
         # --- homepage ---

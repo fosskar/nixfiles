@@ -88,7 +88,9 @@
 
         # no proxy-auth - jellyfin has built-in auth
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
-          reverse_proxy ${listenUrl}
+          reverse_proxy ${listenUrl} {
+            flush_interval -1
+          }
         '';
 
         # --- backup ---
