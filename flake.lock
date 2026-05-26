@@ -1383,10 +1383,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1779584571,
-        "narHash": "sha256-tMS+BuW41wOBLo/h0rUojJ39bpsbig0uXUK/i+FaeI8=",
+        "lastModified": 1779757397,
+        "narHash": "sha256-SKg5rvAJkGv45ZrtCQqKOYgLZp+qzcWBqZ7oHQ0JHWI=",
         "ref": "refs/heads/main",
-        "rev": "91b0b890d9039201e8d2dbb1d1f0102f75a0f840",
+        "rev": "906f4bf533817504fa3f611fbd5c668ac0433b42",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/wiki.git"
