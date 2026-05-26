@@ -15,7 +15,6 @@
       listenUrl = "http://127.0.0.1:${toString listenPort}";
       oidcIssuerUrl = "https://auth.${config.domains.public}";
       nixfilesPackages = inputs.self.packages.${pkgs.stdenv.hostPlatform.system};
-
     in
     {
       clan.core.vars.generators.nextcloud = {
@@ -101,6 +100,7 @@
         https = false;
         autoUpdateApps.enable = false;
         appstoreEnable = false;
+        maxUploadSize = "4G";
 
         caching = {
           apcu = true;
@@ -139,6 +139,9 @@
           "opcache.jit" = "1255";
           "opcache.jit_buffer_size" = "8M";
           "opcache.revalidate_freq" = "60";
+          "redis.session.locking_enabled" = "1";
+          "redis.session.lock_retries" = "-1";
+          "redis.session.lock_wait_time" = "10000";
         };
 
         poolSettings = {
@@ -165,6 +168,7 @@
 
           default_phone_region = "DE";
           maintenance_window_start = 3;
+          chunkSize = "5120MB";
 
           mail_smtpmode = "sendmail";
           mail_sendmailmode = "pipe";
@@ -219,7 +223,9 @@
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        reverse_proxy ${listenUrl}
+        reverse_proxy ${listenUrl} {
+          flush_interval -1
+        }
       '';
 
       clan.core.postgresql.enable = true;
