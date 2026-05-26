@@ -21,7 +21,6 @@
     "irqbalance"
 
     "telegraf-full"
-    "prometheus-node-exporter-lua"
 
     "unbound-daemon"
     "unbound-control"
