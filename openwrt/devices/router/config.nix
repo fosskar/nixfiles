@@ -30,6 +30,8 @@
 
     "sqm-scripts"
     "luci-app-sqm"
+
+    "zram-swap"
   ];
 
   removePackages = [
