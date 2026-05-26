@@ -30,6 +30,8 @@
 
         settings = {
           title = "home-lab dashboard";
+          baseUrl = "https://${localHost}";
+          startUrl = "https://${localHost}";
           headerStyle = "underlined";
           useEqualheights = true;
           hideVersion = true;
