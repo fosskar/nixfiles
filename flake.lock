@@ -527,11 +527,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779592016,
-        "narHash": "sha256-R0UiAEiPgHaEgmY8NDUjCh28uBzUcmqyA07/JXddbb0=",
+        "lastModified": 1779674986,
+        "narHash": "sha256-Nkq5xPj2tkegYGkE56O+8ZVfe6ab147c+A4rFxZl/gE=",
         "owner": "modem-dev",
         "repo": "hunk",
-        "rev": "e9fdfeb52cb694a117d1bc11c58921189e863e22",
+        "rev": "e04133e501596b90a4e350aac243753e9ac0bc89",
         "type": "github"
       },
       "original": {
