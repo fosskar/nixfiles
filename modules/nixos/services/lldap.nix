@@ -98,6 +98,13 @@
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        header {
+          X-Content-Type-Options "nosniff"
+          X-Frame-Options "SAMEORIGIN"
+          X-Robots-Tag "noindex, nofollow, nosnippet, noarchive"
+          X-Download-Options "noopen"
+          X-Permitted-Cross-Domain-Policies "none"
+        }
         reverse_proxy ${listenUrl}
       '';
 

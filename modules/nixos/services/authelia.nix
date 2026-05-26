@@ -110,6 +110,10 @@
               expiration = "1w";
               inactivity = "1w";
               remember_me = "1M";
+              redis = {
+                host = config.services.redis.servers.authelia.unixSocket;
+                port = 0;
+              };
               cookies = [
                 {
                   domain = config.domains.local;
@@ -203,6 +207,11 @@
           lib.mkIf smtpEnabled
             config.clan.core.vars.generators.smtp.files."smtp-env".path;
 
+        services.redis.servers.authelia = {
+          enable = true;
+          user = "authelia-main";
+        };
+
         services.homepage-dashboard.serviceGroups."Security" =
           lib.mkIf config.services.homepage-dashboard.enable
             [
@@ -228,7 +237,14 @@
         ];
 
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
-          header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+          header {
+            Strict-Transport-Security "max-age=31536000; includeSubDomains"
+            X-Content-Type-Options "nosniff"
+            X-Frame-Options "SAMEORIGIN"
+            X-Robots-Tag "noindex, nofollow, nosnippet, noarchive"
+            X-Download-Options "noopen"
+            X-Permitted-Cross-Domain-Policies "none"
+          }
           reverse_proxy ${listenUrl}
         '';
 

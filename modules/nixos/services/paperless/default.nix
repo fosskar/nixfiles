@@ -185,7 +185,11 @@
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        header Referrer-Policy "strict-origin-when-cross-origin"
         reverse_proxy ${listenUrl}
+        request_body {
+          max_size 500MB
+        }
       '';
 
       clan.core.postgresql.enable = true;
