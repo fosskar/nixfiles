@@ -15,6 +15,24 @@
       listenUrl = "http://127.0.0.1:${toString listenPort}";
       oidcIssuerUrl = "https://auth.${config.domains.public}";
       nixfilesPackages = inputs.self.packages.${pkgs.stdenv.hostPlatform.system};
+      tankDisks = [
+        "/dev/sda"
+        "/dev/sdc"
+        "/dev/sdd"
+        "/dev/sdg"
+      ];
+      nextcloudCronCommand = "${lib.getExe config.services.phpfpm.pools.nextcloud.phpPackage} -f ${config.services.nextcloud.finalPackage}/cron.php";
+      nextcloudCronIfTankAwake = pkgs.writeShellScript "nextcloud-cron-if-tank-awake" ''
+        set -eu
+
+        for disk in ${lib.escapeShellArgs tankDisks}; do
+          if ! ${lib.getExe pkgs.smartmontools} --info --nocheck=standby "$disk" 2>&1 | ${lib.getExe pkgs.gnugrep} -qi "standby"; then
+            exec ${nextcloudCronCommand}
+          fi
+        done
+
+        echo "tank disks standby; skipping nextcloud cron"
+      '';
     in
     {
       clan.core.vars.generators.nextcloud = {
@@ -241,6 +259,34 @@
       systemd.services.nextcloud-setup = {
         after = [ "redis-nextcloud.service" ];
         requires = [ "redis-nextcloud.service" ];
+      };
+
+      systemd.services.nextcloud-cron.serviceConfig.ExecStart = lib.mkForce nextcloudCronIfTankAwake;
+
+      systemd.services.nextcloud-cron-force = {
+        description = "forced nextcloud cron run";
+        after = config.systemd.services.nextcloud-cron.after;
+        requires = config.systemd.services.nextcloud-cron.requires;
+        environment = config.systemd.services.nextcloud-cron.environment;
+        serviceConfig = {
+          inherit (config.systemd.services.nextcloud-cron.serviceConfig)
+            ExecCondition
+            KillMode
+            LoadCredential
+            Type
+            User
+            ;
+          ExecStart = nextcloudCronCommand;
+        };
+      };
+
+      systemd.timers.nextcloud-cron-force = {
+        description = "daily forced nextcloud cron run";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "*-*-* 03:05:00";
+          Persistent = true;
+        };
       };
 
       systemd.services.nextcloud-oidc-bootstrap = {
