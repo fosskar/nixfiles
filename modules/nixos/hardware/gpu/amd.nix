@@ -34,5 +34,9 @@
       services.xserver.videoDrivers = [ "modesetting" ];
 
       services.lact.enable = true;
+
+      preservation.preserveAt."/persist".directories = [
+        "/etc/lact"
+      ];
     };
 }
