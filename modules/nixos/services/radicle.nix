@@ -144,6 +144,10 @@
             proxyPass = "http://127.0.0.1:${toString config.services.radicle.httpd.listenPort}";
             recommendedProxySettings = true;
           };
+          locations."/raw/" = {
+            proxyPass = "http://127.0.0.1:${toString config.services.radicle.httpd.listenPort}";
+            recommendedProxySettings = true;
+          };
         };
 
         services.anubis.instances.radicle.settings = {
