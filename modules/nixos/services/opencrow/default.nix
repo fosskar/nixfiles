@@ -133,7 +133,6 @@
       };
 
       users.groups.opencrow.gid = 2000;
-      users.groups.opencrow-signal.gid = 2001;
 
       preservation.preserveAt."/persist".directories = [
         {
@@ -142,15 +141,9 @@
           group = "opencrow";
           mode = "0750";
         }
-        {
-          directory = "/var/lib/opencrow-signal";
-          user = "2001";
-          group = "opencrow-signal";
-          mode = "0750";
-        }
       ];
 
-      containers = mkContainer "opencrow" 2000 // mkContainer "opencrow-signal" 2001;
+      containers = mkContainer "opencrow" 2000;
 
       services.opencrow = commonInstance // {
         environment = commonInstance.environment // {
@@ -166,17 +159,6 @@
 
         credentialFiles = commonInstance.credentialFiles // {
           "nostr-private-key" = config.clan.core.vars.generators.opencrow.files.nostr-private-key.path;
-        };
-
-        instances.signal = commonInstance // {
-          environment = commonInstance.environment // {
-            OPENCROW_BACKEND = "signal";
-            OPENCROW_SOUL_FILE = "${./soul-gismo.md}";
-            OPENCROW_SIGNAL_ACCOUNT = "+4915251840217";
-            OPENCROW_ALLOWED_USERS = "dcca284c-5b24-4eba-8e40-bb9649c1502c,c4c7789f-f5e0-4340-bb57-ffb4e412bbd9";
-            OPENCROW_PI_PROVIDER = "openai-codex";
-            OPENCROW_PI_MODEL = "gpt-5.5";
-          };
         };
       };
     };

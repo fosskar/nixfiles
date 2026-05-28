@@ -3,7 +3,7 @@
     { pkgs, ... }:
     let
       signalAccount = "+4915251840217";
-      signalHttpListen = "127.0.0.1:8080";
+      signalHttpListen = "127.0.0.1:18081";
       jvmArgs = [
         "-Xms64m"
         "-Xmx128m"

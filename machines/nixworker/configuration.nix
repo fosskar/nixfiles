@@ -11,6 +11,8 @@
     self.modules.nixos.buildbotMaster
     self.modules.nixos.buildbotWorker
     self.modules.nixos.codebergActionsRunner
+    self.modules.nixos.hermesAgent
+    self.modules.nixos.signalCli
     #self.modules.nixos.giteaMq
     self.modules.nixos.radicle
     self.modules.nixos.homeManager

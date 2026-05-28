@@ -138,9 +138,14 @@
       inputs.systems.follows = "systems";
     };
     opencrow = {
-      url = "github:fosskar/opencrow";
+      url = "github:pinpox/opencrow";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
+    };
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
     };
     mics-skills = {
       url = "github:Mic92/mics-skills";
