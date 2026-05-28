@@ -35,11 +35,15 @@
         public = true;
         consent_mode = "implicit";
         authorization_policy = "users";
+        claims_policy = "opencloud_groups";
+        require_pkce = true;
+        pkce_challenge_method = "S256";
         scopes = [
           "openid"
           "profile"
           "email"
           "groups"
+          "offline_access"
         ];
         response_types = [ "code" ];
         grant_types = [
@@ -89,21 +93,28 @@
           '';
         };
 
-        services.authelia.instances.main.settings.identity_providers.oidc.cors = {
-          allowed_origins_from_client_redirect_uris = true;
-          endpoints = [
-            "authorization"
-            "token"
-            "userinfo"
-            "revocation"
-          ];
+        services.authelia.instances.main.settings.identity_providers.oidc = {
+          claims_policies.opencloud_groups = {
+            id_token = [ "groups" ];
+            access_token = [ "groups" ];
+            custom_claims.groups.attribute = "groups";
+          };
+          cors = {
+            allowed_origins_from_client_redirect_uris = true;
+            endpoints = [
+              "authorization"
+              "token"
+              "userinfo"
+              "revocation"
+            ];
+          };
         };
 
         services.authelia.instances.main.settings.identity_providers.oidc.clients = [
           (
             commonClientConfig
             // {
-              client_id = "web";
+              client_id = "OpenCloudWeb";
               client_name = "OpenCloud Web";
               redirect_uris = [
                 "https://${localHost}/"
@@ -173,8 +184,23 @@
             PROXY_OIDC_USERINFO_CACHE_TTL = "10m";
             GRAPH_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
             PROXY_USER_OIDC_CLAIM = "sub";
-            PROXY_USER_CS3_CLAIM = "userid";
+            PROXY_AUTOPROVISION_CLAIM_USERNAME = "sub";
+            PROXY_AUTOPROVISION_CLAIM_EMAIL = "email";
+            PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME = "name";
+            PROXY_AUTOPROVISION_CLAIM_GROUPS = "groups";
+            PROXY_USER_CS3_CLAIM = "username";
+            PROXY_ROLE_ASSIGNMENT_DRIVER = "oidc";
+            PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM = "groups";
+            GRAPH_ASSIGN_DEFAULT_USER_ROLE = "false";
             GRAPH_USERNAME_MATCH = "none";
+            WEBFINGER_WEB_OIDC_CLIENT_ID = "OpenCloudWeb";
+            WEBFINGER_WEB_OIDC_CLIENT_SCOPES = "openid profile email groups";
+            WEBFINGER_DESKTOP_OIDC_CLIENT_ID = "OpenCloudDesktop";
+            WEBFINGER_DESKTOP_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
+            WEBFINGER_ANDROID_OIDC_CLIENT_ID = "OpenCloudAndroid";
+            WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
+            WEBFINGER_IOS_OIDC_CLIENT_ID = "OpenCloudIOS";
+            WEBFINGER_IOS_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
             WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${config.domains.public}/settings";
 
             STORAGE_USERS_POSIX_ROOT = lib.mkDefault "/tank/apps/opencloud/data";
@@ -190,6 +216,22 @@
           settings = {
             proxy = {
               oidc.rewrite_well_known = true;
+              role_assignment = {
+                driver = "oidc";
+                oidc_role_mapper = {
+                  role_claim = "groups";
+                  role_mapping = [
+                    {
+                      role_name = "admin";
+                      claim_value = "admin";
+                    }
+                    {
+                      role_name = "user";
+                      claim_value = "user";
+                    }
+                  ];
+                };
+              };
               additional_policies = [
                 {
                   name = "default";
@@ -204,8 +246,8 @@
             };
             web.web.config.oidc = {
               authority = oidcIssuerUrl;
-              client_id = "web";
-              scope = "openid profile email groups";
+              client_id = "OpenCloudWeb";
+              scope = "openid profile email groups offline_access";
             };
           };
         };
@@ -247,9 +289,13 @@
           }
         '';
 
-        clan.core.state.opencloud.folders = [ "/var/lib/opencloud" ];
+        clan.core.state.opencloud.folders = [
+          "/etc/opencloud"
+          "/var/lib/opencloud"
+        ];
 
         preservation.preserveAt."/persist".directories = [
+          "/etc/opencloud"
           {
             directory = "/var/lib/opencloud";
             user = "opencloud";
