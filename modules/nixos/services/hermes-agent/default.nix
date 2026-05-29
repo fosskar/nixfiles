@@ -31,14 +31,28 @@
           type = "hidden";
           persist = true;
         };
+        prompts.matrix-access-token = {
+          description = "Matrix access token for hermes-agent";
+          type = "hidden";
+          persist = true;
+        };
+        prompts.matrix-recovery-key = {
+          description = "Matrix recovery key (Security Key) for hermes-agent cross-signing";
+          type = "hidden";
+          persist = true;
+        };
         script = ''
           {
             echo "HASS_URL=$(cat "$prompts/hass-url")"
             echo "HASS_TOKEN=$(cat "$prompts/hass-token")"
             echo "OPENCODE_GO_API_KEY=$(cat "$prompts/opencode-api-key")"
+            echo "MATRIX_ACCESS_TOKEN=$(cat "$prompts/matrix-access-token")"
+            echo "MATRIX_RECOVERY_KEY=$(cat "$prompts/matrix-recovery-key")"
           } > "$out/.env"
         '';
       };
+
+      nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
 
       services.hermes-agent = {
         enable = true;
@@ -48,6 +62,7 @@
           pkgs.agent-browser
           pkgs.chromium
           pkgs.curl
+          pkgs.olm
         ];
 
         extraDependencyGroups = [
@@ -95,6 +110,10 @@
           SIGNAL_HTTP_URL = "http://127.0.0.1:18081";
 
           SEARXNG_URL = "https://search.${config.domains.local}/";
+
+          MATRIX_HOMESERVER = "https://matrix.org";
+          MATRIX_ALLOWED_USERS = "@fosscar:matrix.org";
+          #MATRIX_ENCRYPTION = "true";
         };
       };
     };
