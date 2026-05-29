@@ -53,8 +53,6 @@
         extraDependencyGroups = [
           "voice"
           "matrix"
-          "web"
-          "pty"
         ];
 
         #documents."SOUL.md" = ./SOUL.md;
