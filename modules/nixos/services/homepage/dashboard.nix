@@ -1,6 +1,15 @@
 {
   flake.modules.nixos.homepage = _: {
     services.homepage-dashboard = {
+      settings.quicklaunch = {
+        searchDescriptions = true;
+        hideInternetSearch = false;
+        showSearchSuggestions = true;
+        hideVisitURL = false;
+        provider = "custom";
+        url = "https://search.nx3.eu/search?q=";
+      };
+
       # layout ordering and column config
       settings.layout = [
         {
@@ -237,6 +246,14 @@
       ];
 
       widgets = [
+        {
+          search = {
+            provider = "custom";
+            url = "https://search.nx3.eu/search?q=";
+            target = "_blank";
+            showSearchSuggestions = true;
+          };
+        }
         {
           datetime = {
             locale = "de";
