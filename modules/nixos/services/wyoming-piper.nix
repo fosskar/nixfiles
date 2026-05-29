@@ -7,7 +7,8 @@
       ...
     }:
     let
-      listenAddress = "127.0.0.1";
+      wyomingAddress = "0.0.0.0";
+      httpAddress = "127.0.0.1";
       listenPort = 10200;
       httpPort = 18082;
       localHost = "piper.${config.domains.local}";
@@ -22,7 +23,7 @@
       services.wyoming.piper.servers.default = {
         enable = true;
         voice = "en_US-ryan-high";
-        uri = "tcp://${listenAddress}:${toString listenPort}";
+        uri = "tcp://${wyomingAddress}:${toString listenPort}";
         useCUDA = true;
         zeroconf.enable = false;
       };
@@ -33,11 +34,13 @@
         requires = [ "wyoming-piper-default.service" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
-          ExecStart = "${python}/bin/python -m wyoming.http.tts_server --host ${listenAddress} --port ${toString httpPort} --uri tcp://127.0.0.1:${toString listenPort}";
+          ExecStart = "${python}/bin/python -m wyoming.http.tts_server --host ${httpAddress} --port ${toString httpPort} --uri tcp://127.0.0.1:${toString listenPort}";
           Restart = "always";
           RestartSec = 5;
         };
       };
+
+      networking.firewall.allowedTCPPorts = [ listenPort ];
 
       systemd.services.wyoming-piper-default.serviceConfig = {
         DevicePolicy = lib.mkForce "auto";
@@ -45,13 +48,13 @@
       };
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        reverse_proxy http://${listenAddress}:${toString httpPort}
+        reverse_proxy http://${httpAddress}:${toString httpPort}
       '';
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
         {
           name = "Wyoming Piper";
-          url = "http://${listenAddress}:${toString httpPort}/api/info";
+          url = "http://${httpAddress}:${toString httpPort}/api/info";
           group = "AI";
           enabled = true;
           interval = "5m";
