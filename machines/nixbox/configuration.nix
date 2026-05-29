@@ -13,12 +13,14 @@
     self.modules.nixos.nextcloud
     self.modules.nixos.opencrow
     self.modules.nixos.opencloud
+    self.modules.nixos.searxng
     self.modules.nixos.nostrRelay
     self.modules.nixos.radicale
     self.modules.nixos.lldap
     self.modules.nixos.authelia
     self.modules.nixos.immich
     self.modules.nixos.llamaCpp
+    self.modules.nixos.wyomingPiper
     self.modules.nixos.itTools
     self.modules.nixos.paperless
     self.modules.nixos.paperlessSamba
