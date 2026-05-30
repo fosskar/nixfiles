@@ -9,7 +9,7 @@
     {
       imports = [ inputs.hermes-agent.nixosModules.default ];
 
-      environment.shellAliases.hermes = "sudo -u hermes -H hermes";
+      environment.shellAliases.hermes = "sudo -u workspace -H hermes";
 
       clan.core.vars.generators.hermes-agent = {
         files.".env" = {
@@ -57,7 +57,10 @@
       services.hermes-agent = {
         enable = true;
         addToSystemPackages = true;
-        workingDirectory = "/home/workspace";
+        createUser = false;
+        user = "workspace";
+        group = "users";
+        stateDir = "/home/workspace";
         environmentFiles = [ config.clan.core.vars.generators.hermes-agent.files.".env".path ];
         extraPackages = [
           pkgs.agent-browser
@@ -80,6 +83,8 @@
             default = "deepseek-v4-flash";
             provider = "opencode-go";
           };
+
+          terminal.cwd = "/home/workspace/workspace";
 
           toolsets = [
             "homeassistant"
