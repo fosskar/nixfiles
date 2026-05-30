@@ -57,6 +57,7 @@
       services.hermes-agent = {
         enable = true;
         addToSystemPackages = true;
+        workingDirectory = "/home/workspace";
         environmentFiles = [ config.clan.core.vars.generators.hermes-agent.files.".env".path ];
         extraPackages = [
           pkgs.agent-browser
