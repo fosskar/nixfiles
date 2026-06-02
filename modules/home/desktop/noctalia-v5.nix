@@ -25,7 +25,7 @@
 
       lockAtStartup = pkgs.writeShellScript "noctalia-lock-at-startup" ''
         for _ in {1..100}; do
-          ${lib.getExe cfg.package} msg screen-lock && exit 0
+          ${lib.getExe cfg.package} msg session lock && exit 0
           sleep 0.1
         done
         exit 1
@@ -46,7 +46,7 @@
         };
         "Mod+Shift+L" = {
           title = "Lock Screen";
-          cmd = "screen-lock";
+          cmd = "session lock";
         };
         "Mod+M" = {
           title = "Toggle Control Center";
@@ -174,6 +174,7 @@
 
           settings = {
             shell = {
+              launch_apps_as_systemd_services = true;
               font_family = theme.fonts.sans;
               time_format = "{:%H:%M}";
               date_format = "%d.%m.%y";
