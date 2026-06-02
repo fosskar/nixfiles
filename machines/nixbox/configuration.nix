@@ -35,7 +35,6 @@
     self.modules.nixos.hdIdle
     self.modules.nixos.podman
     self.modules.nixos.homepage
-    self.modules.nixos.ups
     self.modules.nixos.smtp
     self.modules.nixos.gatus
     self.modules.nixos.msmtp

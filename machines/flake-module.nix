@@ -415,6 +415,18 @@ in
           };
         };
 
+        ups = {
+          module = {
+            name = "ups";
+            input = "self";
+          };
+          roles = {
+            primary.machines."nixbox" = { };
+            secondary.machines."nixworker" = { };
+            secondary.machines."simon-desktop" = { };
+          };
+        };
+
         ## infra / storage / build
 
         garage = {
