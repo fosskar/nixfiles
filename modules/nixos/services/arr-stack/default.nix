@@ -26,6 +26,7 @@
               domain = [
                 "sonarr.*"
                 "radarr.*"
+                "lidarr.*"
                 "prowlarr.*"
                 "bazarr.*"
                 "sabnzbd.*"
@@ -40,6 +41,7 @@
               domain = [
                 "sonarr.*"
                 "radarr.*"
+                "lidarr.*"
                 "prowlarr.*"
                 "bazarr.*"
                 "sabnzbd.*"
@@ -51,6 +53,7 @@
               domain = [
                 "sonarr.*"
                 "radarr.*"
+                "lidarr.*"
                 "prowlarr.*"
                 "bazarr.*"
                 "sabnzbd.*"
