@@ -10,7 +10,11 @@
         settings.dynamic_tuning = true;
         ppdSettings = {
           battery.balanced = "laptop-battery-powersave";
-          profiles.performance = "latency-performance";
+          profiles = {
+            power-saver = "powersave";
+            balanced = "balanced";
+            performance = "latency-performance";
+          };
         };
       };
     };
