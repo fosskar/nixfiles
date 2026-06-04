@@ -38,11 +38,6 @@
               t = "launcher";
               a = "clipboard";
             };
-            "Mod+G" = {
-              title = "Toggle Power Menu";
-              t = "plugin:nostr-chat";
-              a = "toggle";
-            };
             "Mod+X" = {
               title = "Toggle Power Menu";
               t = "sessionMenu";
@@ -277,10 +272,6 @@
 
                 # mic92 plugins need the source hash prefix to match on-disk folder names
                 "c4d277:display-config" = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/Mic92/noctalia-plugins";
-                };
-                "c4d277:nostr-chat" = {
                   enabled = true;
                   sourceUrl = "https://github.com/Mic92/noctalia-plugins";
                 };

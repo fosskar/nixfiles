@@ -13,7 +13,6 @@
     self.modules.nixos.nextcloud
     self.modules.nixos.opencloud
     self.modules.nixos.searxng
-    self.modules.nixos.nostrRelay
     self.modules.nixos.radicale
     self.modules.nixos.lldap
     self.modules.nixos.authelia
