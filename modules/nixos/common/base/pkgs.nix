@@ -19,6 +19,7 @@
           pkgs.wget
           pkgs.unzip
           pkgs.ripgrep
+          pkgs.rsync
           pkgs.yq-go
           pkgs.pciutils
           pkgs.nvme-cli
