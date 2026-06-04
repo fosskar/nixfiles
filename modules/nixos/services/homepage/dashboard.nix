@@ -110,9 +110,9 @@
           }
           {
             "ASRock Rack BMC" = {
-              href = "https://192.168.10.114";
+              href = "https://192.168.10.205";
               icon = "mdi-server-network";
-              siteMonitor = "https://192.168.10.114";
+              siteMonitor = "https://192.168.10.205";
             };
           }
           {
@@ -140,9 +140,9 @@
           }
           {
             "Home Assistant" = {
-              href = "https://ha.fosskar.eu";
+              href = "http://homeassistant.lan:8123";
               icon = "home-assistant.svg";
-              siteMonitor = "http://192.168.10.30";
+              siteMonitor = "http://homeassistant.lan:8123";
             };
           }
           {
