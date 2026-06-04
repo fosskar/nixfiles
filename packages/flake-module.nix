@@ -23,6 +23,7 @@ in
             "agent-desktop"
             "arbor"
             "brave-origin"
+            "kittylitter"
             "limux"
             "t3code"
             "voquill"

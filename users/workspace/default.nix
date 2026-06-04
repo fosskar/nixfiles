@@ -34,6 +34,9 @@
       home = {
         username = "workspace";
         homeDirectory = "/home/workspace";
+        packages = [
+          pkgs.custom.kittylitter
+        ];
         sessionVariables = {
           SHELL = "${lib.getExe pkgs.fish}";
           BROWSER = "zen";
@@ -58,12 +61,38 @@
       programs.jujutsu.settings.signing.key =
         osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519.pub".value;
 
+      # declarative replacement for `kittylitter install` autostart
+      systemd.user.services.kittylitter = {
+        Unit = {
+          Description = "Alleycat bridge daemon (kittylitter)";
+          After = [ "network-online.target" ];
+          Wants = [ "network-online.target" ];
+        };
+        Service = {
+          Type = "simple";
+          ExecStart = "${pkgs.custom.kittylitter}/bin/kittylitter serve";
+          # dump the (stable) pair payload + QR for clients to scan
+          ExecStartPost = pkgs.writeShellScript "kittylitter-pair-dump" ''
+            out="${config.home.homeDirectory}/.local/state/kittylitter"
+            mkdir -p "$out"
+            sleep 2
+            ${pkgs.custom.kittylitter}/bin/kittylitter pair --qr > "$out/pair.txt" || true
+          '';
+          Environment = [ "PATH=${config.home.profileDirectory}/bin" ];
+          Restart = "on-failure";
+          RestartSec = 5;
+        };
+        Install.WantedBy = [ "default.target" ];
+      };
+
       systemd.user.startServices = "sd-switch";
       nix.channels = { };
     };
 
   programs.fish.enable = true;
   users.users.workspace.shell = pkgs.fish;
+  # run the kittylitter user daemon at boot, not just at login
+  users.users.workspace.linger = true;
 
   clan.core.vars.generators.workspace-ssh = {
     files."id_ed25519".owner = "workspace";
