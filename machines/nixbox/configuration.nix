@@ -11,7 +11,6 @@
     self.modules.nixos.caddy
     self.modules.nixos.convertx
     self.modules.nixos.nextcloud
-    self.modules.nixos.opencrow
     self.modules.nixos.opencloud
     self.modules.nixos.searxng
     self.modules.nixos.nostrRelay
