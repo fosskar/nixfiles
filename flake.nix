@@ -138,11 +138,6 @@
       inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
     };
-    opencrow = {
-      url = "github:pinpox/opencrow";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-    };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -153,6 +148,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
+    spaces.url = "github:generational-infrastructure/spaces-os";
+    spaces.inputs.home-manager.follows = "home-manager";
+    spaces.inputs.llm-agents.follows = "llm-agents";
+    spaces.inputs.nixpkgs.follows = "nixpkgs";
+    spaces.inputs.systems.follows = "systems";
+    spaces.inputs.treefmt-nix.follows = "treefmt-nix";
+
     hunk = {
       url = "github:modem-dev/hunk";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -170,10 +172,6 @@
     };
     noctalia-v5 = {
       url = "github:noctalia-dev/noctalia-shell/v5";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    noctalia-plugins = {
-      url = "github:Mic92/noctalia-plugins";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
