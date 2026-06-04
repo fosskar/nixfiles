@@ -313,6 +313,8 @@
             --clientsecret="$secret" \
             --discoveryuri="${oidcIssuerUrl}/.well-known/openid-configuration" \
             --scope="openid email profile groups" \
+            --unique-uid=1 \
+            --mapping-uid="sub" \
             --mapping-groups="groups" \
             --mapping-display-name="name" \
             --mapping-email="email" \
