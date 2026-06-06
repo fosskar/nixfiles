@@ -202,10 +202,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1780585740,
-        "narHash": "sha256-x/BOkIIOhvfzuoZhlB7NQZzXowO5HzJnY3hyQnVevgE=",
+        "lastModified": 1780690323,
+        "narHash": "sha256-XvAIIaH7+eg9bnUijfnHv3YcRrxsCMjSpYP674cygz8=",
         "ref": "refs/heads/main",
-        "rev": "3c1240c2c5c881b96c94281876e12dcdf1b190f2",
+        "rev": "e007aa61b19ee13443a87242a2ddc8b87bb2d906",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -600,11 +600,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780410412,
-        "narHash": "sha256-wVp852H9X/EBdONc4NaSUcwtwqdh97WNnKlsOvauW+s=",
+        "lastModified": 1780689730,
+        "narHash": "sha256-YH5GIhYGj0/sfcrX07uScZEzh7KPmYn71Pq+mOxzo38=",
         "owner": "modem-dev",
         "repo": "hunk",
-        "rev": "59da51791d205c63e2d2635a922dcfc60beae592",
+        "rev": "59cc85726abeae2406b4485e045c6a31e953f2e4",
         "type": "github"
       },
       "original": {
