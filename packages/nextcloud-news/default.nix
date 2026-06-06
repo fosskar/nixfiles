@@ -11,7 +11,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://github.com/nextcloud/news/releases/download/${finalAttrs.version}/news.tar.gz";
-    sha512 = "3l23683j88sa7k4kmyk3bx55nx737m9l93hlbf4m882jlydhaxv0p0n5aj107089hf4y5fsjc04apzwl7d4qclcbvpasmcppil4j2rc";
+    hash = "sha512-LAtJaLyXVa3uXowyTNqh/F9FAJPaFU8cTAgcEKQqFlywu4LNUykQqsQtCkeiqZ5xui2lrzF9nWQepRGSA5kh6A==";
   };
 
   installPhase = ''

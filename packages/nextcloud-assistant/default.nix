@@ -30,7 +30,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   passthru.updateScript = nix-update-script {
     extraArgs = [
       "--url"
-      "https://github.com/nextcloud/assistant"
+      "https://github.com/nextcloud-releases/assistant"
       "--use-github-releases"
       "--version-regex"
       "v?(.*)$"

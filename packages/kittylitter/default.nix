@@ -32,7 +32,7 @@ stdenv.mkDerivation rec {
       "https://github.com/dnakov/litter"
       "--use-github-releases"
       "--version-regex"
-      ''^v(\d+\.\d+\.\d+)$''
+      ''^v(0\.\d+\.\d+)$''
     ];
   };
 
