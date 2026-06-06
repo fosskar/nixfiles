@@ -1343,11 +1343,11 @@
         "voxtype": "voxtype"
       },
       "locked": {
-        "lastModified": 1780563830,
-        "narHash": "sha256-Mj0ggZwNPlmTH4NVb81X0YnOIMfy2ctZZvYmJTX9nws=",
+        "lastModified": 1780704322,
+        "narHash": "sha256-x+ab/FTStY4LwekYe4GgfYKZQnjq8SU3FtPp0DBtT5Q=",
         "owner": "generational-infrastructure",
         "repo": "spaces-os",
-        "rev": "7abcfaa85fe2429ba2c32188c71d36b9933c7763",
+        "rev": "4d1b871e10b7316faa67c656e1c7de982d3cd5b8",
         "type": "github"
       },
       "original": {
