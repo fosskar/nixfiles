@@ -22,7 +22,6 @@ _: {
         lib.optionals (config.home.activation ? piSettings) [ ".pi/agent/skills" ]
         ++ lib.optionals (config.programs.claude-code.enable or false) [ ".claude/skills" ]
         ++ lib.optionals (config.programs.codex.enable or false) [ ".codex/skills" ]
-        ++ lib.optionals (config.programs.gemini-cli.enable or false) [ ".gemini/skills" ]
         ++ lib.optionals (config.programs.opencode.enable or false) [ ".config/opencode/skills" ];
 
       ownSkillNames = builtins.attrNames (
