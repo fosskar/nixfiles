@@ -11,7 +11,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://github.com/R0Wi-DEV/workflow_ocr/releases/download/v${finalAttrs.version}/workflow_ocr.tar.gz";
-    hash = "sha512-0taVuNe6vB7wd34sur3CkogQkw9PAJvOoqmghwisf34tikLknJKD2jJX6Am+POZyV+Ps+W52KmApULXHhw8nnw==";
+    hash = "sha256-EMs0aBNS51USNKkv+PfyxTrDLPIaaYskc8ib4Ysnq9g=";
   };
 
   installPhase = ''
