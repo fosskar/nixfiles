@@ -14,7 +14,9 @@
       config = lib.mkMerge [
         {
           services.netbird = {
-            ui.enable = lib.mkDefault false;
+            # enable tray UI only on graphical clients (niri workstations);
+            # headless servers don't need it
+            ui.enable = lib.mkDefault (lib.attrByPath [ "programs" "niri" "enable" ] false config);
             package = lib.mkDefault pkgs.custom.netbird-client;
             clients.default = {
               name = lib.mkDefault "netbird";
