@@ -7,11 +7,11 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "nextcloud-news";
-  version = "28.0.0-rc.2";
+  version = "28.5.1";
 
   src = fetchurl {
     url = "https://github.com/nextcloud/news/releases/download/${finalAttrs.version}/news.tar.gz";
-    hash = "sha512-LAtJaLyXVa3uXowyTNqh/F9FAJPaFU8cTAgcEKQqFlywu4LNUykQqsQtCkeiqZ5xui2lrzF9nWQepRGSA5kh6A==";
+    hash = "sha256-T3UBQcNxte18J/yyIucGb/X105t3lh97KWn0joTTuDw=";
   };
 
   installPhase = ''
