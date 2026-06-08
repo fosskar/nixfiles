@@ -14,7 +14,7 @@
     }:
     {
       treefmt = {
-        # don't expose as flake check; buildbot-nix would gate PR merge on it.
+        # don't expose as flake check; nixbot would gate PR merge on it.
         # run via `nix fmt` / pre-commit instead.
         flakeCheck = false;
         projectRootFile = "flake.nix";

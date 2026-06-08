@@ -285,9 +285,9 @@ in
               authTokenFile = varsGarage.files.api-token.path;
             };
 
-            # ----- buildbot-nix postBuildStep upload -----
-            # disabled: nix post-build-hook already uploads local buildbot builds.
-            services.buildbot-nix.master.niks3 = lib.mkIf config.services.buildbot-nix.master.enable {
+            # ----- nixbot niks3 upload -----
+            # disabled: nix post-build-hook already uploads local nixbot builds.
+            services.nixbot.niks3 = lib.mkIf config.services.nixbot.enable {
               enable = false;
               serverUrl = "http://127.0.0.1:${toString niks3Port}";
               authTokenFile = varsGarage.files.api-token.path;

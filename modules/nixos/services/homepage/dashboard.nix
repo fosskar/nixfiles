@@ -125,10 +125,10 @@
         ];
         "Automation" = [
           {
-            "Buildbot" = {
-              href = "https://buildbot.fosskar.eu/";
+            "Nixbot" = {
+              href = "https://nixbot.fosskar.eu/";
               icon = "buildbot.svg";
-              siteMonitor = "https://buildbot.fosskar.eu/";
+              siteMonitor = "https://nixbot.fosskar.eu/";
             };
           }
           {
