@@ -9,7 +9,7 @@
   imports = [
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
     inputs.spaces.nixosModules.pi-chat
-    self.modules.nixos.greetd
+    self.modules.nixos.noctalia-greeter
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.lanzaboote

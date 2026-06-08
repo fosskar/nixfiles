@@ -8,7 +8,7 @@
   imports = [
     inputs.spaces.nixosModules.pi-chat
     self.modules.nixos.gaming
-    self.modules.nixos.greetd
+    self.modules.nixos.noctalia-greeter
     self.modules.nixos.betaflight
     self.modules.nixos.wooting
     self.modules.nixos.arctisNovaProWireless
