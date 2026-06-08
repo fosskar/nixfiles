@@ -23,14 +23,6 @@
         ]
         ++ (lib.splitString " " cmd);
 
-      lockAtStartup = pkgs.writeShellScript "noctalia-lock-at-startup" ''
-        for _ in {1..100}; do
-          ${lib.getExe cfg.package} msg session lock && exit 0
-          sleep 0.1
-        done
-        exit 1
-      '';
-
       shellBinds = {
         "Mod+Space" = {
           title = "Toggle Launcher";
@@ -151,7 +143,6 @@
 
         programs.niri.settings = {
           binds = shellNiriBinds;
-          spawn-at-startup = [ { sh = toString lockAtStartup; } ];
           window-rules = [
             {
               matches = [ { app-id = "dev.noctalia.Noctalia.Settings"; } ];
