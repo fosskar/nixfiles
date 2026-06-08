@@ -163,7 +163,6 @@
 
         services.opencloud = {
           enable = true;
-          package = pkgs.custom.opencloud;
           url = "https://${localHost}";
           address = listenAddress;
           environmentFile = config.clan.core.vars.generators.opencloud.files."envfile".path;
