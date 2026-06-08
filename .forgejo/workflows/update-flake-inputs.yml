@@ -57,8 +57,8 @@ jobs:
             --gitea-url "${{ forgejo.server_url }}" \
             --gitea-repository "${{ forgejo.repository }}" \
             --base-branch "main" \
-            --git-author-name "nixfiles-bot" \
-            --git-author-email "nixfiles-bot@noreply.codeberg.org" \
-            --git-committer-name "nixfiles-bot" \
-            --git-committer-email "nixfiles-bot@noreply.codeberg.org" \
+            --git-author-name "nixbot" \
+            --git-author-email "nixbot@noreply.codeberg.org" \
+            --git-committer-name "nixbot" \
+            --git-committer-email "nixbot@noreply.codeberg.org" \
             --auto-merge

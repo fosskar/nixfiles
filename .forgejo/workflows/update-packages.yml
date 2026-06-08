@@ -73,8 +73,8 @@ jobs:
             return 1
           }
 
-          git config user.name "nixfiles-bot"
-          git config user.email "nixfiles-bot@noreply.codeberg.org"
+          git config user.name "nixbot"
+          git config user.email "nixbot@noreply.codeberg.org"
           git fetch origin "$base"
 
           prs="$(api_call GET "$api/pulls?state=open&limit=50")"
