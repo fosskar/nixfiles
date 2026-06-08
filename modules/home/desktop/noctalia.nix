@@ -4,457 +4,366 @@
     {
       config,
       lib,
-      osConfig,
       pkgs,
       ...
     }:
+    let
+      cfg = config.programs.noctalia;
+      inherit (config) theme;
+
+      lockSecrets = pkgs.writeShellScript "lock-secrets" ''
+        ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
+      '';
+
+      noctalia =
+        cmd:
+        [
+          (lib.getExe cfg.package)
+          "msg"
+        ]
+        ++ (lib.splitString " " cmd);
+
+      lockAtStartup = pkgs.writeShellScript "noctalia-lock-at-startup" ''
+        for _ in {1..100}; do
+          ${lib.getExe cfg.package} msg session lock && exit 0
+          sleep 0.1
+        done
+        exit 1
+      '';
+
+      shellBinds = {
+        "Mod+Space" = {
+          title = "Toggle Launcher";
+          cmd = "panel-toggle launcher";
+        };
+        "Mod+B" = {
+          title = "Toggle Clipboard";
+          cmd = "panel-toggle clipboard";
+        };
+        "Mod+X" = {
+          title = "Toggle Power Menu";
+          cmd = "panel-toggle session";
+        };
+        "Mod+Shift+L" = {
+          title = "Lock Screen";
+          cmd = "session lock";
+        };
+        "Mod+M" = {
+          title = "Toggle Control Center";
+          cmd = "panel-toggle control-center";
+        };
+        "XF86AudioRaiseVolume" = {
+          locked = true;
+          cmd = "volume-up";
+        };
+        "XF86AudioLowerVolume" = {
+          locked = true;
+          cmd = "volume-down";
+        };
+        "XF86AudioMute" = {
+          locked = true;
+          cmd = "volume-mute";
+        };
+        "XF86AudioMicMute" = {
+          locked = true;
+          cmd = "mic-mute";
+        };
+        "XF86MonBrightnessUp" = {
+          locked = true;
+          cmd = "brightness-up";
+        };
+        "XF86MonBrightnessDown" = {
+          locked = true;
+          cmd = "brightness-down";
+        };
+      };
+
+      shellNiriBinds = lib.mapAttrs (
+        _: bind:
+        {
+          action.spawn = noctalia bind.cmd;
+        }
+        // lib.optionalAttrs (bind ? title) { hotkey-overlay.title = bind.title; }
+        // lib.optionalAttrs (bind.locked or false) { allow-when-locked = true; }
+      ) shellBinds;
+
+      mkPalette = mode: ansiNormalBlack: ansiNormalWhite: ansiBrightBlack: ansiBrightWhite: {
+        mPrimary = mode.accent.primary;
+        mOnPrimary = mode.bg.base;
+        mSecondary = mode.accent.secondary;
+        mOnSecondary = mode.bg.base;
+        mTertiary = mode.accent.tertiary;
+        mOnTertiary = mode.bg.base;
+        mError = mode.semantic.error;
+        mOnError = mode.bg.base;
+        mSurface = mode.bg.base;
+        mOnSurface = mode.fg.base;
+        mSurfaceVariant = mode.bg.surface;
+        mOnSurfaceVariant = mode.fg.muted;
+        mOutline = mode.fg.dim;
+        mShadow = mode.bg.base;
+        mHover = mode.accent.primary;
+        mOnHover = mode.bg.base;
+        terminal = {
+          background = mode.bg.base;
+          foreground = mode.fg.base;
+          cursor = mode.fg.base;
+          cursorText = mode.bg.base;
+          selectionBg = mode.fg.base;
+          selectionFg = mode.bg.base;
+          normal = {
+            black = ansiNormalBlack;
+            red = theme.ansi.normal.red;
+            green = theme.ansi.normal.green;
+            yellow = theme.ansi.normal.yellow;
+            blue = theme.ansi.normal.blue;
+            magenta = theme.ansi.normal.magenta;
+            cyan = theme.ansi.normal.cyan;
+            white = ansiNormalWhite;
+          };
+          bright = {
+            black = ansiBrightBlack;
+            red = theme.ansi.bright.red;
+            green = theme.ansi.bright.green;
+            yellow = theme.ansi.bright.yellow;
+            blue = theme.ansi.bright.blue;
+            magenta = theme.ansi.bright.magenta;
+            cyan = theme.ansi.bright.cyan;
+            white = ansiBrightWhite;
+          };
+        };
+      };
+
+      palette = {
+        dark =
+          mkPalette theme.dark theme.ansi.normal.black theme.ansi.normal.white theme.ansi.bright.black
+            theme.ansi.bright.white;
+        light =
+          mkPalette theme.light theme.light.bg.base theme.light.fg.base theme.light.bg.overlay
+            theme.dark.bg.elevated;
+      };
+    in
     {
       imports = [ inputs.noctalia.homeModules.default ];
 
-      config =
-        let
-          t = config.theme;
-          lockSecrets = pkgs.writeShellScript "lock-secrets" ''
-            ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
-          '';
+      config = {
+        home.packages = [ pkgs.ddcutil ];
 
-          noctalia =
-            cmd:
-            [
-              (lib.getExe config.programs.noctalia-shell.package)
-              "ipc"
-              "call"
-            ]
-            ++ (lib.splitString " " cmd);
-
-          shellBinds = {
-            "Mod+Space" = {
-              title = "Toggle Launcher";
-              t = "launcher";
-              a = "toggle";
-            };
-            "Mod+B" = {
-              title = "Toggle Clipboard";
-              t = "launcher";
-              a = "clipboard";
-            };
-            "Mod+X" = {
-              title = "Toggle Power Menu";
-              t = "sessionMenu";
-              a = "toggle";
-            };
-            "Mod+Shift+L" = {
-              title = "Lock Screen";
-              t = "lockScreen";
-              a = "lock";
-            };
-            "Mod+N" = {
-              title = "Toggle Notifications";
-              t = "notifications";
-              a = "toggleHistory";
-            };
-            "Mod+M" = {
-              title = "Toggle Control Center";
-              t = "controlCenter";
-              a = "toggle";
-            };
-            "XF86AudioRaiseVolume" = {
-              locked = true;
-              t = "volume";
-              a = "increase";
-            };
-            "XF86AudioLowerVolume" = {
-              locked = true;
-              t = "volume";
-              a = "decrease";
-            };
-            "XF86AudioMute" = {
-              locked = true;
-              t = "volume";
-              a = "muteOutput";
-            };
-            "XF86AudioMicMute" = {
-              locked = true;
-              t = "volume";
-              a = "muteInput";
-            };
-            "XF86MonBrightnessUp" = {
-              locked = true;
-              t = "brightness";
-              a = "increase";
-            };
-            "XF86MonBrightnessDown" = {
-              locked = true;
-              t = "brightness";
-              a = "decrease";
-            };
-          };
-
-          shellNiriBinds = lib.mapAttrs (
-            _: bind:
+        programs.niri.settings = {
+          binds = shellNiriBinds;
+          spawn-at-startup = [ { sh = toString lockAtStartup; } ];
+          window-rules = [
             {
-              action.spawn = noctalia "${bind.t} ${bind.a}";
+              matches = [ { app-id = "dev.noctalia.Noctalia.Settings"; } ];
+              open-floating = true;
+              default-column-width = {
+                fixed = 1080;
+              };
+              default-window-height = {
+                fixed = 920;
+              };
             }
-            // lib.optionalAttrs (bind ? title) { hotkey-overlay.title = bind.title; }
-            // lib.optionalAttrs (bind.locked or false) { allow-when-locked = true; }
-          ) shellBinds;
-        in
-        {
-          programs.niri.settings.binds = shellNiriBinds;
+          ];
+          debug.honor-xdg-activation-with-invalid-serial = true;
+        };
 
-          xdg.configFile."noctalia/colorschemes/grey-teal/grey-teal.json".text = builtins.toJSON {
-            dark = {
-              mPrimary = t.dark.accent.primary;
-              mOnPrimary = t.dark.bg.base;
-              mSecondary = t.dark.accent.secondary;
-              mOnSecondary = t.dark.bg.base;
-              mTertiary = t.dark.accent.tertiary;
-              mOnTertiary = t.dark.bg.base;
-              mError = t.dark.semantic.error;
-              mOnError = t.dark.bg.base;
-              mSurface = t.dark.bg.base;
-              mOnSurface = t.dark.fg.base;
-              mHover = t.dark.accent.primary;
-              mOnHover = t.dark.bg.base;
-              mSurfaceVariant = t.dark.bg.surface;
-              mOnSurfaceVariant = t.dark.fg.muted;
-              mOutline = t.dark.fg.dim;
-              mShadow = t.dark.bg.base;
-              terminal = {
-                background = t.dark.bg.base;
-                foreground = t.dark.fg.base;
-                cursor = t.dark.fg.base;
-                cursorText = t.dark.bg.base;
-                selectionBackground = t.dark.fg.base;
-                selectionForeground = t.dark.bg.base;
-                normal = {
-                  black = t.ansi.normal.black;
-                  red = t.ansi.normal.red;
-                  green = t.ansi.normal.green;
-                  yellow = t.ansi.normal.yellow;
-                  blue = t.ansi.normal.blue;
-                  magenta = t.ansi.normal.magenta;
-                  cyan = t.ansi.normal.cyan;
-                  white = t.ansi.normal.white;
-                };
-                bright = {
-                  black = t.ansi.bright.black;
-                  red = t.ansi.bright.red;
-                  green = t.ansi.bright.green;
-                  yellow = t.ansi.bright.yellow;
-                  blue = t.ansi.bright.blue;
-                  magenta = t.ansi.bright.magenta;
-                  cyan = t.ansi.bright.cyan;
-                  white = t.ansi.bright.white;
-                };
+        programs.noctalia = {
+          enable = lib.mkDefault true;
+          systemd.enable = lib.mkDefault true;
+          customPalettes.grey-teal = palette;
+
+          settings = {
+            shell = {
+              launch_apps_as_systemd_services = true;
+              font_family = theme.fonts.sans;
+              time_format = "{:%H:%M}";
+              date_format = "%d.%m.%y";
+              telemetry_enabled = false;
+              polkit_agent = true;
+              show_location = true;
+              screen_corners.enabled = true;
+              niri_overview_type_to_launch_enabled = true;
+              panel = {
+                background_blur = true;
+                transparency_mode = "soft";
+                open_near_click_control_center = true;
+                session_placement = "centered";
               };
             };
-            light = {
-              mPrimary = t.light.accent.primary;
-              mOnPrimary = t.light.bg.base;
-              mSecondary = t.light.accent.secondary;
-              mOnSecondary = t.light.bg.base;
-              mTertiary = t.light.accent.tertiary;
-              mOnTertiary = t.light.bg.base;
-              mError = t.light.semantic.error;
-              mOnError = t.light.bg.base;
-              mSurface = t.light.bg.base;
-              mOnSurface = t.light.fg.base;
-              mHover = t.light.accent.primary;
-              mOnHover = t.light.bg.base;
-              mSurfaceVariant = t.light.bg.surface;
-              mOnSurfaceVariant = t.light.fg.muted;
-              mOutline = t.light.fg.dim;
-              mShadow = t.light.bg.overlay;
-              terminal = {
-                background = t.light.bg.base;
-                foreground = t.light.fg.base;
-                cursor = t.light.fg.base;
-                cursorText = t.light.bg.base;
-                selectionBackground = t.light.fg.base;
-                selectionForeground = t.light.bg.base;
-                normal = {
-                  black = t.light.bg.base;
-                  red = t.ansi.normal.red;
-                  green = t.ansi.normal.green;
-                  yellow = t.ansi.normal.yellow;
-                  blue = t.ansi.normal.blue;
-                  magenta = t.ansi.normal.magenta;
-                  cyan = t.ansi.normal.cyan;
-                  white = t.light.fg.base;
-                };
-                bright = {
-                  black = t.light.bg.overlay;
-                  red = t.ansi.bright.red;
-                  green = t.ansi.bright.green;
-                  yellow = t.ansi.bright.yellow;
-                  blue = t.ansi.bright.blue;
-                  magenta = t.ansi.bright.magenta;
-                  cyan = t.ansi.bright.cyan;
-                  white = t.dark.bg.elevated;
-                };
-              };
-            };
-          };
 
-          # upstream home-module deprecated its systemd integration and its
-          # warning emission is broken (sets `warnings` key on systemd.user.services,
-          # causing eval failure). inline the original unit 1:1 instead of
-          # enabling cfg.systemd.enable.
-          systemd.user.services.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable (
-            let
-              cfg = config.programs.noctalia-shell;
-            in
-            {
-              Unit = {
-                Description = "Noctalia Shell - Wayland desktop shell";
-                Documentation = "https://docs.noctalia.dev";
-                PartOf = [ config.wayland.systemd.target ];
-                After = [ config.wayland.systemd.target ];
-                X-Restart-Triggers =
-                  lib.optional (cfg.settings != { }) "${config.xdg.configFile."noctalia/settings.json".source}"
-                  ++ lib.optional (cfg.colors != { }) "${config.xdg.configFile."noctalia/colors.json".source}"
-                  ++ lib.optional (cfg.plugins != { }) "${config.xdg.configFile."noctalia/plugins.json".source}"
-                  ++ lib.optional (
-                    cfg.user-templates != { }
-                  ) "${config.xdg.configFile."noctalia/user-templates.toml".source}"
-                  ++ lib.mapAttrsToList (
-                    name: _: "${config.xdg.configFile."noctalia/plugins/${name}/settings.json".source}"
-                  ) cfg.pluginSettings;
-              };
-              Service = {
-                ExecStart = lib.getExe cfg.package;
-                Restart = "on-failure";
-              };
-              Install.WantedBy = [ config.wayland.systemd.target ];
-            }
-          );
-
-          programs.noctalia-shell = {
-            plugins = {
-              sources = [
-                {
-                  enabled = true;
-                  name = "Official Noctalia Plugins";
-                  url = "https://github.com/noctalia-dev/noctalia-plugins";
-                }
-                {
-                  enabled = true;
-                  name = "Mic92 s Noctalia Plugins";
-                  url = "https://github.com/Mic92/noctalia-plugins";
-                }
-              ];
-              states = {
-                netbird = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-                };
-                polkit-agent = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-                };
-                keybind-cheatsheet = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-                };
-                kagi-quick-search = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-                };
-                mirror-mirror = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-                };
-                privacy-indicator = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-                };
-
-                # mic92 plugins need the source hash prefix to match on-disk folder names
-                "c4d277:display-config" = {
-                  enabled = true;
-                  sourceUrl = "https://github.com/Mic92/noctalia-plugins";
-                };
-              };
-              version = 2;
+            osd = {
+              position = "center_right";
+              orientation = "vertical";
+              lock_keys = false;
             };
 
-            enable = lib.mkDefault true;
-
-            settings = {
-              colorSchemes = {
-                predefinedScheme = "grey-teal";
-                darkMode = true;
-              };
-              appLauncher = {
-                terminalCommand = "ghostty -e";
-              };
-
+            theme = {
+              mode = "dark";
+              source = "custom";
+              custom_palette = "grey-teal";
               templates = {
-                enableUserTheming = true;
-                activeTemplates = [
-                  {
-                    id = "btop";
-                    enabled = true;
-                  }
-                  {
-                    id = "gtk";
-                    enabled = true;
-                  }
-                  {
-                    id = "yazi";
-                    enabled = true;
-                  }
-                  {
-                    id = "zathura";
-                    enabled = true;
-                  }
-                  {
-                    id = "zed";
-                    enabled = true;
-                  }
+                enable_builtin_templates = true;
+                enable_community_templates = true;
+                builtin_ids = [
+                  "niri"
+                  "qt"
+                  "gtk4"
+                  "btop"
+                  "gtk3"
+                  "wezterm"
+                ];
+                community_ids = [
+                  "zathura"
+                  "yazi"
                 ];
               };
+            };
 
-              ui = {
-                panelBackgroundOpacity = 0.7;
-                translucentWidgets = true;
-              };
-
-              bar = {
-                backgroundOpacity = 0.7;
-                showCapsule = false;
-                widgets = {
-                  center = [
-                    {
-                      id = "Clock";
-                      formatHorizontal = "HH:mm\\ndd.MM.yy";
-                    }
-                    {
-                      id = "plugin:privacy-indicator";
-                      hideInactive = true;
-                      removeMargins = true;
-                      activeColor = "error";
-                    }
-                  ];
-                  left = [
-                    {
-                      id = "ControlCenter";
-                      useDistroLogo = true;
-                    }
-                    {
-                      id = "Workspace";
-                      hideUnoccupied = true;
-                      labelMode = "Name";
-                    }
-                    {
-                      id = "SystemMonitor";
-                    }
-                    {
-                      id = "plugin:c4d277:display-config";
-                    }
-                    {
-                      id = "plugin:mirror-mirror";
-                    }
-                  ];
-                  right = [
-                    {
-                      id = "Tray";
-                      drawerEnabled = false;
-                      hidePassive = true;
-                    }
-                    {
-                      id = "Microphone";
-                    }
-                    {
-                      id = "Volume";
-                    }
-                    {
-                      id = "plugin:netbird";
-                    }
-                    {
-                      id = "VPN";
-                    }
-                    {
-                      id = "Network";
-                    }
-                    {
-                      id = "Bluetooth";
-                    }
-                    {
-                      id = "Battery";
-                    }
-                    {
-                      id = "NoctaliaPerformance";
-                    }
-                    {
-                      id = "PowerProfile";
-                    }
-                    {
-                      id = "KeepAwake";
-                    }
-                    {
-                      id = "NotificationHistory";
-                    }
-                    {
-                      id = "SessionMenu";
-                    }
-                  ];
-                };
-              };
-
-              dock = {
-                enabled = false;
-              };
-
-              idle = {
+            bar = {
+              order = [ "main" ];
+              main = {
+                position = "top";
                 enabled = true;
-                screenOffTimeout = 300;
-                lockTimeout = 1800;
-                suspendTimeout = 3600;
+                auto_hide = false;
+                reserve_space = true;
+                background_opacity = 0.7;
+                attach_panels = true;
+                capsule = false;
+                margin_ends = 10;
+                margin_edge = 5;
+                widget_spacing = 10;
+                start = [
+                  "control-center"
+                  "workspaces"
+                  "disk"
+                  "ram"
+                  "cpu"
+                  "cpu-temp"
+                  "gpu-temp"
+                ];
+                center = [
+                  "clock"
+                  "weather"
+                ];
+                end = [
+                  "tray"
+                  "tray-volume-spacer"
+                  "input-volume"
+                  "output-volume"
+                  "brightness"
+                  "network"
+                  "bluetooth"
+                  "battery"
+                  "notifications"
+                  "caffeine"
+                  "session"
+                ];
               };
+            };
 
-              general = {
-                autoStartAuth = true;
-                allowPasswordWithFprintd = osConfig.services.fprintd.enable or false;
-                lockOnSuspend = true;
-                showScreenCorners = true;
-                forceBlackScreenCorners = true;
-                compactLockScreen = true;
-                lockScreenBlur = 0.5;
+            backdrop = {
+              enabled = true;
+            };
+
+            widget = {
+              clock = {
+                anchor = true;
+                format = "{:%H:%M}\\n{:%d.%m.%y}";
               };
+              workspaces = {
+                display = "name";
+                hide_when_empty = true;
+                empty_color = "on_surface_variant";
+              };
+              disk = {
+                type = "sysmon";
+                stat = "disk_pct";
+              };
+              ram = {
+                type = "sysmon";
+                stat = "ram_pct";
+              };
+              cpu = {
+                type = "sysmon";
+                stat = "cpu_usage";
+              };
+              cpu-temp = {
+                type = "sysmon";
+                stat = "cpu_temp";
+              };
+              gpu-temp = {
+                type = "sysmon";
+                stat = "gpu_temp";
+              };
+              input-volume = {
+                type = "volume";
+                device = "input";
+              };
+              output-volume = {
+                type = "volume";
+                device = "output";
+              };
+              brightness.show_label = false;
+              tray-volume-spacer = {
+                type = "spacer";
+                length = 20;
+              };
+              tray.drawer = false;
+              network.show_label = false;
+              notifications.hide_when_no_unread = false;
+              session.color = "error";
+            };
 
-              hooks = {
+            dock.enabled = false;
+            desktop_widgets.enabled = false;
+
+            idle.behavior = {
+              screen-off = {
                 enabled = true;
-                startup = "noctalia-shell ipc call lockScreen lock";
-                screenLock = toString lockSecrets;
-                screenUnlock = "kwallet-tpm-unlock $HOME/.config/kwallet-tpm/password.cred";
+                timeout = 300;
+                action = "screen_off";
               };
-
-              location = {
-                name = "Hamburg";
-              };
-
-              notifications = {
-                density = "compact";
-              };
-
-              osd.location = "right";
-
-              wallpaper = {
+              lock = {
                 enabled = true;
-                useWallhaven = true;
-                automationEnabled = false;
-                overviewEnabled = true;
-                overviewBlur = 0.4;
+                timeout = 1800;
+                action = "lock";
               };
+              suspend = {
+                enabled = true;
+                timeout = 3600;
+                action = "suspend";
+                lock_before_suspend = true;
+              };
+            };
 
-              sessionMenu = {
-                countdownDuration = 1000;
-                largeButtonsLayout = "grid";
-              };
+            system.monitor.enabled = true;
+
+            wallpaper.directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
+
+            weather = {
+              enabled = true;
+              auto_locate = false;
+              address = "Hamburg";
+              unit = "metric";
+            };
+
+            notification = {
+              enable_daemon = true;
+              position = "top_right";
+              background_opacity = 0.97;
+            };
+
+            audio = {
+              enable_overdrive = false;
+              enable_sounds = false;
+            };
+
+            hooks = {
+              session_locked = toString lockSecrets;
+              session_unlocked = "kwallet-tpm-unlock $HOME/.config/kwallet-tpm/password.cred";
             };
           };
         };
+      };
     };
 }

@@ -7,7 +7,7 @@
   home-manager.users.simon = {
     imports = [
       self.modules.homeManager.gaming
-      self.modules.homeManager.noctalia-v5
+      self.modules.homeManager.noctalia
     ]
     ++ mylib.scanPaths ./. { };
   };
