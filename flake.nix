@@ -75,12 +75,6 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
 
-    tangled = {
-      url = "git+https://tangled.org/tangled.org/core";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-compat.follows = "";
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -100,12 +94,6 @@
 
     niks3 = {
       url = "github:Mic92/niks3";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-    };
-
-    gitea-mq = {
-      url = "github:Mic92/gitea-mq";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
@@ -154,11 +142,6 @@
     spaces.inputs.nixpkgs.follows = "nixpkgs";
     spaces.inputs.systems.follows = "systems";
     spaces.inputs.treefmt-nix.follows = "treefmt-nix";
-
-    hunk = {
-      url = "github:modem-dev/hunk";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     # wm
     niri-flake = {
