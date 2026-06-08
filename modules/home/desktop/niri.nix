@@ -186,6 +186,22 @@
             show-hotkey-overlay = [ ];
           };
 
+          # toggle the spaces-os pi-chat panel
+          "Mod+A" = {
+            action.spawn = "pi-chat-toggle";
+            hotkey-overlay.title = "Toggle pi-chat";
+          };
+
+          # toggle voxtype voice-to-text recording
+          "Mod+S" = {
+            action.spawn = [
+              "voxtype"
+              "record"
+              "toggle"
+            ];
+            hotkey-overlay.title = "Toggle voice-to-text";
+          };
+
           # program launches
           "Mod+T".action = {
             spawn = "ghostty";

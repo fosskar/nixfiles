@@ -1,21 +1,6 @@
 _: {
   # desktop-specific niri settings
   programs.niri.settings = {
-    # toggle the spaces-os pi-chat panel
-    binds."Mod+A" = {
-      action.spawn = "pi-chat-toggle";
-      hotkey-overlay.title = "Toggle pi-chat";
-    };
-    # toggle voxtype voice-to-text recording
-    binds."Mod+S" = {
-      action.spawn = [
-        "voxtype"
-        "record"
-        "toggle"
-      ];
-      hotkey-overlay.title = "Toggle voice-to-text";
-    };
-
     # outputs managed by kanshi
 
     # workspace->output assignments
