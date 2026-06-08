@@ -24,7 +24,7 @@
         enable = true;
         package = pkgs.caddy.withPlugins {
           plugins = [ "github.com/caddy-dns/desec@v1.1.0" ];
-          hash = "sha256-dKZeuu7G2DO0G149p3ikELlY5c0YwVPn88BIIk05Gb4=";
+          hash = "sha256-w80Yv8Bznxn1EuI+DGjLSIFhENDfWhLgvhdR0oI36A4=";
         };
         email = "letsencrypt.unpleased904@passmail.net";
         globalConfig = ''
