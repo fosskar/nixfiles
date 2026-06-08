@@ -33,7 +33,13 @@
 
       commonClientConfig = {
         public = true;
-        consent_mode = "implicit";
+        # offline_access forces explicit consent regardless of consent_mode, so
+        # use pre-configured consent to remember it instead of prompting every time.
+        consent_mode = "pre-configured";
+        pre_configured_consent_duration = "1y";
+        # extend refresh-token lifespan (default 90m) so idle native clients keep
+        # their session; scoped to opencloud via the custom lifespan profile below.
+        lifespan = "opencloud";
         authorization_policy = "users";
         claims_policy = "opencloud_groups";
         require_pkce = true;
@@ -94,6 +100,7 @@
         };
 
         services.authelia.instances.main.settings.identity_providers.oidc = {
+          lifespans.custom.opencloud.refresh_token = "30d";
           claims_policies.opencloud_groups = {
             id_token = [ "groups" ];
             access_token = [ "groups" ];
@@ -183,11 +190,13 @@
             PROXY_OIDC_USERINFO_CACHE_TTL = "10m";
             GRAPH_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
             PROXY_USER_OIDC_CLAIM = "sub";
-            PROXY_AUTOPROVISION_CLAIM_USERNAME = "sub";
+            PROXY_AUTOPROVISION_CLAIM_USERNAME = "preferred_username";
             PROXY_AUTOPROVISION_CLAIM_EMAIL = "email";
             PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME = "name";
             PROXY_AUTOPROVISION_CLAIM_GROUPS = "groups";
-            PROXY_USER_CS3_CLAIM = "username";
+            # match authelia's stable sub uuid against opencloud's immutable userid,
+            # so the displayed username (provisioned from preferred_username) stays pretty.
+            PROXY_USER_CS3_CLAIM = "userid";
             PROXY_ROLE_ASSIGNMENT_DRIVER = "oidc";
             PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM = "groups";
             GRAPH_ASSIGN_DEFAULT_USER_ROLE = "false";
