@@ -10,30 +10,24 @@ _: {
       smtpPort = 587;
       smtpFrom = "noreply@nx3.eu";
       varsPath = config.clan.core.vars.generators.smtp;
-      sendmail = pkgs.writeShellScript "sendmail-msmtp" ''
-        exec ${pkgs.msmtp}/bin/msmtp \
-          --host=${smtpHost} \
-          --port=${toString smtpPort} \
-          --auth=on \
-          --tls=on \
-          --tls-starttls=on \
-          --user="$(${pkgs.coreutils}/bin/cat ${varsPath.files.username.path})" \
-          --passwordeval="${pkgs.coreutils}/bin/cat ${varsPath.files.password.path}" \
-          --from=${smtpFrom} \
-          "$@"
-      '';
     in
     {
       config = {
-        environment.systemPackages = [ pkgs.msmtp ];
-
-        services.mail.sendmailSetuidWrapper = {
-          program = "sendmail";
-          source = sendmail;
-          setuid = false;
-          setgid = false;
-          owner = "root";
-          group = "root";
+        programs.msmtp = {
+          enable = true;
+          setSendmail = true;
+          accounts.default = {
+            auth = true;
+            tls = true;
+            tls_starttls = true;
+            host = smtpHost;
+            port = smtpPort;
+            from = smtpFrom;
+            # read the username from a runtime secret via msmtp's `eval`
+            # directive so it stays out of the nix store and the repo.
+            eval = ''echo user "$(${pkgs.coreutils}/bin/cat ${varsPath.files.username.path})"'';
+            passwordeval = "${pkgs.coreutils}/bin/cat ${varsPath.files.password.path}";
+          };
         };
       };
     };
