@@ -9,9 +9,9 @@
     {
       config = {
         clan.core.vars.generators.smtp = {
-          prompts.username.description = "mailbox smtp login";
+          prompts.username.description = "mailbox smtp username";
           prompts.username.type = "line";
-          prompts.password.description = "mailbox smtp app password";
+          prompts.password.description = "mailbox smtp email-app-password";
           prompts.password.type = "hidden";
           files.username.secret = true;
           files.password.secret = true;
