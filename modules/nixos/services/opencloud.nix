@@ -100,7 +100,7 @@
         };
 
         services.authelia.instances.main.settings.identity_providers.oidc = {
-          lifespans.custom.opencloud.refresh_token = "30d";
+          lifespans.custom.opencloud.refresh_token = "1y";
           claims_policies.opencloud_groups = {
             id_token = [ "groups" ];
             access_token = [ "groups" ];
