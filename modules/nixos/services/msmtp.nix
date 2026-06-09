@@ -6,27 +6,34 @@ _: {
       ...
     }:
     let
-      smtpHost = "smtp.protonmail.ch";
+      smtpHost = "smtp.mailbox.org";
       smtpPort = 587;
-      smtpUser = "noreply@nx3.eu";
       smtpFrom = "noreply@nx3.eu";
       varsPath = config.clan.core.vars.generators.smtp;
+      sendmail = pkgs.writeShellScript "sendmail-msmtp" ''
+        exec ${pkgs.msmtp}/bin/msmtp \
+          --host=${smtpHost} \
+          --port=${toString smtpPort} \
+          --auth=on \
+          --tls=on \
+          --tls-starttls=on \
+          --user="$(${pkgs.coreutils}/bin/cat ${varsPath.files.username.path})" \
+          --passwordeval="${pkgs.coreutils}/bin/cat ${varsPath.files.password.path}" \
+          --from=${smtpFrom} \
+          "$@"
+      '';
     in
     {
       config = {
-        programs.msmtp = {
-          enable = true;
-          setSendmail = true;
-          accounts.default = {
-            auth = true;
-            tls = true;
-            tls_starttls = true;
-            host = smtpHost;
-            port = smtpPort;
-            user = smtpUser;
-            from = smtpFrom;
-            passwordeval = "${pkgs.coreutils}/bin/cat ${varsPath.files.password.path}";
-          };
+        environment.systemPackages = [ pkgs.msmtp ];
+
+        services.mail.sendmailSetuidWrapper = {
+          program = "sendmail";
+          source = sendmail;
+          setuid = false;
+          setgid = false;
+          owner = "root";
+          group = "root";
         };
       };
     };

@@ -158,10 +158,10 @@
             replyTo = "noreply@nx3.eu";
             transport = {
               ignoreCert = false;
-              host = "smtp.protonmail.ch";
+              host = "smtp.mailbox.org";
               port = 587;
               secure = false;
-              username = "noreply@nx3.eu";
+              username._secret = config.clan.core.vars.generators.smtp.files.username.path;
               password._secret = config.clan.core.vars.generators.smtp.files.password.path;
             };
           };
