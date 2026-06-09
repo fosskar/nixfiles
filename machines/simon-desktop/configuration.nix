@@ -1,12 +1,10 @@
 {
   self,
   mylib,
-  inputs,
   ...
 }:
 {
   imports = [
-    inputs.spaces.nixosModules.pi-chat
     self.modules.nixos.gaming
     self.modules.nixos.noctalia-greeter
     self.modules.nixos.betaflight
@@ -27,11 +25,4 @@
     self.modules.nixos.yubikeyU2f
   ]
   ++ mylib.scanPaths ./. { };
-
-  services.pi-chat = {
-    enable = true;
-    llmUrl = "https://llama-cpp.nx3.eu";
-    defaultModel = "qwen3_6-35b-a3b";
-  };
-  services.llama-swap.enable = false;
 }
