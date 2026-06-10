@@ -60,6 +60,11 @@
           };
         }
         {
+          Communication = {
+            header = true;
+          };
+        }
+        {
           "Arr Stack" = {
             header = true;
             columns = 2;

@@ -9,6 +9,7 @@
   imports = [
     self.modules.nixos.arrStack
     self.modules.nixos.caddy
+    self.modules.nixos.continuwuity
     self.modules.nixos.convertx
     self.modules.nixos.nextcloud
     self.modules.nixos.opencloud
