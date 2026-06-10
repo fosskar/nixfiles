@@ -18,20 +18,19 @@
   glib,
   libGL,
   libwebp,
+  wlroots_0_20,
   # runtime deps for the session wrapper
-  cage,
-  wlr-randr,
   dbus,
 }:
 stdenv.mkDerivation (_finalAttrs: {
   pname = "noctalia-greeter";
-  version = "0-unstable-2026-06-08";
+  version = "0-unstable-2026-06-10";
 
   src = fetchFromGitHub {
     owner = "noctalia-dev";
     repo = "noctalia-greeter";
-    rev = "367ab83dcd9190010f093cfe0e123ba132a75b5a";
-    hash = "sha256-/jQ/lkgjaH5EOTZRXk4YZaFrjrKhq/fzZsU6nm7wPt0=";
+    rev = "11f8092eda1f2a674a2e7ee25a8325b41f894e39";
+    hash = "sha256-sRnrTFTul+wZoxSG2nynLamUPRAQki9pccDr11okEjI=";
   };
 
   nativeBuildInputs = [
@@ -54,6 +53,7 @@ stdenv.mkDerivation (_finalAttrs: {
     glib
     libGL
     libwebp
+    wlroots_0_20
   ];
 
   # plain buildtype avoids the project's release -march=native (non-reproducible)
@@ -69,13 +69,7 @@ stdenv.mkDerivation (_finalAttrs: {
 
   postFixup = ''
     wrapProgram $out/bin/noctalia-greeter-session \
-      --prefix PATH : ${
-        lib.makeBinPath [
-          cage
-          wlr-randr
-          dbus
-        ]
-      }
+      --prefix PATH : ${lib.makeBinPath [ dbus ]}
   '';
 
   meta = {
