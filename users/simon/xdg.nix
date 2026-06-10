@@ -11,7 +11,7 @@ let
 
   browser = [ "zen-beta.desktop" ];
   pdf = [ "org.pwmt.zathura.desktop" ];
-  fileManager = [ "org.kde.dolphin.desktop" ];
+  fileManager = [ "org.gnome.Nautilus.desktop" ];
   editor = [ "dev.zed.Zed-Nightly.desktop" ];
   imageViewer = [ "imv.desktop" ];
   mediaPlayer = [ "mpv.desktop" ];
