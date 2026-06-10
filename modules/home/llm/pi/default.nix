@@ -16,9 +16,6 @@ _: {
       # merged on top of existing local settings.json (or deployed 1:1 if none exists).
       piSettings = {
         lastChangelogVersion = "99.99.99";
-        #defaultProvider = "anthropic";
-        #defaultModel = "claude-opus-4-6";
-        defaultThinkingLevel = "minimal";
         hideThinkingBlock = true;
         followUpMode = "all";
         steeringMode = "one-at-a-time";
@@ -30,9 +27,6 @@ _: {
           {
             source = "git:github.com/rytswd/pi-agent-extensions";
           }
-          #{
-          #  source = "git:github.com/nicobailon/pi-powerline-footer";
-          #}
         ];
         compaction.enabled = true;
       };
