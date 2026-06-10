@@ -1,5 +1,5 @@
 ---
-name: Location
+name: location
 description: Determine the user's current location from GeoClue data
 ---
 

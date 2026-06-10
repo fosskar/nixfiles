@@ -1,5 +1,5 @@
 ---
-name: Date and Time
+name: datetime
 description: Get the current date and time to answer time-related questions
 ---
 
