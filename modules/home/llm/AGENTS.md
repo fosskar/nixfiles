@@ -98,3 +98,6 @@ add body when useful.
 - `nix shell nixpkgs#<pkg>` for temp tools
 - `nix fmt` after edits
 - use repo/channel source already in use; don't assume stable/unstable
+- DO NOT abstract unnecessarily into `let ... in` bindings (or other local
+  abstractions) for single-use values; inline them. reach existing module args
+  (e.g. `self`, `config`) instead of rebinding them.
