@@ -1,6 +1,5 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-const remotes = ["origin", "rad"];
 const widget = "publish";
 
 class PublishError extends Error {}
@@ -16,11 +15,15 @@ function names(output: string): Set<string> {
 
 export default function (pi: ExtensionAPI) {
   pi.registerCommand("publish", {
-    description: "publish current branch/bookmark",
+    description:
+      "publish current branch/bookmark (add 'rad' to also push to rad)",
     handler: async (args, ctx) => {
       await ctx.waitForIdle();
 
-      const ref = args.trim() || undefined;
+      const tokens = args.trim().split(/\s+/).filter(Boolean);
+      const wantRad = tokens.includes("rad");
+      const remotes = wantRad ? ["origin", "rad"] : ["origin"];
+      const ref = tokens.find((t) => t !== "rad");
       const log: string[] = [];
       const show = () =>
         ctx.ui.setWidget(widget, ["publish", ...log.slice(-12)]);
@@ -127,7 +130,9 @@ export default function (pi: ExtensionAPI) {
           }
 
           await must("jj", ["bookmark", "set", bookmark, "-r", "@-"]);
-          if (rs.has("rad")) {
+          if (wantRad && !rs.has("rad"))
+            throw new PublishError("rad remote is not configured");
+          if (wantRad) {
             await must("rad", ["node", "start"]);
             await mustRadSync(["--fetch"]);
           }
@@ -141,7 +146,7 @@ export default function (pi: ExtensionAPI) {
               bookmark,
             ]);
           }
-          if (rs.has("rad")) await mustRadSync(["--announce"]);
+          if (wantRad) await mustRadSync(["--announce"]);
           await must("jj", ["status"]);
         } else {
           const status = await must("git", ["status", "--porcelain"]);
@@ -151,6 +156,8 @@ export default function (pi: ExtensionAPI) {
           const rs = names((await must("git", ["remote"])).stdout);
           if (!rs.has("origin"))
             throw new PublishError("origin remote is not configured");
+          if (wantRad && !rs.has("rad"))
+            throw new PublishError("rad remote is not configured");
 
           if (ref) {
             for (const remote of remotes.filter((r) => rs.has(r))) {
@@ -158,6 +165,7 @@ export default function (pi: ExtensionAPI) {
             }
           } else {
             await must("git", ["push"]);
+            if (wantRad) await must("git", ["push", "rad"]);
           }
           await must("git", ["status", "--short"]);
         }
