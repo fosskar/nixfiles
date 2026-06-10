@@ -23,7 +23,21 @@
 
     pkgs.obsidian
 
-    pkgs.nautilus
+    pkgs.kdePackages.dolphin
+    (pkgs.symlinkJoin {
+      name = "opencloud-desktop";
+      paths = [ pkgs.opencloud-desktop ];
+      buildInputs = [ pkgs.makeWrapper ];
+      # the client derives its qtquick controls style from the active qt
+      # platform style (adwaita-dark), which has no qml module. force a
+      # bundled style so the gui starts.
+      postBuild = ''
+        wrapProgram $out/bin/opencloud \
+          --set QT_QUICK_CONTROLS_STYLE Fusion
+      '';
+    })
+    pkgs.opencloud-desktop-shell-integration-dolphin
+    pkgs.opencloud-desktop-shell-integration-resources
 
     pkgs.ausweisapp
 
