@@ -111,28 +111,47 @@ jobs:
             fi
           }
 
+          # packages released together share one branch/PR; codeberg's spam
+          # filter rejects >2 similarly named PRs per hour, which a burst of
+          # per-package netbird PRs trips.
+          declare -A pkg_group=(
+            [netbird-client]=netbird
+            [netbird-dashboard]=netbird
+            [netbird-proxy]=netbird
+            [netbird-server]=netbird
+          )
+
+          declare -A group_pkgs=()
           for dir in packages/*/; do
             pkg="$(basename "$dir")"
-            branch="update-package-$pkg"
+            group="${pkg_group[$pkg]:-$pkg}"
+            group_pkgs[$group]+=" $pkg"
+          done
+
+          for group in $(printf '%s\n' "${!group_pkgs[@]}" | sort); do
+            branch="update-package-$group"
 
             git reset --hard
             git clean -fd
             git switch -C "$branch" "origin/$base"
 
-            if ! update_package "$pkg" "$dir"; then
-              echo ":: $pkg - update failed, skipping"
-              continue
-            fi
+            for pkg in ${group_pkgs[$group]}; do
+              dir="packages/$pkg/"
+              if ! update_package "$pkg" "$dir"; then
+                echo ":: $pkg - update failed, skipping"
+                continue
+              fi
 
-            nix fmt
-            git add "$dir"
+              nix fmt
+              git add "$dir"
+            done
 
             if git diff --cached --quiet; then
-              echo ":: $pkg - no update"
+              echo ":: $group - no update"
               continue
             fi
 
-            git commit -m "update pkgs $pkg"
+            git commit -m "update pkgs $group"
             git push --force-with-lease origin "$branch"
 
             pr_number="$(printf '%s' "$prs" | jq -r --arg branch "$branch" --arg base "$base" '
@@ -142,10 +161,10 @@ jobs:
 
             if [ -z "$pr_number" ]; then
               pr="$(api_call POST "$api/pulls" "$(jq -nc \
-                --arg title "update $pkg" \
+                --arg title "update $group" \
                 --arg head "$branch" \
                 --arg base "$base" \
-                --arg body "automated package update for $pkg." \
+                --arg body "automated package update for $group." \
                 '{title: $title, head: $head, base: $base, body: $body}')")"
               pr_number="$(printf '%s' "$pr" | jq -r '.number')"
               prs="$(printf '%s' "$prs" | jq --argjson pr "$pr" '. + [$pr]')"
