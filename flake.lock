@@ -138,10 +138,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1781035581,
-        "narHash": "sha256-81+9FnpalDYqGnXNE16icr9J7xIg5U1PYshgGKLe48E=",
+        "lastModified": 1781086086,
+        "narHash": "sha256-dP3AGcFviZC2RBCeFkoLVAsfqKnQl6276CFQxt/eAlg=",
         "ref": "refs/heads/main",
-        "rev": "c9e53e3c6b6ee0c9b559a48cebf8b86ba9fbfa71",
+        "rev": "452b9cc9ecf303d6685e70953d00998c9a5d12aa",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -365,11 +365,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1781083801,
-        "narHash": "sha256-eFYGzKiv7F114dyMJSL/giN8OhzDvoud/6MyPLwnbMk=",
+        "lastModified": 1781086080,
+        "narHash": "sha256-donYhd7ZsnBL/NxIlTzY8t7wGEyzorCKGeElma9ILjE=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "cd9a9cd8e5e12daed968360f70d28e749c6c1fa0",
+        "rev": "a72bb03757c0c925c686f9774eefc8dc5a77b329",
         "type": "github"
       },
       "original": {
@@ -661,11 +661,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781039160,
-        "narHash": "sha256-4xwW2OYXL4AKN8e+ASvogjfd/8GswN+PDs+5pkmlwZg=",
+        "lastModified": 1781088145,
+        "narHash": "sha256-ptmDiGoaRRfyj01ZlLBNZVLXdjarH9S2grn7SjbReAU=",
         "owner": "Mic92",
         "repo": "nixbot",
-        "rev": "e668d3868a296360a6a0c75b7e1bbdeffb2b32c3",
+        "rev": "dfd9534d9c58c18ef9ec6f0a255fa47624eecd6b",
         "type": "github"
       },
       "original": {
@@ -735,11 +735,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781066350,
-        "narHash": "sha256-X8c9DUJ85DWwiLJDBMKVpvvVXOQm/jTFiUus3PWyYOU=",
+        "lastModified": 1781087391,
+        "narHash": "sha256-IgWi4wiI6aQuoTGVBm55oJb7otuuthBgU/XPzI1fJng=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "72b216ce2416e0904616286078b3f5be037d9f77",
+        "rev": "e026a58257df69a24dfddb5d4b556d1753c58b5a",
         "type": "github"
       },
       "original": {
@@ -1034,11 +1034,11 @@
         "voxtype": "voxtype"
       },
       "locked": {
-        "lastModified": 1781077451,
-        "narHash": "sha256-2RVTeVvVUKONJ3PqHo9wEyQogcWkOmekA9ENEeSn+W0=",
+        "lastModified": 1781085676,
+        "narHash": "sha256-vvrOdY3dcCKRCvTjsNgCIfbKz9Jr5YVzDPRncdRCOiI=",
         "owner": "generational-infrastructure",
         "repo": "spaces-os",
-        "rev": "33493c69d099b466ea6bf43f0e20bc1210aef96d",
+        "rev": "c150dd9e60ebaf66474826f8e9a28662b2b0d53a",
         "type": "github"
       },
       "original": {
