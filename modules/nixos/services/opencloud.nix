@@ -282,6 +282,18 @@
             conditions = [ "[STATUS] == 200" ];
             alerts = [ { type = "email"; } ];
           }
+          {
+            # tcp liveness: web UI is disabled and http needs auth; faking an
+            # X-Remote-User would create a phantom principal, so just probe the
+            # listener.
+            name = "Radicale";
+            url = "tcp://127.0.0.1:5232";
+            group = "Files";
+            enabled = true;
+            interval = "5m";
+            conditions = [ "[CONNECTED] == true" ];
+            alerts = [ { type = "email"; } ];
+          }
         ];
 
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
@@ -297,6 +309,38 @@
           }
         '';
 
+        # radicale: opencloud's caldav/carddav backend. merged here because its
+        # http_x_remote_user auth only works behind opencloud's proxy (which
+        # injects X-Remote-User = the sub uuid). web UI disabled; manage via dav
+        # clients. new principals get a default calendar + address book via
+        # predefined_collections.
+        services.radicale = {
+          enable = true;
+          settings = {
+            server = {
+              hosts = [ "127.0.0.1:5232" ];
+              ssl = false;
+            };
+            auth.type = "http_x_remote_user";
+            web.type = "none";
+            storage = {
+              filesystem_folder = "/var/lib/radicale/collections";
+              predefined_collections = builtins.toJSON {
+                def-addressbook = {
+                  "D:displayname" = "Address Book";
+                  tag = "VADDRESSBOOK";
+                };
+                def-calendar = {
+                  "C:supported-calendar-component-set" = "VEVENT,VJOURNAL,VTODO";
+                  "D:displayname" = "Calendar";
+                  tag = "VCALENDAR";
+                };
+              };
+            };
+          };
+        };
+        clan.core.state.radicale.folders = [ "/var/lib/radicale" ];
+
         clan.core.state.opencloud.folders = [
           "/etc/opencloud"
           "/var/lib/opencloud"
@@ -308,6 +352,11 @@
             directory = "/var/lib/opencloud";
             user = "opencloud";
             group = "opencloud";
+          }
+          {
+            directory = "/var/lib/radicale";
+            user = "radicale";
+            group = "radicale";
           }
         ];
 
