@@ -139,7 +139,13 @@
       imports = [ inputs.noctalia.homeModules.default ];
 
       config = {
-        home.packages = [ pkgs.ddcutil ];
+        # python3 is required by the kcolorscheme template's apply.py post-hook,
+        # which merges the generated scheme into kdeglobals so kde apps
+        # (dolphin) follow the theme.
+        home.packages = [
+          pkgs.ddcutil
+          pkgs.python3
+        ];
 
         programs.niri.settings = {
           binds = shellNiriBinds;
@@ -198,6 +204,7 @@
                 builtin_ids = [
                   "niri"
                   "qt"
+                  "kcolorscheme"
                   "gtk4"
                   "btop"
                   "gtk3"
