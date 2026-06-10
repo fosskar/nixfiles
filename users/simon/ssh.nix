@@ -2,6 +2,15 @@ _: {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
+    # workspace user on nixworker: forward ssh agent (root ssh for clan
+    # machines update) and gpg-agent extra socket (sops pgp decrypt through
+    # the local yubikey). both uids are 1000.
+    settings."workspace" = {
+      HostName = "nixworker.s";
+      User = "workspace";
+      ForwardAgent = "yes";
+      RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";
+    };
     settings."*" = {
       User = "root";
       AddKeysToAgent = "no";

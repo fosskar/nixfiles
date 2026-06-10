@@ -89,6 +89,19 @@
       nix.channels = { };
     };
 
+  # let ssh RemoteForward replace a stale forwarded gpg-agent socket (yubikey-forward.nix)
+  services.openssh.settings.StreamLocalBindUnlink = true;
+
+  # simon's yubikey pubkeys (same shared generator as modules/nixos/hardware/yubikey/gpg-ssh.nix)
+  clan.core.vars.generators.yubikey = {
+    share = true;
+    files = {
+      "gpg-pubkey.asc".secret = false;
+      "id_yubikey.pub".secret = false;
+    };
+    script = "true";
+  };
+
   programs.fish.enable = true;
   users.users.workspace.shell = pkgs.fish;
   # run the kittylitter user daemon at boot, not just at login
