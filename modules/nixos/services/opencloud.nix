@@ -73,6 +73,31 @@
           frame-src = oidcOrigins;
         };
       };
+
+      # opencloud web extensions, loaded from WEB_ASSET_APPS_PATH. each release
+      # zip nests under its own <pname>/ dir, so stripRoot = false + symlinkJoin
+      # composes them into one apps dir. restart required to pick up changes.
+      webApps = pkgs.symlinkJoin {
+        name = "opencloud-web-apps";
+        paths = [
+          # web extensions temporarily disabled
+          # (webExtension {
+          #   pname = "unzip";
+          #   version = "2.0.0";
+          #   hash = "sha256-9IEM4sg6fiTTinPoplctZhwACFithNgorKZDdQvVCts=";
+          # })
+          # (webExtension {
+          #   pname = "maps";
+          #   version = "3.0.0";
+          #   hash = "sha256-2qEh3IJ9Nd6x3DFVcCd1GLZ1pFNva8ANr4k85Sq1RIE=";
+          # })
+          # (webExtension {
+          #   pname = "pastebin";
+          #   version = "2.0.0";
+          #   hash = "sha256-TzahYwkt4h3mgf72B9eKjkgUR4Bs8SU1to9KflkBtTo=";
+          # })
+        ];
+      };
     in
     {
       config = {
@@ -183,6 +208,7 @@
             PROXY_CSP_CONFIG_FILE_LOCATION = "${settingsFormat.generate "csp.yaml" cspConfig}";
 
             OC_OIDC_ISSUER = oidcIssuerUrl;
+            #WEB_ASSET_APPS_PATH = "${webApps}";
             OC_EXCLUDE_RUN_SERVICES = "idp";
             PROXY_AUTOPROVISION_ACCOUNTS = "true";
 
