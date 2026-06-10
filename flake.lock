@@ -1034,11 +1034,11 @@
         "voxtype": "voxtype"
       },
       "locked": {
-        "lastModified": 1780934877,
-        "narHash": "sha256-8nH7AnMi9hmofUeQaGOj0AEHt+fcs8YkKZK2A2nWm8U=",
+        "lastModified": 1781038937,
+        "narHash": "sha256-j/0LTKhZ2NREaWYI4L8EIedAhvYwEX1kUU6VVfgHPJs=",
         "owner": "generational-infrastructure",
         "repo": "spaces-os",
-        "rev": "6c2029abfd9b24a7778ac2a7f7d5d73b60b27e23",
+        "rev": "c7248244c6f7b244cefb9febbc52a300dd58884d",
         "type": "github"
       },
       "original": {
