@@ -35,7 +35,6 @@
 
         kernelParams = [
           "zfs.zfs_arc_max=17179869184" # 16GB
-          "zfs.zfs_txg_timeout=120"
         ];
 
         supportedFilesystems = [ "zfs" ];
