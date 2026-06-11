@@ -99,6 +99,7 @@ fd -td -d1 . machines
 ssh patterns:
 
 ```bash
+clan ssh <machine>
 ssh <machine>.s
 ssh <machine>.lan
 ssh root@<ip>
