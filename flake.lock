@@ -138,10 +138,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1781136687,
-        "narHash": "sha256-Ta2i0NvUlSF8qi2pD6dvks2kk/17/hRhl6RGKMGCBSw=",
+        "lastModified": 1781155035,
+        "narHash": "sha256-wyEjT+CHrnZakH/XqbVXFqHiGhqiPoEI+7PJndHYROU=",
         "ref": "refs/heads/main",
-        "rev": "95300d9918b4ec80643334b44d4303b1540e1af9",
+        "rev": "e1a65a0ec1742018158fd58deb9a2c5dd9e3c1b4",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -201,11 +201,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780894562,
-        "narHash": "sha256-c3430xwxwhHipl3jigUGMMBfpaMylDqytW/kdmB3ZGs=",
+        "lastModified": 1781152676,
+        "narHash": "sha256-RxWs5ND31KzTG7wvMM+PMfUjyNpmIEr999lqNARaM5o=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "24fed06cac83bcc44ac8efbb57cab1a82fa0bedc",
+        "rev": "ff8702b4de27f72b4c78573dfb89ec74e36abdf1",
         "type": "github"
       },
       "original": {
@@ -365,11 +365,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1781150804,
-        "narHash": "sha256-SDccCmUejmY/tROZRduFejEmsXEZvOA399zOv2Q2m/k=",
+        "lastModified": 1781154743,
+        "narHash": "sha256-P+dHrPs8yQZ76MG7G2yjwQzlztVRz3As8ByOuxXE5+8=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "3e74f75e41ecd5a3b937d692ba7dcffbf77304f6",
+        "rev": "4d22b8293374fd9eaeac75e1f607b20ddea3a1b3",
         "type": "github"
       },
       "original": {
@@ -748,6 +748,26 @@
         "type": "github"
       }
     },
+    "noctalia-greeter": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781119975,
+        "narHash": "sha256-iwaBR+kIYVuB1CvHDCMQ1CVvyOKqnY2r/a2l4z7TqB8=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "rev": "5f7aacec183b3f7af62de1a4462298898fead014",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "type": "github"
+      }
+    },
     "noctalia-legacy": {
       "inputs": {
         "nixpkgs": [
@@ -961,6 +981,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
         "noctalia": "noctalia",
+        "noctalia-greeter": "noctalia-greeter",
         "noctalia-legacy": "noctalia-legacy",
         "preservation": "preservation",
         "sops-nix": "sops-nix",

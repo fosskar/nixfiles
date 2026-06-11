@@ -1,19 +1,37 @@
 {
   flake.modules.nixos.noctalia-greeter =
-    { config, pkgs, ... }:
+    {
+      config,
+      inputs,
+      pkgs,
+      ...
+    }:
+    let
+      # upstream ships a relative exec.path; polkit needs the absolute binary path
+      # so noctalia-shell's pkexec sync authorizes against this action.
+      noctalia-greeter =
+        inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+          (old: {
+            postInstall = (old.postInstall or "") + ''
+              substituteInPlace $out/share/polkit-1/actions/org.noctalia.greeter.apply-appearance.policy \
+                --replace-fail '>noctalia-greeter-apply-appearance<' \
+                '>'"$out"'/bin/noctalia-greeter-apply-appearance<'
+            '';
+          });
+    in
     {
       services.greetd = {
         enable = true;
         settings.default_session = {
           # pin niri as the default session (overrides last-used at open).
-          command = "${pkgs.custom.noctalia-greeter}/bin/noctalia-greeter-session -- --session niri";
+          command = "${noctalia-greeter}/bin/noctalia-greeter-session -- --session niri";
           user = "greeter";
         };
       };
 
       # registers the apply-appearance polkit action plus binary so noctalia-shell
       # (Settings -> Noctalia Greeter -> Sync Now) can sync wallpaper/palette.
-      environment.systemPackages = [ pkgs.custom.noctalia-greeter ];
+      environment.systemPackages = [ noctalia-greeter ];
 
       # the greeter scans the hardcoded /usr/share/wayland-sessions; point it at
       # the wayland session desktop files collected by the display manager.
