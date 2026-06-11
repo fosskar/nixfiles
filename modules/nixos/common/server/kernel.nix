@@ -46,7 +46,6 @@
         "befs"
         "cramfs"
         "efs"
-        "erofs"
         "exofs"
         "freevxfs"
         "f2fs"
