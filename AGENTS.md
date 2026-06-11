@@ -61,6 +61,7 @@ repo uses dendritic-style composition: feature modules export aspect modules thr
 - `machines/flake-module.nix`: clan inventory plus role composition edge.
 - `clanServices/`: clan service feature modules and role wiring.
 - `users/simon/`: home-manager user composition.
+- `openwrt/`: declarative openwrt config for router and ap (uci via `openwrt/nix/uci.nix`, raw config files under `openwrt/devices/<device>/files/`). the lan router (192.168.10.1) runs unbound (caching resolver for the whole lan, split-horizon for nx3.eu) and adguardhome; its config lives here, not on the device. dns/network tasks must check `openwrt/devices/router/` before suggesting resolver or firewall changes.
 
 ### clan model
 
