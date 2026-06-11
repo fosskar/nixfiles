@@ -15,4 +15,8 @@
       }
     ];
   };
+
+  # no-autostart also blocks keyboxd; force keyboxd off (gpg falls back to
+  # pubring.kbx) instead of the gpg-generated common.conf with use-keyboxd
+  home.file.".gnupg/common.conf".text = "";
 }
