@@ -40,6 +40,13 @@
 
           allow_federation = true;
 
+          # no global ipv6 on this host; skip useless AAAA lookups
+          ip_lookup_strategy = 1;
+
+          # nixbox has ram to spare; larger caches speed up state
+          # resolution and large room joins
+          cache_capacity_modifier = 2.0;
+
           # served by continuwuity itself; keeps federation and clients on
           # :443 behind the netbird proxy without apex-domain delegation.
           well_known = {
