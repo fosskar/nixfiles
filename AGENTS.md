@@ -13,6 +13,7 @@ purpose: help agents work fast + correctly in this repo without stale assumption
 - avoid Nix `with` expressions; prefer explicit attribute references.
 - existing text/pattern is evidence, not justification; keep it only if it still serves current repo/task.
 - explain why, not code-tour.
+- comments in code: minimal. only when really needed (non-obvious why, ref/link, reminder, FIXME). never narrate what code does; one short line max.
 - no guessing/hedging in responses (`likely`, `maybe`, `probably`). verify with evidence or state unknown.
 - for external claims: verify in source, cite path, else say unknown.
 - run `nix fmt` after nix edits.
@@ -127,7 +128,8 @@ ssh root@<ip>
 
 ## 7) module patterns
 
-- `mylib.scanPaths ./. { }` auto-imports directory nix files.
+- `modules/` is auto-imported by `import-tree` (flake.nix); a `_` prefix on a file or directory excludes it (convention for disabling a module).
+- `mylib.scanPaths ./. { }` auto-imports directory nix files where explicitly called (e.g. machine dirs); it has NO `_` prefix convention.
 - `mylib.scanFlakeModules ./.` auto-discovers `flake-module.nix` files.
 - module files under `modules/` usually assign `flake.modules.<class>.<name> = ...`.
 - same exported module name can be extended by multiple files; grep all definitions before editing collectors like `base`, `server`, `workstation`, `gaming`, `arrStack`, `homepage`.
