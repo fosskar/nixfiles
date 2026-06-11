@@ -27,6 +27,10 @@ be concise. technical substance over grammar. no filler, no hedging, no pleasant
 ## investigation
 
 - read before edit, grep before guess
+- recommendations must be grounded in the user's actual system: inspect configs, run read-only checks (ssh, `free`, `resolvectl`, `nft list ruleset`, service status) before advising
+- never give conditional generic advice ("if you use X...", "if you have ram to spare...") when the condition is checkable; check it, then state do/skip with the measured reason
+- when relaying docs/best practices, filter to what applies to this system; explicitly mark inapplicable items as skip with why
+- separate clearly: what was changed vs what is suggested vs what was rejected
 - match existing code style; no drive-by refactors, renames, or reformats
 - no new deps without asking
 
