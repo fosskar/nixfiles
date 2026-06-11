@@ -146,11 +146,10 @@ _: {
               reverse_proxy 127.0.0.1:${toString beszelPort}
             '';
 
-            system.activationScripts.beszelConfig = lib.stringAfter [ "var" ] ''
-              ${pkgs.coreutils}/bin/install -Dm0644 ${beszelConfigYml} ${config.services.beszel.hub.dataDir}/beszel_data/config.yml
-            '';
-
-            systemd.services.beszel-hub.restartTriggers = [ beszelConfigYml ];
+            systemd.services.beszel-hub = {
+              restartTriggers = [ beszelConfigYml ];
+              serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/install -Dm0644 ${beszelConfigYml} ${config.services.beszel.hub.dataDir}/beszel_data/config.yml";
+            };
           };
       };
   };
