@@ -8,7 +8,8 @@ _: {
       ll = "ls -lah -color";
       la = "ls -A -color";
       grep = "grep --color";
-      gpg = "gpg --pinentry-mode loopback";
+      # forbidden on restricted forwarded gpg-agent sockets and fights yubikey pinentry
+      #gpg = "gpg --pinentry-mode loopback";
 
       # system
       sc = "sudo systemctl";
