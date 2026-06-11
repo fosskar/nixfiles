@@ -185,14 +185,13 @@ in
                 inInitrd = true;
               };
 
-            files = [
-              {
-                file = "/etc/machine-id";
-                how = "symlink";
-                inInitrd = true;
-                createLinkTarget = true;
-              }
-            ];
+            # clan machine-id is store-provided + kernel cmdline, no persistence needed
+            files = lib.optional (!(config.clan.core.settings.machine-id.enable or false)) {
+              file = "/etc/machine-id";
+              how = "symlink";
+              inInitrd = true;
+              createLinkTarget = true;
+            };
           };
         };
       };
