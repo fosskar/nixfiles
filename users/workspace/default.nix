@@ -55,11 +55,9 @@
             osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519.pub".path;
       };
 
-      # per-user ssh signing key (the clan-generated workspace key)
-      programs.git.signing.key =
-        osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519.pub".value;
-      programs.jujutsu.settings.signing.key =
-        osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519.pub".value;
+      # key file path: git/jj sign with the on-disk key, no ssh-agent involved
+      programs.git.signing.key = "~/.ssh/id_ed25519";
+      programs.jujutsu.settings.signing.key = "~/.ssh/id_ed25519";
 
       # declarative replacement for `kittylitter install` autostart
       systemd.user.services.kittylitter = {
