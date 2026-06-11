@@ -172,6 +172,7 @@
           settings = {
             shell = {
               launch_apps_as_systemd_services = true;
+              lang = "en";
               font_family = theme.fonts.sans;
               time_format = "{:%H:%M}";
               date_format = "%d.%m.%y";
@@ -334,15 +335,15 @@
               };
             };
 
+            location.auto_locate = true;
+
             system.monitor.enabled = true;
 
             wallpaper.directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
 
             weather = {
               enabled = true;
-              auto_locate = false;
-              address = "Hamburg";
-              unit = "metric";
+              unit = "celsius";
             };
 
             notification = {
