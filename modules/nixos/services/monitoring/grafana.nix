@@ -200,9 +200,36 @@
 
         # --- alerting ---
 
-        services.grafana.provision.alerting.contactPoints.settings = {
-          apiVersion = 1;
-          deleteContactPoints = [ ];
+        services.grafana.provision.alerting = lib.mkIf smtpEnabled {
+          contactPoints.settings = {
+            apiVersion = 1;
+            contactPoints = [
+              {
+                orgId = 1;
+                name = "mailbox";
+                receivers = [
+                  {
+                    uid = "mailbox-email";
+                    type = "email";
+                    settings.addresses = "grafana@nx3.eu";
+                  }
+                ];
+              }
+            ];
+          };
+          policies.settings = {
+            apiVersion = 1;
+            policies = [
+              {
+                orgId = 1;
+                receiver = "mailbox";
+                group_by = [
+                  "grafana_folder"
+                  "alertname"
+                ];
+              }
+            ];
+          };
         };
 
         # --- homepage ---
