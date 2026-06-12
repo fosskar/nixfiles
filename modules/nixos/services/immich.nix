@@ -14,7 +14,7 @@
       listenPort = 2283;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
 
-      python312 = pkgs.python312.override {
+      python3Cuda = pkgs.python3.override {
         packageOverrides = pyFinal: pyPrev: {
           onnxruntime = pyPrev.onnxruntime.override {
             onnxruntime = pkgs.onnxruntime.override {
@@ -25,13 +25,6 @@
         };
       };
 
-      machineLearning = pkgs.immich-machine-learning.override {
-        python3 = python312;
-      };
-
-      immichPackage = pkgs.immich.override {
-        immich-machine-learning = machineLearning;
-      };
     in
     {
       clan.core.vars.generators.immich = {
@@ -99,7 +92,9 @@
 
       services.immich = {
         enable = true;
-        package = immichPackage;
+        package = pkgs.immich.override {
+          immich-machine-learning = pkgs.immich-machine-learning.override { python3 = python3Cuda; };
+        };
         host = listenAddress;
         port = listenPort;
         mediaLocation = "/tank/apps/immich";
@@ -127,8 +122,8 @@
           enable = true;
           environment = {
             LD_LIBRARY_PATH = builtins.concatStringsSep ":" [
-              "${python312.pkgs.onnxruntime}/lib"
-              "${python312.pkgs.onnxruntime}/${python312.sitePackages}/onnxruntime/capi"
+              "${python3Cuda.pkgs.onnxruntime}/lib"
+              "${python3Cuda.pkgs.onnxruntime}/${python3Cuda.sitePackages}/onnxruntime/capi"
             ];
           };
         };
