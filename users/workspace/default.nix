@@ -36,6 +36,10 @@
         homeDirectory = "/home/workspace";
         packages = [
           pkgs.custom.kittylitter
+          # nix language servers for zed ssh remoting
+          pkgs.nil
+          pkgs.nixd
+          pkgs.nixfmt
         ];
         sessionVariables = {
           SHELL = "${lib.getExe pkgs.fish}";
