@@ -151,6 +151,7 @@
             };
           }
           {
+            # no siteMonitor: local-only gui port
             "Syncthing" = {
               href = "http://127.0.0.1:8384";
               icon = "syncthing.svg";
