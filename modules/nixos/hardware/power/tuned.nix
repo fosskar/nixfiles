@@ -1,20 +1,14 @@
 {
+  # base tuned aspect; profile selection lives in the tuned* variants
   flake.modules.nixos.tuned =
-    { lib, config, ... }:
+    { lib, ... }:
     {
       services.tuned = {
         enable = true;
         ppdSupport = lib.mkDefault false;
-        recommend = lib.mkIf (!(config.services.tuned.ppdSupport or false)) {
-          balanced = lib.mkDefault { };
-        };
       };
 
-      systemd.services = {
-        tuned.restartTriggers = [ "balanced" ];
-        tuned-ppd.enable = lib.mkIf (!(config.services.tuned.ppdSupport or false)) false;
-      };
-
+      # nixos-hardware may enable tlp; tuned conflicts with it
       services.tlp.enable = lib.mkForce false;
     };
 }

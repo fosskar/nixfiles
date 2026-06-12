@@ -1,21 +1,19 @@
 { config, ... }:
 {
-  flake.modules.nixos.tunedPpd =
-    { lib, ... }:
-    {
-      imports = [ config.flake.modules.nixos.tuned ];
+  flake.modules.nixos.tunedPpd = {
+    imports = [ config.flake.modules.nixos.tuned ];
 
-      services.tuned = {
-        ppdSupport = lib.mkForce true;
-        settings.dynamic_tuning = true;
-        ppdSettings = {
-          battery.balanced = "laptop-battery-powersave";
-          profiles = {
-            power-saver = "powersave";
-            balanced = "balanced";
-            performance = "latency-performance";
-          };
+    services.tuned = {
+      ppdSupport = true; # overrides base mkDefault false
+      settings.dynamic_tuning = true;
+      ppdSettings = {
+        battery.balanced = "laptop-battery-powersave";
+        profiles = {
+          power-saver = "powersave";
+          balanced = "balanced";
+          performance = "latency-performance";
         };
       };
     };
+  };
 }
