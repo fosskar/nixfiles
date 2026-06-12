@@ -1,11 +1,4 @@
-# pure nix UCI serializer
-# converts nix attrsets to UCI batch commands
-#
-# format follows Mic92/openwrt-nix conventions:
-#   - named sections: attrset with _type
-#   - anonymous sections: list of attrsets with _type
-#   - list values: nix lists become add_list commands
-#   - secrets: @placeholder@ patterns for runtime substitution
+# attrsets -> UCI batch commands, Mic92/openwrt-nix conventions (_type sections, @placeholder@ secrets)
 { lib }:
 let
   inherit (builtins)

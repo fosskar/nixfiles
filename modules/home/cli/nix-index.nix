@@ -1,10 +1,6 @@
 {
   flake.modules.homeManager.nixIndex =
-    # nix-index-database — pre-built index for `nix-locate` and `comma`
-    # comma (,) lets you run any command without installing it:
-    #   , htop    → runs nix run nixpkgs#htop
-    #   , cowsay  → finds and runs the right package
-    # also replaces command-not-found with useful "nix run" suggestions
+    # pre-built index for nix-locate, comma (`, htop`), and command-not-found suggestions
     {
       inputs,
       ...

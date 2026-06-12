@@ -74,9 +74,7 @@
         };
       };
 
-      # opencloud web extensions, loaded from WEB_ASSET_APPS_PATH. each release
-      # zip nests under its own <pname>/ dir, so stripRoot = false + symlinkJoin
-      # composes them into one apps dir. restart required to pick up changes.
+      # web extensions for WEB_ASSET_APPS_PATH; restart to pick up changes
     in
     {
       config = {
@@ -288,9 +286,7 @@
             alerts = [ { type = "email"; } ];
           }
           {
-            # tcp liveness: web UI is disabled and http needs auth; faking an
-            # X-Remote-User would create a phantom principal, so just probe the
-            # listener.
+            # tcp probe only: http check would create phantom X-Remote-User principal
             name = "Radicale";
             url = "tcp://127.0.0.1:5232";
             group = "Files";
@@ -314,11 +310,7 @@
           }
         '';
 
-        # radicale: opencloud's caldav/carddav backend. merged here because its
-        # http_x_remote_user auth only works behind opencloud's proxy (which
-        # injects X-Remote-User = the sub uuid). web UI disabled; manage via dav
-        # clients. new principals get a default calendar + address book via
-        # predefined_collections.
+        # caldav/carddav backend; auth only works behind opencloud proxy (X-Remote-User)
         services.radicale = {
           enable = true;
           settings = {

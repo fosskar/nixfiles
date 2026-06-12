@@ -24,14 +24,10 @@
       services.matrix-continuwuity = {
         enable = true;
         settings.global = {
-          # user ids are @user:fosskar.de; the apex delegates to ${publicHost}
-          # via /.well-known/matrix/server served by continuwuity itself
-          # (apex netbird peer target points at this instance too).
+          # apex delegates to ${publicHost} via /.well-known/matrix/server
           server_name = "fosskar.de";
 
-          # bind on all interfaces: reachable over netbird (wt0 is a
-          # trusted interface); public exposure happens via the
-          # netbird-proxy peer target for ${publicHost} on the gateway.
+          # all interfaces: reachable over netbird wt0; public via netbird-proxy on gateway
           address = [ "0.0.0.0" ];
           port = [ listenPort ];
 

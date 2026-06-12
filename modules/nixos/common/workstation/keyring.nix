@@ -6,14 +6,9 @@
       ...
     }:
     let
-      # kwallet tpm auto-unlock setup (one-time, as user):
-      #   1) create/open kwallet once so salt exists
-      #   2) seal wallet password in user creds store:
-      #      echo -n 'YOUR_KWALLET_PASSWORD' | systemd-creds encrypt --user - ~/.config/kwallet-tpm/password.cred
-      #
-      # refs/credits:
-      # - mic92 dotfiles: nixosModules/niri/kwallet-tpm
-      # - autokdewallet: https://github.com/Himalian/autokdewallet
+      # kwallet tpm auto-unlock setup (one-time, as user): open kwallet once, then
+      #   echo -n 'YOUR_KWALLET_PASSWORD' | systemd-creds encrypt --user - ~/.config/kwallet-tpm/password.cred
+      # refs: mic92 dotfiles nixosModules/niri/kwallet-tpm, https://github.com/Himalian/autokdewallet
       pythonEnv = pkgs.python3.withPackages (ps: [ ps.dbus-python ]);
 
       kwallet-tpm-unlock = pkgs.writeScriptBin "kwallet-tpm-unlock" ''
@@ -89,8 +84,6 @@
       '';
     in
     {
-      # gnome-keyring - secret storage for apps using freedesktop secrets api
-      # browsers and many apps use this for credential storage
       # services.gnome.gnome-keyring.enable = lib.mkDefault true;
 
       # seahorse - gui for managing keyring secrets and keys

@@ -66,11 +66,7 @@
         };
       };
 
-      # --- gcroots cleanup ---
-      # gc only removes store paths after roots are gone. stale automatic
-      # gcroots, stale temproots, and broken symlinks can accumulate
-      # independently of profile/generation cleanup (`nix.gc` or `nh clean`).
-      # clean them weekly.
+      # weekly cleanup of stale gcroots/temproots not covered by nix.gc/nh clean
       systemd.timers.nix-cleanup-gcroots = {
         timerConfig = {
           OnCalendar = [ "weekly" ];

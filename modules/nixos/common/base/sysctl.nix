@@ -5,9 +5,7 @@
       boot.kernel.sysctl = {
         ### SECURITY (no mkDefault - should not be weakened)
 
-        # The Magic SysRq key is a key combo that allows users connected to the
-        # system console of a Linux kernel to perform some low-level commands.
-        # Disable it, since we don't need it, and is a potential security concern.
+        # disable magic sysrq key (unused, security concern)
         "kernel.sysrq" = lib.mkForce 0;
 
         # Hide kptrs even for processes with CAP_SYSLOG
@@ -38,19 +36,13 @@
         # Prevent boot console kernel log information leaks
         "kernel.printk" = "3 3 3 3";
 
-        # Restrict loading TTY line disciplines to the CAP_SYS_MODULE capability to
-        # prevent unprivileged attackers from loading vulnerable line disciplines with
-        # the TIOCSETD ioctl
+        # restrict tty line discipline loading to CAP_SYS_MODULE (TIOCSETD attack surface)
         "dev.tty.ldisc_autoload" = 0;
 
-        # Kexec allows replacing the current running kernel. There may be an edge case where
-        # you wish to boot into a different kernel, but I do not require kexec. Disabling it
-        # patches a potential security hole in our system.
+        # kexec (kernel replacement) unused; security hole
         "kernel.kexec_load_disabled" = true;
 
-        # See:
-        #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-rnd-bits>
-        #  - <https://docs.kernel.org/admin-guide/sysctl/vm.html#mmap-min-addr>
+        # https://docs.kernel.org/admin-guide/sysctl/vm.html
         "vm.mmap_rnd_bits" = 32;
         "vm.mmap_min_addr" = 65536;
 
@@ -97,11 +89,7 @@
 
         ### TCP OPTIMIZATION (mkDefault - can be tuned per machine)
 
-        # Enable TCP Fast Open
-        # TCP Fast Open is an extension to the transmission control protocol (TCP) that helps reduce network latency
-        # by enabling data to be exchanged during the sender's initial TCP SYN [3].
-        # Using the value 3 instead of the default 1 allows TCP Fast Open for both incoming and outgoing connections:
-        # https://github.com/CachyOS/CachyOS-Settings/pull/120
+        # tcp fast open for both directions: https://github.com/CachyOS/CachyOS-Settings/pull/120
         #"net.ipv4.tcp_fastopen" = 3;
 
         # Bufferbloat mitigations + slight improvement in throughput & latency

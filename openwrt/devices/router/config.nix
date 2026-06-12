@@ -297,10 +297,7 @@
         };
       };
 
-      # --- sqm (traffic shaping) ---
-      # note: hardware offloading (flow_offloading_hw) is incompatible with sqm,
-      # so we only use software offloading (flow_offloading) in the firewall defaults.
-      # see: https://openwrt.org/docs/guide-user/network/traffic-shaping/sqm
+      # sqm needs software offloading only (flow_offloading_hw incompatible)
       sqm.eth1 = {
         _type = "queue";
         enabled = "1";

@@ -23,9 +23,7 @@
 
   home.packages = [
     pkgs.radicle-desktop
-    # one-shot key fetch from proton-pass on a new machine. requires prior
-    # `pass-cli login`. drops the keys at ~/.radicle/keys/{radicle,radicle.pub};
-    # radicle reads them like any other identity from then on.
+    # one-shot identity fetch from proton-pass on new machine; needs prior `pass-cli login`
     (pkgs.writeShellScriptBin "radicle-fetch-key" ''
       set -euo pipefail
       mkdir -p "$HOME/.radicle/keys"

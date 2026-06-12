@@ -2,9 +2,7 @@
   flake.modules.nixos.workstation =
     { lib, ... }:
     {
-      # gvfs - virtual filesystem for file managers
-      # provides network shares (smb, ftp), MTP (phone), trash support
-      # used by nautilus, thunar, pcmanfm, nemo, and others (not dolphin/kde)
+      # gvfs: network shares/MTP/trash for non-kde file managers
       services.gvfs.enable = lib.mkDefault true;
 
       # gnome-disks - disk management GUI (uses gvfs/udisks)

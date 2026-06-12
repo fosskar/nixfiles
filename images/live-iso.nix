@@ -13,9 +13,7 @@ in
     # base profiles see: https://github.com/NixOS/nixpkgs/tree/master/nixos/modules/profiles
     "${modulesPath}/profiles/all-hardware.nix"
 
-    # This module creates a bootable ISO image containing the given NixOS
-    # configuration.  The derivation for the ISO image will be placed in
-    # config.system.build.isoImage.
+    # iso image lands in config.system.build.isoImage
     "${modulesPath}/installer/cd-dvd/iso-image.nix"
     "${modulesPath}/installer/cd-dvd/channel.nix"
   ];
@@ -58,11 +56,7 @@ in
       "cifs"
     ];
     loader.grub.memtest86.enable = lib.mkForce false;
-    # Make the installer more likely to succeed in low memory
-    # environments.  The kernel's overcommit heustistics bite us
-    # fairly often, preventing processes such as nix-worker or
-    # download-using-manifests.pl from forking even if there is
-    # plenty of free memory.
+    # overcommit heuristics break installer in low-memory environments
     kernel.sysctl."vm.overcommit_memory" = "1";
     swraid.enable = true;
     # remove warning about unset mail
@@ -103,9 +97,7 @@ in
       pkgs.usbutils
       pkgs.nvme-cli
     ];
-    # Tell the Nix evaluator to garbage collect more aggressively.
-    # This is desirable in memory-constrained environments that don't
-    # (yet) have swap set up.
+    # aggressive evaluator gc: no swap yet on installer
     variables.GC_INITIAL_HEAP_SIZE = "1M";
   };
 

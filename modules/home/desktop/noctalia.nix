@@ -139,9 +139,7 @@
       imports = [ inputs.noctalia.homeModules.default ];
 
       config = {
-        # python3 is required by the kcolorscheme template's apply.py post-hook,
-        # which merges the generated scheme into kdeglobals so kde apps
-        # (dolphin) follow the theme.
+        # python3: kcolorscheme template apply.py post-hook (merges scheme into kdeglobals)
         home.packages = [
           pkgs.ddcutil
           pkgs.python3

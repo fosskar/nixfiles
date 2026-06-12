@@ -291,12 +291,7 @@
                   Restart = "on-failure";
                   RestartSec = "10s";
                 }
-                # on hosts that run netbird-server locally, After=/Wants= only
-                # guarantees the unit was started, not that the gRPC mgmt api on
-                # 127.0.0.1:8081 is accepting connections. probe TCP readiness
-                # before letting `netbird up` race the listener and 403.
-                # remote-mgmt hosts hit the public proxy which is up well before
-                # this unit runs, so the probe is unnecessary there.
+                # local mgmt api may not accept connections yet despite After=; probe before `netbird up`
                 // lib.optionalAttrs isServerMachine {
                   ExecStartPre = pkgs.writeShellScript "wait-netbird-mgmt" ''
                     for _ in $(seq 1 60); do

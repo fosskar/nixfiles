@@ -8,9 +8,7 @@
         "panic=1"
         "boot.panic_on_fail"
 
-        # Disable slab merging which significantly increases the difficulty of heap
-        # exploitation by preventing overwriting objects from merged caches and by
-        # making it harder to influence slab cache layout (costs some performance)
+        # no slab merging: harder heap exploitation, costs some performance
         "slab_nomerge"
 
         # Disable debugfs which exposes sensitive information about the kernel

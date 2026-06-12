@@ -1,6 +1,4 @@
-# gpg through simon's forwarded gpg-agent socket (see workspace host block in
-# users/simon/ssh.nix): sops/clan decrypt via the pgp recipient, pin/touch
-# happens on simon's machine, no key material on this host.
+# gpg via simon's forwarded gpg-agent socket (users/simon/ssh.nix); no key material here
 { osConfig, ... }:
 {
   programs.gpg = {

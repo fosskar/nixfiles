@@ -1,11 +1,6 @@
 {
-  flake.modules.nixos.netbirdServerStack = # netbird reverse proxy
-    # when enabled, sets up:
-    # - traefik routes for dashboard/API/gRPC + TLS passthrough for proxy
-    # - nginx to serve dashboard static files on internal port
-    # - proxy token generation on first boot
-    # - the proxy service itself
-    # requires: modules/traefik for base traefik config (entrypoints, acme, etc)
+  flake.modules.nixos.netbirdServerStack =
+    # netbird reverse proxy: traefik routes + nginx dashboard + proxy service; requires modules/traefik
     {
       config,
       lib,
@@ -200,11 +195,7 @@
           };
         };
 
-        # if traefik is colocated and tcp-passthrough-ing :443 to netbird-proxy
-        # :8443 (see traefik dynamic config below), order traefik after the
-        # proxy so it doesn't log `connect: connection refused 127.0.0.1:8443`
-        # at boot until netbird-proxy comes up. soft dependency — use Wants=
-        # so traefik still starts if proxy is masked.
+        # order traefik after proxy to avoid boot-time "connection refused 127.0.0.1:8443" spam
         systemd.services.traefik = lib.mkIf config.services.traefik.enable {
           after = [ "netbird-proxy.service" ];
           wants = [ "netbird-proxy.service" ];
@@ -236,14 +227,9 @@
             NB_PROXY_HEALTH_ADDRESS = "localhost:8444";
             NB_PROXY_DEBUG_ENDPOINT_ADDRESS = "localhost:8445";
             NB_PROXY_GEO_DATA_DIR = "${stateDir}/geolocation";
-            # netbird-proxy embeds the netbird client which defaults to
-            # /var/lib/netbird/ for state.json, active_profile.json, etc.
-            # that dir is owned by the root-running netbird daemon, so the
-            # proxy (running as netbird:netbird) can't write there. redirect
-            # the embedded client's state into our own StateDirectory.
+            # embedded client default state dir /var/lib/netbird is root-owned; redirect
             NB_STATE_DIR = stateDir;
-            # PROXY protocol v2 from traefik tcp passthrough so real client IPs
-            # appear in proxy events (otherwise all sources show as 127.0.0.1)
+            # PROXY protocol v2 from traefik passthrough: real client IPs in events
             NB_PROXY_PROXY_PROTOCOL = "true";
             NB_PROXY_TRUSTED_PROXIES = "127.0.0.1/32";
           }
@@ -342,10 +328,7 @@
           '';
         };
 
-        # crowdsec parser for netbird-proxy debug access log lines
-        # (NB_PROXY_LOG_LEVEL=debug enables per-request `response:` lines
-        # in the journal; this parser extracts them into the http_access-log
-        # event shape so stock http-* scenarios fire)
+        # parse debug-level `response:` journal lines into http_access-log shape for stock http-* scenarios
         services.crowdsec.localConfig.parsers.s01Parse = lib.mkIf cfg.crowdsec.enable [
           {
             onsuccess = "next_stage";
@@ -436,13 +419,10 @@
                 tls.certResolver = "letsencrypt";
                 priority = 100;
               };
-              # Dashboard catch-all is defined in dashboard.nix so it can point
-              # at Anubis when dashboard protection is enabled:
-              # traefik -> anubis -> nginx -> static dashboard.
+              # dashboard catch-all lives in dashboard.nix (can route via anubis)
             };
             services = {
-              # Dashboard service is defined in dashboard.nix for the same
-              # reason as the dashboard router above.
+              # dashboard service lives in dashboard.nix, same as the router
               netbird-server.loadBalancer.servers = [
                 { url = "http://127.0.0.1:${toString cfg.serverPort}"; }
               ];

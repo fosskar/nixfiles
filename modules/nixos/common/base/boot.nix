@@ -2,10 +2,7 @@
   flake.modules.nixos.base =
     { lib, ... }:
     {
-      # srvos sets: initrd.systemd.enable, tmp.cleanOnBoot
-      # bootloader is not chosen here: each machine imports either
-      # self.modules.nixos.grub, self.modules.nixos.systemdBoot, or
-      # self.modules.nixos.lanzaboote.
+      # srvos sets initrd.systemd.enable + tmp.cleanOnBoot; bootloader chosen per machine (grub/systemdBoot/lanzaboote)
 
       boot = {
         initrd.availableKernelModules = [

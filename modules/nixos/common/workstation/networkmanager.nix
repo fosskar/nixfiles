@@ -47,9 +47,7 @@
         # iwd settings
         wireless.iwd.settings = {
           Scan.DisablePeriodicScan = true;
-          # let networkmanager drive autoconnect; iwd-only autoconnect races
-          # with nm-ensure-profiles and synthesizes a dhcp profile for known
-          # ssids before the declarative profile activates.
+          # nm drives autoconnect; iwd autoconnect races nm-ensure-profiles
           Settings.AutoConnect = false;
           General = {
             AddressRandomization = "network";

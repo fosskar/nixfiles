@@ -8,19 +8,13 @@
         # make stack-based attacks on the kernel harder
         "randomize_kstack_offset=on"
 
-        # Disable vsyscalls as they are obsolete and have been replaced with vDSO.
-        # vsyscalls are also at fixed addresses in memory, making them a potential
-        # target for ROP attacks. This breaks really old binaries for security.
+        # obsolete fixed-address syscalls, ROP target; breaks very old binaries
         "vsyscall=none"
 
-        # Sometimes certain kernel exploits will cause what is known as an "oops".
-        # This parameter will cause the kernel to panic on such oopses, thereby
-        # preventing those exploits.
+        # panic on kernel oops to stop exploits mid-flight
         "oops=panic"
 
-        # enable buddy allocator free poisoning
-        #  on: memory will be filled with a specific byte pattern
-        #      that is unlikely to occur in normal operation.
+        # buddy allocator free poisoning
         "page_poison=on"
 
         # performance improvement for direct-mapped memory-side-cache utilization

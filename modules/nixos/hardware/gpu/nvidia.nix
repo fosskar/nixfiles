@@ -31,8 +31,7 @@
         #package = config.boot.kernelPackages.nvidiaPackages.beta;
         #package = config.boot.kernelPackages.nvidiaPackages.production;
 
-        # Data center GPUs startin from Blackwell must use open-source modules
-        # proprietary modules are no longer supported
+        # blackwell+ requires open modules
         open = true;
         modesetting.enable = true;
         nvidiaPersistenced = true;

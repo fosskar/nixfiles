@@ -1,6 +1,4 @@
-# shared traefik reverse proxy base
-# provides: entrypoints, acme, access log, metrics, geoblock middleware, persistence
-# other modules add routes/services/middlewares via services.traefik merging
+# shared traefik base (entrypoints, acme, logs, geoblock); other modules merge in routes
 {
   flake.modules.nixos.traefik =
     { config, lib, ... }:

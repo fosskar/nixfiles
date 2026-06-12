@@ -18,9 +18,7 @@ buildNpmPackage rec {
   npmDepsHash = "sha256-Ze+1r5Uh+wdm3MuVr93oS2itodx9Zdv+JYO6Uji1saw=";
   npmFlags = [ "--legacy-peer-deps" ];
 
-  # auth config is baked in at build time via string replacement in the JS bundle.
-  # the combined server's embedded IdP serves at /oauth2 on the same domain.
-  # these are replaced post-build so they work for any domain.
+  # auth config string-replaced post-build in JS bundle so it works for any domain
   installPhase = ''
     cp -R out $out
   '';

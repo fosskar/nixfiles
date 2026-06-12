@@ -197,10 +197,7 @@
             };
           };
 
-          # upstream home-module deprecated its systemd integration and its
-          # warning emission is broken (sets `warnings` key on systemd.user.services,
-          # causing eval failure). inline the original unit 1:1 instead of
-          # enabling cfg.systemd.enable.
+          # upstream cfg.systemd.enable is deprecated + breaks eval; inline original unit
           systemd.user.services.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable (
             let
               cfg = config.programs.noctalia-shell;
