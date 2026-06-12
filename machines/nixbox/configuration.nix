@@ -63,20 +63,9 @@
         "garage"
         "garage-layout-init"
         "garage-webui"
-        "nextcloud-cron"
-        "nextcloud-notify_push"
-        "nextcloud-notify_push_setup"
-        "nextcloud-oidc-bootstrap"
-        "nextcloud-setup"
-        "nextcloud-update-db"
         "opencloud"
         "opencloud-permission-fixer"
         "papra"
-        "paperless-consumer"
-        "paperless-scheduler"
-        "paperless-task-queue"
-        "paperless-web"
-        "phpfpm-nextcloud"
       ]
       (_: {
         after = [ "zfs-mount.service" ];
