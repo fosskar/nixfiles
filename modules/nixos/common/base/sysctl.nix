@@ -13,7 +13,7 @@
         "kernel.kptr_restrict" = 2;
 
         # Disable ftrace debugging
-        "kernel.ftrace_enabled" = false;
+        "kernel.ftrace_enabled" = 0;
 
         # Avoid kernel memory address exposures via dmesg
         # (this value can also be set by CONFIG_SECURITY_DMESG_RESTRICT)
@@ -40,7 +40,7 @@
         "dev.tty.ldisc_autoload" = 0;
 
         # kexec (kernel replacement) unused; security hole
-        "kernel.kexec_load_disabled" = true;
+        "kernel.kexec_load_disabled" = 1;
 
         # https://docs.kernel.org/admin-guide/sysctl/vm.html
         "vm.mmap_rnd_bits" = 32;
@@ -80,10 +80,10 @@
         "net.ipv6.conf.all.accept_redirects" = 0;
         "net.ipv6.conf.default.accept_redirects" = 0;
         # helps in identifying suspicious network activity
-        "net.ipv4.conf.all.log_martians" = true;
-        "net.ipv4.conf.default.log_martians" = true;
+        "net.ipv4.conf.all.log_martians" = 1;
+        "net.ipv4.conf.default.log_martians" = 1;
         # prevents responding to broadcast pings
-        "net.ipv4.icmp_echo_ignore_broadcasts" = true;
+        "net.ipv4.icmp_echo_ignore_broadcasts" = 1;
         # basic syn flood protection
         "net.ipv4.tcp_syncookies" = 1;
 

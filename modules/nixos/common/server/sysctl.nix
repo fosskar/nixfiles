@@ -4,7 +4,7 @@
     {
       boot.kernel.sysctl = {
         # memory overcommit for Redis, etc.
-        "vm.overcommit_memory" = lib.mkDefault "1";
+        "vm.overcommit_memory" = lib.mkDefault 1;
 
         # higher inotify limits for servers
         "fs.inotify.max_user_watches" = lib.mkForce 1048576;
