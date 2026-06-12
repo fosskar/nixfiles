@@ -66,4 +66,15 @@
     };
   };
   users.users.simon.shell = pkgs.fish;
+
+  # session link for kagi-search skill (modules/home/llm/skills)
+  clan.core.vars.generators.kagi = {
+    share = true;
+    files."session-link".owner = "simon";
+    prompts."session-link" = {
+      type = "hidden";
+      persist = true;
+      description = "kagi session link";
+    };
+  };
 }

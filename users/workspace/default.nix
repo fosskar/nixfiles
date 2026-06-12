@@ -109,6 +109,17 @@
   # run the kittylitter user daemon at boot, not just at login
   users.users.workspace.linger = true;
 
+  # session link for kagi-search skill (modules/home/llm/skills)
+  clan.core.vars.generators.kagi = {
+    share = true;
+    files."session-link".owner = "workspace";
+    prompts."session-link" = {
+      type = "hidden";
+      persist = true;
+      description = "kagi session link";
+    };
+  };
+
   clan.core.vars.generators.workspace-ssh = {
     files."id_ed25519".owner = "workspace";
     files."id_ed25519.pub".secret = false;
