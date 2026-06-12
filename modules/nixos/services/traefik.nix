@@ -73,6 +73,18 @@
 
         systemd.services.traefik.serviceConfig.StateDirectory = "traefik";
 
+        # traefik reopens access.log on USR1; crowdsec file acquisition follows rotation
+        services.logrotate.settings."/var/log/traefik/access.log" = {
+          frequency = "daily";
+          rotate = 7;
+          compress = true;
+          delaycompress = true;
+          missingok = true;
+          notifempty = true;
+          su = "traefik traefik";
+          postrotate = "systemctl kill --signal=USR1 traefik.service";
+        };
+
         systemd.tmpfiles.rules = [
           "d /var/log/traefik 0755 traefik traefik -"
         ];
