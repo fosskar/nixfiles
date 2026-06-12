@@ -39,6 +39,10 @@
           "vars/*"
           "**/vars/*"
         ];
+        settings.formatter.nixf-diagnose = {
+          command = pkgs.nixf-diagnose;
+          includes = [ "*.nix" ];
+        };
         settings.formatter.flake-edit = {
           command = pkgs.flake-edit;
           options = [
