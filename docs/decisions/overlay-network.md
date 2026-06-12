@@ -17,9 +17,9 @@ one network, several roles:
 
 tailscale and pangolin each covered half the problem:
 
-| role                    | before    | after                          |
-| ----------------------- | --------- | ------------------------------ |
-| mesh vpn between peers  | tailscale | netbird mesh                   |
+| role                    | before    | after                            |
+| ----------------------- | --------- | -------------------------------- |
+| mesh vpn between peers  | tailscale | netbird mesh                     |
 | public service exposure | pangolin  | netbird reverse proxy on gateway |
 
 netbird covers both, so the second tool became redundant. fewer moving parts: one control plane, one client, one set of secrets, one clan service.
@@ -36,14 +36,14 @@ wireguard mesh with direct peer connections where possible, relay fallback other
 
 ## technical comparison
 
-| aspect             | tailscale                                   | pangolin                                  | netbird                                        |
-| ------------------ | ------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| data plane         | wireguard (userspace wireguard-go only)     | wireguard tunnels to central node (newt)  | wireguard, kernel module when available         |
-| topology           | p2p mesh, derp relay fallback               | hub-and-spoke: all traffic hairpins through the vps | p2p mesh, turn relay fallback          |
-| lan-to-lan traffic | direct                                      | via vps even between lan peers            | direct                                          |
-| control plane      | closed SaaS (headscale: third-party reimpl) | self-hosted                               | self-hosted, vendor-supported                   |
-| service exposure   | none first-party (funnel is SaaS-bound)     | core feature (reverse proxy)              | reverse proxy on gateway + `netbird expose`     |
-| auth               | SaaS identity providers                     | own users or oidc                         | embedded IdP or external oidc                   |
+| aspect             | tailscale                                   | pangolin                                            | netbird                                     |
+| ------------------ | ------------------------------------------- | --------------------------------------------------- | ------------------------------------------- |
+| data plane         | wireguard (userspace wireguard-go only)     | wireguard tunnels to central node (newt)            | wireguard, kernel module when available     |
+| topology           | p2p mesh, derp relay fallback               | hub-and-spoke: all traffic hairpins through the vps | p2p mesh, turn relay fallback               |
+| lan-to-lan traffic | direct                                      | via vps even between lan peers                      | direct                                      |
+| control plane      | closed SaaS (headscale: third-party reimpl) | self-hosted                                         | self-hosted, vendor-supported               |
+| service exposure   | none first-party (funnel is SaaS-bound)     | core feature (reverse proxy)                        | reverse proxy on gateway + `netbird expose` |
+| auth               | SaaS identity providers                     | own users or oidc                                   | embedded IdP or external oidc               |
 
 kernel wireguard and direct p2p paths are measurable differences, not taste: lan peers exchange traffic at line rate without a vps round-trip, and the data plane avoids the userspace packet-copy overhead tailscale always has.
 

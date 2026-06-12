@@ -25,25 +25,25 @@ paperless-ngx is a full document-management system: ocr ingest pipelines, taggin
 
 ## technical comparison
 
-| aspect            | nextcloud                                              | opencloud                                         |
-| ----------------- | ------------------------------------------------------ | -------------------------------------------------- |
-| runtime           | php-fpm + webserver + sql db + redis + cron jobs       | single go binary (embedded services)               |
-| metadata          | sql db (`oc_filecache`); files on disk invalid without db sync (`occ files:scan`) | posix storage driver: filesystem is the source of truth, external changes picked up |
-| auth              | session/password core, oidc via app plugin (`user_oidc`) | oidc-native, no plugin layer                      |
-| upgrades          | sequential major-version migrations, app compatibility matrix | binary swap + automatic service migrations    |
-| extension model   | php apps loaded into the monolith (shared failure domain) | none; integrations are separate services        |
-| search/ocr        | app plugins (workflow-ocr) inside php runtime           | tika sidecar, out of process                       |
+| aspect          | nextcloud                                                                         | opencloud                                                                           |
+| --------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| runtime         | php-fpm + webserver + sql db + redis + cron jobs                                  | single go binary (embedded services)                                                |
+| metadata        | sql db (`oc_filecache`); files on disk invalid without db sync (`occ files:scan`) | posix storage driver: filesystem is the source of truth, external changes picked up |
+| auth            | session/password core, oidc via app plugin (`user_oidc`)                          | oidc-native, no plugin layer                                                        |
+| upgrades        | sequential major-version migrations, app compatibility matrix                     | binary swap + automatic service migrations                                          |
+| extension model | php apps loaded into the monolith (shared failure domain)                         | none; integrations are separate services                                            |
+| search/ocr      | app plugins (workflow-ocr) inside php runtime                                     | tika sidecar, out of process                                                        |
 
 the metadata point is the structural one: with nextcloud the database co-owns file state, so backup/restore must keep db and disk consistent and out-of-band file changes corrupt the cache. with the posix driver the files alone are the state - backup is a filesystem backup, and data outlives the software.
 
 ## role mapping
 
-| role                       | before        | after                              |
-| -------------------------- | ------------- | ---------------------------------- |
-| file sync/share            | nextcloud     | opencloud                          |
-| document archive + search  | paperless-ngx | opencloud folders + tika ocr/search |
-| caldav/carddav             | nextcloud     | radicale (wired in the opencloud module) |
-| feed reader (nextcloud news) | nextcloud app | miniflux (standalone service)      |
+| role                         | before        | after                                    |
+| ---------------------------- | ------------- | ---------------------------------------- |
+| file sync/share              | nextcloud     | opencloud                                |
+| document archive + search    | paperless-ngx | opencloud folders + tika ocr/search      |
+| caldav/carddav               | nextcloud     | radicale (wired in the opencloud module) |
+| feed reader (nextcloud news) | nextcloud app | miniflux (standalone service)            |
 
 ## accepted tradeoffs
 

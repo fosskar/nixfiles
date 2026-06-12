@@ -24,15 +24,15 @@ nginx could have been fixed instead - `security.acme` supports dns-01 wildcard, 
 
 these are properties of the software, not preferences:
 
-| aspect            | nginx                                            | caddy                                                        |
-| ----------------- | ------------------------------------------------ | ------------------------------------------------------------ |
-| tls by default    | opt-in; cipher suites, protocol versions, ocsp stapling, http→https redirect all manual | automatic https: modern tls defaults, ocsp stapling, redirect out of the box |
-| acme              | external (`security.acme` / certbot / lego), cert paths wired into vhosts, reload hooks | built-in client: issuance, renewal, dns-01, in-process cert rotation without reload glue |
-| memory safety     | c                                                | go (memory-safe runtime)                                      |
-| http/3            | available, off by default                        | built in, on by default                                       |
-| config reload     | signal-based reload                              | zero-downtime apply via admin api                             |
-| auth at proxy     | `auth_request` subrequest glue per vhost         | first-class `forward_auth` directive                          |
-| extension model   | compile-time modules or dynamic `.so`            | compile-time go plugins (`withPlugins`), declarative in nix   |
+| aspect          | nginx                                                                                   | caddy                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| tls by default  | opt-in; cipher suites, protocol versions, ocsp stapling, http→https redirect all manual | automatic https: modern tls defaults, ocsp stapling, redirect out of the box             |
+| acme            | external (`security.acme` / certbot / lego), cert paths wired into vhosts, reload hooks | built-in client: issuance, renewal, dns-01, in-process cert rotation without reload glue |
+| memory safety   | c                                                                                       | go (memory-safe runtime)                                                                 |
+| http/3          | available, off by default                                                               | built in, on by default                                                                  |
+| config reload   | signal-based reload                                                                     | zero-downtime apply via admin api                                                        |
+| auth at proxy   | `auth_request` subrequest glue per vhost                                                | first-class `forward_auth` directive                                                     |
+| extension model | compile-time modules or dynamic `.so`                                                   | compile-time go plugins (`withPlugins`), declarative in nix                              |
 
 net effect: caddy's secure state is the default state; nginx's secure state is the result of correct manual configuration in several places. fewer hand-written security-relevant lines means fewer places to get it wrong.
 
