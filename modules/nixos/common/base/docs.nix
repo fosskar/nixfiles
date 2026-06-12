@@ -8,8 +8,7 @@
         doc.enable = lib.mkDefault false;
         info.enable = lib.mkDefault false;
         nixos.enable = lib.mkDefault false;
-        man.mandoc.enable = lib.mkDefault false;
-        # low priority so fish.nix can override if needed
+        # not a restated default: programs.fish would mkDefault-enable this
         man.cache.enable = false;
       };
     };

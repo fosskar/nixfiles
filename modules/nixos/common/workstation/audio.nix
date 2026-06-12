@@ -24,9 +24,7 @@
 
           pipewire = {
             alsa.support32Bit = lib.mkDefault true;
-            jack.enable = lib.mkDefault false;
             wireplumber = {
-              enable = lib.mkDefault true;
               extraConfig = {
                 "10-disable-camera" = {
                   "wireplumber.profiles".main."monitor.libcamera" = "disabled";

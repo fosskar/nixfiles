@@ -10,8 +10,6 @@
         promptInit = ''
           PROMPT='%B%F{red}%n@%m%f%b:%F{blue}%~%f %# '
         '';
-        enableGlobalCompInit = true;
-        enableCompletion = true;
         enableBashCompletion = true;
         autosuggestions.enable = true;
         syntaxHighlighting = {

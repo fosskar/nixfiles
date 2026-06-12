@@ -28,8 +28,6 @@
             "blake3-hashes"
           ];
 
-          accept-flake-config = lib.mkDefault false;
-
           allowed-users = lib.mkDefault [
             "root"
             "@wheel"
@@ -39,15 +37,13 @@
 
           download-buffer-size = lib.mkDefault (256 * 1024 * 1024); # 256 MB
 
-          # for direnv garbage-collection roots
-          keep-derivations = lib.mkDefault true;
+          # for direnv garbage-collection roots (keep-derivations already
+          # defaults to true in nix itself)
           keep-outputs = lib.mkDefault true;
 
           warn-dirty = lib.mkDefault false;
 
           auto-optimise-store = lib.mkDefault true;
-
-          log-lines = lib.mkDefault 25;
 
           # avoid disk full
           max-free = lib.mkDefault (3000 * 1024 * 1024);

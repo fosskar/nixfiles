@@ -5,9 +5,6 @@
       # compressed swap in RAM: https://www.kernel.org/doc/Documentation/blockdev/zram.txt
       zramSwap = {
         enable = lib.mkDefault true;
-        algorithm = lib.mkDefault "zstd"; # lzo, lz4, or zstd
-        # higher than disk swap so zram fills first
-        priority = lib.mkDefault 5;
         # `zramctl` to check compression ratio
         memoryPercent = lib.mkDefault 25;
       };

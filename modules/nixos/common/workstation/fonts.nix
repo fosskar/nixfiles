@@ -9,7 +9,6 @@
           decompressFonts = lib.mkDefault true;
         };
         fontconfig = {
-          enable = lib.mkDefault true;
           defaultFonts = {
             serif = lib.mkDefault [
               "Noto Serif"
@@ -25,13 +24,9 @@
             ];
             emoji = lib.mkDefault [ "Noto Color Emoji" ];
           };
-          antialias = lib.mkDefault true;
-          includeUserConf = lib.mkDefault true;
           cache32Bit = lib.mkDefault true;
           allowBitmaps = lib.mkDefault false;
-          allowType1 = lib.mkDefault false;
           hinting = {
-            enable = lib.mkDefault true;
             autohint = lib.mkDefault true;
             style = lib.mkDefault "full";
           };

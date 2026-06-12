@@ -6,13 +6,8 @@
         # disables hibernation as side effect
         protectKernelImage = true;
 
-        # true breaks runtime module loading (virtd, wireguard, iptables); needs all modules declared
-        lockKernelModules = false;
-
-        # User namespaces are required for sandboxing
-        allowUserNamespaces = true;
-
-        allowSimultaneousMultithreading = true;
+        # upstream defaults kept: lockKernelModules=false (runtime module
+        # loading needed), allowUserNamespaces=true (sandboxing), smt=true
 
         lsm = lib.mkForce [
           "landlock"
