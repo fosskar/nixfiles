@@ -24,6 +24,12 @@
   # kvm guest has no hwmon — disable telegraf sensors input to silence
   # recurring `inputs.sensors` plugin errors.
 
+  # no dev shells on this server; don't retain build-time deps in the store
+  nix.settings = {
+    keep-derivations = false;
+    keep-outputs = false;
+  };
+
   preservation.preserveAt."/persist".directories = [
     {
       directory = "/var/lib/private";
