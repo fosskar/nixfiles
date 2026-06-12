@@ -3,7 +3,6 @@
     {
       config,
       lib,
-      pkgs,
       ...
     }:
     let
@@ -72,7 +71,6 @@
 
         services.pangolin = {
           enable = lib.mkDefault true;
-          package = lib.mkDefault pkgs.custom.fosrl-pangolin;
           openFirewall = lib.mkDefault true;
           letsEncryptEmail = lib.mkDefault "letsencrypt.unpleased904@passmail.net";
 
