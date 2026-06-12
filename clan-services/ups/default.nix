@@ -73,8 +73,10 @@ _: {
             upsd = {
               enable = true;
               listen = [
-                # dual-stack; nixbox.lan resolves ipv6-only on secondaries
+                # nut binds :: v6-only; nixbox.lan resolves ipv6-only on secondaries
                 { address = "::"; }
+                # telegraf inputs.upsd dials ipv4 loopback
+                { address = "127.0.0.1"; }
               ];
             };
           };
