@@ -10,7 +10,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 - [flake-parts](https://flake.parts/) - modular flake framework
 - [dendritic pattern](https://github.com/mightyiam/dendritic) - feature/aspect-oriented module structure composed through clan and machine imports
 - [home-manager](https://github.com/nix-community/home-manager) - user environments and desktop integration
-- [preservation](https://github.com/nix-community/preservation) - opt-in state persistence with ephemeral roots; see [why preservation over impermanence](docs/preservation.md)
+- [preservation](https://github.com/nix-community/preservation) - opt-in state persistence with ephemeral roots; see [why preservation over impermanence](docs/decisions/state-persistence.md)
 - openwrt home network declarative router/ap management
 
 ## machines

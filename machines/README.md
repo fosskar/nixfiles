@@ -1,6 +1,6 @@
 # machines
 
-all machines use [preservation](../docs/preservation.md) (ephemeral root, opt-in state persistence).
+all machines use [preservation](../docs/decisions/state-persistence.md) (ephemeral root, opt-in state persistence).
 
 ## configuration model
 

@@ -223,7 +223,7 @@ if user says "commit and push":
 
 ## 13) sharp edges / quirks
 
-- preservation: root is ephemeral; persist explicit dirs/files only (`docs/preservation.md`).
+- preservation: root is ephemeral; persist explicit dirs/files only (`docs/decisions/state-persistence.md`).
 - first install with preservation disabled; enable after secrets have landed (`machines/README.md`).
 - zfs machines: keep `networking.hostId` stable.
 - grafana oidc role mapping needs `groups` in `id_token`.
