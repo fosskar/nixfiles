@@ -232,6 +232,8 @@
             # PROXY protocol v2 from traefik passthrough: real client IPs in events
             NB_PROXY_PROXY_PROTOCOL = "true";
             NB_PROXY_TRUSTED_PROXIES = "127.0.0.1/32";
+            # capability flag: allows per-service NetBird-Only access mode
+            NB_PROXY_PRIVATE = "true";
           }
           // lib.optionalAttrs cfg.allowInsecure {
             NB_PROXY_ALLOW_INSECURE = "true";
