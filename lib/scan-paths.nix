@@ -29,5 +29,5 @@
         ) (builtins.readDir path)
       );
     in
-    builtins.map (f: (path + "/${f}")) allFiles;
+    map (f: (path + "/${f}")) allFiles;
 }
