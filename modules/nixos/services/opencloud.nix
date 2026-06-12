@@ -167,6 +167,22 @@
         services.tika = {
           enable = true;
           enableOcr = true;
+          # tika defaults to language=eng at runtime; include german models for
+          # proper umlaut/ß recognition in scanned documents
+          configFile = pkgs.writeText "tika-config.xml" ''
+            <properties>
+              <parsers>
+                <parser class="org.apache.tika.parser.DefaultParser">
+                  <parser-exclude class="org.apache.tika.parser.ocr.TesseractOCRParser"/>
+                </parser>
+                <parser class="org.apache.tika.parser.ocr.TesseractOCRParser">
+                  <params>
+                    <param name="language" type="string">deu+eng</param>
+                  </params>
+                </parser>
+              </parsers>
+            </properties>
+          '';
           listenAddress = "127.0.0.1";
           port = 9998;
         };
