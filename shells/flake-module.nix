@@ -6,8 +6,6 @@ _: {
       ...
     }:
     let
-      mkScript = name: text: pkgs.writeShellScriptBin name text;
-
       # patch clan-cli to support SOPS_AGE_KEY_CMD
       # https://git.clan.lol/clan/clan-core/issues/6799
       clan-cli-patched = inputs'.clan-core.packages.clan-cli.overrideAttrs (old: {
@@ -17,7 +15,7 @@ _: {
       # until it not only a cli flag https://git.clan.lol/clan/clan-core/issues/4624
       defaultShellName = "nixfiles";
       scripts = [
-        (mkScript "clan" ''
+        (pkgs.writeShellScriptBin "clan" ''
           ${clan-cli-patched}/bin/clan "$@"
         '')
       ];
