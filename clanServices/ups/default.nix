@@ -73,7 +73,8 @@ _: {
             upsd = {
               enable = true;
               listen = [
-                { address = "0.0.0.0"; }
+                # dual-stack; nixbox.lan resolves ipv6-only on secondaries
+                { address = "::"; }
               ];
             };
           };
