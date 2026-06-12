@@ -539,52 +539,50 @@
           };
         };
 
-        borgbackup = {
-          module = {
-            name = "borgbackup";
-            input = "clan-core";
-          };
-          roles = {
-            client.machines = {
-              "gateway".settings = {
-                startAt = "*-*-* 04:00:00";
-                exclude = [
-                  "/var/cache"
-                  "/var/log"
-                  "/var/tmp"
-                  "*.pyc"
-                  "*.o"
-                  "*/node_modules/*"
-                ];
-                destinations = {
-                  "storagebox" = {
-                    repo = "u499127-sub1@u499127.your-storagebox.de:/./gateway";
-                    rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
-                  };
-                };
-              };
-              "nixbox".settings = {
-                startAt = "*-*-* 03:00:00";
-                exclude = [
-                  "/var/cache"
-                  "/var/log"
-                  "/var/lib/postgresql"
-                  "/var/tmp"
-                  "*.pyc"
-                  "*.o"
-                  "*/node_modules/*"
-                ];
-                destinations = {
-                  "storagebox" = {
-                    repo = "u499127-sub1@u499127.your-storagebox.de:/./nixbox";
-                    rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
-                  };
-                };
-              };
+        borgbackup =
+          let
+            # shared client settings for both storagebox destinations
+            rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
+            exclude = [
+              "/var/cache"
+              "/var/log"
+              "/var/tmp"
+              "*.pyc"
+              "*.o"
+              "*/node_modules/*"
+            ];
+          in
+          {
+            module = {
+              name = "borgbackup";
+              input = "clan-core";
             };
-            server.machines = { };
+            roles = {
+              client.machines = {
+                "gateway".settings = {
+                  startAt = "*-*-* 04:00:00";
+                  inherit exclude;
+                  destinations = {
+                    "storagebox" = {
+                      repo = "u499127-sub1@u499127.your-storagebox.de:/./gateway";
+                      inherit rsh;
+                    };
+                  };
+                };
+                "nixbox".settings = {
+                  startAt = "*-*-* 03:00:00";
+                  exclude = exclude ++ [ "/var/lib/postgresql" ];
+                  destinations = {
+                    "storagebox" = {
+                      repo = "u499127-sub1@u499127.your-storagebox.de:/./nixbox";
+                      inherit rsh;
+                    };
+                  };
+                };
+              };
+              server.machines = { };
+            };
           };
-        };
 
       };
     };
