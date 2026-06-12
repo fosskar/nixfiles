@@ -101,8 +101,19 @@ _: {
                 "network.target"
                 "upsdrv.service"
               ];
-              requires = [ "upsdrv.service" ];
+              # wants, not requires: usb enumeration race at boot can fail
+              # upsdrv, and a dependency-failed upsd start job is never
+              # retried. upsd runs without the driver and picks it up once
+              # upsdrv's restart succeeds.
+              wants = [ "upsdrv.service" ];
               before = [ "upsmon.service" ];
+              # covers runtime crashes only; a dependency-failed start job
+              # would not be retried by Restart (hence wants above)
+              unitConfig.StartLimitIntervalSec = 0;
+              serviceConfig = {
+                Restart = "on-failure";
+                RestartSec = "10s";
+              };
             };
 
             upsmon = {
