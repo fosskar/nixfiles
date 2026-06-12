@@ -21,9 +21,6 @@
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression
 
-  # kvm guest has no hwmon — disable telegraf sensors input to silence
-  # recurring `inputs.sensors` plugin errors.
-
   # no dev shells on this server; don't retain build-time deps in the store
   nix.settings = {
     keep-derivations = false;
