@@ -23,9 +23,9 @@ _: {
             white = t.dark.fg.base;
           };
           pane_frames = false;
+          copy_on_select = false;
           show_release_notes = false;
           show_startup_tips = false;
-          default_layout = "compact";
           # detach instead of quit so sessions survive ssh disconnects
           on_force_close = "detach";
         };
