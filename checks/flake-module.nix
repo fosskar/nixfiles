@@ -69,33 +69,16 @@
 
       checks =
         let
-          machinesPerSystem = {
-            x86_64-linux = [
-              "gateway"
-              "lpt-titan"
-              "nixbox"
-              "nixworker"
-              "simon-desktop"
-            ];
-          };
+          # machines deliberately excluded from CI builds
+          excludedMachines = [ ];
 
-          listedMachines = lib.sort lib.lessThan (lib.concatLists (lib.attrValues machinesPerSystem));
-          actualMachines = lib.sort lib.lessThan (lib.attrNames inputs.self.nixosConfigurations);
-          machinesPerSystemCheck = pkgs.runCommand "machines-per-system-check" { } ''
-            ${lib.optionalString (listedMachines != actualMachines) ''
-              echo "machinesPerSystem out of sync with nixosConfigurations:"
-              echo "  listed: ${lib.concatStringsSep " " listedMachines}"
-              echo "  actual: ${lib.concatStringsSep " " actualMachines}"
-              exit 1
-            ''}
-            touch $out
-          '';
-
-          nixosMachines = lib.mapAttrs' (name: lib.nameValuePair "nixos-${name}") (
-            lib.genAttrs (machinesPerSystem.${system} or [ ]) (
-              name: inputs.self.nixosConfigurations.${name}.config.system.build.toplevel
-            )
-          );
+          nixosMachines =
+            lib.mapAttrs' (name: cfg: lib.nameValuePair "nixos-${name}" cfg.config.system.build.toplevel)
+              (
+                lib.filterAttrs (
+                  name: cfg: !(lib.elem name excludedMachines) && cfg.pkgs.stdenv.hostPlatform.system == system
+                ) inputs.self.nixosConfigurations
+              );
 
           packages = lib.mapAttrs' (name: pkg: lib.nameValuePair "package-${name}" pkg) (
             self'.packages or { }
@@ -109,12 +92,6 @@
             name: home: lib.nameValuePair "home-${name}" home.activation-script
           ) ((self'.legacyPackages or { }).homeConfigurations or { });
         in
-        {
-          inherit machinesPerSystemCheck;
-        }
-        // nixosMachines
-        // packages
-        // devShells
-        // homeConfigurations;
+        nixosMachines // packages // devShells // homeConfigurations;
     };
 }
