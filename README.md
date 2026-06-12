@@ -6,7 +6,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 ## features
 
-- [clan-core](https://docs.clan.lol/) - machine inventory, secrets (sops-nix/age), disk partitioning (disko), service roles and [clanServices](clanServices/)
+- [clan-core](https://docs.clan.lol/) - machine inventory, secrets (sops-nix/age), disk partitioning (disko), service roles and [clan-services](clan-services/)
 - [flake-parts](https://flake.parts/) - modular flake framework
 - [dendritic pattern](https://github.com/mightyiam/dendritic) - feature/aspect-oriented module structure composed through clan and machine imports
 - [home-manager](https://github.com/nix-community/home-manager) - user environments and desktop integration

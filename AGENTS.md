@@ -25,14 +25,14 @@ run before non-trivial repo changes:
 ```bash
 jj status
 jj diff --stat
-rg "imports|scanPaths|self\.modules|config\.flake\.modules" machines modules clanServices users
+rg "imports|scanPaths|self\.modules|config\.flake\.modules" machines modules clan-services users
 rg "inventory =|instances =|roles\.|tags\." machines/flake-module.nix
 ```
 
 if task touches option/service/module:
 
 ```bash
-rg "<option|service|module|domain>" machines modules clanServices users docs
+rg "<option|service|module|domain>" machines modules clan-services users docs
 ```
 
 do not run clan/deploy/network commands as default orientation. use them only when task explicitly touches clan inventory, vars, deployment, or runtime networking; prefer local `rg`/`nix eval` first.
@@ -60,7 +60,7 @@ repo uses dendritic-style composition: feature modules export aspect modules thr
 - `modules/{nixos,home,generic}/`: feature modules and aspect definitions.
 - `machines/<machine>/configuration.nix`: host composition edge.
 - `machines/flake-module.nix`: clan inventory plus role composition edge.
-- `clanServices/`: clan service feature modules and role wiring.
+- `clan-services/`: clan service feature modules and role wiring.
 - `users/simon/`: home-manager user composition.
 - `openwrt/`: declarative openwrt config for router and ap (uci via `openwrt/nix/uci.nix`, raw config files under `openwrt/devices/<device>/files/`). the lan router (192.168.10.1) runs unbound (caching resolver for the whole lan, split-horizon for nx3.eu) and adguardhome; its config lives here, not on the device. dns/network tasks must check `openwrt/devices/router/` before suggesting resolver or firewall changes.
 
@@ -70,7 +70,7 @@ clan owns machine inventory, tags, secrets/vars, and service role assignment. ho
 
 - inventory and tags decide which clan roles apply to which machines.
 - clan `instances` wire roles to machines/tags and can inject extra nixos modules.
-- `clanServices/` defines reusable clan service modules, role modules, peer wiring, and vars.
+- `clan-services/` defines reusable clan service modules, role modules, peer wiring, and vars.
 - secrets should use `clan.core.vars.generators` when possible.
 - deployment/runtime clan commands are not discovery commands; prefer reading/evaluating local nix first.
 
@@ -80,7 +80,7 @@ agents know their tools; this section defines what must be proven before editing
 
 - before changing a module, prove where its aspect is exported, where it is imported, and whether multiple files contribute to the same aspect.
 - before changing a machine, inspect host imports plus files included by `scanPaths`.
-- before changing clan behavior, inspect inventory instance, role settings, target tags/machines, and related `clanServices` module.
+- before changing clan behavior, inspect inventory instance, role settings, target tags/machines, and related `clan-services` module.
 - before changing service/front-door behavior, inspect service module plus reverse proxy vhost/route definitions.
 - before changing persistence, inspect `preservation.preserveAt."/persist"` users and rollback module.
 - prefer local repo search/eval for discovery. use clan/runtime/network commands only when task needs runtime state or user explicitly asks.
@@ -118,8 +118,8 @@ ssh root@<ip>
 - change clan role assignment/service ownership:
   - edit instance block in `machines/flake-module.nix`
 - change clan service implementation:
-  - edit `clanServices/<service>/default.nix`
-  - edit `clanServices/<service>/flake-module.nix` for service module wiring
+  - edit `clan-services/<service>/default.nix`
+  - edit `clan-services/<service>/flake-module.nix` for service module wiring
 - debug option conflict:
   - `rg` all setters, then `nix eval` exact option
 - add reusable module:
