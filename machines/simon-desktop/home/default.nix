@@ -1,5 +1,5 @@
 {
-  mylib,
+  nflib,
   self,
   ...
 }:
@@ -9,6 +9,6 @@
       self.modules.homeManager.gaming
       self.modules.homeManager.noctalia
     ]
-    ++ mylib.scanPaths ./. { };
+    ++ nflib.scanPaths ./. { };
   };
 }

@@ -1,7 +1,7 @@
 {
   self,
   lib,
-  mylib,
+  nflib,
   pkgs,
   ...
 }:
@@ -38,7 +38,7 @@
     self.modules.nixos.miniflux
     self.modules.nixos.wiki
   ]
-  ++ (mylib.scanPaths ./. { });
+  ++ (nflib.scanPaths ./. { });
 
   environment.systemPackages = [
     pkgs.ipmitool

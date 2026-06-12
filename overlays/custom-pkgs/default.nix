@@ -1,8 +1,8 @@
 final: _prev:
 let
   inherit (final) lib;
-  mylib = import ../../lib { inherit lib; };
-  packageDirs = mylib.scanPaths ../../packages {
+  nflib = import ../../lib { inherit lib; };
+  packageDirs = nflib.scanPaths ../../packages {
     exclude = [ ];
   };
   # extra args for specific packages

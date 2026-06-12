@@ -4,15 +4,12 @@
   config,
   ...
 }:
-let
-  inherit (inputs.nixpkgs) lib;
-  mylib = import "${self}/lib" { inherit lib self; };
-in
 {
   flake.clan = {
     inherit self;
     specialArgs = {
-      inherit inputs mylib;
+      inherit inputs;
+      nflib = config.flake.lib;
     };
 
     meta = {

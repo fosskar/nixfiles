@@ -1,6 +1,6 @@
 {
   self,
-  mylib,
+  nflib,
   ...
 }:
 {
@@ -15,7 +15,7 @@
     self.modules.nixos.radicle
     self.modules.nixos.homeManager
   ]
-  ++ (mylib.scanPaths ./. { });
+  ++ (nflib.scanPaths ./. { });
 
   srvos.boot.consoles = [ "tty0" ];
 

@@ -1,5 +1,5 @@
 {
-  mylib,
+  nflib,
   self,
   ...
 }:
@@ -8,6 +8,6 @@
     imports = [
       self.modules.homeManager.noctalia
     ]
-    ++ mylib.scanPaths ./. { };
+    ++ nflib.scanPaths ./. { };
   };
 }

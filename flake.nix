@@ -180,15 +180,15 @@
     }:
     let
       inherit (inputs.nixpkgs) lib;
-      mylib = import ./lib { inherit lib self; };
+      nflib = import ./lib { inherit lib self; };
 
-      flakeModules = mylib.scanFlakeModules ./.;
+      flakeModules = nflib.scanFlakeModules ./.;
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       systems = import inputs.systems;
 
-      flake.lib = mylib;
+      flake.lib = nflib;
 
       imports = [
         inputs.clan-core.flakeModules.default

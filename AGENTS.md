@@ -130,8 +130,8 @@ ssh root@<ip>
 ## 7) module patterns
 
 - `modules/` is auto-imported by `import-tree` (flake.nix); a `_` prefix on a file or directory excludes it (convention for disabling a module).
-- `mylib.scanPaths ./. { }` auto-imports directory nix files where explicitly called (e.g. machine dirs); it has NO `_` prefix convention.
-- `mylib.scanFlakeModules ./.` auto-discovers `flake-module.nix` files.
+- `nflib.scanPaths ./. { }` auto-imports directory nix files where explicitly called (e.g. machine dirs); it has NO `_` prefix convention.
+- `nflib.scanFlakeModules ./.` auto-discovers `flake-module.nix` files.
 - module files under `modules/` usually assign `flake.modules.<class>.<name> = ...`.
 - same exported module name can be extended by multiple files; grep all definitions before editing collectors like `base`, `server`, `workstation`, `gaming`, `arrStack`, `homepage`.
 - default rule: import => enabled.

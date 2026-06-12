@@ -1,6 +1,6 @@
 {
   self,
-  mylib,
+  nflib,
   ...
 }:
 {
@@ -24,5 +24,5 @@
     self.modules.nixos.yubikeyGpgSsh
     self.modules.nixos.yubikeyU2f
   ]
-  ++ mylib.scanPaths ./. { };
+  ++ nflib.scanPaths ./. { };
 }

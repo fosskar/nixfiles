@@ -1,7 +1,7 @@
 { inputs, ... }:
 let
   inherit (inputs.nixpkgs) lib;
-  mylib = import ../lib { inherit lib; };
+  nflib = import ../lib { inherit lib; };
 in
 {
   perSystem =
@@ -14,7 +14,7 @@ in
           (lib.nixosSystem {
             inherit system;
             modules = [ ./vm-base.nix ];
-            specialArgs = { inherit inputs mylib; };
+            specialArgs = { inherit inputs nflib; };
           }).config.system.build.isoImage;
       };
     };

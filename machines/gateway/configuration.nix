@@ -1,7 +1,7 @@
 {
   self,
   lib,
-  mylib,
+  nflib,
   inputs,
   ...
 }:
@@ -16,7 +16,7 @@
     self.modules.nixos.traefik
     self.modules.nixos.traefikGeoblock
   ]
-  ++ (mylib.scanPaths ./. { });
+  ++ (nflib.scanPaths ./. { });
 
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression

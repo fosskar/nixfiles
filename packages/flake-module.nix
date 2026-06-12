@@ -1,7 +1,7 @@
 { inputs, ... }:
 let
   inherit (inputs.nixpkgs) lib;
-  mylib = import ../lib { inherit lib; };
+  nflib = import ../lib { inherit lib; };
 in
 {
   perSystem =
@@ -31,7 +31,7 @@ in
           packageDirs =
             lib.filter (path: system == "x86_64-linux" || !(builtins.elem (baseNameOf path) x86OnlyPackages))
               (
-                mylib.scanPaths ./. {
+                nflib.scanPaths ./. {
                   exclude = [ ];
                 }
               );

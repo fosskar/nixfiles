@@ -2,7 +2,7 @@
   lib,
   pkgs,
   self,
-  mylib,
+  nflib,
   ...
 }:
 {
@@ -45,7 +45,7 @@
       self.modules.homeManager.zellij
       self.modules.homeManager.zen
     ]
-    ++ mylib.scanPaths ./. { };
+    ++ nflib.scanPaths ./. { };
 
     config = {
       home = {

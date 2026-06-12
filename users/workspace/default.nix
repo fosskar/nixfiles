@@ -2,7 +2,7 @@
   lib,
   pkgs,
   self,
-  mylib,
+  nflib,
   ...
 }:
 {
@@ -29,7 +29,7 @@
         self.modules.homeManager.yazi
         self.modules.homeManager.zellij
       ]
-      ++ mylib.scanPaths ./. { };
+      ++ nflib.scanPaths ./. { };
 
       home = {
         username = "workspace";
