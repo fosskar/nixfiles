@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.papra =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -127,15 +128,11 @@
           ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "Papra";
           url = "https://${localHost}";
           group = "Files";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
     };
 }

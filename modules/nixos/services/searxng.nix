@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.searxng =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -56,15 +57,11 @@
           ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "SearXNG";
           url = "https://${localHost}";
           group = "Tools";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

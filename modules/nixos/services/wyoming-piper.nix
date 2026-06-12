@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.wyomingPiper =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -52,15 +53,11 @@
       '';
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "Wyoming Piper";
           url = "http://${httpAddress}:${toString httpPort}/api/info";
           group = "AI";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
     };
 }

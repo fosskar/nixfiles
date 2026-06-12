@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.victoriaMetrics =
     {
+      nflib,
       config,
       lib,
       ...
@@ -102,15 +103,11 @@
         # --- gatus ---
 
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-          {
+          (nflib.gatusEndpoint {
             name = "VictoriaMetrics";
             url = listenUrl;
             group = "Monitoring";
-            enabled = true;
-            interval = "5m";
-            conditions = [ "[STATUS] == 200" ];
-            alerts = [ { type = "email"; } ];
-          }
+          })
         ];
 
         # --- caddy ---

@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.nextcloud =
     {
+      nflib,
       config,
       inputs,
       lib,
@@ -229,15 +230,11 @@
           ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "Nextcloud";
           url = "https://${publicHost}";
           group = "Files";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

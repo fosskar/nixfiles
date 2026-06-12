@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.miniflux =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -99,15 +100,11 @@
           ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "Miniflux";
           url = "https://${localHost}";
           group = "Media";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

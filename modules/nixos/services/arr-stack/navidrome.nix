@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.arrStack =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -47,15 +48,11 @@
         # --- gatus ---
 
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-          {
+          (nflib.gatusEndpoint {
             name = "Navidrome";
             url = listenUrl;
             group = "Media";
-            enabled = true;
-            interval = "5m";
-            conditions = [ "[STATUS] == 200" ];
-            alerts = [ { type = "email"; } ];
-          }
+          })
         ];
 
         # --- caddy ---

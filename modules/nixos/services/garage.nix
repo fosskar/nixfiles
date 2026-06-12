@@ -3,6 +3,7 @@
 {
   flake.modules.nixos.garage =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -56,15 +57,11 @@
             ];
 
         services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-          {
+          (nflib.gatusEndpoint {
             name = "Garage";
             url = listenUrl;
             group = "Infrastructure";
-            enabled = true;
-            interval = "5m";
-            conditions = [ "[STATUS] == 200" ];
-            alerts = [ { type = "email"; } ];
-          }
+          })
         ];
 
         services.caddy.virtualHosts.${localHost}.extraConfig = ''

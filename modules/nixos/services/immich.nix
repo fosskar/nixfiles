@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.immich =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -193,15 +194,11 @@
           ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "Immich";
           url = "https://${localHost}";
           group = "Media";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

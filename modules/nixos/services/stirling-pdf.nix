@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.stirlingPdf =
     {
+      nflib,
       config,
       lib,
       ...
@@ -37,15 +38,11 @@
           ];
 
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "Stirling PDF";
           url = "https://${localHost}";
           group = "Tools";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

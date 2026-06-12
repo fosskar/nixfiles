@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.itTools =
     {
+      nflib,
       config,
       lib,
       pkgs,
@@ -26,15 +27,11 @@
 
       # --- gatus ---
       services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
-        {
+        (nflib.gatusEndpoint {
           name = "IT Tools";
           url = "https://${localHost}";
           group = "Tools";
-          enabled = true;
-          interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
-          alerts = [ { type = "email"; } ];
-        }
+        })
       ];
 
       # --- caddy ---
