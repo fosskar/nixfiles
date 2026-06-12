@@ -59,6 +59,14 @@
             osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519.pub".path;
       };
 
+      # auto-attach the persistent "workspace" zellij session on ssh logins so any
+      # client (desktop/laptop/zed remote) lands in the same long-running state
+      programs.fish.interactiveShellInit = ''
+        if set -q SSH_CONNECTION; and not set -q ZELLIJ
+          exec zellij attach -c workspace
+        end
+      '';
+
       # key file path: git/jj sign with the on-disk key, no ssh-agent involved
       programs.git.signing.key = "~/.ssh/id_ed25519";
       programs.jujutsu.settings.signing.key = "~/.ssh/id_ed25519";
