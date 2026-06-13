@@ -18,6 +18,8 @@
         pkgs.yubikey-personalization
       ];
 
+      programs.yubikey-touch-detector.enable = true;
+
       environment.systemPackages = [
         pkgs.yubikey-manager
         pkgs.yubikey-personalization
