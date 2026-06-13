@@ -111,17 +111,16 @@
             };
           }
           {
-            "ASRock Rack BMC" = {
-              href = "https://192.168.20.205";
+            "Nixbox BMC" = {
+              href = "https://nixbox-bmc.lan";
               icon = "mdi-server-network";
-              siteMonitor = "https://192.168.20.205";
+              siteMonitor = "https://nixbox-bmc.lan";
             };
           }
           {
-            "HP Drucker" = {
+            "HP Printer" = {
               href = "http://192.168.10.153";
               icon = "mdi-printer";
-              siteMonitor = "http://192.168.10.153";
             };
           }
         ];
