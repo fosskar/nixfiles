@@ -152,6 +152,8 @@
           device = "br-servers";
           proto = "static";
           ipaddr = "192.168.20.1/24";
+          ip6addr = "fd8a:2e59:7bfd:20::1/64";
+          ip6assign = "60";
         };
       };
 
@@ -270,6 +272,13 @@
           start = "100";
           limit = "50";
           leasetime = "12h";
+          dhcpv6 = "server";
+          ra = "server";
+          ra_flags = [
+            "managed-config"
+            "other-config"
+          ];
+          dns = "fd8a:2e59:7bfd:20::1";
         };
 
         openwrt_ap = {
@@ -479,6 +488,20 @@
             src = "iot";
             src_dport = "53";
             dest_ip = "fd8a:2e59:7bfd::1";
+            dest_port = "53";
+            family = "ipv6";
+          }
+          {
+            _type = "redirect";
+            target = "DNAT";
+            name = "force dns interception - servers v6";
+            proto = [
+              "tcp"
+              "udp"
+            ];
+            src = "servers";
+            src_dport = "53";
+            dest_ip = "fd8a:2e59:7bfd:20::1";
             dest_port = "53";
             family = "ipv6";
           }
