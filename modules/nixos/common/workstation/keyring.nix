@@ -100,6 +100,11 @@
       services.gnome.gnome-keyring.enable = lib.mkForce false;
       programs.seahorse.enable = lib.mkForce false;
 
+      xdg.portal = {
+        config.niri."org.freedesktop.impl.portal.Secret" = lib.mkForce "kwallet";
+        extraPortals = [ pkgs.kdePackages.kwallet ];
+      };
+
       environment.systemPackages = [
         pkgs.kdePackages.kwallet
         pkgs.kdePackages.kwalletmanager

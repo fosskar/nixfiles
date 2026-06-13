@@ -1,13 +1,9 @@
 {
   config,
-  lib,
-  osConfig ? null,
-  pkgs,
   ...
 }:
 let
   # only enable portal in home-manager if not already managed by nixos
-  nixosManagesPortal = osConfig != null && osConfig.xdg.portal.enable or false;
 
   browser = [ "zen-beta.desktop" ];
   pdf = [ "org.pwmt.zathura.desktop" ];
@@ -81,38 +77,5 @@ in
       #associations.added = associations;
       defaultApplications = associations;
     };
-    # fallback portal config for standalone home-manager (without nixos)
-    portal = lib.mkMerge [
-      (lib.mkIf nixosManagesPortal {
-        enable = false;
-      })
-      (lib.mkIf (!nixosManagesPortal) {
-        enable = true;
-        xdgOpenUsePortal = true;
-        config = {
-          common.default = [
-            "gtk"
-            "gnome"
-          ];
-          niri = {
-            default = [
-              "gnome"
-              "gtk"
-            ];
-            "org.freedesktop.impl.portal.Access" = [ "gtk" ];
-            "org.freedesktop.impl.portal.Notification" = [ "gtk" ];
-            "org.freedesktop.impl.portal.Secret" = [
-              "kwallet"
-              "gnome-keyring"
-            ];
-          };
-        };
-        extraPortals = [
-          pkgs.xdg-desktop-portal-gtk
-          pkgs.xdg-desktop-portal-gnome
-          pkgs.kdePackages.kwallet
-        ];
-      })
-    ];
   };
 }
