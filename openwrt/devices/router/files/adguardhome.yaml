@@ -8,6 +8,7 @@ dns:
   bind_hosts:
     - fd8a:2e59:7bfd::1
     - 192.168.10.1
+    - 192.168.20.1
     - 127.0.0.1
   port: 53
   upstream_dns:

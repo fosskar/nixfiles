@@ -450,7 +450,7 @@
             ];
             src = "servers";
             src_dport = "53";
-            dest_ip = "192.168.10.1";
+            dest_ip = "192.168.20.1";
             dest_port = "53";
             family = "ipv4";
           }

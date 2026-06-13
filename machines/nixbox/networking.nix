@@ -8,7 +8,7 @@
       address = "192.168.20.1";
       interface = "bond0";
     };
-    nameservers = [ "192.168.10.1" ];
+    nameservers = [ "192.168.20.1" ];
 
     bonds.bond0 = {
       interfaces = [
