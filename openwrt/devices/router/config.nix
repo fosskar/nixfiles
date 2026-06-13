@@ -530,6 +530,16 @@
           dest_port = "9273";
           target = "ACCEPT";
         };
+        servers_homeassistant = {
+          _type = "rule";
+          name = "Allow-Servers-HomeAssistant";
+          src = "servers";
+          dest = "lan";
+          dest_ip = "192.168.10.50";
+          proto = "tcp";
+          dest_port = "8123";
+          target = "ACCEPT";
+        };
       };
     };
   };
