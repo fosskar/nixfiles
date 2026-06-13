@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.noctalia-greeter =
     {
-      config,
       inputs,
       pkgs,
       ...
@@ -20,29 +19,11 @@
           });
     in
     {
-      services.greetd = {
+      imports = [ inputs.noctalia-greeter.nixosModules.default ];
+
+      programs.noctalia-greeter = {
         enable = true;
-        settings.default_session = {
-          # pin niri as the default session (overrides last-used at open).
-          command = "${noctalia-greeter}/bin/noctalia-greeter-session -- --session niri";
-          user = "greeter";
-        };
-      };
-
-      # registers the apply-appearance polkit action plus binary so noctalia-shell
-      # (Settings -> Noctalia Greeter -> Sync Now) can sync wallpaper/palette.
-      environment.systemPackages = [ noctalia-greeter ];
-
-      # the greeter scans the hardcoded /usr/share/wayland-sessions; point it at
-      # the wayland session desktop files collected by the display manager.
-      systemd.tmpfiles.settings."10-noctalia-greeter" = {
-        "/var/lib/noctalia-greeter".d = {
-          user = "greeter";
-          group = "greeter";
-          mode = "0755";
-        };
-        "/usr/share/wayland-sessions".L.argument =
-          "${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
+        package = noctalia-greeter;
       };
 
       # greeter state (synced appearance, remembered scheme) lives here.
