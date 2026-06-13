@@ -15,17 +15,18 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 ## machines
 
-| machine       | type        | description                | specs                                                                     |
-| ------------- | ----------- | -------------------------- | ------------------------------------------------------------------------- |
-| simon-desktop | desktop     | daily driver workstation   | dyi: ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                |
-| lpt-titan     | laptop      | remote work                | framework 13: ryzen ai 5 340, radeon 840m, 32gb                           |
-| nixbox        | home server | self-hosted services       | dyi: ryzen 7 5700x, 64gb, arc b50 pro, 4x6tb + 2x960gb ssd, 2x16gb optane |
-| nixworker     | home server | ci, remote builder, cache  | minisforum ms-a2: ryzen 9 9955hx, 96gb ddr5                               |
-| gateway       | vps         | gw/reverse proxy (netbird) | hetzner cx23: 2vcpu, 4gb ram, 40gb ssd                                    |
+| machine       | type        | description                | specs                                                                                          |
+| ------------- | ----------- | -------------------------- | ---------------------------------------------------------------------------------------------- |
+| simon-desktop | desktop     | daily driver workstation   | dyi: ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                                     |
+| lpt-titan     | laptop      | remote work                | framework 13: ryzen ai 5 340, radeon 840m, 32gb                                                |
+| nixbox        | home server | self-hosted services       | dyi: ryzen 7 5700x, 64gb, nvidia rtx pro 4000 backwell sff, 4x6tb + 2x960gb ssd, 2x16gb optane |
+| nixworker     | home server | ci, remote builder, cache  | minisforum ms-a2: ryzen 9 9955hx, 96gb ddr5                                                    |
+| gateway       | vps         | gw/reverse proxy (netbird) | hetzner cx23: 2vcpu, 4gb ram, 40gb ssd                                                         |
 
 ## documentation
 
 - [repo docs](docs/)
+  - [decisions](docs/decisions/)
 - [machine docs](machines/README.md)
 - [nixos search](https://search.nixos.org/)
 - [clan-core docs](https://docs.clan.lol/)
@@ -36,6 +37,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 - [mic92 dotfiles](https://github.com/Mic92/dotfiles)
 - [badele nix-homelab](https://github.com/badele/nix-homelab)
+- [pinpox nixos-config](https://github.com/pinpox/nixos)
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
 - [fufexan dotfiles](https://github.com/fufexan/dotfiles)
 - [NotAShelf nyx](https://github.com/notashelf/nyx)
