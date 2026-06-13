@@ -1,15 +1,14 @@
 _: {
   # desktop-specific niri settings
-  programs.niri.settings = {
+  wayland.windowManager.niri.settings = {
     # outputs managed by kanshi
 
     # workspace->output assignments
-    workspaces = {
-      primary.open-on-output = "eDP-1";
-    };
-
-    # desktop-only startup apps
-    spawn-at-startup = [
+    workspace = [
+      {
+        _args = [ "primary" ];
+        open-on-output = "eDP-1";
+      }
     ];
   };
 }

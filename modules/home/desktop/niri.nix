@@ -10,70 +10,82 @@
     let
       inherit (config) theme;
 
+      toNodeList = lib.mapAttrsToList (name: value: value // { _args = [ (value.name or name) ]; });
+      mapMatch = match: if match == { } then { } else { _props = match; };
+      mapRule =
+        rule:
+        (removeAttrs rule [
+          "matches"
+          "excludes"
+          "default-floating-position"
+        ])
+        // lib.optionalAttrs (rule ? matches) { match = map mapMatch rule.matches; }
+        // lib.optionalAttrs (rule ? excludes) { exclude = map mapMatch rule.excludes; }
+        // lib.optionalAttrs (rule ? default-floating-position) {
+          default-floating-position._props = rule.default-floating-position;
+        };
+      mapBind =
+        bind:
+        (bind.action or { })
+        // lib.optionalAttrs (bind ? allow-when-locked) {
+          _props.allow-when-locked = bind.allow-when-locked;
+        }
+        // lib.optionalAttrs (bind ? allow-inhibiting) { _props.allow-inhibiting = bind.allow-inhibiting; }
+        // lib.optionalAttrs (bind ? cooldown-ms) { _props.cooldown-ms = bind.cooldown-ms; }
+        // lib.optionalAttrs (bind ? repeat) { _props.repeat = bind.repeat; }
+        // lib.optionalAttrs (bind ? hotkey-overlay && bind.hotkey-overlay ? title) {
+          _props.hotkey-overlay-title = bind.hotkey-overlay.title;
+        }
+        // lib.optionalAttrs (bind ? hotkey-overlay && (bind.hotkey-overlay.hidden or false)) {
+          _props.hotkey-overlay-title = {
+            _raw = "null";
+          };
+        };
+      fromNiriFlakeSettings =
+        settings:
+        (removeAttrs settings [
+          "workspaces"
+          "binds"
+          "spawn-at-startup"
+          "window-rules"
+          "layer-rules"
+        ])
+        // lib.optionalAttrs (settings ? workspaces) { workspace = toNodeList settings.workspaces; }
+        // lib.optionalAttrs (settings ? binds) { binds = lib.mapAttrs (_: mapBind) settings.binds; }
+        // lib.optionalAttrs (settings ? spawn-at-startup) (
+          let
+            shEntries = map (entry: [ entry.sh ]) (
+              builtins.filter (entry: entry ? sh) settings.spawn-at-startup
+            );
+            argvEntries = map (entry: entry.argv or entry.command) (
+              builtins.filter (entry: entry ? argv || entry ? command) settings.spawn-at-startup
+            );
+          in
+          lib.optionalAttrs (shEntries != [ ]) { spawn-sh-at-startup = shEntries; }
+          // lib.optionalAttrs (argvEntries != [ ]) { spawn-at-startup = argvEntries; }
+        )
+        // lib.optionalAttrs (settings ? window-rules) { window-rule = map mapRule settings.window-rules; }
+        // lib.optionalAttrs (settings ? layer-rules) { layer-rule = map mapRule settings.layer-rules; };
+
     in
     {
+      imports = [ inputs.niri-nix.homeModules.default ];
+
+      wayland.windowManager.niri = {
+        enable = true;
+        package = inputs.niri-nix.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
+      };
+
       home.packages = [
         pkgs.wl-clipboard
         pkgs.custom.live-ocr
       ];
 
-      xdg.configFile.niri-config.source =
-        let
-          inherit (inputs.niri-flake.lib.internal) validated-config-for;
-          inherit (config.programs.niri) finalConfig package;
-        in
-        lib.mkForce (
-          validated-config-for pkgs package ''
-            ${finalConfig}
-
-            window-rule {
-              background-effect {
-                blur true
-                xray false
-              }
-
-              popups {
-                background-effect {
-                  blur true
-                }
-              }
-            }
-
-            layer-rule {
-              match namespace="^noctalia-backdrop"
-              place-within-backdrop true
-            }
-
-            layer-rule {
-              match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel|background|launcher-overlay)(-.*)?$"
-              background-effect {
-                xray false
-              }
-
-              popups {
-                background-effect {
-                  blur true
-                }
-              }
-            }
-
-            // combined v4/v5 Noctalia namespaces:
-            // v5: ^noctalia-(bar-[^\"]+|notification|dock|panel)$
-            // v4: ^noctalia-(background|launcher-overlay|dock)-.*$
-          ''
-        );
-
-      programs.niri.settings = {
-        workspaces = {
-          "1" = { };
-          "2" = { };
-        };
-
+      wayland.windowManager.niri.settings = fromNiriFlakeSettings {
         # input configuration
         input = {
-          focus-follows-mouse.enable = true;
-          focus-follows-mouse.max-scroll-amount = "0%";
-          warp-mouse-to-focus.enable = true;
+          focus-follows-mouse._props.max-scroll-amount = "0%";
+          warp-mouse-to-focus = [ ];
           workspace-auto-back-and-forth = true;
 
           keyboard.xkb = {
@@ -103,15 +115,14 @@
 
           focus-ring = {
             width = 2;
-            active.color = theme.dark.accent.primary;
-            inactive.color = theme.dark.fg.dim;
+            active-color = theme.dark.accent.primary;
+            inactive-color = theme.dark.fg.dim;
           };
 
           shadow = {
-            enable = true;
             softness = 20;
             spread = 3;
-            offset = {
+            offset._props = {
               x = 0.0;
               y = 3.0;
             };
@@ -135,12 +146,12 @@
           {
             matches = [ { } ]; # match all windows
             draw-border-with-background = false;
-            geometry-corner-radius = {
-              top-left = 14.0;
-              top-right = 14.0;
-              bottom-left = 14.0;
-              bottom-right = 14.0;
+            background-effect = {
+              blur = true;
+              xray = false;
             };
+            popups.background-effect.blur = true;
+            geometry-corner-radius = 14.0;
             clip-to-geometry = true;
           }
           #steam notifications as floating at bottom right
@@ -177,6 +188,20 @@
               { title = "^MainPicker$"; }
             ];
             open-floating = true;
+          }
+        ];
+
+        layer-rules = [
+          {
+            matches = [ { namespace = "^noctalia-backdrop"; } ];
+            place-within-backdrop = true;
+          }
+          {
+            matches = [
+              { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|background|launcher-overlay)(-.*)?$"; }
+            ];
+            background-effect.xray = false;
+            popups.background-effect.blur = true;
           }
         ];
 

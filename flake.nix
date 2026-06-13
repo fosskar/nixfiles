@@ -144,10 +144,9 @@
     spaces.inputs.treefmt-nix.follows = "treefmt-nix";
 
     # wm
-    niri-flake = {
-      url = "github:sodiboo/niri-flake";
+    niri-nix = {
+      url = "git+https://codeberg.org/BANanaD3V/niri-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-stable.follows = "nixpkgs-stable";
     };
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";

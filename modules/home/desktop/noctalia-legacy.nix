@@ -93,14 +93,14 @@
           shellNiriBinds = lib.mapAttrs (
             _: bind:
             {
-              action.spawn = noctalia "${bind.t} ${bind.a}";
+              spawn = noctalia "${bind.t} ${bind.a}";
             }
-            // lib.optionalAttrs (bind ? title) { hotkey-overlay.title = bind.title; }
-            // lib.optionalAttrs (bind.locked or false) { allow-when-locked = true; }
+            // lib.optionalAttrs (bind ? title) { _props.hotkey-overlay-title = bind.title; }
+            // lib.optionalAttrs (bind.locked or false) { _props.allow-when-locked = true; }
           ) shellBinds;
         in
         {
-          programs.niri.settings.binds = shellNiriBinds;
+          wayland.windowManager.niri.settings.binds = shellNiriBinds;
 
           xdg.configFile."noctalia/colorschemes/grey-teal/grey-teal.json".text = builtins.toJSON {
             dark = {

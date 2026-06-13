@@ -8,7 +8,7 @@
         #inputs.zen-browser.homeModules.twilight
       ];
 
-      programs.niri.settings.binds."Mod+W".action.spawn = "zen-beta";
+      wayland.windowManager.niri.settings.binds."Mod+W".spawn = "zen-beta";
 
       programs.zen-browser = {
         enable = true;

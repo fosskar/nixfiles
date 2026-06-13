@@ -73,10 +73,10 @@
       shellNiriBinds = lib.mapAttrs (
         _: bind:
         {
-          action.spawn = noctalia bind.cmd;
+          spawn = noctalia bind.cmd;
         }
-        // lib.optionalAttrs (bind ? title) { hotkey-overlay.title = bind.title; }
-        // lib.optionalAttrs (bind.locked or false) { allow-when-locked = true; }
+        // lib.optionalAttrs (bind ? title) { _props.hotkey-overlay-title = bind.title; }
+        // lib.optionalAttrs (bind.locked or false) { _props.allow-when-locked = true; }
       ) shellBinds;
 
       mkPalette = mode: ansiNormalBlack: ansiNormalWhite: ansiBrightBlack: ansiBrightWhite: {
@@ -145,11 +145,11 @@
           pkgs.python3
         ];
 
-        programs.niri.settings = {
+        wayland.windowManager.niri.settings = {
           binds = shellNiriBinds;
-          window-rules = [
+          window-rule = [
             {
-              matches = [ { app-id = "dev.noctalia.Noctalia.Settings"; } ];
+              match = [ { _props.app-id = "dev.noctalia.Noctalia.Settings"; } ];
               open-floating = true;
               default-column-width = {
                 fixed = 1080;
@@ -159,7 +159,7 @@
               };
             }
           ];
-          debug.honor-xdg-activation-with-invalid-serial = true;
+          debug.honor-xdg-activation-with-invalid-serial = [ true ];
         };
 
         programs.noctalia = {

@@ -1,57 +1,53 @@
 _: {
   # desktop-specific niri settings
-  programs.niri.settings = {
+  wayland.windowManager.niri.settings = {
     # outputs managed by kanshi
 
     # workspace->output assignments
-    workspaces = {
-      "1" = {
-        name = "1";
+    workspace = [
+      {
+        _args = [ "1" ];
         open-on-output = "DP-1";
-      };
-      "2" = {
-        name = "2";
+      }
+      {
+        _args = [ "2" ];
         open-on-output = "HDMI-A-2";
-      };
-    };
+      }
+    ];
 
     # element to secondary workspace (desktop only, has second monitor)
-    window-rules = [
+    window-rule = [
       {
-        matches = [
-          { app-id = "^Element$"; }
-          { app-id = "^element$"; }
-          { app-id = "^io\\.element\\.desktop$"; }
+        match = [
+          { _props.app-id = "^Element$"; }
+          { _props.app-id = "^element$"; }
+          { _props.app-id = "^io\\.element\\.desktop$"; }
           # Element reports `electron` as app-id here; keep specific IDs for builds that set them correctly.
           {
-            app-id = "^electron$";
-            title = ".*Element.*";
+            _props = {
+              app-id = "^electron$";
+              title = ".*Element.*";
+            };
           }
-          { app-id = "^steam$"; }
+          { _props.app-id = "^steam$"; }
         ];
         open-on-workspace = "2";
       }
       {
-        matches = [
-          { app-id = "^dev\\.zed\\.Zed(-Nightly)?$"; }
+        match = [
+          { _props.app-id = "^dev\\.zed\\.Zed(-Nightly)?$"; }
         ];
-        default-column-width = {
-          fixed = 1800;
-        };
+        default-column-width.fixed = 1800;
       }
       {
-        matches = [
-          { app-id = "^zen-beta$"; }
+        match = [
+          { _props.app-id = "^zen-beta$"; }
         ];
-        default-column-width = {
-          fixed = 1700;
-        };
+        default-column-width.fixed = 1700;
       }
     ];
 
     # desktop-only startup apps
-    spawn-at-startup = [
-      { sh = "steam -silent"; }
-    ];
+    spawn-sh-at-startup = [ [ "steam -silent" ] ];
   };
 }
