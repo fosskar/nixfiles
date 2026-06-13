@@ -80,21 +80,18 @@
             "OpenWrt Router" = {
               href = "https://192.168.10.1";
               icon = "openwrt.svg";
-              siteMonitor = "https://192.168.10.1";
             };
           }
           {
             "OpenWrt AP" = {
               href = "https://192.168.10.2";
               icon = "openwrt.svg";
-              siteMonitor = "https://192.168.10.2";
             };
           }
           {
             "AdGuard Home" = {
               href = "http://192.168.10.1:8080";
               icon = "adguard-home.svg";
-              siteMonitor = "http://192.168.10.1:8080";
             };
           }
           {
