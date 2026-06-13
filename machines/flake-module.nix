@@ -225,8 +225,8 @@
         internet = {
           roles.default.machines = {
             "gateway".settings.host = "138.201.155.21";
-            "nixbox".settings.host = "192.168.10.200";
-            "nixworker".settings.host = "192.168.10.210";
+            "nixbox".settings.host = "192.168.20.200";
+            "nixworker".settings.host = "192.168.20.210";
             "simon-desktop".settings.host = "192.168.10.100";
             "lpt-titan".settings.host = "192.168.10.150";
           };

@@ -3,7 +3,7 @@
     useDHCP = false;
     nameservers = [ "192.168.10.1" ];
     defaultGateway = {
-      address = "192.168.10.1";
+      address = "192.168.20.1";
       interface = "bond0";
     };
 
@@ -23,7 +23,7 @@
       useDHCP = false;
       ipv4.addresses = [
         {
-          address = "192.168.10.210";
+          address = "192.168.20.210";
           prefixLength = 24;
         }
       ];

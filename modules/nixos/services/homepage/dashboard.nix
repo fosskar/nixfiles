@@ -115,9 +115,9 @@
           }
           {
             "ASRock Rack BMC" = {
-              href = "https://192.168.10.205";
+              href = "https://192.168.20.205";
               icon = "mdi-server-network";
-              siteMonitor = "https://192.168.10.205";
+              siteMonitor = "https://192.168.20.205";
             };
           }
           {

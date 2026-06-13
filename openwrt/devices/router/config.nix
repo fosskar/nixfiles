@@ -92,12 +92,17 @@
             name = "br-lan";
             type = "bridge";
             ports = [
-              "lan1"
               "lan2"
               "lan3"
               "lan4"
               "lan5"
             ];
+          }
+          {
+            _type = "device";
+            name = "br-servers";
+            type = "bridge";
+            ports = [ "lan1" ];
           }
           {
             _type = "device";
@@ -141,6 +146,12 @@
           device = "br-iot";
           proto = "static";
           ipaddr = "192.168.50.1/24";
+        };
+        servers = {
+          _type = "interface";
+          device = "br-servers";
+          proto = "static";
+          ipaddr = "192.168.20.1/24";
         };
       };
 
@@ -252,6 +263,14 @@
           limit = "150";
           leasetime = "12h";
         };
+        # nixbox/nixworker are static; dhcp only for management devices (bmc)
+        servers = {
+          _type = "dhcp";
+          interface = "servers";
+          start = "100";
+          limit = "50";
+          leasetime = "12h";
+        };
 
         openwrt_ap = {
           _type = "host";
@@ -348,6 +367,14 @@
           }
           {
             _type = "zone";
+            name = "servers";
+            network = [ "servers" ];
+            input = "REJECT";
+            output = "ACCEPT";
+            forward = "REJECT";
+          }
+          {
+            _type = "zone";
             name = "iot";
             network = [ "iot" ];
             input = "REJECT";
@@ -371,6 +398,16 @@
             _type = "forwarding";
             src = "lan";
             dest = "iot";
+          }
+          {
+            _type = "forwarding";
+            src = "servers";
+            dest = "wan";
+          }
+          {
+            _type = "forwarding";
+            src = "lan";
+            dest = "servers";
           }
         ];
         redirect = [
@@ -398,6 +435,20 @@
               "udp"
             ];
             src = "iot";
+            src_dport = "53";
+            dest_ip = "192.168.10.1";
+            dest_port = "53";
+            family = "ipv4";
+          }
+          {
+            _type = "redirect";
+            target = "DNAT";
+            name = "force dns interception - servers";
+            proto = [
+              "tcp"
+              "udp"
+            ];
+            src = "servers";
             src_dport = "53";
             dest_ip = "192.168.10.1";
             dest_port = "53";
@@ -449,6 +500,42 @@
             "tcp"
           ];
           dest_port = "53";
+          target = "ACCEPT";
+        };
+        servers_dhcp = {
+          _type = "rule";
+          name = "Allow-Servers-DHCP";
+          src = "servers";
+          proto = "udp";
+          dest_port = "67-68";
+          target = "ACCEPT";
+        };
+        servers_dns = {
+          _type = "rule";
+          name = "Allow-Servers-DNS";
+          src = "servers";
+          proto = [
+            "udp"
+            "tcp"
+          ];
+          dest_port = "53";
+          target = "ACCEPT";
+        };
+        # victoriametrics on nixbox scrapes router telegraf (9273) and node-exporter (9100)
+        servers_telegraf = {
+          _type = "rule";
+          name = "Allow-Servers-Telegraf";
+          src = "servers";
+          proto = "tcp";
+          dest_port = "9273";
+          target = "ACCEPT";
+        };
+        servers_node_exporter = {
+          _type = "rule";
+          name = "Allow-Servers-Node-Exporter";
+          src = "servers";
+          proto = "tcp";
+          dest_port = "9100";
           target = "ACCEPT";
         };
       };

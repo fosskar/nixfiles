@@ -34,8 +34,8 @@ two-step bootstrap:
 | ------------- | ---------------- | ------------------------------------ |
 | simon-desktop | `192.168.10.100` | NixOS static, no DHCP                |
 | lpt-titan     | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
-| nixbox        | `192.168.10.200` | NixOS static, no DHCP                |
-| nixworker     | `192.168.10.210` | NixOS static, no DHCP                |
+| nixbox        | `192.168.20.200` | NixOS static, no DHCP                |
+| nixworker     | `192.168.20.210` | NixOS static, no DHCP                |
 | gateway       | `138.201.155.21` | hetzner                              |
 
 servers define their own static IP in `networking.nix` with `useDHCP = false` per interface.
@@ -92,7 +92,7 @@ framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 
 ## nixbox
 
-home server at `192.168.10.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
+home server at `192.168.20.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 
 ### infrastructure
 
@@ -186,7 +186,7 @@ borgbackup with zfs snapshots:
 
 ## nixworker
 
-minisforum ms-a2 at `192.168.10.210` (ryzen 9 9955hx 16c/32t, 96gb ddr5)
+minisforum ms-a2 at `192.168.20.210` (ryzen 9 9955hx 16c/32t, 96gb ddr5)
 
 ### ci/cd
 
