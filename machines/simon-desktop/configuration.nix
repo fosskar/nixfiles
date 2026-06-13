@@ -9,7 +9,6 @@
     self.modules.nixos.noctalia-greeter
     self.modules.nixos.betaflight
     self.modules.nixos.wooting
-    self.modules.nixos.arctisNovaProWireless
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.systemdBoot
