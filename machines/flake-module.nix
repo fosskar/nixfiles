@@ -401,17 +401,6 @@
           roles = {
             server.machines."nixbox".settings = {
               extraTelegrafTargets = [ "openwrt.lan:9273" ];
-              extraScrapeConfigs = [
-                {
-                  job_name = "openwrt-node-exporter";
-                  static_configs = [
-                    {
-                      targets = [ "openwrt.lan:9100" ];
-                      labels.type = "node-exporter";
-                    }
-                  ];
-                }
-              ];
             };
             client.tags.server = { };
           };

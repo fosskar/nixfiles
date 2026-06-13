@@ -521,7 +521,7 @@
           dest_port = "53";
           target = "ACCEPT";
         };
-        # victoriametrics on nixbox scrapes router telegraf (9273) and node-exporter (9100)
+        # victoriametrics on nixbox scrapes router telegraf
         servers_telegraf = {
           _type = "rule";
           name = "Allow-Servers-Telegraf";
@@ -530,18 +530,6 @@
           dest_port = "9273";
           target = "ACCEPT";
         };
-        servers_node_exporter = {
-          _type = "rule";
-          name = "Allow-Servers-Node-Exporter";
-          src = "servers";
-          proto = "tcp";
-          dest_port = "9100";
-          target = "ACCEPT";
-        };
-      };
-      prometheus-node-exporter-lua.main = {
-        _type = "prometheus-node-exporter-lua";
-        listen_interface = "lan";
       };
     };
   };
