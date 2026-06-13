@@ -20,6 +20,8 @@
   ]
   ++ nflib.scanPaths ./. { };
 
+  hardware.fw-fanctrl.enable = true;
+
   services.lact.enable = lib.mkForce false;
 
   # scx_lavd crashed (rcu cpu stall) on this machine; use bpfland instead
