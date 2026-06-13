@@ -281,6 +281,12 @@
           dns = "fd8a:2e59:7bfd:20::1";
         };
 
+        nixbox_bmc = {
+          _type = "host";
+          name = "nixbox-bmc";
+          ip = "192.168.20.205";
+          mac = "9C:6B:00:A9:15:CC";
+        };
         openwrt_ap = {
           _type = "host";
           name = "openwrt-ap";
