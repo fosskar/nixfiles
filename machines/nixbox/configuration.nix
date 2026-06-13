@@ -36,6 +36,7 @@
     self.modules.nixos.systemdEmailAlerts
     self.modules.nixos.garage
     self.modules.nixos.miniflux
+    self.modules.nixos.netbox
     self.modules.nixos.wiki
   ]
   ++ (nflib.scanPaths ./. { });
