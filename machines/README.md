@@ -4,7 +4,7 @@ all machines use [preservation](../docs/decisions/state-persistence.md) (ephemer
 
 ## configuration model
 
-machine configs are composition edges for the [dendritic pattern](https://github.com/mightyiam/dendritic), with feature/aspect modules exposed through `flake.modules.*` and assembled per host through imports and clan inventory. see the [dendritic wiki](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki) for the design background.
+machine configs are composition edges: feature/aspect modules are exposed through `flake.modules.*` and assembled per host through imports and clan inventory.
 
 ### bootstrap caveat
 
