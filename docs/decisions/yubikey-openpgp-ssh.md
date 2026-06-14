@@ -61,8 +61,8 @@ accepted security tradeoff - touch off, long PIN cache: touch policy is off on a
 ## repo wiring
 
 - `modules/nixos/hardware/yubikey/gpg-ssh.nix`: `gpg-agent` ssh support, disables the plain ssh agent, gpg smartcards, publishes `id_yubikey.pub` via clan vars.
-- `modules/home/cli/git.nix`: `programs.git.signing.format = "ssh"`, sign by default.
+- `modules/home-manager/cli/git.nix`: `programs.git.signing.format = "ssh"`, sign by default.
 - `users/simon/signing.nix`: per-user `ssh-ed25519` signing key for git and jj.
-- `modules/home/system/gpg.nix`: general `gpg`/`gpg-agent` aspect (hardened settings, pinentry, non-ssh cache ttls).
-- `modules/home/system/yubikey-gpg.nix`: `yubikeyGpg` aspect with the card pubkey, `disable-ccid`, ssh support, and ssh cache ttls; imported alongside `gpg` by `users/simon`.
+- `modules/home-manager/system/gpg.nix`: general `gpg`/`gpg-agent` aspect (hardened settings, pinentry, non-ssh cache ttls).
+- `modules/home-manager/system/yubikey-gpg.nix`: `yubikeyGpg` aspect with the card pubkey, `disable-ccid`, ssh support, and ssh cache ttls; imported alongside `gpg` by `users/simon`.
 - `.envrc`: leaves `SOPS_AGE_KEY_CMD` unset so secret decryption uses the cached gpg path.
