@@ -125,6 +125,7 @@
             extraModules = [
               config.flake.modules.nixos.laptop
               config.flake.modules.nixos.fprint
+              config.flake.modules.nixos.yubikeyLockOnRemove
             ];
           };
         };
