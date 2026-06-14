@@ -44,7 +44,7 @@ do not run clan/deploy/network commands as default orientation. use them only wh
 repo uses aspect-oriented composition: feature modules export aspect modules through `flake.modules.*`; machines and clan roles select those aspects through imports.
 
 - feature module: flake-parts module that defines one or more `flake.modules.*` entries and any related flake wiring.
-- aspect module: module for one configuration class, e.g. `flake.modules.nixos.<name>`, `flake.modules.homeManager.<name>`, `flake.modules.generic.<name>`.
+- aspect module: module for one configuration class, e.g. `flake.modules.nixos.<name>`, `flake.modules.homeManager.<name>`.
 - simple aspect: independent aspect imported directly where needed.
 - multi-context aspect: main aspect also wires a nested context, e.g. a nixos aspect importing/wiring home-manager.
 - inheritance aspect: aspect imports parent aspects, then extends or overrides them.
@@ -52,12 +52,14 @@ repo uses aspect-oriented composition: feature modules export aspect modules thr
 - collector aspect: one aspect collects contributions from other feature modules. this is distinct from a broad role/profile feature.
 - feature-owned integration: service/app-specific glue lives in the feature module that needs it, not in the module it integrates with.
 - composition edge: place that chooses aspects for a concrete target, mainly host imports and clan role imports.
-- import is the primary enable mechanism; do not add `nixfiles.*` wrapper options unless current code already defines them.
+- import is the primary enable mechanism.
 - make feature modules self-contained: if a feature needs homepage entries, gatus checks, reverse proxy routes, desktop shortcuts, window rules, or related glue, define that glue in the feature module and guard it on the integrated service being enabled when needed.
 
 ### repo mapping
 
-- `modules/{nixos,home,generic}/`: feature modules and aspect definitions.
+- `modules/{nixos,home-manager}/`: feature/aspect modules (nixos + home-manager classes).
+- `modules/flake-parts/`: flake-level wiring/data, NOT feature modules — e.g. `flake.domains` (fleet DNS metadata), `flake.lib`, `systems`, treefmt, devshells, packages (pkgs-by-name), overlays. all auto-loaded by `import-tree ./modules`.
+- flake-level vs feature: `flake.modules.*` (feature/aspect) live under `modules/{nixos,home-manager}/`; plain flake outputs/wiring (`flake.domains`, `flake.lib`, `systems`, …) live under `modules/flake-parts/`. don't put flake-level data in the nixos/home-manager aspect trees.
 - `machines/<machine>/configuration.nix`: host composition edge.
 - `machines/flake-module.nix`: clan inventory plus role composition edge.
 - `clan-services/`: clan service feature modules and role wiring.
@@ -120,6 +122,8 @@ ssh root@<ip>
 - change clan service implementation:
   - edit `clan-services/<service>/default.nix`
   - edit `clan-services/<service>/flake-module.nix` for service module wiring
+- expose a service on the dashboard / monitoring / reverse proxy:
+  - in the service module use the DEFAULT options (see section 7b): `services.homepage-dashboard.serviceGroups.<group>`, `services.gatus.settings.endpoints` (via `nflib.gatusEndpoint`), `services.caddy.virtualHosts.<host>`
 - debug option conflict:
   - `rg` all setters, then `nix eval` exact option
 - add reusable module:
@@ -143,6 +147,43 @@ override tools:
 - `lib.mkDefault` for soft defaults
 - `lib.mkForce` for real conflicts only
 - avoid adding new options unless user asked; hardcode sane defaults first
+
+## 7b) service exposure (dashboard / monitoring / reverse proxy)
+
+services declare their dashboard tile, health check, and reverse proxy with the
+DEFAULT options in the service module. there is NO custom registry option. cross-
+host is handled by collectors that pull other machines' definitions into the host
+that runs homepage/gatus.
+
+- dashboard tile:
+  `services.homepage-dashboard.serviceGroups.<group> = [ { "<Name>" = { href; icon; siteMonitor; }; } ];`
+  - the `serviceGroups` option is declared in `base` (all machines), so a host
+    that does NOT run homepage can still author tiles (picked up cross-host).
+  - do NOT guard tiles with `mkIf config.services.homepage-dashboard.enable` on
+    a host that doesn't run homepage — that would hide it from the collector.
+- health check:
+  `services.gatus.settings.endpoints = [ (nflib.gatusEndpoint { name; url; group; }) ];`
+  (don't guard with `mkIf config.services.gatus.enable` on non-gatus hosts.)
+- reverse proxy (LOCAL host only):
+  `services.caddy.virtualHosts.<host>.extraConfig = "...";`
+- cross-host collectors run on the homepage/gatus host and merge OTHER machines'
+  `serviceGroups` / gatus `endpoints` into the local instance, excluding self to
+  avoid recursion: `modules/nixos/services/{homepage,gatus}/collector.nix`. so a
+  service on machine A (e.g. nixbot on nixworker) shows up on machine B's
+  dashboard/monitoring just by setting the default options on A.
+- caddy has no cross-host collector (you don't proxy a remote host's service);
+  the vhost is written directly by the service on its own host.
+- service-specific secret wiring (authelia oidc clients, etc.) stays in the
+  service module.
+
+## 7c) domains
+
+fleet DNS domains are flake-level metadata, NOT a nixos option:
+
+- defined in `modules/flake-parts/domains.nix` as `flake.domains = { local = "nx3.eu"; public = "fosskar.eu"; }`.
+- access in nixos/home modules via `self.domains.local` / `flake-self.domains.local` (both are the flake; `self` is clan-provided, `flake-self` is the alias set in `flake.clan.specialArgs`).
+- access in flake-parts/clan inventory via `config.flake.domains.local`.
+- there is NO `config.domains` option — don't reintroduce one; build hostnames from `<sub>.${self.domains.local}`.
 
 ## 8) vars/secrets
 

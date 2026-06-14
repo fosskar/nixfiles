@@ -43,5 +43,5 @@ net effect: caddy's secure state is the default state; nginx's secure state is t
 
 ## repo wiring
 
-- `modules/nixos/services/caddy.nix`: caddy with desec dns-01 wildcard cert and forward-auth; feature modules contribute their own vhosts.
+- `modules/nixos/services/caddy/caddy.nix`: caddy with desec dns-01 wildcard cert and forward-auth; feature modules contribute their own vhosts.
 - `modules/nixos/services/nginx.nix` / `acme.nix`: legacy, unimported.
