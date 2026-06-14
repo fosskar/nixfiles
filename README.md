@@ -44,4 +44,4 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 ## license
 
-[WTFPL](LICENSE)
+[MIT](LICENSE)
