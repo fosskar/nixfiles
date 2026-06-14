@@ -272,6 +272,7 @@
           start = "100";
           limit = "50";
           leasetime = "12h";
+          dhcpv4 = "server";
           dhcpv6 = "server";
           ra = "server";
           ra_flags = [
@@ -304,6 +305,25 @@
           name = "HPF4DB54";
           ip = "192.168.10.153";
           mac = "E0:73:E7:F4:DB:55";
+        };
+        tl_sg108pe = {
+          _type = "host";
+          name = "tl-sg108pe";
+          ip = "192.168.10.10";
+          mac = "DC:62:79:90:0E:B2";
+        };
+        jetkvm_ha = {
+          _type = "host";
+          name = "jetkvm-ha";
+          ip = "192.168.10.30";
+          mac = "30:52:53:0A:4F:32";
+        };
+        # kvm attached to nixworker (192.168.20.210) on br-servers
+        jetkvm_nixworker = {
+          _type = "host";
+          name = "jetkvm-nixworker";
+          ip = "192.168.20.211";
+          mac = "30:52:53:02:BF:49";
         };
       };
 
