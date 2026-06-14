@@ -293,7 +293,12 @@
             };
             # no local GPU on nixworker; use nixbox's llama-cpp instead of
             # the clan service's bundled llama-swap.
-            extraModules = [ { services.llama-swap.enable = false; } ];
+            extraModules = [
+              {
+                services.llama-swap.enable = false;
+                services.pi-sessiond.extensions = [ ];
+              }
+            ];
           };
           roles.client = {
             tags.workstation = { };
