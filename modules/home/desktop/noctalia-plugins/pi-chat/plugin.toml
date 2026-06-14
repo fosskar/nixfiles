@@ -1,0 +1,24 @@
+id = "simon/pi-chat"
+name = "pi-chat"
+version = "0.1.0"
+min_noctalia = "5.0.0"
+author = "simon"
+license = "MIT"
+tags = ["pi", "chat", "agent"]
+icon = "message-chatbot"
+description = "Toggle the spaces-os pi-chat panel from Noctalia."
+
+[[setting]]
+key = "command"
+type = "string"
+label = "Toggle command"
+description = "Command used to toggle the pi-chat Quickshell panel."
+default = "pi-chat-toggle toggle"
+
+[[widget]]
+id = "toggle"
+entry = "toggle.luau"
+
+[[shortcut]]
+id = "control-center"
+entry = "shortcut.luau"

@@ -203,6 +203,16 @@
             background-effect.xray = false;
             popups.background-effect.blur = true;
           }
+          {
+            matches = [
+              { namespace = "^(pi-chat|quickshell)(-.+)?$"; }
+            ];
+            background-effect = {
+              blur = true;
+              xray = false;
+            };
+            popups.background-effect.blur = true;
+          }
         ];
 
         binds = {

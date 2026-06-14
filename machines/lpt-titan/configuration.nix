@@ -24,6 +24,8 @@
 
   services.lact.enable = lib.mkForce false;
 
+  clan.core.deployment.requireExplicitUpdate = true;
+
   # scx_lavd crashed (rcu cpu stall) on this machine; use bpfland instead
   services.scx.scheduler = "scx_bpfland";
 }
