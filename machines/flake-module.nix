@@ -299,7 +299,12 @@
             tags.workstation = { };
             # pi-chat bundles a local llama-swap (mkDefault true); clients
             # use the remote executor, so don't build a local llama-cpp.
-            extraModules = [ { services.llama-swap.enable = false; } ];
+            extraModules = [
+              {
+                services.llama-swap.enable = false;
+                services.pi-chat.extensions.bash-confirm = false;
+              }
+            ];
           };
         };
 
