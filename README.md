@@ -34,12 +34,12 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 ## credits
 
-- [mic92 dotfiles](https://github.com/Mic92/dotfiles)
 - [badele nix-homelab](https://github.com/badele/nix-homelab)
+- [fufexan dotfiles](https://github.com/fufexan/dotfiles)
+- [mic92 dotfiles](https://github.com/Mic92/dotfiles)
+- [NotAShelf nyx](https://github.com/notashelf/nyx)
 - [pinpox nixos-config](https://github.com/pinpox/nixos)
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
-- [fufexan dotfiles](https://github.com/fufexan/dotfiles)
-- [NotAShelf nyx](https://github.com/notashelf/nyx)
 - [sini nix-config](https://github.com/sini/nix-config)
 
 ## license

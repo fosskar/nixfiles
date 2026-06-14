@@ -39,9 +39,9 @@ do not run clan/deploy/network commands as default orientation. use them only wh
 
 ## 2) core concepts
 
-### dendritic / flake-parts module model
+### aspect / flake-parts module model
 
-repo uses dendritic-style composition: feature modules export aspect modules through `flake.modules.*`; machines and clan roles select those aspects through imports.
+repo uses aspect-oriented composition: feature modules export aspect modules through `flake.modules.*`; machines and clan roles select those aspects through imports.
 
 - feature module: flake-parts module that defines one or more `flake.modules.*` entries and any related flake wiring.
 - aspect module: module for one configuration class, e.g. `flake.modules.nixos.<name>`, `flake.modules.homeManager.<name>`, `flake.modules.generic.<name>`.
