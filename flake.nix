@@ -75,6 +75,10 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
 
+    nix-topology.url = "github:oddlama/nix-topology";
+    nix-topology.inputs.nixpkgs.follows = "nixpkgs";
+    nix-topology.inputs.flake-parts.follows = "flake-parts";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
