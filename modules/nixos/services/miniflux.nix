@@ -2,6 +2,7 @@
   flake.modules.nixos.miniflux =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -9,7 +10,7 @@
     }:
     let
       serviceName = "feed";
-      localHost = "${serviceName}.${config.domains.local}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8787;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
@@ -82,7 +83,7 @@
           OAUTH2_PROVIDER = "oidc";
           OAUTH2_CLIENT_ID = "miniflux";
           OAUTH2_REDIRECT_URL = "https://${localHost}/oauth2/oidc/callback";
-          OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://auth.${config.domains.public}";
+          OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://auth.${flake-self.domains.public}";
           OAUTH2_USER_CREATION = "1";
         };
       };

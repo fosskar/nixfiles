@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.hermesAgent =
     {
+      flake-self,
       config,
       inputs,
       pkgs,
@@ -115,7 +116,7 @@
           SIGNAL_ALLOWED_USERS = "dcca284c-5b24-4eba-8e40-bb9649c1502c";
           SIGNAL_HTTP_URL = "http://127.0.0.1:18081";
 
-          SEARXNG_URL = "https://search.${config.domains.local}/";
+          SEARXNG_URL = "https://search.${flake-self.domains.local}/";
 
           MATRIX_HOMESERVER = "https://matrix.org";
           MATRIX_ALLOWED_USERS = "@fosscar:matrix.org";

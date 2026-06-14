@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.gatus =
     {
+      flake-self,
       config,
       lib,
       pkgs,
@@ -8,7 +9,7 @@
     }:
     let
       serviceName = "gatus";
-      localHost = "${serviceName}.${config.domains.local}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8700;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

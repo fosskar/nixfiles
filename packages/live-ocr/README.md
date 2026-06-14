@@ -44,7 +44,7 @@ go get -u ./...
 go mod tidy
 ```
 
-then set `vendorHash = lib.fakeHash;` in `default.nix`, rebuild, and replace with the correct hash from the error output.
+then set `vendorHash = lib.fakeHash;` in `package.nix`, rebuild, and replace with the correct hash from the error output.
 
 ## build
 

@@ -1,17 +1,18 @@
 {
   flake.modules.nixos.kanidm =
     {
+      flake-self,
       config,
       pkgs,
       ...
     }:
     let
       serviceName = "auth";
-      localHost = "${serviceName}.${config.domains.local}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8443;
       listenUrl = "https://${listenAddress}:${toString listenPort}";
-      acmeCertDir = config.security.acme.certs.${config.domains.local}.directory;
+      acmeCertDir = config.security.acme.certs.${flake-self.domains.local}.directory;
     in
     {
       clan.core.vars.generators.kanidm = {
@@ -39,7 +40,7 @@
 
         serverSettings = {
           origin = "https://${localHost}";
-          domain = config.domains.local;
+          domain = flake-self.domains.local;
           bindaddress = "${listenAddress}:${toString listenPort}";
           ldapbindaddress = "${listenAddress}:3636";
 

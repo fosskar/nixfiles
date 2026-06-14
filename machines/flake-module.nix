@@ -5,11 +5,15 @@
   ...
 }:
 {
+  # clan-core flake-parts module that provides the flake.clan option below
+  imports = [ inputs.clan-core.flakeModules.default ];
+
   flake.clan = {
     inherit self;
     specialArgs = {
       inherit inputs;
       nflib = config.flake.lib;
+      flake-self = self;
     };
 
     meta = {
@@ -72,14 +76,6 @@
 
       instances = {
         ## core / access
-
-        metadata = {
-          module.name = "importer";
-          roles.default = {
-            tags.all = { };
-            extraModules = [ config.flake.modules.generic.domains ];
-          };
-        };
 
         base-common = {
           module.name = "importer";
@@ -153,7 +149,7 @@
               certificate.searchDomains = [
                 "lan"
                 "local"
-                "nx3.eu"
+                config.flake.domains.local
               ];
             };
           };
@@ -260,8 +256,8 @@
           module.input = "self";
 
           roles.server.machines."gateway".settings = {
-            domain = "nb.fosskar.eu";
-            proxyDomain = "proxy.fosskar.eu";
+            domain = "nb.${config.flake.domains.public}";
+            proxyDomain = "proxy.${config.flake.domains.public}";
             proxyTCPPorts = [ 8776 ];
             port = 51821;
           };
@@ -288,7 +284,7 @@
           module.input = "spaces";
           roles.executor = {
             machines."nixworker".settings = {
-              llmUrl = "https://llama-cpp.nx3.eu";
+              llmUrl = "https://llama-cpp.${config.flake.domains.local}";
               defaultModel = "qwen3_6-35b-a3b";
             };
             # no local GPU on nixworker; use nixbox's llama-cpp instead of

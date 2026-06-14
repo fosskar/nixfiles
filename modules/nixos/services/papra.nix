@@ -2,6 +2,7 @@
   flake.modules.nixos.papra =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -9,11 +10,11 @@
     }:
     let
       serviceName = "papra";
-      localHost = "${serviceName}.${config.domains.local}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 1221;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
-      oidcIssuerUrl = "https://auth.${config.domains.public}";
+      oidcIssuerUrl = "https://auth.${flake-self.domains.public}";
       documentsDir = "/tank/apps/papra/documents";
       ingestionDir = "/tank/shares/shared/documents/papra-consume";
     in

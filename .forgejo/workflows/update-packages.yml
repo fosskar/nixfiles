@@ -85,7 +85,7 @@ jobs:
             local json script
             local -a cmd
 
-            if grep -q "updateScript" "$dir/default.nix" 2>/dev/null; then
+            if grep -q "updateScript" "$dir/package.nix" 2>/dev/null; then
               echo ":: $pkg - using nix updateScript"
               json="$(nix eval --json ".#$pkg.updateScript")" || return 1
 

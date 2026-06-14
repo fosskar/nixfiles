@@ -15,6 +15,7 @@ _: {
       {
         nixosModule =
           {
+            flake-self,
             config,
             lib,
             pkgs,
@@ -23,7 +24,7 @@ _: {
           let
             clientMachines = lib.attrNames (roles.client.machines or { });
             beszelPort = 8090;
-            beszelDomain = "beszel.${config.domains.local}";
+            beszelDomain = "beszel.${flake-self.domains.local}";
 
             beszelClientSystems = map (
               machine:

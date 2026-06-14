@@ -2,6 +2,7 @@
   flake.modules.nixos.wyomingPiper =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -12,7 +13,7 @@
       httpAddress = "127.0.0.1";
       listenPort = 10200;
       httpPort = 18082;
-      localHost = "piper.${config.domains.local}";
+      localHost = "piper.${flake-self.domains.local}";
       python = pkgs.python313.withPackages (ps: [
         ps.asgiref
         ps.flask

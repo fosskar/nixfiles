@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-pkg=packages/live-ocr/default.nix
+pkg=packages/live-ocr/package.nix
 
 sed -i -E 's/vendorHash = "sha256-[^"]+";/vendorHash = lib.fakeHash;/' "$pkg"
 

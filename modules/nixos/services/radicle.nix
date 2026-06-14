@@ -1,14 +1,16 @@
 {
   flake.modules.nixos.radicle =
     {
+      flake-self,
       config,
       lib,
       pkgs,
+      nflib,
       ...
     }:
     let
       serviceName = "radicle";
-      publicHost = "${serviceName}.${config.domains.public}";
+      publicHost = "${serviceName}.${flake-self.domains.public}";
       explorerPort = 8090;
       nodePort = 8776;
       cfg = config.services.radicle;
@@ -43,6 +45,26 @@
       };
 
       config = {
+        # cross-host: radicle runs on nixworker (no homepage/gatus here); these
+        # default-option entries are collected onto the dashboard/monitoring host.
+        services.homepage-dashboard.serviceGroups."Automation" = [
+          {
+            "Radicle" = {
+              href = "https://${publicHost}/";
+              icon = "mdi-source-branch";
+              siteMonitor = "https://${publicHost}/";
+            };
+          }
+        ];
+
+        services.gatus.settings.endpoints = [
+          (nflib.gatusEndpoint {
+            name = "Radicle";
+            url = "https://${publicHost}/";
+            group = "Automation";
+          })
+        ];
+
         clan.core.vars.generators.radicle = {
           files."ssh-private-key" = {
             secret = true;

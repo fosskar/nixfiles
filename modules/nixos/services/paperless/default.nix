@@ -2,6 +2,7 @@
   flake.modules.nixos.paperless =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -9,7 +10,7 @@
     }:
     let
       serviceName = "docs";
-      localHost = "${serviceName}.${config.domains.local}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 28981;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
@@ -60,7 +61,7 @@
                   "client_id": "paperless",
                   "secret": $secret,
                   "settings": {
-                    "server_url": "https://auth.${config.domains.public}",
+                    "server_url": "https://auth.${flake-self.domains.public}",
                     "token_auth_method": "client_secret_basic"
                   }
                 }]
@@ -127,7 +128,7 @@
         settings = {
           PAPERLESS_ADMIN_USER = "admin";
           PAPERLESS_OCR_LANGUAGE = "deu+eng";
-          PAPERLESS_LOGOUT_REDIRECT_URL = "https://auth.${config.domains.public}/logout";
+          PAPERLESS_LOGOUT_REDIRECT_URL = "https://auth.${flake-self.domains.public}/logout";
           PAPERLESS_TIME_ZONE = "Europe/Berlin";
           PAPERLESS_DATE_ORDER = "DMY";
           PAPERLESS_TRUSTED_PROXIES = "138.201.155.21,127.0.0.1";

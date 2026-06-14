@@ -2,6 +2,7 @@
   flake.modules.nixos.llamaCpp =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -9,7 +10,7 @@
     }:
     let
       serviceName = "llama-cpp";
-      localHost = "${serviceName}.${config.domains.local}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 18080;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

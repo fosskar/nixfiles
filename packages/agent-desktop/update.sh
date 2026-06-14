@@ -4,7 +4,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-file="$SCRIPT_DIR/default.nix"
+file="$SCRIPT_DIR/package.nix"
 
 # prefer RENOVATE_GITHUB_COM_TOKEN (set in ci) > GITHUB_TOKEN (only useful if it's actually a github pat)
 gh_token="${RENOVATE_GITHUB_COM_TOKEN:-${GITHUB_TOKEN:-}}"

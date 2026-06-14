@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.caddy =
     {
+      flake-self,
       config,
       pkgs,
       ...
@@ -40,7 +41,7 @@
             }
           }
         '';
-        virtualHosts."*.${config.domains.local}".extraConfig = "";
+        virtualHosts."*.${flake-self.domains.local}".extraConfig = "";
       };
 
       networking.firewall = {

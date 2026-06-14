@@ -2,6 +2,7 @@
   flake.modules.nixos.continuwuity =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -9,7 +10,7 @@
     }:
     let
       serviceName = "matrix";
-      publicHost = "${serviceName}.${config.domains.public}";
+      publicHost = "${serviceName}.${flake-self.domains.public}";
       listenPort = 6167;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
     in

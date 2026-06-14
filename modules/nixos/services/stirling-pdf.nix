@@ -2,13 +2,14 @@
   flake.modules.nixos.stirlingPdf =
     {
       nflib,
+      flake-self,
       config,
       lib,
       ...
     }:
     let
       serviceName = "pdf";
-      localHost = "${serviceName}.${config.domains.local}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
       listenAddress = "127.0.0.1";
       listenPort = 8180;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

@@ -2,6 +2,7 @@
   flake.modules.nixos.opencloud =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -10,13 +11,13 @@
     let
       dataDir = config.services.opencloud.environment.STORAGE_USERS_POSIX_ROOT;
       serviceName = "opencloud";
-      localHost = "${serviceName}.${config.domains.local}";
-      publicHost = "${serviceName}.${config.domains.public}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
+      publicHost = "${serviceName}.${flake-self.domains.public}";
       listenAddress = "0.0.0.0";
       listenPort = 9200;
       webListenPort = 9201;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
-      oidcIssuerUrl = "https://auth.${config.domains.public}";
+      oidcIssuerUrl = "https://auth.${flake-self.domains.public}";
 
       publicHostUris = [
         "https://${publicHost}/"
@@ -26,8 +27,8 @@
       ];
 
       oidcOrigins = [
-        "https://auth.${config.domains.local}"
-        "https://auth.${config.domains.public}"
+        "https://auth.${flake-self.domains.local}"
+        "https://auth.${flake-self.domains.public}"
       ];
 
       settingsFormat = pkgs.formats.yaml { };
@@ -229,7 +230,7 @@
             WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
             WEBFINGER_IOS_OIDC_CLIENT_ID = "OpenCloudIOS";
             WEBFINGER_IOS_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
-            WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${config.domains.public}/settings";
+            WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${flake-self.domains.public}/settings";
 
             STORAGE_USERS_POSIX_ROOT = lib.mkDefault "/tank/apps/opencloud/data";
             STORAGE_USERS_POSIX_WATCH_FS = "true";

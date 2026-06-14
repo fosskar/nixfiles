@@ -2,6 +2,7 @@
   flake.modules.nixos.immich =
     {
       nflib,
+      flake-self,
       config,
       lib,
       pkgs,
@@ -9,8 +10,8 @@
     }:
     let
       serviceName = "immich";
-      localHost = "${serviceName}.${config.domains.local}";
-      publicHost = "${serviceName}.${config.domains.public}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
+      publicHost = "${serviceName}.${flake-self.domains.public}";
       listenAddress = "0.0.0.0";
       listenPort = 2283;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
@@ -169,7 +170,7 @@
             buttonText = "Login with Authelia";
             clientId = "immich";
             clientSecret._secret = config.clan.core.vars.generators.immich.files."oauth-client-secret".path;
-            issuerUrl = "https://auth.${config.domains.public}/.well-known/openid-configuration";
+            issuerUrl = "https://auth.${flake-self.domains.public}/.well-known/openid-configuration";
             scope = "openid profile email groups";
             roleClaim = "immich_role";
           };

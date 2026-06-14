@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.netbox =
     {
+      flake-self,
       config,
       lib,
       nflib,
@@ -9,8 +10,8 @@
     }:
     let
       serviceName = "netbox";
-      localHost = "${serviceName}.${config.domains.local}";
-      oidcIssuerUrl = "https://auth.${config.domains.public}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
+      oidcIssuerUrl = "https://auth.${flake-self.domains.public}";
       listenAddress = "127.0.0.1";
       listenPort = 8001;
       listenUrl = "http://${listenAddress}:${toString listenPort}";

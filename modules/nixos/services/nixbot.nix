@@ -1,20 +1,43 @@
 {
   flake.modules.nixos.nixbot =
     {
+      flake-self,
       config,
       inputs,
       lib,
       pkgs,
+      nflib,
       ...
     }:
     let
       serviceName = "nixbot";
-      publicHost = "${serviceName}.${config.domains.public}";
+      publicHost = "${serviceName}.${flake-self.domains.public}";
     in
     {
       imports = [ inputs.nixbot.nixosModules.nixbot ];
 
       config = {
+        # cross-host: declared here on nixworker via the default options; nixbot
+        # has no homepage/gatus locally, so these are inert until the homepage/
+        # gatus host collects them across the fleet.
+        services.homepage-dashboard.serviceGroups."Automation" = [
+          {
+            "Nixbot" = {
+              href = "https://${publicHost}";
+              icon = "buildbot.svg";
+              siteMonitor = "https://${publicHost}";
+            };
+          }
+        ];
+
+        services.gatus.settings.endpoints = [
+          (nflib.gatusEndpoint {
+            name = "Nixbot";
+            url = "https://${publicHost}";
+            group = "Automation";
+          })
+        ];
+
         clan.core.vars.generators.nixbot = {
           prompts.codeberg-token = {
             description = "codeberg api token for nixbot";
@@ -42,7 +65,7 @@
           admins = [
             "gitea:fosskar"
             "github:fosskar"
-            #"oidc:auth.${config.domains.public}:d5103b45-c922-48f0-98fe-b9e249e32885"
+            #"oidc:auth.${flake-self.domains.public}:d5103b45-c922-48f0-98fe-b9e249e32885"
           ];
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
           evalWorkerCount = lib.mkDefault 8;
@@ -56,24 +79,6 @@
             oauthSecretFile = config.clan.core.vars.generators.nixbot.files."oauth-secret".path;
             oauthId = config.clan.core.vars.generators.nixbot.files."oauth-id".value;
           };
-
-          #oidc = {
-          #  enable = true;
-          #  name = "Authelia";
-          #  discoveryUrl = "https://auth.${config.domains.public}/.well-known/openid-configuration";
-          #  clientId = "nixbot";
-          #  clientSecretFile = config.clan.core.vars.generators.nixbot.files."oidc-client-secret".path;
-          #  scope = [
-          #    "openid"
-          #    "email"
-          #    "profile"
-          #    "groups"
-          #  ];
-          #  mapping.groups = "groups";
-          #};
-
-          # any authenticated authelia user may view private repos and their builds
-          #privateRepoViewers."*" = [ "oidc:auth.${config.domains.public}:*" ];
         };
       };
     };

@@ -61,6 +61,7 @@
           {
             config,
             pkgs,
+            nflib,
             ...
           }:
           let
@@ -69,6 +70,25 @@
           in
           {
             imports = [ self.modules.nixos.netbirdServerStack ];
+
+            # cross-host: netbird server runs on the gateway (no homepage/gatus
+            # here); collected onto the dashboard/monitoring host.
+            services.homepage-dashboard.serviceGroups."Network" = [
+              {
+                "NetBird" = {
+                  href = "https://${settings.domain}";
+                  icon = "netbird.svg";
+                  siteMonitor = "https://${settings.domain}";
+                };
+              }
+            ];
+            services.gatus.settings.endpoints = [
+              (nflib.gatusEndpoint {
+                name = "NetBird";
+                url = "https://${settings.domain}";
+                group = "Network";
+              })
+            ];
 
             # server secrets
             clan.core.vars.generators.netbird-server = {

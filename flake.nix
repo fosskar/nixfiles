@@ -1,5 +1,5 @@
 {
-  description = "simonoscr's flake";
+  description = "nixfiles";
 
   inputs = {
     # nixpkgs
@@ -42,6 +42,8 @@
 
     import-tree.url = "github:denful/import-tree";
 
+    pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
+
     srvos = {
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -52,19 +54,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #nix-cachyos-kernel = {
-    #  url = "github:xddxdd/nix-cachyos-kernel";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #  inputs.flake-parts.follows = "flake-parts";
-    #  inputs.flake-compat.follows = "";
-    #};
-
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # impermanence.url = "github:nix-community/impermanence";
     preservation.url = "github:nix-community/preservation";
 
     lanzaboote = {
@@ -189,30 +183,12 @@
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
-      systems = import inputs.systems;
-
-      flake.lib = nflib;
+      _module.args.rootPath = ./.;
 
       imports = [
-        inputs.clan-core.flakeModules.default
         inputs.flake-parts.flakeModules.modules
         (inputs.import-tree ./modules)
       ]
       ++ flakeModules;
-
-      perSystem =
-        { config, inputs', ... }:
-        {
-
-          # make pkgs available in perSystem
-          _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
-
-          # disabled: clan-core now propagates pkgsFor into nixosConfigurations,
-          # which conflicts with nixpkgs.config set in nixos modules.
-          # not needed anyway since clan-core.inputs.nixpkgs follows our nixpkgs.
-          #clan.pkgs = inputs'.nixpkgs.legacyPackages;
-
-          formatter = config.treefmt.build.wrapper;
-        };
     };
 }

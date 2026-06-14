@@ -94,13 +94,6 @@
               icon = "adguard-home.svg";
             };
           }
-          {
-            "NetBird" = {
-              href = "https://nb.fosskar.eu";
-              icon = "netbird.svg";
-              siteMonitor = "https://nb.fosskar.eu";
-            };
-          }
         ];
         "Infrastructure" = [
           {
@@ -108,6 +101,13 @@
               href = "http://jetkvm-ha.lan";
               icon = "mdi-console";
               siteMonitor = "http://192.168.10.30";
+            };
+          }
+          {
+            "JetKVM nixworker" = {
+              href = "http://192.168.20.211";
+              icon = "mdi-console";
+              siteMonitor = "http://192.168.20.211";
             };
           }
           {
@@ -125,20 +125,8 @@
           }
         ];
         "Automation" = [
-          {
-            "Nixbot" = {
-              href = "https://nixbot.fosskar.eu/";
-              icon = "buildbot.svg";
-              siteMonitor = "https://nixbot.fosskar.eu/";
-            };
-          }
-          {
-            "Radicle" = {
-              href = "https://radicle.fosskar.eu/";
-              icon = "mdi-source-branch";
-              siteMonitor = "https://radicle.fosskar.eu/";
-            };
-          }
+          # Nixbot + Radicle tiles come from their own modules (nixworker),
+          # collected cross-host by homepage/collector.nix.
           {
             "Home Assistant" = {
               href = "http://homeassistant.lan:8123";

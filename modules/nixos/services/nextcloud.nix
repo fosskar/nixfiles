@@ -2,6 +2,7 @@
   flake.modules.nixos.nextcloud =
     {
       nflib,
+      flake-self,
       config,
       inputs,
       lib,
@@ -10,11 +11,11 @@
     }:
     let
       serviceName = "cloud";
-      localHost = "${serviceName}.${config.domains.local}";
-      publicHost = "${serviceName}.${config.domains.public}";
+      localHost = "${serviceName}.${flake-self.domains.local}";
+      publicHost = "${serviceName}.${flake-self.domains.public}";
       listenPort = 8009;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
-      oidcIssuerUrl = "https://auth.${config.domains.public}";
+      oidcIssuerUrl = "https://auth.${flake-self.domains.public}";
       nixfilesPackages = inputs.self.packages.${pkgs.stdenv.hostPlatform.system};
       tankDisks = [
         "/dev/sda"
