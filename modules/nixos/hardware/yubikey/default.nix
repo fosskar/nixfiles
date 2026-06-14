@@ -1,8 +1,6 @@
 {
   flake.modules.nixos.yubikey =
     {
-      config,
-      lib,
       pkgs,
       ...
     }:
@@ -10,8 +8,9 @@
       # smartcard support
       services.pcscd.enable = true;
 
-      # add wheel users to pcscd group
-      users.groups.pcscd.members = lib.mkAfter config.users.groups.wheel.members;
+      # redundant: card access is polkit-mediated via the pcsclite-with-polkit
+      # socket, and the daemon reaches the device through its own pcscd group.
+      # users.groups.pcscd.members = lib.mkAfter config.users.groups.wheel.members;
 
       # udev rules
       services.udev.packages = [
