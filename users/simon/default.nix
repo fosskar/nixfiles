@@ -40,6 +40,8 @@
       self.modules.homeManager.udiskie
       self.modules.homeManager.wezterm
       self.modules.homeManager.yazi
+      self.modules.homeManager.gpg
+      self.modules.homeManager.yubikeyGpg
       self.modules.homeManager.zed
       self.modules.homeManager.zathura
       self.modules.homeManager.zellij
