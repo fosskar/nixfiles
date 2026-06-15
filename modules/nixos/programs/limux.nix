@@ -2,6 +2,6 @@
   flake.modules.nixos.limux =
     { pkgs, ... }:
     {
-      environment.systemPackages = [ pkgs.custom.limux ];
+      environment.systemPackages = [ pkgs.local.limux ];
     };
 }

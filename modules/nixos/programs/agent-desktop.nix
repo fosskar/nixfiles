@@ -2,6 +2,6 @@
   flake.modules.nixos.agentDesktop =
     { pkgs, ... }:
     {
-      environment.systemPackages = [ pkgs.custom.agent-desktop ];
+      environment.systemPackages = [ pkgs.local.agent-desktop ];
     };
 }

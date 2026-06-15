@@ -35,7 +35,7 @@
         username = "workspace";
         homeDirectory = "/home/workspace";
         packages = [
-          pkgs.custom.kittylitter
+          pkgs.local.kittylitter
           # nix language servers for zed ssh remoting
           pkgs.nil
           pkgs.nixd
@@ -83,13 +83,13 @@
         };
         Service = {
           Type = "simple";
-          ExecStart = "${pkgs.custom.kittylitter}/bin/kittylitter serve";
+          ExecStart = "${pkgs.local.kittylitter}/bin/kittylitter serve";
           # dump the (stable) pair payload + QR for clients to scan
           ExecStartPost = pkgs.writeShellScript "kittylitter-pair-dump" ''
             out="${config.home.homeDirectory}/.local/state/kittylitter"
             mkdir -p "$out"
             sleep 2
-            ${pkgs.custom.kittylitter}/bin/kittylitter pair --qr > "$out/pair.txt" || true
+            ${pkgs.local.kittylitter}/bin/kittylitter pair --qr > "$out/pair.txt" || true
           '';
           Environment = [ "PATH=${config.home.profileDirectory}/bin" ];
           Restart = "on-failure";

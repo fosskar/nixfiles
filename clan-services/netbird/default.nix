@@ -114,7 +114,7 @@
             services.netbird.server = {
               enable = true;
               inherit (settings) domain;
-              package = pkgs.custom.netbird-server;
+              package = pkgs.local.netbird-server;
               authSecretFile = relaySecretPath;
               encryptionKeyFile = encryptionKeyPath;
               ownerEmail = "admin@fosskar.eu";
@@ -125,7 +125,7 @@
             # dashboard
             services.netbird.server.dashboard = {
               enable = true;
-              package = pkgs.custom.netbird-dashboard;
+              package = pkgs.local.netbird-dashboard;
               managementServer = "https://${settings.domain}";
               settings = {
                 AUTH_AUTHORITY = "https://${settings.domain}/oauth2";
@@ -142,7 +142,7 @@
             # reverse proxy + traefik frontend
             services.netbird.server.proxy = {
               enable = true;
-              package = pkgs.custom.netbird-proxy;
+              package = pkgs.local.netbird-proxy;
               domain = settings.proxyDomain;
               publicTCPPorts = settings.proxyTCPPorts;
               managementAddress = "http://127.0.0.1:8081";

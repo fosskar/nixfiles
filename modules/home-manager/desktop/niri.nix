@@ -78,7 +78,7 @@
 
       home.packages = [
         pkgs.wl-clipboard
-        pkgs.custom.live-ocr
+        pkgs.local.live-ocr
       ];
 
       wayland.windowManager.niri.settings = fromNiriFlakeSettings {

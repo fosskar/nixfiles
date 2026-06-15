@@ -1,5 +1,6 @@
+_:
+# tuned without GUI deps (tuna, gtk, gobject-introspection)
 _final: prev: {
-  # tuned without GUI deps (tuna, gtk, gobject-introspection)
   tuned = prev.tuned.overrideAttrs (old: {
     nativeBuildInputs = builtins.filter (
       drv:
@@ -17,11 +18,9 @@ _final: prev: {
       ])
     ) old.propagatedBuildInputs;
 
-    # don't wrap with gapps
     dontWrapGApps = true;
     makeWrapperArgs = builtins.filter (arg: arg != "\${gappsWrapperArgs[@]}") old.makeWrapperArgs;
 
-    # remove gui files
     postInstall = (old.postInstall or "") + ''
       rm -f $out/bin/tuned-gui
       rm -f $out/share/applications/tuned-gui.desktop
