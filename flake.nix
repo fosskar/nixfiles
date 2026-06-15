@@ -42,6 +42,11 @@
 
     import-tree.url = "github:denful/import-tree";
 
+    home-git-clone = {
+      url = "github:rytswd/home-git-clone";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
 
     srvos = {
