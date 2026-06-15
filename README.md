@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo/logo.png" width="300px" alt="nixfiles logo"/>
+  <img src="docs/logo/logo.png" width="200px" alt="nixfiles logo"/>
 </p>
 
 personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). modules are aspect-oriented: feature modules export reusable aspects through `flake.modules.*`, while clan roles and machine imports compose them into concrete systems. the repo covers host configuration, user environments, secrets, storage, networking, and self-hosted services.
