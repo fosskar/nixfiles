@@ -162,15 +162,6 @@
           debug.honor-xdg-activation-with-invalid-serial = [ true ];
         };
 
-        # pi-chat reads Noctalia v4-compatible colors.json directly.
-        xdg.configFile."noctalia/colors.json".text = builtins.toJSON (
-          palette.dark
-          // {
-            mSurface = "${palette.dark.mSurface}cc";
-            mSurfaceVariant = "${palette.dark.mSurfaceVariant}e6";
-          }
-        );
-
         programs.noctalia = {
           enable = lib.mkDefault true;
           systemd.enable = lib.mkDefault true;
@@ -261,7 +252,6 @@
                   "bluetooth"
                   "battery"
                   "notifications"
-                  "pi-chat"
                   "caffeine"
                   "session"
                 ];
@@ -318,7 +308,6 @@
               tray.drawer = false;
               network.show_label = false;
               notifications.hide_when_no_unread = false;
-              pi-chat.type = "simon/pi-chat:toggle";
               session.color = "error";
             };
 
@@ -345,17 +334,6 @@
             };
 
             location.auto_locate = true;
-
-            plugins = {
-              enabled = [ "simon/pi-chat" ];
-              source = [
-                {
-                  name = "nixfiles";
-                  kind = "path";
-                  location = toString ./noctalia-plugins;
-                }
-              ];
-            };
 
             system.monitor.enabled = true;
 
