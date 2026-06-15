@@ -13,7 +13,7 @@ purpose: help agents work fast + correctly in this repo without stale assumption
 - avoid Nix `with` expressions; prefer explicit attribute references.
 - existing text/pattern is evidence, not justification; keep it only if it still serves current repo/task.
 - explain why, not code-tour.
-- comments in code: minimal. only when really needed (non-obvious why, ref/link, reminder, FIXME). never narrate what code does; one short line max.
+- comments in code: default to ZERO. the code already states what it does; do not restate it. write a comment only for information the code cannot convey: a non-obvious _why_, a ref/link, a real FIXME/reminder, or a genuine gotcha (e.g. recursion trap). never narrate paths, types, option names, or what an expression evaluates to. one short line, lowercase. no header/banner blocks, no per-attr annotations, no "exposed as / used by / see file x" tour comments. if a comment restates the next line, delete it. comments must never out-bulk the code in an edit.
 - no guessing/hedging in responses (`likely`, `maybe`, `probably`). verify with evidence or state unknown.
 - for external claims: verify in source, cite path, else say unknown.
 - run `nix fmt` after nix edits.
@@ -130,6 +130,11 @@ ssh root@<ip>
   - create under matching aspect tree in `modules/`
   - export through `flake.modules.<class>.<name>`
   - import it from machine/clan composition edge; import means enabled unless module defines its own `enable`
+- add/update a local package:
+  - create `packages/<name>/package.nix` (RFC-140 by-name layout, auto-discovered by `pkgs-by-name-for-flake-parts`); available as flake package `<name>` and `pkgs.custom.<name>`.
+  - x86-only packages: add the name to `x86OnlyPackages` in `modules/flake-parts/treefmt.nix` so CI skips them on other systems.
+- add flake-level wiring/data (not a feature module):
+  - put it under `modules/flake-parts/` (e.g. `flake.domains`, `flake.lib`, overlays, systems, treefmt, devshells); auto-loaded by `import-tree ./modules`.
 
 ## 7) module patterns
 
