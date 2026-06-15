@@ -73,7 +73,7 @@ _: {
             upsd = {
               enable = true;
               listen = [
-                # nut binds :: v6-only; nixbox.lan resolves ipv6-only on secondaries
+                # :: also covers the yggdrasil mesh addresses secondaries dial
                 { address = "::"; }
                 # telegraf inputs.upsd dials ipv4 loopback
                 { address = "127.0.0.1"; }
@@ -81,8 +81,8 @@ _: {
             };
           };
 
-          # expose upsd to LAN secondaries only
-          networking.firewall.interfaces.bond0.allowedTCPPorts = [ 3493 ];
+          # expose upsd to secondaries over the yggdrasil mesh only
+          networking.firewall.interfaces.ygg.allowedTCPPorts = [ 3493 ];
 
           systemd.services = {
             upsdrv = {
@@ -145,7 +145,7 @@ _: {
               if primaryMachines == [ ] then
                 throw "ups: secondary role requires a primary machine"
               else
-                "${lib.head primaryMachines}.lan";
+                "${lib.head primaryMachines}.s";
           in
           {
             environment.systemPackages = [ pkgs.nut ];
