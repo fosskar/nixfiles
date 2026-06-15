@@ -29,7 +29,8 @@
           baseUrl = "https://${localHost}";
           startUrl = "https://${localHost}";
           headerStyle = "underlined";
-          useEqualheights = true;
+          useEqualHeights = true;
+          iconStyle = "theme";
           hideVersion = true;
           disableUpdateCheck = true;
           disableIndexing = true;

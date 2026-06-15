@@ -32,7 +32,7 @@
         ];
       };
 
-      services.homepage-dashboard.serviceGroups."AI" =
+      services.homepage-dashboard.serviceGroups."llm" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {

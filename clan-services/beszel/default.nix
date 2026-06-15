@@ -119,7 +119,7 @@ _: {
               environment.APP_URL = "https://${beszelDomain}";
             };
 
-            services.homepage-dashboard.serviceGroups."Monitoring" =
+            services.homepage-dashboard.serviceGroups."monitoring" =
               lib.mkIf config.services.homepage-dashboard.enable
                 [
                   {

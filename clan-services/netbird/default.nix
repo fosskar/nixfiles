@@ -73,7 +73,7 @@
 
             # cross-host: netbird server runs on the gateway (no homepage/gatus
             # here); collected onto the dashboard/monitoring host.
-            services.homepage-dashboard.serviceGroups."Network" = [
+            services.homepage-dashboard.serviceGroups."network" = [
               {
                 "NetBird" = {
                   href = "https://${settings.domain}";

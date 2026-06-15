@@ -41,7 +41,7 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."Arr Stack" =
+        services.homepage-dashboard.serviceGroups."arr-stack" =
           lib.mkIf config.services.homepage-dashboard.enable
             [
               {

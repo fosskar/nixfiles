@@ -114,7 +114,7 @@
         reverse_proxy ${listenUrl}
       '';
 
-      services.homepage-dashboard.serviceGroups."Infrastructure" =
+      services.homepage-dashboard.serviceGroups."infrastructure" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {

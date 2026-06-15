@@ -20,7 +20,7 @@
         # cross-host: declared here on nixworker via the default options; nixbot
         # has no homepage/gatus locally, so these are inert until the homepage/
         # gatus host collects them across the fleet.
-        services.homepage-dashboard.serviceGroups."Automation" = [
+        services.homepage-dashboard.serviceGroups."code" = [
           {
             "Nixbot" = {
               href = "https://${publicHost}";

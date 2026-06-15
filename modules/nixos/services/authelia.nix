@@ -214,7 +214,7 @@
           user = "authelia-main";
         };
 
-        services.homepage-dashboard.serviceGroups."Security" =
+        services.homepage-dashboard.serviceGroups."security" =
           lib.mkIf config.services.homepage-dashboard.enable
             [
               {

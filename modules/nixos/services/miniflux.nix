@@ -88,7 +88,7 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."Media" =
+      services.homepage-dashboard.serviceGroups."media" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {

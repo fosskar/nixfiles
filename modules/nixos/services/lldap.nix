@@ -75,7 +75,7 @@
         environmentFile = config.clan.core.vars.generators.lldap.files."envfile".path;
       };
 
-      services.homepage-dashboard.serviceGroups."Security" =
+      services.homepage-dashboard.serviceGroups."security" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {

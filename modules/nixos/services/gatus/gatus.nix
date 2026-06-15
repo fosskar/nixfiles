@@ -61,7 +61,7 @@
       systemd.services.gatus.serviceConfig.EnvironmentFile =
         config.clan.core.vars.generators.smtp.files."smtp-env".path;
 
-      services.homepage-dashboard.serviceGroups."Monitoring" =
+      services.homepage-dashboard.serviceGroups."monitoring" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {
@@ -69,6 +69,10 @@
                 href = "https://${localHost}";
                 icon = "gatus.svg";
                 siteMonitor = listenUrl;
+                widget = {
+                  type = "gatus";
+                  url = listenUrl;
+                };
               };
             }
           ];

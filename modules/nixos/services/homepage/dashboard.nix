@@ -13,59 +13,60 @@
       # layout ordering and column config
       settings.layout = [
         {
-          Network = {
+          infrastructure = {
             header = true;
+            style = "row";
             columns = 2;
           };
         }
         {
-          Monitoring = {
+          media = {
+            header = true;
+          };
+        }
+        {
+          tools = {
+            header = true;
+          };
+        }
+        {
+          monitoring = {
             header = true;
             style = "column";
           };
         }
         {
-          Infrastructure = {
+          network = {
             header = true;
           };
         }
         {
-          Automation = {
+          code = {
             header = true;
           };
         }
         {
-          Media = {
+          security = {
             header = true;
           };
         }
         {
-          Files = {
+          files = {
             header = true;
           };
         }
         {
-          Tools = {
+          "llm" = {
             header = true;
           };
         }
         {
-          "AI / LLM" = {
+          communication = {
             header = true;
           };
         }
         {
-          Security = {
-            header = true;
-          };
-        }
-        {
-          Communication = {
-            header = true;
-          };
-        }
-        {
-          "Arr Stack" = {
+          "arr-stack" = {
             header = true;
             columns = 2;
             initiallyCollapsed = true;
@@ -75,7 +76,7 @@
 
       # services on other machines — can't auto-register cross-machine
       serviceGroups = {
-        "Network" = [
+        "network" = [
           {
             "OpenWrt Router" = {
               href = "https://192.168.10.1";
@@ -95,7 +96,7 @@
             };
           }
         ];
-        "Infrastructure" = [
+        "infrastructure" = [
           {
             "JetKVM HA" = {
               href = "http://jetkvm-ha.lan";
@@ -112,9 +113,9 @@
           }
           {
             "Nixbox BMC" = {
-              href = "https://nixbox-bmc.lan";
+              href = "https://192.168.20.205";
               icon = "mdi-server-network";
-              siteMonitor = "https://nixbox-bmc.lan";
+              siteMonitor = "https://192.168.20.205";
             };
           }
           {
@@ -124,9 +125,7 @@
             };
           }
         ];
-        "Automation" = [
-          # Nixbot + Radicle tiles come from their own modules (nixworker),
-          # collected cross-host by homepage/collector.nix.
+        "code" = [
           {
             "Home Assistant" = {
               href = "http://homeassistant.lan:8123";
@@ -134,6 +133,8 @@
               siteMonitor = "http://homeassistant.lan:8123";
             };
           }
+        ];
+        "files" = [
           {
             # no siteMonitor: local-only gui port
             "Syncthing" = {

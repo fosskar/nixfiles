@@ -60,7 +60,7 @@
         }"
       ];
 
-      services.homepage-dashboard.serviceGroups."Communication" =
+      services.homepage-dashboard.serviceGroups."communication" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {

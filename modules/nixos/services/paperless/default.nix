@@ -162,7 +162,7 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."Files" =
+      services.homepage-dashboard.serviceGroups."files" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {

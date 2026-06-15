@@ -43,7 +43,7 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."Tools" =
+      services.homepage-dashboard.serviceGroups."tools" =
         lib.mkIf config.services.homepage-dashboard.enable
           [
             {

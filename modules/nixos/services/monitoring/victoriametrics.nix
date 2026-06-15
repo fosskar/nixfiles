@@ -89,7 +89,7 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."Monitoring" =
+        services.homepage-dashboard.serviceGroups."monitoring" =
           lib.mkIf config.services.homepage-dashboard.enable
             [
               {
