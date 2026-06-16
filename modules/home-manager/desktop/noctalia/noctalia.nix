@@ -245,6 +245,7 @@
                 end = [
                   "tray"
                   "tray-volume-spacer"
+                  "voxtype"
                   "input-volume"
                   "output-volume"
                   "brightness"
@@ -262,7 +263,21 @@
               enabled = true;
             };
 
+            plugins = {
+              enabled = [ "fosskar/voxtype" ];
+              source = [
+                {
+                  kind = "path";
+                  name = "nixfiles";
+                  location = ./plugins;
+                }
+              ];
+            };
+
             widget = {
+              voxtype = {
+                type = "fosskar/voxtype:status";
+              };
               clock = {
                 anchor = true;
                 format = "{:%H:%M}\\n{:%d.%m.%y}";

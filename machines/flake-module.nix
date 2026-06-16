@@ -301,16 +301,14 @@
             # pi-chat bundles a local llama-swap (mkDefault true); clients
             # use the remote executor, so don't build a local llama-cpp.
             extraModules = [
-              {
-                services.llama-swap.enable = false;
-                services.pi-chat.extensions.bash-confirm = false;
-                spaces.voxtype = {
-                  engine = "parakeet";
-                  parakeetModel = "parakeet-unified-en-0.6b";
-                  streaming = true;
-                  variant = "parakeet-migraphx";
-                };
-              }
+              (
+                { lib, ... }:
+                {
+                  services.llama-swap.enable = false;
+                  services.pi-chat.extensions.bash-confirm = false;
+                  systemd.user.services.voxtype.enable = lib.mkForce false;
+                }
+              )
             ];
           };
         };

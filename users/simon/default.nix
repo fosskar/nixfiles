@@ -37,6 +37,7 @@
       self.modules.homeManager.starship
       self.modules.homeManager.theme
       self.modules.homeManager.tmux
+      self.modules.homeManager.voxtype
       self.modules.homeManager.udiskie
       self.modules.homeManager.wezterm
       self.modules.homeManager.yazi

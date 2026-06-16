@@ -1,0 +1,29 @@
+id = "fosskar/voxtype"
+name = "Voxtype"
+version = "1.0.0"
+min_noctalia = "5.0.0"
+author = "fosskar"
+license = "MIT"
+tags = ["voice", "dictation"]
+icon = "microphone"
+description = "Voxtype status and recording control."
+
+[[setting]]
+key = "command"
+type = "string"
+label = "Voxtype command"
+default = "voxtype"
+
+[[setting]]
+key = "hide_idle"
+type = "bool"
+label = "Hide when idle"
+default = false
+
+[[widget]]
+id = "status"
+entry = "status.luau"
+
+[[service]]
+id = "watcher"
+entry = "watcher.luau"

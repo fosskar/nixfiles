@@ -145,6 +145,12 @@
     spaces.inputs.nixpkgs.follows = "nixpkgs";
     spaces.inputs.systems.follows = "systems";
     spaces.inputs.treefmt-nix.follows = "treefmt-nix";
+    spaces.inputs.voxtype.follows = "voxtype";
+
+    voxtype = {
+      url = "github:peteonrails/voxtype";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # wm
     niri-nix = {
