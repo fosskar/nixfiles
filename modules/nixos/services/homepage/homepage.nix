@@ -16,7 +16,7 @@
       cfg = config.services.homepage-dashboard;
     in
     {
-      # serviceGroups option is declared in base; collected fleet-wide by
+      # serviceGroups option is declared in base; collected clan-wide by
       # homepage/collector.nix. here we just render the merged result.
       config.services.homepage-dashboard = {
         enable = true;

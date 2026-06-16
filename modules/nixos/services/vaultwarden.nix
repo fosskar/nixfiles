@@ -17,7 +17,7 @@
     in
     {
       # dashboard tile + health check via the default options (collected
-      # fleet-wide by the homepage/gatus collectors)
+      # clan-wide by the homepage/gatus collectors)
       services.homepage-dashboard.serviceGroups."security" = [
         {
           "Vaultwarden" = {

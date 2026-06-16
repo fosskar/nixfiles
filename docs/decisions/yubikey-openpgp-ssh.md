@@ -20,7 +20,7 @@ through `gpg-agent`, the card behaves like an SSH agent with PIN cache TTLs, so 
 
 clan/sops secrets are encrypted to both the OpenPGP (PGP) recipient and the PIV `age-plugin-yubikey` recipient. decrypting through the PGP recipient goes via `gpg-agent`, so the same cached PIN that covers SSH and signing also covers secret decryption. the PIV/age path has no agent and re-prompts on every single decrypt.
 
-the payoff is batch deploys: updating many machines in one run decrypts many secrets, but with the gpg path the PIN is requested at most once per cache window instead of once per secret per machine. unattended fleet deploys become possible.
+the payoff is batch deploys: updating many machines in one run decrypts many secrets, but with the gpg path the PIN is requested at most once per cache window instead of once per secret per machine. unattended clan deploys become possible.
 
 this depends on sops using the PGP path rather than the PIV age identity, controlled by not exporting `SOPS_AGE_KEY_CMD` (see `.envrc`). the age recipient stays baked into every secret file as a portable fallback for machines where the gpg key is not set up.
 

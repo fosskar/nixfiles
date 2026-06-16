@@ -58,7 +58,7 @@ repo uses aspect-oriented composition: feature modules export aspect modules thr
 ### repo mapping
 
 - `modules/{nixos,home-manager}/`: feature/aspect modules (nixos + home-manager classes).
-- `modules/flake-parts/`: flake-level wiring/data, NOT feature modules — e.g. `flake.domains` (fleet DNS metadata), `flake.lib`, `systems`, treefmt, devshells, packages (pkgs-by-name), overlays. all auto-loaded by `import-tree ./modules`.
+- `modules/flake-parts/`: flake-level wiring/data, NOT feature modules — e.g. `flake.domains` (clan DNS metadata), `flake.lib`, `systems`, treefmt, devshells, packages (pkgs-by-name), overlays. all auto-loaded by `import-tree ./modules`.
 - flake-level vs feature: `flake.modules.*` (feature/aspect) live under `modules/{nixos,home-manager}/`; plain flake outputs/wiring (`flake.domains`, `flake.lib`, `systems`, …) live under `modules/flake-parts/`. don't put flake-level data in the nixos/home-manager aspect trees.
 - `machines/<machine>/configuration.nix`: host composition edge.
 - `machines/flake-module.nix`: clan inventory plus role composition edge.
@@ -183,7 +183,7 @@ that runs homepage/gatus.
 
 ## 7c) domains
 
-fleet DNS domains are flake-level metadata, NOT a nixos option:
+clan DNS domains are flake-level metadata, NOT a nixos option:
 
 - defined in `modules/flake-parts/domains.nix` as `flake.domains = { local = "nx3.eu"; public = "fosskar.eu"; }`.
 - access in nixos/home modules via `self.domains.local` / `flake-self.domains.local` (both are the flake; `self` is clan-provided, `flake-self` is the alias set in `flake.clan.specialArgs`).
