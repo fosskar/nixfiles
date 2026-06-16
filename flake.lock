@@ -365,11 +365,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1781495225,
-        "narHash": "sha256-2yPcqvTvBpdlf2/kOrV/Ymt/oolAg3L3YbrdWgZdByk=",
+        "lastModified": 1781585419,
+        "narHash": "sha256-kwaiEuBPPx+eVAtWA6ZkfN6xW6/pqw99ZGDX4Tn5RVY=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "61ee2dbfdb407af8a5a649683dc4966272a94b53",
+        "rev": "c6b0eb4de0e5010a752e312c0577a4d04d2a08a5",
         "type": "github"
       },
       "original": {
@@ -603,11 +603,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781411167,
-        "narHash": "sha256-GLf7zW8Oe+vMP2nNajKUShYkW0FsZ2nMkSsihX2cR6o=",
+        "lastModified": 1781585853,
+        "narHash": "sha256-Jxy8cO5gkixVBKtlcDSAKk9aEiof9L+96ttJJCJ3FwE=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "0c680d0426cf04641f718d083bd352e20bc3e0dc",
+        "rev": "a0a9d5a7a147044553d146e80e6a09d4fd045093",
         "type": "github"
       },
       "original": {
@@ -1301,10 +1301,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1781485467,
-        "narHash": "sha256-t+NRG3+NoVaiypPbOSNwdfsnAWAcRij6ynKiq1dItBg=",
+        "lastModified": 1781571865,
+        "narHash": "sha256-8qmr4/hn65SgDTYaz/VprSVOwirBNrCvpYGDHkIePT0=",
         "ref": "refs/heads/main",
-        "rev": "d10ab1a5cb75098a09246ac2ce418b1b78d6ef05",
+        "rev": "196af1f7e0bbcb119cf8311f9efeb2ed261a8173",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/wiki.git"
