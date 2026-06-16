@@ -24,30 +24,37 @@
           host = listenAddress;
           port = listenPort;
           n-gpu-layers = 999;
+          models-max = 1;
           models-preset = (pkgs.formats.ini { }).generate "llama-cpp-models-preset.ini" {
+            "*" = {
+              ctx-size = 32768;
+              flash-attn = "on";
+              cache-type-k = "q8_0";
+              cache-type-v = "q8_0";
+            };
             gemma4-e4b = {
               hf-repo = "unsloth/gemma-4-E4B-it-GGUF";
               hf-file = "gemma-4-E4B-it-Q4_K_M.gguf";
               alias = "gemma4-e4b";
-              jinja = "on";
               ctx-size = 131072;
-              parallel = 2;
+              temp = 1.0;
+              top-p = 0.95;
+              top-k = 64;
+              reasoning = "off";
             };
-            granite = {
-              hf-repo = "ibm-granite/granite-4.1-8b-GGUF";
-              hf-file = "granite-4.1-8b-Q4_K_M.gguf";
-              alias = "granite4.1-8b";
-              jinja = "on";
-              ctx-size = 65536;
-              parallel = 1;
+            gemma4-12b = {
+              hf-repo = "unsloth/gemma-4-12b-it-GGUF";
+              hf-file = "gemma-4-12b-it-Q4_K_M.gguf";
+              alias = "gemma4-12b";
+              temp = 1.0;
+              top-p = 0.95;
+              top-k = 64;
+              reasoning = "off";
             };
             qwen3_6-27b = {
               hf-repo = "unsloth/Qwen3.6-27B-GGUF";
               hf-file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
               alias = "qwen3.6-27b";
-              jinja = "on";
-              ctx-size = 32768;
-              parallel = 1;
               temp = 0.7;
               top-p = 0.8;
               top-k = 20;
@@ -55,22 +62,43 @@
               min-p = 0.00;
               reasoning = "off";
             };
-            qwen3_6-35b-a3b = {
-              hf-repo = "unsloth/Qwen3.6-35B-A3B-GGUF";
-              hf-file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";
-              alias = "qwen3.6-35b-a3b";
-              jinja = "on";
-              ctx-size = 32768;
-              parallel = 1;
+            qwen3_6-27b-mtp = {
+              hf-repo = "unsloth/Qwen3.6-27B-MTP-GGUF";
+              hf-file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
+              alias = "qwen3.6-27b-mtp";
               temp = 0.7;
               top-p = 0.8;
               top-k = 20;
               presence-penalty = 1.5;
               min-p = 0.00;
               reasoning = "off";
-              flash-attn = "on";
-              cache-type-k = "q4_0";
-              cache-type-v = "q4_0";
+              spec-type = "draft-mtp";
+              cache-type-k-draft = "q4_0";
+              cache-type-v-draft = "q4_0";
+            };
+            qwopus3_6-27b-v2-mtp = {
+              hf-repo = "Jackrong/Qwopus3.6-27B-v2-MTP-GGUF";
+              hf-file = "Qwopus3.6-27B-v2-MTP-Q4_K_M.gguf";
+              alias = "qwopus3.6-27b-v2-mtp";
+              parallel = 1;
+              temp = 1.0;
+              top-p = 0.95;
+              top-k = 20;
+              reasoning = "on";
+              spec-type = "draft-mtp";
+              cache-type-k-draft = "q4_0";
+              cache-type-v-draft = "q4_0";
+            };
+            qwen3_6-35b-a3b = {
+              hf-repo = "unsloth/Qwen3.6-35B-A3B-GGUF";
+              hf-file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";
+              alias = "qwen3.6-35b-a3b";
+              temp = 0.7;
+              top-p = 0.8;
+              top-k = 20;
+              presence-penalty = 1.5;
+              min-p = 0.00;
+              reasoning = "off";
             };
           };
         };
