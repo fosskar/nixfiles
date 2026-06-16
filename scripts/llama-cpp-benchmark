@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+out_dir="${1:-llama-cpp-benchmark-$(date -u +%Y%m%dT%H%M%SZ)}"
+llama_bench="${LLAMA_BENCH:-llama-bench}"
+repetitions="${REPETITIONS:-5}"
+prompt_tokens="${PROMPT_TOKENS:-512,2048}"
+generation_tokens="${GENERATION_TOKENS:-128,512}"
+batch_size="${BATCH_SIZE:-2048}"
+ubatch_size="${UBATCH_SIZE:-512}"
+flash_attn="${FLASH_ATTN:-on}"
+cache_type_k="${CACHE_TYPE_K:-q8_0}"
+cache_type_v="${CACHE_TYPE_V:-q8_0}"
+gpu_layers="${N_GPU_LAYERS:-999}"
+
+mkdir -p "$out_dir"
+: > "$out_dir/results.jsonl"
+: > "$out_dir/commands.log"
+
+need() {
+  command -v "$1" >/dev/null || {
+    echo "missing required command: $1" >&2
+    exit 1
+  }
+}
+
+need "$llama_bench"
+
+models=(
+  'gemma4-e4b|unsloth/gemma-4-E4B-it-GGUF|gemma-4-E4B-it-Q4_K_M.gguf'
+  'gemma4-12b|unsloth/gemma-4-12b-it-GGUF|gemma-4-12b-it-Q4_K_M.gguf'
+  'qwen3.6-27b|unsloth/Qwen3.6-27B-GGUF|Qwen3.6-27B-UD-Q4_K_XL.gguf'
+  'qwen3.6-27b-mtp|unsloth/Qwen3.6-27B-MTP-GGUF|Qwen3.6-27B-UD-Q4_K_XL.gguf'
+  'qwopus3.6-27b-v2-mtp|Jackrong/Qwopus3.6-27B-v2-MTP-GGUF|Qwopus3.6-27B-v2-MTP-Q4_K_M.gguf'
+  'qwen3.6-35b-a3b|unsloth/Qwen3.6-35B-A3B-GGUF|Qwen3.6-35B-A3B-UD-Q4_K_M.gguf'
+)
+
+if [ -n "${MODELS:-}" ]; then
+  selected=()
+  for wanted in $MODELS; do
+    found=0
+    for entry in "${models[@]}"; do
+      IFS='|' read -r alias _ _ <<< "$entry"
+      if [ "$alias" = "$wanted" ]; then
+        selected+=("$entry")
+        found=1
+        break
+      fi
+    done
+    if [ "$found" -eq 0 ]; then
+      echo "unknown model alias: $wanted" >&2
+      exit 1
+    fi
+  done
+  models=("${selected[@]}")
+fi
+
+for entry in "${models[@]}"; do
+  IFS='|' read -r alias repo file <<< "$entry"
+  echo "== $alias =="
+
+  cmd=(
+    "$llama_bench"
+    --hf-repo "$repo"
+    --hf-file "$file"
+    --n-prompt "$prompt_tokens"
+    --n-gen "$generation_tokens"
+    --batch-size "$batch_size"
+    --ubatch-size "$ubatch_size"
+    --flash-attn "$flash_attn"
+    --cache-type-k "$cache_type_k"
+    --cache-type-v "$cache_type_v"
+    --n-gpu-layers "$gpu_layers"
+    --repetitions "$repetitions"
+    --output jsonl
+  )
+
+  printf '%q ' "${cmd[@]}" >> "$out_dir/commands.log"
+  printf '\n' >> "$out_dir/commands.log"
+
+  "${cmd[@]}" \
+    | while IFS= read -r line; do
+        printf '{"alias":"%s",%s\n' "$alias" "${line#\{}" >> "$out_dir/results.jsonl"
+      done
+done
+
+printf 'wrote %s/results.jsonl\n' "$out_dir"
+printf 'wrote %s/commands.log\n' "$out_dir"
