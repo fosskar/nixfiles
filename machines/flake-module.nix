@@ -304,6 +304,12 @@
               {
                 services.llama-swap.enable = false;
                 services.pi-chat.extensions.bash-confirm = false;
+                spaces.voxtype = {
+                  engine = "parakeet";
+                  parakeetModel = "parakeet-unified-en-0.6b";
+                  streaming = true;
+                  variant = "parakeet-migraphx";
+                };
               }
             ];
           };
