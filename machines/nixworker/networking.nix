@@ -29,4 +29,10 @@
       ];
     };
   };
+
+  # address + mac auto-extracted from networking.interfaces.bond0
+  topology.self = {
+    hardware.info = "server / remote builder";
+    interfaces.bond0.network = "server";
+  };
 }

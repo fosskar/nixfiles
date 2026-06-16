@@ -27,6 +27,14 @@
     keep-outputs = false;
   };
 
+  topology.self = {
+    hardware.info = "hetzner vps";
+    interfaces.wan = {
+      addresses = [ "138.201.155.21" ];
+      network = "internet";
+    };
+  };
+
   preservation.preserveAt."/persist".directories = [
     {
       directory = "/var/lib/private";

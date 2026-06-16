@@ -44,6 +44,12 @@
     linkConfig.WakeOnLan = "off";
   };
 
+  # address + mac auto-extracted from networking.interfaces.bond0
+  topology.self = {
+    hardware.info = "server / 10gbe bond";
+    interfaces.bond0.network = "server";
+  };
+
   # udev rules for network interfaces
   services.udev.extraRules = ''
     # increase ring buffer to reduce packet drops on 10G NIC
