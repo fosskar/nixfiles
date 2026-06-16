@@ -18,6 +18,7 @@
 
   # derive address from the networkmanager profile ("ip/cidr,gateway")
   topology.self = {
+    icon = "devices.desktop";
     hardware.info = "workstation";
     interfaces.lan = {
       addresses = [
