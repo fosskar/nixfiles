@@ -1,8 +1,7 @@
 {
-  flake.modules.nixos.workstation =
+  flake.modules.nixos.base =
     { lib, ... }:
     {
-      # firmware update daemon
       services.fwupd.enable = lib.mkDefault true;
     };
 }
