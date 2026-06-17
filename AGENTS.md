@@ -156,6 +156,7 @@ Rules:
 - service on machine A appears on machine B homepage/gatus by setting default options on A
 - caddy has no cross-host collector
 - service-specific secret wiring stays in service module
+- public `*.fosskar.eu` ingress = netbird-proxy on `gateway`, configured in the netbird UI (not declarative); a service maps a domain to a `{peer,protocol,port}` target, straight to peer:appPort (no caddy hop); exposed modules must bind `0.0.0.0`/wt0, not loopback, and keep the LAN closed (`openFirewall = false`) (`docs/netbird-exposure.md`)
 
 ## domains
 
@@ -242,6 +243,7 @@ If user says "commit and push": include full working copy scope unless narrowed;
 - tuned has nixpkgs `ppd.conf` workaround
 - netbird is custom module set here
 - netbird reverse proxy: permanent dashboard/API peer targets need service on peer NetBird interface (`0.0.0.0` or NetBird IP); `netbird expose` can expose local `127.0.0.1` via peer-created tunnel
+- public exposure is configured in the netbird UI, not the repo; inspect live domain->peer:port mappings read-only in `/var/lib/netbird-server/store.db` on gateway (`docs/netbird-exposure.md`)
 - remote-builder: `sshUser = "nix-remote-builder"` needs real shell; nologin breaks `ssh-ng`
 - remote-builder proof: `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`
 - harmonia option: `services.harmonia.cache.*`
