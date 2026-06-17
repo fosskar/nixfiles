@@ -13,6 +13,8 @@
     self.modules.nixos.hermesAgent
     self.modules.nixos.signalCli
     self.modules.nixos.radicle
+    self.modules.nixos.tangledKnot
+    self.modules.nixos.tangledSpindle
     self.modules.nixos.homeManager
   ]
   ++ (nflib.scanPaths ./. { });
