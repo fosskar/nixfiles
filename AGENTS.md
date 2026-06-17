@@ -1,26 +1,35 @@
 # nixfiles agent playbook
 
-purpose: help agents work fast + correctly in this repo without stale assumptions.
+## hard rules
 
-## 0) hard rules
+- declarative first; no manual drift
+- no destructive remote actions unless explicit
+- do not run by default: `clan machines update`, `reboot`, `systemctl restart`, destructive migrations
+- atomic commits only
+- prefer minimal direct fix over abstractions
+- no unnecessary single-use `let ... in` or local abstractions
+- avoid Nix `with`; use explicit attrs
+- existing text/pattern is evidence, not justification; keep only if it serves current repo/task
+- explain why, not code tours
+- code comments: default zero; only non-obvious why/ref/FIXME/gotcha; no headers, tours, restatement, or comments bulkier than code
+- no guessing/hedging; verify or say unknown
+- external claims: verify in source and cite path, else say unknown
+- `nix fmt` after nix edits
 
-- declarative first. no manual drift.
-- no destructive remote actions unless user explicitly says so.
-  - do not run: `clan machines update`, `reboot`, `systemctl restart`, destructive migrations.
-- atomic commits only.
-- prefer minimal direct fix over abstractions.
-- do not introduce unnecessary `let ... in` bindings or other local abstractions for single-use values.
-- avoid Nix `with` expressions; prefer explicit attribute references.
-- existing text/pattern is evidence, not justification; keep it only if it still serves current repo/task.
-- explain why, not code-tour.
-- comments in code: default to ZERO. the code already states what it does; do not restate it. write a comment only for information the code cannot convey: a non-obvious _why_, a ref/link, a real FIXME/reminder, or a genuine gotcha (e.g. recursion trap). never narrate paths, types, option names, or what an expression evaluates to. one short line, lowercase. no header/banner blocks, no per-attr annotations, no "exposed as / used by / see file x" tour comments. if a comment restates the next line, delete it. comments must never out-bulk the code in an edit.
-- no guessing/hedging in responses (`likely`, `maybe`, `probably`). verify with evidence or state unknown.
-- for external claims: verify in source, cite path, else say unknown.
-- run `nix fmt` after nix edits.
+## output
 
-## 1) initial repo check
+Chat replies: smart caveman. Artifacts use normal English unless requested: code, comments, docs, issues, PR/MR text, commits, email.
 
-run before non-trivial repo changes:
+- drop articles, filler, pleasantries
+- no hedging; verify or say unknown
+- fragments ok; short synonyms
+- exact: technical terms, identifiers, paths, commands, config, errors
+- pattern: `[thing] [action] [reason]. [next step]`
+- expand for safety, destructive confirmations, multi-step instructions, nontrivial reasoning, clarification
+
+## initial checks
+
+Before nontrivial repo changes:
 
 ```bash
 jj status
@@ -29,76 +38,69 @@ rg "imports|scanPaths|self\.modules|config\.flake\.modules" machines modules cla
 rg "inventory =|instances =|roles\.|tags\." machines/flake-module.nix
 ```
 
-if task touches option/service/module:
+If task touches option/service/module:
 
 ```bash
 rg "<option|service|module|domain>" machines modules clan-services users docs
 ```
 
-do not run clan/deploy/network commands as default orientation. use them only when task explicitly touches clan inventory, vars, deployment, or runtime networking; prefer local `rg`/`nix eval` first.
+Do not use clan/deploy/network commands for discovery. Use only when task explicitly touches clan inventory, vars, deployment, or runtime networking. Prefer local `rg`/`nix eval`.
 
-## 2) core concepts
+## model
 
-### aspect / flake-parts module model
+- feature module: flake-parts module exporting `flake.modules.*` and related wiring
+- aspect module: module for one class, e.g. `flake.modules.nixos.<name>`, `flake.modules.homeManager.<name>`
+- simple aspect: imported directly
+- multi-context aspect: main aspect wires nested context, e.g. nixos + home-manager
+- inheritance aspect: imports parent aspects, then extends/overrides
+- conditional aspect: conditional content; unconditional imports
+- collector aspect: collects contributions from other feature modules; not broad role/profile
+- feature-owned integration: service/app glue lives in feature module needing it
+- composition edge: machine/clan role imports choosing aspects for concrete target
+- import is primary enable mechanism
+- feature modules should own homepage, gatus, reverse proxy, desktop shortcuts, window rules, and related glue; guard on integrated service when needed
 
-repo uses aspect-oriented composition: feature modules export aspect modules through `flake.modules.*`; machines and clan roles select those aspects through imports.
+## repo map
 
-- feature module: flake-parts module that defines one or more `flake.modules.*` entries and any related flake wiring.
-- aspect module: module for one configuration class, e.g. `flake.modules.nixos.<name>`, `flake.modules.homeManager.<name>`.
-- simple aspect: independent aspect imported directly where needed.
-- multi-context aspect: main aspect also wires a nested context, e.g. a nixos aspect importing/wiring home-manager.
-- inheritance aspect: aspect imports parent aspects, then extends or overrides them.
-- conditional aspect: aspect content is conditional; imports stay unconditional.
-- collector aspect: one aspect collects contributions from other feature modules. this is distinct from a broad role/profile feature.
-- feature-owned integration: service/app-specific glue lives in the feature module that needs it, not in the module it integrates with.
-- composition edge: place that chooses aspects for a concrete target, mainly host imports and clan role imports.
-- import is the primary enable mechanism.
-- make feature modules self-contained: if a feature needs homepage entries, gatus checks, reverse proxy routes, desktop shortcuts, window rules, or related glue, define that glue in the feature module and guard it on the integrated service being enabled when needed.
+- `modules/{nixos,home-manager}/`: feature/aspect modules
+- `modules/flake-parts/`: flake-level wiring/data, not feature modules; e.g. `flake.domains`, `flake.lib`, `systems`, treefmt, devshells, packages, overlays; auto-loaded by `import-tree ./modules`
+- `machines/<machine>/configuration.nix`: host composition edge
+- `machines/flake-module.nix`: clan inventory and role composition edge
+- `clan-services/`: clan service modules, role wiring, vars
+- `users/simon/`: home-manager user composition
+- `openwrt/`: declarative router/ap config; uci via `openwrt/nix/uci.nix`, raw config under `openwrt/devices/<device>/files/`; lan router `192.168.10.1` runs unbound, split-horizon for `nx3.eu`, and adguardhome; config lives here, not on device
 
-### repo mapping
+## clan
 
-- `modules/{nixos,home-manager}/`: feature/aspect modules (nixos + home-manager classes).
-- `modules/flake-parts/`: flake-level wiring/data, NOT feature modules — e.g. `flake.domains` (clan DNS metadata), `flake.lib`, `systems`, treefmt, devshells, packages (pkgs-by-name), overlays. all auto-loaded by `import-tree ./modules`.
-- flake-level vs feature: `flake.modules.*` (feature/aspect) live under `modules/{nixos,home-manager}/`; plain flake outputs/wiring (`flake.domains`, `flake.lib`, `systems`, …) live under `modules/flake-parts/`. don't put flake-level data in the nixos/home-manager aspect trees.
-- `machines/<machine>/configuration.nix`: host composition edge.
-- `machines/flake-module.nix`: clan inventory plus role composition edge.
-- `clan-services/`: clan service feature modules and role wiring.
-- `users/simon/`: home-manager user composition.
-- `openwrt/`: declarative openwrt config for router and ap (uci via `openwrt/nix/uci.nix`, raw config files under `openwrt/devices/<device>/files/`). the lan router (192.168.10.1) runs unbound (caching resolver for the whole lan, split-horizon for nx3.eu) and adguardhome; its config lives here, not on the device. dns/network tasks must check `openwrt/devices/router/` before suggesting resolver or firewall changes.
+Clan owns inventory, tags, secrets/vars, and service role assignment. Host files own host-local composition and hardware/storage.
 
-### clan model
+- inventory/tags decide role targets
+- `instances` wire roles to machines/tags and can inject nixos modules
+- `clan-services/` defines reusable service modules, roles, peer wiring, vars
+- prefer `clan.core.vars.generators` for secrets
+- deployment/runtime clan commands are not discovery commands
 
-clan owns machine inventory, tags, secrets/vars, and service role assignment. host files own host-local composition and hardware/storage details.
+## investigation
 
-- inventory and tags decide which clan roles apply to which machines.
-- clan `instances` wire roles to machines/tags and can inject extra nixos modules.
-- `clan-services/` defines reusable clan service modules, role modules, peer wiring, and vars.
-- secrets should use `clan.core.vars.generators` when possible.
-- deployment/runtime clan commands are not discovery commands; prefer reading/evaluating local nix first.
+- module edit: prove export, importers, duplicate contributors
+- machine edit: inspect host imports and files loaded by `scanPaths`
+- clan behavior: inspect inventory instance, role settings, target tags/machines, related `clan-services`
+- service/front-door: inspect service module and reverse proxy vhost/routes
+- persistence: inspect `preservation.preserveAt."/persist"` users and rollback module
+- prefer local search/eval; runtime commands only when needed or requested
 
-## 3) investigation rules
+## machines
 
-agents know their tools; this section defines what must be proven before editing.
+Machine ids source: `machines/flake-module.nix`.
 
-- before changing a module, prove where its aspect is exported, where it is imported, and whether multiple files contribute to the same aspect.
-- before changing a machine, inspect host imports plus files included by `scanPaths`.
-- before changing clan behavior, inspect inventory instance, role settings, target tags/machines, and related `clan-services` module.
-- before changing service/front-door behavior, inspect service module plus reverse proxy vhost/route definitions.
-- before changing persistence, inspect `preservation.preserveAt."/persist"` users and rollback module.
-- prefer local repo search/eval for discovery. use clan/runtime/network commands only when task needs runtime state or user explicitly asks.
-
-## 5) machines and access
-
-machine ids are source-of-truth in `machines/flake-module.nix`; do not hardcode a list here.
-
-discover:
+Discover:
 
 ```bash
 nix eval .#clan.inventory.machines --json | jq 'keys'
 fd -td -d1 . machines
 ```
 
-ssh patterns:
+SSH:
 
 ```bash
 clan ssh <machine>
@@ -107,99 +109,70 @@ ssh <machine>.lan
 ssh root@<ip>
 ```
 
-## 6) task routing cheatsheet
+## task routing
 
-- change service behavior globally:
-  - edit/export relevant `modules/nixos/services/<service>.nix` or submodule
-  - verify host/clan imports using `rg "self.modules.nixos.<name>|config.flake.modules.nixos.<name>"`
-- change one host:
-  - edit `machines/<host>/configuration.nix` or host-local file loaded via `scanPaths`
-- change common role behavior:
-  - edit aggregate module in `modules/nixos/common/{base,server,workstation}/`
-  - verify clan importer roles in `machines/flake-module.nix`
-- change clan role assignment/service ownership:
-  - edit instance block in `machines/flake-module.nix`
-- change clan service implementation:
-  - edit `clan-services/<service>/default.nix`
-  - edit `clan-services/<service>/flake-module.nix` for service module wiring
-- expose a service on the dashboard / monitoring / reverse proxy:
-  - in the service module use the DEFAULT options (see section 7b): `services.homepage-dashboard.serviceGroups.<group>`, `services.gatus.settings.endpoints` (via `nflib.gatusEndpoint`), `services.caddy.virtualHosts.<host>`
-- debug option conflict:
-  - `rg` all setters, then `nix eval` exact option
-- add reusable module:
-  - create under matching aspect tree in `modules/`
-  - export through `flake.modules.<class>.<name>`
-  - import it from machine/clan composition edge; import means enabled unless module defines its own `enable`
-- add/update a local package:
-  - create `packages/<name>/package.nix` (RFC-140 by-name layout, auto-discovered by `pkgs-by-name-for-flake-parts`); available as flake package `<name>` and `pkgs.custom.<name>`.
-  - x86-only packages: add the name to `x86OnlyPackages` in `modules/flake-parts/treefmt.nix` so CI skips them on other systems.
-- add flake-level wiring/data (not a feature module):
-  - put it under `modules/flake-parts/` (e.g. `flake.domains`, `flake.lib`, overlays, systems, treefmt, devshells); auto-loaded by `import-tree ./modules`.
+- global service behavior: edit/export `modules/nixos/services/<service>.nix`; verify importers with `rg "self.modules.nixos.<name>|config.flake.modules.nixos.<name>"`
+- one host: edit `machines/<host>/configuration.nix` or scanned host-local file
+- common role: edit `modules/nixos/common/{base,server,workstation}/`; verify clan roles in `machines/flake-module.nix`
+- clan role assignment/ownership: edit `machines/flake-module.nix`
+- clan service implementation: edit `clan-services/<service>/default.nix`; service wiring in `clan-services/<service>/flake-module.nix`
+- dashboard/monitoring/reverse proxy: use default options in service module; see service exposure
+- option conflict: `rg` setters, then `nix eval` exact option
+- reusable module: create under matching `modules/` tree; export `flake.modules.<class>.<name>`; import at composition edge
+- local package: `packages/<name>/package.nix`; available as flake package `<name>` and `pkgs.local.<name>`; x86-only add to `x86OnlyPackages` in `modules/flake-parts/treefmt.nix`
+- flake-level data: `modules/flake-parts/`
 
-## 7) module patterns
+## module patterns
 
-- `modules/` is auto-imported by `import-tree` (flake.nix); a `_` prefix on a file or directory excludes it (convention for disabling a module).
-- `nflib.scanPaths ./. { }` auto-imports directory nix files where explicitly called (e.g. machine dirs); it has NO `_` prefix convention.
-- `nflib.scanFlakeModules ./.` auto-discovers `flake-module.nix` files.
-- module files under `modules/` usually assign `flake.modules.<class>.<name> = ...`.
-- same exported module name can be extended by multiple files; grep all definitions before editing collectors like `base`, `server`, `workstation`, `gaming`, `arrStack`, `homepage`.
-- default rule: import => enabled.
-- exception: modules with explicit `enable` options or upstream services still need those options.
-- prefer upstream option namespaces (`services.*`, `programs.*`, `users.*`, `preservation.*`, `clan.core.*`) over repo-specific wrappers.
+- `modules/` auto-imported by `import-tree`; `_` prefix excludes
+- `nflib.scanPaths ./. { }` auto-imports directory nix files where called; no `_` convention
+- `nflib.scanFlakeModules ./.` discovers `flake-module.nix`
+- module files usually assign `flake.modules.<class>.<name>`
+- same exported module can have multiple contributors; grep before editing collectors (`base`, `server`, `workstation`, `gaming`, `arrStack`, `homepage`)
+- default: import => enabled
+- exception: explicit `enable` options or upstream services
+- prefer upstream namespaces: `services.*`, `programs.*`, `users.*`, `preservation.*`, `clan.core.*`
+- overrides: `lib.mkDefault` for defaults; `lib.mkForce` only for real conflicts
+- avoid new options unless asked; hardcode sane defaults first
 
-override tools:
+## service exposure
 
-- `lib.mkDefault` for soft defaults
-- `lib.mkForce` for real conflicts only
-- avoid adding new options unless user asked; hardcode sane defaults first
+Services declare dashboard, health check, and reverse proxy with default options. No custom registry option. Cross-host collectors pull remote `serviceGroups`/gatus `endpoints` into homepage/gatus host.
 
-## 7b) service exposure (dashboard / monitoring / reverse proxy)
+Dashboard:
 
-services declare their dashboard tile, health check, and reverse proxy with the
-DEFAULT options in the service module. there is NO custom registry option. cross-
-host is handled by collectors that pull other machines' definitions into the host
-that runs homepage/gatus.
+```nix
+services.homepage-dashboard.serviceGroups.<group> = [ { "<Name>" = { href; icon; siteMonitor; }; } ];
+```
 
-- dashboard tile:
-  `services.homepage-dashboard.serviceGroups.<group> = [ { "<Name>" = { href; icon; siteMonitor; }; } ];`
-  - the `serviceGroups` option is declared in `base` (all machines), so a host
-    that does NOT run homepage can still author tiles (picked up cross-host).
-  - do NOT guard tiles with `mkIf config.services.homepage-dashboard.enable` on
-    a host that doesn't run homepage — that would hide it from the collector.
-- health check:
-  `services.gatus.settings.endpoints = [ (nflib.gatusEndpoint { name; url; group; }) ];`
-  (don't guard with `mkIf config.services.gatus.enable` on non-gatus hosts.)
-- reverse proxy (LOCAL host only):
-  `services.caddy.virtualHosts.<host>.extraConfig = "...";`
-- cross-host collectors run on the homepage/gatus host and merge OTHER machines'
-  `serviceGroups` / gatus `endpoints` into the local instance, excluding self to
-  avoid recursion: `modules/nixos/services/{homepage,gatus}/collector.nix`. so a
-  service on machine A (e.g. nixbot on nixworker) shows up on machine B's
-  dashboard/monitoring just by setting the default options on A.
-- caddy has no cross-host collector (you don't proxy a remote host's service);
-  the vhost is written directly by the service on its own host.
-- service-specific secret wiring (authelia oidc clients, etc.) stays in the
-  service module.
+Rules:
 
-## 7c) domains
+- `serviceGroups` declared in `base`; non-homepage hosts can author tiles
+- do not guard dashboard tiles with `mkIf config.services.homepage-dashboard.enable` on non-homepage hosts
+- gatus: `services.gatus.settings.endpoints = [ (nflib.gatusEndpoint { name; url; group; }) ];`
+- do not guard gatus endpoints with `mkIf config.services.gatus.enable` on non-gatus hosts
+- local reverse proxy only: `services.caddy.virtualHosts.<host>.extraConfig`
+- collectors: `modules/nixos/services/{homepage,gatus}/collector.nix`; exclude self to avoid recursion
+- service on machine A appears on machine B homepage/gatus by setting default options on A
+- caddy has no cross-host collector
+- service-specific secret wiring stays in service module
 
-clan DNS domains are flake-level metadata, NOT a nixos option:
+## domains
 
-- defined in `modules/flake-parts/domains.nix` as `flake.domains = { local = "nx3.eu"; public = "fosskar.eu"; }`.
-- access in nixos/home modules via `self.domains.local` / `flake-self.domains.local` (both are the flake; `self` is clan-provided, `flake-self` is the alias set in `flake.clan.specialArgs`).
-- access in flake-parts/clan inventory via `config.flake.domains.local`.
-- there is NO `config.domains` option — don't reintroduce one; build hostnames from `<sub>.${self.domains.local}`.
+- defined in `modules/flake-parts/domains.nix`: `flake.domains = { local = "nx3.eu"; public = "fosskar.eu"; }`
+- nixos/home access: `self.domains.local` or `flake-self.domains.local`
+- flake-parts/clan access: `config.flake.domains.local`
+- no `config.domains`; build hostnames from `<sub>.${self.domains.local}`
 
-## 8) vars/secrets
+## vars/secrets
 
-- prefer clan vars generators for service secrets.
-- generator naming rule:
-  - generator name = service
-  - file name = secret/env filename
-  - use `clan.core.vars.generators.<service>.files."<file>"`
-- manual secret path only when already in use for that service.
+- prefer `clan.core.vars.generators`
+- generator name = service
+- file name = secret/env filename
+- use `clan.core.vars.generators.<service>.files."<file>"`
+- manual secret path only when already in use
 
-example:
+Example:
 
 ```nix
 clan.core.vars.generators.myservice = {
@@ -210,20 +183,18 @@ clan.core.vars.generators.myservice = {
 };
 ```
 
-## 9) verify proportionally
+## verification
 
-- docs/text only: no build.
-- simple value change in existing option: `nix eval` target option.
-- structural/module/import/package changes: build touched machine(s).
-
-commands:
+- docs/text only: no build
+- simple value change: `nix eval` target option
+- structural/module/import/package changes: build touched machines
 
 ```bash
 nix eval .#nixosConfigurations.<machine>.config.<option> --json
 nix build .#nixosConfigurations.<machine>.config.system.build.toplevel
 ```
 
-## 10) debugging quick cmds
+## debugging
 
 ```bash
 journalctl -u <service> -f
@@ -231,17 +202,17 @@ systemctl status <service>
 nix log <store-path>
 ```
 
-## 11) vcs
+## vcs
 
-use jj, not git porcelain.
+Prefer jj over git in colocated repos.
 
-never run:
+Never run:
 
 - `jj restore`
 - `git restore`
 - `git checkout -- <file>`
 
-use:
+Use:
 
 ```bash
 jj status
@@ -254,36 +225,31 @@ jj bookmark set main -r @
 jj git push
 ```
 
-if user says "commit and push":
+If user says "commit and push": include full working copy scope unless narrowed; split atomically; move `main`; push; do not reconfirm.
 
-- include full working copy scope unless user narrows.
-- split atomically by logical change.
-- move `main` then push.
-- do not reconfirm explicit imperative command.
+## nix/dev
 
-## 12) nix/dev env notes
+- prefer `nix build`, `nix shell`, `nix develop`
+- temp tool: `nix shell nixpkgs#<pkg>`
+- format nix: `nix fmt`
 
-- prefer flake-native commands (`nix build`, `nix shell`, `nix develop`).
-- temporary tool: `nix shell nixpkgs#<pkg>`.
-- format nix: `nix fmt`.
+## sharp edges
 
-## 13) sharp edges / quirks
+- preservation: root ephemeral; persist explicit dirs/files only (`docs/decisions/state-persistence.md`)
+- first install: preservation disabled; enable after secrets land (`machines/README.md`)
+- zfs: keep `networking.hostId` stable
+- grafana oidc role mapping needs `groups` in `id_token`
+- tuned has nixpkgs `ppd.conf` workaround
+- netbird is custom module set here
+- netbird reverse proxy: permanent dashboard/API peer targets need service on peer NetBird interface (`0.0.0.0` or NetBird IP); `netbird expose` can expose local `127.0.0.1` via peer-created tunnel
+- remote-builder: `sshUser = "nix-remote-builder"` needs real shell; nologin breaks `ssh-ng`
+- remote-builder proof: `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`
+- harmonia option: `services.harmonia.cache.*`
+- do not force `--build-host localhost` in shell wrappers
 
-- preservation: root is ephemeral; persist explicit dirs/files only (`docs/decisions/state-persistence.md`).
-- first install with preservation disabled; enable after secrets have landed (`machines/README.md`).
-- zfs machines: keep `networking.hostId` stable.
-- grafana oidc role mapping needs `groups` in `id_token`.
-- tuned has nixpkgs bug workaround (`ppd.conf` issue).
-- netbird is custom module set in this repo.
-- netbird reverse proxy has two modes: permanent dashboard/API peer targets need service reachable on peer NetBird interface (bind `0.0.0.0` or NetBird IP); `netbird expose` can expose local `127.0.0.1` services through peer-created ephemeral tunnel.
-- remote-builder: `sshUser = "nix"` needs real shell on builder; nologin breaks `ssh-ng`.
-- remote-builder proof cmd: `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`.
-- harmonia option path is `services.harmonia.cache.*`.
-- do not force `--build-host localhost` in shell wrappers.
+## finish
 
-## 14) pre-finish checklist
-
-- `nix fmt` after nix edits.
-- verify proportionally.
-- track newly created files if any (`jj file track <path>`).
-- do not deploy/restart/update remote machines unless explicitly asked.
+- `nix fmt` after nix edits
+- verify proportionally
+- track new files if any (`jj file track <path>`)
+- do not deploy/restart/update remote machines unless explicit
