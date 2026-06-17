@@ -9,7 +9,9 @@ from contextlib import contextmanager
 from pathlib import Path
 
 
-def run(args: list[str], cwd: Path | None = None, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+def run(
+    args: list[str], cwd: Path | None = None, env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(args, cwd=cwd, env=env, text=True, check=True)
 
 
@@ -37,7 +39,14 @@ def worktree(branch: str, base: str) -> Iterator[Path]:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
-def commit_all(cwd: Path, message: str, author_name: str, author_email: str, committer_name: str, committer_email: str) -> bool:
+def commit_all(
+    cwd: Path,
+    message: str,
+    author_name: str,
+    author_email: str,
+    committer_name: str,
+    committer_email: str,
+) -> bool:
     if not has_changes(cwd):
         return False
     run(["git", "add", "flake.lock"], cwd=cwd)

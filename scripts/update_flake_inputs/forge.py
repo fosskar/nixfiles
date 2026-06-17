@@ -29,7 +29,9 @@ class Forgejo:
         self.token = token
         self.api_url = f"{self.server_url}/api/v1"
 
-    def request(self, method: str, path: str, data: dict[str, Any] | None = None) -> Any:
+    def request(
+        self, method: str, path: str, data: dict[str, Any] | None = None
+    ) -> Any:
         body = None if data is None else json.dumps(data).encode()
         request = urllib.request.Request(
             f"{self.api_url}{path}",
@@ -93,7 +95,9 @@ class Forgejo:
                     )
             page += 1
 
-    def create_pull_request(self, branch: str, base: str, title: str, body: str) -> PullRequest:
+    def create_pull_request(
+        self, branch: str, base: str, title: str, body: str
+    ) -> PullRequest:
         pr = self.request(
             "POST",
             f"/repos/{self.repository}/pulls",

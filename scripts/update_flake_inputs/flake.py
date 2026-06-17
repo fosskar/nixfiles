@@ -27,7 +27,12 @@ def locked_node(lock: Lock, input_name: str) -> dict[str, Any] | None:
 def locked_ref(lock: Lock, input_name: str) -> str:
     node = locked_node(lock, input_name) or {}
     locked = node.get("locked", {})
-    value = locked.get("rev") or locked.get("narHash") or locked.get("lastModified") or "unknown"
+    value = (
+        locked.get("rev")
+        or locked.get("narHash")
+        or locked.get("lastModified")
+        or "unknown"
+    )
     return str(value)
 
 

@@ -10,16 +10,16 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/f32"
+	"gioui.org/io/event"
 	"gioui.org/io/key"
 	"gioui.org/io/pointer"
-	"gioui.org/io/event"
 	"gioui.org/io/system"
-	"gioui.org/unit"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
+	"gioui.org/unit"
 	"gioui.org/widget/material"
 )
 
@@ -54,13 +54,13 @@ func showOverlay(imgData []byte, words []Word) error {
 	}
 
 	state := &overlayState{
-		words:    words,
+		words:       words,
 		selected:    make(map[int]bool),
 		lastClicked: -1,
-		img:      img,
-		imgOp:    paint.NewImageOp(img),
-		imgW:     img.Bounds().Dx(),
-		imgH:     img.Bounds().Dy(),
+		img:         img,
+		imgOp:       paint.NewImageOp(img),
+		imgW:        img.Bounds().Dx(),
+		imgH:        img.Bounds().Dy(),
 	}
 
 	go func() {

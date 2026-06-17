@@ -20,19 +20,37 @@ def env_first(*names: str) -> str:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="update flake inputs and create Forgejo pull requests")
+    parser = argparse.ArgumentParser(
+        description="update flake inputs and create Forgejo pull requests"
+    )
     parser.add_argument("--forgejo-url", default=env_first("FORGEJO_URL", "GITEA_URL"))
-    parser.add_argument("--forgejo-repository", default=env_first("FORGEJO_REPOSITORY", "GITEA_REPOSITORY"))
-    parser.add_argument("--forgejo-token", default=env_first("FORGEJO_TOKEN", "GITEA_TOKEN"))
+    parser.add_argument(
+        "--forgejo-repository",
+        default=env_first("FORGEJO_REPOSITORY", "GITEA_REPOSITORY"),
+    )
+    parser.add_argument(
+        "--forgejo-token", default=env_first("FORGEJO_TOKEN", "GITEA_TOKEN")
+    )
     parser.add_argument("--base-branch", default="main")
     parser.add_argument("--branch-prefix", default="update-")
     parser.add_argument("--auto-merge", action="store_true")
     parser.add_argument("--cleanup-stale-branches", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--git-author-name", default=env_first("GIT_AUTHOR_NAME") or "nixfiles-bot")
-    parser.add_argument("--git-author-email", default=env_first("GIT_AUTHOR_EMAIL") or "nixfiles-bot@noreply.codeberg.org")
-    parser.add_argument("--git-committer-name", default=env_first("GIT_COMMITTER_NAME") or "nixfiles-bot")
-    parser.add_argument("--git-committer-email", default=env_first("GIT_COMMITTER_EMAIL") or "nixfiles-bot@noreply.codeberg.org")
+    parser.add_argument(
+        "--git-author-name", default=env_first("GIT_AUTHOR_NAME") or "nixfiles-bot"
+    )
+    parser.add_argument(
+        "--git-author-email",
+        default=env_first("GIT_AUTHOR_EMAIL") or "nixfiles-bot@noreply.codeberg.org",
+    )
+    parser.add_argument(
+        "--git-committer-name",
+        default=env_first("GIT_COMMITTER_NAME") or "nixfiles-bot",
+    )
+    parser.add_argument(
+        "--git-committer-email",
+        default=env_first("GIT_COMMITTER_EMAIL") or "nixfiles-bot@noreply.codeberg.org",
+    )
     return parser.parse_args()
 
 
@@ -48,7 +66,9 @@ def validate_args(args: argparse.Namespace) -> None:
         raise SystemExit("missing: " + ", ".join(missing))
 
 
-def update_input(input_name: str, args: argparse.Namespace, forge: Forgejo | None) -> bool:
+def update_input(
+    input_name: str, args: argparse.Namespace, forge: Forgejo | None
+) -> bool:
     lock_before = read_lock(Path("flake.lock"))
     old = locked_ref(lock_before, input_name)
     branch = f"{args.branch_prefix}{input_name}".replace("/", "-").strip("-")
@@ -94,7 +114,9 @@ def update_input(input_name: str, args: argparse.Namespace, forge: Forgejo | Non
                 print(f"update {input_name}: reuse PR #{pr.number}: {pr.html_url}")
         except ForgeError as error:
             if error.status == 429:
-                print(f"update {input_name}: PR creation rate-limited; branch kept: {branch}")
+                print(
+                    f"update {input_name}: PR creation rate-limited; branch kept: {branch}"
+                )
                 return True
             raise
 
