@@ -4,7 +4,6 @@
       nflib,
       flake-self,
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -182,19 +181,17 @@
         "video"
       ];
 
-      services.homepage-dashboard.serviceGroups."media" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "Immich" = {
-                href = "https://${localHost}";
-                icon = "immich.png";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."media" = [
+        {
+          "Immich" = {
+            href = "https://${localHost}";
+            icon = "immich.png";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "Immich";
           url = "https://${localHost}";

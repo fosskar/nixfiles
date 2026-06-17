@@ -218,19 +218,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."files" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "Nextcloud" = {
-                href = "https://${publicHost}";
-                icon = "nextcloud.svg";
-                siteMonitor = "${listenUrl}/status.php";
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."files" = [
+        {
+          "Nextcloud" = {
+            href = "https://${publicHost}";
+            icon = "nextcloud.svg";
+            siteMonitor = "${listenUrl}/status.php";
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "Nextcloud";
           url = "https://${publicHost}";

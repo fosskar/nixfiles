@@ -3,8 +3,6 @@
     {
       nflib,
       flake-self,
-      config,
-      lib,
       ...
     }:
     let
@@ -26,19 +24,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."tools" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "Stirling PDF" = {
-                href = "https://${localHost}";
-                icon = "stirling-pdf.svg";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."tools" = [
+        {
+          "Stirling PDF" = {
+            href = "https://${localHost}";
+            icon = "stirling-pdf.svg";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "Stirling PDF";
           url = "https://${localHost}";

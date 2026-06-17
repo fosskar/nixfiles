@@ -4,7 +4,6 @@
       nflib,
       flake-self,
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -60,19 +59,17 @@
         }"
       ];
 
-      services.homepage-dashboard.serviceGroups."communication" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "Continuwuity" = {
-                href = "https://${publicHost}";
-                icon = "matrix.svg";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."communication" = [
+        {
+          "Continuwuity" = {
+            href = "https://${publicHost}";
+            icon = "matrix.svg";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "Continuwuity";
           url = "https://${publicHost}/_matrix/client/versions";

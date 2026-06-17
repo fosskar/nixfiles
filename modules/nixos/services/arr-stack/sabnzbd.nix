@@ -67,21 +67,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "SABnzbd" = {
-                  href = "https://${localHost}";
-                  icon = "sabnzbd.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."arr-stack" = [
+          {
+            "SABnzbd" = {
+              href = "https://${localHost}";
+              icon = "sabnzbd.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "SABnzbd";
             url = listenUrl;

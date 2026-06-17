@@ -3,7 +3,6 @@
     {
       nflib,
       flake-self,
-      config,
       lib,
       pkgs,
       ...
@@ -60,21 +59,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."media" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Jellyfin" = {
-                  href = "https://${localHost}";
-                  icon = "jellyfin.png";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."media" = [
+          {
+            "Jellyfin" = {
+              href = "https://${localHost}";
+              icon = "jellyfin.png";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Jellyfin";
             url = listenUrl;

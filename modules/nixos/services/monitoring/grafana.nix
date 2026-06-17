@@ -236,21 +236,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."monitoring" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Grafana" = {
-                  href = "https://${localHost}";
-                  icon = "grafana.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."monitoring" = [
+          {
+            "Grafana" = {
+              href = "https://${localHost}";
+              icon = "grafana.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Grafana";
             url = "https://${localHost}";

@@ -281,19 +281,17 @@
           };
         };
 
-        services.homepage-dashboard.serviceGroups."files" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "OpenCloud" = {
-                  href = "https://${localHost}";
-                  icon = "https://${localHost}/themes/opencloud/assets/favicon.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."files" = [
+          {
+            "OpenCloud" = {
+              href = "https://${localHost}";
+              icon = "https://${localHost}/themes/opencloud/assets/favicon.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "OpenCloud";
             url = "https://${localHost}";

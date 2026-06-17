@@ -119,19 +119,17 @@ _: {
               environment.APP_URL = "https://${beszelDomain}";
             };
 
-            services.homepage-dashboard.serviceGroups."monitoring" =
-              lib.mkIf config.services.homepage-dashboard.enable
-                [
-                  {
-                    "Beszel" = {
-                      href = "https://${beszelDomain}";
-                      icon = "beszel.svg";
-                      siteMonitor = "http://127.0.0.1:${toString beszelPort}";
-                    };
-                  }
-                ];
+            services.homepage-dashboard.serviceGroups."monitoring" = [
+              {
+                "Beszel" = {
+                  href = "https://${beszelDomain}";
+                  icon = "beszel.svg";
+                  siteMonitor = "http://127.0.0.1:${toString beszelPort}";
+                };
+              }
+            ];
 
-            services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+            services.gatus.settings.endpoints = [
               {
                 name = "Beszel";
                 url = "https://${beszelDomain}";

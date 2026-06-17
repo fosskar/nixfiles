@@ -45,19 +45,17 @@
           };
         };
 
-        services.homepage-dashboard.serviceGroups."infrastructure" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Garage" = {
-                  href = "https://${localHost}";
-                  icon = "garage.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."infrastructure" = [
+          {
+            "Garage" = {
+              href = "https://${localHost}";
+              icon = "garage.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Garage";
             url = listenUrl;

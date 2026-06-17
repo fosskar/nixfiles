@@ -4,7 +4,6 @@
       nflib,
       flake-self,
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -88,19 +87,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."media" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "Miniflux" = {
-                href = "https://${localHost}";
-                icon = "miniflux.svg";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."media" = [
+        {
+          "Miniflux" = {
+            href = "https://${localHost}";
+            icon = "miniflux.svg";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "Miniflux";
           url = "https://${localHost}";

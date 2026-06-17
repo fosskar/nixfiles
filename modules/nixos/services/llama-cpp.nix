@@ -3,8 +3,6 @@
     {
       nflib,
       flake-self,
-      config,
-      lib,
       pkgs,
       ...
     }:
@@ -104,19 +102,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."llm" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "llama.cpp" = {
-                href = "https://${localHost}";
-                icon = "llama-cpp.png";
-                siteMonitor = "${listenUrl}/health";
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."llm" = [
+        {
+          "llama.cpp" = {
+            href = "https://${localHost}";
+            icon = "llama-cpp.png";
+            siteMonitor = "${listenUrl}/health";
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "llama.cpp";
           url = "${listenUrl}/health";

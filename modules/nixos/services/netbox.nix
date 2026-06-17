@@ -3,7 +3,6 @@
     {
       flake-self,
       config,
-      lib,
       nflib,
       pkgs,
       ...
@@ -114,19 +113,17 @@
         reverse_proxy ${listenUrl}
       '';
 
-      services.homepage-dashboard.serviceGroups."infrastructure" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "NetBox" = {
-                href = "https://${localHost}";
-                icon = "netbox.svg";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."infrastructure" = [
+        {
+          "NetBox" = {
+            href = "https://${localHost}";
+            icon = "netbox.svg";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "NetBox";
           url = "https://${localHost}";

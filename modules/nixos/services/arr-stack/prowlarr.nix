@@ -36,21 +36,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Prowlarr" = {
-                  href = "https://${localHost}";
-                  icon = "prowlarr.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."arr-stack" = [
+          {
+            "Prowlarr" = {
+              href = "https://${localHost}";
+              icon = "prowlarr.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Prowlarr";
             url = listenUrl;

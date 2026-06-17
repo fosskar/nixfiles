@@ -41,21 +41,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Sonarr" = {
-                  href = "https://${localHost}";
-                  icon = "sonarr.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."arr-stack" = [
+          {
+            "Sonarr" = {
+              href = "https://${localHost}";
+              icon = "sonarr.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Sonarr";
             url = listenUrl;

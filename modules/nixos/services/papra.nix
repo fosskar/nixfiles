@@ -4,7 +4,6 @@
       nflib,
       flake-self,
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -116,19 +115,17 @@
         reverse_proxy ${listenUrl}
       '';
 
-      services.homepage-dashboard.serviceGroups."files" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "Papra" = {
-                href = "https://${localHost}";
-                icon = "papra.svg";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."files" = [
+        {
+          "Papra" = {
+            href = "https://${localHost}";
+            icon = "papra.svg";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "Papra";
           url = "https://${localHost}";

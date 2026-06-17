@@ -41,21 +41,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Radarr" = {
-                  href = "https://${localHost}";
-                  icon = "radarr.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."arr-stack" = [
+          {
+            "Radarr" = {
+              href = "https://${localHost}";
+              icon = "radarr.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Radarr";
             url = listenUrl;

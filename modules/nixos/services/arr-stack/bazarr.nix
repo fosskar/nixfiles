@@ -30,21 +30,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Bazarr" = {
-                  href = "https://${localHost}";
-                  icon = "bazarr.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."arr-stack" = [
+          {
+            "Bazarr" = {
+              href = "https://${localHost}";
+              icon = "bazarr.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Bazarr";
             url = listenUrl;

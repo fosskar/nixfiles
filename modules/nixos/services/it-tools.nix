@@ -3,8 +3,6 @@
     {
       nflib,
       flake-self,
-      config,
-      lib,
       pkgs,
       ...
     }:
@@ -14,20 +12,18 @@
     in
     {
       # --- homepage ---
-      services.homepage-dashboard.serviceGroups."tools" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "IT Tools" = {
-                href = "https://${localHost}";
-                icon = "it-tools.svg";
-                siteMonitor = "https://${localHost}";
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."tools" = [
+        {
+          "IT Tools" = {
+            href = "https://${localHost}";
+            icon = "it-tools.svg";
+            siteMonitor = "https://${localHost}";
+          };
+        }
+      ];
 
       # --- gatus ---
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "IT Tools";
           url = "https://${localHost}";

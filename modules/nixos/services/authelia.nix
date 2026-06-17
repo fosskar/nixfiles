@@ -214,19 +214,17 @@
           user = "authelia-main";
         };
 
-        services.homepage-dashboard.serviceGroups."security" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Authelia" = {
-                  href = "https://${localHost}";
-                  icon = "authelia.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."security" = [
+          {
+            "Authelia" = {
+              href = "https://${localHost}";
+              icon = "authelia.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Authelia";
             url = "https://${localHost}";

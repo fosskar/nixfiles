@@ -1,9 +1,7 @@
 {
   flake.modules.nixos.wiki =
     {
-      config,
       inputs,
-      lib,
       pkgs,
       ...
     }:
@@ -21,17 +19,15 @@
         root = inputs.wiki.packages.${pkgs.stdenv.hostPlatform.system}.default;
       };
 
-      services.homepage-dashboard.serviceGroups."tools" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "fosskar's bliki" = {
-                href = "https://fosskar.nx3.eu/";
-                icon = "mdi-book-open-variant";
-                siteMonitor = "https://fosskar.nx3.eu/";
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."tools" = [
+        {
+          "fosskar's bliki" = {
+            href = "https://fosskar.nx3.eu/";
+            icon = "mdi-book-open-variant";
+            siteMonitor = "https://fosskar.nx3.eu/";
+          };
+        }
+      ];
 
       services.anubis.instances.bliki.settings = {
         TARGET = "http://127.0.0.1:${toString port}";

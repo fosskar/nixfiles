@@ -3,7 +3,6 @@
     {
       nflib,
       flake-self,
-      config,
       lib,
       pkgs,
       ...
@@ -34,21 +33,19 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."media" =
-          lib.mkIf config.services.homepage-dashboard.enable
-            [
-              {
-                "Navidrome" = {
-                  href = "https://${localHost}";
-                  icon = "navidrome.svg";
-                  siteMonitor = listenUrl;
-                };
-              }
-            ];
+        services.homepage-dashboard.serviceGroups."media" = [
+          {
+            "Navidrome" = {
+              href = "https://${localHost}";
+              icon = "navidrome.svg";
+              siteMonitor = listenUrl;
+            };
+          }
+        ];
 
         # --- gatus ---
 
-        services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+        services.gatus.settings.endpoints = [
           (nflib.gatusEndpoint {
             name = "Navidrome";
             url = listenUrl;

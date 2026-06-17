@@ -75,19 +75,17 @@
         environmentFile = config.clan.core.vars.generators.lldap.files."envfile".path;
       };
 
-      services.homepage-dashboard.serviceGroups."security" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "LLDAP" = {
-                href = "https://${localHost}";
-                icon = "lldap.png";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."security" = [
+        {
+          "LLDAP" = {
+            href = "https://${localHost}";
+            icon = "lldap.png";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "LLDAP";
           url = "https://${localHost}";

@@ -4,7 +4,6 @@
       nflib,
       flake-self,
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -45,19 +44,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."tools" =
-        lib.mkIf config.services.homepage-dashboard.enable
-          [
-            {
-              "SearXNG" = {
-                href = "https://${localHost}";
-                icon = "searxng.svg";
-                siteMonitor = listenUrl;
-              };
-            }
-          ];
+      services.homepage-dashboard.serviceGroups."tools" = [
+        {
+          "SearXNG" = {
+            href = "https://${localHost}";
+            icon = "searxng.svg";
+            siteMonitor = listenUrl;
+          };
+        }
+      ];
 
-      services.gatus.settings.endpoints = lib.mkIf config.services.gatus.enable [
+      services.gatus.settings.endpoints = [
         (nflib.gatusEndpoint {
           name = "SearXNG";
           url = "https://${localHost}";
