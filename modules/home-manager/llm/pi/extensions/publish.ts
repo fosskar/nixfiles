@@ -177,7 +177,7 @@ export default function (pi: ExtensionAPI) {
           display: true,
           content: [summary, "", ...log].join("\n"),
         });
-        ctx.ui.notify(summary, "success");
+        ctx.ui.notify(summary, "info");
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         log.push(`failed: ${message.split("\n", 1)[0]}`);

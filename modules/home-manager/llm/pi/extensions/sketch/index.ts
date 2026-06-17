@@ -140,7 +140,8 @@ export default function (pi: ExtensionAPI) {
     pi.sendUserMessage([
       {
         type: "image",
-        source: { type: "base64", mediaType: "image/png", data: imageData },
+        mimeType: "image/png",
+        data: imageData,
       },
       { type: "text", text: event.text || "Here's my sketch:" },
     ]);
