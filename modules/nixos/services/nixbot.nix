@@ -6,7 +6,6 @@
       inputs,
       lib,
       pkgs,
-      nflib,
       ...
     }:
     let
@@ -31,11 +30,15 @@
         ];
 
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "Nixbot";
             url = "https://${publicHost}";
             group = "Automation";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
         ];
 
         clan.core.vars.generators.nixbot = {

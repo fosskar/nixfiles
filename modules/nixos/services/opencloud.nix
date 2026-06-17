@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.opencloud =
     {
-      nflib,
       flake-self,
       config,
       lib,
@@ -292,18 +291,25 @@
         ];
 
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "OpenCloud";
             url = "https://${localHost}";
             group = "Files";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
           # tcp probe only: http check would create phantom X-Remote-User principal
-          (nflib.gatusEndpoint {
+          {
             name = "Radicale";
             url = "tcp://127.0.0.1:5232";
             group = "Files";
             conditions = [ "[CONNECTED] == true" ];
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+          }
         ];
 
         services.caddy.virtualHosts.${localHost}.extraConfig = ''

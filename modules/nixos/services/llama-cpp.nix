@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.llamaCpp =
     {
-      nflib,
       flake-self,
       pkgs,
       ...
@@ -113,11 +112,15 @@
       ];
 
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "llama.cpp";
           url = "${listenUrl}/health";
           group = "AI";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

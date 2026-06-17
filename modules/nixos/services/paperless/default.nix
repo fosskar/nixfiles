@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.paperless =
     {
-      nflib,
       flake-self,
       config,
       pkgs,
@@ -172,11 +171,15 @@
       ];
 
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "Paperless";
           url = "https://${localHost}";
           group = "Files";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

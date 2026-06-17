@@ -5,7 +5,6 @@
       config,
       lib,
       pkgs,
-      nflib,
       ...
     }:
     let
@@ -29,11 +28,15 @@
       ];
 
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "Vaultwarden";
           url = "https://${localHost}";
           group = "security";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

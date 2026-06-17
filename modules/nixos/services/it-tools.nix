@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.itTools =
     {
-      nflib,
       flake-self,
       pkgs,
       ...
@@ -24,11 +23,15 @@
 
       # --- gatus ---
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "IT Tools";
           url = "https://${localHost}";
           group = "Tools";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
 
       # --- caddy ---

@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.arrStack =
     {
-      nflib,
       flake-self,
       lib,
       pkgs,
@@ -72,11 +71,15 @@
         # --- gatus ---
 
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "Jellyfin";
             url = listenUrl;
             group = "Media";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
         ];
 
         # --- caddy ---

@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.continuwuity =
     {
-      nflib,
       flake-self,
       config,
       pkgs,
@@ -70,11 +69,15 @@
       ];
 
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "Continuwuity";
           url = "https://${publicHost}/_matrix/client/versions";
           group = "Communication";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
 
       # DynamicUser service: state lives in /var/lib/private/continuwuity,

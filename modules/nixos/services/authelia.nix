@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.authelia =
     {
-      nflib,
       flake-self,
       config,
       lib,
@@ -225,11 +224,15 @@
         ];
 
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "Authelia";
             url = "https://${localHost}";
             group = "Security";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
         ];
 
         services.caddy.virtualHosts.${localHost}.extraConfig = ''

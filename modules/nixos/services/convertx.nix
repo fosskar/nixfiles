@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.convertx =
     {
-      nflib,
       flake-self,
       lib,
       pkgs,
@@ -53,11 +52,15 @@
       ];
 
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "ConvertX";
           url = "https://${localHost}/healthcheck";
           group = "Tools";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

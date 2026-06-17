@@ -3,7 +3,6 @@
     {
       flake-self,
       config,
-      nflib,
       pkgs,
       ...
     }:
@@ -124,11 +123,15 @@
       ];
 
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "NetBox";
           url = "https://${localHost}";
           group = "Infrastructure";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
     };
 }

@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.arrStack =
     {
-      nflib,
       flake-self,
       config,
       lib,
@@ -49,11 +48,15 @@
         # --- gatus ---
 
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "Prowlarr";
             url = listenUrl;
             group = "Arr Stack";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
         ];
 
         # --- caddy ---

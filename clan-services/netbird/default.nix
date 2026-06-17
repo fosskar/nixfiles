@@ -61,7 +61,6 @@
           {
             config,
             pkgs,
-            nflib,
             ...
           }:
           let
@@ -83,11 +82,15 @@
               }
             ];
             services.gatus.settings.endpoints = [
-              (nflib.gatusEndpoint {
+              {
                 name = "NetBird";
                 url = "https://${settings.domain}";
                 group = "Network";
-              })
+                enabled = true;
+                alerts = [ { type = "email"; } ];
+                interval = "5m";
+                conditions = [ "[STATUS] == 200" ];
+              }
             ];
 
             # server secrets

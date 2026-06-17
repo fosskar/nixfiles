@@ -3,7 +3,6 @@
     {
       flake-self,
       inputs,
-      nflib,
       ...
     }:
     let
@@ -27,22 +26,16 @@
           openFirewall = false;
         };
 
-        services.homepage-dashboard.serviceGroups."code" = [
-          {
-            "Tangled Knot" = {
-              href = "https://${publicHost}";
-              icon = "mdi-git";
-              siteMonitor = "https://${publicHost}";
-            };
-          }
-        ];
-
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "Tangled Knot";
             url = "https://${publicHost}";
             group = "Automation";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
         ];
       };
     };

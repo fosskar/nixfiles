@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.grafana =
     {
-      nflib,
       flake-self,
       config,
       lib,
@@ -249,11 +248,15 @@
         # --- gatus ---
 
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "Grafana";
             url = "https://${localHost}";
             group = "Monitoring";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
         ];
 
         # --- caddy ---

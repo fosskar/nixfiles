@@ -148,7 +148,7 @@ Rules:
 
 - `serviceGroups` declared in `base`; non-homepage hosts can author tiles
 - do not guard dashboard tiles with `mkIf config.services.homepage-dashboard.enable` on non-homepage hosts
-- gatus: `services.gatus.settings.endpoints = [ (nflib.gatusEndpoint { name; url; group; }) ];`
+- gatus: `services.gatus.settings.endpoints = [ { name; url; group; enabled = true; alerts = [ { type = "email"; } ]; interval = "5m"; conditions = [ "[STATUS] == 200" ]; } ];`
 - do not guard gatus endpoints with `mkIf config.services.gatus.enable` on non-gatus hosts
 - local reverse proxy only: `services.caddy.virtualHosts.<host>.extraConfig`
 - collectors: `modules/nixos/services/{homepage,gatus}/collector.nix`; exclude self to avoid recursion

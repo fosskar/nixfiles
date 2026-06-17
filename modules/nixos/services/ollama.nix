@@ -1,7 +1,6 @@
 {
   flake.modules.nixos.ollama =
     {
-      nflib,
       flake-self,
       pkgs,
       ...
@@ -41,11 +40,15 @@
       ];
 
       services.gatus.settings.endpoints = [
-        (nflib.gatusEndpoint {
+        {
           name = "Ollama";
           url = "${listenUrl}/api/tags";
           group = "AI";
-        })
+          enabled = true;
+          alerts = [ { type = "email"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''

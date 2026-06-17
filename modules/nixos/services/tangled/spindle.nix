@@ -3,7 +3,6 @@
     {
       flake-self,
       inputs,
-      nflib,
       ...
     }:
     let
@@ -24,22 +23,16 @@
           };
         };
 
-        services.homepage-dashboard.serviceGroups."code" = [
-          {
-            "Tangled Spindle" = {
-              href = "https://${publicHost}";
-              icon = "mdi-cog";
-              siteMonitor = "https://${publicHost}";
-            };
-          }
-        ];
-
         services.gatus.settings.endpoints = [
-          (nflib.gatusEndpoint {
+          {
             name = "Tangled Spindle";
             url = "https://${publicHost}";
             group = "Automation";
-          })
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "5m";
+            conditions = [ "[STATUS] == 200" ];
+          }
         ];
       };
     };
