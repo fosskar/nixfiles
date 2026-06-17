@@ -173,6 +173,10 @@
       inputs.noctalia-qs.inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
+    tangled.url = "git+https://tangled.org/@tangled.org/core";
+    tangled.inputs.nixpkgs.follows = "nixpkgs";
+    tangled.inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";
+
     wiki = {
       url = "git+https://codeberg.org/fosskar/wiki.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
