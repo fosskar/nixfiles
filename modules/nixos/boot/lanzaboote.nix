@@ -22,7 +22,6 @@
             editor = lib.mkDefault false;
           };
         };
-        bootspec.enable = true;
         lanzaboote = {
           enable = true;
           inherit pkiBundle;

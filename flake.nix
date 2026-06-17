@@ -150,6 +150,7 @@
     voxtype = {
       url = "github:peteonrails/voxtype";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.inputs.systems.follows = "systems";
     };
 
     # wm
@@ -168,6 +169,8 @@
     noctalia-legacy = {
       url = "github:noctalia-dev/noctalia-shell/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.noctalia-qs.inputs.systems.follows = "systems";
+      inputs.noctalia-qs.inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     wiki = {

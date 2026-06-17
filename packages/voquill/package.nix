@@ -109,8 +109,9 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out
+    mkdir -p $out/lib
     cp -r usr/* $out/
+    ln -s ${xdotool}/lib/libxdo.so.4 $out/lib/libxdo.so.3
 
     # rename binary to voquill
     mv $out/bin/voquill-desktop $out/bin/voquill
