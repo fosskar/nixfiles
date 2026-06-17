@@ -72,6 +72,11 @@
           shfmt.enable = true;
           shellcheck.enable = true;
           yamlfmt.enable = true;
+          taplo.enable = true;
+          gofmt.enable = true;
+          rustfmt.enable = true;
+          ruff-check.enable = true;
+          ruff-format.enable = true;
         };
       };
 
