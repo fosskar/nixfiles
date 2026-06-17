@@ -63,10 +63,10 @@ Do not use clan/deploy/network commands for discovery. Use only when task explic
 ## repo map
 
 - `modules/{nixos,home-manager}/`: feature/aspect modules
-- `modules/flake-parts/`: flake-level wiring/data, not feature modules; e.g. `flake.domains`, `flake.lib`, `systems`, treefmt, devshells, packages, overlays; auto-loaded by `import-tree ./modules`
+- `modules/flake-parts/`: flake-level wiring/data, not feature modules; e.g. `flake.domains`, `flake.lib`, `systems`, treefmt, devshells, packages, overlays; `clan.nix` registers `clan-services/<svc>` as `clan.modules.<svc>`; auto-loaded by `import-tree ./modules`
 - `machines/<machine>/configuration.nix`: host composition edge
 - `machines/flake-module.nix`: clan inventory and role composition edge
-- `clan-services/`: clan service modules, role wiring, vars
+- `clan-services/<svc>/default.nix`: clan.service modules (plain dir, referenced by `modules/flake-parts/clan.nix`, not auto-imported)
 - `users/simon/`: home-manager user composition
 - `openwrt/`: declarative router/ap config; uci via `openwrt/nix/uci.nix`, raw config under `openwrt/devices/<device>/files/`; lan router `192.168.10.1` runs unbound, split-horizon for `nx3.eu`, and adguardhome; config lives here, not on device
 
@@ -115,7 +115,7 @@ ssh root@<ip>
 - one host: edit `machines/<host>/configuration.nix` or scanned host-local file
 - common role: edit `modules/nixos/common/{base,server,workstation}/`; verify clan roles in `machines/flake-module.nix`
 - clan role assignment/ownership: edit `machines/flake-module.nix`
-- clan service implementation: edit `clan-services/<service>/default.nix`; service wiring in `clan-services/<service>/flake-module.nix`
+- clan service implementation: edit `clan-services/<service>/default.nix`; registration is automatic via `modules/flake-parts/clan.nix`
 - dashboard/monitoring/reverse proxy: use default options in service module; see service exposure
 - option conflict: `rg` setters, then `nix eval` exact option
 - reusable module: create under matching `modules/` tree; export `flake.modules.<class>.<name>`; import at composition edge
@@ -126,7 +126,6 @@ ssh root@<ip>
 
 - `modules/` auto-imported by `import-tree`; `_` prefix excludes
 - `nflib.scanPaths ./. { }` auto-imports directory nix files where called; no `_` convention
-- `nflib.scanFlakeModules ./.` discovers `flake-module.nix`
 - module files usually assign `flake.modules.<class>.<name>`
 - same exported module can have multiple contributors; grep before editing collectors (`base`, `server`, `workstation`, `gaming`, `arrStack`, `homepage`)
 - default: import => enabled

@@ -1,4 +1,5 @@
-_: {
+{ rootPath, ... }:
+{
   perSystem =
     {
       pkgs,
@@ -6,7 +7,7 @@ _: {
       ...
     }:
     let
-      openwrtLib = import ./nix/lib.nix { inherit lib; };
+      openwrtLib = import (rootPath + "/openwrt/nix/lib.nix") { inherit lib; };
 
       # evaluate a device config through the module system
       evalDevice =
@@ -14,21 +15,24 @@ _: {
         (lib.evalModules {
           modules = [
             { _module.args = { inherit pkgs; }; }
-            ./nix/module-options.nix
+            (rootPath + "/openwrt/nix/module-options.nix")
             configuration
           ];
         }).config;
 
       # auto-discover devices from openwrt/devices/*/config.nix
       deviceDirs = lib.filterAttrs (
-        name: type: type == "directory" && builtins.pathExists ./devices/${name}/config.nix
-      ) (builtins.readDir ./devices);
-      devices = lib.mapAttrs (name: _: evalDevice ./devices/${name}/config.nix) deviceDirs;
+        name: type:
+        type == "directory" && builtins.pathExists (rootPath + "/openwrt/devices/${name}/config.nix")
+      ) (builtins.readDir (rootPath + "/openwrt/devices"));
+      devices = lib.mapAttrs (
+        name: _: evalDevice (rootPath + "/openwrt/devices/${name}/config.nix")
+      ) deviceDirs;
 
       deviceNames = lib.concatStringsSep ", " (builtins.attrNames devices);
 
       # UCI batch generation (per device)
-      mkWriteUci = import ./nix/uci.nix { inherit pkgs lib openwrtLib; };
+      mkWriteUci = import (rootPath + "/openwrt/nix/uci.nix") { inherit pkgs lib openwrtLib; };
       uciOutputs = lib.mapAttrs mkWriteUci devices;
 
       # scripts
@@ -40,9 +44,13 @@ _: {
           deviceNames
           ;
       };
-      deployScript = import ./nix/scripts/deploy.nix (scriptArgs // { inherit uciOutputs; });
-      fetchScript = import ./nix/scripts/fetch.nix scriptArgs;
-      diffScript = import ./nix/scripts/diff.nix (scriptArgs // { inherit uciOutputs; });
+      deployScript = import (rootPath + "/openwrt/nix/scripts/deploy.nix") (
+        scriptArgs // { inherit uciOutputs; }
+      );
+      fetchScript = import (rootPath + "/openwrt/nix/scripts/fetch.nix") scriptArgs;
+      diffScript = import (rootPath + "/openwrt/nix/scripts/diff.nix") (
+        scriptArgs // { inherit uciOutputs; }
+      );
     in
     {
       apps = {

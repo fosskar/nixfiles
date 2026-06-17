@@ -189,16 +189,9 @@
 
   outputs =
     inputs@{
-      self,
       flake-parts,
       ...
     }:
-    let
-      inherit (inputs.nixpkgs) lib;
-      nflib = import ./lib { inherit lib self; };
-
-      flakeModules = nflib.scanFlakeModules ./.;
-    in
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       _module.args.rootPath = ./.;
@@ -206,7 +199,7 @@
       imports = [
         inputs.flake-parts.flakeModules.modules
         (inputs.import-tree ./modules)
-      ]
-      ++ flakeModules;
+        ./machines/flake-module.nix
+      ];
     };
 }

@@ -1,43 +1,44 @@
-_: {
+{ rootPath, ... }:
+{
   flake.templates = {
     clanService = {
       description = "Clan service template";
-      path = ./clanService;
+      path = rootPath + "/templates/clanService";
     };
 
     devshell = {
       description = "Flake devshell template";
-      path = ./devshell;
+      path = rootPath + "/templates/devshell";
     };
 
     go = {
       description = "Flake GO template";
-      path = ./go;
+      path = rootPath + "/templates/go";
     };
 
     module = {
       description = "NixOS module template";
-      path = ./module;
+      path = rootPath + "/templates/module";
     };
 
     overlay = {
       description = "NixOS overlay template";
-      path = ./overlay;
+      path = rootPath + "/templates/overlay";
     };
 
     node = {
       description = "Flake node template";
-      path = ./node;
+      path = rootPath + "/templates/node";
     };
 
     python = {
       description = "Flake Python template";
-      path = ./python;
+      path = rootPath + "/templates/python";
     };
 
     rust = {
       description = "Flake Rust template";
-      path = ./rust;
+      path = rootPath + "/templates/rust";
     };
   };
 }
