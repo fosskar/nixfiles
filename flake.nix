@@ -194,8 +194,6 @@
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
 
-      _module.args.rootPath = ./.;
-
       imports = [
         inputs.flake-parts.flakeModules.modules
         (inputs.import-tree ./modules)

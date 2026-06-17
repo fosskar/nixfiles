@@ -1,10 +1,21 @@
 {
   inputs,
-  rootPath,
+  self,
+  withSystem,
   ...
 }:
 {
   imports = [ inputs.pkgs-by-name-for-flake-parts.flakeModule ];
+
+  # local packages (config.packages) -> pkgs.local.*
+  flake.overlays.default =
+    _final: prev:
+    withSystem prev.stdenv.hostPlatform.system (
+      { config, ... }:
+      {
+        local = config.packages;
+      }
+    );
 
   perSystem =
     { system, ... }:
@@ -16,9 +27,9 @@
           allowUnfree = true;
           allowDeprecatedx86_64Darwin = true;
         };
-        overlays = import (rootPath + "/overlays") { inherit inputs; };
+        overlays = import (self.outPath + "/overlays") { inherit inputs; };
       };
 
-      pkgsDirectory = rootPath + "/packages";
+      pkgsDirectory = self.outPath + "/packages";
     };
 }

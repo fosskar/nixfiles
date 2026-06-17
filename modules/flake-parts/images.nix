@@ -1,7 +1,7 @@
-{ inputs, rootPath, ... }:
+{ inputs, self, ... }:
 let
   inherit (inputs.nixpkgs) lib;
-  nflib = import (rootPath + "/lib") { inherit lib; };
+  nflib = import (self.outPath + "/lib") { inherit lib; };
 in
 {
   perSystem =
@@ -13,7 +13,7 @@ in
         vm-base =
           (lib.nixosSystem {
             inherit system;
-            modules = [ (rootPath + "/images/vm-base.nix") ];
+            modules = [ (self.outPath + "/images/vm-base.nix") ];
             specialArgs = { inherit inputs nflib; };
           }).config.system.build.isoImage;
       };
