@@ -36,4 +36,20 @@ Machines assigned both `builder` and `client` skip client config, so builders do
 
 ## Settings
 
-No role settings. Builder/client behavior is derived from role assignment.
+`roles.builder.<machine>.settings.extraClientKeys`: list of ssh pubkeys for
+non-clan clients allowed to offload builds. Each key is added to
+`nix-remote-builder` authorized_keys with the same
+`restrict,command="nix-daemon --stdio"` restriction as clan clients.
+
+```nix
+roles.builder.machines."builder".settings.extraClientKeys = [
+  "ssh-ed25519 AAAA... foreign-machine"
+];
+```
+
+The foreign machine still configures itself as a nix remote builder client
+manually (`/etc/nix/machines` or `nix.buildMachines`) using the matching
+private key and `sshUser = "nix-remote-builder"`.
+
+Otherwise no role settings; builder/client behavior is derived from role
+assignment.

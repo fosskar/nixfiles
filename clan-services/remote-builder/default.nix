@@ -10,9 +10,20 @@ _:
   roles.builder = {
     description = "remote nix builder host";
 
+    interface =
+      { lib, ... }:
+      {
+        options.extraClientKeys = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = "ssh pubkeys of non-clan clients allowed to offload builds";
+        };
+      };
+
     perInstance =
       {
         roles,
+        settings,
         ...
       }:
       {
@@ -69,17 +80,19 @@ _:
               isNormalUser = true;
               group = "nogroup";
               shell = pkgs.bashInteractive;
-              openssh.authorizedKeys.keys = map (
-                machine:
-                ''restrict,command="nix-daemon --stdio" ${
-                  clanLib.getPublicValue {
-                    flake = config.clan.core.settings.directory;
-                    inherit machine;
-                    generator = "remote-builder";
-                    file = "id_ed25519.pub";
-                  }
-                }''
-              ) clientMachines;
+              openssh.authorizedKeys.keys =
+                map (
+                  machine:
+                  ''restrict,command="nix-daemon --stdio" ${
+                    clanLib.getPublicValue {
+                      flake = config.clan.core.settings.directory;
+                      inherit machine;
+                      generator = "remote-builder";
+                      file = "id_ed25519.pub";
+                    }
+                  }''
+                ) clientMachines
+                ++ map (key: ''restrict,command="nix-daemon --stdio" ${key}'') settings.extraClientKeys;
             };
 
             nix.settings.trusted-users = [ "nix-remote-builder" ];

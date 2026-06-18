@@ -451,7 +451,9 @@
             input = "self";
           };
           roles = {
-            builder.machines."nixworker" = { };
+            builder.machines."nixworker".settings.extraClientKeys = [
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJGHwgucKTyUpHllRV4dHnoL5FYgqgzsVfRw9IZTJEid"
+            ];
             # service no-ops client config on builder machines
             client.tags.all = { };
           };
