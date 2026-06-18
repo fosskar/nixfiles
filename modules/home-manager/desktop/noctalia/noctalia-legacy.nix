@@ -423,7 +423,6 @@
 
               hooks = {
                 enabled = true;
-                startup = "noctalia-shell ipc call lockScreen lock";
                 screenLock = toString lockSecrets;
                 screenUnlock = "kwallet-tpm-unlock $HOME/.config/kwallet-tpm/password.cred";
               };
