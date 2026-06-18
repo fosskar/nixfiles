@@ -9,6 +9,12 @@ _: {
       ForwardAgent = "yes";
       RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";
     };
+    # tangled knot push: public DNS points at the gateway, so reach nixworker's
+    # knot sshd directly over the netbird mesh.
+    settings."knot.fosskar.eu" = {
+      HostName = "nixworker.s";
+      User = "git";
+    };
     settings."*" = {
       User = "root";
       AddKeysToAgent = "no";
