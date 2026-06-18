@@ -1,7 +1,12 @@
 # shared traefik base (entrypoints, acme, logs, geoblock); other modules merge in routes
 {
   flake.modules.nixos.traefik =
-    { config, lib, ... }:
+    {
+      config,
+      lib,
+      options,
+      ...
+    }:
     let
       acmeEmail = "letsencrypt.unpleased904@passmail.net";
       metricsAddress = "127.0.0.1:8082";
@@ -61,14 +66,6 @@
           }
         ];
 
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/traefik";
-            user = "traefik";
-            group = "traefik";
-          }
-        ];
-
         systemd.services.traefik.serviceConfig.StateDirectory = "traefik";
 
         # traefik reopens access.log on USR1; crowdsec file acquisition follows rotation
@@ -96,6 +93,15 @@
             443 # HTTP/3 (QUIC)
           ];
         };
+      }
+      // lib.optionalAttrs (options ? preservation) {
+        preservation.preserveAt."/persist".directories = [
+          {
+            directory = "/var/lib/traefik";
+            user = "traefik";
+            group = "traefik";
+          }
+        ];
       };
     };
 }

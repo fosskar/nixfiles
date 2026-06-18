@@ -19,6 +19,7 @@
         {
           config,
           lib,
+          options,
           pkgs,
           ...
         }:
@@ -26,88 +27,91 @@
           configFile = mkConfigFile pkgs config;
         in
         {
-          services.crowdsec = {
-            enable = true;
-            openFirewall = false;
-            autoUpdateService = true;
+          config = {
+            services.crowdsec = {
+              enable = true;
+              openFirewall = false;
+              autoUpdateService = true;
 
-            settings = {
-              general = {
-                common.log_level = "warning";
-                api.server = {
-                  enable = true;
-                  listen_uri = "127.0.0.1:${toString listenPort}";
+              settings = {
+                general = {
+                  common.log_level = "warning";
+                  api.server = {
+                    enable = true;
+                    listen_uri = "127.0.0.1:${toString listenPort}";
+                  };
+                  plugin_config = {
+                    user = "crowdsec";
+                    group = "crowdsec";
+                  };
+                  prometheus = {
+                    enabled = true;
+                    level = "full";
+                    listen_addr = "127.0.0.1";
+                    listen_port = 6061;
+                  };
                 };
-                plugin_config = {
-                  user = "crowdsec";
-                  group = "crowdsec";
-                };
-                prometheus = {
-                  enabled = true;
-                  level = "full";
-                  listen_addr = "127.0.0.1";
-                  listen_port = 6061;
-                };
+                lapi.credentialsFile = "/var/lib/crowdsec/state/local_api_credentials.yaml";
+                capi.credentialsFile = "/var/lib/crowdsec/state/online_api_credentials.yaml";
               };
-              lapi.credentialsFile = "/var/lib/crowdsec/state/local_api_credentials.yaml";
-              capi.credentialsFile = "/var/lib/crowdsec/state/online_api_credentials.yaml";
+
+              hub.collections = collections;
+
+              localConfig.acquisitions = [
+                {
+                  source = "journalctl";
+                  journalctl_filter = [ "_TRANSPORT=journal" ];
+                  labels.type = "syslog";
+                }
+                {
+                  source = "journalctl";
+                  journalctl_filter = [ "_TRANSPORT=syslog" ];
+                  labels.type = "syslog";
+                }
+                {
+                  source = "journalctl";
+                  journalctl_filter = [ "_TRANSPORT=stdout" ];
+                  labels.type = "syslog";
+                }
+                {
+                  source = "journalctl";
+                  journalctl_filter = [ "_TRANSPORT=kernel" ];
+                  labels.type = "syslog";
+                }
+              ];
             };
 
-            hub.collections = collections;
+            services.crowdsec-firewall-bouncer = {
+              enable = true;
+              settings.mode = "nftables";
+              registerBouncer.enable = true;
+            };
 
-            localConfig.acquisitions = [
+            services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
               {
-                source = "journalctl";
-                journalctl_filter = [ "_TRANSPORT=journal" ];
-                labels.type = "syslog";
-              }
-              {
-                source = "journalctl";
-                journalctl_filter = [ "_TRANSPORT=syslog" ];
-                labels.type = "syslog";
-              }
-              {
-                source = "journalctl";
-                journalctl_filter = [ "_TRANSPORT=stdout" ];
-                labels.type = "syslog";
-              }
-              {
-                source = "journalctl";
-                journalctl_filter = [ "_TRANSPORT=kernel" ];
-                labels.type = "syslog";
+                urls = [ "http://127.0.0.1:6061/metrics" ];
               }
             ];
-          };
 
-          services.crowdsec-firewall-bouncer = {
-            enable = true;
-            settings.mode = "nftables";
-            registerBouncer.enable = true;
-          };
+            environment.etc."crowdsec/config.yaml".source = configFile;
 
-          services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
-            {
-              urls = [ "http://127.0.0.1:6061/metrics" ];
-            }
-          ];
+            systemd.services = {
+              crowdsec-update-hub.serviceConfig.ExecStartPost = lib.mkForce "+systemctl restart crowdsec.service";
 
-          environment.etc."crowdsec/config.yaml".source = configFile;
-
-          preservation.preserveAt."/persist".directories = [
-            {
-              directory = "/var/lib/crowdsec";
-              inherit (config.services.crowdsec) user;
-              inherit (config.services.crowdsec) group;
-            }
-          ];
-
-          systemd.services = {
-            crowdsec-update-hub.serviceConfig.ExecStartPost = lib.mkForce "+systemctl restart crowdsec.service";
-
-            crowdsec-firewall-bouncer-register.serviceConfig = {
-              StateDirectory = lib.mkForce "crowdsec-firewall-bouncer-register";
-              ReadWritePaths = [ "/var/lib/crowdsec" ];
+              crowdsec-firewall-bouncer-register.serviceConfig = {
+                StateDirectory = lib.mkForce "crowdsec-firewall-bouncer-register";
+                ReadWritePaths = [ "/var/lib/crowdsec" ];
+              };
             };
+          }
+          // lib.optionalAttrs (options ? preservation) {
+            preservation.preserveAt."/persist".directories = [
+              {
+                directory = "/var/lib/crowdsec";
+                inherit (config.services.crowdsec) user;
+                inherit (config.services.crowdsec) group;
+              }
+            ];
           };
         };
 

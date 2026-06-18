@@ -4,6 +4,7 @@
       flake-self,
       config,
       lib,
+      options,
       pkgs,
       ...
     }:
@@ -367,20 +368,6 @@
           "/var/lib/opencloud"
         ];
 
-        preservation.preserveAt."/persist".directories = [
-          "/etc/opencloud"
-          {
-            directory = "/var/lib/opencloud";
-            user = "opencloud";
-            group = "opencloud";
-          }
-          {
-            directory = "/var/lib/radicale";
-            user = "radicale";
-            group = "radicale";
-          }
-        ];
-
         systemd.services.opencloud = {
           after = [ "tika.service" ];
           wants = [ "tika.service" ];
@@ -423,6 +410,21 @@
             '';
           };
         };
+      }
+      // lib.optionalAttrs (options ? preservation) {
+        preservation.preserveAt."/persist".directories = [
+          "/etc/opencloud"
+          {
+            directory = "/var/lib/opencloud";
+            user = "opencloud";
+            group = "opencloud";
+          }
+          {
+            directory = "/var/lib/radicale";
+            user = "radicale";
+            group = "radicale";
+          }
+        ];
       };
     };
 }

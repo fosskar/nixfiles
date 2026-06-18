@@ -2,6 +2,8 @@
   flake.modules.nixos.noctalia-greeter =
     {
       inputs,
+      lib,
+      options,
       pkgs,
       ...
     }:
@@ -21,18 +23,21 @@
     {
       imports = [ inputs.noctalia-greeter.nixosModules.default ];
 
-      programs.noctalia-greeter = {
-        enable = true;
-        package = noctalia-greeter;
+      config = {
+        programs.noctalia-greeter = {
+          enable = true;
+          package = noctalia-greeter;
+        };
+      }
+      // lib.optionalAttrs (options ? preservation) {
+        # greeter state (synced appearance, remembered scheme) lives here.
+        preservation.preserveAt."/persist".directories = [
+          {
+            directory = "/var/lib/noctalia-greeter";
+            user = "greeter";
+            group = "greeter";
+          }
+        ];
       };
-
-      # greeter state (synced appearance, remembered scheme) lives here.
-      preservation.preserveAt."/persist".directories = [
-        {
-          directory = "/var/lib/noctalia-greeter";
-          user = "greeter";
-          group = "greeter";
-        }
-      ];
     };
 }

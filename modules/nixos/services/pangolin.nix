@@ -3,6 +3,7 @@
     {
       config,
       lib,
+      options,
       ...
     }:
     let
@@ -169,15 +170,6 @@
           ];
         };
 
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/pangolin";
-            user = config.systemd.services.pangolin.serviceConfig.User;
-            group = config.systemd.services.pangolin.serviceConfig.Group;
-          }
-        ]
-        ++ lib.optional cfg.maxmindGeoip geoipDir;
-
         systemd.tmpfiles.rules = lib.mkIf cfg.geoblock.enable [
           "d /var/log/traefik 0755 traefik traefik -"
         ];
@@ -202,6 +194,16 @@
             wants = [ "pangolin.service" ];
           };
         };
+      }
+      // lib.optionalAttrs (options ? preservation) {
+        preservation.preserveAt."/persist".directories = [
+          {
+            directory = "/var/lib/pangolin";
+            user = config.systemd.services.pangolin.serviceConfig.User;
+            group = config.systemd.services.pangolin.serviceConfig.Group;
+          }
+        ]
+        ++ lib.optional cfg.maxmindGeoip geoipDir;
       };
     };
 }
