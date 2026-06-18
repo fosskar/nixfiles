@@ -1,8 +1,12 @@
 _: {
   flake.modules.homeManager.llm =
-    { config, pkgs, ... }:
+    {
+      self,
+      pkgs,
+      ...
+    }:
     let
-      t = config.theme;
+      t = self.themes.${self.theme};
       piTheme = {
         "$schema" =
           "https://raw.githubusercontent.com/earendil-works/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";

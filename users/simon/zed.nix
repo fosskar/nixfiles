@@ -1,9 +1,9 @@
 {
-  config,
+  self,
   ...
 }:
 let
-  t = config.theme;
+  t = self.themes.${self.theme};
 in
 {
   programs.zed-editor = {
@@ -92,9 +92,9 @@ in
       };
       icon_theme = "Material Icon Theme";
       #vim_mode = true;
-      buffer_font_family = config.theme.fonts.mono;
+      buffer_font_family = self.themes.${self.theme}.fonts.mono;
       buffer_line_height = "standard";
-      ui_font_family = config.theme.fonts.sans;
+      ui_font_family = self.themes.${self.theme}.fonts.sans;
       confirm_quit = true;
       show_whitespaces = "boundary";
       calls = {

@@ -1,8 +1,13 @@
 _: {
   flake.modules.homeManager.starship =
-    { config, lib, ... }:
+    {
+      self,
+      config,
+      lib,
+      ...
+    }:
     let
-      inherit (config) theme;
+      theme = self.themes.${self.theme};
     in
     {
       home.sessionVariables.STARSHIP_CACHE = "${config.xdg.cacheHome}/starship";

@@ -2,6 +2,7 @@
 {
   flake.modules.homeManager.noctalia =
     {
+      self,
       config,
       lib,
       pkgs,
@@ -9,7 +10,7 @@
     }:
     let
       cfg = config.programs.noctalia;
-      inherit (config) theme;
+      theme = self.themes.${self.theme};
 
       lockSecrets = pkgs.writeShellScript "lock-secrets" ''
         ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true

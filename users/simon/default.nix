@@ -35,7 +35,6 @@
       self.modules.homeManager.shellAliases
       self.modules.homeManager.shellIntegration
       self.modules.homeManager.starship
-      self.modules.homeManager.theme
       self.modules.homeManager.tmux
       self.modules.homeManager.voxtype
       self.modules.homeManager.udiskie

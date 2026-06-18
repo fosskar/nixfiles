@@ -1,6 +1,7 @@
 _: {
   flake.modules.homeManager.gtk =
     {
+      self,
       pkgs,
       config,
       ...
@@ -9,7 +10,7 @@ _: {
       gtk = {
         enable = true;
         font = {
-          name = config.theme.fonts.sans;
+          name = self.themes.${self.theme}.fonts.sans;
         };
         theme = {
           name = "adw-gtk3-dark";

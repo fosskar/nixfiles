@@ -1,13 +1,13 @@
 _: {
   flake.modules.homeManager.ghostty =
     {
+      self,
       pkgs,
-      config,
       lib,
       ...
     }:
     let
-      t = config.theme;
+      t = self.themes.${self.theme};
     in
     {
       programs.ghostty = {
@@ -48,7 +48,7 @@ _: {
         };
         settings = {
           theme = "grey-teal";
-          font-family = config.theme.fonts.mono;
+          font-family = self.themes.${self.theme}.fonts.mono;
           font-size = lib.mkDefault 10;
           copy-on-select = false;
           background-opacity = lib.mkDefault 0.8;

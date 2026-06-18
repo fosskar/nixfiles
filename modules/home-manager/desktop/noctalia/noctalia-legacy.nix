@@ -2,6 +2,7 @@
 {
   flake.modules.homeManager.noctalia-legacy =
     {
+      self,
       config,
       lib,
       osConfig,
@@ -13,7 +14,7 @@
 
       config =
         let
-          t = config.theme;
+          t = self.themes.${self.theme};
           lockSecrets = pkgs.writeShellScript "lock-secrets" ''
             ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
           '';

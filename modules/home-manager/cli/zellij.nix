@@ -1,8 +1,8 @@
 _: {
   flake.modules.homeManager.zellij =
-    { config, ... }:
+    { self, ... }:
     let
-      t = config.theme;
+      t = self.themes.${self.theme};
     in
     {
       programs.zellij = {

@@ -2,13 +2,13 @@
 {
   flake.modules.homeManager.niri =
     {
-      config,
+      self,
       lib,
       pkgs,
       ...
     }:
     let
-      inherit (config) theme;
+      theme = self.themes.${self.theme};
 
       toNodeList = lib.mapAttrsToList (name: value: value // { _args = [ (value.name or name) ]; });
       mapMatch = match: if match == { } then { } else { _props = match; };
