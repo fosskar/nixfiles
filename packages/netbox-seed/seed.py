@@ -1,6 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
-from django.utils.text import slugify
-
 from dcim.models import (
     Device,
     DeviceRole,
@@ -10,6 +7,8 @@ from dcim.models import (
     Manufacturer,
     Site,
 )
+from django.contrib.contenttypes.models import ContentType
+from django.utils.text import slugify
 from ipam.models import IPAddress, Prefix
 
 # Run from repo root with:

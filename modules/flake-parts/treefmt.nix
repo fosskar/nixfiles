@@ -75,8 +75,31 @@
           taplo.enable = true;
           gofmt.enable = true;
           rustfmt.enable = true;
-          ruff-check.enable = true;
-          ruff-format.enable = true;
+        };
+        settings.formatter.ruff-check = {
+          command = pkgs.ruff;
+          includes = [
+            "*.py"
+            "*.pyi"
+          ];
+          options = [
+            "check"
+            "--no-cache"
+            "--fix"
+            "--extend-select"
+            "I"
+          ];
+        };
+        settings.formatter.ruff-format = {
+          command = pkgs.ruff;
+          includes = [
+            "*.py"
+            "*.pyi"
+          ];
+          options = [
+            "format"
+            "--no-cache"
+          ];
         };
       };
 
