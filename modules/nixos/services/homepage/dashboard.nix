@@ -75,75 +75,83 @@
       ];
 
       # services on other machines — can't auto-register cross-machine
-      serviceGroups = {
-        "network" = [
-          {
-            "OpenWrt Router" = {
-              href = "https://192.168.10.1";
-              icon = "openwrt.svg";
-            };
-          }
-          {
-            "OpenWrt AP" = {
-              href = "https://192.168.10.2";
-              icon = "openwrt.svg";
-            };
-          }
-          {
-            "AdGuard Home" = {
-              href = "http://192.168.10.1:8080";
-              icon = "adguard-home.svg";
-            };
-          }
-        ];
-        "infrastructure" = [
-          {
-            "JetKVM HA" = {
-              href = "http://jetkvm-ha.lan";
-              icon = "mdi-console";
-              siteMonitor = "http://192.168.10.30";
-            };
-          }
-          {
-            "JetKVM nixworker" = {
-              href = "http://192.168.20.211";
-              icon = "mdi-console";
-              siteMonitor = "http://192.168.20.211";
-            };
-          }
-          {
-            "Nixbox BMC" = {
-              href = "https://192.168.20.205";
-              icon = "mdi-server-network";
-              siteMonitor = "https://192.168.20.205";
-            };
-          }
-          {
-            "HP Printer" = {
-              href = "http://192.168.10.153";
-              icon = "mdi-printer";
-            };
-          }
-        ];
-        "code" = [
-          {
-            "Home Assistant" = {
-              href = "http://homeassistant.lan:8123";
-              icon = "home-assistant.svg";
-              siteMonitor = "http://homeassistant.lan:8123";
-            };
-          }
-        ];
-        "files" = [
-          {
-            # no siteMonitor: local-only gui port
-            "Syncthing" = {
-              href = "http://127.0.0.1:8384";
-              icon = "syncthing.svg";
-            };
-          }
-        ];
-      };
+      services = [
+        {
+          "network" = [
+            {
+              "OpenWrt Router" = {
+                href = "https://192.168.10.1";
+                icon = "openwrt.svg";
+              };
+            }
+            {
+              "OpenWrt AP" = {
+                href = "https://192.168.10.2";
+                icon = "openwrt.svg";
+              };
+            }
+            {
+              "AdGuard Home" = {
+                href = "http://192.168.10.1:8080";
+                icon = "adguard-home.svg";
+              };
+            }
+          ];
+        }
+        {
+          "infrastructure" = [
+            {
+              "JetKVM HA" = {
+                href = "http://jetkvm-ha.lan";
+                icon = "mdi-console";
+                siteMonitor = "http://192.168.10.30";
+              };
+            }
+            {
+              "JetKVM nixworker" = {
+                href = "http://192.168.20.211";
+                icon = "mdi-console";
+                siteMonitor = "http://192.168.20.211";
+              };
+            }
+            {
+              "Nixbox BMC" = {
+                href = "https://192.168.20.205";
+                icon = "mdi-server-network";
+                siteMonitor = "https://192.168.20.205";
+              };
+            }
+            {
+              "HP Printer" = {
+                href = "http://192.168.10.153";
+                icon = "mdi-printer";
+              };
+            }
+          ];
+        }
+        {
+          "code" = [
+            {
+              "Home Assistant" = {
+                href = "http://homeassistant.lan:8123";
+                icon = "home-assistant.svg";
+                siteMonitor = "http://homeassistant.lan:8123";
+              };
+            }
+          ];
+        }
+        {
+          "files" = [
+            {
+              # no siteMonitor: local-only gui port
+              "Syncthing" = {
+                href = "http://127.0.0.1:8384";
+                icon = "syncthing.svg";
+              };
+            }
+          ];
+        }
+      ];
 
       bookmarks = [
         {

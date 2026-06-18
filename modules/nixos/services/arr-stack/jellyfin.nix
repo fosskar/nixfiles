@@ -58,13 +58,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."media" = [
+        services.homepage-dashboard.services = [
           {
-            "Jellyfin" = {
-              href = "https://${localHost}";
-              icon = "jellyfin.png";
-              siteMonitor = listenUrl;
-            };
+            "media" = [
+              {
+                "Jellyfin" = {
+                  href = "https://${localHost}";
+                  icon = "jellyfin.png";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

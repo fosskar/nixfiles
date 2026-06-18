@@ -180,13 +180,17 @@
         "video"
       ];
 
-      services.homepage-dashboard.serviceGroups."media" = [
+      services.homepage-dashboard.services = [
         {
-          "Immich" = {
-            href = "https://${localHost}";
-            icon = "immich.png";
-            siteMonitor = listenUrl;
-          };
+          "media" = [
+            {
+              "Immich" = {
+                href = "https://${localHost}";
+                icon = "immich.png";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

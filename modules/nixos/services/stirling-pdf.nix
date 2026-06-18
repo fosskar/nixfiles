@@ -23,13 +23,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."tools" = [
+      services.homepage-dashboard.services = [
         {
-          "Stirling PDF" = {
-            href = "https://${localHost}";
-            icon = "stirling-pdf.svg";
-            siteMonitor = listenUrl;
-          };
+          "tools" = [
+            {
+              "Stirling PDF" = {
+                href = "https://${localHost}";
+                icon = "stirling-pdf.svg";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

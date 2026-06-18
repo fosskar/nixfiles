@@ -43,13 +43,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."tools" = [
+      services.homepage-dashboard.services = [
         {
-          "SearXNG" = {
-            href = "https://${localHost}";
-            icon = "searxng.svg";
-            siteMonitor = listenUrl;
-          };
+          "tools" = [
+            {
+              "SearXNG" = {
+                href = "https://${localHost}";
+                icon = "searxng.svg";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

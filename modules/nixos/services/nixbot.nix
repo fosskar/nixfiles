@@ -19,13 +19,17 @@
         # cross-host: declared here on nixworker via the default options; nixbot
         # has no homepage/gatus locally, so these are inert until the homepage/
         # gatus host collects them across the clan.
-        services.homepage-dashboard.serviceGroups."code" = [
+        services.homepage-dashboard.services = [
           {
-            "Nixbot" = {
-              href = "https://${publicHost}";
-              icon = "buildbot.svg";
-              siteMonitor = "https://${publicHost}";
-            };
+            "code" = [
+              {
+                "Nixbot" = {
+                  href = "https://${publicHost}";
+                  icon = "buildbot.svg";
+                  siteMonitor = "https://${publicHost}";
+                };
+              }
+            ];
           }
         ];
 

@@ -66,13 +66,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" = [
+        services.homepage-dashboard.services = [
           {
-            "SABnzbd" = {
-              href = "https://${localHost}";
-              icon = "sabnzbd.svg";
-              siteMonitor = listenUrl;
-            };
+            "arr-stack" = [
+              {
+                "SABnzbd" = {
+                  href = "https://${localHost}";
+                  icon = "sabnzbd.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

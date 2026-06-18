@@ -217,13 +217,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."files" = [
+      services.homepage-dashboard.services = [
         {
-          "Nextcloud" = {
-            href = "https://${publicHost}";
-            icon = "nextcloud.svg";
-            siteMonitor = "${listenUrl}/status.php";
-          };
+          "files" = [
+            {
+              "Nextcloud" = {
+                href = "https://${publicHost}";
+                icon = "nextcloud.svg";
+                siteMonitor = "${listenUrl}/status.php";
+              };
+            }
+          ];
         }
       ];
 

@@ -163,13 +163,17 @@
           };
         };
 
-        services.homepage-dashboard.serviceGroups."files" = [
+        services.homepage-dashboard.services = [
           {
-            "Paperless" = {
-              href = "https://${localHost}";
-              icon = "paperless.png";
-              siteMonitor = listenUrl;
-            };
+            "files" = [
+              {
+                "Paperless" = {
+                  href = "https://${localHost}";
+                  icon = "paperless.png";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

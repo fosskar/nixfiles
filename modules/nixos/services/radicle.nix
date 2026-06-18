@@ -46,13 +46,17 @@
       config = {
         # cross-host: radicle runs on nixworker (no homepage/gatus here); these
         # default-option entries are collected onto the dashboard/monitoring host.
-        services.homepage-dashboard.serviceGroups."code" = [
+        services.homepage-dashboard.services = [
           {
-            "Radicle" = {
-              href = "https://${publicHost}/";
-              icon = "mdi-source-branch";
-              siteMonitor = "https://${publicHost}/";
-            };
+            "code" = [
+              {
+                "Radicle" = {
+                  href = "https://${publicHost}/";
+                  icon = "mdi-source-branch";
+                  siteMonitor = "https://${publicHost}/";
+                };
+              }
+            ];
           }
         ];
 

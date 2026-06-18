@@ -32,13 +32,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."media" = [
+        services.homepage-dashboard.services = [
           {
-            "Navidrome" = {
-              href = "https://${localHost}";
-              icon = "navidrome.svg";
-              siteMonitor = listenUrl;
-            };
+            "media" = [
+              {
+                "Navidrome" = {
+                  href = "https://${localHost}";
+                  icon = "navidrome.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

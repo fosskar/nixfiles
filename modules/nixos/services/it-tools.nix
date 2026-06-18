@@ -11,13 +11,17 @@
     in
     {
       # --- homepage ---
-      services.homepage-dashboard.serviceGroups."tools" = [
+      services.homepage-dashboard.services = [
         {
-          "IT Tools" = {
-            href = "https://${localHost}";
-            icon = "it-tools.svg";
-            siteMonitor = "https://${localHost}";
-          };
+          "tools" = [
+            {
+              "IT Tools" = {
+                href = "https://${localHost}";
+                icon = "it-tools.svg";
+                siteMonitor = "https://${localHost}";
+              };
+            }
+          ];
         }
       ];
 

@@ -17,13 +17,17 @@
     {
       # dashboard tile + health check via the default options (collected
       # clan-wide by the homepage/gatus collectors)
-      services.homepage-dashboard.serviceGroups."security" = [
+      services.homepage-dashboard.services = [
         {
-          "Vaultwarden" = {
-            href = "https://${localHost}";
-            icon = "vaultwarden.svg";
-            siteMonitor = listenUrl;
-          };
+          "security" = [
+            {
+              "Vaultwarden" = {
+                href = "https://${localHost}";
+                icon = "vaultwarden.svg";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

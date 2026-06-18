@@ -213,13 +213,17 @@
           user = "authelia-main";
         };
 
-        services.homepage-dashboard.serviceGroups."security" = [
+        services.homepage-dashboard.services = [
           {
-            "Authelia" = {
-              href = "https://${localHost}";
-              icon = "authelia.svg";
-              siteMonitor = listenUrl;
-            };
+            "security" = [
+              {
+                "Authelia" = {
+                  href = "https://${localHost}";
+                  icon = "authelia.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

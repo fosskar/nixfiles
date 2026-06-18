@@ -101,13 +101,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."llm" = [
+      services.homepage-dashboard.services = [
         {
-          "llama.cpp" = {
-            href = "https://${localHost}";
-            icon = "llama-cpp.png";
-            siteMonitor = "${listenUrl}/health";
-          };
+          "llm" = [
+            {
+              "llama.cpp" = {
+                href = "https://${localHost}";
+                icon = "llama-cpp.png";
+                siteMonitor = "${listenUrl}/health";
+              };
+            }
+          ];
         }
       ];
 

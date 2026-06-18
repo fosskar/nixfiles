@@ -41,13 +41,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."tools" = [
+      services.homepage-dashboard.services = [
         {
-          "ConvertX" = {
-            href = "https://${localHost}";
-            icon = "mdi-file-sync";
-            siteMonitor = healthUrl;
-          };
+          "tools" = [
+            {
+              "ConvertX" = {
+                href = "https://${localHost}";
+                icon = "mdi-file-sync";
+                siteMonitor = healthUrl;
+              };
+            }
+          ];
         }
       ];
 

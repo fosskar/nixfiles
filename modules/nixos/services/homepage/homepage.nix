@@ -2,7 +2,6 @@
   flake.modules.nixos.homepage =
     {
       flake-self,
-      config,
       lib,
       ...
     }:
@@ -12,12 +11,24 @@
       listenAddress = "127.0.0.1";
       listenPort = 8082;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
-
-      cfg = config.services.homepage-dashboard;
     in
     {
-      # serviceGroups option is declared in base; collected clan-wide by
-      # homepage/collector.nix. here we just render the merged result.
+      # upstream services is a list of groups; list-merge concatenates, so two
+      # modules contributing the same group name produce duplicate headers
+      # (gethomepage's yaml path does not dedup, unlike its docker/k8s paths).
+      # apply collapses same-named groups at read-time, concatenating their
+      # service lists. runs only here (the homepage host reads the option for
+      # services.yaml generation); no recursion since apply transforms the
+      # already-merged value.
+      options.services.homepage-dashboard.services = lib.mkOption {
+        apply =
+          groups:
+          let
+            names = lib.unique (lib.concatMap lib.attrNames groups);
+          in
+          map (n: { ${n} = lib.concatMap (g: g.${n} or [ ]) groups; }) names;
+      };
+
       config.services.homepage-dashboard = {
         enable = true;
         inherit listenPort;
@@ -39,8 +50,6 @@
         };
 
         customJS = "";
-
-        services = lib.mapAttrsToList (name: services: { ${name} = services; }) cfg.serviceGroups;
       };
 
       config.services.caddy.virtualHosts.${localHost}.extraConfig = ''

@@ -72,13 +72,17 @@
 
             # cross-host: netbird server runs on the gateway (no homepage/gatus
             # here); collected onto the dashboard/monitoring host.
-            services.homepage-dashboard.serviceGroups."network" = [
+            services.homepage-dashboard.services = [
               {
-                "NetBird" = {
-                  href = "https://${settings.domain}";
-                  icon = "netbird.svg";
-                  siteMonitor = "https://${settings.domain}";
-                };
+                "network" = [
+                  {
+                    "NetBird" = {
+                      href = "https://${settings.domain}";
+                      icon = "netbird.svg";
+                      siteMonitor = "https://${settings.domain}";
+                    };
+                  }
+                ];
               }
             ];
             services.gatus.settings.endpoints = [

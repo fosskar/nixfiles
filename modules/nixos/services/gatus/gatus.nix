@@ -61,17 +61,21 @@
       systemd.services.gatus.serviceConfig.EnvironmentFile =
         config.clan.core.vars.generators.smtp.files."smtp-env".path;
 
-      services.homepage-dashboard.serviceGroups."monitoring" = [
+      services.homepage-dashboard.services = [
         {
-          "Gatus" = {
-            href = "https://${localHost}";
-            icon = "gatus.svg";
-            siteMonitor = listenUrl;
-            widget = {
-              type = "gatus";
-              url = listenUrl;
-            };
-          };
+          "monitoring" = [
+            {
+              "Gatus" = {
+                href = "https://${localHost}";
+                icon = "gatus.svg";
+                siteMonitor = listenUrl;
+                widget = {
+                  type = "gatus";
+                  url = listenUrl;
+                };
+              };
+            }
+          ];
         }
       ];
     };

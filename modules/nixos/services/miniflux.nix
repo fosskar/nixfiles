@@ -86,13 +86,17 @@
         };
       };
 
-      services.homepage-dashboard.serviceGroups."media" = [
+      services.homepage-dashboard.services = [
         {
-          "Miniflux" = {
-            href = "https://${localHost}";
-            icon = "miniflux.svg";
-            siteMonitor = listenUrl;
-          };
+          "media" = [
+            {
+              "Miniflux" = {
+                href = "https://${localHost}";
+                icon = "miniflux.svg";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

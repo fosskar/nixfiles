@@ -27,13 +27,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."media" = [
+        services.homepage-dashboard.services = [
           {
-            "Seerr" = {
-              href = "https://${localHost}";
-              icon = "jellyseerr.svg";
-              siteMonitor = listenUrl;
-            };
+            "media" = [
+              {
+                "Seerr" = {
+                  href = "https://${localHost}";
+                  icon = "jellyseerr.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

@@ -35,13 +35,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" = [
+        services.homepage-dashboard.services = [
           {
-            "Prowlarr" = {
-              href = "https://${localHost}";
-              icon = "prowlarr.svg";
-              siteMonitor = listenUrl;
-            };
+            "arr-stack" = [
+              {
+                "Prowlarr" = {
+                  href = "https://${localHost}";
+                  icon = "prowlarr.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

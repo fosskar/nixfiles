@@ -19,13 +19,17 @@
         root = inputs.wiki.packages.${pkgs.stdenv.hostPlatform.system}.default;
       };
 
-      services.homepage-dashboard.serviceGroups."tools" = [
+      services.homepage-dashboard.services = [
         {
-          "fosskar's bliki" = {
-            href = "https://fosskar.nx3.eu/";
-            icon = "mdi-book-open-variant";
-            siteMonitor = "https://fosskar.nx3.eu/";
-          };
+          "tools" = [
+            {
+              "fosskar's bliki" = {
+                href = "https://fosskar.nx3.eu/";
+                icon = "mdi-book-open-variant";
+                siteMonitor = "https://fosskar.nx3.eu/";
+              };
+            }
+          ];
         }
       ];
 

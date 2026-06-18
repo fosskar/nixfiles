@@ -58,13 +58,17 @@
         }"
       ];
 
-      services.homepage-dashboard.serviceGroups."communication" = [
+      services.homepage-dashboard.services = [
         {
-          "Continuwuity" = {
-            href = "https://${publicHost}";
-            icon = "matrix.svg";
-            siteMonitor = listenUrl;
-          };
+          "communication" = [
+            {
+              "Continuwuity" = {
+                href = "https://${publicHost}";
+                icon = "matrix.svg";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

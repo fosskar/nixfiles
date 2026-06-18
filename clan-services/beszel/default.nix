@@ -119,13 +119,17 @@ _: {
               environment.APP_URL = "https://${beszelDomain}";
             };
 
-            services.homepage-dashboard.serviceGroups."monitoring" = [
+            services.homepage-dashboard.services = [
               {
-                "Beszel" = {
-                  href = "https://${beszelDomain}";
-                  icon = "beszel.svg";
-                  siteMonitor = "http://127.0.0.1:${toString beszelPort}";
-                };
+                "monitoring" = [
+                  {
+                    "Beszel" = {
+                      href = "https://${beszelDomain}";
+                      icon = "beszel.svg";
+                      siteMonitor = "http://127.0.0.1:${toString beszelPort}";
+                    };
+                  }
+                ];
               }
             ];
 

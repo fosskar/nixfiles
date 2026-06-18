@@ -29,13 +29,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" = [
+        services.homepage-dashboard.services = [
           {
-            "Bazarr" = {
-              href = "https://${localHost}";
-              icon = "bazarr.svg";
-              siteMonitor = listenUrl;
-            };
+            "arr-stack" = [
+              {
+                "Bazarr" = {
+                  href = "https://${localHost}";
+                  icon = "bazarr.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

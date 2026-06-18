@@ -114,13 +114,17 @@
         reverse_proxy ${listenUrl}
       '';
 
-      services.homepage-dashboard.serviceGroups."files" = [
+      services.homepage-dashboard.services = [
         {
-          "Papra" = {
-            href = "https://${localHost}";
-            icon = "papra.svg";
-            siteMonitor = listenUrl;
-          };
+          "files" = [
+            {
+              "Papra" = {
+                href = "https://${localHost}";
+                icon = "papra.svg";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

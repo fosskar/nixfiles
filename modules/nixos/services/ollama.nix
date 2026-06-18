@@ -29,13 +29,17 @@
         ];
       };
 
-      services.homepage-dashboard.serviceGroups."llm" = [
+      services.homepage-dashboard.services = [
         {
-          "Ollama" = {
-            href = "https://${localHost}";
-            icon = "ollama.png";
-            siteMonitor = listenUrl;
-          };
+          "llm" = [
+            {
+              "Ollama" = {
+                href = "https://${localHost}";
+                icon = "ollama.png";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

@@ -88,13 +88,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."monitoring" = [
+        services.homepage-dashboard.services = [
           {
-            "VictoriaMetrics" = {
-              href = "https://${localHost}";
-              icon = "victoriametrics.svg";
-              siteMonitor = listenUrl;
-            };
+            "monitoring" = [
+              {
+                "VictoriaMetrics" = {
+                  href = "https://${localHost}";
+                  icon = "victoriametrics.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

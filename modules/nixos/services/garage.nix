@@ -44,13 +44,17 @@
           };
         };
 
-        services.homepage-dashboard.serviceGroups."infrastructure" = [
+        services.homepage-dashboard.services = [
           {
-            "Garage" = {
-              href = "https://${localHost}";
-              icon = "garage.svg";
-              siteMonitor = listenUrl;
-            };
+            "infrastructure" = [
+              {
+                "Garage" = {
+                  href = "https://${localHost}";
+                  icon = "garage.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

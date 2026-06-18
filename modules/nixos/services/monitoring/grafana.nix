@@ -235,13 +235,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."monitoring" = [
+        services.homepage-dashboard.services = [
           {
-            "Grafana" = {
-              href = "https://${localHost}";
-              icon = "grafana.svg";
-              siteMonitor = listenUrl;
-            };
+            "monitoring" = [
+              {
+                "Grafana" = {
+                  href = "https://${localHost}";
+                  icon = "grafana.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

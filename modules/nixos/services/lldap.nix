@@ -74,13 +74,17 @@
         environmentFile = config.clan.core.vars.generators.lldap.files."envfile".path;
       };
 
-      services.homepage-dashboard.serviceGroups."security" = [
+      services.homepage-dashboard.services = [
         {
-          "LLDAP" = {
-            href = "https://${localHost}";
-            icon = "lldap.png";
-            siteMonitor = listenUrl;
-          };
+          "security" = [
+            {
+              "LLDAP" = {
+                href = "https://${localHost}";
+                icon = "lldap.png";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

@@ -281,13 +281,17 @@
           };
         };
 
-        services.homepage-dashboard.serviceGroups."files" = [
+        services.homepage-dashboard.services = [
           {
-            "OpenCloud" = {
-              href = "https://${localHost}";
-              icon = "https://${localHost}/themes/opencloud/assets/favicon.svg";
-              siteMonitor = listenUrl;
-            };
+            "files" = [
+              {
+                "OpenCloud" = {
+                  href = "https://${localHost}";
+                  icon = "https://${localHost}/themes/opencloud/assets/favicon.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 

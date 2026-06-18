@@ -112,13 +112,17 @@
         reverse_proxy ${listenUrl}
       '';
 
-      services.homepage-dashboard.serviceGroups."infrastructure" = [
+      services.homepage-dashboard.services = [
         {
-          "NetBox" = {
-            href = "https://${localHost}";
-            icon = "netbox.svg";
-            siteMonitor = listenUrl;
-          };
+          "infrastructure" = [
+            {
+              "NetBox" = {
+                href = "https://${localHost}";
+                icon = "netbox.svg";
+                siteMonitor = listenUrl;
+              };
+            }
+          ];
         }
       ];
 

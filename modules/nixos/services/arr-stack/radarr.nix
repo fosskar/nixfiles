@@ -40,13 +40,17 @@
 
         # --- homepage ---
 
-        services.homepage-dashboard.serviceGroups."arr-stack" = [
+        services.homepage-dashboard.services = [
           {
-            "Radarr" = {
-              href = "https://${localHost}";
-              icon = "radarr.svg";
-              siteMonitor = listenUrl;
-            };
+            "arr-stack" = [
+              {
+                "Radarr" = {
+                  href = "https://${localHost}";
+                  icon = "radarr.svg";
+                  siteMonitor = listenUrl;
+                };
+              }
+            ];
           }
         ];
 
