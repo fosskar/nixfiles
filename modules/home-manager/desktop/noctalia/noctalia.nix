@@ -171,32 +171,32 @@
             shell = {
               launch_apps_as_systemd_services = true;
               lang = "en";
-              font_family = theme.fonts.sans;
-              time_format = "{:%H:%M}";
-              date_format = "%d.%m.%y";
+              font_family = lib.mkDefault theme.fonts.sans;
+              time_format = lib.mkDefault "{:%H:%M}";
+              date_format = lib.mkDefault "%d.%m.%y";
               telemetry_enabled = false;
               polkit_agent = true;
               show_location = true;
-              screen_corners.enabled = true;
-              niri_overview_type_to_launch_enabled = true;
+              screen_corners.enabled = lib.mkDefault true;
+              niri_overview_type_to_launch_enabled = lib.mkDefault true;
               panel = {
-                background_blur = true;
-                transparency_mode = "soft";
+                background_blur = lib.mkDefault true;
+                transparency_mode = lib.mkDefault "soft";
                 open_near_click_control_center = true;
                 session_placement = "centered";
               };
             };
 
             osd = {
-              position = "center_right";
-              orientation = "vertical";
-              lock_keys = false;
+              position = lib.mkDefault "center_right";
+              orientation = lib.mkDefault "vertical";
+              lock_keys = lib.mkDefault false;
             };
 
             theme = {
-              mode = "dark";
-              source = "custom";
-              custom_palette = "grey-teal";
+              mode = lib.mkDefault "dark";
+              source = lib.mkDefault "custom";
+              custom_palette = lib.mkDefault "grey-teal";
               templates = {
                 enable_builtin_templates = true;
                 enable_community_templates = true;
@@ -219,13 +219,13 @@
             bar = {
               order = [ "main" ];
               main = {
-                position = "top";
+                position = lib.mkDefault "top";
                 enabled = true;
-                auto_hide = false;
-                reserve_space = true;
-                background_opacity = 0.7;
-                attach_panels = true;
-                capsule = false;
+                auto_hide = lib.mkDefault false;
+                reserve_space = lib.mkDefault true;
+                background_opacity = lib.mkDefault 0.7;
+                attach_panels = lib.mkDefault true;
+                capsule = lib.mkDefault false;
                 margin_ends = 10;
                 margin_edge = 5;
                 widget_spacing = 10;
@@ -361,8 +361,8 @@
 
             notification = {
               enable_daemon = true;
-              position = "top_right";
-              background_opacity = 0.97;
+              position = lib.mkDefault "top_right";
+              background_opacity = lib.mkDefault 0.97;
             };
 
             audio = {

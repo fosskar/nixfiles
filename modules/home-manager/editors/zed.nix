@@ -1,6 +1,10 @@
 {
   flake.modules.homeManager.zed =
-    { pkgs, ... }:
+    {
+      pkgs,
+      lib,
+      ...
+    }:
     {
       programs.zed-editor = {
         enable = true;
@@ -21,8 +25,8 @@
         ];
 
         userSettings = {
-          theme = "VSCode Dark Modern";
-          icon_theme = "Material Icon Theme";
+          theme = lib.mkDefault "VSCode Dark Modern";
+          icon_theme = lib.mkDefault "Material Icon Theme";
         };
       };
       wayland.windowManager.niri.settings.binds."Mod+Z".spawn = "zeditor";

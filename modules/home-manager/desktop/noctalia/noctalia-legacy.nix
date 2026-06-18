@@ -280,8 +280,8 @@
 
             settings = {
               colorSchemes = {
-                predefinedScheme = "grey-teal";
-                darkMode = true;
+                predefinedScheme = lib.mkDefault "grey-teal";
+                darkMode = lib.mkDefault true;
               };
               appLauncher = {
                 terminalCommand = "ghostty -e";
@@ -314,13 +314,13 @@
               };
 
               ui = {
-                panelBackgroundOpacity = 0.7;
-                translucentWidgets = true;
+                panelBackgroundOpacity = lib.mkDefault 0.7;
+                translucentWidgets = lib.mkDefault true;
               };
 
               bar = {
-                backgroundOpacity = 0.7;
-                showCapsule = false;
+                backgroundOpacity = lib.mkDefault 0.7;
+                showCapsule = lib.mkDefault false;
                 widgets = {
                   center = [
                     {
@@ -415,10 +415,10 @@
                 autoStartAuth = true;
                 allowPasswordWithFprintd = osConfig.services.fprintd.enable or false;
                 lockOnSuspend = true;
-                showScreenCorners = true;
-                forceBlackScreenCorners = true;
-                compactLockScreen = true;
-                lockScreenBlur = 0.5;
+                showScreenCorners = lib.mkDefault true;
+                forceBlackScreenCorners = lib.mkDefault true;
+                compactLockScreen = lib.mkDefault true;
+                lockScreenBlur = lib.mkDefault 0.5;
               };
 
               hooks = {
@@ -432,10 +432,10 @@
               };
 
               notifications = {
-                density = "compact";
+                density = lib.mkDefault "compact";
               };
 
-              osd.location = "right";
+              osd.location = lib.mkDefault "right";
 
               wallpaper = {
                 enabled = true;
@@ -447,7 +447,7 @@
 
               sessionMenu = {
                 countdownDuration = 1000;
-                largeButtonsLayout = "grid";
+                largeButtonsLayout = lib.mkDefault "grid";
               };
             };
           };

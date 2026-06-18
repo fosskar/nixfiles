@@ -84,21 +84,21 @@
       wayland.windowManager.niri.settings = fromNiriFlakeSettings {
         # input configuration
         input = {
-          focus-follows-mouse._props.max-scroll-amount = "0%";
+          focus-follows-mouse._props.max-scroll-amount = lib.mkDefault "0%";
           warp-mouse-to-focus = [ ];
-          workspace-auto-back-and-forth = true;
+          workspace-auto-back-and-forth = lib.mkDefault true;
 
           keyboard.xkb = {
-            layout = "de";
+            layout = lib.mkDefault "de";
           };
 
           mouse = {
-            accel-profile = "flat";
+            accel-profile = lib.mkDefault "flat";
           };
         };
 
         # prefer server-side decorations
-        prefer-no-csd = true;
+        prefer-no-csd = lib.mkDefault true;
 
         environment = {
           NIXOS_OZONE_WL = "1";
@@ -107,26 +107,26 @@
         };
 
         layout = {
-          gaps = 8;
+          gaps = lib.mkDefault 8;
 
-          always-center-single-column = true;
+          always-center-single-column = lib.mkDefault true;
 
-          center-focused-column = "on-overflow";
+          center-focused-column = lib.mkDefault "on-overflow";
 
           focus-ring = {
-            width = 2;
-            active-color = theme.dark.accent.primary;
-            inactive-color = theme.dark.fg.dim;
+            width = lib.mkDefault 2;
+            active-color = lib.mkDefault theme.dark.accent.primary;
+            inactive-color = lib.mkDefault theme.dark.fg.dim;
           };
 
           shadow = {
-            softness = 20;
-            spread = 3;
+            softness = lib.mkDefault 20;
+            spread = lib.mkDefault 3;
             offset._props = {
-              x = 0.0;
-              y = 3.0;
+              x = lib.mkDefault 0.0;
+              y = lib.mkDefault 3.0;
             };
-            color = "${theme.dark.bg.base}70";
+            color = lib.mkDefault "${theme.dark.bg.base}70";
           };
         };
 
@@ -139,7 +139,7 @@
         };
 
         overview = {
-          backdrop-color = theme.dark.bg.elevated;
+          backdrop-color = lib.mkDefault theme.dark.bg.elevated;
         };
 
         window-rules = [

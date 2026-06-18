@@ -1,14 +1,18 @@
 _: {
   flake.modules.homeManager.zathura =
-    { config, ... }:
+    {
+      config,
+      lib,
+      ...
+    }:
     {
       programs.zathura = {
         enable = true;
         options = {
           recolor-lightcolor = "rgba(0,0,0,0)";
-          default-bg = "rgba(0,0,0,0.7)";
+          default-bg = lib.mkDefault "rgba(0,0,0,0.7)";
 
-          font = "${config.theme.fonts.sans} 12";
+          font = lib.mkDefault "${config.theme.fonts.sans} 12";
           selection-notification = true;
 
           selection-clipboard = "clipboard";

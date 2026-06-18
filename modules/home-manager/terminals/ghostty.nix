@@ -1,6 +1,11 @@
 _: {
   flake.modules.homeManager.ghostty =
-    { pkgs, config, ... }:
+    {
+      pkgs,
+      config,
+      lib,
+      ...
+    }:
     let
       t = config.theme;
     in
@@ -44,11 +49,11 @@ _: {
         settings = {
           theme = "grey-teal";
           font-family = config.theme.fonts.mono;
-          font-size = 10;
+          font-size = lib.mkDefault 10;
           copy-on-select = false;
-          background-opacity = 0.8;
-          window-padding-x = 4;
-          window-padding-y = 4;
+          background-opacity = lib.mkDefault 0.8;
+          window-padding-x = lib.mkDefault 4;
+          window-padding-y = lib.mkDefault 4;
           window-padding-balance = true;
           clipboard-trim-trailing-spaces = true;
           focus-follows-mouse = true;
