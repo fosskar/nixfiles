@@ -61,6 +61,7 @@
           VISUAL = "${lib.getExe pkgs.zed-editor}";
           EDITOR = "${lib.getExe pkgs.neovim}";
           KUBE_EDITOR = "${lib.getExe pkgs.neovim}";
+          NH_HOME_FLAKE = "/home/simon/Projects/nixfiles";
         };
       };
       systemd.user.startServices = "sd-switch";
