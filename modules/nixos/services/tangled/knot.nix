@@ -21,7 +21,7 @@
             listenAddr = "0.0.0.0:${toString listenPort}";
             hostname = publicHost;
             owner = "did:plc:an4f4yxu6sfuhvc7ih56dyl2";
-            secureMode = true;
+            secureMode = false;
           };
           openFirewall = false;
         };

@@ -14,6 +14,8 @@
       imports = [ inputs.tangled.nixosModules.spindle ];
 
       config = {
+        boot.kernelModules = [ "vhost_vsock" ];
+
         services.tangled.spindle = {
           enable = true;
           server = {
