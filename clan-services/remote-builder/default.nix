@@ -127,6 +127,12 @@ _:
             config = lib.mkIf (!isBuilder) {
               nix.distributedBuilds = lib.mkDefault true;
 
+              programs.ssh.extraConfig = lib.concatMapStrings (builderName: ''
+                Host ${builderName}.${config.clan.core.settings.domain}
+                  ServerAliveInterval 30
+                  ServerAliveCountMax 4
+              '') builderNames;
+
               clan.core.vars.generators.remote-builder = {
                 files."id_ed25519" = { };
                 files."id_ed25519.pub".secret = false;
