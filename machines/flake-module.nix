@@ -249,14 +249,16 @@
           roles.server.machines."gateway".settings = {
             domain = "nb.${config.flake.domains.public}";
             proxyDomain = "proxy.${config.flake.domains.public}";
-            proxyTCPPorts = [ 8776 ];
+            proxyTCPPorts = [
+              8776
+              2222
+            ];
             port = 51821;
           };
           roles.client = {
             tags.all = { };
             machines."nixbox".settings.routingFeatures = "server";
           };
-          roles.sshServer.tags.server = { };
         };
 
         tor = {
