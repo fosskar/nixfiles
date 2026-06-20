@@ -173,11 +173,9 @@
               launch_apps_as_systemd_services = true;
               lang = "en";
               font_family = lib.mkDefault theme.fonts.sans;
-              time_format = lib.mkDefault "{:%H:%M}";
               date_format = lib.mkDefault "%d.%m.%y";
-              telemetry_enabled = false;
               polkit_agent = true;
-              show_location = true;
+              screen_time_enabled = true;
               screen_corners.enabled = lib.mkDefault true;
               niri_overview_type_to_launch_enabled = lib.mkDefault true;
               panel = {
@@ -191,16 +189,18 @@
             osd = {
               position = lib.mkDefault "center_right";
               orientation = lib.mkDefault "vertical";
-              lock_keys = lib.mkDefault false;
+              background_opacity = lib.mkDefault 0.80;
+              kinds = {
+                lock_keys = lib.mkDefault false;
+                keyboard_layout = false;
+                media = false;
+              };
             };
 
             theme = {
-              mode = lib.mkDefault "dark";
               source = lib.mkDefault "custom";
               custom_palette = lib.mkDefault "grey-teal";
               templates = {
-                enable_builtin_templates = true;
-                enable_community_templates = true;
                 builtin_ids = [
                   "niri"
                   "qt"
@@ -213,6 +213,7 @@
                 community_ids = [
                   "zathura"
                   "yazi"
+                  "papirus-icons"
                 ];
               };
             };
@@ -220,13 +221,9 @@
             bar = {
               order = [ "main" ];
               main = {
-                position = lib.mkDefault "top";
                 enabled = true;
-                auto_hide = lib.mkDefault false;
-                reserve_space = lib.mkDefault true;
                 background_opacity = lib.mkDefault 0.7;
                 attach_panels = lib.mkDefault true;
-                capsule = lib.mkDefault false;
                 margin_ends = 10;
                 margin_edge = 5;
                 widget_spacing = 10;
@@ -327,9 +324,6 @@
               session.color = "error";
             };
 
-            dock.enabled = false;
-            desktop_widgets.enabled = false;
-
             idle.behavior = {
               screen-off = {
                 enabled = true;
@@ -349,26 +343,57 @@
               };
             };
 
-            location.auto_locate = true;
+            battery.device.hidpp_battery_0.warning_threshold = 15;
 
-            system.monitor.enabled = true;
+            calendar = {
+              enabled = true;
+              refresh_minutes = 15;
+              account.opencloud = {
+                type = "caldav";
+                provider = "custom";
+                name = "opencloud";
+                server_url = "https://opencloud.${self.domains.local}/caldav/";
+              };
+            };
+
+            lockscreen = {
+              allow_empty_password = true;
+              blurred_desktop = true;
+              tint_intensity = lib.mkDefault 0.50;
+            };
+
+            lockscreen_widgets = {
+              enabled = true;
+              widget.clock_main = {
+                type = "clock";
+                output = "DP-1";
+                cx = 1720.0;
+                cy = 360.0;
+                scale = 1.0;
+                rotation = 0.0;
+                settings.format = "{:%H:%M}";
+              };
+              widget.weather_main = {
+                type = "weather";
+                output = "DP-1";
+                cx = 1720.0;
+                cy = 540.0;
+                scale = 1.0;
+                rotation = 0.0;
+              };
+            };
+
+            location.auto_locate = true;
 
             wallpaper.directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
 
             weather = {
               enabled = true;
-              unit = "celsius";
             };
 
             notification = {
-              enable_daemon = true;
               position = lib.mkDefault "top_right";
-              background_opacity = lib.mkDefault 0.97;
-            };
-
-            audio = {
-              enable_overdrive = false;
-              enable_sounds = false;
+              background_opacity = lib.mkDefault 0.80;
             };
 
             hooks = {
