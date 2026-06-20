@@ -145,11 +145,6 @@ in
           ) installDirs
         );
 
-        # point userborn at persistent storage so passwd/group/shadow survive
-        # ephemeral root. userborn creates /etc symlinks automatically.
-        services.userborn.passwordFilesLocation = lib.mkIf (config.services.userborn.enable or false
-        ) "${persistPath}/etc";
-
         preservation = {
           enable = true;
 
