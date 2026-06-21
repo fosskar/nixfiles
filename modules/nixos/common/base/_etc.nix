@@ -3,6 +3,9 @@
 {
   flake.modules.nixos.base = {
     # mutable upperdir (default); immutable is a later step
-    system.etc.overlay.enable = true;
+    system.etc.overlay = {
+      enable = true;
+      mutable = true;
+    };
   };
 }
