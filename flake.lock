@@ -1328,11 +1328,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781863709,
-        "narHash": "sha256-1o2TNOT0COKgYSVDmtpdbZkkburCRNH74P4tBTZhvNQ=",
+        "lastModified": 1781991984,
+        "narHash": "sha256-YVazPG66PsqjhSvX0bWExzLOnJa/fofGezXfLYcYPW8=",
         "owner": "generational-infrastructure",
         "repo": "spaces-os",
-        "rev": "ad2cacb072ff6a70601af4a3ce9d11efe33ff155",
+        "rev": "90fb21dd38995ab9fff7ecfefb48f8a74235d4d7",
         "type": "github"
       },
       "original": {
