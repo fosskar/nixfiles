@@ -63,6 +63,24 @@
           files."oauth-id".secret = false;
         };
 
+        # effects read secrets as a JSON file; derive one holding the existing
+        # codeberg token so the flake-update effect can push branches + open PRs.
+        clan.core.vars.generators.nixbot-effects-secrets = {
+          dependencies = [
+            "nixbot"
+            "nix-access-tokens"
+          ];
+          runtimeInputs = [ pkgs.jq ];
+          files."secrets.json" = { };
+          script = ''
+            jq -n \
+              --arg t "$(cat "$in/nixbot/codeberg-token")" \
+              --arg gh "$(cat "$in/nix-access-tokens/tokens")" \
+              '{codeberg:{data:{token:$t}},github:{data:{config:$gh}}}' \
+              > "$out/secrets.json"
+          '';
+        };
+
         services.nixbot = {
           enable = true;
 
@@ -77,6 +95,9 @@
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
           evalWorkerCount = lib.mkDefault 8;
           cacheFailedBuilds = true;
+
+          effects.perRepoSecretFiles."gitea:fosskar/nixfiles" =
+            config.clan.core.vars.generators.nixbot-effects-secrets.files."secrets.json".path;
 
           gitea = {
             enable = true;
