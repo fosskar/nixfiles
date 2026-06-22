@@ -3,7 +3,6 @@
     { config, ... }:
     {
       clan.core.vars.generators.nix-access-tokens = {
-        share = true;
         files.tokens.secret = true;
         prompts.tokens = {
           description = "nix access-tokens line (e.g. access-tokens = github.com=ghp_...)";

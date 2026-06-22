@@ -9,7 +9,6 @@
     self.modules.nixos.systemdBoot
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.nixbot
-    self.modules.nixos.nixAccessTokens
     self.modules.nixos.codebergActionsRunner
     self.modules.nixos.hermesAgent
     self.modules.nixos.signalCli
