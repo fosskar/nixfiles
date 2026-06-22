@@ -25,6 +25,7 @@
             SMTP_HOST=${smtpHost}
             SMTP_PORT=${toString smtpPort}
             SMTP_USER=$USERNAME
+            SMTP_USERNAME=$USERNAME
             SMTP_FROM=${smtpFrom}
             SMTP_PASSWORD=$PASSWORD
             EOF
