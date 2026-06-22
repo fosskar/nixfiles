@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+_: {
   networking = {
     hostId = "25e85037"; # zfs requires unique hostId
 
@@ -38,24 +37,9 @@
     "99-wireless-client-dhcp".enable = false;
   };
 
-  # disable WoL on all ethernet interfaces
-  systemd.network.links."10-disable-wol" = {
-    matchConfig.OriginalName = "en*";
-    linkConfig.WakeOnLan = "off";
-  };
-
   # address + mac auto-extracted from networking.interfaces.bond0
   topology.self = {
     hardware.info = "server / 10gbe bond";
     interfaces.bond0.network = "server";
   };
-
-  # udev rules for network interfaces
-  services.udev.extraRules = ''
-    # increase ring buffer to reduce packet drops on 10G NIC
-    ACTION=="add", SUBSYSTEM=="net", KERNEL=="enp36s0f0np0", RUN+="${pkgs.ethtool}/bin/ethtool -G $name rx 2047 tx 2047"
-    ACTION=="add", SUBSYSTEM=="net", KERNEL=="enp36s0f1np1", RUN+="${pkgs.ethtool}/bin/ethtool -G $name rx 2047 tx 2047"
-    # enable runtime power management for ethernet devices
-    ACTION=="add", SUBSYSTEM=="net", KERNEL=="en*", RUN+="/bin/sh -c 'echo auto > /sys/class/net/%k/device/power/control'"
-  '';
 }
