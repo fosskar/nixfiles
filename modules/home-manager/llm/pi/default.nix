@@ -27,6 +27,10 @@ _: {
           {
             source = "git:github.com/rytswd/pi-agent-extensions";
           }
+          {
+            # v0.10.4
+            source = "git:github.com/tintinweb/pi-subagents@b717012e170f9acaa5b756456e9636d12a6e2f2a";
+          }
         ];
         compaction.enabled = true;
       };
