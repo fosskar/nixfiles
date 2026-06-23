@@ -93,6 +93,24 @@
           "d ${dataEntry.path} 0770 - - -"
         ];
 
+        # back up a consistent lmdb snapshot, not the live meta db. clan-core's
+        # garage service defaults folders to the live meta dir, which can tear
+        # when copied hot; override to the snapshot copy instead.
+        clan.core.state.garage = {
+          folders = lib.mkForce [ "/var/backup/garage" ];
+          preBackupScript = ''
+            set -euo pipefail
+            export GARAGE_RPC_SECRET_FILE=/run/secrets/vars/garage-shared/rpc_secret
+            ${pkgs.garage_2}/bin/garage meta snapshot
+            newest=$(ls -dt /var/lib/garage/meta/snapshots/*/ | head -1)
+            rm -rf /var/backup/garage
+            mkdir -p /var/backup/garage
+            cp -a "$newest" /var/backup/garage/meta
+            # keep only the newest on-disk snapshot to bound growth
+            ls -dt /var/lib/garage/meta/snapshots/*/ | tail -n +2 | xargs -r rm -rf
+          '';
+        };
+
         systemd.services.garage-layout-init = {
           description = "garage cluster layout init";
           after = [ "garage.service" ];
