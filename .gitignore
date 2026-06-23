@@ -67,3 +67,6 @@ terraform.rc
 
 # Pi ralph loops
 .ralph
+
+# Pi subagents runtime state
+.pi/subagents.json
