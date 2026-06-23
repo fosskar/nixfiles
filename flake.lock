@@ -1332,11 +1332,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782051883,
-        "narHash": "sha256-kvEZhBq0NzmfbKyu6LlMYwgq+YiQm8PK1iEApBcnS4E=",
+        "lastModified": 1782159444,
+        "narHash": "sha256-UPZG/vAJPjrFkwJ8Jqk39Hel8YI66ExEGnXi4u9VWQo=",
         "owner": "generational-infrastructure",
         "repo": "spaces-os",
-        "rev": "7d9006a3f3e9afbb68283e51d3d2efecb6d29c4b",
+        "rev": "b5dfbc4344d81e32f2fe2a5457dd70706f03c83e",
         "type": "github"
       },
       "original": {
