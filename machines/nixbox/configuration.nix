@@ -12,6 +12,7 @@
     self.modules.nixos.continuwuity
     self.modules.nixos.mautrix-signal
     self.modules.nixos.convertx
+    self.modules.nixos.dawarich
     self.modules.nixos.opencloud
     self.modules.nixos.searxng
     self.modules.nixos.lldap
