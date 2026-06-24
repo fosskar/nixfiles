@@ -100,7 +100,7 @@
           }
           {
             _type = "device";
-            name = "br-servers";
+            name = "br-srv";
             type = "bridge";
             ports = [ "lan1" ];
           }
@@ -147,9 +147,9 @@
           proto = "static";
           ipaddr = "192.168.50.1/24";
         };
-        servers = {
+        srv = {
           _type = "interface";
-          device = "br-servers";
+          device = "br-srv";
           proto = "static";
           ipaddr = "192.168.20.1/24";
           ip6addr = "fd8a:2e59:7bfd:20::1/64";
@@ -265,10 +265,9 @@
           limit = "150";
           leasetime = "12h";
         };
-        # nixbox/nixworker are static; dhcp only for management devices (bmc)
-        servers = {
+        srv = {
           _type = "dhcp";
-          interface = "servers";
+          interface = "srv";
           start = "100";
           limit = "50";
           leasetime = "12h";
@@ -318,7 +317,6 @@
           ip = "192.168.10.30";
           mac = "30:52:53:0A:4F:32";
         };
-        # kvm attached to nixworker (192.168.20.210) on br-servers
         jetkvm_nixworker = {
           _type = "host";
           name = "jetkvm-nixworker";
@@ -402,8 +400,8 @@
           }
           {
             _type = "zone";
-            name = "servers";
-            network = [ "servers" ];
+            name = "srv";
+            network = [ "srv" ];
             input = "REJECT";
             output = "ACCEPT";
             forward = "REJECT";
@@ -436,13 +434,13 @@
           }
           {
             _type = "forwarding";
-            src = "servers";
+            src = "srv";
             dest = "wan";
           }
           {
             _type = "forwarding";
             src = "lan";
-            dest = "servers";
+            dest = "srv";
           }
         ];
         redirect = [
@@ -478,12 +476,12 @@
           {
             _type = "redirect";
             target = "DNAT";
-            name = "force dns interception - servers";
+            name = "force dns interception - srv";
             proto = [
               "tcp"
               "udp"
             ];
-            src = "servers";
+            src = "srv";
             src_dport = "53";
             dest_ip = "192.168.20.1";
             dest_port = "53";
@@ -520,12 +518,12 @@
           {
             _type = "redirect";
             target = "DNAT";
-            name = "force dns interception - servers v6";
+            name = "force dns interception - srv v6";
             proto = [
               "tcp"
               "udp"
             ];
-            src = "servers";
+            src = "srv";
             src_dport = "53";
             dest_ip = "fd8a:2e59:7bfd:20::1";
             dest_port = "53";
@@ -551,18 +549,18 @@
           dest_port = "53";
           target = "ACCEPT";
         };
-        servers_dhcp = {
+        srv_dhcp = {
           _type = "rule";
-          name = "Allow-Servers-DHCP";
-          src = "servers";
+          name = "Allow-Srv-DHCP";
+          src = "srv";
           proto = "udp";
           dest_port = "67-68";
           target = "ACCEPT";
         };
-        servers_dns = {
+        srv_dns = {
           _type = "rule";
-          name = "Allow-Servers-DNS";
-          src = "servers";
+          name = "Allow-Srv-DNS";
+          src = "srv";
           proto = [
             "udp"
             "tcp"
@@ -570,19 +568,18 @@
           dest_port = "53";
           target = "ACCEPT";
         };
-        # victoriametrics on nixbox scrapes router telegraf
-        servers_telegraf = {
+        srv_telegraf = {
           _type = "rule";
-          name = "Allow-Servers-Telegraf";
-          src = "servers";
+          name = "Allow-Srv-Telegraf";
+          src = "srv";
           proto = "tcp";
           dest_port = "9273";
           target = "ACCEPT";
         };
-        servers_homeassistant = {
+        srv_homeassistant = {
           _type = "rule";
-          name = "Allow-Servers-HomeAssistant";
-          src = "servers";
+          name = "Allow-Srv-HomeAssistant";
+          src = "srv";
           dest = "lan";
           dest_ip = "192.168.10.50";
           proto = "tcp";
