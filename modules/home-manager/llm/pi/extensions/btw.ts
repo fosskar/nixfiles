@@ -2550,9 +2550,7 @@ export default function (pi: ExtensionAPI) {
     }));
   }
 
-  async function getBtwHandoffThread(
-    ctx: ExtensionCommandContext,
-  ): Promise<{
+  async function getBtwHandoffThread(ctx: ExtensionCommandContext): Promise<{
     sessionRuntime: BtwSessionRuntime | null;
     thread: BtwHandoffExchange[];
   }> {
