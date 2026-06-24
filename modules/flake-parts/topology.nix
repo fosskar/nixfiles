@@ -28,9 +28,33 @@
             cidrv4 = "192.168.50.0/24";
           };
           wan.name = "Internet";
-          netbird.name = "Netbird";
-          wireguard.name = "Wireguard";
-          yggdrasil.name = "Yggdrasil";
+          netbird = {
+            name = "Netbird";
+            cidrv4 = "100.64.0.0/10";
+            style = {
+              primaryColor = "#f59e0b";
+              secondaryColor = "#1e1e2e";
+              pattern = "dashed";
+            };
+          };
+          wireguard = {
+            name = "Wireguard";
+            cidrv6 = "fd28:387a:4e:a500::/64";
+            style = {
+              primaryColor = "#22c55e";
+              secondaryColor = "#1e1e2e";
+              pattern = "dashed";
+            };
+          };
+          yggdrasil = {
+            name = "Yggdrasil";
+            cidrv6 = "200::/7";
+            style = {
+              primaryColor = "#a855f7";
+              secondaryColor = "#1e1e2e";
+              pattern = "dashed";
+            };
+          };
         };
 
         nodes.internet = mkInternet {
