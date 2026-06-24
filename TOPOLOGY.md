@@ -34,15 +34,15 @@ All five hosts also carry the three p2p overlay interfaces (`wt0`/`wireguard`/`y
 
 ## Networks
 
-| Network   | Name        | CIDR                  | Style  |
-| --------- | ----------- | --------------------- | ------ |
-| lan       | Home LAN    | 192.168.10.0/24       | solid  |
-| srv       | Servers     | 192.168.20.0/24       | solid  |
-| iot       | IoT Network | 192.168.50.0/24       | solid  |
-| wan       | Internet    | —                     | solid  |
-| netbird   | Netbird     | 100.64.0.0/10         | dashed |
+| Network   | Name        | CIDR                   | Style  |
+| --------- | ----------- | ---------------------- | ------ |
+| lan       | Home LAN    | 192.168.10.0/24        | solid  |
+| srv       | Servers     | 192.168.20.0/24        | solid  |
+| iot       | IoT Network | 192.168.50.0/24        | solid  |
+| wan       | Internet    | —                      | solid  |
+| netbird   | Netbird     | 100.64.0.0/10          | dashed |
 | wireguard | Wireguard   | fd28:387a:4e:a500::/64 | dashed |
-| yggdrasil | Yggdrasil   | 200::/7               | dashed |
+| yggdrasil | Yggdrasil   | 200::/7                | dashed |
 
 The overlays are virtual: they render in the network-centric view (`network.svg`)
 and stay out of the physical main view (`main.svg`). gateway is the wireguard
