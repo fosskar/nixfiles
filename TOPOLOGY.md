@@ -4,13 +4,13 @@ Network/service topology of the clan, rendered by
 [nix-topology](https://github.com/oddlama/nix-topology).
 
 - Per-host nodes (interfaces, services, IPs) are **derived** from each machine's
-  NixOS config — `topology.self` in `machines/<host>/networking.nix`, with host
+  NixOS config — `topology.self` in `machines/<host>/topology.nix`, with host
   IPs read from the static `networking.*` config where one exists.
 - The shared graph (OpenWrt router, dumb AP, the internet, and the
-  home/server/IoT networks) is declared centrally in
+  lan/srv/iot networks) is declared centrally in
   `modules/flake-parts/topology.nix` (sourced from `openwrt/devices/*/config.nix`).
-- The NixOS extractor is wired onto every host via
-  `modules/nixos/common/base/topology.nix`.
+- The NixOS extractor and the p2p overlay interfaces (netbird/wireguard/yggdrasil)
+  are wired onto every host via `modules/nixos/common/base/topology.nix`.
 
 ## Main view
 
@@ -22,22 +22,32 @@ Network/service topology of the clan, rendered by
 
 ## Hosts
 
-| Host          | Interface | Address        | Network  | Icon         | Info                  |
-| ------------- | --------- | -------------- | -------- | ------------ | --------------------- |
-| gateway       | wan       | 138.201.155.21 | internet | cloud-server | hetzner vps           |
-| nixbox        | bond0     | 192.168.20.200 | server   | nixos        | server / 10gbe bond   |
-| nixworker     | bond0     | 192.168.20.210 | server   | nixos        | server / remote build |
-| simon-desktop | lan       | 192.168.10.100 | home     | desktop      | workstation           |
-| lpt-titan     | wlan      | 192.168.10.150 | home     | laptop       | laptop (wifi via AP)  |
+| Host          | Interface | Address        | Network | Icon         | Info           |
+| ------------- | --------- | -------------- | ------- | ------------ | -------------- |
+| gateway       | wan       | 138.201.155.21 | wan     | cloud-server | hetzner vps    |
+| nixbox        | bond0     | 192.168.20.200 | srv     | nixos        | home server    |
+| nixworker     | bond0     | 192.168.20.210 | srv     | nixos        | remote builder |
+| simon-desktop | lan       | 192.168.10.100 | lan     | desktop      | workstation    |
+| lpt-titan     | wlan      | 192.168.10.150 | lan     | laptop       | laptop         |
+
+All five hosts also carry the three p2p overlay interfaces (`wt0`/`wireguard`/`ygg`).
 
 ## Networks
 
-| Network  | Name        | CIDR            |
-| -------- | ----------- | --------------- |
-| home     | Home LAN    | 192.168.10.0/24 |
-| server   | Server LAN  | 192.168.20.0/24 |
-| iot      | IoT Network | 192.168.50.0/24 |
-| internet | Internet    | —               |
+| Network   | Name        | CIDR                  | Style  |
+| --------- | ----------- | --------------------- | ------ |
+| lan       | Home LAN    | 192.168.10.0/24       | solid  |
+| srv       | Servers     | 192.168.20.0/24       | solid  |
+| iot       | IoT Network | 192.168.50.0/24       | solid  |
+| wan       | Internet    | —                     | solid  |
+| netbird   | Netbird     | 100.64.0.0/10         | dashed |
+| wireguard | Wireguard   | fd28:387a:4e:a500::/64 | dashed |
+| yggdrasil | Yggdrasil   | 200::/7               | dashed |
+
+The overlays are virtual: they render in the network-centric view (`network.svg`)
+and stay out of the physical main view (`main.svg`). gateway is the wireguard
+controller / netbird management server (shown as services on its node); yggdrasil
+is a pure p2p mesh with no controller.
 
 ## Infrastructure (non-NixOS, hand-declared)
 
