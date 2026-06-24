@@ -1,4 +1,4 @@
-{
+_: {
   networking = {
     useDHCP = false;
     nameservers = [ "192.168.20.1" ];
@@ -28,11 +28,5 @@
         }
       ];
     };
-  };
-
-  # address + mac auto-extracted from networking.interfaces.bond0
-  topology.self = {
-    hardware.info = "server / remote builder";
-    interfaces.bond0.network = "server";
   };
 }

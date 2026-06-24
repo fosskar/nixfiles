@@ -36,10 +36,4 @@ _: {
     "99-ethernet-default-dhcp".enable = false;
     "99-wireless-client-dhcp".enable = false;
   };
-
-  # address + mac auto-extracted from networking.interfaces.bond0
-  topology.self = {
-    hardware.info = "server / 10gbe bond";
-    interfaces.bond0.network = "server";
-  };
 }

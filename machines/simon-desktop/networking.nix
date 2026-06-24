@@ -1,5 +1,4 @@
-{ lib, config, ... }:
-{
+_: {
   networking = {
     networkmanager.ensureProfiles.profiles."lan" = {
       connection = {
@@ -13,20 +12,6 @@
         dns = "192.168.10.1;";
       };
       ipv6.method = "auto";
-    };
-  };
-
-  # derive address from the networkmanager profile ("ip/cidr,gateway")
-  topology.self = {
-    icon = "devices.desktop";
-    hardware.info = "workstation";
-    interfaces.lan = {
-      addresses = [
-        (lib.head (
-          lib.splitString "/" config.networking.networkmanager.ensureProfiles.profiles.lan.ipv4.address1
-        ))
-      ];
-      network = "home";
     };
   };
 }
