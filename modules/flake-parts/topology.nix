@@ -28,6 +28,9 @@
             cidrv4 = "192.168.50.0/24";
           };
           wan.name = "Internet";
+          netbird.name = "Netbird";
+          wireguard.name = "Wireguard";
+          yggdrasil.name = "Yggdrasil";
         };
 
         nodes.internet = mkInternet {

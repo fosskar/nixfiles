@@ -1,7 +1,23 @@
 { inputs, ... }:
 {
-  # nixos aspect: every host that imports base participates in the topology,
-  # contributing its interfaces/services and its `topology.self` declarations.
-  # the flake-level wiring + global graph live in modules/flake-parts/topology.nix.
-  flake.modules.nixos.base.imports = [ inputs.nix-topology.nixosModules.default ];
+  flake.modules.nixos.base = {
+    imports = [ inputs.nix-topology.nixosModules.default ];
+
+    topology.self.interfaces = {
+      wt0 = {
+        virtual = true;
+        type = "wireguard";
+        network = "netbird";
+      };
+      wireguard = {
+        virtual = true;
+        type = "wireguard";
+        network = "wireguard";
+      };
+      ygg0 = {
+        virtual = true;
+        network = "yggdrasil";
+      };
+    };
+  };
 }
