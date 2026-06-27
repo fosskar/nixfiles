@@ -71,6 +71,8 @@
           web.url = "https://${localHost}";
 
           protocols.enable = "osmand";
+          # 5055 is osmand's default port but collides with seerr; move it
+          osmand.port = "50556";
 
           openid.issuerUrl = oidcIssuerUrl;
           openid.clientId = "traccar";
