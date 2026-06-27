@@ -25,7 +25,7 @@
           inherit listenPort;
         };
 
-        systemd.services.bazarr.serviceConfig.UMask = "0027";
+        systemd.services.bazarr.serviceConfig.UMask = "0002";
 
         # --- homepage ---
 

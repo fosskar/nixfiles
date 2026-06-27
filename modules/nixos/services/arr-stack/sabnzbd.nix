@@ -64,6 +64,9 @@
           };
         };
 
+        # keep group-write on created files so other media-group apps can manage them
+        systemd.services.sabnzbd.serviceConfig.UMask = lib.mkForce "0002";
+
         # --- homepage ---
 
         services.homepage-dashboard.services = [
