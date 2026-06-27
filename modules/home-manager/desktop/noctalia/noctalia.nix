@@ -181,6 +181,8 @@
               panel = {
                 transparency_mode = lib.mkDefault "soft";
                 open_near_click_control_center = true;
+                session_placement = "floating";
+                session_position = "center";
               };
             };
 
