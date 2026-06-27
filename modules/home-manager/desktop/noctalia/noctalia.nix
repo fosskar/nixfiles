@@ -179,10 +179,8 @@
               screen_corners.enabled = lib.mkDefault true;
               niri_overview_type_to_launch_enabled = lib.mkDefault true;
               panel = {
-                background_blur = lib.mkDefault true;
                 transparency_mode = lib.mkDefault "soft";
                 open_near_click_control_center = true;
-                session_placement = "centered";
               };
             };
 
@@ -223,7 +221,6 @@
               main = {
                 enabled = true;
                 background_opacity = lib.mkDefault 0.7;
-                attach_panels = lib.mkDefault true;
                 margin_ends = 10;
                 margin_edge = 5;
                 widget_spacing = 10;
@@ -369,7 +366,6 @@
                 output = "DP-1";
                 cx = 1720.0;
                 cy = 360.0;
-                scale = 1.0;
                 rotation = 0.0;
                 settings.format = "{:%H:%M}";
               };
@@ -378,7 +374,6 @@
                 output = "DP-1";
                 cx = 1720.0;
                 cy = 540.0;
-                scale = 1.0;
                 rotation = 0.0;
               };
             };
