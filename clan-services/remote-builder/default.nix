@@ -45,7 +45,7 @@ _:
           {
             nix.settings = {
               max-jobs = lib.mkDefault 8;
-              cores = lib.mkDefault 4;
+              cores = lib.mkDefault 6;
               experimental-features = lib.mkAfter [
                 "auto-allocate-uids"
                 "cgroups"
