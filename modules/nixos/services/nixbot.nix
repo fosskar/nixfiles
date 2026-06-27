@@ -75,6 +75,7 @@
             #"oidc:auth.${flake-self.domains.public}:d5103b45-c922-48f0-98fe-b9e249e32885"
           ];
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
+          buildConcurrency = 2;
           evalWorkerCount = lib.mkDefault 8;
           cacheFailedBuilds = true;
 
