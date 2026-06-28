@@ -6,16 +6,16 @@
 }:
 buildNpmPackage rec {
   pname = "netbird-dashboard";
-  version = "2.80.0";
+  version = "2.90.0";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "dashboard";
     rev = "v${version}";
-    hash = "sha256-Z0yE6w7CIBE/JD/JS4ehz+lT2lKoK8U9mjifMaO/joM=";
+    hash = "sha256-oXp+GjEmJOQLF3+7VJoZGkUdjG4UENAAIAMGnCTgeW8=";
   };
 
-  npmDepsHash = "sha256-weTRhkPGoNF34iHOITCBhZj9LWwWmemMOng51aAv+BU=";
+  npmDepsHash = "sha256-A6zXrOPdxLepi7XPn67YsY673iFOAgJqCEynn4SYco8=";
   npmFlags = [ "--legacy-peer-deps" ];
 
   # auth config string-replaced post-build in JS bundle so it works for any domain
