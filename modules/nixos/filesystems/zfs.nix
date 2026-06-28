@@ -54,6 +54,12 @@
           interval = lib.mkDefault "weekly";
         };
         trim.enable = lib.mkDefault true;
+        # zed mail auto-enables when msmtp's sendmail wrapper is present
+        # (services.zfs.zed.enableMail default). only the recipient is missing.
+        zed.settings = {
+          ZED_EMAIL_ADDR = [ "zfs@nx3.eu" ];
+          ZED_NOTIFY_VERBOSE = true;
+        };
         autoSnapshot = {
           enable = lib.mkDefault true;
           frequent = 0;
