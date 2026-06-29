@@ -122,7 +122,7 @@ home server at `192.168.20.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 
 | service         | port       | domain         | notes                             |
 | --------------- | ---------- | -------------- | --------------------------------- |
-| beszel          | 8090/45876 | beszel.nx3.eu  | lightweight monitoring            |
+| beszel          | 8090/18876 | beszel.nx3.eu  | lightweight monitoring            |
 | victoriametrics | -          | vm.nx3.eu      | tsdb, scrapes openwrt nodes       |
 | grafana         | -          | grafana.nx3.eu | dashboards                        |
 | telegraf        | -          | -              | system, zfs, upsd, sensors, smart |

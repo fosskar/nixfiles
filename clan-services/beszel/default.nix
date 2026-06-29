@@ -37,7 +37,7 @@ _: {
                     "127.0.0.1"
                   else
                     "${machine}.${config.clan.core.settings.domain}";
-                port = clientSettings.port or 45876;
+                port = clientSettings.port or 18876;
               in
               {
                 name = machine;
@@ -172,7 +172,10 @@ _: {
 
           port = lib.mkOption {
             type = lib.types.port;
-            default = 45876;
+            # below net.ipv4.ip_local_port_range (32768-65535): beszel's default
+            # 45876 sits inside the ephemeral range and gets stolen as an
+            # outbound source port before the agent can bind it.
+            default = 18876;
             description = "beszel agent listen port";
           };
 

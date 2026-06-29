@@ -43,7 +43,7 @@ Client role:
 ### `client`
 
 - `host`: override host written to hub `config.yml`. defaults to `<machine>.<clan-domain>` or `127.0.0.1` for the hub machine.
-- `port`: Beszel agent listen port. defaults to `45876`.
+- `port`: Beszel agent listen port. defaults to `18876` (below the ephemeral range so it is never claimed as an outbound source port; beszel's own default 45876 sits inside `net.ipv4.ip_local_port_range`).
 - `sensors`: sensors to exclude, for example `-nct6798_cputin`.
 - `filesystem`: primary filesystem shown by Beszel. defaults to `/`.
 - `extraFilesystems`: extra filesystems in Beszel format, for example `/nix__Nix,/tank__Tank`.
