@@ -11,9 +11,9 @@
     self.modules.nixos.caddy
     self.modules.nixos.continuwuity
     self.modules.nixos.mautrix-signal
+    self.modules.nixos.opencrow
     self.modules.nixos.convertx
     self.modules.nixos.dawarich
-    self.modules.nixos.traccar
     self.modules.nixos.opencloud
     self.modules.nixos.searxng
     self.modules.nixos.lldap
