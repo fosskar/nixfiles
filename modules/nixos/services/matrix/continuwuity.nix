@@ -31,10 +31,23 @@
           address = [ "0.0.0.0" ];
           port = [ listenPort ];
 
-          allow_registration = true;
+          # closed: family accounts created via `!admin users create-user`
+          allow_registration = false;
           registration_token_file = "/run/credentials/continuwuity.service/registration-token";
 
           allow_federation = true;
+
+          # profile GET is unauthenticated by default; require auth to stop
+          # display-name/avatar scraping of local users
+          require_auth_for_profile_requests = true;
+
+          # room for family photos/short videos; also caps incoming federated media
+          max_request_size = 100000000;
+
+          # online RocksDB backup target under already-offsite-backed /tank/backup.
+          # run manually: `!admin server backup-database` in the admin room
+          database_backup_path = "/tank/backup/continuwuity";
+          database_backups_to_keep = 3;
 
           # no global ipv6 on this host; skip useless AAAA lookups
           ip_lookup_strategy = 1;
@@ -57,6 +70,11 @@
           config.clan.core.vars.generators.continuwuity.files."registration-token".path
         }"
       ];
+
+      # required for the backup target: ProtectSystem=strict makes /tank read-only
+      # to the service, and DynamicUser can't create the dir under it
+      systemd.services.continuwuity.serviceConfig.ReadWritePaths = [ "/tank/backup/continuwuity" ];
+      systemd.tmpfiles.rules = [ "d /tank/backup/continuwuity 0700 continuwuity continuwuity -" ];
 
       services.homepage-dashboard.services = [
         {
