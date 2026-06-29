@@ -16,8 +16,9 @@
           audio.max_duration_secs = 300;
 
           hotkey = {
-            enabled = false;
-            mode = "toggle";
+            enabled = true;
+            mode = "push_to_talk";
+            key = "RIGHTCTRL";
           };
 
           osd.enabled = false;
