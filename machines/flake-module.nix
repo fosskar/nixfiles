@@ -267,7 +267,7 @@
 
         iroh-ssh = {
           module.name = "p2p-ssh-iroh";
-          roles.server.tags.server = { };
+          roles.server.tags.all = { };
         };
 
         ## AI
