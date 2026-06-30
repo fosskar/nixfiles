@@ -154,10 +154,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782691592,
-        "narHash": "sha256-EmfAyxjpZeBtHTzzq8OyG9MAFdS5EDOCSYYO1jTYopE=",
+        "lastModified": 1782777992,
+        "narHash": "sha256-ev+d3h3c1qhZpARfTO2BFpeFukDiHfIz8OM1JG+Uia8=",
         "ref": "refs/heads/main",
-        "rev": "e3ba3e88974b745b19ef3778cc60269356f49d43",
+        "rev": "59a8677a03ccfdbc9747dd26340b05c5403443d2",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -485,11 +485,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1782791863,
-        "narHash": "sha256-Wh0xRvmiCiFCZCsk4FNJ8kZLSGR3qFGWWu2OKgSB9dw=",
+        "lastModified": 1782802079,
+        "narHash": "sha256-0eVtk0qUegtGD5lrn2yRMIMz/L9ID64MZqyqT/Uk344=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "184c10cf97002c95b233830d62d6fb355a82708a",
+        "rev": "d6396e6a41d5e44b3dc4c9fc47e2380e6783f635",
         "type": "github"
       },
       "original": {
@@ -672,11 +672,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782784694,
-        "narHash": "sha256-OJv+xYjqi/qQtFUuS0aeq0pOoPdneV8SBfb+hIDH+Bs=",
+        "lastModified": 1782800843,
+        "narHash": "sha256-L8DrSbztVIm3LTtXDEBbZuQJmwNcWvQjglTLCf+mKY8=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "04e3cda91f39df8cd6a9aafbf4a92f477c1e4ea9",
+        "rev": "1731fdb296c4f53e2e5447be952f7313f2c6677c",
         "type": "github"
       },
       "original": {
@@ -849,11 +849,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782735500,
-        "narHash": "sha256-sYPCuNlHZ1tBGeLVbCZg4qvTHhVVHmj+inw8AbdIKMM=",
+        "lastModified": 1782792307,
+        "narHash": "sha256-OeM0skzLT6VTs1agIzgFKRz4dyE3OeNom4HSDS9kWSo=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "fb95c11a3f677cf20fdc25a0987c13e3e8ebaac0",
+        "rev": "9a593f382964e3daf30de77ef58b2829f52f65d3",
         "type": "github"
       },
       "original": {
@@ -928,11 +928,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782732441,
-        "narHash": "sha256-RsmefReEwvEqQbn88Cb5r3bx48h5bgJ6cYP0QO8MOLk=",
+        "lastModified": 1782802236,
+        "narHash": "sha256-fSTQmREUrTJhilttU8Fb3uwbqt80jQqFxtVfMGJNqGw=",
         "owner": "Mic92",
         "repo": "nixbot",
-        "rev": "94d6621dd3558501d637a271910d0ca6ba01c678",
+        "rev": "4b8102774fdad08fbb034ae80b98c42d0b2cf044",
         "type": "github"
       },
       "original": {
@@ -963,10 +963,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1782467914,
-        "narHash": "sha256-pGvFkM8N0xEkIIXDe5YYfbEAvHrk4IxBrjB/x8OomhE=",
+        "lastModified": 1782723713,
+        "narHash": "sha256-oPXCU/SSUokcGaJREHibG1CBX3+s/W7orDWQOZDsEeQ=",
         "ref": "nixos-unstable",
-        "rev": "e73de5be04e0eff4190a1432b946d469c794e7b4",
+        "rev": "b5aa0fbd538984f6e3d201be0005b4463d8b09f8",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"
@@ -1488,11 +1488,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1782772414,
-        "narHash": "sha256-I1NEgWUkC5Bj3DVfCyY0JbuoFYwkf+r81GGEBnK+bqE=",
+        "lastModified": 1782797459,
+        "narHash": "sha256-NtaeXCW0br2GnaGN6kWNHyw9rnayuywrVKmET2RjEj0=",
         "ref": "refs/heads/master",
-        "rev": "753240353cdafc8f409255e4c81896a9c723fe5d",
-        "revCount": 2803,
+        "rev": "97396d802b395fd18f332113f88a6fb5e13d977e",
+        "revCount": 2805,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
       },
@@ -1607,10 +1607,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782695185,
-        "narHash": "sha256-Sj0Jo7B+VEWZqNqLaTFNN9zJSlX5ldcVg2d2GWy6ikU=",
+        "lastModified": 1782781528,
+        "narHash": "sha256-t9MpMu9xK51s/yOYCv/28Su+Ng7us3TY2/ag31GPcN8=",
         "ref": "refs/heads/main",
-        "rev": "66a9c46d30130f86311eac17e32900e69c281295",
+        "rev": "331ab00648f03b9971fb472d89251f42c95e358d",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/wiki.git"
