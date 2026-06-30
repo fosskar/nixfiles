@@ -498,6 +498,18 @@
         "type": "github"
       }
     },
+    "hls-src": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-mmxgaQRXXWzRG6/OlOn5efV+NmzhvmXTQaFbODqh0b8=",
+        "type": "file",
+        "url": "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"
+      }
+    },
     "home-git-clone": {
       "inputs": {
         "nixpkgs": [
@@ -1461,6 +1473,7 @@
         "fetch-tangled": "fetch-tangled",
         "flake-compat": "flake-compat_3",
         "gomod2nix": "gomod2nix",
+        "hls-src": "hls-src",
         "htmx-src": "htmx-src",
         "htmx-ws-src": "htmx-ws-src",
         "ibm-plex-mono-src": "ibm-plex-mono-src",
@@ -1475,11 +1488,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1782731968,
-        "narHash": "sha256-HX2lwNAJ9N8i+CEbIravM8/KxfD3aI+4hBcv+BcgQMQ=",
+        "lastModified": 1782772414,
+        "narHash": "sha256-I1NEgWUkC5Bj3DVfCyY0JbuoFYwkf+r81GGEBnK+bqE=",
         "ref": "refs/heads/master",
-        "rev": "28ebc96f29bd808299370284cf3cef36f8254cc9",
-        "revCount": 2775,
+        "rev": "753240353cdafc8f409255e4c81896a9c723fe5d",
+        "revCount": 2803,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
       },
