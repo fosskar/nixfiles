@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.mautrix-signal =
+  flake.modules.nixos.matrix =
     { config, pkgs, ... }:
     {
       clan.core.vars.generators.mautrix-signal = {

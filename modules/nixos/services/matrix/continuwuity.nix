@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.continuwuity =
+  flake.modules.nixos.matrix =
     {
       flake-self,
       config,
