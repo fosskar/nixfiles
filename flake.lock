@@ -510,26 +510,6 @@
         "url": "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"
       }
     },
-    "home-git-clone": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1771629616,
-        "narHash": "sha256-UfivDuDUL6GMjxuRUemwOAbD6VvBy57mci8Hi4QUFaU=",
-        "owner": "rytswd",
-        "repo": "home-git-clone",
-        "rev": "1c10de44609ed8d3fa591d97dc8f2459234eabe5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rytswd",
-        "repo": "home-git-clone",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -1276,7 +1256,6 @@
         "disko": "disko",
         "flake-parts": "flake-parts",
         "hermes-agent": "hermes-agent",
-        "home-git-clone": "home-git-clone",
         "home-manager": "home-manager",
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
