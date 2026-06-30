@@ -21,7 +21,6 @@
     self.modules.nixos.llamaCpp
     self.modules.nixos.wyomingPiper
     self.modules.nixos.itTools
-    self.modules.nixos.papra
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf
     self.modules.nixos.grub
@@ -36,7 +35,6 @@
     self.modules.nixos.msmtp
     self.modules.nixos.systemdEmailAlerts
     self.modules.nixos.miniflux
-    self.modules.nixos.netbox
     self.modules.nixos.wiki
   ]
   ++ (nflib.scanPaths ./. { });
