@@ -25,6 +25,10 @@
         lanzaboote = {
           enable = true;
           inherit pkiBundle;
+          # firmware updates (e.g. Framework BIOS) wipe enrolled secure boot
+          # keys, dropping firmware to setup mode; systemd-boot then re-enrolls
+          # the staged keys automatically instead of failing to boot.
+          autoEnrollKeys.enable = true;
         };
       };
 
