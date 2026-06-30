@@ -130,6 +130,11 @@ in
           }
         ];
 
+        # userborn's mutableUsers=false read-only guards can't be umounted
+        # under the shared /var/lib/nixos bind-mount, breaking the next
+        # activation's db rename() (EBUSY). users stay declarative regardless.
+        users.mutableUsers = lib.mkIf config.services.userborn.enable (lib.mkForce true);
+
         fileSystems.${persistPath}.neededForBoot = true;
 
         _module.args.preservationDiskoPostMountHook = lib.concatStringsSep "\n" (

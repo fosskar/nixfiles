@@ -1,14 +1,8 @@
 {
   flake.modules.nixos.base = _: {
-    users = {
-      mutableUsers = false; # disable useradd + passwd
-    };
     services.userborn = {
       enable = true;
-      # store passwd/group/shadow outside /etc so they survive an etc.overlay.
-      # /var/lib/nixos is persisted by preservation on ephemeral hosts and is
-      # on the normal root elsewhere, so it survives either way. independent
-      # of preservation.
+      # outside /etc to survive an etc.overlay; persisted on ephemeral hosts.
       passwordFilesLocation = "/var/lib/nixos";
     };
   };
