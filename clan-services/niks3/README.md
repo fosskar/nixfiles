@@ -15,17 +15,18 @@ inventory.instances = {
 
 ## Overview
 
-`niks3` runs a self-hosted Nix binary cache backed by a local Garage S3 bucket. It also configures clients to use the Garage web endpoint as a substituter.
+`niks3` runs a self-hosted Nix binary cache backed by a Garage S3 bucket. It also configures clients to use the Garage web endpoint as a substituter.
+
+Garage itself is **not** bundled here. The server role expects a local Garage daemon provided by the `garage` clan-service (the machine must also be a garage `peer`); niks3 provisions its own bucket/key against that cluster using the garage service's `garage-shared` rpc secret and `garage` admin token. This is a deliberate dependency: niks3 self-creates its bucket, but relies on the garage cluster being present.
 
 Server role:
 
-- enables Garage with single-node layout
-- creates a Garage bucket for cache objects
+- creates a Garage bucket for cache objects (against the local garage node)
 - creates S3 credentials for `niks3`
 - enables `services.niks3`
 - configures PostgreSQL for `niks3`
 - enables `niks3-auto-upload` as a Nix post-build hook
-- generates a binary cache signing key with clan vars
+- generates a binary cache signing key and an API token with clan vars
 - opens the `niks3` API port and Garage web port
 
 Client role:

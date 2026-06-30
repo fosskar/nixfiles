@@ -36,7 +36,6 @@
     self.modules.nixos.gatus
     self.modules.nixos.msmtp
     self.modules.nixos.systemdEmailAlerts
-    self.modules.nixos.garage
     self.modules.nixos.miniflux
     self.modules.nixos.netbox
     self.modules.nixos.wiki
@@ -52,20 +51,13 @@
     "/var/lib"
   ];
 
-  services.garage.settings.data_dir = [
-    {
-      path = "/tank/apps/garage";
-      capacity = "100G";
-    }
-  ];
-
   systemd.services =
     lib.genAttrs
       [
         "beszel-agent"
         "garage"
         "garage-layout-init"
-        "garage-webui"
+        "garage-ui"
         "opencloud"
         "opencloud-permission-fixer"
         "papra"

@@ -40,14 +40,19 @@ in
           }:
           let
             niks3Pkgs = self.inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system};
-            bucketName = "${config.networking.hostName}.${config.clan.core.settings.domain}";
+            # friendly bucket name; webHost is an extra global alias garage uses
+            # to route the cache website (clients fetch http://<webHost>:3902).
+            bucketName = "niks3-cache";
+            webHost = "${config.networking.hostName}.${config.clan.core.settings.domain}";
             niks3Port = 5751;
             garageS3Port = 3900;
-            garageRpcPort = 3901;
             garageWebPort = 3902;
-            garageAdminPort = 3903;
             varsGarage = config.clan.core.vars.generators."niks3-garage";
             varsKeys = config.clan.core.vars.generators."niks3-private";
+            # garage cluster secrets owned by the garage clan-service; this
+            # machine must also be a garage `peer`.
+            garageShared = config.clan.core.vars.generators."garage-shared";
+            garageTokens = config.clan.core.vars.generators."garage";
             stateDir = "/var/lib/niks3";
             s3AccessFile = "${stateDir}/s3-access";
             s3SecretFile = "${stateDir}/s3-secret";
@@ -68,121 +73,25 @@ in
               script = "cp $in/niks3/sign-key $out/sign-key";
             };
 
-            # per-machine garage credentials + niks3 api token.
             clan.core.vars.generators."niks3-garage" = {
-              files.rpc_secret.secret = true;
-              files.admin_token.secret = true;
-              files.metrics_token.secret = true;
               files.api-token.secret = true;
               files.api-token.owner = "niks3";
               files.api-token.group = "niks3";
               runtimeInputs = [ pkgs.openssl ];
               script = ''
-                openssl rand -hex 32 > "$out/rpc_secret"
-                openssl rand -base64 32 > "$out/admin_token"
-                openssl rand -base64 32 > "$out/metrics_token"
                 openssl rand -hex 32 > "$out/api-token"
               '';
             };
 
-            # ----- garage -----
-            services.garage = {
-              enable = true;
-              package = pkgs.garage_2;
-              settings = {
-                metadata_dir = "/var/lib/garage/meta";
-                data_dir = [
-                  {
-                    path = "/var/lib/garage/data";
-                    capacity = "200G";
-                  }
-                ];
-                replication_factor = 1;
-                rpc_bind_addr = "[::]:${toString garageRpcPort}";
-                s3_api = {
-                  s3_region = config.networking.hostName;
-                  api_bind_addr = "127.0.0.1:${toString garageS3Port}";
-                };
-                s3_web = {
-                  bind_addr = "[::]:${toString garageWebPort}";
-                  root_domain = "";
-                  index = "index.html";
-                };
-                admin = {
-                  api_bind_addr = "127.0.0.1:${toString garageAdminPort}";
-                };
-              };
-            };
-
-            systemd.services.garage.serviceConfig = {
-              LoadCredential = [
-                "rpc_secret_path:${varsGarage.files.rpc_secret.path}"
-                "admin_token_path:${varsGarage.files.admin_token.path}"
-                "metrics_token_path:${varsGarage.files.metrics_token.path}"
-              ];
-              Environment = [
-                "GARAGE_ALLOW_WORLD_READABLE_SECRETS=true"
-                "GARAGE_RPC_SECRET_FILE=%d/rpc_secret_path"
-                "GARAGE_ADMIN_TOKEN_FILE=%d/admin_token_path"
-                "GARAGE_METRICS_TOKEN_FILE=%d/metrics_token_path"
-              ];
-            };
-
             systemd.tmpfiles.rules = [
-              "d /var/lib/garage/data 0770 - - -"
               "d ${stateDir} 0750 niks3 niks3 -"
             ];
-
-            # one-shot: assign + apply garage cluster layout.
-            systemd.services.niks3-garage-layout-init = {
-              description = "garage cluster layout init for niks3";
-              after = [ "garage.service" ];
-              requires = [ "garage.service" ];
-              wantedBy = [ "multi-user.target" ];
-              unitConfig.ConditionPathExists = "!/var/lib/garage/meta/.layout-initialized";
-              path = [ pkgs.garage_2 ];
-              environment = {
-                GARAGE_RPC_SECRET_FILE = "/run/credentials/niks3-garage-layout-init.service/rpc_secret";
-                GARAGE_ADMIN_TOKEN_FILE = "/run/credentials/niks3-garage-layout-init.service/admin_token";
-              };
-              serviceConfig = {
-                Type = "oneshot";
-                RemainAfterExit = true;
-                LoadCredential = [
-                  "rpc_secret:${varsGarage.files.rpc_secret.path}"
-                  "admin_token:${varsGarage.files.admin_token.path}"
-                ];
-              };
-              script = ''
-                for i in $(seq 1 30); do
-                  garage status >/dev/null 2>&1 && break
-                  sleep 2
-                done
-
-                node_id=$(garage node id 2>/dev/null | head -1 | cut -c1-16)
-                if [ -z "$node_id" ]; then
-                  echo "failed to get garage node id" >&2
-                  exit 1
-                fi
-
-                if garage layout show 2>/dev/null | grep -q "$node_id"; then
-                  touch /var/lib/garage/meta/.layout-initialized
-                  exit 0
-                fi
-
-                garage layout assign -z dc1 -c 200G "$node_id"
-                version=$(garage layout show 2>/dev/null | grep -oP 'apply --version \K[0-9]+')
-                garage layout apply --version "$version"
-
-                touch /var/lib/garage/meta/.layout-initialized
-              '';
-            };
 
             # one-shot: create bucket, allow website, mint s3 key for niks3.
             systemd.services.niks3-bucket-init = {
               description = "niks3 garage bucket + s3 key bootstrap";
-              after = [ "niks3-garage-layout-init.service" ];
-              requires = [ "niks3-garage-layout-init.service" ];
+              after = [ "garage.service" ];
+              requires = [ "garage.service" ];
               wantedBy = [ "multi-user.target" ];
               unitConfig.ConditionPathExists = "!${stateDir}/.bucket-initialized";
               path = [
@@ -198,17 +107,26 @@ in
                 Type = "oneshot";
                 RemainAfterExit = true;
                 LoadCredential = [
-                  "rpc_secret:${varsGarage.files.rpc_secret.path}"
-                  "admin_token:${varsGarage.files.admin_token.path}"
+                  "rpc_secret:${garageShared.files.rpc_secret.path}"
+                  "admin_token:${garageTokens.files.admin_token.path}"
                 ];
               };
               script = ''
                 set -euo pipefail
 
+                # wait for the local garage node and a usable cluster layout.
+                for i in $(seq 1 60); do
+                  garage layout show 2>/dev/null | grep -q 'Current cluster layout version' && break
+                  sleep 2
+                done
+
                 # create bucket if missing.
                 if ! garage bucket info ${bucketName} >/dev/null 2>&1; then
                   garage bucket create ${bucketName}
                 fi
+
+                # website Host alias (clients read at http://${webHost}:3902).
+                garage bucket alias ${bucketName} ${webHost} 2>/dev/null || true
 
                 # enable website mode -> anonymous reads on web endpoint.
                 garage bucket website --allow ${bucketName}

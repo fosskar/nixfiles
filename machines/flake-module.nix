@@ -444,7 +444,18 @@
         ## infra / storage / build
 
         garage = {
-          roles.default.machines."nixbox" = { };
+          module = {
+            name = "garage";
+            input = "self";
+          };
+          roles.node.machines = {
+            "nixbox".settings = {
+              capacity = "250G";
+              dataPath = "/tank/apps/garage";
+              ui.enable = true;
+            };
+            "nixworker".settings.capacity = "250G";
+          };
         };
 
         remote-builder = {
