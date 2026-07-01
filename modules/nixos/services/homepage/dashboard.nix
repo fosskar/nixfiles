@@ -103,14 +103,14 @@
             {
               "JetKVM HA" = {
                 href = "http://jetkvm-ha.lan";
-                icon = "mdi-console";
+                icon = "sh-jetkvm";
                 siteMonitor = "http://192.168.10.30";
               };
             }
             {
               "JetKVM nixworker" = {
                 href = "http://192.168.20.211";
-                icon = "mdi-console";
+                icon = "sh-jetkvm";
                 siteMonitor = "http://192.168.20.211";
               };
             }

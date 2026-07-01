@@ -108,7 +108,7 @@
             {
               "llama.cpp" = {
                 href = "https://${localHost}";
-                icon = "llama-cpp.png";
+                icon = "sh-llama-cpp";
                 siteMonitor = "${listenUrl}/health";
               };
             }

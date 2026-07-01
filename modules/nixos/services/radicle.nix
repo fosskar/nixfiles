@@ -52,7 +52,7 @@
               {
                 "Radicle" = {
                   href = "https://${publicHost}/";
-                  icon = "mdi-source-branch";
+                  icon = "sh-radicle";
                   siteMonitor = "https://${publicHost}/";
                 };
               }

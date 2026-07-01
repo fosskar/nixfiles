@@ -25,7 +25,7 @@
               {
                 "Nixbot" = {
                   href = "https://${publicHost}";
-                  icon = "buildbot.svg";
+                  icon = "https://raw.githubusercontent.com/Mic92/nixbot/main/nixbot/nixbot/web/static/favicon.svg";
                   siteMonitor = "https://${publicHost}";
                 };
               }

@@ -82,7 +82,7 @@
             {
               "Continuwuity" = {
                 href = "https://${publicHost}";
-                icon = "matrix.svg";
+                icon = "sh-continuwuity";
                 siteMonitor = listenUrl;
               };
             }
