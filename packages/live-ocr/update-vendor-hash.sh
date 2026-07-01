@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# renovate runs this as a postUpgradeTask and does not propagate NIX_CONFIG
-# into the child env, so enable the flakes CLI features the nix builds need.
-# sandbox is disabled because the postUpgradeTask already runs inside the
-# nixbot effect sandbox, and a nested build sandbox cannot remount /nix/store.
-export NIX_CONFIG="experimental-features = nix-command flakes
-sandbox = false"
+# renovate runs this as a postUpgradeTask and strips the env, so restore what
+# the nix builds need: the flakes CLI features and, on this multi-user nix,
+# NIX_REMOTE=daemon so the build goes through the daemon instead of trying to
+# write /nix/store directly (which fails with a store remount error).
+export NIX_CONFIG="experimental-features = nix-command flakes"
+export NIX_REMOTE=daemon
 
 pkg=packages/live-ocr/package.nix
 
