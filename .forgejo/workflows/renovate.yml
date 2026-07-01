@@ -19,5 +19,8 @@ jobs:
           RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
           RENOVATE_GITHUB_COM_TOKEN: ${{ secrets.RENOVATE_GITHUB_COM_TOKEN }}
           RENOVATE_ALLOWED_COMMANDS: '["^bash packages/live-ocr/update-vendor-hash\\.sh$"]'
+          # use tools from PATH (not containerbase); gomodTidy needs go and
+          # update-vendor-hash.sh needs nix, both provided by the nix shell.
+          RENOVATE_BINARY_SOURCE: global
           LOG_LEVEL: info
-        run: nix run nixpkgs#renovate
+        run: nix shell nixpkgs#go --command nix run nixpkgs#renovate
