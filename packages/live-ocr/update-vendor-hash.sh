@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# renovate runs this as a postUpgradeTask and does not propagate NIX_CONFIG
+# into the child env, so enable the flakes CLI features the nix builds need.
+export NIX_CONFIG="experimental-features = nix-command flakes"
+
 pkg=packages/live-ocr/package.nix
 
 sed -i -E 's/vendorHash = "sha256-[^"]+";/vendorHash = lib.fakeHash;/' "$pkg"
