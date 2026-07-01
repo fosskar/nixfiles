@@ -3,7 +3,7 @@ module live-ocr
 go 1.25.0
 
 require (
-	gioui.org v0.10.0
+	gioui.org v0.10.1
 	github.com/otiai10/gosseract/v2 v2.4.1
 )
 
