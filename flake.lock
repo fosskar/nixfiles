@@ -946,34 +946,32 @@
       "locked": {
         "lastModified": 1782723713,
         "narHash": "sha256-oPXCU/SSUokcGaJREHibG1CBX3+s/W7orDWQOZDsEeQ=",
-        "ref": "nixos-unstable",
+        "owner": "nixos",
+        "repo": "nixpkgs",
         "rev": "b5aa0fbd538984f6e3d201be0005b4463d8b09f8",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/NixOS/nixpkgs"
+        "type": "github"
       },
       "original": {
+        "owner": "nixos",
         "ref": "nixos-unstable",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/NixOS/nixpkgs"
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1782767157,
-        "narHash": "sha256-db/8NgfehQlPNt8rMY0J1gvwzTaURU/foM7y/AQimIM=",
-        "ref": "nixos-25.11",
-        "rev": "1d4e0f865d68258aada31e68e6d79c8c463f3b34",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/NixOS/nixpkgs"
+        "lastModified": 1782847225,
+        "narHash": "sha256-JC9PjqKYG9ve5U8aDOLQipp3+KLANBHUvGdLZlxzdKI=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "95ca1e203c0750115fd4a6f17d5a245dfe6b1edd",
+        "type": "github"
       },
       "original": {
-        "ref": "nixos-25.11",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/NixOS/nixpkgs"
+        "owner": "nixos",
+        "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "noctalia": {
@@ -1442,10 +1440,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782899766,
-        "narHash": "sha256-eSG1HfGH1Av3fxd9JEPQpEVx/Lhqh9tRUQ1t5dxiXmg=",
+        "lastModified": 1782902254,
+        "narHash": "sha256-Ojihw2jzT/NxNY9nSCQyxram2nqMTcVwONAIXyqj4xo=",
         "ref": "refs/heads/main",
-        "rev": "4a6adb6525f3a0cecbca4ab884d9c48375bab6a4",
+        "rev": "53ab1cc6068746d7170b75bdbbfa9499d9aec06e",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/ssync"
