@@ -60,8 +60,8 @@ def process_group(
     for pkg in pkgs:
         try:
             result = update(repo, pkg)
-        except subprocess.CalledProcessError as e:
-            print(f":: {pkg.name} - update failed, skipping: {e}")
+        except subprocess.CalledProcessError:
+            print(f":: {pkg.name} - update failed (see error above), skipping")
             run(repo=repo, cmd=["git", "reset", "--hard"], check=False)
             run(repo=repo, cmd=["git", "clean", "-fd"], check=False)
             continue

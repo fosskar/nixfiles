@@ -27,6 +27,14 @@ class UpdateResult:
 def run(
     cmd: list[str], repo: Path, check: bool = True
 ) -> subprocess.CompletedProcess[str]:
+    # Stream stdout/stderr straight to the effect log so command output
+    # (nix-update errors, git progress) is visible live.
+    return subprocess.run(cmd, cwd=repo, text=True, check=check)
+
+
+def capture(
+    cmd: list[str], repo: Path, check: bool = True
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(cmd, cwd=repo, capture_output=True, text=True, check=check)
 
 
@@ -45,7 +53,7 @@ def discover(repo: Path) -> list[Package]:
 
 
 def _read_version(repo: Path, name: str) -> str | None:
-    result = run(
+    result = capture(
         repo=repo, cmd=["nix", "eval", "--raw", f".#{name}.version"], check=False
     )
     return result.stdout.strip() if result.returncode == 0 else None
@@ -53,12 +61,12 @@ def _read_version(repo: Path, name: str) -> str | None:
 
 def _git_touched(repo: Path, rel: str) -> bool:
     return bool(
-        run(repo=repo, cmd=["git", "status", "--porcelain", rel]).stdout.strip()
+        capture(repo=repo, cmd=["git", "status", "--porcelain", rel]).stdout.strip()
     )
 
 
 def _update_script_args(repo: Path, name: str) -> list[str] | None:
-    result = run(repo=repo, cmd=["nix", "eval", "--json", f".#{name}.updateScript"])
+    result = capture(repo=repo, cmd=["nix", "eval", "--json", f".#{name}.updateScript"])
     value = json.loads(result.stdout)
     return value if isinstance(value, list) else None
 
