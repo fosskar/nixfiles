@@ -1,9 +1,4 @@
-"""Minimal Codeberg (Gitea) REST client for the package updater.
-
-Uses only the standard library. Codeberg rate limits are per-token, so
-requests retry with backoff and honor Retry-After; using an "official"
-CLI would hit the same endpoints with the same quota.
-"""
+"""Codeberg (Gitea) REST client; stdlib only, retries on rate limit."""
 
 from __future__ import annotations
 
@@ -71,7 +66,6 @@ class Codeberg:
         )
 
     def enable_automerge(self, index: int) -> None:
-        """Squash-merge once required checks pass; tolerate 'not ready yet'."""
         try:
             self._request(
                 "POST",

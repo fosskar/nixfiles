@@ -1,35 +1,52 @@
 { inputs, self, ... }:
 let
-  # Effects build/run on the nixbot host (nixworker, x86_64-linux).
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  updater = self.packages.x86_64-linux.update-pkgs;
 
-  # Packaged updater (nix-update/git/nix wired on its PATH); runs against
-  # a fresh clone it makes itself.
-  updater = self.packages.x86_64-linux.update-packages;
+  # Shared plumbing for every repo-mutating scheduled effect: request
+  # nixbot's forge token (GitToken), authenticate git via GIT_ASKPASS so
+  # the token never lands in a remote URL, clone, then run command.
+  mkRepoEffect =
+    name: command:
+    pkgs.runCommand "effect-${name}"
+      {
+        nativeBuildInputs = [
+          pkgs.cacert
+          pkgs.git
+          pkgs.jq
+        ];
+        secretsMap = builtins.toJSON { git.type = "GitToken"; };
+        HOME = "/build";
+      }
+      ''
+        set -euo pipefail
+        export NIX_CONFIG="experimental-features = nix-command flakes"
 
-  # Raw effect derivation: nixbot runs its builder inside the effects
-  # bwrap sandbox. secretsMap requests nixbot's forge token as a hercules
-  # GitToken, exposed at $HERCULES_CI_SECRETS_JSON (.git.data.token).
-  mkEffect =
-    name: script:
-    pkgs.runCommand "effect-${name}" {
-      nativeBuildInputs = [ pkgs.cacert ];
-      secretsMap = builtins.toJSON { git.type = "GitToken"; };
-      HOME = "/build";
-    } script;
+        token=$(jq -r '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
+        export FORGE_TOKEN="$token" GIT_TOKEN="$token"
+        export GIT_ASKPASS="$HOME/.git-askpass" GIT_TERMINAL_PROMPT=0
+        printf '#!/usr/bin/env bash\nprintf "%s\n" "$GIT_TOKEN"\n' >"$GIT_ASKPASS"
+        chmod +x "$GIT_ASKPASS"
+
+        git config --global user.name nixbot
+        git config --global user.email nixbot@nx3.eu
+        git config --global safe.directory '*'
+
+        git clone https://oauth2@codeberg.org/fosskar/nixfiles.git repo
+        cd repo
+
+        ${command}
+      '';
 in
 {
-  flake.herculesCI = _args: {
-    # Daily package updates; one PR per changed package group. Replaces
-    # .forgejo/workflows/update-packages.yml.
-    onSchedule.update-packages = {
+  flake.effects = _args: {
+    onSchedule.update-pkgs = {
       when = {
         hour = 2;
         minute = 0;
       };
-      outputs.effects.update-packages = mkEffect "update-packages" ''
-        export NIX_CONFIG="experimental-features = nix-command flakes"
-        exec ${updater}/bin/update-packages
+      outputs.effects.update-pkgs = mkRepoEffect "update-pkgs" ''
+        ${updater}/bin/update-pkgs
       '';
     };
   };

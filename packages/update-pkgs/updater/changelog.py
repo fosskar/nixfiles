@@ -1,11 +1,4 @@
-"""Inline upstream release notes into a PR body.
-
-nix-update only emits a compare link (`Diff: .../compare/vA...vB`). For
-github-sourced packages we resolve the new tag's release notes from the
-github API and inline them; everything is best-effort and falls back to
-the bare message on any failure. Only github is handled because that is
-the only forge our packages fetch sources from.
-"""
+"""Inline github release notes for the `Diff:` link nix-update emits."""
 
 from __future__ import annotations
 
@@ -25,7 +18,7 @@ def _release_body(owner: str, repo: str, tag: str) -> str | None:
     if key in _cache:
         return _cache[key]
     body: str | None = None
-    # Upstreams disagree on the leading "v"; try the tag as-is and toggled.
+    # tag may or may not carry a leading "v"; try both.
     candidates = [tag, tag[1:] if tag.startswith("v") else f"v{tag}"]
     for candidate in candidates:
         url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{candidate}"
@@ -51,7 +44,6 @@ def _release_body(owner: str, repo: str, tag: str) -> str | None:
 
 
 def enrich(message: str, max_len: int = 3000) -> str:
-    """Append release notes for each github compare URL found in message."""
     out = message
     for owner, repo, _old, new in _COMPARE.findall(message):
         body = _release_body(owner, repo, new)

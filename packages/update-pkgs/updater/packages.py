@@ -1,16 +1,9 @@
-"""Package discovery and version updates for packages/<name>.
-
-Update mechanism mirrors the repo convention:
-- package.nix with a `updateScript` attr -> `nix-update -u`
-- executable update.sh (no updateScript)    -> run it directly
-- neither                                    -> skipped
-
-nix-update writes a commit message (`pkg: old -> new` plus a changelog /
-compare link) which we reuse as the commit body.
-"""
+"""Discover and update packages/<name>: updateScript -> nix-update,
+executable update.sh -> run it, neither -> skipped."""
 
 from __future__ import annotations
 
+import json
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -28,13 +21,13 @@ class Package:
 class UpdateResult:
     name: str
     changed: bool
-    message: str | None = None  # commit message incl. changelog, if any
+    message: str | None = None
 
 
 def run(
-    cmd: list[str], cwd: Path, check: bool = True
+    cmd: list[str], repo: Path, check: bool = True
 ) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, check=check)
+    return subprocess.run(cmd, cwd=repo, capture_output=True, text=True, check=check)
 
 
 def discover(repo: Path) -> list[Package]:
@@ -64,19 +57,34 @@ def _git_touched(repo: Path, rel: str) -> bool:
     )
 
 
+def _update_script_args(repo: Path, name: str) -> list[str] | None:
+    result = run(repo=repo, cmd=["nix", "eval", "--json", f".#{name}.updateScript"])
+    value = json.loads(result.stdout)
+    return value if isinstance(value, list) else None
+
+
+def _is_nix_update(arg: str) -> bool:
+    return arg == "nix-update" or arg.rsplit("/", 1)[-1] == "nix-update"
+
+
 def update(repo: Path, pkg: Package) -> UpdateResult:
     rel = f"packages/{pkg.name}"
     if pkg.method == "nix-update":
+        # updateScript is `[<nix-update>, <args...>]`; call nix-update with
+        # those args. --use-update-script re-runs it in a nix develop shell
+        # and fails.
+        script = _update_script_args(repo, pkg.name) or []
+        extra = script[1:] if script and _is_nix_update(script[0]) else []
         with tempfile.NamedTemporaryFile("r", suffix=".msg") as msg:
             run(
                 repo=repo,
                 cmd=[
                     "nix-update",
-                    pkg.name,
+                    *extra,
                     "--flake",
-                    "--use-update-script",
                     "--write-commit-message",
                     msg.name,
+                    pkg.name,
                 ],
             )
             message = Path(msg.name).read_text().strip() or None

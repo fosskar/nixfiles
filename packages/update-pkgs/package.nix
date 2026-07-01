@@ -9,7 +9,7 @@
   cacert,
 }:
 python3.pkgs.buildPythonApplication {
-  pname = "update-packages";
+  pname = "update-pkgs";
   version = "0.1.0";
   pyproject = false;
 
@@ -17,16 +17,14 @@ python3.pkgs.buildPythonApplication {
 
   nativeBuildInputs = [ makeWrapper ];
 
-  # Pure stdlib; __main__.py adds its own directory to sys.path for the
-  # sibling modules, so a plain copy + wrapper is enough.
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/lib/update_packages $out/bin
-    cp *.py $out/lib/update_packages/
+    mkdir -p $out/lib/update_pkgs $out/bin
+    cp *.py $out/lib/update_pkgs/
 
-    makeWrapper ${python3}/bin/python3 $out/bin/update-packages \
-      --add-flags "$out/lib/update_packages/__main__.py" \
+    makeWrapper ${python3}/bin/python3 $out/bin/update-pkgs \
+      --add-flags "$out/lib/update_pkgs/__main__.py" \
       --prefix PATH : ${
         lib.makeBinPath [
           nix-update
@@ -42,6 +40,6 @@ python3.pkgs.buildPythonApplication {
 
   meta = {
     description = "update packages/ third-party sources and open one Codeberg PR per group";
-    mainProgram = "update-packages";
+    mainProgram = "update-pkgs";
   };
 }
