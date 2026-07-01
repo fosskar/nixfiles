@@ -129,10 +129,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782831873,
-        "narHash": "sha256-dAYza8qrrzbpCdnMm2IK9qquq5rAXzcWejUXT35t86k=",
+        "lastModified": 1782882723,
+        "narHash": "sha256-T1br9YV7GNHF65ydTxXCM1wPJlfrhFovyMpS2zdg7+8=",
         "ref": "refs/heads/main",
-        "rev": "20a540d4180c08b1d3a1f3956c4956cb3fdb2f83",
+        "rev": "3ed6a5394c5e8e5176e101ee658ab9c4454c8bb0",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -460,11 +460,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1782802079,
-        "narHash": "sha256-0eVtk0qUegtGD5lrn2yRMIMz/L9ID64MZqyqT/Uk344=",
+        "lastModified": 1782910960,
+        "narHash": "sha256-1gQw/RXClKnAHswQVY+A8KgFrcQAArck6tShnfHroNg=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "d6396e6a41d5e44b3dc4c9fc47e2380e6783f635",
+        "rev": "eae3700b168500ef300a677ebcb6ebb2f8f6b837",
         "type": "github"
       },
       "original": {
@@ -492,11 +492,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782839684,
-        "narHash": "sha256-vzs4SBgPsK4aNzlJR2PpFwtARazXMOxZonQnDz0YHxk=",
+        "lastModified": 1782881387,
+        "narHash": "sha256-HvlS1KDGXDjd1bNzzPvH1mkDJATlDAfVYfTh//wJBEA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2a37d71bbe69e1522ddabf03a4cea0374958bdbe",
+        "rev": "d32537981c036473cf6990ae03176a5d84c43b29",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782869010,
-        "narHash": "sha256-4OWJdeCsT1AbqYis6GyCjcO+tiJ0G5GTPP9rfl2mMuQ=",
+        "lastModified": 1782888034,
+        "narHash": "sha256-bmM+TfnodBmk/95HE/eIoNzRY8b7wRWbcYU3cUvKIZw=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "36bc6d09f3b7f9a4c9837bcf2092e3e7bb85f6a6",
+        "rev": "2a0d5e87e34cbec74c2df9764eeddf1a655d2046",
         "type": "github"
       },
       "original": {
@@ -805,11 +805,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782792307,
-        "narHash": "sha256-OeM0skzLT6VTs1agIzgFKRz4dyE3OeNom4HSDS9kWSo=",
+        "lastModified": 1782879690,
+        "narHash": "sha256-pPA8uv71nqPxxsF1wU1m0gnP4+G+pZtfcEIw5Zv8Q20=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "9a593f382964e3daf30de77ef58b2829f52f65d3",
+        "rev": "0c07b30bc7bd15014db7154597b34ca12f60398c",
         "type": "github"
       },
       "original": {
@@ -884,11 +884,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782809086,
-        "narHash": "sha256-aSeIbszt/9Dt2qPZ336JKcJFB6QFMRCUwJhUo9Puw3M=",
+        "lastModified": 1782894918,
+        "narHash": "sha256-+nEvx2+C9JOK4wruCJaNr//DAgO0IpyeJqe3Ev7+2Mk=",
         "owner": "Mic92",
         "repo": "nixbot",
-        "rev": "ee80d5e1e687764068557156d825c155cc61373b",
+        "rev": "9c706edf88b3d2f6a8619d011fc8bb15e25ea765",
         "type": "github"
       },
       "original": {
@@ -956,11 +956,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782876167,
-        "narHash": "sha256-3yP82Djjr//6Mn+Y0AYe/ywo7PpRCMpDqPxHrPqAWn0=",
+        "lastModified": 1782911031,
+        "narHash": "sha256-oRm36UAyF2Yf9iHMoelgOO9vrClZqX7XIDYnFLiE+EE=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "5f636c6cbed0ee6858fa6b83a9981a455c6d4d2c",
+        "rev": "f5da9103446de8ae0d9b755257908b0910e020dd",
         "type": "github"
       },
       "original": {
@@ -1378,10 +1378,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782905730,
-        "narHash": "sha256-sY5RAeQT/zzMCZtOBNBXl3hO8Ssau7A8GTqvk7pVGFM=",
+        "lastModified": 1782911873,
+        "narHash": "sha256-Sv1DSM3a64bLYhV/0KX+lQ6OTj4iCZV7XyocEHsf26U=",
         "ref": "refs/heads/main",
-        "rev": "9a0457c728015ab82f770bf9aacdf31a9274e5ec",
+        "rev": "97fbe35ab1c23bcbdf705464181d471af3109ac8",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/ssync"
