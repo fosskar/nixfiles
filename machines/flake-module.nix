@@ -270,42 +270,6 @@
           roles.server.tags.all = { };
         };
 
-        ## AI
-
-        pi = {
-          module.name = "pi";
-          module.input = "spaces";
-          roles.executor = {
-            machines."nixworker".settings = {
-              llmUrl = "https://llama-cpp.${config.flake.domains.local}";
-              defaultModel = "qwen3_6-35b-a3b";
-            };
-            # no local GPU on nixworker; use nixbox's llama-cpp instead of
-            # the clan service's bundled llama-swap.
-            extraModules = [
-              {
-                services.llama-swap.enable = false;
-                services.pi-sessiond.extensions = [ ];
-              }
-            ];
-          };
-          roles.client = {
-            tags.workstation = { };
-            # pi-chat bundles a local llama-swap (mkDefault true); clients
-            # use the remote executor, so don't build a local llama-cpp.
-            extraModules = [
-              (
-                { lib, ... }:
-                {
-                  services.llama-swap.enable = false;
-                  services.pi-chat.extensions.bash-confirm = false;
-                  systemd.user.services.voxtype.enable = lib.mkForce false;
-                }
-              )
-            ];
-          };
-        };
-
         #mycelium = {
         #  roles.peer.tags.all = { };
         #};

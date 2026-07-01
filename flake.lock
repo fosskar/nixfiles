@@ -41,31 +41,6 @@
         "type": "github"
       }
     },
-    "blueprint_2": {
-      "inputs": {
-        "nixpkgs": [
-          "spaces",
-          "nixpkgs"
-        ],
-        "systems": [
-          "spaces",
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1776249299,
-        "narHash": "sha256-Dt9t1TGRmJFc0xVYhttNBD6QsAgHOHCArqGa0AyjrJY=",
-        "owner": "numtide",
-        "repo": "blueprint",
-        "rev": "56131e8628f173d24a27f6d27c0215eff57e40dd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "blueprint",
-        "type": "github"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -1276,7 +1251,6 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "preservation": "preservation",
         "sops-nix": "sops-nix",
-        "spaces": "spaces",
         "srvos": "srvos",
         "ssync": "ssync",
         "systems": "systems",
@@ -1342,42 +1316,6 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
-        "type": "github"
-      }
-    },
-    "spaces": {
-      "inputs": {
-        "blueprint": "blueprint_2",
-        "home-manager": [
-          "home-manager"
-        ],
-        "llm-agents": [
-          "llm-agents"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "systems": [
-          "systems"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ],
-        "voxtype": [
-          "voxtype"
-        ]
-      },
-      "locked": {
-        "lastModified": 1782723715,
-        "narHash": "sha256-47wmBI09pr5MPH8VNN89qlkz8/GaGwR4CdCdU/C59GU=",
-        "owner": "generational-infrastructure",
-        "repo": "spaces-os",
-        "rev": "c5f6004b74d3a0c322f56ecc791d29ede9709b58",
-        "type": "github"
-      },
-      "original": {
-        "owner": "generational-infrastructure",
-        "repo": "spaces-os",
         "type": "github"
       }
     },
