@@ -22,6 +22,8 @@ let
       ''
         set -euo pipefail
         export NIX_CONFIG="experimental-features = nix-command flakes"
+        # Stream output to the live effect log instead of buffering it.
+        export PYTHONUNBUFFERED=1
 
         token=$(jq -r '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
         export FORGE_TOKEN="$token"
@@ -30,7 +32,7 @@ let
         git config --global user.email nixbot@nx3.eu
         git config --global safe.directory '*'
 
-        git clone --depth 1 "https://oauth2:$token@codeberg.org/fosskar/nixfiles.git" repo
+        git clone --depth 1 --progress "https://oauth2:$token@codeberg.org/fosskar/nixfiles.git" repo
         cd repo
 
         ${command}

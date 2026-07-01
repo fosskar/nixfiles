@@ -79,12 +79,11 @@ def process_group(
             check=False,
         )
         if staged.returncode == 0:
-            print(f":: {pkg.name} - no effective change")
+            print(f":: {pkg.name} - no update")
             continue
         messages.append(result.message or f"update {pkg.name}")
 
     if not messages:
-        print(f":: {group} - nothing to commit")
         return
 
     message = commit_message(group, messages)
