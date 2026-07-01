@@ -71,6 +71,16 @@ def process_group(
         rel = f"packages/{pkg.name}"
         run(repo=repo, cmd=["nix", "fmt", "--", rel])
         run(repo=repo, cmd=["git", "add", rel])
+        # nix fmt can normalize an update.sh rewrite back to the committed
+        # content, leaving nothing staged.
+        staged = run(
+            repo=repo,
+            cmd=["git", "diff", "--cached", "--quiet", "--", rel],
+            check=False,
+        )
+        if staged.returncode == 0:
+            print(f":: {pkg.name} - no effective change")
+            continue
         messages.append(result.message or f"update {pkg.name}")
 
     if not messages:
@@ -134,8 +144,20 @@ def main() -> int:
         forge = Codeberg(OWNER, REPO, read_token())
         prs = forge.open_pulls()
 
+    # Isolate each group: one failing package/group must not abort the
+    # rest of the run. All groups are attempted; a failure still fails the
+    # run (red) so it is visible, without blocking the others.
+    failures: list[str] = []
     for group, pkgs in group_packages(packages).items():
-        process_group(repo, group, pkgs, forge, prs)
+        try:
+            process_group(repo, group, pkgs, forge, prs)
+        except Exception as e:  # noqa: BLE001
+            print(f":: {group} - FAILED, skipping: {e}")
+            failures.append(group)
+
+    if failures:
+        print(f":: {len(failures)} group(s) failed: {', '.join(failures)}")
+        return 1
     return 0
 
 
