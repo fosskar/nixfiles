@@ -92,7 +92,9 @@ def update(repo: Path, pkg: Package) -> UpdateResult:
         return UpdateResult(pkg.name, changed, message if changed else None)
 
     old = _read_version(repo, pkg.name)
-    run(repo=repo, cmd=[str(pkg.path / "update.sh")])
+    # update.sh has a `#!/usr/bin/env nix` shebang; /usr/bin/env is absent
+    # in the effect sandbox, so invoke nix on the script directly.
+    run(repo=repo, cmd=["nix", str(pkg.path / "update.sh")])
     changed = _git_touched(repo, rel)
     new = _read_version(repo, pkg.name)
     message = (
