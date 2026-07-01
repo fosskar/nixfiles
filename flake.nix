@@ -155,7 +155,7 @@
 
     # wm
     niri-nix = {
-      url = "git+https://codeberg.org/BANanaD3V/niri-nix";
+      url = "git+https://codeberg.org/BANanaD3V/niri-nix?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     noctalia = {
@@ -173,9 +173,15 @@
       inputs.noctalia-qs.inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
-    tangled.url = "git+https://tangled.org/@tangled.org/core";
+    tangled.url = "git+https://tangled.org/@tangled.org/core?shallow=1";
     tangled.inputs.nixpkgs.follows = "nixpkgs";
     tangled.inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";
+
+    ssync = {
+      url = "git+https://codeberg.org/fosskar/ssync?shallow=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
 
     wiki = {
       url = "git+https://codeberg.org/fosskar/wiki.git?shallow=1";

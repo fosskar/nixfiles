@@ -771,11 +771,12 @@
         "narHash": "sha256-0TF7/XeFQihYvwe4L1Y2ujpwyAIpgXwrt3jzOaw5Y6g=",
         "ref": "refs/heads/main",
         "rev": "31d15bc6c5f3f84256335b34592cda2d4104c9eb",
-        "revCount": 135,
+        "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
       "original": {
+        "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       }
@@ -1279,6 +1280,7 @@
         "sops-nix": "sops-nix",
         "spaces": "spaces",
         "srvos": "srvos",
+        "ssync": "ssync",
         "systems": "systems",
         "tangled": "tangled",
         "treefmt-nix": "treefmt-nix",
@@ -1430,6 +1432,30 @@
         "type": "github"
       }
     },
+    "ssync": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1782896164,
+        "narHash": "sha256-Hky8rZLnrdwPQwBIrqHP81wNbv/Ai/Rx+OrP1fXpqDM=",
+        "ref": "refs/heads/main",
+        "rev": "4a16d53c7ef1f054886c8cda6f8d9756e009d2e4",
+        "shallow": true,
+        "type": "git",
+        "url": "https://codeberg.org/fosskar/ssync"
+      },
+      "original": {
+        "shallow": true,
+        "type": "git",
+        "url": "https://codeberg.org/fosskar/ssync"
+      }
+    },
     "systems": {
       "locked": {
         "lastModified": 1689347949,
@@ -1467,15 +1493,16 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1782843151,
-        "narHash": "sha256-kMeklrpQM60qsoyZ3tGwhe0qdaGVNgvSlj5qwt6hqXE=",
+        "lastModified": 1782891304,
+        "narHash": "sha256-tuPrcDHJx1dFR8o2mTfvCPecA1FDSgG4/66RYX/7NUU=",
         "ref": "refs/heads/master",
-        "rev": "e7c20c9117afaba5765921e249bb473a5d336596",
-        "revCount": 2819,
+        "rev": "551034f63fdd2ebfbe6a98787bc25d076bb50415",
+        "shallow": true,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
       },
       "original": {
+        "shallow": true,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
       }
