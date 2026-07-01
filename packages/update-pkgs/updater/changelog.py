@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import urllib.error
 import urllib.request
@@ -22,13 +23,14 @@ def _release_body(owner: str, repo: str, tag: str) -> str | None:
     candidates = [tag, tag[1:] if tag.startswith("v") else f"v{tag}"]
     for candidate in candidates:
         url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{candidate}"
-        req = urllib.request.Request(
-            url,
-            headers={
-                "Accept": "application/vnd.github+json",
-                "User-Agent": "nixfiles-updater",
-            },
-        )
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "nixfiles-updater",
+        }
+        token = os.environ.get("GITHUB_TOKEN")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        req = urllib.request.Request(url, headers=headers)
         try:
             with urllib.request.urlopen(req) as resp:
                 body = (json.load(resp).get("body") or "").strip() or None

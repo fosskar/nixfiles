@@ -45,22 +45,25 @@
           }
         ];
 
-        clan.core.vars.generators.nixbot = {
-          prompts.codeberg-token = {
-            description = "codeberg api token for nixbot";
-            type = "hidden";
-            persist = true;
-          };
-          prompts.oauth-secret = {
-            description = "codeberg oauth2 client secret";
-            type = "hidden";
-            persist = true;
-          };
-          prompts.oauth-id = {
-            description = "codeberg oauth2 client id (uuid)";
-            persist = true;
-          };
-          files."oauth-id".secret = false;
+        clan.core.vars.generators.nixbot-codeberg = {
+          files.token = { };
+          files.oauth-secret = { };
+          prompts.token.description = "codeberg access token (write:repository, read:user)";
+          prompts.oauth-secret.description = "codeberg oauth client secret";
+          script = ''
+            cp $prompts/token $out/token
+            cp $prompts/oauth-secret $out/oauth-secret
+          '';
+        };
+
+        clan.core.vars.generators.nixbot-github = {
+          files."token" = { };
+          prompts.token.description = "github PAT (no scopes) for the update-pkgs effect";
+          script = ''
+            ${pkgs.jq}/bin/jq -n --arg token "$(cat "$prompts/token")" \
+              '{ "github-api": { condition: "isDefaultBranch", data: { token: $token } } }' \
+              >"$out/token"
+          '';
         };
 
         services.nixbot = {
@@ -69,10 +72,12 @@
           useHTTPS = true;
           domain = publicHost;
 
+          effects.perRepoSecretFiles."gitea:fosskar/*" =
+            config.clan.core.vars.generators.nixbot-github.files."token".path;
+
           admins = [
             "gitea:fosskar"
             "github:fosskar"
-            #"oidc:auth.${flake-self.domains.public}:d5103b45-c922-48f0-98fe-b9e249e32885"
           ];
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
           buildConcurrency = 2;
@@ -83,9 +88,9 @@
             enable = true;
             instanceUrl = "https://codeberg.org";
             topic = "build-with-nixbot";
-            tokenFile = config.clan.core.vars.generators.nixbot.files."codeberg-token".path;
-            oauthSecretFile = config.clan.core.vars.generators.nixbot.files."oauth-secret".path;
-            oauthId = config.clan.core.vars.generators.nixbot.files."oauth-id".value;
+            tokenFile = config.clan.core.vars.generators.nixbot-codeberg.files."token".path;
+            oauthSecretFile = config.clan.core.vars.generators.nixbot-codeberg.files."oauth-secret".path;
+            oauthId = "a7b24f2c-1291-4566-970c-d39b869f0a35";
           };
         };
       };

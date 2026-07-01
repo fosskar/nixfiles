@@ -16,7 +16,10 @@ let
           pkgs.git
           pkgs.jq
         ];
-        secretsMap = builtins.toJSON { git.type = "GitToken"; };
+        secretsMap = builtins.toJSON {
+          git.type = "GitToken";
+          github = "github-api";
+        };
         HOME = "/build";
       }
       ''
@@ -27,6 +30,8 @@ let
 
         token=$(jq -r '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
         export FORGE_TOKEN="$token"
+        # authenticates github API calls (nix-update reads GITHUB_TOKEN).
+        export GITHUB_TOKEN=$(jq -r '.github.data.token' "$HERCULES_CI_SECRETS_JSON")
 
         git config --global user.name nixbot
         git config --global user.email nixbot@nx3.eu
