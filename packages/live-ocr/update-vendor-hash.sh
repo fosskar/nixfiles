@@ -3,7 +3,10 @@ set -euo pipefail
 
 # renovate runs this as a postUpgradeTask and does not propagate NIX_CONFIG
 # into the child env, so enable the flakes CLI features the nix builds need.
-export NIX_CONFIG="experimental-features = nix-command flakes"
+# sandbox is disabled because the postUpgradeTask already runs inside the
+# nixbot effect sandbox, and a nested build sandbox cannot remount /nix/store.
+export NIX_CONFIG="experimental-features = nix-command flakes
+sandbox = false"
 
 pkg=packages/live-ocr/package.nix
 
