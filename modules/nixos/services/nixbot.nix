@@ -48,7 +48,7 @@
         clan.core.vars.generators.nixbot-codeberg = {
           files.token = { };
           files.oauth-secret = { };
-          prompts.token.description = "codeberg access token (write:repository, read:user)";
+          prompts.token.description = "codeberg access token (write:repository, read:user, read:organization, write:issue)";
           prompts.oauth-secret.description = "codeberg oauth client secret";
           script = ''
             cp $prompts/token $out/token
