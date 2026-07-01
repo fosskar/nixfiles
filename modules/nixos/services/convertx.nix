@@ -47,7 +47,7 @@
             {
               "ConvertX" = {
                 href = "https://${localHost}";
-                icon = "mdi-file-sync";
+                icon = "sh-convertx.png";
                 siteMonitor = healthUrl;
               };
             }
