@@ -42,6 +42,43 @@ let
 
         ${command}
       '';
+
+  # Renovate clones the repo itself, so this skips mkRepoEffect's clone. Tools
+  # are pinned on PATH via nativeBuildInputs (binarySource=global) instead of a
+  # runtime `nix shell`: go for gomodTidy, nix for update-vendor-hash.sh.
+  renovate =
+    pkgs.runCommand "effect-renovate"
+      {
+        nativeBuildInputs = [
+          pkgs.renovate
+          pkgs.go
+          pkgs.nix
+          pkgs.git
+          pkgs.cacert
+          pkgs.jq
+        ];
+        secretsMap = builtins.toJSON {
+          git.type = "GitToken";
+          github = "github-api";
+        };
+        HOME = "/build";
+      }
+      ''
+        set -euo pipefail
+        export NIX_CONFIG="experimental-features = nix-command flakes"
+
+        export RENOVATE_TOKEN=$(jq -r '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
+        export RENOVATE_GITHUB_COM_TOKEN=$(jq -r '.github.data.token' "$HERCULES_CI_SECRETS_JSON")
+
+        export RENOVATE_PLATFORM=forgejo
+        export RENOVATE_ENDPOINT=https://codeberg.org
+        export RENOVATE_REPOSITORIES=fosskar/nixfiles
+        export RENOVATE_ALLOWED_COMMANDS='["^bash packages/live-ocr/update-vendor-hash\\.sh$"]'
+        export RENOVATE_BINARY_SOURCE=global
+        export LOG_LEVEL=info
+
+        renovate
+      '';
 in
 {
   flake.effects = _args: {
@@ -53,6 +90,13 @@ in
       outputs.effects.update-pkgs = mkRepoEffect "update-pkgs" ''
         ${updater}/bin/update-pkgs
       '';
+    };
+    onSchedule.renovate = {
+      when = {
+        hour = 1;
+        minute = 0;
+      };
+      outputs.effects.renovate = renovate;
     };
   };
 }
