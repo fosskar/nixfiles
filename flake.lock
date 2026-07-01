@@ -1442,10 +1442,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782896164,
-        "narHash": "sha256-Hky8rZLnrdwPQwBIrqHP81wNbv/Ai/Rx+OrP1fXpqDM=",
+        "lastModified": 1782899766,
+        "narHash": "sha256-eSG1HfGH1Av3fxd9JEPQpEVx/Lhqh9tRUQ1t5dxiXmg=",
         "ref": "refs/heads/main",
-        "rev": "4a16d53c7ef1f054886c8cda6f8d9756e009d2e4",
+        "rev": "4a6adb6525f3a0cecbca4ab884d9c48375bab6a4",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/ssync"

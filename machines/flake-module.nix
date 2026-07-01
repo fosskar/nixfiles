@@ -372,6 +372,20 @@
           };
         };
 
+        # p2p sync of pi agent sessions between the two workstations. leaderless:
+        # both machines are equal peers. shared age key handled by the service's
+        # own clan.vars generator.
+        ssync = {
+          module = {
+            name = "ssync";
+            input = "ssync";
+          };
+          roles.peer.machines = {
+            "simon-desktop".settings.user = "simon";
+            "lpt-titan".settings.user = "simon";
+          };
+        };
+
         #syncthing = {
         #  module = {
         #    name = "syncthing";
