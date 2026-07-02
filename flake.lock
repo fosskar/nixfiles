@@ -129,10 +129,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782918272,
-        "narHash": "sha256-9oKIngJy/5vJ9ETnr5vOUZZ7h/38O4DnR7y2mk+xRYQ=",
+        "lastModified": 1782969384,
+        "narHash": "sha256-Tjo0ouK5ests5NtNV8N70twPdogRXih28AvRw4tFuIo=",
         "ref": "refs/heads/main",
-        "rev": "9b81b6b7b50d49d48d2226f50026e9a9bb78ef74",
+        "rev": "0efdb1cbdc7422b89d38e9b1936f4981e2bc74ba",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -174,11 +174,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778718524,
-        "narHash": "sha256-pXLoI6Ax0EnUK6r34UM1vibVC7CfTu6j72R2692ZzPs=",
-        "rev": "12c552ad547d87254f33f33bddd1a2cdbeac754d",
+        "lastModified": 1782950912,
+        "narHash": "sha256-J8o75aMwRBulLGIqDklE/A8HChBjGgypHv2FcnBSvLA=",
+        "rev": "0ba36e69ad590f51eeabe2635d580b67fbbf57ab",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/12c552ad547d87254f33f33bddd1a2cdbeac754d.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/0ba36e69ad590f51eeabe2635d580b67fbbf57ab.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -301,11 +301,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778716662,
-        "narHash": "sha256-m1Yf0wZ8j1OHjTc2UwHwyQRSnNeSgLJOd7q5Y45hzi4=",
+        "lastModified": 1782949081,
+        "narHash": "sha256-vp6Y/Grm98ESt6ceOkWiHWyZRDV3J1RID4w+6NWK9yA=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "f7c1a2d347e4c52d5fb8d10cb4d94b5884e546fb",
+        "rev": "17c9d6cdfc60c64f4ee8d306f9bc0b4ccb51481e",
         "type": "github"
       },
       "original": {
@@ -460,11 +460,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1782913220,
-        "narHash": "sha256-4eQBUAvJgJgkxvHqR5ENzZPZWgdgvYcV/ZYoOtRlajc=",
+        "lastModified": 1782954380,
+        "narHash": "sha256-huYypPK5L0nh5HFYLAGmmOToYkXzg+s3ZWDmpnNLRdI=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "9be292f1e678437644396b47b3410b433ba3433f",
+        "rev": "88d1d6206f399c134d1f4c0b7db27733aaa3c50c",
         "type": "github"
       },
       "original": {
@@ -492,11 +492,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782881387,
-        "narHash": "sha256-HvlS1KDGXDjd1bNzzPvH1mkDJATlDAfVYfTh//wJBEA=",
+        "lastModified": 1782964450,
+        "narHash": "sha256-2rwNd77TzZ4sDDvMam0IXFXN5IfC35mifoeKS0uAc/4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d32537981c036473cf6990ae03176a5d84c43b29",
+        "rev": "ebc87daabc8d3f595e9a8b67107eaaa8115ad582",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782913490,
-        "narHash": "sha256-GGqfwevUQduaLpqfJqc2yAvs36BYy5R9rCpkqHn9ZVE=",
+        "lastModified": 1782954992,
+        "narHash": "sha256-MGkohe8+gQpDQaZNMrandWvmLXNYuMM62ZLd/jt5Tto=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "54a6e303164407d73bef861367f4e653db3bef45",
+        "rev": "ce2287ce07b78f033a4d04e229be34eb2de9cae1",
         "type": "github"
       },
       "original": {
@@ -805,11 +805,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782879690,
-        "narHash": "sha256-pPA8uv71nqPxxsF1wU1m0gnP4+G+pZtfcEIw5Zv8Q20=",
+        "lastModified": 1782934759,
+        "narHash": "sha256-1YTEea1x4jfVZkwj2P9K+EpN4huU4PlCsMXbl4ili/A=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "0c07b30bc7bd15014db7154597b34ca12f60398c",
+        "rev": "a34118c61059e72f9276680400c4f52e8b4db4dd",
         "type": "github"
       },
       "original": {
@@ -956,11 +956,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782919043,
-        "narHash": "sha256-Y4P7WHwoVJCpAoy6+brTa0E51T17Tvx7CQCXefXVRe8=",
+        "lastModified": 1782953157,
+        "narHash": "sha256-mp92xRkWul0PEkPt1v/eJOBcuzG/ohQavn6vO+djEtc=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "fee9ff554738bd0efcfda18611813895bef4a26e",
+        "rev": "8d2c6881d3e1e7f1e894fc2e811c36fe9ffa6989",
         "type": "github"
       },
       "original": {
@@ -1355,11 +1355,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782858952,
-        "narHash": "sha256-4L8Nk5ET2kBVNOKfv1mOPylSe36H454QkTZwtbQUIUE=",
+        "lastModified": 1782959762,
+        "narHash": "sha256-foGp7WLUoX50QN1VzBDkdDOkxkRGGPoXQdgMbEFqBYs=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "885a83fcf8d5b7bf05ebb21f8e994d87ebfa1ed0",
+        "rev": "9228f1ec58f3af7cb7cb09aaa7db138c96d7e97e",
         "type": "github"
       },
       "original": {
@@ -1378,10 +1378,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782917325,
-        "narHash": "sha256-QTT+JlBPIrhtqLG7xyZcrbgB4/YPrAMV13/E76DTP5M=",
+        "lastModified": 1782974691,
+        "narHash": "sha256-udxOPUrr7P8o+plUj5R3kO88hNSRufhfgiWURNDmcJQ=",
         "ref": "refs/heads/main",
-        "rev": "a024f72437c8eec092efdec8ec55399ce7fb8050",
+        "rev": "842d2c67d8e6eca47da4d272c93016c1d10b7f2f",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/ssync"
