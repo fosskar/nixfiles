@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import changelog  # noqa: E402
 from forge import Codeberg  # noqa: E402
 
-from packages import Package, discover, run, update  # noqa: E402
+from packages import Package, capture, discover, run, update  # noqa: E402
 
 OWNER = "fosskar"
 REPO = "nixfiles"
@@ -93,20 +93,44 @@ def process_group(
         print(f":: {group} - dry-run, not pushing\n{message}\n")
         return
 
+    # The branch is recreated each run, so the commit hash always differs;
+    # compare trees against the remote branch to avoid a nightly force-push
+    # (and CI rerun) when nothing changed.
+    remote = capture(
+        repo=repo,
+        cmd=["git", "rev-parse", "--verify", "--quiet", f"origin/{branch}"],
+        check=False,
+    )
+    if (
+        remote.returncode == 0
+        and run(
+            repo=repo,
+            cmd=["git", "diff", "--quiet", f"origin/{branch}", "HEAD"],
+            check=False,
+        ).returncode
+        == 0
+    ):
+        print(f":: {group} - remote branch up to date, skipping push")
+        return
+
     run(repo=repo, cmd=["git", "push", "--force-with-lease", "origin", branch])
+
+    title, _, rest = message.partition("\n\n")
+    # rest is empty for single-package groups; keep the full message
+    # so the PR body is not blank.
+    body = changelog.enrich(rest or message)
 
     existing = next(
         (p for p in prs if p["head"]["ref"] == branch and p["base"]["ref"] == BASE),
         None,
     )
     if existing is None:
-        title = message.splitlines()[0]
-        body = changelog.enrich(message)
         pr = forge.create_pull(title=title, head=branch, base=BASE, body=body)
         prs.append(pr)
         index = pr["number"]
     else:
         index = existing["number"]
+        forge.update_pull(index, title=title, body=body)
     forge.enable_automerge(index)
 
 

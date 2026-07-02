@@ -65,6 +65,11 @@ class Codeberg:
             {"title": title, "head": head, "base": base, "body": body},
         )
 
+    def update_pull(self, index: int, *, title: str, body: str) -> None:
+        self._request(
+            "PATCH", f"{self.api}/pulls/{index}", {"title": title, "body": body}
+        )
+
     def enable_automerge(self, index: int) -> None:
         try:
             self._request(
