@@ -47,7 +47,11 @@ def _release_body(owner: str, repo: str, tag: str) -> str | None:
 
 def enrich(message: str, max_len: int = 3000) -> str:
     out = message
+    seen: set[tuple[str, str]] = set()
     for owner, repo, _old, new in _COMPARE.findall(message):
+        if (repo, new) in seen:
+            continue
+        seen.add((repo, new))
         body = _release_body(owner, repo, new)
         if not body:
             continue
