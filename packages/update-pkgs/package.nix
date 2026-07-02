@@ -17,11 +17,17 @@ python3.pkgs.buildPythonApplication {
 
   nativeBuildInputs = [ makeWrapper ];
 
+  checkPhase = ''
+    runHook preCheck
+    ${python3}/bin/python3 -m unittest discover -s . -v
+    runHook postCheck
+  '';
+
   installPhase = ''
     runHook preInstall
 
     mkdir -p $out/lib/update_pkgs $out/bin
-    cp *.py $out/lib/update_pkgs/
+    cp changelog.py forge.py packages.py __main__.py $out/lib/update_pkgs/
 
     makeWrapper ${python3}/bin/python3 $out/bin/update-pkgs \
       --add-flags "$out/lib/update_pkgs/__main__.py" \
