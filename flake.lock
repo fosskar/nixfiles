@@ -460,11 +460,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1782978925,
-        "narHash": "sha256-WTCsCf6oglPbO3bzG0HbjxHFwKByHV2ebHHgxiQlQNA=",
+        "lastModified": 1782979913,
+        "narHash": "sha256-m9n49iOgZGEfcTUj3fOrquK9ojW/0clw4osC2Tj9/n0=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "71c0622122dfdc977c36b7a5c8fc68e231087f59",
+        "rev": "b837f07dcd9092105ca56a4d856be91196e09d81",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782978946,
-        "narHash": "sha256-aWJC4rWJhh9bzrYSCsBPIctyyTAe7I1Y4MheOUHYDOg=",
+        "lastModified": 1782981686,
+        "narHash": "sha256-+u0g5NKXt67e4MxX2hvECg0ArGRbtCJPgbH8tuTNraw=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "bc6c4c74d398c9b9cbfecfd41cd88598e54f4a23",
+        "rev": "cb156ebf811904005c136ca42a467a6f12de6cb8",
         "type": "github"
       },
       "original": {
@@ -651,6 +651,18 @@
       "original": {
         "type": "tarball",
         "url": "https://github.com/lucide-icons/lucide/releases/download/0.536.0/lucide-icons-0.536.0.zip"
+      }
+    },
+    "mathjax-src": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-eqg25bKfiDzynRMR2RfeWNfo0EefHF/eRRFafl9RnNI=",
+        "type": "file",
+        "url": "https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-svg.js"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-svg.js"
       }
     },
     "mermaid-src": {
@@ -1378,10 +1390,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782979352,
-        "narHash": "sha256-Upajx2fdpAZja9u7/f3bk38Zn0vMohxKS28GON4y99s=",
+        "lastModified": 1782981955,
+        "narHash": "sha256-f1OfBiVj69SWI1tp3UDjgYK+dBncy1ZIh7h4MBH7hmg=",
         "ref": "refs/heads/main",
-        "rev": "5ed20efcfa7ca03aa8254bae0379cb644a6905bb",
+        "rev": "c9bb4f5bc1366db7dcf3dd05eafd67a80764fdc0",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/ssync"
@@ -1421,6 +1433,7 @@
         "indigo": "indigo",
         "inter-fonts-src": "inter-fonts-src",
         "lucide-src": "lucide-src",
+        "mathjax-src": "mathjax-src",
         "mermaid-src": "mermaid-src",
         "microvm": "microvm",
         "nixpkgs": [
@@ -1429,10 +1442,10 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1782916526,
-        "narHash": "sha256-GVq9ar5xnwY1pjYWe9rq+XDGO9Iaf8XRpQEDq7zgUqc=",
+        "lastModified": 1782981128,
+        "narHash": "sha256-FMGJV91c+vSFZcR9BQUQTQ3hXPSbYBZnU3B0SeVAQaU=",
         "ref": "refs/heads/master",
-        "rev": "3fcce0302f30248f46b11aeb82b34baf2c775a8b",
+        "rev": "f3fded0a75d5e0e77dfef80f20a2091a83818bc9",
         "shallow": true,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
