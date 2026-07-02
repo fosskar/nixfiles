@@ -21,6 +21,7 @@ _: {
         followUpMode = "all";
         steeringMode = "one-at-a-time";
         compaction.enabled = true;
+        theme.dark = "custom";
       };
       # json is valid yaml; yq merges it into config.yml
       ompSettingsFile = pkgs.writeText "omp-settings-overlay.json" (builtins.toJSON ompSettings);
