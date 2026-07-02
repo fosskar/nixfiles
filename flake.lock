@@ -460,11 +460,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1782954380,
-        "narHash": "sha256-huYypPK5L0nh5HFYLAGmmOToYkXzg+s3ZWDmpnNLRdI=",
+        "lastModified": 1782978925,
+        "narHash": "sha256-WTCsCf6oglPbO3bzG0HbjxHFwKByHV2ebHHgxiQlQNA=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "88d1d6206f399c134d1f4c0b7db27733aaa3c50c",
+        "rev": "71c0622122dfdc977c36b7a5c8fc68e231087f59",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782954992,
-        "narHash": "sha256-MGkohe8+gQpDQaZNMrandWvmLXNYuMM62ZLd/jt5Tto=",
+        "lastModified": 1782978946,
+        "narHash": "sha256-aWJC4rWJhh9bzrYSCsBPIctyyTAe7I1Y4MheOUHYDOg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "ce2287ce07b78f033a4d04e229be34eb2de9cae1",
+        "rev": "bc6c4c74d398c9b9cbfecfd41cd88598e54f4a23",
         "type": "github"
       },
       "original": {
@@ -1378,10 +1378,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1782974691,
-        "narHash": "sha256-udxOPUrr7P8o+plUj5R3kO88hNSRufhfgiWURNDmcJQ=",
+        "lastModified": 1782979352,
+        "narHash": "sha256-Upajx2fdpAZja9u7/f3bk38Zn0vMohxKS28GON4y99s=",
         "ref": "refs/heads/main",
-        "rev": "842d2c67d8e6eca47da4d272c93016c1d10b7f2f",
+        "rev": "5ed20efcfa7ca03aa8254bae0379cb644a6905bb",
         "shallow": true,
         "type": "git",
         "url": "https://codeberg.org/fosskar/ssync"
