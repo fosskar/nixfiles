@@ -7,9 +7,9 @@ _: {
       ...
     }:
     let
-      extensionFiles = builtins.readDir ./extensions;
+      extensionFiles = builtins.readDir ../extensions;
       extensionEntries = lib.mapAttrs' (
-        name: _: lib.nameValuePair ".pi/agent/extensions/${name}" { source = ./extensions/${name}; }
+        name: _: lib.nameValuePair ".pi/agent/extensions/${name}" { source = ../extensions/${name}; }
       ) extensionFiles;
     in
     {
