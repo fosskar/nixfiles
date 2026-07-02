@@ -4,6 +4,7 @@ executable update.sh -> run it, neither -> skipped."""
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -45,7 +46,9 @@ def discover(repo: Path) -> list[Package]:
             continue
         package_nix = pkg_dir / "package.nix"
         update_sh = pkg_dir / "update.sh"
-        if package_nix.exists() and "updateScript" in package_nix.read_text():
+        if package_nix.exists() and re.search(
+            r"\bupdateScript\s*=", package_nix.read_text()
+        ):
             packages.append(Package(pkg_dir.name, "nix-update", pkg_dir))
         elif update_sh.exists() and update_sh.stat().st_mode & 0o111:
             packages.append(Package(pkg_dir.name, "script", pkg_dir))
@@ -65,10 +68,13 @@ def _git_touched(repo: Path, rel: str) -> bool:
     )
 
 
-def _update_script_args(repo: Path, name: str) -> list[str] | None:
+def _update_script_args(repo: Path, name: str) -> list[str]:
     result = capture(repo=repo, cmd=["nix", "eval", "--json", f".#{name}.updateScript"])
     value = json.loads(result.stdout)
-    return value if isinstance(value, list) else None
+    if not isinstance(value, list):
+        msg = f"{name}: updateScript is not a list; unsupported form: {value!r}"
+        raise RuntimeError(msg)
+    return value
 
 
 def _is_nix_update(arg: str) -> bool:
@@ -81,7 +87,7 @@ def update(repo: Path, pkg: Package) -> UpdateResult:
         # updateScript is `[<nix-update>, <args...>]`; call nix-update with
         # those args. --use-update-script re-runs it in a nix develop shell
         # and fails.
-        script = _update_script_args(repo, pkg.name) or []
+        script = _update_script_args(repo, pkg.name)
         extra = script[1:] if script and _is_nix_update(script[0]) else []
         with tempfile.NamedTemporaryFile("r", suffix=".msg") as msg:
             run(
