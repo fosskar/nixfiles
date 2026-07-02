@@ -29,11 +29,37 @@ _: {
         ) ownSkillNames
       );
 
+      mattpocockSkillsSrc = pkgs.fetchFromGitHub {
+        owner = "mattpocock";
+        repo = "skills";
+        rev = "7a83a3a682adf699f24dbc06613de87f4e52a0a0";
+        hash = "sha256-NSMNCO6O1/a1oMTAtmtJRERElwUaBRLgpOUXW05qQAQ=";
+      };
+      mattpocockSkills = [
+        "engineering/code-review"
+        "engineering/improve-codebase-architecture"
+        "engineering/resolving-merge-conflicts"
+        "engineering/tdd"
+        "productivity/grilling"
+        "productivity/handoff"
+        "productivity/teach"
+        "productivity/writing-great-skills"
+      ];
+      mattpocockSkillEntries = lib.listToAttrs (
+        lib.concatMap (
+          skill:
+          map (dir: {
+            name = "${dir}/${baseNameOf skill}";
+            value.source = "${mattpocockSkillsSrc}/skills/${skill}";
+          }) skillTargetDirs
+        ) mattpocockSkills
+      );
+
     in
     {
       imports = [ inputs.mics-skills.homeModules.default ];
 
-      home.file = ownSkillEntries;
+      home.file = ownSkillEntries // mattpocockSkillEntries;
 
       xdg.configFile."kagi/config.json".text = builtins.toJSON {
         password_command = "cat ${osConfig.clan.core.vars.generators.kagi.files."session-link".path}";
