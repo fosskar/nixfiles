@@ -7,7 +7,7 @@ _: {
       ...
     }:
     let
-      extensionFiles = builtins.readDir ../extensions;
+      extensionFiles = removeAttrs (builtins.readDir ../extensions) [ "pi-to-PI.ts" ];
       extensionEntries = lib.mapAttrs' (
         name: _: lib.nameValuePair ".omp/agent/extensions/${name}" { source = ../extensions/${name}; }
       ) extensionFiles;
