@@ -91,7 +91,7 @@ in
   flake.effects = _args: {
     onSchedule.renovate = {
       when = {
-        hour = 0;
+        hour = 1;
         minute = 0;
       };
       outputs.effects.renovate = renovate;

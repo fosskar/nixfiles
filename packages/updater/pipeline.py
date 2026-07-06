@@ -40,12 +40,12 @@ def publish(
     message: str,
     forge: Codeberg | None,
     prs: list[dict],
-) -> None:
-    """Push the committed HEAD as `branch` and open/refresh its PR."""
+) -> int | None:
+    """Push HEAD as `branch`, open/refresh its PR; returns the PR number."""
     name = branch
     if forge is None:
         print(f":: {name} - dry-run, not pushing\n{message}\n")
-        return
+        return None
 
     # The effect clone is `--depth 1` of main only, so the remote-tracking
     # ref for a leftover update branch (unmerged PR) is absent: the
@@ -92,7 +92,7 @@ def publish(
         existing = next((p for p in prs if p["head"]["ref"] == branch), None)
         if existing is not None:
             forge.merge_if_green(existing["number"])
-        return
+        return None
 
     run(repo=repo, cmd=["git", "push", "--force-with-lease", "origin", branch])
 
@@ -113,3 +113,16 @@ def publish(
         index = existing["number"]
         forge.update_pull(index, title=title, body=body)
     forge.enable_automerge(index)
+    return index
+
+
+def sweep(forge: Codeberg | None, indexes: list[int]) -> None:
+    # Codeberg rate-limits the merge endpoint hard (observed Retry-After up
+    # to 120s), so enable_automerge often lands only after CI went green -
+    # and Forgejo automerge fires solely on a *future* status event, leaving
+    # the PR scheduled forever. By the end of the run CI is finished; one
+    # merge attempt per touched PR either merges it now or no-ops (405).
+    if forge is None:
+        return
+    for index in indexes:
+        forge.merge_if_green(index)

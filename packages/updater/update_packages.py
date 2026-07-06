@@ -37,13 +37,13 @@ def commit_message(group: str, messages: list[str]) -> str:
     return f"update {group}\n\n" + "\n\n".join(messages)
 
 
-def process_group(
+def process_group(  # noqa: PLR0913
     repo: Path,
     group: str,
     pkgs: list[Package],
     forge: pipeline.Codeberg | None,
     prs: list[dict],
-) -> None:
+) -> int | None:
     branch = f"update-package-{group}"
     run(repo=repo, cmd=["git", "reset", "--hard"])
     run(repo=repo, cmd=["git", "clean", "-fd"])
@@ -81,11 +81,11 @@ def process_group(
         )
 
     if not messages:
-        return
+        return None
 
     message = commit_message(group, messages)
     run(repo=repo, cmd=["git", "commit", "-m", message])
-    pipeline.publish(repo, branch, message, forge, prs)
+    return pipeline.publish(repo, branch, message, forge, prs)
 
 
 def main() -> int:
@@ -119,12 +119,20 @@ def main() -> int:
     # rest of the run. All groups are attempted; a failure still fails the
     # run (red) so it is visible, without blocking the others.
     failures: list[str] = []
+    touched: list[int] = []
     for group, pkgs in group_packages(packages).items():
         try:
-            process_group(repo, group, pkgs, forge, prs)
+            index = process_group(repo, group, pkgs, forge, prs)
+            if index is not None:
+                touched.append(index)
         except Exception as e:  # noqa: BLE001
             print(f":: {group} - FAILED, skipping: {e}")
             failures.append(group)
+
+    # automerge scheduled after CI already went green never fires (Forgejo
+    # is event-driven; the merge endpoint's rate-limit backoff makes that
+    # the common case here). CI is done by now: merge whatever is green.
+    pipeline.sweep(forge, touched)
 
     if failures:
         print(f":: {len(failures)} group(s) failed: {', '.join(failures)}")

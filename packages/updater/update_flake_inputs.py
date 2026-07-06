@@ -93,7 +93,7 @@ def commit_message(inp: FlakeInput, old: dict | None, new: dict | None) -> str:
 
 def process_input(
     repo: Path, inp: FlakeInput, forge: pipeline.Codeberg | None, prs: list[dict]
-) -> None:
+) -> int | None:
     run(repo=repo, cmd=["git", "reset", "--hard"])
     run(repo=repo, cmd=["git", "clean", "-fd"])
     run(repo=repo, cmd=["git", "switch", "-C", inp.branch, f"origin/{pipeline.BASE}"])
@@ -108,12 +108,12 @@ def process_input(
         == 0
     ):
         print(f":: {inp.unit} - no update")
-        return
+        return None
     new = _locked_rev(repo, inp)
 
     message = commit_message(inp, old, new)
     run(repo=repo, cmd=["git", "commit", "-m", message, "--", lock_rel])
-    pipeline.publish(repo, inp.branch, message, forge, prs)
+    return pipeline.publish(repo, inp.branch, message, forge, prs)
 
 
 def main() -> int:
@@ -147,12 +147,20 @@ def main() -> int:
     forge, prs = pipeline.connect(repo, dry_run=args.dry_run)
 
     failures: list[str] = []
+    touched: list[int] = []
     for inp in inputs:
         try:
-            process_input(repo, inp, forge, prs)
+            index = process_input(repo, inp, forge, prs)
+            if index is not None:
+                touched.append(index)
         except Exception as e:  # noqa: BLE001
             print(f":: {inp.unit} - FAILED, skipping: {e}")
             failures.append(inp.unit)
+
+    # automerge scheduled after CI already went green never fires (Forgejo
+    # is event-driven; the merge endpoint's rate-limit backoff makes that
+    # the common case here). CI is done by now: merge whatever is green.
+    pipeline.sweep(forge, touched)
 
     if failures:
         print(f":: {len(failures)} input(s) failed: {', '.join(failures)}")
