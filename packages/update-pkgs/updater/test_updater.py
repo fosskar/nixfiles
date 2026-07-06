@@ -69,5 +69,40 @@ class TestChangelog(unittest.TestCase):
         self.assertNotIn("<details>", out)
 
 
+class TestFixStaleUrls(unittest.TestCase):
+    def test_rewrites_changelog_line(self):
+        msg = (
+            "limux: 0.1.19 -> 0.1.21\n\n"
+            "Changelog: https://github.com/am-will/limux/releases/tag/v0.1.19"
+        )
+        out = changelog.fix_stale_urls(msg)
+        lines = out.splitlines()
+        self.assertEqual(lines[0], "limux: 0.1.19 -> 0.1.21")
+        self.assertEqual(
+            lines[-1],
+            "Changelog: https://github.com/am-will/limux/releases/tag/v0.1.21",
+        )
+
+    def test_diff_line_untouched(self):
+        diff = "Diff: https://github.com/o/r/compare/v1.0.0...v1.1.0"
+        msg = f"r: 1.0.0 -> 1.1.0\n\n{diff}"
+        out = changelog.fix_stale_urls(msg)
+        self.assertEqual(out.splitlines()[-1], diff)
+
+    def test_no_title_match_unchanged(self):
+        msg = (
+            "update netbird\n\n"
+            "Changelog: https://github.com/netbirdio/netbird/releases/tag/v0.1.0"
+        )
+        self.assertEqual(changelog.fix_stale_urls(msg), msg)
+
+    def test_old_equals_new_unchanged(self):
+        msg = (
+            "limux: 0.1.19 -> 0.1.19\n\n"
+            "Changelog: https://github.com/am-will/limux/releases/tag/v0.1.19"
+        )
+        self.assertEqual(changelog.fix_stale_urls(msg), msg)
+
+
 if __name__ == "__main__":
     unittest.main()

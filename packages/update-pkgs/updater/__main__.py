@@ -81,7 +81,11 @@ def process_group(
         if staged.returncode == 0:
             print(f":: {pkg.name} - no update")
             continue
-        messages.append(result.message or f"update {pkg.name}")
+        messages.append(
+            changelog.fix_stale_urls(result.message)
+            if result.message
+            else f"update {pkg.name}"
+        )
 
     if not messages:
         return

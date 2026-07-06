@@ -11,7 +11,25 @@ import urllib.request
 _COMPARE = re.compile(
     r"https://github\.com/([^/\s]+)/([^/\s]+)/compare/(\S+?)\.\.\.(\S+)"
 )
+_TITLE = re.compile(r"^\S+: (\S+) -> (\S+)$")
 _cache: dict[tuple[str, str, str], str | None] = {}
+
+
+def fix_stale_urls(message: str) -> str:
+    # nix-update evaluates meta.changelog before bumping the version, so a
+    # version-templated changelog URL still points at the old release.
+    # Rewrite old -> new version on Changelog: lines only; Diff: URLs are
+    # computed post-fetch by nix-update and already correct.
+    title = _TITLE.match(message.splitlines()[0])
+    if not title:
+        return message
+    old, new = title.groups()
+    if old == new:
+        return message
+    return "\n".join(
+        line.replace(old, new) if line.startswith("Changelog:") else line
+        for line in message.splitlines()
+    )
 
 
 def _release_body(owner: str, repo: str, tag: str) -> str | None:
