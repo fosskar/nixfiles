@@ -8,20 +8,20 @@
   nix-update-script,
 }:
 let
-  version = "0.8.4";
+  version = "0.8.5";
 
   src = fetchFromGitHub {
     owner = "Noooste";
     repo = "garage-ui";
     tag = "v${version}";
-    hash = "sha256-pRD/uFoKGfKJOxkmx+DXGb+p0+z6oXZVCzpejzlJpxA=";
+    hash = "sha256-P95Kk8qgqa5wQlbwoKPPgOyRFmFxYLei4KvHf6e9Dk0=";
   };
 
   frontend = buildNpmPackage {
     pname = "garage-ui-frontend";
     inherit version src;
     sourceRoot = "${src.name}/frontend";
-    npmDepsHash = "sha256-ywrT4d8fvSeHTsggTa9599Mg8zshnLv+NDXZ6mRIGRk=";
+    npmDepsHash = "sha256-qx7DRfjCDhtamf9NcKda4PtGsN+qNKUcTQZwZRiVMts=";
     installPhase = ''
       runHook preInstall
       cp -r dist $out
@@ -62,7 +62,17 @@ buildGoModule (finalAttrs: {
     wrapProgram $out/bin/garage-ui --chdir $out/share/garage-ui
   '';
 
-  passthru.updateScript = nix-update-script { };
+  passthru = {
+    inherit frontend;
+    # --subpackage updates the frontend npmDepsHash, which nix-update
+    # otherwise never touches (nested buildNpmPackage in a let binding).
+    updateScript = nix-update-script {
+      extraArgs = [
+        "--subpackage"
+        "frontend"
+      ];
+    };
+  };
 
   meta = {
     description = "Garage admin UI with OIDC and team access control";

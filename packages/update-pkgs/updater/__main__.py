@@ -93,6 +93,22 @@ def process_group(
         print(f":: {group} - dry-run, not pushing\n{message}\n")
         return
 
+    # The effect clone is `--depth 1` of main only, so the remote-tracking
+    # ref for a leftover update branch (unmerged PR) is absent: the
+    # up-to-date check below would be skipped and --force-with-lease would
+    # reject with "stale info" for lack of a lease. Fetch it explicitly;
+    # missing branch (first push) is fine.
+    run(
+        repo=repo,
+        cmd=[
+            "git",
+            "fetch",
+            "origin",
+            f"+refs/heads/{branch}:refs/remotes/origin/{branch}",
+        ],
+        check=False,
+    )
+
     # The branch is recreated each run, so the commit hash always differs;
     # compare trees against the remote branch to avoid a nightly force-push
     # (and CI rerun) when nothing changed.
