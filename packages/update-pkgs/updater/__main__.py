@@ -184,6 +184,10 @@ def main() -> int:
             print(f"{pkg.name}\t{pkg.method}")
         return 0
 
+    # process_group hard-resets the tree per group; refuse to eat local work.
+    if capture(repo=repo, cmd=["git", "status", "--porcelain"]).stdout.strip():
+        sys.exit("working tree is dirty; commit or stash first")
+
     run(repo=repo, cmd=["git", "fetch", "origin", BASE])
 
     forge: Codeberg | None = None
