@@ -44,6 +44,10 @@ python3.pkgs.buildPythonApplication {
     runHook postInstall
   '';
 
+  # buildPythonApplication injects a default nix-update updateScript;
+  # this package is local-only (path src, no fetcher) and cannot be updated.
+  passthru.updateScript = null;
+
   meta = {
     description = "update packages/ third-party sources and open one Codeberg PR per group";
     mainProgram = "update-pkgs";

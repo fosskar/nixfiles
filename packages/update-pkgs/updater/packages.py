@@ -1,10 +1,9 @@
-"""Discover and update packages/<name>: updateScript -> nix-update,
+"""Discover and update packages/<name>: updateScript attr -> nix-update,
 executable update.sh -> run it, neither -> skipped."""
 
 from __future__ import annotations
 
 import json
-import re
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -39,19 +38,34 @@ def capture(
     return subprocess.run(cmd, cwd=repo, capture_output=True, text=True, check=check)
 
 
+def _nix_update_args(repo: Path, name: str) -> list[str] | None:
+    # Probe the flake attr instead of grepping package.nix: updateScript
+    # may be defined in another file (brave-origin's make-brave.nix).
+    # Only the nix-update-script list form is usable here; a path form
+    # (updateScript = ./update.sh) is handled by the update.sh fallback.
+    result = capture(
+        repo=repo,
+        cmd=["nix", "eval", f".#{name}.updateScript", "--json"],
+        check=False,
+    )
+    if result.returncode != 0:
+        return None
+    value = json.loads(result.stdout)
+    return value if isinstance(value, list) else None
+
+
 def discover(repo: Path) -> list[Package]:
     packages: list[Package] = []
     for pkg_dir in sorted((repo / "packages").iterdir()):
         if not pkg_dir.is_dir():
             continue
-        package_nix = pkg_dir / "package.nix"
         update_sh = pkg_dir / "update.sh"
-        if package_nix.exists() and re.search(
-            r"\bupdateScript\s*=", package_nix.read_text()
-        ):
+        if _nix_update_args(repo, pkg_dir.name) is not None:
             packages.append(Package(pkg_dir.name, "nix-update", pkg_dir))
         elif update_sh.exists() and update_sh.stat().st_mode & 0o111:
             packages.append(Package(pkg_dir.name, "script", pkg_dir))
+        else:
+            print(f":: {pkg_dir.name} - no usable updateScript or update.sh, skipping")
     return packages
 
 
@@ -69,12 +83,11 @@ def _git_touched(repo: Path, rel: str) -> bool:
 
 
 def _update_script_args(repo: Path, name: str) -> list[str]:
-    result = capture(repo=repo, cmd=["nix", "eval", "--json", f".#{name}.updateScript"])
-    value = json.loads(result.stdout)
-    if not isinstance(value, list):
-        msg = f"{name}: updateScript is not a list; unsupported form: {value!r}"
+    args = _nix_update_args(repo, name)
+    if args is None:
+        msg = f"{name}: updateScript vanished or changed shape since discovery"
         raise RuntimeError(msg)
-    return value
+    return args
 
 
 def _is_nix_update(arg: str) -> bool:
