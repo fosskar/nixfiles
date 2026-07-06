@@ -1,7 +1,7 @@
 { inputs, self, ... }:
 let
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-  updater = self.packages.x86_64-linux.update-pkgs;
+  updater = self.packages.x86_64-linux.updater;
 
   forgeHost = "codeberg.org";
   repo = "fosskar/nixfiles";
@@ -28,13 +28,14 @@ let
       }
       ''
         set -euo pipefail
-        export NIX_CONFIG="experimental-features = nix-command flakes"
-
         token=$(jq -re '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
         export FORGE_TOKEN="$token"
-        # authenticates github API calls (nix-update reads GITHUB_TOKEN).
+        # nix-update and changelog enrichment read GITHUB_TOKEN for their
+        # direct github API calls; nix itself only honors access-tokens.
         github_token=$(jq -re '.github.data.token' "$HERCULES_CI_SECRETS_JSON")
         export GITHUB_TOKEN="$github_token"
+        export NIX_CONFIG="experimental-features = nix-command flakes
+        access-tokens = github.com=$github_token"
 
         git config --global user.name nixbot
         git config --global user.email nixbot@nx3.eu
@@ -88,45 +89,31 @@ let
 in
 {
   flake.effects = _args: {
+    onSchedule.renovate = {
+      when = {
+        hour = 1;
+        minute = 0;
+      };
+      outputs.effects.renovate = renovate;
+    };
+
     onSchedule.update-pkgs = {
       when = {
         hour = 2;
         minute = 0;
       };
       outputs.effects.update-pkgs = mkRepoEffect "update-pkgs" ''
-        # stream updater output to the live effect log instead of buffering it
-        PYTHONUNBUFFERED=1 ${updater}/bin/update-pkgs
+        ${updater}/bin/updater-packages
       '';
     };
-    onSchedule.renovate = {
-      when = {
-        hour = [
-          0
-          12
-        ];
-        minute = 0;
-      };
-      outputs.effects.renovate = renovate;
-    };
+
     onSchedule.update-flake-inputs = {
       when = {
         hour = 4;
         minute = 0;
       };
       outputs.effects.update-flake-inputs = mkRepoEffect "update-flake-inputs" ''
-        export GITEA_TOKEN="$token"
-        export NIX_CONFIG="$NIX_CONFIG
-        access-tokens = github.com=$GITHUB_TOKEN"
-
-        nix run "github:Mic92/update-flake-inputs-gitea" -- \
-          --gitea-url "https://${forgeHost}" \
-          --gitea-repository "${repo}" \
-          --base-branch "main" \
-          --git-author-name "nixbot" \
-          --git-author-email "nixbot@noreply.codeberg.org" \
-          --git-committer-name "nixbot" \
-          --git-committer-email "nixbot@noreply.codeberg.org" \
-          --auto-merge
+        ${updater}/bin/updater-flake-inputs
       '';
     };
   };

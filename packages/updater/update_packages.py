@@ -12,20 +12,9 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import changelog  # noqa: E402
-from forge import Codeberg  # noqa: E402
+import pipeline  # noqa: E402
 
-from packages import Package, capture, discover, run, update  # noqa: E402
-
-OWNER = "fosskar"
-REPO = "nixfiles"
-BASE = "main"
-
-
-def read_token() -> str:
-    token = os.environ.get("FORGE_TOKEN") or os.environ.get("CODEBERG_TOKEN")
-    if not token:
-        sys.exit("no token: set FORGE_TOKEN (or CODEBERG_TOKEN)")
-    return token
+from packages import Package, discover, run, update  # noqa: E402
 
 
 def group_packages(packages: list[Package]) -> dict[str, list[Package]]:
@@ -49,12 +38,16 @@ def commit_message(group: str, messages: list[str]) -> str:
 
 
 def process_group(
-    repo: Path, group: str, pkgs: list[Package], forge: Codeberg | None, prs: list[dict]
+    repo: Path,
+    group: str,
+    pkgs: list[Package],
+    forge: pipeline.Codeberg | None,
+    prs: list[dict],
 ) -> None:
     branch = f"update-package-{group}"
     run(repo=repo, cmd=["git", "reset", "--hard"])
     run(repo=repo, cmd=["git", "clean", "-fd"])
-    run(repo=repo, cmd=["git", "switch", "-C", branch, f"origin/{BASE}"])
+    run(repo=repo, cmd=["git", "switch", "-C", branch, f"origin/{pipeline.BASE}"])
 
     messages: list[str] = []
     for pkg in pkgs:
@@ -92,71 +85,7 @@ def process_group(
 
     message = commit_message(group, messages)
     run(repo=repo, cmd=["git", "commit", "-m", message])
-
-    if forge is None:
-        print(f":: {group} - dry-run, not pushing\n{message}\n")
-        return
-
-    # The effect clone is `--depth 1` of main only, so the remote-tracking
-    # ref for a leftover update branch (unmerged PR) is absent: the
-    # up-to-date check below would be skipped and --force-with-lease would
-    # reject with "stale info" for lack of a lease. Fetch it explicitly;
-    # missing branch (first push) is fine.
-    run(
-        repo=repo,
-        cmd=[
-            "git",
-            "fetch",
-            "origin",
-            f"+refs/heads/{branch}:refs/remotes/origin/{branch}",
-        ],
-        check=False,
-    )
-
-    # The branch is recreated each run, so the commit hash always differs;
-    # compare trees against the remote branch to avoid a nightly force-push
-    # (and CI rerun) when nothing changed.
-    remote = capture(
-        repo=repo,
-        cmd=["git", "rev-parse", "--verify", "--quiet", f"origin/{branch}"],
-        check=False,
-    )
-    if (
-        remote.returncode == 0
-        and run(
-            repo=repo,
-            cmd=["git", "diff", "--quiet", f"origin/{branch}", "HEAD"],
-            check=False,
-        ).returncode
-        == 0
-    ):
-        print(f":: {group} - remote branch up to date, skipping push")
-        # existing PR whose checks finished before automerge was scheduled
-        # (green race) is stuck forever; one targeted attempt unsticks it.
-        existing = next((p for p in prs if p["head"]["ref"] == branch), None)
-        if existing is not None:
-            forge.merge_if_green(existing["number"])
-        return
-
-    run(repo=repo, cmd=["git", "push", "--force-with-lease", "origin", branch])
-
-    title, _, rest = message.partition("\n\n")
-    # rest is empty for single-package groups; keep the full message
-    # so the PR body is not blank.
-    body = changelog.enrich(rest or message)
-
-    existing = next(
-        (p for p in prs if p["head"]["ref"] == branch and p["base"]["ref"] == BASE),
-        None,
-    )
-    if existing is None:
-        pr = forge.create_pull(title=title, head=branch, base=BASE, body=body)
-        prs.append(pr)
-        index = pr["number"]
-    else:
-        index = existing["number"]
-        forge.update_pull(index, title=title, body=body)
-    forge.enable_automerge(index)
+    pipeline.publish(repo, branch, message, forge, prs)
 
 
 def main() -> int:
@@ -184,17 +113,7 @@ def main() -> int:
             print(f"{pkg.name}\t{pkg.method}")
         return 0
 
-    # process_group hard-resets the tree per group; refuse to eat local work.
-    if capture(repo=repo, cmd=["git", "status", "--porcelain"]).stdout.strip():
-        sys.exit("working tree is dirty; commit or stash first")
-
-    run(repo=repo, cmd=["git", "fetch", "origin", BASE])
-
-    forge: Codeberg | None = None
-    prs: list[dict] = []
-    if not args.dry_run:
-        forge = Codeberg(OWNER, REPO, read_token())
-        prs = forge.open_pulls()
+    forge, prs = pipeline.connect(repo, dry_run=args.dry_run)
 
     # Isolate each group: one failing package/group must not abort the
     # rest of the run. All groups are attempted; a failure still fails the
