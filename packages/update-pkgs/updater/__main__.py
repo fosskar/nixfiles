@@ -131,6 +131,11 @@ def process_group(
         == 0
     ):
         print(f":: {group} - remote branch up to date, skipping push")
+        # existing PR whose checks finished before automerge was scheduled
+        # (green race) is stuck forever; one targeted attempt unsticks it.
+        existing = next((p for p in prs if p["head"]["ref"] == branch), None)
+        if existing is not None:
+            forge.merge_if_green(existing["number"])
         return
 
     run(repo=repo, cmd=["git", "push", "--force-with-lease", "origin", branch])

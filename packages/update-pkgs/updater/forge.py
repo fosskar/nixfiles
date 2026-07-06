@@ -70,6 +70,22 @@ class Codeberg:
             "PATCH", f"{self.api}/pulls/{index}", {"title": title, "body": body}
         )
 
+    def merge_if_green(self, index: int) -> None:
+        # Forgejo automerge only fires on a *future* status event; checks
+        # that finished before enable_automerge (fast CI, rate-limit backoff
+        # delaying the schedule call) leave the PR scheduled forever. main is
+        # protected (required status: nixbot/nix-build), so this fails
+        # harmlessly while checks are pending and succeeds once green.
+        try:
+            self._request(
+                "POST",
+                f"{self.api}/pulls/{index}/merge",
+                {"Do": "squash", "delete_branch_after_merge": True},
+            )
+            print(f":: PR {index} - checks already green, merged directly")
+        except ForgeError:
+            pass
+
     def enable_automerge(self, index: int) -> None:
         try:
             self._request(
