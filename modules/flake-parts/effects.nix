@@ -100,7 +100,10 @@ in
     };
     onSchedule.renovate = {
       when = {
-        hour = 1;
+        hour = [
+          0
+          12
+        ];
         minute = 0;
       };
       outputs.effects.renovate = renovate;
