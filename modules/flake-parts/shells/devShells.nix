@@ -28,6 +28,7 @@ _: {
             export name="${defaultShellName}"
           '';
           packages = [
+            inputs'.nixbot.packages.nixbot-effects
             pkgs.hcloud
             pkgs.radicle-node
           ]
