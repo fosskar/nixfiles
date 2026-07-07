@@ -192,12 +192,12 @@ minisforum ms-a2 at `192.168.20.210` (ryzen 9 9955hx 16c/32t, 96gb ddr5)
 
 ### ci/cd
 
-| service | port | domain            | notes                   |
-| ------- | ---- | ----------------- | ----------------------- |
-| nixbot  | 8010 | nixbot.fosskar.eu | ci via nixbot, codeberg |
+| service | port | domain            | notes                 |
+| ------- | ---- | ----------------- | --------------------- |
+| nixbot  | 8010 | nixbot.fosskar.eu | ci via nixbot, github |
 
 nixbot evaluates `.#checks` on push/PR: all nixos machines, packages, devshells.
-forgejo workflow runs nightly to create per-input flake update PRs.
+scheduled nixbot effects create per-input flake update PRs nightly.
 
 ### nix infrastructure
 

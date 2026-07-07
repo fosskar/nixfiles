@@ -437,11 +437,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1783423692,
-        "narHash": "sha256-r+xSiGty4eyVnJwTD+r03sqPCv+kd5FQwZQXdrYIgrY=",
+        "lastModified": 1783454672,
+        "narHash": "sha256-CyvUdZFUlAZUowFWh4ZnOpxqN5WVgtDkPHyNquUGvP4=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "b899ffd1ea846753b2fa9a28fe76b28191a45e90",
+        "rev": "ee66ff27909607c75ad30d5eb1a4e2d944ed6a27",
         "type": "github"
       },
       "original": {
@@ -469,11 +469,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783388784,
-        "narHash": "sha256-w+YU5vatysjLZIg1wOKSzo/RL9Z66eBQuIjVnBM/1Zg=",
+        "lastModified": 1783436070,
+        "narHash": "sha256-F80z1JoiJgZyTT5D+3siLOVzqmCEphLR7t0Ym/I2CLI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "63d02d1c19f1c2b47a5bc7e55c620b6af7b218a6",
+        "rev": "f09af49406ffad37acb6538d3207189a1a1e0b7e",
         "type": "github"
       },
       "original": {
@@ -604,11 +604,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783423685,
-        "narHash": "sha256-eVOeGKvh29fYjUlw5lTnI1S8TXRHA0GoDCiW0KAruM0=",
+        "lastModified": 1783454762,
+        "narHash": "sha256-YdYJmutobkeCTgiJVo5QsuQvZYgch3Wmw0ihk3Lkl58=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "332268da404240dcd7b2f1304ad95d56474f877f",
+        "rev": "3cd6e3663ea9238e1d3d06db8fc540b5c3e1b059",
         "type": "github"
       },
       "original": {
@@ -945,11 +945,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783398147,
-        "narHash": "sha256-D4Rug29rQuvFey2BHuOb/haBfLd/8i7CrmmavbytARE=",
+        "lastModified": 1783434244,
+        "narHash": "sha256-htyNZPgi5ZfT8CpALQ7MpwU2odWNL/jifoQQ/S4WVQ4=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "831c513f1ea0396ed4671b8d4704c0ed6bab83f4",
+        "rev": "b57faefe739b69a07199763eb98e85102c402d0b",
         "type": "github"
       },
       "original": {
@@ -965,11 +965,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783267606,
-        "narHash": "sha256-GhnfGnxzD1Fp1sbY0I2b9gNIBT298dw8ijk5s5ffZIo=",
+        "lastModified": 1783448862,
+        "narHash": "sha256-/6QHGF8qB7Khc3fYj9J7nnhKjrmRnv5GtilKXNQKd70=",
         "owner": "noctalia-dev",
         "repo": "noctalia-greeter",
-        "rev": "48fc6d22b54efd62df83e3d1266feb89c291115a",
+        "rev": "a8941defe8950062ec3f8189dccd7332f865a9a6",
         "type": "github"
       },
       "original": {
@@ -1329,18 +1329,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1783407956,
-        "narHash": "sha256-8RhxUzUuTWmyjVzXCVX6gMgSPmpvyEN/KkvAPtSNCec=",
+        "lastModified": 1783452957,
+        "narHash": "sha256-HokfW+iMdrsqjvBSyx1GqHnE0rdzTFa4Vwnaqt38wkI=",
         "ref": "refs/heads/main",
-        "rev": "f7603539a28c4e6353a97ed44d370c57e243d6df",
+        "rev": "8cb88e18421bdb4caae14933fa2536d45d028a4c",
         "shallow": true,
         "type": "git",
-        "url": "https://codeberg.org/fosskar/ssync"
+        "url": "https://github.com/fosskar/ssync"
       },
       "original": {
         "shallow": true,
         "type": "git",
-        "url": "https://codeberg.org/fosskar/ssync"
+        "url": "https://github.com/fosskar/ssync"
       }
     },
     "systems": {
@@ -1477,18 +1477,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1783439652,
-        "narHash": "sha256-4HYITe1NEh7ARaxUDL8crfD6djphyNTbNyb9t/k4/8A=",
+        "lastModified": 1783453106,
+        "narHash": "sha256-mdxuU7DMvLlw8mzTkmwSUqFBcxSNY0zgQPeYtNjQPa4=",
         "ref": "refs/heads/main",
-        "rev": "819527f44fe2c6661ce9aba07c11c7b791670504",
+        "rev": "3d901d6da7d7ca90afa8458e607a225c8cfd1aad",
         "shallow": true,
         "type": "git",
-        "url": "https://codeberg.org/fosskar/wiki.git"
+        "url": "https://github.com/fosskar/wiki.git"
       },
       "original": {
         "shallow": true,
         "type": "git",
-        "url": "https://codeberg.org/fosskar/wiki.git"
+        "url": "https://github.com/fosskar/wiki.git"
       }
     },
     "xwayland-satellite-unstable": {

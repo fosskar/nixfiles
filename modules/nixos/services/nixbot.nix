@@ -56,15 +56,6 @@
           '';
         };
 
-        clan.core.vars.generators.nixbot-github = {
-          files."token" = { };
-          prompts.token.description = "github PAT (no scopes) for the update-pkgs effect";
-          script = ''
-            ${pkgs.jq}/bin/jq -n --arg token "$(cat "$prompts/token")" \
-              '{ "github-api": { condition: "isDefaultBranch", data: { token: $token } } }' \
-              >"$out/token"
-          '';
-        };
         clan.core.vars.generators.nixbot-github-app = {
           files."private-key.pem" = { };
           files."oauth-secret" = { };
@@ -85,9 +76,6 @@
           useHTTPS = true;
           domain = publicHost;
 
-          effects.perRepoSecretFiles."gitea:fosskar/*" =
-            config.clan.core.vars.generators.nixbot-github.files."token".path;
-
           admins = [
             "gitea:fosskar"
             "github:fosskar"
@@ -107,9 +95,8 @@
           };
 
           gitea = {
-            enable = true;
+            enable = false;
             instanceUrl = "https://codeberg.org";
-            topic = "build-with-nixbot";
             tokenFile = config.clan.core.vars.generators.nixbot-codeberg.files."token".path;
             oauthSecretFile = config.clan.core.vars.generators.nixbot-codeberg.files."oauth-secret".path;
             oauthId = "a7b24f2c-1291-4566-970c-d39b869f0a35";

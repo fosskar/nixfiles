@@ -170,13 +170,13 @@
     tangled.inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";
 
     ssync = {
-      url = "git+https://codeberg.org/fosskar/ssync?shallow=1";
+      url = "git+https://github.com/fosskar/ssync?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     wiki = {
-      url = "git+https://codeberg.org/fosskar/wiki.git?shallow=1";
+      url = "git+https://github.com/fosskar/wiki.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
