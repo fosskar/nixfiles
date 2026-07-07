@@ -137,7 +137,7 @@ ssh root@<ip>
 
 ## service exposure
 
-Services declare dashboard, health check, and reverse proxy with default options. No custom registry option. Cross-host collectors pull remote `serviceGroups`/gatus `endpoints` into homepage/gatus host.
+Services declare dashboard, health check, and reverse proxy with default options. No custom registry option (a `nixfiles.webServices` abstraction was tried and rejected 2026-07: per-module hand-written stanzas preferred over option indirection — do not re-suggest). Cross-host collectors pull remote `serviceGroups`/gatus `endpoints` into homepage/gatus host.
 
 Dashboard:
 
