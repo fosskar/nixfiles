@@ -8,6 +8,10 @@ import urllib.error
 import urllib.request
 from typing import Any
 
+# sleeps *between* attempts (attempts = len + 1); codeberg's rate-limit
+# window is undocumented and its 429s carry no Retry-After, so geometric
+# growth probes short burst limits cheaply and still outlasts a
+# minutes-scale bucket (185s cumulative before the final attempt).
 _BACKOFF = (5, 15, 45, 120)
 
 
@@ -27,7 +31,7 @@ class Codeberg:
     ) -> Any:
         data = json.dumps(body).encode() if body is not None else None
         last_status: int | None = None
-        for delay in _BACKOFF:
+        for delay in (*_BACKOFF, None):
             req = urllib.request.Request(url, data=data, method=method)
             req.add_header("Authorization", f"token {self._token}")
             if data is not None:
@@ -37,7 +41,7 @@ class Codeberg:
                     raw = resp.read()
                     return json.loads(raw) if raw else None
             except urllib.error.HTTPError as e:
-                if e.code == 429:
+                if e.code == 429 and delay is not None:
                     last_status = e.code
                     retry_after = e.headers.get("Retry-After")
                     wait = (
@@ -48,10 +52,15 @@ class Codeberg:
                     print(f":: rate limited ({method} {url}), sleeping {wait}s")
                     time.sleep(wait)
                     continue
+                if e.code == 429:
+                    last_status = e.code
+                    break
                 detail = e.read().decode(errors="replace")
                 msg = f"{method} {url} -> {e.code}: {detail}"
                 raise ForgeError(msg, status=e.code) from e
             except urllib.error.URLError as e:
+                if delay is None:
+                    break
                 print(f":: request error ({method} {url}): {e}; retrying in {delay}s")
                 time.sleep(delay)
         msg = f"retries exhausted: {method} {url}"
