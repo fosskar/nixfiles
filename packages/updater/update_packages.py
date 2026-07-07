@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update packages/ sources and open one Codeberg PR per group."""
+"""Update packages/ sources and open one forge PR per group."""
 
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def process_group(  # noqa: PLR0913
     repo: Path,
     group: str,
     pkgs: list[Package],
-    forge: pipeline.Codeberg | None,
+    forge: pipeline.Forge | None,
     prs: list[dict],
 ) -> int | None:
     branch = f"update-package-{group}"

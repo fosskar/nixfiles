@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 import changelog
-from forge import Codeberg
+from forge import Codeberg, Forge, Github
 
 from packages import capture, run
 
@@ -50,7 +50,7 @@ def default_branch(repo: Path) -> str:
     return "main"
 
 
-def connect(repo: Path, *, dry_run: bool) -> tuple[Codeberg | None, list[dict]]:
+def connect(repo: Path, *, dry_run: bool) -> tuple[Forge | None, list[dict]]:
     global BASE  # noqa: PLW0603 - resolved once per run, read by entrypoints
     # Callers hard-reset the tree per unit; refuse to eat local work.
     if capture(repo=repo, cmd=["git", "status", "--porcelain"]).stdout.strip():
@@ -61,7 +61,8 @@ def connect(repo: Path, *, dry_run: bool) -> tuple[Codeberg | None, list[dict]]:
         return None, []
     origin = capture(repo=repo, cmd=["git", "remote", "get-url", "origin"])
     host, owner, name = parse_origin(origin.stdout.strip())
-    forge = Codeberg(host, owner, name, read_token())
+    cls = Github if host == "github.com" else Codeberg
+    forge = cls(host, owner, name, read_token())
     return forge, forge.open_pulls()
 
 
@@ -69,7 +70,7 @@ def publish(
     repo: Path,
     branch: str,
     message: str,
-    forge: Codeberg | None,
+    forge: Forge | None,
     prs: list[dict],
 ) -> int | None:
     """Push HEAD as `branch`, open/refresh its PR; returns the PR number."""
@@ -165,7 +166,7 @@ def publish(
     return index
 
 
-def sweep(forge: Codeberg | None, indexes: list[int]) -> None:
+def sweep(forge: Forge | None, indexes: list[int]) -> None:
     # Codeberg rate-limits the merge endpoint hard (observed Retry-After up
     # to 120s), so enable_automerge often lands only after CI went green -
     # and Forgejo automerge fires solely on a *future* status event, leaving

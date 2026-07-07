@@ -1,4 +1,4 @@
-"""Codeberg (Gitea) REST client; stdlib only, retries on rate limit."""
+"""Forge REST clients (Codeberg/Gitea, GitHub); stdlib only, retries on rate limit."""
 
 from __future__ import annotations
 
@@ -21,10 +21,16 @@ class ForgeError(Exception):
         self.status = status
 
 
-class Codeberg:
+class Forge:
+    """Shared request plumbing; subclasses define endpoints and auth."""
+
+    api: str
+
     def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
-        self.api = f"https://{host}/api/v1/repos/{owner}/{repo}"
         self._token = token
+
+    def _headers(self) -> dict[str, str]:
+        raise NotImplementedError
 
     def _request(
         self, method: str, url: str, body: dict[str, Any] | None = None
@@ -34,7 +40,8 @@ class Codeberg:
         attempts = len(_BACKOFF) + 1
         for attempt, delay in enumerate((*_BACKOFF, None), start=1):
             req = urllib.request.Request(url, data=data, method=method)
-            req.add_header("Authorization", f"token {self._token}")
+            for name, value in self._headers().items():
+                req.add_header(name, value)
             if data is not None:
                 req.add_header("Content-Type", "application/json")
             try:
@@ -71,9 +78,6 @@ class Codeberg:
         msg = f"retries exhausted: {method} {url}"
         raise ForgeError(msg, status=last_status)
 
-    def open_pulls(self) -> list[dict[str, Any]]:
-        return self._request("GET", f"{self.api}/pulls?state=open&limit=50") or []
-
     def create_pull(
         self, *, title: str, head: str, base: str, body: str
     ) -> dict[str, Any]:
@@ -87,6 +91,18 @@ class Codeberg:
         self._request(
             "PATCH", f"{self.api}/pulls/{index}", {"title": title, "body": body}
         )
+
+
+class Codeberg(Forge):
+    def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
+        super().__init__(host, owner, repo, token)
+        self.api = f"https://{host}/api/v1/repos/{owner}/{repo}"
+
+    def _headers(self) -> dict[str, str]:
+        return {"Authorization": f"token {self._token}"}
+
+    def open_pulls(self) -> list[dict[str, Any]]:
+        return self._request("GET", f"{self.api}/pulls?state=open&limit=50") or []
 
     def merge_if_green(self, index: int) -> None:
         # Forgejo automerge only fires on a *future* status event; checks
@@ -119,5 +135,60 @@ class Codeberg:
                     "delete_branch_after_merge": True,
                 },
             )
+        except ForgeError as e:
+            print(f":: automerge request queued or pending: {e}")
+
+
+class Github(Forge):
+    def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
+        super().__init__(host, owner, repo, token)
+        self.api = f"https://api.github.com/repos/{owner}/{repo}"
+
+    def _headers(self) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {self._token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+
+    def open_pulls(self) -> list[dict[str, Any]]:
+        return self._request("GET", f"{self.api}/pulls?state=open&per_page=50") or []
+
+    def merge_if_green(self, index: int) -> None:
+        # Same green-race unsticking as Codeberg. Branch deletion is not a
+        # merge parameter on GitHub; the repo's "automatically delete head
+        # branches" setting covers it.
+        try:
+            self._request(
+                "PUT", f"{self.api}/pulls/{index}/merge", {"merge_method": "squash"}
+            )
+            print(f":: PR {index} - checks already green, merged directly")
+        except ForgeError as e:
+            # 405 = not mergeable (yet), 409 = head moved during the attempt;
+            # both are expected when racing CI and covered by the next run.
+            if e.status not in (405, 409):
+                print(f":: PR {index} - merge attempt failed: {e}")
+
+    def enable_automerge(self, index: int) -> None:
+        # REST cannot enable automerge; the GraphQL mutation needs the PR
+        # node id and the repo setting "allow auto-merge". Failure is
+        # tolerable either way: sweep/next run merges green PRs directly.
+        try:
+            node_id = self._request("GET", f"{self.api}/pulls/{index}")["node_id"]
+            result = self._request(
+                "POST",
+                "https://api.github.com/graphql",
+                {
+                    "query": (
+                        "mutation($id: ID!) { enablePullRequestAutoMerge("
+                        "input: {pullRequestId: $id, mergeMethod: SQUASH})"
+                        " { clientMutationId } }"
+                    ),
+                    "variables": {"id": node_id},
+                },
+            )
+            errors = (result or {}).get("errors")
+            if errors:
+                print(f":: automerge request queued or pending: {errors[0]['message']}")
         except ForgeError as e:
             print(f":: automerge request queued or pending: {e}")

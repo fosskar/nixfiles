@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update flake inputs across all flake.nix files, one Codeberg PR per input."""
+"""Update flake inputs across all flake.nix files, one forge PR per input."""
 
 from __future__ import annotations
 
@@ -93,7 +93,7 @@ def commit_message(inp: FlakeInput, old: dict | None, new: dict | None) -> str:
 
 
 def process_input(
-    repo: Path, inp: FlakeInput, forge: pipeline.Codeberg | None, prs: list[dict]
+    repo: Path, inp: FlakeInput, forge: pipeline.Forge | None, prs: list[dict]
 ) -> int | None:
     run(repo=repo, cmd=["git", "reset", "--hard"])
     run(repo=repo, cmd=["git", "clean", "-fd"])

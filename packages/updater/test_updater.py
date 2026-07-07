@@ -16,7 +16,7 @@ from unittest import mock
 import changelog
 import pipeline
 import update_flake_inputs  # noqa: E402
-from forge import Codeberg, ForgeError
+from forge import Codeberg, ForgeError, Github
 from update_flake_inputs import FlakeInput
 from update_packages import commit_message, group_packages  # noqa: E402
 
@@ -373,6 +373,137 @@ class TestRateLimitDeferral(unittest.TestCase):
 
     def test_other_status_still_fails(self):
         self.assertEqual(self._main(ForgeError("boom", status=None)), 1)
+
+
+class TestGithubRequestShape(unittest.TestCase):
+    """merge_if_green must emit the exact GitHub REST merge request."""
+
+    def test_merge_request_method_url_auth_body(self):
+        gh = Github("github.com", "owner", "repo", "tok")
+        urlopen = mock.MagicMock()
+        urlopen.return_value.__enter__.return_value.read.return_value = b""
+        with (
+            mock.patch("forge.urllib.request.urlopen", urlopen),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            gh.merge_if_green(7)
+        req = urlopen.call_args[0][0]
+        self.assertEqual(req.get_method(), "PUT")
+        self.assertEqual(
+            req.full_url, "https://api.github.com/repos/owner/repo/pulls/7/merge"
+        )
+        self.assertEqual(req.get_header("Authorization"), "Bearer tok")
+        self.assertEqual(req.get_header("Accept"), "application/vnd.github+json")
+        self.assertEqual(json.loads(req.data), {"merge_method": "squash"})
+
+
+class TestGithubMergeIfGreen(unittest.TestCase):
+    """405/409 are expected races and stay silent; other failures print."""
+
+    def _merge(self, exc: Exception | None) -> str:
+        gh = Github("github.com", "o", "r", "tok")
+        urlopen = mock.MagicMock()
+        if exc is not None:
+            urlopen.side_effect = exc
+        else:
+            urlopen.return_value.__enter__.return_value.read.return_value = b""
+        out = io.StringIO()
+        with (
+            mock.patch("forge._BACKOFF", (0,)),
+            mock.patch("forge.time.sleep"),
+            mock.patch("forge.urllib.request.urlopen", urlopen),
+            contextlib.redirect_stdout(out),
+        ):
+            gh.merge_if_green(7)
+        return out.getvalue()
+
+    @staticmethod
+    def _http_error(code: int) -> urllib.error.HTTPError:
+        return urllib.error.HTTPError(
+            "https://api.github.com/x",
+            code,
+            "err",
+            email.message.Message(),
+            io.BytesIO(b"detail"),
+        )
+
+    def test_405_silent(self):
+        self.assertEqual(self._merge(self._http_error(405)), "")
+
+    def test_409_silent(self):
+        self.assertEqual(self._merge(self._http_error(409)), "")
+
+    def test_other_status_prints_but_does_not_raise(self):
+        self.assertIn("merge attempt failed", self._merge(self._http_error(403)))
+
+    def test_success_prints_merged(self):
+        self.assertIn("merged directly", self._merge(None))
+
+
+class TestGithubEnableAutomerge(unittest.TestCase):
+    """Automerge goes through GraphQL with the PR node id; never raises."""
+
+    def _gh(self, side_effect) -> tuple[Github, mock.Mock, str]:
+        gh = Github("github.com", "o", "r", "tok")
+        gh._request = mock.Mock(side_effect=side_effect)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            gh.enable_automerge(7)
+        return gh, gh._request, out.getvalue()
+
+    def test_graphql_mutation_carries_node_id(self):
+        _, request, out = self._gh(
+            [{"node_id": "PR_X"}, {"data": {"enablePullRequestAutoMerge": {}}}]
+        )
+        self.assertEqual(
+            request.call_args_list[0],
+            mock.call("GET", "https://api.github.com/repos/o/r/pulls/7"),
+        )
+        method, url, body = request.call_args_list[1][0]
+        self.assertEqual((method, url), ("POST", "https://api.github.com/graphql"))
+        self.assertEqual(body["variables"], {"id": "PR_X"})
+        self.assertIn("enablePullRequestAutoMerge", body["query"])
+        self.assertEqual(out, "")
+
+    def test_graphql_errors_print_not_raise(self):
+        _, _, out = self._gh(
+            [{"node_id": "PR_X"}, {"errors": [{"message": "not allowed"}]}]
+        )
+        self.assertIn("not allowed", out)
+
+    def test_forge_error_prints_not_raise(self):
+        _, _, out = self._gh(ForgeError("boom", status=422))
+        self.assertIn("boom", out)
+
+
+class TestConnectDispatch(unittest.TestCase):
+    """connect picks Github for github.com origins, Codeberg otherwise."""
+
+    def _connect(self, url: str) -> object:
+        def fake_capture(*, repo, cmd, check=True):
+            if "status" in cmd:
+                return SimpleNamespace(returncode=0, stdout="")
+            if "get-url" in cmd:
+                return SimpleNamespace(returncode=0, stdout=url + "\n")
+            raise AssertionError(f"unexpected capture: {cmd}")
+
+        with (
+            mock.patch("pipeline.capture", side_effect=fake_capture),
+            mock.patch("pipeline.run"),
+            mock.patch("pipeline.default_branch", return_value="main"),
+            mock.patch("pipeline.read_token", return_value="tok"),
+            mock.patch.object(Github, "open_pulls", return_value=[]),
+            mock.patch.object(Codeberg, "open_pulls", return_value=[]),
+        ):
+            forge, prs = pipeline.connect(Path("/repo"), dry_run=False)
+        self.assertEqual(prs, [])
+        return forge
+
+    def test_github_host(self):
+        self.assertIsInstance(self._connect("https://github.com/o/r.git"), Github)
+
+    def test_codeberg_host(self):
+        self.assertIsInstance(self._connect("https://codeberg.org/o/r.git"), Codeberg)
 
 
 if __name__ == "__main__":
