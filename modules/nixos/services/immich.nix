@@ -130,7 +130,7 @@
 
         settings = {
           server = {
-            externalDomain = "https://${localHost}";
+            externalDomain = "https://${publicHost}";
             loginPageMessage = "henlo";
           };
           newVersionCheck.enabled = false;
