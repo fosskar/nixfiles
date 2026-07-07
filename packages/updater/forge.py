@@ -31,7 +31,8 @@ class Codeberg:
     ) -> Any:
         data = json.dumps(body).encode() if body is not None else None
         last_status: int | None = None
-        for delay in (*_BACKOFF, None):
+        attempts = len(_BACKOFF) + 1
+        for attempt, delay in enumerate((*_BACKOFF, None), start=1):
             req = urllib.request.Request(url, data=data, method=method)
             req.add_header("Authorization", f"token {self._token}")
             if data is not None:
@@ -49,11 +50,15 @@ class Codeberg:
                         if retry_after and retry_after.isdigit()
                         else delay
                     )
-                    print(f":: rate limited ({method} {url}), sleeping {wait}s")
+                    print(
+                        f":: rate limited (attempt {attempt}/{attempts}, "
+                        f"{method} {url}), sleeping {wait}s"
+                    )
                     time.sleep(wait)
                     continue
                 if e.code == 429:
                     last_status = e.code
+                    print(f":: rate limited (final attempt {attempt}/{attempts})")
                     break
                 detail = e.read().decode(errors="replace")
                 msg = f"{method} {url} -> {e.code}: {detail}"
