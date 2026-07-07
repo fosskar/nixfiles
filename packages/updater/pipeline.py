@@ -94,7 +94,22 @@ def publish(
             forge.merge_if_green(existing["number"])
         return None
 
-    run(repo=repo, cmd=["git", "push", "--force-with-lease", "origin", branch])
+    # Explicit lease value: the effect clone is single-branch, so git has no
+    # fetch refspec for this branch and a bare --force-with-lease assumes
+    # "must not exist on the remote" - rejecting the push with "stale info"
+    # whenever a leftover branch exists (e.g. from an unmerged or manually
+    # merged PR), even when the tracking ref matches the remote exactly.
+    lease = remote.stdout.strip() if remote.returncode == 0 else ""
+    run(
+        repo=repo,
+        cmd=[
+            "git",
+            "push",
+            f"--force-with-lease=refs/heads/{branch}:{lease}",
+            "origin",
+            branch,
+        ],
+    )
 
     title, _, rest = message.partition("\n\n")
     # rest is empty for single-unit branches; keep the full message
