@@ -149,6 +149,11 @@ _: {
             condition = "hasconfig:remote.*.url:https://github.com/**";
             contents.user = github;
           }
+          # github (ssh://)
+          {
+            condition = "hasconfig:remote.*.url:ssh://git@github.com/**";
+            contents.user = github;
+          }
           # gitlab (ssh)
           # {
           #   condition = "hasconfig:remote.*.url:git@gitlab.com:*/**";
@@ -169,6 +174,11 @@ _: {
             condition = "hasconfig:remote.*.url:https://codeberg.org/**";
             contents.user = codeberg;
           }
+          # codeberg (ssh://)
+          {
+            condition = "hasconfig:remote.*.url:ssh://git@codeberg.org/**";
+            contents.user = codeberg;
+          }
           # tangled (ssh)
           {
             condition = "hasconfig:remote.*.url:git@tangled.sh:*/**";
@@ -177,6 +187,11 @@ _: {
           # tangled (https)
           {
             condition = "hasconfig:remote.*.url:https://tangled.sh/**";
+            contents.user = tangled;
+          }
+          # tangled (ssh://)
+          {
+            condition = "hasconfig:remote.*.url:ssh://git@tangled.sh/**";
             contents.user = tangled;
           }
         ];
