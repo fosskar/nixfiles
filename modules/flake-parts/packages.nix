@@ -18,7 +18,7 @@
     );
 
   perSystem =
-    { system, ... }:
+    { config, system, ... }:
     {
       # no local-packages bridge here: it is config.packages, would recurse
       _module.args.pkgs = import inputs.nixpkgs {
@@ -31,5 +31,12 @@
       };
 
       pkgsDirectory = self.outPath + "/packages";
+
+      # nix run .#updater-packages / .#updater-flake-inputs, also remotely
+      # via nix run git+https://…#updater-flake-inputs (no flake input needed).
+      apps = {
+        updater-packages.program = "${config.packages.updater}/bin/updater-packages";
+        updater-flake-inputs.program = "${config.packages.updater}/bin/updater-flake-inputs";
+      };
     };
 }

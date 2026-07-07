@@ -1,7 +1,6 @@
-{ inputs, self, ... }:
+{ inputs, ... }:
 let
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-  updater = self.packages.x86_64-linux.updater;
 
   forgeHost = "codeberg.org";
   repo = "fosskar/nixfiles";
@@ -102,8 +101,11 @@ in
         hour = 2;
         minute = 0;
       };
+      # apps on the cloned repo's own flake keep the effect body generic;
+      # other repos use nix run "git+https://codeberg.org/fosskar/nixfiles?shallow=1#updater-packages"
+      # instead - no flake input required.
       outputs.effects.update-pkgs = mkRepoEffect "update-pkgs" ''
-        ${updater}/bin/updater-packages
+        nix run .#updater-packages
       '';
     };
 
@@ -113,7 +115,7 @@ in
         minute = 0;
       };
       outputs.effects.update-flake-inputs = mkRepoEffect "update-flake-inputs" ''
-        ${updater}/bin/updater-flake-inputs
+        nix run .#updater-flake-inputs
       '';
     };
   };
