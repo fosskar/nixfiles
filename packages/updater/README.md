@@ -60,6 +60,9 @@ enrichment expands into release notes in the PR body.
 - automerge (squash, delete branch) is scheduled via API; if checks went
   green _before_ automerge was scheduled, Forgejo never fires it - the next
   run detects the stuck PR and merges it directly (`merge_if_green`)
+- rate-limited (429) forge calls are retried with backoff; a unit that is
+  still throttled is deferred, not failed - the next run pushes nothing
+  (tree unchanged) and creates the missing PR
 
 ## Files
 

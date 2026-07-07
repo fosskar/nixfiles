@@ -118,29 +118,32 @@ def publish(
         == message.strip()
     ):
         print(f":: {name} - remote branch up to date, skipping push")
-        # existing PR whose checks finished before automerge was scheduled
-        # (green race) is stuck forever; one targeted attempt unsticks it.
         existing = next((p for p in prs if p["head"]["ref"] == branch), None)
         if existing is not None:
+            # existing PR whose checks finished before automerge was scheduled
+            # (green race) is stuck forever; one targeted attempt unsticks it.
             forge.merge_if_green(existing["number"])
-        return None
-
-    # Explicit lease value: the effect clone is single-branch, so git has no
-    # fetch refspec for this branch and a bare --force-with-lease assumes
-    # "must not exist on the remote" - rejecting the push with "stale info"
-    # whenever a leftover branch exists (e.g. from an unmerged or manually
-    # merged PR), even when the tracking ref matches the remote exactly.
-    lease = remote.stdout.strip() if remote.returncode == 0 else ""
-    run(
-        repo=repo,
-        cmd=[
-            "git",
-            "push",
-            f"--force-with-lease=refs/heads/{branch}:{lease}",
-            "origin",
-            branch,
-        ],
-    )
+            return None
+        # branch was pushed but PR creation failed (e.g. rate limited);
+        # fall through to create it now.
+    else:
+        # Explicit lease value: the effect clone is single-branch, so git has
+        # no fetch refspec for this branch and a bare --force-with-lease
+        # assumes "must not exist on the remote" - rejecting the push with
+        # "stale info" whenever a leftover branch exists (e.g. from an
+        # unmerged or manually merged PR), even when the tracking ref matches
+        # the remote exactly.
+        lease = remote.stdout.strip() if remote.returncode == 0 else ""
+        run(
+            repo=repo,
+            cmd=[
+                "git",
+                "push",
+                f"--force-with-lease=refs/heads/{branch}:{lease}",
+                "origin",
+                branch,
+            ],
+        )
 
     title, _, rest = message.partition("\n\n")
     # rest is empty for single-unit branches; keep the full message

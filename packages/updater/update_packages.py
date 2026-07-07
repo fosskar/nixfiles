@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import changelog  # noqa: E402
 import pipeline  # noqa: E402
+from forge import ForgeError  # noqa: E402
 
 from packages import Package, discover, run, update  # noqa: E402
 
@@ -125,6 +126,14 @@ def main() -> int:
             index = process_group(repo, group, pkgs, forge, prs)
             if index is not None:
                 touched.append(index)
+        except ForgeError as e:
+            if e.status == 429:
+                # branch state is already reconciled next run (push dedupe +
+                # missing-PR creation); a throttled forge is not a failure.
+                print(f":: {group} - rate limited, deferred to next run: {e}")
+            else:
+                print(f":: {group} - FAILED, skipping: {e}")
+                failures.append(group)
         except Exception as e:  # noqa: BLE001
             print(f":: {group} - FAILED, skipping: {e}")
             failures.append(group)

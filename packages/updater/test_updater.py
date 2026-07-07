@@ -2,15 +2,22 @@
 
 from __future__ import annotations
 
+import contextlib
+import email.message
+import io
 import json
 import tempfile
 import unittest
+import urllib.error
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 import changelog
 import pipeline
 import update_flake_inputs  # noqa: E402
+from forge import Codeberg, ForgeError
+from update_flake_inputs import FlakeInput
 from update_packages import commit_message, group_packages  # noqa: E402
 
 from packages import Package
@@ -265,6 +272,107 @@ class TestParseOrigin(unittest.TestCase):
     def test_unparseable_url_exits(self):
         with self.assertRaises(SystemExit):
             pipeline.parse_origin("/local/path")
+
+
+class TestForgeRetryStatus(unittest.TestCase):
+    def _exhaust(self, exc: Exception) -> ForgeError:
+        cb = Codeberg("h", "o", "r", "tok")
+        with (
+            mock.patch("forge._BACKOFF", (0,)),
+            mock.patch("forge.time.sleep"),
+            mock.patch("forge.urllib.request.urlopen", side_effect=exc),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            with self.assertRaises(ForgeError) as ctx:
+                cb._request("GET", "https://h/x")
+        return ctx.exception
+
+    def test_exhausted_429_carries_status(self):
+        err = urllib.error.HTTPError(
+            "https://h/x", 429, "Too Many Requests", email.message.Message(), None
+        )
+        self.assertEqual(self._exhaust(err).status, 429)
+
+    def test_exhausted_urlerror_has_no_status(self):
+        self.assertIsNone(self._exhaust(urllib.error.URLError("down")).status)
+
+
+class TestPublishSkipPush(unittest.TestCase):
+    """Remote branch already up to date: never push, but ensure a PR exists."""
+
+    BRANCH = "update-flake-input-nixpkgs"
+    MESSAGE = "flake: update nixpkgs"
+
+    def _publish(self, prs: list[dict], forge_mock: mock.Mock) -> int | None:
+        self.run_cmds: list[list[str]] = []
+
+        def fake_run(*, repo, cmd, check=True):
+            self.run_cmds.append(cmd)
+            return SimpleNamespace(returncode=0)  # fetch ok, diff --quiet clean
+
+        def fake_capture(*, repo, cmd, check=True):
+            if "rev-parse" in cmd:
+                return SimpleNamespace(returncode=0, stdout="deadbeef\n")
+            if "log" in cmd:
+                return SimpleNamespace(returncode=0, stdout=self.MESSAGE + "\n")
+            raise AssertionError(f"unexpected capture: {cmd}")
+
+        with (
+            mock.patch("pipeline.run", side_effect=fake_run),
+            mock.patch("pipeline.capture", side_effect=fake_capture),
+            mock.patch("pipeline.changelog.enrich", side_effect=lambda b: b),
+            mock.patch("pipeline.BASE", "main"),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            return pipeline.publish(
+                Path("/repo"), self.BRANCH, self.MESSAGE, forge_mock, prs
+            )
+
+    def test_existing_pr_only_pokes_merge(self):
+        forge_mock = mock.Mock()
+        prs = [{"head": {"ref": self.BRANCH}, "base": {"ref": "main"}, "number": 7}]
+        self.assertIsNone(self._publish(prs, forge_mock))
+        forge_mock.merge_if_green.assert_called_once_with(7)
+        forge_mock.create_pull.assert_not_called()
+
+    def test_missing_pr_created_without_push(self):
+        forge_mock = mock.Mock()
+        forge_mock.create_pull.return_value = {"number": 12}
+        prs: list[dict] = []
+        self.assertEqual(self._publish(prs, forge_mock), 12)
+        forge_mock.create_pull.assert_called_once_with(
+            title=self.MESSAGE, head=self.BRANCH, base="main", body=self.MESSAGE
+        )
+        forge_mock.enable_automerge.assert_called_once_with(12)
+        self.assertEqual(prs, [{"number": 12}])
+        self.assertFalse(any("push" in cmd for cmd in self.run_cmds))
+
+
+class TestRateLimitDeferral(unittest.TestCase):
+    """A 429 from the forge defers the input; anything else is a failure."""
+
+    def _main(self, exc: Exception) -> int:
+        with (
+            mock.patch("sys.argv", ["update_flake_inputs"]),
+            mock.patch(
+                "update_flake_inputs.discover_inputs",
+                return_value=[FlakeInput(".", "nixpkgs")],
+            ),
+            mock.patch(
+                "update_flake_inputs.pipeline.connect",
+                return_value=(mock.Mock(), []),
+            ),
+            mock.patch("update_flake_inputs.pipeline.sweep"),
+            mock.patch("update_flake_inputs.process_input", side_effect=exc),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            return update_flake_inputs.main()
+
+    def test_429_deferred_not_a_failure(self):
+        self.assertEqual(self._main(ForgeError("throttled", status=429)), 0)
+
+    def test_other_status_still_fails(self):
+        self.assertEqual(self._main(ForgeError("boom", status=None)), 1)
 
 
 if __name__ == "__main__":

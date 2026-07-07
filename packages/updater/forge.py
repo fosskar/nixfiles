@@ -12,7 +12,9 @@ _BACKOFF = (5, 15, 45, 120)
 
 
 class ForgeError(Exception):
-    pass
+    def __init__(self, msg: str, status: int | None = None) -> None:
+        super().__init__(msg)
+        self.status = status
 
 
 class Codeberg:
@@ -24,6 +26,7 @@ class Codeberg:
         self, method: str, url: str, body: dict[str, Any] | None = None
     ) -> Any:
         data = json.dumps(body).encode() if body is not None else None
+        last_status: int | None = None
         for delay in _BACKOFF:
             req = urllib.request.Request(url, data=data, method=method)
             req.add_header("Authorization", f"token {self._token}")
@@ -35,6 +38,7 @@ class Codeberg:
                     return json.loads(raw) if raw else None
             except urllib.error.HTTPError as e:
                 if e.code == 429:
+                    last_status = e.code
                     retry_after = e.headers.get("Retry-After")
                     wait = (
                         int(retry_after)
@@ -46,12 +50,12 @@ class Codeberg:
                     continue
                 detail = e.read().decode(errors="replace")
                 msg = f"{method} {url} -> {e.code}: {detail}"
-                raise ForgeError(msg) from e
+                raise ForgeError(msg, status=e.code) from e
             except urllib.error.URLError as e:
                 print(f":: request error ({method} {url}): {e}; retrying in {delay}s")
                 time.sleep(delay)
         msg = f"retries exhausted: {method} {url}"
-        raise ForgeError(msg)
+        raise ForgeError(msg, status=last_status)
 
     def open_pulls(self) -> list[dict[str, Any]]:
         return self._request("GET", f"{self.api}/pulls?state=open&limit=50") or []
@@ -83,8 +87,12 @@ class Codeberg:
                 {"Do": "squash", "delete_branch_after_merge": True},
             )
             print(f":: PR {index} - checks already green, merged directly")
-        except ForgeError:
-            pass
+        except ForgeError as e:
+            # 405 = not mergeable (yet): checks pending or conflicts - the
+            # expected outcome when racing CI; automerge or the next run
+            # covers it. Anything else (auth, 5xx) must be visible.
+            if e.status != 405:
+                print(f":: PR {index} - merge attempt failed: {e}")
 
     def enable_automerge(self, index: int) -> None:
         try:
