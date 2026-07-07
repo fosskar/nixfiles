@@ -65,6 +65,19 @@
               >"$out/token"
           '';
         };
+        clan.core.vars.generators.nixbot-github-app = {
+          files."private-key.pem" = { };
+          files."oauth-secret" = { };
+          files."webhook-secret" = { };
+          prompts.private-key.description = "github app private key (.pem)";
+          prompts.private-key.type = "multiline-hidden";
+          prompts.oauth-secret.description = "github app oauth client secret";
+          script = ''
+            cp $prompts/private-key $out/private-key.pem
+            cp $prompts/oauth-secret $out/oauth-secret
+            ${pkgs.openssl}/bin/openssl rand -hex 32 | tr -d '\n' >$out/webhook-secret
+          '';
+        };
 
         services.nixbot = {
           enable = true;
@@ -83,6 +96,15 @@
           buildConcurrency = 2;
           evalWorkerCount = lib.mkDefault 8;
           cacheFailedBuilds = true;
+
+          github = {
+            enable = true;
+            appId = 4238312;
+            oauthId = "Iv23lilwHkCSxKsP6HOB";
+            appSecretKeyFile = config.clan.core.vars.generators.nixbot-github-app.files."private-key.pem".path;
+            webhookSecretFile = config.clan.core.vars.generators.nixbot-github-app.files."webhook-secret".path;
+            oauthSecretFile = config.clan.core.vars.generators.nixbot-github-app.files."oauth-secret".path;
+          };
 
           gitea = {
             enable = true;
