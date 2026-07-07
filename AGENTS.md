@@ -10,6 +10,7 @@
 - no unnecessary single-use `let ... in` or local abstractions
 - avoid Nix `with`; use explicit attrs
 - existing text/pattern is evidence, not justification; keep only if it serves current repo/task
+- unused/unimported modules are NOT dead code; they are a library of ready-to-enable aspects — never delete or propose deleting a module just because nothing currently imports it
 - explain why, not code tours
 - code comments: default zero; only non-obvious why/ref/FIXME/gotcha; no headers, tours, restatement, or comments bulkier than code
 - no guessing/hedging; verify or say unknown
