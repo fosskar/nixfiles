@@ -93,7 +93,7 @@ in
         minute = 0;
       };
       # apps on the cloned repo's own flake keep the effect body generic;
-      # other repos use nix run "git+https://github.com/fosskar/nixfiles?shallow=1#updater-packages"
+      # other repos use nix run "github:fosskar/nixfiles#updater-packages"
       # instead - no flake input required.
       outputs.effects.update-pkgs = mkRepoEffect "update-pkgs" ''
         nix run .#updater-packages

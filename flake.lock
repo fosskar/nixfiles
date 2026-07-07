@@ -129,10 +129,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1783418882,
-        "narHash": "sha256-VvPBGDSN5XqEREGKkIPC6GLJ1H/40NxBktF6gRCIA40=",
+        "lastModified": 1783455124,
+        "narHash": "sha256-eMHSFk47Bx+vxaSlkGwLelNW1Z9ktMGnpLnj6VDPc78=",
         "ref": "refs/heads/main",
-        "rev": "620a8f594a0746fae9af8b87d184e86d426b6b15",
+        "rev": "62a9d8b86bb4265541e598e48c4d3ed5d9fcfa73",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -174,11 +174,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782968882,
-        "narHash": "sha256-+23UKgwc11/ZENf7hbNE0AZSRjDTxk0n/nB+q3V4l0Q=",
-        "rev": "d3b85614d122852dab51954b6ecb1e772e7c3384",
+        "lastModified": 1783438741,
+        "narHash": "sha256-OtYg9tw3EYghi8yebrvNPZt5NE4jpNLkdgDYhhDIyRU=",
+        "rev": "9f8943c5ce12fa07d66206a4fb8de9ff29f3ba0e",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/d3b85614d122852dab51954b6ecb1e772e7c3384.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/9f8943c5ce12fa07d66206a4fb8de9ff29f3ba0e.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -604,11 +604,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783454762,
-        "narHash": "sha256-YdYJmutobkeCTgiJVo5QsuQvZYgch3Wmw0ihk3Lkl58=",
+        "lastModified": 1783455357,
+        "narHash": "sha256-dmnO+QzFdnF8RVKw0P58vjQJP8hWvjKZ9rpihSzdgDw=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "3cd6e3663ea9238e1d3d06db8fc540b5c3e1b059",
+        "rev": "242e2ea7825ec51a778a950a85f51dae8e3e0f60",
         "type": "github"
       },
       "original": {
@@ -1331,16 +1331,15 @@
       "locked": {
         "lastModified": 1783452957,
         "narHash": "sha256-HokfW+iMdrsqjvBSyx1GqHnE0rdzTFa4Vwnaqt38wkI=",
-        "ref": "refs/heads/main",
+        "owner": "fosskar",
+        "repo": "ssync",
         "rev": "8cb88e18421bdb4caae14933fa2536d45d028a4c",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/fosskar/ssync"
+        "type": "github"
       },
       "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/fosskar/ssync"
+        "owner": "fosskar",
+        "repo": "ssync",
+        "type": "github"
       }
     },
     "systems": {
@@ -1479,16 +1478,15 @@
       "locked": {
         "lastModified": 1783453106,
         "narHash": "sha256-mdxuU7DMvLlw8mzTkmwSUqFBcxSNY0zgQPeYtNjQPa4=",
-        "ref": "refs/heads/main",
+        "owner": "fosskar",
+        "repo": "wiki",
         "rev": "3d901d6da7d7ca90afa8458e607a225c8cfd1aad",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/fosskar/wiki.git"
+        "type": "github"
       },
       "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/fosskar/wiki.git"
+        "owner": "fosskar",
+        "repo": "wiki",
+        "type": "github"
       }
     },
     "xwayland-satellite-unstable": {
