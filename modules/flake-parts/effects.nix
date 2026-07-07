@@ -24,14 +24,9 @@ let
           github = "github-api";
         };
         HOME = "/build";
-        # persistent nix git/tarball cache (writable mountable declared in
-        # modules/nixos/services/nixbot.nix); cold cache re-fetches every
-        # flake input and costs >10min per run.
-        __hci_effect_mounts = builtins.toJSON { "/cache" = "nix-cache"; };
       }
       ''
         set -euo pipefail
-        export XDG_CACHE_HOME=/cache
         token=$(jq -re '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
         export FORGE_TOKEN="$token"
         # nix-update and changelog enrichment read GITHUB_TOKEN for their
@@ -70,11 +65,9 @@ let
           github = "github-api";
         };
         HOME = "/build";
-        __hci_effect_mounts = builtins.toJSON { "/cache" = "nix-cache"; };
       }
       ''
         set -euo pipefail
-        export XDG_CACHE_HOME=/cache
         export NIX_CONFIG="experimental-features = nix-command flakes"
 
         renovate_token=$(jq -re '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
