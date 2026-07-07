@@ -11,8 +11,6 @@ from forge import Codeberg
 
 from packages import capture, run
 
-OWNER = "fosskar"
-REPO = "nixfiles"
 BASE = "main"
 
 
@@ -23,14 +21,47 @@ def read_token() -> str:
     return token
 
 
+def parse_origin(url: str) -> tuple[str, str, str]:
+    """(host, owner, repo) from an https or ssh git remote URL."""
+    url = url.removesuffix(".git")
+    if url.startswith(("http://", "https://")):
+        _, _, rest = url.partition("://")
+        host, _, path = rest.partition("/")
+        host = host.rpartition("@")[2]  # strip oauth2:token@ credentials
+    elif "@" in url and ":" in url:  # git@host:owner/repo
+        host, _, path = url.rpartition("@")[2].partition(":")
+    else:
+        sys.exit(f"cannot parse origin remote URL: {url!r}")
+    parts = path.strip("/").split("/")
+    if len(parts) != 2 or not all(parts):
+        sys.exit(f"origin remote is not an owner/repo URL: {url!r}")
+    return host, parts[0], parts[1]
+
+
+def default_branch(repo: Path) -> str:
+    # HEAD of the origin remote = the repo's default branch; works in
+    # shallow/single-branch clones without any API call.
+    out = capture(
+        repo=repo, cmd=["git", "ls-remote", "--symref", "origin", "HEAD"], check=False
+    ).stdout
+    for line in out.splitlines():
+        if line.startswith("ref:"):
+            return line.split()[1].removeprefix("refs/heads/")
+    return "main"
+
+
 def connect(repo: Path, *, dry_run: bool) -> tuple[Codeberg | None, list[dict]]:
+    global BASE  # noqa: PLW0603 - resolved once per run, read by entrypoints
     # Callers hard-reset the tree per unit; refuse to eat local work.
     if capture(repo=repo, cmd=["git", "status", "--porcelain"]).stdout.strip():
         sys.exit("working tree is dirty; commit or stash first")
+    BASE = default_branch(repo)
     run(repo=repo, cmd=["git", "fetch", "origin", BASE])
     if dry_run:
         return None, []
-    forge = Codeberg(OWNER, REPO, read_token())
+    origin = capture(repo=repo, cmd=["git", "remote", "get-url", "origin"])
+    host, owner, name = parse_origin(origin.stdout.strip())
+    forge = Codeberg(host, owner, name, read_token())
     return forge, forge.open_pulls()
 
 

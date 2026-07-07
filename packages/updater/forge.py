@@ -16,8 +16,8 @@ class ForgeError(Exception):
 
 
 class Codeberg:
-    def __init__(self, owner: str, repo: str, token: str) -> None:
-        self.api = f"https://codeberg.org/api/v1/repos/{owner}/{repo}"
+    def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
+        self.api = f"https://{host}/api/v1/repos/{owner}/{repo}"
         self._token = token
 
     def _request(

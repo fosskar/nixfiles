@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest import mock
 
 import changelog
+import pipeline
 import update_flake_inputs  # noqa: E402
 from update_packages import commit_message, group_packages  # noqa: E402
 
@@ -234,6 +235,36 @@ class TestFlakeInputs(unittest.TestCase):
         msg = update_flake_inputs.commit_message(inp, old, new)
         self.assertEqual(msg, "flake: update nixpkgs")
         self.assertNotIn("Diff:", msg)
+
+
+class TestParseOrigin(unittest.TestCase):
+    def test_https_with_credentials(self):
+        self.assertEqual(
+            pipeline.parse_origin(
+                "https://oauth2:tok@codeberg.org/fosskar/nixfiles.git"
+            ),
+            ("codeberg.org", "fosskar", "nixfiles"),
+        )
+
+    def test_plain_https_without_git_suffix(self):
+        self.assertEqual(
+            pipeline.parse_origin("https://github.com/owner/repo"),
+            ("github.com", "owner", "repo"),
+        )
+
+    def test_ssh_scp_form(self):
+        self.assertEqual(
+            pipeline.parse_origin("git@github.com:o/r.git"),
+            ("github.com", "o", "r"),
+        )
+
+    def test_non_owner_repo_path_exits(self):
+        with self.assertRaises(SystemExit):
+            pipeline.parse_origin("https://host/a/b/c")
+
+    def test_unparseable_url_exits(self):
+        with self.assertRaises(SystemExit):
+            pipeline.parse_origin("/local/path")
 
 
 if __name__ == "__main__":
