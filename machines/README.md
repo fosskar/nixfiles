@@ -30,6 +30,10 @@ two-step bootstrap:
 
 ### static IPs
 
+source of truth: `flake.hosts` in `modules/flake-parts/hosts.nix` — machine
+`networking.nix`, the `internet`/`wireguard` inventory instances, and feature
+modules all read from it. this table is a derived copy; update `hosts.nix` first.
+
 | machine       | IP               | method                               |
 | ------------- | ---------------- | ------------------------------------ |
 | simon-desktop | `192.168.10.100` | NixOS static, no DHCP                |
@@ -40,8 +44,6 @@ two-step bootstrap:
 
 servers define their own static IP in `networking.nix` with `useDHCP = false` per interface.
 the laptop keeps DHCP enabled so it works on other networks.
-
-IPs are also registered in `flake-module.nix` under the `internet` inventory instance.
 
 ---
 

@@ -1,4 +1,5 @@
-_: {
+{ flake-self, ... }:
+{
   networking = {
     useDHCP = false;
     nameservers = [ "192.168.20.1" ];
@@ -23,7 +24,7 @@ _: {
       useDHCP = false;
       ipv4.addresses = [
         {
-          address = "192.168.20.210";
+          address = flake-self.hosts.nixworker.lan;
           prefixLength = 24;
         }
       ];

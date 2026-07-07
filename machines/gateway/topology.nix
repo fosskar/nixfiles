@@ -1,9 +1,10 @@
-_: {
+{ flake-self, ... }:
+{
   topology.self = {
     icon = "devices.cloud-server";
     hardware.info = "hetzner vps";
     interfaces.wan = {
-      addresses = [ "138.201.155.21" ];
+      addresses = [ flake-self.hosts.gateway.wan ];
       network = "wan";
     };
     services.wireguard = {

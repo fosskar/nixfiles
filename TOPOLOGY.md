@@ -5,7 +5,8 @@ Network/service topology of the clan, rendered by
 
 - Per-host nodes (interfaces, services, IPs) are **derived** from each machine's
   NixOS config — `topology.self` in `machines/<host>/topology.nix`, with host
-  IPs read from the static `networking.*` config where one exists.
+  IPs read from the static `networking.*` config where one exists (machine IPs
+  originate from `flake.hosts` in `modules/flake-parts/hosts.nix`).
 - The shared graph (OpenWrt router, dumb AP, the internet, and the
   lan/srv/iot networks) is declared centrally in
   `modules/flake-parts/topology.nix` (sourced from `openwrt/devices/*/config.nix`).

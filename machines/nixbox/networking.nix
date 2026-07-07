@@ -1,4 +1,5 @@
-_: {
+{ flake-self, ... }:
+{
   networking = {
     hostId = "25e85037"; # zfs requires unique hostId
 
@@ -24,7 +25,7 @@ _: {
       useDHCP = false;
       ipv4.addresses = [
         {
-          address = "192.168.20.200";
+          address = flake-self.hosts.nixbox.lan;
           prefixLength = 24;
         }
       ];

@@ -211,15 +211,12 @@
 
         ## networking
 
-        # export IPs so yggdrasil peers via explicit connection (no multicast)
+        # export IPs so yggdrasil peers via explicit connection (no multicast).
+        # addresses come from flake.hosts (modules/flake-parts/hosts.nix).
         internet = {
-          roles.default.machines = {
-            "gateway".settings.host = "138.201.155.21";
-            "nixbox".settings.host = "192.168.20.200";
-            "nixworker".settings.host = "192.168.20.210";
-            "simon-desktop".settings.host = "192.168.10.100";
-            "lpt-titan".settings.host = "192.168.10.150";
-          };
+          roles.default.machines = builtins.mapAttrs (_: host: {
+            settings.host = host.wan or host.lan;
+          }) config.flake.hosts;
         };
 
         wireguard = {
@@ -227,7 +224,7 @@
           module.input = "clan-core";
 
           roles.controller.machines."gateway".settings = {
-            endpoint = "138.201.155.21";
+            endpoint = config.flake.hosts.gateway.wan;
             port = 51820; # default
           };
           roles.peer.machines = {

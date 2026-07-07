@@ -132,7 +132,7 @@
             PAPERLESS_LOGOUT_REDIRECT_URL = "https://auth.${flake-self.domains.public}/logout";
             PAPERLESS_TIME_ZONE = "Europe/Berlin";
             PAPERLESS_DATE_ORDER = "DMY";
-            PAPERLESS_TRUSTED_PROXIES = "138.201.155.21,127.0.0.1";
+            PAPERLESS_TRUSTED_PROXIES = "${flake-self.hosts.gateway.wan},127.0.0.1";
             PAPERLESS_ARCHIVE_FILE_GENERATION = "always";
 
             PAPERLESS_TASK_WORKERS = 2;

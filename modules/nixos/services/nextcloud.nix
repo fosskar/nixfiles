@@ -177,7 +177,7 @@
           "overwrite.cli.url" = "https://${publicHost}";
           trusted_proxies = [
             "127.0.0.1"
-            "192.168.20.200"
+            flake-self.hosts.nixbox.lan
             "100.64.0.0/10"
           ];
           trusted_domains = [
