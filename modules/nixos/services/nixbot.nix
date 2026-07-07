@@ -66,6 +66,10 @@
           '';
         };
 
+        # persistent nix git/tarball cache for effects: the sandbox HOME is
+        # throwaway, so without this every run re-fetches all flake inputs.
+        systemd.tmpfiles.rules = [ "d /var/lib/nixbot/effects-nix-cache 0700 nixbot nixbot -" ];
+
         services.nixbot = {
           enable = true;
 
@@ -74,6 +78,14 @@
 
           effects.perRepoSecretFiles."gitea:fosskar/*" =
             config.clan.core.vars.generators.nixbot-github.files."token".path;
+
+          effects.mountables.nix-cache = {
+            source = "/var/lib/nixbot/effects-nix-cache";
+            readOnly = false;
+            condition = {
+              isOwner = "fosskar";
+            };
+          };
 
           admins = [
             "gitea:fosskar"
