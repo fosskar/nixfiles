@@ -586,6 +586,45 @@
           dest_port = "8123";
           target = "ACCEPT";
         };
+        srv_icmpv6 = {
+          _type = "rule";
+          # NDP runs over ICMPv6; without this the router rejects neighbor
+          # advertisements from srv hosts and all their IPv6 dies (IPv4
+          # survives because ARP is not IP and bypasses the firewall).
+          name = "Allow-Srv-ICMPv6";
+          src = "srv";
+          proto = "icmp";
+          family = "ipv6";
+          limit = "1000/sec";
+          target = "ACCEPT";
+        };
+        srv_dhcpv6 = {
+          _type = "rule";
+          name = "Allow-Srv-DHCPv6";
+          src = "srv";
+          proto = "udp";
+          dest_port = "547";
+          family = "ipv6";
+          target = "ACCEPT";
+        };
+        iot_icmpv6 = {
+          _type = "rule";
+          name = "Allow-IoT-ICMPv6";
+          src = "iot";
+          proto = "icmp";
+          family = "ipv6";
+          limit = "1000/sec";
+          target = "ACCEPT";
+        };
+        iot_dhcpv6 = {
+          _type = "rule";
+          name = "Allow-IoT-DHCPv6";
+          src = "iot";
+          proto = "udp";
+          dest_port = "547";
+          family = "ipv6";
+          target = "ACCEPT";
+        };
       };
     };
   };
