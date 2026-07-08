@@ -18,8 +18,43 @@ _: {
       ompSettings = {
         setupVersion = 1;
         theme.dark = "custom";
-        statusLine.transparent = true;
+        statusLine = {
+          transparent = true;
+          # default preset + usage (sub quota %); custom preset required:
+          # named presets ignore leftSegments/rightSegments
+          preset = "custom";
+          leftSegments = [
+            "model"
+            "mode"
+            "path"
+            "git"
+            "pr"
+            "context_pct"
+            "usage"
+          ];
+          rightSegments = [ "session_name" ];
+          segmentOptions = {
+            model.showThinkingLevel = true;
+            path = {
+              abbreviate = true;
+              maxLength = 40;
+              stripWorkPrefix = true;
+            };
+            git = {
+              # colocated jj keeps git HEAD detached -> branch renders literal
+              # "detached" (oh-my-pi#3582); hide branch, keep dirty counters
+              showBranch = false;
+              showStaged = true;
+              showUnstaged = true;
+              showUntracked = true;
+            };
+          };
+        };
         hideThinkingBlock = true;
+        showTokenUsage = false;
+        display.showTokenUsage = false;
+        personality = "pragmatic";
+        collapseChangelog = true;
         followUpMode = "all";
         providers.webSearch = "anthropic";
         defaultThinkingLevel = "low";
