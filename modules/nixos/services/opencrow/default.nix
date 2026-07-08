@@ -44,6 +44,7 @@
           OPENCROW_PI_MODEL = "qwen3_6-35b-a3b-mtp";
           LLAMA_CPP_BASE_URL = "http://127.0.0.1:18080";
           SEARXNG_ENDPOINT = "http://127.0.0.1:8888";
+          TZ = "Europe/Berlin";
         };
 
         extensions = {
