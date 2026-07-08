@@ -12,16 +12,28 @@ _: {
         name: _: lib.nameValuePair ".omp/agent/extensions/${name}" { source = ../extensions/${name}; }
       ) extensionFiles;
 
-      # declarative omp settings overlay.
-      # merged on top of existing local config.yml (or deployed 1:1 if none exists).
-      # omp settings schema differs from pi: no quietStartup, enableInstallTelemetry,
-      # terminal.showTerminalProgress or packages; theme is theme.dark/theme.light.
+      # declarative omp settings overlay: non-default values only (schema
+      # defaults omitted). merged on top of existing local config.yml (or
+      # deployed 1:1 if none exists).
       ompSettings = {
+        setupVersion = 1;
+        theme.dark = "custom";
+        statusLine.transparent = true;
         hideThinkingBlock = true;
         followUpMode = "all";
-        steeringMode = "one-at-a-time";
-        compaction.enabled = true;
-        theme.dark = "custom";
+        providers.webSearch = "anthropic";
+        defaultThinkingLevel = "low";
+        stt.enabled = true;
+        startup = {
+          quiet = true;
+          setupWizard = false;
+          checkUpdate = false;
+        };
+        autolearn.enabled = true;
+        memory.backend = "local";
+        github.enabled = true;
+        secrets.enabled = true;
+        vault.enabled = true;
       };
       # json is valid yaml; yq merges it into config.yml
       ompSettingsFile = pkgs.writeText "omp-settings-overlay.json" (builtins.toJSON ompSettings);
