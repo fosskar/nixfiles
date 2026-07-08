@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   home.pointerCursor = {
+    enable = true;
     name = "phinger-cursors-light"; # alt: Bibata-Modern-Classic
     package = pkgs.phinger-cursors; # alt: bibata-cursors
     # available sizes for are:
