@@ -32,8 +32,8 @@ let
         export NIX_CONFIG="experimental-features = nix-command flakes
         access-tokens = github.com=$token"
 
-        git config --global user.name nixbot
-        git config --global user.email nixbot@nx3.eu
+        git config --global user.name 'fosskar[bot]'
+        git config --global user.email '300917551+fosskar[bot]@users.noreply.github.com'
         git config --global safe.directory '*'
 
         git clone --depth 1 --progress "https://oauth2:$token@${forgeHost}/${repo}.git" repo
@@ -69,7 +69,7 @@ let
 
         export RENOVATE_PLATFORM=github
         export RENOVATE_REPOSITORIES=${repo}
-        export RENOVATE_GIT_AUTHOR='nixbot <nixbot@nx3.eu>'
+        export RENOVATE_GIT_AUTHOR='fosskar[bot] <300917551+fosskar[bot]@users.noreply.github.com>'
         export RENOVATE_ALLOWED_COMMANDS='["^bash packages/live-ocr/update-vendor-hash\\.sh$"]'
         export RENOVATE_BINARY_SOURCE=global
         export LOG_LEVEL=info
