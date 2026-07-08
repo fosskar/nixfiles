@@ -32,8 +32,8 @@ _: {
       mattpocockSkillsSrc = pkgs.fetchFromGitHub {
         owner = "mattpocock";
         repo = "skills";
-        rev = "7a83a3a682adf699f24dbc06613de87f4e52a0a0";
-        hash = "sha256-NSMNCO6O1/a1oMTAtmtJRERElwUaBRLgpOUXW05qQAQ=";
+        rev = "d574778f94cf620fcc8ce741584093bc650a61d3";
+        hash = "sha256-XqF709Y9GMKINzZITlbCTyatG9AxRZh0qn2vcv1Z8yo=";
       };
       mattpocockSkills = [
         "engineering/code-review"
