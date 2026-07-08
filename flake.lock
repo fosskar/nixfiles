@@ -401,6 +401,27 @@
         "type": "github"
       }
     },
+    "herdr": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783464789,
+        "narHash": "sha256-Q2yvMs/N6oAF8xnRIrMxEOOV6Aj8aAXQzuvcaux2enA=",
+        "owner": "ogulcancelik",
+        "repo": "herdr",
+        "rev": "299dd4163a96381ec2d8e5bde13d7ba6d6432373",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ogulcancelik",
+        "ref": "v0.7.3",
+        "repo": "herdr",
+        "type": "github"
+      }
+    },
     "hermes-agent": {
       "inputs": {
         "flake-parts": [
@@ -1157,6 +1178,7 @@
         "clan-core": "clan-core",
         "disko": "disko",
         "flake-parts": "flake-parts",
+        "herdr": "herdr",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
         "import-tree": "import-tree",

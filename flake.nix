@@ -145,6 +145,11 @@
       inputs.flake-utils.inputs.systems.follows = "systems";
     };
 
+    herdr = {
+      url = "github:ogulcancelik/herdr/v0.7.3";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # wm
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix?shallow=1";
