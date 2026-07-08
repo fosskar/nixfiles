@@ -41,7 +41,7 @@
           OPENCROW_HEARTBEAT_INTERVAL = "30m";
           OPENCROW_PI_IDLE_TIMEOUT = "6h";
           OPENCROW_PI_PROVIDER = "llama.cpp";
-          OPENCROW_PI_MODEL = "qwen3_6-35b-a3b";
+          OPENCROW_PI_MODEL = "qwen3_6-35b-a3b-mtp";
           LLAMA_CPP_BASE_URL = "http://127.0.0.1:18080";
           SEARXNG_ENDPOINT = "http://127.0.0.1:8888";
         };

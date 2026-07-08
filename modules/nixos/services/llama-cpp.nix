@@ -86,17 +86,22 @@
               cache-type-k-draft = "q4_0";
               cache-type-v-draft = "q4_0";
             };
-            qwen3_6-35b-a3b = {
-              hf-repo = "unsloth/Qwen3.6-35B-A3B-GGUF";
-              hf-file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";
-              alias = "qwen3.6-35b-a3b";
+            qwen3_6-35b-a3b-mtp = {
+              hf-repo = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF";
+              hf-file = "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf";
+              alias = "qwen3.6-35b-a3b-mtp";
               load-on-startup = true;
+              ctx-size = 131072;
               temp = 0.7;
               top-p = 0.8;
               top-k = 20;
               presence-penalty = 1.5;
               min-p = 0.00;
               reasoning = "off";
+              spec-type = "draft-mtp";
+              spec-draft-n-max = 2;
+              cache-type-k-draft = "q4_0";
+              cache-type-v-draft = "q4_0";
             };
           };
         };
