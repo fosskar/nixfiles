@@ -57,7 +57,7 @@ _: {
         collapseChangelog = true;
         followUpMode = "all";
         providers.webSearch = "anthropic";
-        defaultThinkingLevel = "low";
+        defaultThinkingLevel = "auto";
         stt.enabled = true;
         startup = {
           quiet = true;
