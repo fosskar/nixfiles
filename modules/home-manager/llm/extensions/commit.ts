@@ -56,7 +56,7 @@ export default function (pi: ExtensionAPI) {
       }
 
       const name = isJj ? "jj" : "git";
-      const statusArgs = isJj ? ["status"] : ["status"];
+      const statusArgs = ["status"];
       const logArgs = isJj
         ? ["log", "--limit", "5", "--no-graph"]
         : ["log", "--oneline", "-5"];
