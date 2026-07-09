@@ -29,37 +29,11 @@ _: {
         ) ownSkillNames
       );
 
-      mattpocockSkillsSrc = pkgs.fetchFromGitHub {
-        owner = "mattpocock";
-        repo = "skills";
-        rev = "d574778f94cf620fcc8ce741584093bc650a61d3";
-        hash = "sha256-XqF709Y9GMKINzZITlbCTyatG9AxRZh0qn2vcv1Z8yo=";
-      };
-      mattpocockSkills = [
-        "engineering/code-review"
-        "engineering/improve-codebase-architecture"
-        "engineering/resolving-merge-conflicts"
-        "engineering/tdd"
-        "productivity/grilling"
-        "productivity/handoff"
-        "productivity/teach"
-        "productivity/writing-great-skills"
-      ];
-      mattpocockSkillEntries = lib.listToAttrs (
-        lib.concatMap (
-          skill:
-          map (dir: {
-            name = "${dir}/${baseNameOf skill}";
-            value.source = "${mattpocockSkillsSrc}/skills/${skill}";
-          }) skillTargetDirs
-        ) mattpocockSkills
-      );
-
     in
     {
       imports = [ inputs.mics-skills.homeModules.default ];
 
-      home.file = ownSkillEntries // mattpocockSkillEntries;
+      home.file = ownSkillEntries;
 
       xdg.configFile."kagi/config.json".text = builtins.toJSON {
         password_command = "cat ${osConfig.clan.core.vars.generators.kagi.files."session-link".path}";
@@ -72,7 +46,6 @@ _: {
         package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
         skillDirs = skillTargetDirs;
         skills = [
-          "buildbot-pr-check"
           "calendar-cli"
           "context7-cli"
           "db-cli"
