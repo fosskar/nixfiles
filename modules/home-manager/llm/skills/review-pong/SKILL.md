@@ -1,12 +1,12 @@
 ---
 name: review-pong
-description: "Adversarial code review: a second model attacks the review's findings until the verdicts go stable."
+description: "Adversarial code review: a critic in a fresh context attacks the review's findings until the verdicts go stable."
 disable-model-invocation: true
 ---
 
 # Review Pong
 
-A code review, then an adversarial loop: a **critic** — a _different_ model — attacks the findings; the reviewer defends with evidence. A finding that survives challenges is worth more than one nobody attacked. Everything happens in-conversation; write no files.
+A code review, then an adversarial loop: a **critic** in a **fresh context** attacks the findings; the reviewer defends with evidence. A finding that survives challenges is worth more than one nobody attacked. Everything happens in-conversation; write no files.
 
 ## 1. Review
 
@@ -14,13 +14,9 @@ Run the code-review skill against the fixed point the user named. If the convers
 
 ## 2. Pick the critic
 
-Use the harness's cross-model mechanism, whichever exists:
+The critic needs a **fresh context**, not necessarily a different model: a clean session that receives only the brief — never this conversation's reasoning, or it inherits the reviewer's anchoring. Use whatever the harness offers: a subagent, a completion helper, or a second-opinion tool.
 
-- the `second_opinion` tool (from the oracle extension), with `model` set
-- an in-session completion helper with a model parameter (use the strongest available model)
-- a subagent pinned to a different model
-
-Same model as the reviewer is pointless — the value is a different prior. No cross-model mechanism at all? Say so and stop; a self-critique is not this skill.
+Default to the session's default model. Use a different model only when the user names one — a different prior surfaces different objections, but it's a bonus, not a requirement.
 
 ## 3. Critic round
 
