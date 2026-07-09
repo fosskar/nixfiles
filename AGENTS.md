@@ -69,6 +69,7 @@ Do not use clan/deploy/network commands for discovery. Use only when task explic
 - `machines/flake-module.nix`: clan inventory and role composition edge
 - `clan-services/<svc>/default.nix`: clan.service modules (plain dir, referenced by `modules/flake-parts/clan.nix`, not auto-imported)
 - `users/simon/`: home-manager user composition
+- `modules/home-manager/llm/`: agent tooling; `skills/<name>/` (dir per skill, `SKILL.md` + optional siblings) and `extensions/*.ts` auto-installed into all agent dirs by home-manager; deploy = rebuild/switch
 - `openwrt/`: declarative router/ap config; uci via `openwrt/nix/uci.nix`, raw config under `openwrt/devices/<device>/files/`; lan router `192.168.10.1` runs unbound, split-horizon for `nx3.eu`, and adguardhome; config lives here, not on device
 
 ## clan
@@ -137,17 +138,17 @@ ssh root@<ip>
 
 ## service exposure
 
-Services declare dashboard, health check, and reverse proxy with default options. No custom registry option (a `nixfiles.webServices` abstraction was tried and rejected 2026-07: per-module hand-written stanzas preferred over option indirection — do not re-suggest). Cross-host collectors pull remote `serviceGroups`/gatus `endpoints` into homepage/gatus host.
+Services declare dashboard, health check, and reverse proxy with default options. No custom registry option (a `nixfiles.webServices` abstraction was tried and rejected 2026-07: per-module hand-written stanzas preferred over option indirection — do not re-suggest). Cross-host collectors pull remote homepage `services`/gatus `endpoints` into homepage/gatus host.
 
 Dashboard:
 
 ```nix
-services.homepage-dashboard.serviceGroups.<group> = [ { "<Name>" = { href; icon; siteMonitor; }; } ];
+services.homepage-dashboard.services = [ { "<group>" = [ { "<Name>" = { href; icon; siteMonitor; }; } ]; } ];
 ```
 
 Rules:
 
-- `serviceGroups` declared in `base`; non-homepage hosts can author tiles
+- `services` is the stock nixpkgs option, available on every host, so non-homepage hosts can author tiles; the homepage module merges same-named groups at read-time (`services/homepage/homepage.nix` apply)
 - do not guard dashboard tiles with `mkIf config.services.homepage-dashboard.enable` on non-homepage hosts
 - gatus: `services.gatus.settings.endpoints = [ { name; url; group; enabled = true; alerts = [ { type = "email"; } ]; interval = "5m"; conditions = [ "[STATUS] == 200" ]; } ];`
 - do not guard gatus endpoints with `mkIf config.services.gatus.enable` on non-gatus hosts
@@ -240,7 +241,6 @@ If user says "commit and push": include full working copy scope unless narrowed;
 - first install: preservation disabled; enable after secrets land (`machines/README.md`)
 - zfs: keep `networking.hostId` stable
 - grafana oidc role mapping needs `groups` in `id_token`
-- tuned has nixpkgs `ppd.conf` workaround
 - netbird is custom module set here
 - netbird reverse proxy: permanent dashboard/API peer targets need service on peer NetBird interface (`0.0.0.0` or NetBird IP); `netbird expose` can expose local `127.0.0.1` via peer-created tunnel
 - public exposure is configured in the netbird UI, not the repo; inspect live domain->peer:port mappings read-only in `/var/lib/netbird-server/store.db` on gateway (`docs/netbird-exposure.md`)
