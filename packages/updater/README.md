@@ -1,7 +1,8 @@
 # updater
 
-Updates third-party sources in this repository and opens one Codeberg PR per
-unit, with automerge. Two entrypoints share one pipeline
+Updates third-party sources in this repository and opens one PR per unit,
+with automerge. The forge — GitHub, or Codeberg/Forgejo — is detected from
+the origin remote. Two entrypoints share one pipeline
 (branch, push dedupe, PR create/refresh, automerge, green-race unstick):
 
 | binary                 | unit                | branch                      | commit message         |
@@ -19,8 +20,10 @@ nix shell .#updater -c updater-flake-inputs --dry-run -i nixpkgs
 ```
 
 Without `--dry-run` a forge token is required: `FORGE_TOKEN` (or
-`CODEBERG_TOKEN`). `GITHUB_TOKEN` is optional but avoids GitHub API rate
-limits (nix-update version lookups, release-note enrichment).
+`CODEBERG_TOKEN`); on a GitHub-hosted repo this is a GitHub token.
+`GITHUB_TOKEN` is optional but avoids GitHub API rate limits (nix-update
+version lookups, release-note enrichment) — in production both are set from
+the same nixbot secret.
 
 Both tools refuse to run on a dirty working tree: they hard-reset and clean
 the checkout per unit. Use a scratch clone, or commit first.
@@ -38,8 +41,9 @@ injected from nixbot's secrets.
 - neither -> skipped, printed loudly.
 - opt out explicitly with `passthru.updateScript = null` (this package does).
 
-Packages sharing a name prefix (`netbird-*`) are grouped into one branch/PR:
-Codeberg's anti-spam rejects bursts of similar PRs.
+Packages sharing a name prefix (`netbird-*`) are grouped into one branch/PR
+to keep the PR count down (originally because Codeberg's anti-spam rejected
+bursts of similar PRs).
 
 ## Flake inputs
 
@@ -57,9 +61,12 @@ enrichment expands into release notes in the PR body.
   comparison against the remote branch skips no-op force-pushes (and CI
   reruns)
 - existing PR gets title/body refreshed instead of a duplicate
-- automerge (squash, delete branch) is scheduled via API; if checks went
-  green _before_ automerge was scheduled, Forgejo never fires it - the next
-  run detects the stuck PR and merges it directly (`merge_if_green`)
+- automerge (squash) is scheduled via API: Forgejo
+  `merge_when_checks_succeed` (deletes the branch on merge), GitHub GraphQL
+  `enablePullRequestAutoMerge` (needs the repo settings "allow auto-merge"
+  and "automatically delete head branches"); if checks went green _before_
+  automerge was scheduled it never fires - the next run detects the stuck
+  PR and merges it directly (`merge_if_green`)
 - rate-limited (429) forge calls are retried with backoff; a unit that is
   still throttled is deferred, not failed - the next run pushes nothing
   (tree unchanged) and creates the missing PR
@@ -72,7 +79,7 @@ enrichment expands into release notes in the PR body.
 | `update_flake_inputs.py` | entrypoint: flake.lock inputs                 |
 | `pipeline.py`            | shared: token, dirty guard, push/PR/automerge |
 | `packages.py`            | package discovery + nix-update/update.sh runs |
-| `forge.py`               | Codeberg (Gitea) REST client, 429 backoff     |
+| `forge.py`               | forge REST clients (GitHub, Codeberg/Forgejo) |
 | `changelog.py`           | release-note enrichment, stale-URL fix        |
 | `test_updater.py`        | pure-logic tests, run in checkPhase           |
 
