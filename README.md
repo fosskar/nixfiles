@@ -13,6 +13,17 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 - [preservation](https://github.com/nix-community/preservation) - opt-in state persistence with ephemeral roots; see [why preservation over impermanence](docs/decisions/state-persistence.md)
 - openwrt home network declarative router/ap management
 
+## highlights
+
+some pieces worth a closer look:
+
+- [noctalia v5 plugins](modules/home-manager/desktop/noctalia/plugins/) - self-written luau plugins for [noctalia-shell](https://github.com/noctalia-dev/noctalia-shell), shipped straight from the repo as a local plugin source
+- [agent extensions](modules/home-manager/llm/extensions/) - typescript extensions for the pi coding agent
+- [agent skills](modules/home-manager/llm/skills/) - hand-written skills installed into every agent's skill directory by home-manager
+- [clan-services](clan-services/) - reusable clan service modules with roles and vars
+- update automation - [scheduled effects](modules/flake-parts/effects.nix) plus an [updater pipeline](packages/updater/) keep flake inputs and local packages fresh with changelog-enriched prs, built and gated by nixbot ci
+- [local packages](packages/) - packages not in nixpkgs
+
 ## machines
 
 | machine       | type        | description                | specs                                                                                          |
