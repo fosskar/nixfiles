@@ -213,10 +213,16 @@
         ...
       }:
       let
-        # get the server domain from the server role
         serverMachines = lib.attrNames (roles.server.machines or { });
-        serverName = lib.head serverMachines;
-        serverSettings = (roles.server.machines.${serverName} or { }).settings or { };
+        serverSettings =
+          if lib.length serverMachines == 1 then
+            roles.server.machines.${lib.head serverMachines}.settings
+          else
+            throw ''
+              netbird: client role on machine "${machine.name}" requires exactly one machine
+              with the server role in this instance, found ${toString (lib.length serverMachines)}
+              (${lib.concatStringsSep ", " serverMachines})
+            '';
         isServerMachine = builtins.elem machine.name serverMachines;
         sshSettings = (roles.sshServer.machines.${machine.name} or { }).settings or null;
         sshArgs = lib.optionals (sshSettings != null) (
@@ -260,7 +266,7 @@
               services.netbird = {
                 useRoutingFeatures = settings.routingFeatures;
                 clients.default = {
-                  port = serverSettings.port or 51820;
+                  inherit (serverSettings) port;
                   login = {
                     enable = true;
                     setupKeyFile = config.clan.core.vars.generators.netbird-client.files."setup-key".path;
@@ -268,11 +274,11 @@
                   config = {
                     ManagementURL = {
                       Scheme = "https";
-                      Host = "${serverSettings.domain or "localhost"}:443";
+                      Host = "${serverSettings.domain}:443";
                     };
                     AdminURL = {
                       Scheme = "https";
-                      Host = "${serverSettings.domain or "localhost"}:443";
+                      Host = "${serverSettings.domain}:443";
                     };
                   };
                 };
