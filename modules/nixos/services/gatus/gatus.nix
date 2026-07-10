@@ -2,7 +2,6 @@
   flake.modules.nixos.gatus =
     {
       flake-self,
-      options,
       config,
       lib,
       pkgs,
@@ -79,12 +78,6 @@
               }
             ];
           }
-        ];
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        # sqlite uptime history; DynamicUser state lives under /var/lib/private.
-        preservation.preserveAt."/persist".directories = [
-          "/var/lib/private/gatus"
         ];
       };
     };
