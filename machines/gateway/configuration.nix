@@ -27,13 +27,6 @@
     keep-outputs = false;
   };
 
-  preservation.preserveAt."/persist".directories = [
-    {
-      directory = "/var/lib/private";
-      mode = "0700";
-    }
-  ];
-
   services.cloud-init = {
     settings = {
       preserve_hostname = true;

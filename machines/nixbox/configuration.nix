@@ -43,11 +43,6 @@
     pkgs.ipmitool
   ];
 
-  preservation.preserveAt."/persist".directories = [
-    "/var/cache"
-    "/var/lib"
-  ];
-
   boot.kernelModules = [
     "nct6775"
     "kvm-amd"

@@ -157,6 +157,10 @@ in
             directories =
               map toPreservationDir (
                 [
+                  # blanket: all service state survives without per-module wiring.
+                  # cost: state of since-removed services lingers in /persist.
+                  "/var/cache"
+                  "/var/lib"
                   "/var/lib/nixos"
                   "/var/lib/systemd"
                   "/var/log"
