@@ -74,7 +74,7 @@
         }
       ];
 
-      # services on other machines — can't auto-register cross-machine
+      # tiles the cross-host collector can't provide: external non-NixOS devices and local-only endpoints
       services = [
         {
           "network" = [
