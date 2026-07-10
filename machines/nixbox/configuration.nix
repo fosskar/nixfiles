@@ -36,6 +36,7 @@
     self.modules.nixos.systemdEmailAlerts
     self.modules.nixos.miniflux
     self.modules.nixos.wiki
+    self.modules.nixos.vdirsyncer
   ]
   ++ (nflib.scanPaths ./. { });
 
