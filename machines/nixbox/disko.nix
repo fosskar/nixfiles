@@ -27,8 +27,37 @@
       }
     ];
     # tank pool members (flash1/flash2 + optane slogs) are declared below;
-    # extraPools imports it at boot since disko only manages the root pool.
-    zfs.extraPools = [ "tank" ];
+    # disko only manages the root pool. tank datasets are legacy-mountpoint
+    # and declared in fileSystems, so nixos generates zfs-import-tank.service
+    # plus real .mount units; services depend on them via RequiresMountsFor.
+  };
+
+  fileSystems = {
+    "/tank" = {
+      device = "tank";
+      fsType = "zfs";
+      options = [ "nofail" ];
+    };
+    "/tank/apps" = {
+      device = "tank/apps";
+      fsType = "zfs";
+      options = [ "nofail" ];
+    };
+    "/tank/media" = {
+      device = "tank/media";
+      fsType = "zfs";
+      options = [ "nofail" ];
+    };
+    "/tank/shares" = {
+      device = "tank/shares";
+      fsType = "zfs";
+      options = [ "nofail" ];
+    };
+    "/tank/backup" = {
+      device = "tank/backup";
+      fsType = "zfs";
+      options = [ "nofail" ];
+    };
   };
 
   disko.devices = {
