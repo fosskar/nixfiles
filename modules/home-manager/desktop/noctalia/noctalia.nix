@@ -144,6 +144,9 @@
         home.packages = [
           pkgs.ddcutil
           pkgs.python3
+          # fosskar/displays plugin: mirroring + drag-arrange fallback
+          pkgs.wl-mirror
+          pkgs.wdisplays
         ];
 
         wayland.windowManager.niri.settings = {
@@ -245,6 +248,7 @@
                   "voxtype"
                   "input-volume"
                   "output-volume"
+                  "displays"
                   "brightness"
                   "network"
                   "bluetooth"
@@ -261,7 +265,10 @@
             };
 
             plugins = {
-              enabled = [ "fosskar/voxtype" ];
+              enabled = [
+                "fosskar/voxtype"
+                "fosskar/displays"
+              ];
               source = [
                 {
                   kind = "path";
@@ -274,6 +281,9 @@
             widget = {
               voxtype = {
                 type = "fosskar/voxtype:status";
+              };
+              displays = {
+                type = "fosskar/displays:indicator";
               };
               clock = {
                 anchor = true;
@@ -399,6 +409,25 @@
             };
           };
         };
+
+        # fosskar/displays saves ad-hoc kanshi profiles into this mutable file —
+        # deliberate runtime state, not drift; declarative profiles stay in
+        # services.kanshi.settings. mkBefore: kanshi applies the first matching
+        # profile, so UI-saved layouts shadow declarative ones for the same
+        # monitor set.
+        services.kanshi.settings = lib.mkBefore [
+          { include = "${config.xdg.configHome}/kanshi/noctalia.conf"; }
+        ];
+
+        # kanshi fails to start when an included file is missing; seed it empty.
+        home.activation.seedNoctaliaKanshiConf = lib.mkIf config.services.kanshi.enable (
+          lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            if [ ! -f "${config.xdg.configHome}/kanshi/noctalia.conf" ]; then
+              run mkdir -p "${config.xdg.configHome}/kanshi"
+              run touch "${config.xdg.configHome}/kanshi/noctalia.conf"
+            fi
+          ''
+        );
       };
     };
 }

@@ -1,0 +1,64 @@
+# Merged v5 port of Mic92/noctalia-plugins display-config (kanshi/niri display
+# control) and legacy-v4 mirror-mirror (wl-mirror). One panel: per-output
+# power/mode/scale, two-output arrangements, kanshi profile save/switch, and
+# screen mirroring. niri only.
+#
+# Saved profiles live in ~/.config/kanshi/noctalia.conf (mutable runtime
+# state by design); the noctalia HM module prepends the include to
+# services.kanshi.settings and seeds the file on activation.
+#
+# IPC (noctalia msg plugin fosskar/displays:service all <event> [payload]):
+#   toggle | refresh | keep | revert
+#   arrange <extend-right|extend-left|stack-above|stack-below|external-only|internal-only>
+#   kanshiSwitch <name> | kanshiSave <name>
+#   mirrorStart <source> <destination> | mirrorStop
+
+id = "fosskar/displays"
+name = "Displays"
+version = "1.0.0"
+min_noctalia = "5.0.0"
+author = "fosskar"
+license = "MIT"
+tags = ["display", "monitor", "kanshi", "mirror"]
+icon = "device-desktop"
+description = "Monitor power, mode, scale, layout, kanshi profiles, and screen mirroring."
+dependencies = ["niri", "kanshi", "wl-mirror", "wdisplays"]
+
+[[setting]]
+key = "poll_interval"
+type = "int"
+label = "Poll interval (seconds)"
+default = 5
+min = 2
+max = 60
+
+[[setting]]
+key = "kanshi_enabled"
+type = "bool"
+label = "Kanshi integration"
+default = true
+
+[[setting]]
+key = "kanshi_config_dir"
+type = "string"
+label = "Kanshi config directory (empty = auto)"
+default = ""
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 560
+height = 720
+# noctalia.togglePanel() from Luau carries no click anchor (script_api_context.h
+# togglePanelHook is id-only), so open_near_click can't work for plugin panels;
+# pin the panel where the widget lives instead.
+placement = "floating"
+position = "top_right"
+
+[[widget]]
+id = "indicator"
+entry = "widget.luau"
