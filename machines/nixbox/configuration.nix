@@ -57,7 +57,6 @@
         "garage-ui"
         "opencloud"
         "opencloud-permission-fixer"
-        "papra"
       ]
       (_: {
         after = [ "zfs-mount.service" ];
