@@ -64,11 +64,11 @@ Do not use clan/deploy/network commands for discovery. Use only when task explic
 ## repo map
 
 - `modules/{nixos,home-manager}/`: feature/aspect modules
-- `modules/flake-parts/`: flake-level wiring/data, not feature modules; e.g. `flake.domains`, `flake.lib`, `systems`, treefmt, devshells, packages, overlays; `clan.nix` registers `clan-services/<svc>` as `clan.modules.<svc>`; auto-loaded by `import-tree ./modules`
+- `modules/flake-parts/`: flake-level wiring/data, not feature modules; e.g. `flake.domains`, `flake.lib`, `flake.hosts` (`hosts.nix`, single source of machine IPs), `systems`, treefmt, devshells, packages, overlays, effects; `clan.nix` registers `clan-services/<svc>` as `clan.modules.<svc>`; auto-loaded by `import-tree ./modules`
 - `machines/<machine>/configuration.nix`: host composition edge
 - `machines/flake-module.nix`: clan inventory and role composition edge
 - `clan-services/<svc>/default.nix`: clan.service modules (plain dir, referenced by `modules/flake-parts/clan.nix`, not auto-imported)
-- `users/simon/`: home-manager user composition
+- `users/<user>/`: home-manager user composition (`simon`, `workspace`)
 - `modules/home-manager/llm/`: agent tooling; `skills/<name>/` (dir per skill, `SKILL.md` + optional siblings) and `extensions/*.ts` auto-installed into all agent dirs by home-manager; deploy = rebuild/switch
 - `openwrt/`: declarative router/ap config; uci via `openwrt/nix/uci.nix`, raw config under `openwrt/devices/<device>/files/`; lan router `192.168.10.1` runs unbound, split-horizon for `nx3.eu`, and adguardhome; config lives here, not on device
 
@@ -113,9 +113,9 @@ ssh root@<ip>
 
 ## task routing
 
-- global service behavior: edit/export `modules/nixos/services/<service>.nix`; verify importers with `rg "self.modules.nixos.<name>|config.flake.modules.nixos.<name>"`
+- global service behavior: edit/export `modules/nixos/services/<service>.nix` (multi-file services are dirs: `<service>/*.nix`, e.g. `arr-stack/`, `matrix/`, `opencloud/`); verify importers with `rg "self.modules.nixos.<name>|config.flake.modules.nixos.<name>"`
 - one host: edit `machines/<host>/configuration.nix` or scanned host-local file
-- common role: edit `modules/nixos/common/{base,server,workstation}/`; verify clan roles in `machines/flake-module.nix`
+- common role: edit `modules/nixos/common/{base,server,workstation,laptop}/`; verify clan roles in `machines/flake-module.nix`
 - clan role assignment/ownership: edit `machines/flake-module.nix`
 - clan service implementation: edit `clan-services/<service>/default.nix`; registration is automatic via `modules/flake-parts/clan.nix`
 - dashboard/monitoring/reverse proxy: use default options in service module; see service exposure
@@ -157,7 +157,7 @@ Rules:
 - service on machine A appears on machine B homepage/gatus by setting default options on A
 - caddy has no cross-host collector
 - service-specific secret wiring stays in service module
-- public `*.fosskar.eu` ingress = netbird-proxy on `gateway`, configured in the netbird UI (not declarative); a service maps a domain to a `{peer,protocol,port}` target, straight to peer:appPort (no caddy hop); exposed modules must bind `0.0.0.0`/wt0, not loopback, and keep the LAN closed (`openFirewall = false`) (`docs/netbird-exposure.md`)
+- public `*.fosskar.eu` ingress = netbird-proxy on `gateway` (fronted by traefik TCP passthrough, `HostSNI(*)`), configured in the netbird UI (not declarative); a service maps a domain to a `{peer,protocol,port}` target, straight to peer:appPort (no caddy hop); exposed modules must bind `0.0.0.0`/wt0, not loopback, and keep the LAN closed (`openFirewall = false`) (`docs/netbird-exposure.md`)
 
 ## domains
 
@@ -173,6 +173,7 @@ Rules:
 - file name = secret/env filename
 - use `clan.core.vars.generators.<service>.files."<file>"`
 - manual secret path only when already in use
+- shared cross-service generator: `clan.core.vars.generators.smtp` (files `smtp-env`, username, password) reused by gatus, authelia, immich, dawarich
 
 Example:
 
