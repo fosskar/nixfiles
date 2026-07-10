@@ -255,7 +255,6 @@
           {
             name = "Grafana";
             url = "https://${localHost}";
-            group = "Monitoring";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

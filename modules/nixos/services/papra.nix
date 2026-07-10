@@ -132,7 +132,6 @@
         {
           name = "Papra";
           url = "https://${localHost}";
-          group = "Files";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

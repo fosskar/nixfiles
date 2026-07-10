@@ -48,8 +48,8 @@
         services.gatus.settings.endpoints = [
           {
             name = "Bazarr";
+            # backend check on purpose: the edge is forward-auth, authelia answers 302 without reaching the service
             url = listenUrl;
-            group = "Arr Stack";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

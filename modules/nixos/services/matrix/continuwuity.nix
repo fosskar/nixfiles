@@ -94,7 +94,6 @@
         {
           name = "Continuwuity";
           url = "https://${publicHost}/_matrix/client/versions";
-          group = "Communication";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

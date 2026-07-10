@@ -46,8 +46,7 @@
         services.gatus.settings.endpoints = [
           {
             name = "Seerr";
-            url = listenUrl;
-            group = "Media";
+            url = "https://${localHost}";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

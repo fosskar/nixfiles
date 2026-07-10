@@ -175,8 +175,7 @@
         services.gatus.settings.endpoints = [
           {
             name = "Garage";
-            url = listenUrl;
-            group = "Infrastructure";
+            url = "https://${localHost}";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

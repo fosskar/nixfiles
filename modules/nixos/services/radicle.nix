@@ -64,7 +64,6 @@
           {
             name = "Radicle";
             url = "https://${publicHost}/";
-            group = "Automation";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

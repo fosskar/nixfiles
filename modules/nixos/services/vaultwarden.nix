@@ -35,7 +35,6 @@
         {
           name = "Vaultwarden";
           url = "https://${localHost}";
-          group = "security";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

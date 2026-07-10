@@ -77,8 +77,7 @@
         services.gatus.settings.endpoints = [
           {
             name = "Jellyfin";
-            url = listenUrl;
-            group = "Media";
+            url = "https://${localHost}";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

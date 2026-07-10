@@ -226,7 +226,6 @@
           {
             name = "Authelia";
             url = "https://${localHost}";
-            group = "Security";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

@@ -137,7 +137,6 @@ _: {
               {
                 name = "Beszel";
                 url = "https://${beszelDomain}";
-                group = "Monitoring";
                 enabled = true;
                 interval = "5m";
                 conditions = [ "[STATUS] == 200" ];

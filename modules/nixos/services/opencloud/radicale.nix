@@ -70,7 +70,6 @@
           {
             name = "Radicale";
             url = "tcp://127.0.0.1:5232";
-            group = "Files";
             conditions = [ "[CONNECTED] == true" ];
             enabled = true;
             alerts = [ { type = "email"; } ];

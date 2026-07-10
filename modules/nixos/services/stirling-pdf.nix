@@ -41,7 +41,6 @@
         {
           name = "Stirling PDF";
           url = "https://${localHost}";
-          group = "Tools";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

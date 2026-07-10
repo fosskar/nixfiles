@@ -116,7 +116,6 @@
         {
           name = "Dawarich";
           url = "https://${localHost}";
-          group = "Media";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

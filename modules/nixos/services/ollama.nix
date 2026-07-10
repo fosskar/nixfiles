@@ -46,8 +46,7 @@
       services.gatus.settings.endpoints = [
         {
           name = "Ollama";
-          url = "${listenUrl}/api/tags";
-          group = "AI";
+          url = "https://${localHost}/api/tags";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

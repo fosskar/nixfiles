@@ -64,7 +64,6 @@
         {
           name = "Collabora";
           url = "https://${officeHost}/hosting/discovery";
-          group = "Files";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

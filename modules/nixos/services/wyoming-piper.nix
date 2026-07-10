@@ -54,8 +54,7 @@
       services.gatus.settings.endpoints = [
         {
           name = "Wyoming Piper";
-          url = "http://${httpAddress}:${toString httpPort}/api/info";
-          group = "AI";
+          url = "https://${localHost}/api/info";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

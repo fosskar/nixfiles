@@ -51,8 +51,7 @@
         services.gatus.settings.endpoints = [
           {
             name = "Navidrome";
-            url = listenUrl;
-            group = "Media";
+            url = "https://${localHost}";
             enabled = true;
             alerts = [ { type = "email"; } ];
             interval = "5m";

@@ -89,7 +89,6 @@
               {
                 name = "NetBird";
                 url = "https://${settings.domain}";
-                group = "Network";
                 enabled = true;
                 alerts = [ { type = "email"; } ];
                 interval = "5m";

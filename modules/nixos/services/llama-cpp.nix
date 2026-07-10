@@ -124,8 +124,7 @@
       services.gatus.settings.endpoints = [
         {
           name = "llama.cpp";
-          url = "${listenUrl}/health";
-          group = "AI";
+          url = "https://${localHost}/health";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";

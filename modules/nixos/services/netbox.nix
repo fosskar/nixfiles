@@ -130,7 +130,6 @@
         {
           name = "NetBox";
           url = "https://${localHost}";
-          group = "Infrastructure";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";
