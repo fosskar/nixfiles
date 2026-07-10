@@ -40,5 +40,10 @@
       description = "Flake Rust template";
       path = self.outPath + "/templates/rust";
     };
+
+    service = {
+      description = "NixOS service module template (homepage, gatus, caddy, preservation)";
+      path = self.outPath + "/templates/service";
+    };
   };
 }
