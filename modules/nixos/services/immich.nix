@@ -60,35 +60,42 @@
         '';
       };
 
-      services.authelia.instances.main.settings.identity_providers.oidc.clients = [
-        {
-          client_id = "immich";
-          client_name = "Immich";
-          client_secret = "{{ secret \"${
-            config.clan.core.vars.generators.immich.files."oauth-client-secret-hash".path
-          }\" }}";
-          public = false;
-          consent_mode = "implicit";
-          authorization_policy = "users";
-          token_endpoint_auth_method = "client_secret_post";
-          redirect_uris = [
-            "https://${localHost}/auth/login"
-            "https://${localHost}/user-settings"
-            "https://${publicHost}/auth/login"
-            "https://${publicHost}/user-settings"
-            "app.immich:///oauth-callback"
-          ];
-          scopes = [
-            "openid"
-            "profile"
-            "email"
-            "groups"
-          ];
-          response_types = [ "code" ];
-          grant_types = [ "authorization_code" ];
-          claims_policy = "immich_policy";
-        }
-      ];
+      # maps authelia group membership to the immich role claim consumed
+      # via oauth.roleClaim below
+      services.authelia.instances.main.settings = {
+        definitions.user_attributes.immich_role.expression = ''"admin" in groups ? "admin" : "user"'';
+        identity_providers.oidc.claims_policies.immich_policy.custom_claims.immich_role.attribute =
+          "immich_role";
+        identity_providers.oidc.clients = [
+          {
+            client_id = "immich";
+            client_name = "Immich";
+            client_secret = "{{ secret \"${
+              config.clan.core.vars.generators.immich.files."oauth-client-secret-hash".path
+            }\" }}";
+            public = false;
+            consent_mode = "implicit";
+            authorization_policy = "users";
+            token_endpoint_auth_method = "client_secret_post";
+            redirect_uris = [
+              "https://${localHost}/auth/login"
+              "https://${localHost}/user-settings"
+              "https://${publicHost}/auth/login"
+              "https://${publicHost}/user-settings"
+              "app.immich:///oauth-callback"
+            ];
+            scopes = [
+              "openid"
+              "profile"
+              "email"
+              "groups"
+            ];
+            response_types = [ "code" ];
+            grant_types = [ "authorization_code" ];
+            claims_policy = "immich_policy";
+          }
+        ];
+      };
 
       services.immich = {
         enable = true;

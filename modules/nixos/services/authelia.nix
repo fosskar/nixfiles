@@ -146,8 +146,6 @@
               ];
             };
 
-            definitions.user_attributes.immich_role.expression = ''"admin" in groups ? "admin" : "user"'';
-
             identity_providers.oidc.authorization_policies = {
               users = {
                 default_policy = "deny";
@@ -172,9 +170,6 @@
                 ];
               };
             };
-
-            identity_providers.oidc.claims_policies.immich_policy.custom_claims.immich_role.attribute =
-              "immich_role";
 
             identity_validation.elevated_session = {
               require_second_factor = true;
