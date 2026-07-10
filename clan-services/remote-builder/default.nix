@@ -4,7 +4,7 @@ _:
   _class = "clan.service";
   manifest.name = "remote-builder";
   manifest.description = "nix remote build server/client wiring";
-  manifest.readme = "configure remote nix builder and clients with per-client ssh keys";
+  manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "Developer Tools" ];
 
   roles.builder = {

@@ -21,7 +21,7 @@ in
   _class = "clan.service";
   manifest.name = "harmonia";
   manifest.description = "serve local nix store as binary cache";
-  manifest.readme = "harmonia server/client cache wiring";
+  manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "Nix Tools" ];
 
   roles.server = {

@@ -3,7 +3,7 @@
   _class = "clan.service";
   manifest.name = "monitoring";
   manifest.description = "lightweight central monitoring via telegraf, victoriametrics, victorialogs, and grafana";
-  manifest.readme = "opinionated lightweight monitoring service for nixfiles";
+  manifest.readme = builtins.readFile ./README.md;
 
   roles.server = {
     description = "central monitoring server";

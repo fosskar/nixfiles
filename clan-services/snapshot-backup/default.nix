@@ -4,7 +4,7 @@ _:
   _class = "clan.service";
   manifest.name = "snapshot-backup";
   manifest.description = "create filesystem snapshots for clan backup state";
-  manifest.readme = "adds snapshot-backed clan.core.state entries consumed by clan-core borgbackup";
+  manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "System" ];
 
   roles.client = {

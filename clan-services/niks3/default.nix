@@ -22,7 +22,7 @@ in
   _class = "clan.service";
   manifest.name = "niks3";
   manifest.description = "self-hosted nix binary cache via niks3 with bundled garage s3 backend";
-  manifest.readme = "niks3 server with bundled garage s3 backend; server role hosts cache, client role wires substituter";
+  manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "Nix Tools" ];
 
   roles.server = {

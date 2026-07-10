@@ -9,7 +9,7 @@
   _class = "clan.service";
   manifest.name = "netbird";
   manifest.description = "self-hosted netbird VPN mesh with relay server and embedded IdP";
-  manifest.readme = "netbird mesh VPN with management, signal, relay, and dashboard";
+  manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "Network" ];
   manifest.exports.out = [
     "networking"

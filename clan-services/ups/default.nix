@@ -2,7 +2,7 @@ _: {
   _class = "clan.service";
   manifest.name = "ups";
   manifest.description = "NUT UPS monitoring: usb-attached primary serving remote secondaries";
-  manifest.readme = "NUT UPS monitoring; usb-attached primary serves remote secondaries over the LAN";
+  manifest.readme = builtins.readFile ./README.md;
 
   roles.primary = {
     description = "usb-attached UPS host: runs the driver, upsd and the primary upsmon";

@@ -2,7 +2,7 @@ _: {
   _class = "clan.service";
   manifest.name = "beszel";
   manifest.description = "beszel hub + agents with declarative systems config";
-  manifest.readme = "dedicated beszel service";
+  manifest.readme = builtins.readFile ./README.md;
 
   roles.server = {
     description = "beszel hub server";
