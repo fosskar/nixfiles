@@ -94,22 +94,20 @@ framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 
 ## nixbox
 
-home server at `192.168.20.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
+home server at `192.168.20.200` (ryzen 7 5700x, 64gb, nvidia rtx pro 4000, zfs)
 
 ### infrastructure
 
 | service    | port   | domain    | notes                     |
 | ---------- | ------ | --------- | ------------------------- |
-| nginx      | 80/443 | \*.nx3.eu | reverse proxy, acme certs |
+| caddy      | 80/443 | \*.nx3.eu | reverse proxy, acme certs |
 | postgresql | 5432   | -         | database backend          |
-| avahi      | -      | -         | mdns/bonjour for mac/ios  |
 
 **storage:**
 
-- zfs pool `tank` with datasets: apps, media, shares, backup
+- zfs pool `tank` with datasets: apps, media, shares, backup (legacy mountpoints, mounted via `fileSystems`)
 - media dirs: `/tank/media/{books,movies,music,podcasts,tv}`
 - user shares: `/tank/shares/{simon,ina,shared}`
-- samba: smb3_11 minimum, encryption required, recycle bin
 
 **ups:** eaton ellipse pro via nut (usbhid-ups)
 
@@ -128,16 +126,16 @@ home server at `192.168.20.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 | victoriametrics | -          | vm.nx3.eu      | tsdb, scrapes openwrt nodes       |
 | grafana         | -          | grafana.nx3.eu | dashboards                        |
 | telegraf        | -          | -              | system, zfs, upsd, sensors, smart |
-| glances         | 61208      | -              | real-time system stats            |
+| victorialogs    | -          | -              | log database                      |
 
 ### media
 
-| service        | port  | domain                | notes                             |
-| -------------- | ----- | --------------------- | --------------------------------- |
-| jellyfin       | 8096  | jellyfin.nx3.eu       | media server, intel qsv transcode |
-| seerr          | 5055  | seerr.nx3.eu          | request management                |
-| immich         | 2283  | immich.nx3.eu         | photo management                  |
-| audiobookshelf | 13378 | audiobookshelf.nx3.eu | audiobooks/podcasts               |
+| service   | port | domain           | notes              |
+| --------- | ---- | ---------------- | ------------------ |
+| jellyfin  | 8096 | jellyfin.nx3.eu  | media server       |
+| seerr     | 5055 | seerr.nx3.eu     | request management |
+| immich    | 2283 | immich.nx3.eu    | photo management   |
+| navidrome | 4533 | navidrome.nx3.eu | music streaming    |
 
 ### arr stack
 
@@ -147,7 +145,6 @@ home server at `192.168.20.200` (ryzen 7 5700x, 64gb, intel arc b580, zfs)
 | sonarr    | 8989 | sonarr.nx3.eu   | tv shows                   |
 | radarr    | 7878 | radarr.nx3.eu   | movies                     |
 | lidarr    | 8686 | lidarr.nx3.eu   | music                      |
-| readarr   | 8787 | readarr.nx3.eu  | books                      |
 | bazarr    | 6767 | -               | subtitles                  |
 | sabnzbd   | 8080 | sabnzbd.nx3.eu  | usenet client              |
 | recyclarr | -    | -               | trash guides sync (weekly) |
@@ -156,18 +153,15 @@ all services run as `media` group with umask 0027
 
 ### documents & security
 
-| service     | port  | domain       | notes                         |
-| ----------- | ----- | ------------ | ----------------------------- |
-| paperless   | 28981 | docs.nx3.eu  | document management           |
-| vaultwarden | 8222  | vault.nx3.eu | password manager (postgresql) |
+| service     | port | domain       | notes                         |
+| ----------- | ---- | ------------ | ----------------------------- |
+| vaultwarden | 8222 | vault.nx3.eu | password manager (postgresql) |
 
 ### ai/llm
 
-| service | port  | notes                    |
-| ------- | ----- | ------------------------ |
-| ollama  | 11434 | vulkan on intel arc b580 |
-
-**models:** deepseek-r1:7b, qwen3:8b, gemma3:4b, minicpm-v:8b (vision)
+| service   | port  | notes                       |
+| --------- | ----- | --------------------------- |
+| llama-cpp | 18080 | cuda on nvidia rtx pro 4000 |
 
 ### networking
 
