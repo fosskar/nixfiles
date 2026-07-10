@@ -312,6 +312,7 @@
         systemd.services.opencloud = {
           after = [ "tika.service" ];
           wants = [ "tika.service" ];
+          unitConfig.RequiresMountsFor = [ dataDir ];
           serviceConfig.ReadWritePaths = [ dataDir ];
           path = [ pkgs.inotify-tools ];
         };
@@ -334,6 +335,7 @@
             pkgs.coreutils
             pkgs.findutils
           ];
+          unitConfig.RequiresMountsFor = [ dataDir ];
           serviceConfig = {
             Type = "simple";
             User = "opencloud";

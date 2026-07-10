@@ -1,6 +1,5 @@
 {
   self,
-  lib,
   nflib,
   pkgs,
   ...
@@ -48,22 +47,6 @@
     "/var/cache"
     "/var/lib"
   ];
-
-  systemd.services =
-    lib.genAttrs
-      [
-        "beszel-agent"
-        "garage"
-        "garage-layout-init"
-        "garage-ui"
-        "opencloud"
-        "opencloud-permission-fixer"
-      ]
-      (_: {
-        after = [ "zfs-mount.service" ];
-        requires = [ "zfs-mount.service" ];
-        unitConfig.RequiresMountsFor = [ "/tank" ];
-      });
 
   boot.kernelModules = [
     "nct6775"

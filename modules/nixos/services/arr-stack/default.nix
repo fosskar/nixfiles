@@ -20,6 +20,24 @@
           "d ${mediaRoot}/downloads/complete 0775 root media -"
         ];
 
+        # media consumers must not start (and write into the empty mountpoint
+        # dir on the ephemeral root) unless the media mount is up. prowlarr,
+        # recyclarr, and seerr only talk to APIs and stay out of this list.
+        systemd.services =
+          lib.genAttrs
+            [
+              "sonarr"
+              "radarr"
+              "lidarr"
+              "bazarr"
+              "sabnzbd"
+              "jellyfin"
+              "navidrome"
+            ]
+            (_: {
+              unitConfig.RequiresMountsFor = [ mediaRoot ];
+            });
+
         services.authelia.instances.main.settings.access_control.rules = lib.mkIf autheliaEnabled (
           lib.mkBefore [
             {
