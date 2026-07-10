@@ -88,9 +88,11 @@ in
             metadataDir = config.services.garage.settings.metadata_dir;
             hostName = config.networking.hostName;
 
+            # runs as root (`+` prefix) after the dynamic user is allocated:
+            # boot-time tmpfiles can't resolve the DynamicUser `garage`.
             placeNodeKey = pkgs.writeShellScript "garage-place-node-key" ''
               set -euo pipefail
-              install -d -m 0700 -o garage -g garage ${metadataDir}
+              install -d -m 0700 -o garage -g garage ${metadataDir} ${settings.dataPath}
               install -m 0600 -o garage -g garage \
                 ${nodeKeyGen.files."node_key_${hostName}".path} ${metadataDir}/node_key
               install -m 0644 -o garage -g garage \
@@ -148,21 +150,24 @@ in
 
             networking.firewall.allowedTCPPorts = [ rpcPort ];
 
-            systemd.tmpfiles.rules = [ "d ${settings.dataPath} 0700 garage garage -" ];
-
-            systemd.services.garage.serviceConfig = {
-              ExecStartPre = [ "+${placeNodeKey}" ];
-              LoadCredential = [
-                "rpc_secret_path:${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}"
-                "admin_token_path:${config.clan.core.vars.generators.garage.files.admin_token.path}"
-                "metrics_token_path:${config.clan.core.vars.generators.garage.files.metrics_token.path}"
-              ];
-              Environment = [
-                "GARAGE_ALLOW_WORLD_READABLE_SECRETS=true"
-                "GARAGE_RPC_SECRET_FILE=%d/rpc_secret_path"
-                "GARAGE_ADMIN_TOKEN_FILE=%d/admin_token_path"
-                "GARAGE_METRICS_TOKEN_FILE=%d/metrics_token_path"
-              ];
+            systemd.services.garage = {
+              # don't start (and don't create data on the wrong fs) unless the
+              # dataPath's backing mount is up; no-op when dataPath sits on /.
+              unitConfig.RequiresMountsFor = [ settings.dataPath ];
+              serviceConfig = {
+                ExecStartPre = [ "+${placeNodeKey}" ];
+                LoadCredential = [
+                  "rpc_secret_path:${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}"
+                  "admin_token_path:${config.clan.core.vars.generators.garage.files.admin_token.path}"
+                  "metrics_token_path:${config.clan.core.vars.generators.garage.files.metrics_token.path}"
+                ];
+                Environment = [
+                  "GARAGE_ALLOW_WORLD_READABLE_SECRETS=true"
+                  "GARAGE_RPC_SECRET_FILE=%d/rpc_secret_path"
+                  "GARAGE_ADMIN_TOKEN_FILE=%d/admin_token_path"
+                  "GARAGE_METRICS_TOKEN_FILE=%d/metrics_token_path"
+                ];
+              };
             };
 
             # per-node admin/metrics tokens; rpc secret shared cluster-wide.
