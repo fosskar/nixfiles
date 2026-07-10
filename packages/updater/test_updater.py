@@ -20,7 +20,7 @@ from forge import Codeberg, ForgeError, Github
 from update_flake_inputs import FlakeInput
 from update_packages import commit_message, group_packages  # noqa: E402
 
-from packages import Package
+from packages import Package, classify, nix_update_cmd, parse_update_script
 
 
 def pkg(name: str) -> Package:
@@ -504,6 +504,79 @@ class TestConnectDispatch(unittest.TestCase):
 
     def test_codeberg_host(self):
         self.assertIsInstance(self._connect("https://codeberg.org/o/r.git"), Codeberg)
+
+
+class TestParseUpdateScript(unittest.TestCase):
+    """parse_update_script reads captured `nix eval .#<pkg>.updateScript --json`."""
+
+    def test_nix_update_script_list_form(self):
+        out = json.dumps(
+            ["/nix/store/abc-nix-update/bin/nix-update", "--version-regex", "v(.*)"]
+        )
+        self.assertEqual(
+            parse_update_script(out),
+            ["/nix/store/abc-nix-update/bin/nix-update", "--version-regex", "v(.*)"],
+        )
+
+    def test_path_form_rejected(self):
+        # updateScript = ./update.sh evals to a store-path string, not a list;
+        # handled by the update.sh fallback instead.
+        self.assertIsNone(parse_update_script(json.dumps("/nix/store/x-src/update.sh")))
+
+    def test_null_rejected(self):
+        # the updater package itself sets passthru.updateScript = null
+        self.assertIsNone(parse_update_script("null"))
+
+
+class TestClassify(unittest.TestCase):
+    def test_update_script_wins_over_update_sh(self):
+        self.assertEqual(classify(["nix-update"], has_update_sh=True), "nix-update")
+
+    def test_update_sh_fallback(self):
+        self.assertEqual(classify(None, has_update_sh=True), "script")
+
+    def test_neither_skips(self):
+        self.assertIsNone(classify(None, has_update_sh=False))
+
+
+class TestNixUpdateCmd(unittest.TestCase):
+    def test_store_path_head_stripped_args_kept(self):
+        cmd = nix_update_cmd(
+            "brave-origin",
+            ["/nix/store/abc-nix-update/bin/nix-update", "--version-regex", "v(.*)"],
+            "/tmp/m.msg",
+        )
+        self.assertEqual(
+            cmd,
+            [
+                "nix-update",
+                "--version-regex",
+                "v(.*)",
+                "--flake",
+                "--write-commit-message",
+                "/tmp/m.msg",
+                "brave-origin",
+            ],
+        )
+
+    def test_bare_nix_update_head(self):
+        cmd = nix_update_cmd("voquill", ["nix-update", "--flake"], "/tmp/m.msg")
+        self.assertEqual(cmd[:2], ["nix-update", "--flake"])
+        self.assertEqual(cmd[-1], "voquill")
+
+    def test_foreign_head_drops_args(self):
+        # a list updateScript not headed by nix-update: args are not
+        # nix-update flags, so only the package name is passed
+        cmd = nix_update_cmd("pkg", ["/nix/store/x/bin/custom-update", "--foo"], "m")
+        self.assertEqual(
+            cmd, ["nix-update", "--flake", "--write-commit-message", "m", "pkg"]
+        )
+
+    def test_empty_script(self):
+        cmd = nix_update_cmd("pkg", [], "m")
+        self.assertEqual(
+            cmd, ["nix-update", "--flake", "--write-commit-message", "m", "pkg"]
+        )
 
 
 if __name__ == "__main__":

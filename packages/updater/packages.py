@@ -38,11 +38,24 @@ def capture(
     return subprocess.run(cmd, cwd=repo, capture_output=True, text=True, check=check)
 
 
+def parse_update_script(nix_eval_json: str) -> list[str] | None:
+    # Only the nix-update-script list form is usable here; a path form
+    # (updateScript = ./update.sh) is handled by the update.sh fallback.
+    value = json.loads(nix_eval_json)
+    return value if isinstance(value, list) else None
+
+
+def classify(update_script: list[str] | None, has_update_sh: bool) -> str | None:
+    if update_script is not None:
+        return "nix-update"
+    if has_update_sh:
+        return "script"
+    return None
+
+
 def _nix_update_args(repo: Path, name: str) -> list[str] | None:
     # Probe the flake attr instead of grepping package.nix: updateScript
     # may be defined in another file (brave-origin's make-brave.nix).
-    # Only the nix-update-script list form is usable here; a path form
-    # (updateScript = ./update.sh) is handled by the update.sh fallback.
     result = capture(
         repo=repo,
         cmd=["nix", "eval", f".#{name}.updateScript", "--json"],
@@ -50,8 +63,7 @@ def _nix_update_args(repo: Path, name: str) -> list[str] | None:
     )
     if result.returncode != 0:
         return None
-    value = json.loads(result.stdout)
-    return value if isinstance(value, list) else None
+    return parse_update_script(result.stdout)
 
 
 def discover(repo: Path) -> list[Package]:
@@ -60,12 +72,12 @@ def discover(repo: Path) -> list[Package]:
         if not pkg_dir.is_dir():
             continue
         update_sh = pkg_dir / "update.sh"
-        if _nix_update_args(repo, pkg_dir.name) is not None:
-            packages.append(Package(pkg_dir.name, "nix-update", pkg_dir))
-        elif update_sh.exists() and update_sh.stat().st_mode & 0o111:
-            packages.append(Package(pkg_dir.name, "script", pkg_dir))
-        else:
+        has_update_sh = update_sh.exists() and bool(update_sh.stat().st_mode & 0o111)
+        method = classify(_nix_update_args(repo, pkg_dir.name), has_update_sh)
+        if method is None:
             print(f":: {pkg_dir.name} - no usable updateScript or update.sh, skipping")
+        else:
+            packages.append(Package(pkg_dir.name, method, pkg_dir))
     return packages
 
 
@@ -94,26 +106,20 @@ def _is_nix_update(arg: str) -> bool:
     return arg == "nix-update" or arg.rsplit("/", 1)[-1] == "nix-update"
 
 
+def nix_update_cmd(name: str, script: list[str], msg_file: str) -> list[str]:
+    # updateScript is `[<nix-update>, <args...>]`; call nix-update with
+    # those args. --use-update-script re-runs it in a nix develop shell
+    # and fails.
+    extra = script[1:] if script and _is_nix_update(script[0]) else []
+    return ["nix-update", *extra, "--flake", "--write-commit-message", msg_file, name]
+
+
 def update(repo: Path, pkg: Package) -> UpdateResult:
     rel = f"packages/{pkg.name}"
     if pkg.method == "nix-update":
-        # updateScript is `[<nix-update>, <args...>]`; call nix-update with
-        # those args. --use-update-script re-runs it in a nix develop shell
-        # and fails.
         script = _update_script_args(repo, pkg.name)
-        extra = script[1:] if script and _is_nix_update(script[0]) else []
         with tempfile.NamedTemporaryFile("r", suffix=".msg") as msg:
-            run(
-                repo=repo,
-                cmd=[
-                    "nix-update",
-                    *extra,
-                    "--flake",
-                    "--write-commit-message",
-                    msg.name,
-                    pkg.name,
-                ],
-            )
+            run(repo=repo, cmd=nix_update_cmd(pkg.name, script, msg.name))
             message = Path(msg.name).read_text().strip() or None
         changed = _git_touched(repo, rel)
         return UpdateResult(pkg.name, changed, message if changed else None)
