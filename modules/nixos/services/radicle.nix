@@ -37,6 +37,10 @@
         type = lib.types.listOf lib.types.str;
         default = [
           "rad:z4X1gDvBMpZLyzkQEj7dCMpurwqkV" # nixfiles
+          "rad:z5CtgCW1jHxrty8g192NZYVG7S7H" # harbor-labeler
+          "rad:zMmPXt7SUuhRQuodAjvy8owU8CoF" # pi-pack
+          "rad:z2meKz6mpGHaWFhmxmC15wpS2Zjb1" # ssync
+          "rad:z27Hv7yHKZG5df2u9PQnUfRV7VRcb" # wiki
         ];
         description = ''
           radicle repository ids to whitelist (`rad seed`) and pin in the explorer.
