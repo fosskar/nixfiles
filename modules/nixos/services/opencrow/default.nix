@@ -9,6 +9,7 @@
     }:
     let
       micsSkills = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+      opencrowPackages = inputs.opencrow.packages.${pkgs.stdenv.hostPlatform.system};
     in
     {
       imports = [ inputs.opencrow.nixosModules.default ];
@@ -27,6 +28,10 @@
 
       services.opencrow = {
         enable = true;
+        # upstream module resolves the package default and `= true` extensions
+        # via the deprecated pkgs.hostPlatform alias; pass packages explicitly
+        # so those code paths never evaluate
+        package = opencrowPackages.opencrow;
         piPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.omp;
 
         environmentFiles = [ config.clan.core.vars.generators.opencrow.files.".env".path ];
@@ -48,8 +53,8 @@
         };
 
         extensions = {
-          memory = true;
-          reminders = true;
+          memory = opencrowPackages.extension-memory;
+          reminders = opencrowPackages.extension-reminders;
         };
 
         skills = {
