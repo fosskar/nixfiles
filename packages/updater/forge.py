@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any
 
@@ -154,13 +155,40 @@ class Github(Forge):
     def open_pulls(self) -> list[dict[str, Any]]:
         return self._request("GET", f"{self.api}/pulls?state=open&per_page=50") or []
 
+    # The check run gating direct merges. Mirrors the required status of the
+    # Codeberg branch protection; nixbot creates it per push and it succeeds
+    # only when every build attribute did.
+    REQUIRED_CHECK = "nixbot/nix-build"
+
     def merge_if_green(self, index: int) -> None:
-        # Same green-race unsticking as Codeberg. Branch deletion is not a
-        # merge parameter on GitHub; the repo's "automatically delete head
-        # branches" setting covers it.
+        # Same green-race unsticking as Codeberg, but GitHub cannot be
+        # trusted to reject the merge: branch protection is unavailable on
+        # private repos under the free plan, so an unconditional PUT merges
+        # anything (nixwork PR #28 merged 96s after creation, hours before
+        # nix-build failed). Verify CI ourselves: the aggregate nixbot check
+        # run on the PR head must have concluded successfully. A missing run
+        # fails closed - nixbot has not reported (or not started) yet.
+        # Branch deletion is not a merge parameter on GitHub; the repo's
+        # "automatically delete head branches" setting covers it.
         try:
+            head = self._request("GET", f"{self.api}/pulls/{index}")["head"]["sha"]
+            runs = self._request(
+                "GET",
+                f"{self.api}/commits/{head}/check-runs"
+                f"?check_name={urllib.parse.quote(self.REQUIRED_CHECK, safe='')}",
+            ).get("check_runs", [])
+            if not any(
+                run["status"] == "completed" and run["conclusion"] == "success"
+                for run in runs
+            ):
+                print(f":: PR {index} - {self.REQUIRED_CHECK} not green, not merging")
+                return
+            # `sha` pins the merge to the verified head; a push racing this
+            # check is rejected with 409 instead of merging unverified work.
             self._request(
-                "PUT", f"{self.api}/pulls/{index}/merge", {"merge_method": "squash"}
+                "PUT",
+                f"{self.api}/pulls/{index}/merge",
+                {"merge_method": "squash", "sha": head},
             )
             print(f":: PR {index} - checks already green, merged directly")
         except ForgeError as e:

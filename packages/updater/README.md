@@ -67,6 +67,12 @@ enrichment expands into release notes in the PR body.
   and "automatically delete head branches"); if checks went green _before_
   automerge was scheduled it never fires - the next run detects the stuck
   PR and merges it directly (`merge_if_green`)
+- on Codeberg `merge_if_green` trusts branch protection: the direct merge
+  405s while the required status is pending. On GitHub it verifies CI
+  itself - branch protection is unavailable on private free-plan repos, so
+  it merges (pinned to the verified head sha) only when the
+  `nixbot/nix-build` check run on the PR head concluded successfully; a
+  missing run fails closed
 - rate-limited (429) forge calls are retried with backoff; a unit that is
   still throttled is deferred, not failed - the next run pushes nothing
   (tree unchanged) and creates the missing PR

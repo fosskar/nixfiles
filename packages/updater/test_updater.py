@@ -376,68 +376,118 @@ class TestRateLimitDeferral(unittest.TestCase):
 
 
 class TestGithubRequestShape(unittest.TestCase):
-    """merge_if_green must emit the exact GitHub REST merge request."""
+    """merge_if_green must verify CI, then emit the exact REST merge request."""
+
+    @staticmethod
+    def _resp(payload: dict) -> mock.MagicMock:
+        resp = mock.MagicMock()
+        resp.__enter__.return_value.read.return_value = json.dumps(payload).encode()
+        return resp
 
     def test_merge_request_method_url_auth_body(self):
         gh = Github("github.com", "owner", "repo", "tok")
-        urlopen = mock.MagicMock()
-        urlopen.return_value.__enter__.return_value.read.return_value = b""
+        urlopen = mock.Mock(
+            side_effect=[
+                self._resp({"head": {"sha": "abc123"}}),
+                self._resp(
+                    {"check_runs": [{"status": "completed", "conclusion": "success"}]}
+                ),
+                self._resp({}),
+            ]
+        )
         with (
             mock.patch("forge.urllib.request.urlopen", urlopen),
             contextlib.redirect_stdout(io.StringIO()),
         ):
             gh.merge_if_green(7)
-        req = urlopen.call_args[0][0]
-        self.assertEqual(req.get_method(), "PUT")
+        pull, checks, merge = (call[0][0] for call in urlopen.call_args_list)
+        self.assertEqual(pull.get_method(), "GET")
         self.assertEqual(
-            req.full_url, "https://api.github.com/repos/owner/repo/pulls/7/merge"
+            pull.full_url, "https://api.github.com/repos/owner/repo/pulls/7"
         )
-        self.assertEqual(req.get_header("Authorization"), "Bearer tok")
-        self.assertEqual(req.get_header("Accept"), "application/vnd.github+json")
-        self.assertEqual(json.loads(req.data), {"merge_method": "squash"})
+        self.assertEqual(checks.get_method(), "GET")
+        self.assertEqual(
+            checks.full_url,
+            "https://api.github.com/repos/owner/repo/commits/abc123"
+            "/check-runs?check_name=nixbot%2Fnix-build",
+        )
+        self.assertEqual(merge.get_method(), "PUT")
+        self.assertEqual(
+            merge.full_url, "https://api.github.com/repos/owner/repo/pulls/7/merge"
+        )
+        self.assertEqual(merge.get_header("Authorization"), "Bearer tok")
+        self.assertEqual(merge.get_header("Accept"), "application/vnd.github+json")
+        self.assertEqual(
+            json.loads(merge.data), {"merge_method": "squash", "sha": "abc123"}
+        )
 
 
 class TestGithubMergeIfGreen(unittest.TestCase):
     """405/409 are expected races and stay silent; other failures print."""
 
+    _GREEN = {"check_runs": [{"status": "completed", "conclusion": "success"}]}
+
     def _merge(self, exc: Exception | None) -> str:
         gh = Github("github.com", "o", "r", "tok")
-        urlopen = mock.MagicMock()
-        if exc is not None:
-            urlopen.side_effect = exc
-        else:
-            urlopen.return_value.__enter__.return_value.read.return_value = b""
+        gh._request = mock.Mock(
+            side_effect=[{"head": {"sha": "abc"}}, self._GREEN, exc or None]
+        )
         out = io.StringIO()
-        with (
-            mock.patch("forge._BACKOFF", (0,)),
-            mock.patch("forge.time.sleep"),
-            mock.patch("forge.urllib.request.urlopen", urlopen),
-            contextlib.redirect_stdout(out),
-        ):
+        with contextlib.redirect_stdout(out):
             gh.merge_if_green(7)
         return out.getvalue()
 
-    @staticmethod
-    def _http_error(code: int) -> urllib.error.HTTPError:
-        return urllib.error.HTTPError(
-            "https://api.github.com/x",
-            code,
-            "err",
-            email.message.Message(),
-            io.BytesIO(b"detail"),
-        )
-
     def test_405_silent(self):
-        self.assertEqual(self._merge(self._http_error(405)), "")
+        self.assertEqual(self._merge(ForgeError("pending", status=405)), "")
 
     def test_409_silent(self):
-        self.assertEqual(self._merge(self._http_error(409)), "")
+        self.assertEqual(self._merge(ForgeError("head moved", status=409)), "")
 
     def test_other_status_prints_but_does_not_raise(self):
-        self.assertIn("merge attempt failed", self._merge(self._http_error(403)))
+        out = self._merge(ForgeError("forbidden", status=403))
+        self.assertIn("merge attempt failed", out)
 
     def test_success_prints_merged(self):
         self.assertIn("merged directly", self._merge(None))
+
+
+class TestGithubMergeGate(unittest.TestCase):
+    """No merge without a green nixbot/nix-build check run on the PR head."""
+
+    def _merge(self, check_runs: list[dict]) -> tuple[mock.Mock, str]:
+        gh = Github("github.com", "o", "r", "tok")
+        gh._request = mock.Mock(
+            side_effect=[{"head": {"sha": "abc"}}, {"check_runs": check_runs}, None]
+        )
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            gh.merge_if_green(7)
+        return gh._request, out.getvalue()
+
+    def test_no_check_runs_skips_merge(self):
+        request, out = self._merge([])
+        self.assertEqual(request.call_count, 2)
+        self.assertIn("not green", out)
+
+    def test_pending_run_skips_merge(self):
+        request, _ = self._merge([{"status": "in_progress", "conclusion": None}])
+        self.assertEqual(request.call_count, 2)
+
+    def test_failed_run_skips_merge(self):
+        request, _ = self._merge([{"status": "completed", "conclusion": "failure"}])
+        self.assertEqual(request.call_count, 2)
+
+    def test_green_run_merges_pinned_to_head(self):
+        request, out = self._merge([{"status": "completed", "conclusion": "success"}])
+        self.assertEqual(
+            request.call_args_list[2],
+            mock.call(
+                "PUT",
+                "https://api.github.com/repos/o/r/pulls/7/merge",
+                {"merge_method": "squash", "sha": "abc"},
+            ),
+        )
+        self.assertIn("merged directly", out)
 
 
 class TestGithubEnableAutomerge(unittest.TestCase):
