@@ -20,6 +20,9 @@
     };
   };
 
+  # installation-cd profile enables zfs support; iso has no zfs root, so
+  # opt into the 26.11 default early to silence the forceImportRoot warning
+  boot.zfs.forceImportRoot = false;
   networking.hostId = "8425e349";
 
   services.qemuGuest.enable = true;
