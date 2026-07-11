@@ -124,16 +124,13 @@
       "locked": {
         "lastModified": 1783694054,
         "narHash": "sha256-TxXVAAG94LMv8YmvBW7WjZa4xnA+0+01rW5Ads3N8RQ=",
-        "ref": "refs/heads/main",
         "rev": "877c77b15fbc99e2fb8cced694e99c9a235c1d90",
-        "shallow": true,
-        "type": "git",
-        "url": "https://git.clan.lol/clan/clan-community"
+        "type": "tarball",
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-community/archive/877c77b15fbc99e2fb8cced694e99c9a235c1d90.tar.gz"
       },
       "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "https://git.clan.lol/clan/clan-community"
+        "type": "tarball",
+        "url": "https://git.clan.lol/clan/clan-community/archive/main.tar.gz"
       }
     },
     "clan-core": {
@@ -163,16 +160,13 @@
       "locked": {
         "lastModified": 1783746889,
         "narHash": "sha256-alUh4/fW+6qzTmK8wnFmdltd5+XHElSFcomOQ5Vw8TA=",
-        "ref": "refs/heads/main",
         "rev": "72215fc09342b69c855ef4680da84fddb424c21d",
-        "shallow": true,
-        "type": "git",
-        "url": "https://git.clan.lol/clan/clan-core"
+        "type": "tarball",
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/72215fc09342b69c855ef4680da84fddb424c21d.tar.gz"
       },
       "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "https://git.clan.lol/clan/clan-core"
+        "type": "tarball",
+        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
       }
     },
     "crane": {
@@ -764,16 +758,13 @@
       "locked": {
         "lastModified": 1783744348,
         "narHash": "sha256-LE+2A+HUEH1m3TozkyV+ohCCu7I21Y51mM6RisTCbqU=",
-        "ref": "refs/heads/main",
         "rev": "841861b39dc0c4fe36ed2a92289b899fd4d956f2",
-        "shallow": true,
-        "type": "git",
-        "url": "https://codeberg.org/BANanaD3V/niri-nix"
+        "type": "tarball",
+        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/841861b39dc0c4fe36ed2a92289b899fd4d956f2.tar.gz"
       },
       "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "https://codeberg.org/BANanaD3V/niri-nix"
+        "type": "tarball",
+        "url": "https://codeberg.org/BANanaD3V/niri-nix/archive/main.tar.gz"
       }
     },
     "niri-unstable": {

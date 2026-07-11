@@ -14,7 +14,7 @@
     };
 
     clan-community = {
-      url = "git+https://git.clan.lol/clan/clan-community?shallow=1";
+      url = "https://git.clan.lol/clan/clan-community/archive/main.tar.gz";
       inputs.clan-core.follows = "clan-core";
       inputs.flake-parts.follows = "flake-parts";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,8 +22,7 @@
     };
 
     clan-core = {
-      url = "git+https://git.clan.lol/clan/clan-core?shallow=1";
-      #url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
+      url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.sops-nix.follows = "sops-nix";
@@ -152,7 +151,7 @@
 
     # wm
     niri-nix = {
-      url = "git+https://codeberg.org/BANanaD3V/niri-nix?shallow=1";
+      url = "https://codeberg.org/BANanaD3V/niri-nix/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     noctalia = {
