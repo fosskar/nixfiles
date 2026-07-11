@@ -95,6 +95,12 @@
           mouse = {
             accel-profile = lib.mkDefault "flat";
           };
+
+          touchpad = {
+            natural-scroll = [ ];
+            tap = [ ];
+            dwt = [ ];
+          };
         };
 
         # prefer server-side decorations
