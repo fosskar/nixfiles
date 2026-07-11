@@ -1568,19 +1568,16 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "systems": [
-          "systems"
-        ],
         "treefmt-nix": [
           "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1783593861,
-        "narHash": "sha256-0kRjp2Nk9zJfaf5+yzf8oLkmygdeZXn14F9JtB9nNwc=",
+        "lastModified": 1783756079,
+        "narHash": "sha256-b1DIdXo9Zt7wFz/f3xpUi0+3YDYEZ4HEfZ9H1zlEG7U=",
         "owner": "fosskar",
         "repo": "wiki",
-        "rev": "2570dd0b80b06af04545a29c6e2a7369c16d801d",
+        "rev": "9310d5c172a78909b32b6c278f5ed3e8f2e6188c",
         "type": "github"
       },
       "original": {
