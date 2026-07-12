@@ -36,7 +36,7 @@ _: {
             # signing.key is set per-user; backend/behavior are common
             signing = {
               backend = "ssh";
-              behavior = "keep";
+              behavior = "own";
             };
             snapshot = {
               max-new-file-size = 16000000; # ~16mb
