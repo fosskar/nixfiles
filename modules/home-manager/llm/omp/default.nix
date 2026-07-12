@@ -20,6 +20,8 @@ _: {
         theme.dark = "custom";
         statusLine = {
           transparent = true;
+          # thinking level as glyph-only model icon, no " · <level>" tail
+          compactThinkingLevel = true;
           # default preset + usage (sub quota %); custom preset required:
           # named presets ignore leftSegments/rightSegments
           preset = "custom";
@@ -29,7 +31,6 @@ _: {
             "path"
             "git"
             "pr"
-            "context_pct"
             "usage"
           ];
           rightSegments = [ "session_name" ];
