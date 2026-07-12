@@ -7,7 +7,7 @@
 }:
 {
   home-manager.users.simon =
-    { config, osConfig, ... }:
+    { config, ... }:
     {
       imports = [
         self.modules.homeManager.bash
@@ -43,25 +43,28 @@
         ];
         sessionVariables = {
           SHELL = "${lib.getExe pkgs.fish}";
-          BROWSER = "zen";
+          BROWSER = "remote-open";
           EDITOR = "${lib.getExe pkgs.neovim}";
         };
 
         stateVersion = "25.11";
       };
 
-      home.file = {
-        ".ssh/id_ed25519".source =
-          config.lib.file.mkOutOfStoreSymlink
-            osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519".path;
-        ".ssh/id_ed25519.pub".source =
-          config.lib.file.mkOutOfStoreSymlink
-            osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519.pub".path;
-      };
+      # exported in shellInit, not sessionVariables: herdr panes are non-login
+      # shells and never source hm-session-vars. SSH_AUTH_SOCK = yubikey agent
+      # forwarded from the attached client to a fixed path (users/simon/ssh.nix)
+      programs.fish.shellInit = ''
+        set -gx SSH_AUTH_SOCK /run/user/1000/ssh-agent.sock
+        set -gx BROWSER remote-open
+        set -gx EDITOR ${lib.getExe pkgs.neovim}
+      '';
 
-      # key file path: git/jj sign with the on-disk key, no ssh-agent involved
-      programs.git.signing.key = "~/.ssh/id_ed25519";
-      programs.jujutsu.settings.signing.key = "~/.ssh/id_ed25519";
+      # sign with the yubikey via the forwarded agent socket (same key as
+      # users/simon/signing.nix); jj signs on push, which needs the attached
+      # client anyway
+      programs.git.signing.key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
+      programs.jujutsu.settings.signing.key =
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
 
       # declarative replacement for `kittylitter install` autostart
       systemd.user.services.kittylitter = {
@@ -135,12 +138,4 @@
     };
   };
 
-  clan.core.vars.generators.workspace-ssh = {
-    files."id_ed25519".owner = "simon";
-    files."id_ed25519.pub".secret = false;
-    runtimeInputs = [ pkgs.openssh ];
-    script = ''
-      ssh-keygen -t ed25519 -N "" -C "workspace@nixworker" -f "$out/id_ed25519" -q
-    '';
-  };
 }
