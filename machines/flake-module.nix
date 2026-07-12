@@ -181,6 +181,9 @@
           };
         };
 
+        # nixworker's headless dev user: username simon (ssync session identity
+        # needs the same user/home path on every peer), but its own per-machine
+        # password — deliberately NOT share=true like simon-user above.
         workspace-user = {
           module = {
             name = "users";
@@ -190,7 +193,7 @@
           roles.default = {
             machines."nixworker" = { };
             settings = {
-              user = "workspace";
+              user = "simon";
               groups = [ "wheel" ];
               openssh.authorizedKeys.keys = [
                 "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE"
@@ -333,9 +336,9 @@
           };
         };
 
-        # p2p sync of pi agent sessions between the two workstations. leaderless:
-        # both machines are equal peers. shared age key handled by the service's
-        # own clan.vars generator.
+        # p2p sync of pi agent sessions between the workstations and the
+        # nixworker dev host. leaderless: all machines are equal peers. shared
+        # age key handled by the service's own clan.vars generator.
         ssync = {
           module = {
             name = "ssync";
@@ -344,6 +347,7 @@
           roles.peer.machines = {
             "simon-desktop".settings.user = "simon";
             "lpt-titan".settings.user = "simon";
+            "nixworker".settings.user = "simon";
           };
         };
 

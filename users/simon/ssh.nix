@@ -5,7 +5,7 @@ _: {
     # forward ssh agent + gpg-agent extra socket (clan update, sops decrypt via local yubikey)
     settings."workspace" = {
       HostName = "nixworker.s";
-      User = "workspace";
+      User = "simon";
       ForwardAgent = "yes";
       RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";
     };

@@ -6,7 +6,7 @@
   ...
 }:
 {
-  home-manager.users.workspace =
+  home-manager.users.simon =
     { config, osConfig, ... }:
     {
       imports = [
@@ -18,6 +18,7 @@
         self.modules.homeManager.fish
         self.modules.homeManager.fzf
         self.modules.homeManager.git
+        self.modules.homeManager.herdr
         self.modules.homeManager.jujutsu
         self.modules.homeManager.llm
         self.modules.homeManager.neovim
@@ -31,8 +32,8 @@
       ++ nflib.scanPaths ./. { };
 
       home = {
-        username = "workspace";
-        homeDirectory = "/home/workspace";
+        username = "simon";
+        homeDirectory = "/home/simon";
         packages = [
           pkgs.local.kittylitter
           # nix language servers for zed ssh remoting
@@ -57,17 +58,6 @@
           config.lib.file.mkOutOfStoreSymlink
             osConfig.clan.core.vars.generators.workspace-ssh.files."id_ed25519.pub".path;
       };
-
-      # auto-attach the persistent "workspace" zellij session on ssh logins so
-      # any client (desktop/laptop) lands in the same long-running state. zed
-      # terminals are excluded: agent panel terminal threads must run their
-      # agent, not attach the session; attach manually there with `za`.
-      programs.fish.interactiveShellInit = ''
-        if set -q SSH_CONNECTION; and not set -q ZELLIJ; and not set -q ZED_TERM; and isatty stdin
-          exec zellij attach -c workspace
-        end
-      '';
-      programs.fish.shellAbbrs.za = "zellij attach -c workspace";
 
       # key file path: git/jj sign with the on-disk key, no ssh-agent involved
       programs.git.signing.key = "~/.ssh/id_ed25519";
@@ -115,14 +105,29 @@
   };
 
   programs.fish.enable = true;
-  users.users.workspace.shell = pkgs.fish;
+  users.users.simon.shell = pkgs.fish;
   # run the kittylitter user daemon at boot, not just at login
-  users.users.workspace.linger = true;
+  users.users.simon.linger = true;
+  # keep the old workspace user's uid: /home data ownership and the hardcoded
+  # /run/user/1000 gpg-agent forward path (users/simon/ssh.nix) survive the rename
+  users.users.simon.uid = 1000;
+
+  # reserve RAM for the interactive dev user against nix builds. MemoryMin/Low
+  # only apply when every ancestor slice reserves at least as much, so
+  # user.slice carries the same values
+  systemd.slices."user".sliceConfig = {
+    MemoryMin = "16G";
+    MemoryLow = "32G";
+  };
+  systemd.slices."user-1000".sliceConfig = {
+    MemoryMin = "16G";
+    MemoryLow = "32G";
+  };
 
   # session link for kagi-search skill (modules/home/llm/skills)
   clan.core.vars.generators.kagi = {
     share = true;
-    files."session-link".owner = "workspace";
+    files."session-link".owner = "simon";
     prompts."session-link" = {
       type = "hidden";
       persist = true;
@@ -131,7 +136,7 @@
   };
 
   clan.core.vars.generators.workspace-ssh = {
-    files."id_ed25519".owner = "workspace";
+    files."id_ed25519".owner = "simon";
     files."id_ed25519.pub".secret = false;
     runtimeInputs = [ pkgs.openssh ];
     script = ''

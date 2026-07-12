@@ -55,7 +55,7 @@ in
       colorize_brackets = true;
       ssh_connections = [
         {
-          host = "workspace@nixworker.s";
+          host = "simon@nixworker.s";
           upload_binary_over_ssh = true;
         }
       ];
