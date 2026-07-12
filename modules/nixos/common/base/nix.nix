@@ -43,8 +43,6 @@
 
           warn-dirty = lib.mkDefault false;
 
-          auto-optimise-store = lib.mkDefault true;
-
           # avoid disk full
           max-free = lib.mkDefault (3000 * 1024 * 1024);
           min-free = lib.mkDefault (512 * 1024 * 1024);
@@ -60,6 +58,9 @@
           automatic = lib.mkDefault (!(config.programs.nh.clean.enable or false));
           options = lib.mkDefault "--delete-older-than 15d";
         };
+        # batch dedup via nix-optimise.timer instead of write-time
+        # auto-optimise-store (per-build overhead, EMLINK noise on btrfs)
+        optimise.automatic = lib.mkDefault true;
       };
 
       # weekly cleanup of stale gcroots/temproots not covered by nix.gc/nh clean
