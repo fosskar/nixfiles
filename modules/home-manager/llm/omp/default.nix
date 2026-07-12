@@ -55,18 +55,25 @@ _: {
         showTokenUsage = false;
         display.showTokenUsage = false;
         personality = "pragmatic";
+        advisor.enabled = true;
+        symbolPreset = "nerd";
         collapseChangelog = true;
         followUpMode = "all";
         providers.webSearch = "anthropic";
         defaultThinkingLevel = "auto";
-        stt.enabled = true;
+        stt.enabled = false;
         startup = {
           quiet = true;
           setupWizard = false;
           checkUpdate = false;
         };
         autolearn.enabled = true;
-        memory.backend = "local";
+        features.unexpectedStopDetection = true;
+        compaction.handoffSaveToDisk = true;
+        memory.backend = "mnemopi";
+        mnemopi.scoping = "per-project-tagged";
+        mnemopi.polyphonicRecall = true;
+        lsp.formatOnWrite = true;
         github.enabled = true;
         secrets.enabled = true;
         vault.enabled = true;
