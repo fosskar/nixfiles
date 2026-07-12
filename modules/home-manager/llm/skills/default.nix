@@ -19,21 +19,29 @@ _: {
       ownSkillNames = builtins.attrNames (
         lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.)
       );
-      ownSkillEntries = lib.listToAttrs (
+      # skills shipped by upstream flake inputs; skill name -> SKILL.md source
+      externalSkills = {
+        herdr = "${inputs.herdr}/SKILL.md";
+      };
+      skillEntries = lib.listToAttrs (
         lib.concatMap (
-          name:
-          map (dir: {
+          dir:
+          map (name: {
             name = "${dir}/${name}";
             value.source = ./${name};
-          }) skillTargetDirs
-        ) ownSkillNames
+          }) ownSkillNames
+          ++ lib.mapAttrsToList (name: source: {
+            name = "${dir}/${name}/SKILL.md";
+            value.source = source;
+          }) externalSkills
+        ) skillTargetDirs
       );
 
     in
     {
       imports = [ inputs.mics-skills.homeModules.default ];
 
-      home.file = ownSkillEntries;
+      home.file = skillEntries;
 
       xdg.configFile."kagi/config.json".text = builtins.toJSON {
         password_command = "cat ${osConfig.clan.core.vars.generators.kagi.files."session-link".path}";
