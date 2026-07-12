@@ -74,7 +74,7 @@
           ${lib.concatStrings (
             lib.mapAttrsToList (id: source: ''
               if ! printf '%s' "$installed" | ${pkgs.jq}/bin/jq -e '.result.plugins[] | select(.plugin_id == "${id}")' > /dev/null; then
-              run PATH="${pluginInstallPath}:$PATH" ${herdrBin} plugin install ${source} --yes
+              run env PATH="${pluginInstallPath}:$PATH" ${herdrBin} plugin install ${source} --yes
               fi
             '') herdrPlugins
           )}
