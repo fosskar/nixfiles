@@ -2,7 +2,7 @@ _: {
   flake.modules.homeManager.jujutsu =
     _:
     let
-      email = "fosskar.educated493@passmail.net";
+      email = "117449098+fosskar@users.noreply.github.com";
       name = "fosskar";
     in
     {
