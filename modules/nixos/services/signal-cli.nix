@@ -21,7 +21,7 @@
 
         serviceConfig = {
           Type = "simple";
-          ExecStart = "${pkgs.signal-cli}/bin/signal-cli -a ${signalAccount} daemon --http ${signalHttpListen} --ignore-stories --send-read-receipts";
+          ExecStart = "${pkgs.small.signal-cli}/bin/signal-cli -a ${signalAccount} daemon --http ${signalHttpListen} --ignore-stories --send-read-receipts";
           Restart = "always";
           RestartSec = "5s";
           MemoryMax = "512M";

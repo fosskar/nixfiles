@@ -3,7 +3,8 @@
   home.packages = [
     # desktop apps
     #webcord-vencord
-    pkgs.signal-desktop
+    # small channel: signal hard-expires old clients; stay ahead of the cutoff
+    pkgs.small.signal-desktop
     #protonvpn-gui
     #protonvpn-cli
     #filen-desktop
