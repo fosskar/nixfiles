@@ -194,7 +194,7 @@
             machines."nixworker" = { };
             settings = {
               user = "simon";
-              groups = [ ];
+              groups = [ "wheel" ];
               openssh.authorizedKeys.keys = [
                 "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE"
                 "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG7nahd/01skftk7ujmj2F2T8vzqUH/UWqQViSz7XEVaQbPIEYTwR6V/TpFx54wKlzJA75BDV+fHIBJsmhNzd3U="
