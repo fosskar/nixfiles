@@ -102,13 +102,12 @@ nix eval .#clan.inventory.machines --json | jq 'keys'
 fd -td -d1 . machines
 ```
 
-SSH:
+SSH: machine in clan inventory => prefer `clan ssh <machine>`; raw `ssh` fine for non-clan hosts.
 
 ```bash
 clan ssh <machine>
-ssh <machine>.s
-ssh <machine>.lan
-ssh root@<ip>
+# remote command: -c takes an argv list, not one shell string; pipelines need sh -c
+clan ssh <machine> -c sh -c "journalctl -b --no-pager | tail -20"
 ```
 
 ## task routing
