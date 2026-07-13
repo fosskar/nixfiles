@@ -59,7 +59,7 @@ _: {
         symbolPreset = "nerd";
         collapseChangelog = true;
         followUpMode = "all";
-        providers.webSearch = "anthropic";
+        web_search.enabled = false;
         defaultThinkingLevel = "auto";
         stt.enabled = false;
         startup = {
