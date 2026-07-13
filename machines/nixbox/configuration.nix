@@ -37,7 +37,7 @@
     self.modules.nixos.wiki
     self.modules.nixos.vdirsyncer
   ]
-  ++ (nflib.scanPaths ./. { });
+  ++ (nflib.scanPaths ./. { exclude = [ "beszel-settings.nix" ]; });
 
   environment.systemPackages = [
     pkgs.ipmitool
