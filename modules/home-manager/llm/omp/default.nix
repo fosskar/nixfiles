@@ -88,6 +88,7 @@ _: {
 
       home.file = {
         ".omp/agent/AGENTS.md".source = ../AGENTS.md;
+        ".omp/agent/WATCHDOG.md".source = ./WATCHDOG.md;
       }
       // extensionEntries;
 
