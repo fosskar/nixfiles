@@ -137,7 +137,7 @@
         };
 
         spawn-at-startup = [
-          { sh = "sleep 3 && cinny"; }
+          { sh = "sleep 3 && element-desktop"; }
         ];
 
         hotkey-overlay = {

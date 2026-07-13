@@ -18,8 +18,6 @@
       '';
     })
 
-    pkgs.cinny-desktop
-
     # media
     pkgs.spotify
 
