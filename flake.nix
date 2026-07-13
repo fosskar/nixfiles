@@ -6,7 +6,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
     #nixpkgs-private.url = "github:simonoscr/nixpkgs/nixos-unstable"; # testing private
-    #nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster
+    nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small"; # faster channel advance, sparse cache
 
     home-manager = {
       url = "github:nix-community/home-manager";
