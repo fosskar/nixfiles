@@ -7,7 +7,7 @@
 }:
 {
   home-manager.users.simon =
-    { config, ... }:
+    { ... }:
     {
       imports = [
         self.modules.homeManager.bash
@@ -35,7 +35,6 @@
         username = "simon";
         homeDirectory = "/home/simon";
         packages = [
-          pkgs.local.kittylitter
           # nix language servers for zed ssh remoting
           pkgs.nil
           pkgs.nixd
@@ -66,30 +65,6 @@
       programs.jujutsu.settings.signing.key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
 
-      # declarative replacement for `kittylitter install` autostart
-      systemd.user.services.kittylitter = {
-        Unit = {
-          Description = "Alleycat bridge daemon (kittylitter)";
-          After = [ "network-online.target" ];
-          Wants = [ "network-online.target" ];
-        };
-        Service = {
-          Type = "simple";
-          ExecStart = "${pkgs.local.kittylitter}/bin/kittylitter serve";
-          # dump the (stable) pair payload + QR for clients to scan
-          ExecStartPost = pkgs.writeShellScript "kittylitter-pair-dump" ''
-            out="${config.home.homeDirectory}/.local/state/kittylitter"
-            mkdir -p "$out"
-            sleep 2
-            ${pkgs.local.kittylitter}/bin/kittylitter pair --qr > "$out/pair.txt" || true
-          '';
-          Environment = [ "PATH=${config.home.profileDirectory}/bin" ];
-          Restart = "on-failure";
-          RestartSec = 5;
-        };
-        Install.WantedBy = [ "default.target" ];
-      };
-
       systemd.user.startServices = "sd-switch";
       nix.channels = { };
     };
@@ -109,8 +84,6 @@
 
   programs.fish.enable = true;
   users.users.simon.shell = pkgs.fish;
-  # run the kittylitter user daemon at boot, not just at login
-  users.users.simon.linger = true;
   # keep the old workspace user's uid: /home data ownership and the hardcoded
   # /run/user/1000 gpg-agent forward path (users/simon/ssh.nix) survive the rename
   users.users.simon.uid = 1000;
