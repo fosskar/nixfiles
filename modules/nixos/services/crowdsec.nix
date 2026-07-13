@@ -60,17 +60,7 @@
               localConfig.acquisitions = [
                 {
                   source = "journalctl";
-                  journalctl_filter = [ "_TRANSPORT=journal" ];
-                  labels.type = "syslog";
-                }
-                {
-                  source = "journalctl";
                   journalctl_filter = [ "_TRANSPORT=syslog" ];
-                  labels.type = "syslog";
-                }
-                {
-                  source = "journalctl";
-                  journalctl_filter = [ "_TRANSPORT=stdout" ];
                   labels.type = "syslog";
                 }
                 {
@@ -103,6 +93,21 @@
                 ReadWritePaths = [ "/var/lib/crowdsec" ];
               };
             };
+
+            # nixpkgs module installs localConfig yamls via tmpfiles symlinks;
+            # nothing restarts crowdsec when they change, so rule edits would
+            # silently never load until the next manual restart/reboot
+            systemd.services.crowdsec.restartTriggers = [
+              (builtins.toJSON {
+                inherit (config.services.crowdsec.localConfig)
+                  acquisitions
+                  parsers
+                  postOverflows
+                  scenarios
+                  profiles
+                  ;
+              })
+            ];
           }
           // lib.optionalAttrs (options ? preservation) {
             preservation.preserveAt."/persist".directories = [
@@ -159,6 +164,14 @@
                 filenames = [ "/var/log/traefik/access.log" ];
                 labels.type = "traefik";
               }
+              # WAF: inspects requests forwarded by the traefik plugin;
+              # appsec-default chains vpatch-* and generic-* rules
+              {
+                source = "appsec";
+                listen_addr = "127.0.0.1:7422";
+                appsec_configs = [ "crowdsecurity/appsec-default" ];
+                labels.type = "appsec";
+              }
             ];
           };
 
@@ -175,6 +188,8 @@
               crowdsecLapiKeyFile = apiKeyFile;
               crowdsecLapiHost = "127.0.0.1:${toString listenPort}";
               crowdsecMode = "live";
+              crowdsecAppsecEnabled = true;
+              crowdsecAppsecHost = "127.0.0.1:7422";
               forwardedHeadersTrustedIPs = [
                 "127.0.0.1/32"
                 "10.0.0.0/8"
