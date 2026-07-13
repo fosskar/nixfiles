@@ -12,6 +12,8 @@
       herdrSettings = {
         onboarding = false;
         update.version_check = false;
+        theme.name = "vesper";
+        ui.toast.delivery = "herdr";
         keys.command = [
           {
             key = "prefix+f";
