@@ -35,6 +35,8 @@
           allow_registration = false;
           registration_token_file = "/run/credentials/continuwuity.service/registration-token";
 
+          new_user_displayname_suffix = "";
+
           allow_federation = true;
 
           # profile GET is unauthenticated by default; require auth to stop
