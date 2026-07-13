@@ -62,7 +62,7 @@
           db = "${micsSkills.db-cli}/share/skills/db-cli";
           weather = "${micsSkills.weather-cli}/share/skills/weather-cli";
           context7 = "${micsSkills.context7-cli}/share/skills/context7-cli";
-          datetime = "${flake-self}/modules/home-manager/llm/skills/datetime";
+          datetime = ../../../home-manager/llm/skills/datetime;
         };
 
         extraPackages = [
