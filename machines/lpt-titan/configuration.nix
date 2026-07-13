@@ -24,6 +24,10 @@
 
   services.lact.enable = lib.mkForce false;
 
+  # overdrive ppfeaturemask (0xfffd7fff) clears PP_GFXOFF_MASK; gfxoff is
+  # required for s0i3 entry on strix point -> suspend never reached hw sleep
+  hardware.amdgpu.overdrive.enable = lib.mkForce false;
+
   clan.core.deployment.requireExplicitUpdate = true;
 
   # scx_lavd crashed (rcu cpu stall) on this machine; use bpfland instead
