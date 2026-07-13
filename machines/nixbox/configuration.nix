@@ -16,6 +16,7 @@
     self.modules.nixos.searxng
     self.modules.nixos.lldap
     self.modules.nixos.authelia
+    self.modules.nixos.nixbotOidc
     self.modules.nixos.immich
     self.modules.nixos.llamaCpp
     self.modules.nixos.wyomingPiper
