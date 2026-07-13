@@ -63,6 +63,7 @@
           weather = "${micsSkills.weather-cli}/share/skills/weather-cli";
           context7 = "${micsSkills.context7-cli}/share/skills/context7-cli";
           datetime = ../../../home-manager/llm/skills/datetime;
+          nixpkgs-pr-tracker = ../../../home-manager/llm/skills/nixpkgs-pr-tracker;
         };
 
         extraPackages = [
