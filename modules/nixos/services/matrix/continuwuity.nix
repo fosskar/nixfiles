@@ -23,6 +23,8 @@
 
       services.matrix-continuwuity = {
         enable = true;
+        # nixos-unstable lags calver releases; drop back to pkgs.matrix-continuwuity once caught up
+        package = pkgs.small.matrix-continuwuity;
         settings.global = {
           # apex delegates to ${publicHost} via /.well-known/matrix/server
           server_name = "fosskar.de";
