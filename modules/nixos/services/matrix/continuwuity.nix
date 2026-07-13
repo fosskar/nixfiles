@@ -21,6 +21,52 @@
         '';
       };
 
+      # separate generator: extending the continuwuity generator would
+      # invalidate and rotate the existing registration-token
+      clan.core.vars.generators.continuwuity-oidc = {
+        files."oauth-client-secret" = { };
+        files."oauth-client-secret-hash" = {
+          owner = "authelia-main";
+          group = "authelia-main";
+        };
+        runtimeInputs = [
+          pkgs.pwgen
+          pkgs.authelia
+        ];
+        script = ''
+          SECRET=$(pwgen -s 64 1)
+          echo -n "$SECRET" > "$out/oauth-client-secret"
+          authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
+        '';
+      };
+
+      services.authelia.instances.main.settings.identity_providers.oidc.clients = [
+        {
+          client_id = "continuwuity";
+          client_name = "Continuwuity";
+          client_secret = "{{ secret \"${
+            config.clan.core.vars.generators.continuwuity-oidc.files."oauth-client-secret-hash".path
+          }\" }}";
+          public = false;
+          consent_mode = "implicit";
+          authorization_policy = "users";
+          # continuwuity always sends an S256 PKCE challenge (oidc/mod.rs begin_session)
+          require_pkce = true;
+          pkce_challenge_method = "S256";
+          # redirect target: get_client_domain() (= well_known.client) + ROUTE_PREFIX/oidc/complete
+          redirect_uris = [ "https://${publicHost}/_continuwuity/oidc/complete" ];
+          scopes = [
+            "openid"
+            "profile"
+            "email"
+          ];
+          response_types = [ "code" ];
+          grant_types = [ "authorization_code" ];
+          # openidconnect-rs default
+          token_endpoint_auth_method = "client_secret_basic";
+        }
+      ];
+
       services.matrix-continuwuity = {
         enable = true;
         # nixos-unstable lags calver releases; drop back to pkgs.matrix-continuwuity once caught up
@@ -66,12 +112,33 @@
             client = "https://${publicHost}";
             server = "${publicHost}:443";
           };
+
+          # delegated auth via authelia. WARNING: forces oauth-exclusive mode,
+          # legacy password login stops working for new client logins; family
+          # links existing accounts by confirming the matrix password once.
+          # default prompt_for_localpart = true stays on purpose for that.
+          # required field once [global.oauth] exists (no serde default upstream);
+          # value irrelevant: oidc presence forces exclusive regardless
+          oauth.compatibility_mode = "hybrid";
+          oauth.oidc = {
+            discovery_url = "https://auth.${flake-self.domains.public}";
+            client_id = "continuwuity";
+            client_secret_file = "/run/credentials/continuwuity.service/oauth-client-secret";
+            # profile: displayname import (profile_key_map default) + preferred_username
+            additional_scopes = [
+              "profile"
+              "email"
+            ];
+          };
         };
       };
 
       systemd.services.continuwuity.serviceConfig.LoadCredential = [
         "registration-token:${
           config.clan.core.vars.generators.continuwuity.files."registration-token".path
+        }"
+        "oauth-client-secret:${
+          config.clan.core.vars.generators.continuwuity-oidc.files."oauth-client-secret".path
         }"
       ];
 
