@@ -1,5 +1,6 @@
 {
   self,
+  pkgs,
   ...
 }:
 let
@@ -7,6 +8,8 @@ let
 in
 {
   programs.zed-editor = {
+    # small channel: get editor releases days earlier than nixos-unstable
+    package = pkgs.small.zed-editor;
     extensions = [
       "ansible"
       "basher"
