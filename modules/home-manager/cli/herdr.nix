@@ -55,6 +55,12 @@
             command = "cloudmanic.herdr-plus.quick-actions";
             description = "herdr-plus: quick actions";
           }
+          {
+            key = "prefix+r";
+            type = "plugin_action";
+            command = "persiyanov.reviewr.toggle";
+            description = "reviewr: toggle sidebar";
+          }
         ];
       };
 
@@ -66,6 +72,8 @@
         "herdr-file-viewer" = "smarzban/herdr-file-viewer";
         "nathanflurry.jj-workspace" = "NathanFlurry/herdr-plugin-jj-workspace";
         "cloudmanic.herdr-plus" = "cloudmanic/herdr-plus";
+        "persiyanov.reviewr" = "persiyanov/herdr-reviewr";
+        "herdr-remote.relay" = "dcolinmorgan/herdr-remote";
       };
 
       # herdr-plus project templates: one file = one entry in the projects
@@ -89,13 +97,14 @@
 
       # git for the source clone; rust/go toolchains for plugins built from
       # source (jj-workspace: cargo; herdr-plus: go — else its build.sh
-      # downloads a prebuilt binary)
+      # downloads a prebuilt binary); curl for reviewr's release download
       pluginInstallPath = lib.makeBinPath [
         pkgs.git
         pkgs.cargo
         pkgs.rustc
         pkgs.gcc
         pkgs.go
+        pkgs.curl
       ];
     in
     {
