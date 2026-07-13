@@ -173,19 +173,19 @@
 
           settings = {
             shell = {
-              launch_apps_as_systemd_services = true;
-              lang = "en";
+              launch_apps_as_systemd_services = lib.mkDefault true;
+              lang = lib.mkDefault "en";
               font_family = lib.mkDefault theme.fonts.sans;
               date_format = lib.mkDefault "%d.%m.%y";
-              polkit_agent = true;
-              screen_time_enabled = true;
+              polkit_agent = lib.mkDefault true;
+              screen_time_enabled = lib.mkDefault true;
               screen_corners.enabled = lib.mkDefault true;
               niri_overview_type_to_launch_enabled = lib.mkDefault true;
               panel = {
                 transparency_mode = lib.mkDefault "soft";
-                open_near_click_control_center = true;
-                session_placement = "floating";
-                session_position = "center";
+                open_near_click_control_center = lib.mkDefault true;
+                session_placement = lib.mkDefault "floating";
+                session_position = lib.mkDefault "center";
               };
             };
 
@@ -195,8 +195,8 @@
               background_opacity = lib.mkDefault 0.80;
               kinds = {
                 lock_keys = lib.mkDefault false;
-                keyboard_layout = false;
-                media = false;
+                keyboard_layout = lib.mkDefault false;
+                media = lib.mkDefault false;
               };
             };
 
@@ -224,11 +224,11 @@
             bar = {
               order = [ "main" ];
               main = {
-                enabled = true;
+                enabled = lib.mkDefault true;
                 background_opacity = lib.mkDefault 0.7;
-                margin_ends = 10;
-                margin_edge = 5;
-                widget_spacing = 10;
+                margin_ends = lib.mkDefault 10;
+                margin_edge = lib.mkDefault 5;
+                widget_spacing = lib.mkDefault 10;
                 start = [
                   "control-center"
                   "workspaces"
@@ -261,7 +261,7 @@
             };
 
             backdrop = {
-              enabled = true;
+              enabled = lib.mkDefault true;
             };
 
             plugins = {
@@ -286,13 +286,13 @@
                 type = "fosskar/displays:indicator";
               };
               clock = {
-                anchor = true;
-                format = "{:%H:%M}\\n{:%d.%m.%y}";
+                anchor = lib.mkDefault true;
+                format = lib.mkDefault "{:%H:%M}\\n{:%d.%m.%y}";
               };
               workspaces = {
-                display = "name";
-                hide_when_empty = true;
-                empty_color = "on_surface_variant";
+                display = lib.mkDefault "name";
+                hide_when_empty = lib.mkDefault true;
+                empty_color = lib.mkDefault "on_surface_variant";
               };
               disk = {
                 type = "sysmon";
@@ -322,41 +322,41 @@
                 type = "volume";
                 device = "output";
               };
-              brightness.show_label = false;
+              brightness.show_label = lib.mkDefault false;
               tray-volume-spacer = {
                 type = "spacer";
-                length = 20;
+                length = lib.mkDefault 20;
               };
-              tray.drawer = false;
-              network.show_label = false;
-              notifications.hide_when_no_unread = false;
-              session.color = "error";
+              tray.drawer = lib.mkDefault false;
+              network.show_label = lib.mkDefault false;
+              notifications.hide_when_no_unread = lib.mkDefault false;
+              session.color = lib.mkDefault "error";
             };
 
             idle.behavior = {
               screen-off = {
-                enabled = true;
-                timeout = 300;
+                enabled = lib.mkDefault true;
+                timeout = lib.mkDefault 300;
                 action = "screen_off";
               };
               lock = {
-                enabled = true;
-                timeout = 1800;
+                enabled = lib.mkDefault true;
+                timeout = lib.mkDefault 1800;
                 action = "lock";
               };
               suspend = {
-                enabled = true;
-                timeout = 3600;
+                enabled = lib.mkDefault true;
+                timeout = lib.mkDefault 3600;
                 action = "suspend";
-                lock_before_suspend = true;
+                lock_before_suspend = lib.mkDefault true;
               };
             };
 
-            battery.device.hidpp_battery_0.warning_threshold = 15;
+            battery.device.hidpp_battery_0.warning_threshold = lib.mkDefault 15;
 
             calendar = {
-              enabled = true;
-              refresh_minutes = 15;
+              enabled = lib.mkDefault true;
+              refresh_minutes = lib.mkDefault 15;
               account.opencloud = {
                 type = "caldav";
                 provider = "custom";
@@ -366,13 +366,13 @@
             };
 
             lockscreen = {
-              allow_empty_password = true;
-              blurred_desktop = true;
+              allow_empty_password = lib.mkDefault true;
+              blurred_desktop = lib.mkDefault true;
               tint_intensity = lib.mkDefault 0.50;
             };
 
             lockscreen_widgets = {
-              enabled = true;
+              enabled = lib.mkDefault true;
               widget.clock_main = {
                 type = "clock";
                 output = "DP-1";
@@ -390,12 +390,12 @@
               };
             };
 
-            location.auto_locate = true;
+            location.auto_locate = lib.mkDefault true;
 
-            wallpaper.directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
+            wallpaper.directory = lib.mkDefault "${config.home.homeDirectory}/Pictures/Wallpapers";
 
             weather = {
-              enabled = true;
+              enabled = lib.mkDefault true;
             };
 
             notification = {
