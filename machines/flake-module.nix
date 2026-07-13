@@ -422,6 +422,8 @@
             name = "garage";
             input = "self";
           };
+          # cluster-wide; role-level so both nodes agree on the list.
+          roles.node.settings.buckets = [ "backup" ];
           roles.node.machines = {
             "nixbox".settings = {
               capacity = "250G";

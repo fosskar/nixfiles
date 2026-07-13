@@ -61,6 +61,26 @@ stored on both nodes, so the cluster tolerates one node being down for reads.
 Note that in garage RF2 consistent mode, **writes fail while a node is down**
 (reads continue) — acceptable for caches and most self-hosted workloads.
 
+## Declarative buckets
+
+`roles.node.settings.buckets` (role-level, so every node agrees on the list)
+names cluster-wide S3 buckets to create automatically — e.g. a `backup`
+bucket for generic S3 backups over the LAN instead of NFS/Samba. The
+bootstrap node creates each bucket and imports a pre-generated key with
+read+write access. The S3 API port (3900) is opened in the firewall on every
+node. Growing the list creates the new buckets on the next deploy/boot.
+
+Per-bucket credentials live in the shared `garage-buckets` vars generator
+(run `clan vars generate` after changing the list):
+
+```bash
+clan vars get <node> garage-buckets/<bucket>_access_key_id
+clan vars get <node> garage-buckets/<bucket>_secret_access_key
+```
+
+Client configuration: endpoint `http://<node>.<lan-domain>:3900`, region =
+the node's hostname (`s3_region` defaults to it), path-style addressing.
+
 ## Notes
 
 - `capacity` set on a node is the per-node advertised capacity; it is not a
@@ -68,5 +88,6 @@ Note that in garage RF2 consistent mode, **writes fail while a node is down**
 - rpc binds all interfaces (`[::]:3901`) and advertises the node's rpc address
   (default `<machine>.s`); the rpc port is opened in the firewall. Nodes must be
   able to reach each other on it.
-- Tenants (buckets/keys) are provisioned by the consuming service (e.g. niks3
-  creates its own cache bucket against the local garage S3 endpoint).
+- Service-specific tenants (buckets/keys) are provisioned by the consuming
+  service (e.g. niks3 creates its own cache bucket against the local garage S3
+  endpoint); only buckets listed in `buckets` are owned by this service.

@@ -47,6 +47,15 @@ in
             '';
           };
           ui.enable = lib.mkEnableOption "the garage-ui web interface on this node";
+          buckets = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = ''
+              cluster-wide s3 buckets to create automatically, each with its own
+              pre-generated read+write key in the shared `garage-buckets` vars
+              generator. set at role level so every node agrees on the list.
+            '';
+          };
         };
       };
 
@@ -65,6 +74,8 @@ in
             bootstrapNode = lib.head (lib.sort (a: b: a < b) nodeNames);
             # garage requires replication_factor <= node count.
             replicationFactor = lib.min 3 (lib.length nodeNames);
+
+            inherit ((nodeSettings bootstrapNode)) buckets;
 
             nodeKeyGen = config.clan.core.vars.generators.garage-node;
             nodeId = name: lib.removeSuffix "\n" nodeKeyGen.files."node_id_${name}".value;
@@ -148,7 +159,11 @@ in
               };
             };
 
-            networking.firewall.allowedTCPPorts = [ rpcPort ];
+            # s3 api open on lan so other machines can use the buckets.
+            networking.firewall.allowedTCPPorts = [
+              rpcPort
+              s3Port
+            ];
 
             systemd.services.garage = {
               # don't start (and don't create data on the wrong fs) unless the
@@ -282,6 +297,86 @@ in
                 fi
 
                 touch ${metadataDir}/.layout-initialized
+              '';
+            };
+
+            # per-bucket s3 credentials, pre-generated in garage's native
+            # format (GK + 24 hex id, 64-hex secret) so consumers can fetch
+            # them via `clan vars get <machine> garage-buckets/...`.
+            clan.core.vars.generators.garage-buckets = lib.mkIf (buckets != [ ]) {
+              share = true;
+              files = lib.foldl' (
+                acc: b:
+                acc
+                // {
+                  "${b}_access_key_id" = { };
+                  "${b}_secret_access_key" = { };
+                }
+              ) { } buckets;
+              runtimeInputs = [
+                pkgs.coreutils
+                pkgs.openssl
+              ];
+              script = lib.concatMapStringsSep "\n" (b: ''
+                printf 'GK%s' "$(openssl rand -hex 12)" > "$out"/${b}_access_key_id
+                printf '%s' "$(openssl rand -hex 32)" > "$out"/${b}_secret_access_key
+              '') buckets;
+            };
+
+            # declarative buckets: created on the bootstrap node, each with its
+            # pre-generated key imported and granted read+write. idempotent, so
+            # growing the list just creates the new buckets on next boot.
+            systemd.services.garage-buckets-init = lib.mkIf (buckets != [ ] && hostName == bootstrapNode) {
+              description = "garage declarative buckets bootstrap";
+              after = [ "garage-layout-init.service" ];
+              requires = [ "garage-layout-init.service" ];
+              wantedBy = [ "multi-user.target" ];
+              path = [
+                pkgs.garage_2
+                pkgs.coreutils
+                pkgs.gnugrep
+              ];
+              environment = {
+                GARAGE_RPC_SECRET_FILE = "/run/credentials/garage-buckets-init.service/rpc_secret";
+                GARAGE_ADMIN_TOKEN_FILE = "/run/credentials/garage-buckets-init.service/admin_token";
+              };
+              serviceConfig = {
+                Type = "oneshot";
+                RemainAfterExit = true;
+                LoadCredential = [
+                  "rpc_secret:${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}"
+                  "admin_token:${config.clan.core.vars.generators.garage.files.admin_token.path}"
+                ]
+                ++ lib.concatMap (b: [
+                  "${b}_access_key_id:${
+                    config.clan.core.vars.generators.garage-buckets.files."${b}_access_key_id".path
+                  }"
+                  "${b}_secret_access_key:${
+                    config.clan.core.vars.generators.garage-buckets.files."${b}_secret_access_key".path
+                  }"
+                ]) buckets;
+              };
+              script = ''
+                set -euo pipefail
+
+                for i in $(seq 1 60); do
+                  garage layout show 2>/dev/null | grep -q 'Current cluster layout version' && break
+                  sleep 2
+                done
+
+                ${lib.concatMapStringsSep "\n" (b: ''
+                  if ! garage bucket info ${b} >/dev/null 2>&1; then
+                    garage bucket create ${b}
+                  fi
+
+                  key_id=$(cat "$CREDENTIALS_DIRECTORY"/${b}_access_key_id)
+                  if ! garage key info "$key_id" >/dev/null 2>&1; then
+                    garage key import --yes -n ${b} \
+                      "$key_id" "$(cat "$CREDENTIALS_DIRECTORY"/${b}_secret_access_key)"
+                  fi
+
+                  garage bucket allow --read --write --key "$key_id" ${b}
+                '') buckets}
               '';
             };
           };
