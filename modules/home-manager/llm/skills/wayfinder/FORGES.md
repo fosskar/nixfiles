@@ -12,30 +12,30 @@ Labels (`wayfinder:map`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder
 
 Native sub-issues and dependencies — use them, no body conventions.
 
-| Operation | Command |
-| --- | --- |
-| Create map | `gh issue create --label wayfinder:map --title <name> --body-file <f>` |
-| Create ticket | `gh issue create --parent <map#> --label wayfinder:<type> --title <name> --body <q>` |
-| Wire blocking (second pass) | `gh issue edit <n> --add-blocked-by <m>` (also `--add-blocking`, `--remove-blocked-by`) |
-| Claim | `gh issue edit <n> --add-assignee @me` |
-| Resolve | `gh issue comment <n> --body <answer>` then `gh issue close <n>` |
-| Update map body | `gh issue edit <map#> --body-file <f>` |
-| Open children | `gh api repos/{owner}/{repo}/issues/<map#>/sub_issues` and keep `state == "open"` (multi-label `gh issue list` filters AND labels — useless here, each ticket has one type label) |
-| Frontier | from open children, keep unassigned ones with no open blocked-by; check relationships per issue (`gh issue view <n>`, else the dependency endpoints via `gh api`) — verify the query shape once on a real repo before relying on it |
+| Operation                   | Command                                                                                                                                                                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Create map                  | `gh issue create --label wayfinder:map --title <name> --body-file <f>`                                                                                                                                                              |
+| Create ticket               | `gh issue create --parent <map#> --label wayfinder:<type> --title <name> --body <q>`                                                                                                                                                |
+| Wire blocking (second pass) | `gh issue edit <n> --add-blocked-by <m>` (also `--add-blocking`, `--remove-blocked-by`)                                                                                                                                             |
+| Claim                       | `gh issue edit <n> --add-assignee @me`                                                                                                                                                                                              |
+| Resolve                     | `gh issue comment <n> --body <answer>` then `gh issue close <n>`                                                                                                                                                                    |
+| Update map body             | `gh issue edit <map#> --body-file <f>`                                                                                                                                                                                              |
+| Open children               | `gh api repos/{owner}/{repo}/issues/<map#>/sub_issues` and keep `state == "open"` (multi-label `gh issue list` filters AND labels — useless here, each ticket has one type label)                                                   |
+| Frontier                    | from open children, keep unassigned ones with no open blocked-by; check relationships per issue (`gh issue view <n>`, else the dependency endpoints via `gh api`) — verify the query shape once on a real repo before relying on it |
 
 ## Forgejo / Gitea (`fj`)
 
 CLI has no sub-issue or dependency commands — use body conventions; the map is the index of children.
 
-| Operation | Command / convention |
-| --- | --- |
-| Create map | `fj issue create --body-file <f> "<name>"`, then add `wayfinder:map` via `fj issue edit <n> labels` |
-| Create ticket | `fj issue create --body <q> "<name>"`; ticket body ends with `Map: #<map#>` |
-| Wire blocking | line in ticket body: `Blocked by: #<m>` (one per blocker); edit via `fj issue edit <n> body`. Forgejo has native dependencies in the web UI — mirror there if a visual frontier is wanted |
-| Claim | `fj issue assign <n> <user>` |
-| Resolve | `fj issue comment <n> <answer>` then `fj issue close <n>` |
-| Update map body | `fj issue edit <map#> body` |
-| Open children / frontier | `fj issue search` for open issues referencing the map, or walk the map's ticket links; frontier = unassigned with every `Blocked by:` target closed (`fj issue view <m>`) |
+| Operation                | Command / convention                                                                                                                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Create map               | `fj issue create --body-file <f> "<name>"`, then add `wayfinder:map` via `fj issue edit <n> labels`                                                                                       |
+| Create ticket            | `fj issue create --body <q> "<name>"`; ticket body ends with `Map: #<map#>`                                                                                                               |
+| Wire blocking            | line in ticket body: `Blocked by: #<m>` (one per blocker); edit via `fj issue edit <n> body`. Forgejo has native dependencies in the web UI — mirror there if a visual frontier is wanted |
+| Claim                    | `fj issue assign <n> <user>`                                                                                                                                                              |
+| Resolve                  | `fj issue comment <n> <answer>` then `fj issue close <n>`                                                                                                                                 |
+| Update map body          | `fj issue edit <map#> body`                                                                                                                                                               |
+| Open children / frontier | `fj issue search` for open issues referencing the map, or walk the map's ticket links; frontier = unassigned with every `Blocked by:` target closed (`fj issue view <m>`)                 |
 
 Flag shapes above are from `fj --help` at time of writing — verify with `fj issue <cmd> --help` before first use in a session.
 
