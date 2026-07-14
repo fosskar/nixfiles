@@ -181,6 +181,7 @@
               screen_time_enabled = lib.mkDefault true;
               screen_corners.enabled = lib.mkDefault true;
               niri_overview_type_to_launch_enabled = lib.mkDefault true;
+              greeter_sync.auto_sync = lib.mkDefault true;
               panel = {
                 transparency_mode = lib.mkDefault "soft";
                 open_near_click_control_center = lib.mkDefault true;
