@@ -44,7 +44,7 @@
 }:
 let
   pname = "voquill";
-  version = "0.0.644";
+  version = "0.0.650";
 
   runtimeDeps = [
     # tauri/webkit runtime deps
@@ -91,7 +91,7 @@ stdenv.mkDerivation {
   # use pre-built binary from github releases
   src = fetchurl {
     url = "https://github.com/josiahsrc/voquill/releases/download/desktop-v${version}/voquill-desktop_${version}_amd64.deb";
-    hash = "sha256-vqePmmZPagP6ZnxyCyW07AzUktu8eVCYTFZi1aoddVQ=";
+    hash = "sha256-36PED8fDaNBBThvoRrG3dIUJogyNUzadof4QQtTJoPg=";
   };
 
   nativeBuildInputs = [
