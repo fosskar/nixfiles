@@ -2,6 +2,7 @@
   flake.modules.homeManager.herdr =
     {
       inputs,
+      config,
       pkgs,
       lib,
       ...
@@ -73,6 +74,9 @@
         "nathanflurry.jj-workspace" = "NathanFlurry/herdr-plugin-jj-workspace";
         "cloudmanic.herdr-plus" = "cloudmanic/herdr-plus";
         "persiyanov.reviewr" = "persiyanov/herdr-reviewr";
+      }
+      # event pusher for the relay (herdr-remote.nix); only useful on a relay host
+      // lib.optionalAttrs config.programs.herdr.remote.enable {
         "herdr-remote.relay" = "dcolinmorgan/herdr-remote";
       };
 
