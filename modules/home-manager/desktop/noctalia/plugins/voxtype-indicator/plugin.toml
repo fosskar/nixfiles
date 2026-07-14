@@ -11,13 +11,13 @@ description = "Voxtype status and recording control."
 [[setting]]
 key = "command"
 type = "string"
-label = "Voxtype command"
+label_key = "settings.command.label"
 default = "voxtype"
 
 [[setting]]
 key = "hide_idle"
 type = "bool"
-label = "Hide when idle"
+label_key = "settings.hide_idle.label"
 default = false
 
 [[widget]]

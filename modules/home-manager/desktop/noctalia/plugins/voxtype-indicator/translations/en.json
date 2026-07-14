@@ -1,0 +1,10 @@
+{
+  "settings": {
+    "command": {
+      "label": "Voxtype command"
+    },
+    "hide_idle": {
+      "label": "Hide when idle"
+    }
+  }
+}
