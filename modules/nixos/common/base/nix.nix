@@ -60,7 +60,10 @@
         };
         # batch dedup via nix-optimise.timer instead of write-time
         # auto-optimise-store (per-build overhead, EMLINK noise on btrfs)
-        optimise.automatic = lib.mkDefault true;
+        optimise = {
+          automatic = lib.mkDefault true;
+          dates = lib.mkDefault [ "12:00" ];
+        };
       };
 
       # weekly cleanup of stale gcroots/temproots not covered by nix.gc/nh clean
