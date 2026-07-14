@@ -27,21 +27,22 @@ dependencies = ["niri", "kanshi", "wl-mirror", "wdisplays"]
 [[setting]]
 key = "poll_interval"
 type = "int"
-label = "Poll interval (seconds)"
-default = 5
-min = 2
-max = 60
+label_key = "settings.poll_interval.label"
+description_key = "settings.poll_interval.description"
+default = 30
+min = 5
+max = 300
 
 [[setting]]
 key = "kanshi_enabled"
 type = "bool"
-label = "Kanshi integration"
+label_key = "settings.kanshi_enabled.label"
 default = true
 
 [[setting]]
 key = "kanshi_config_dir"
 type = "string"
-label = "Kanshi config directory (empty = auto)"
+label_key = "settings.kanshi_config_dir.label"
 default = ""
 
 [[service]]
@@ -54,10 +55,10 @@ entry = "panel.luau"
 width = 560
 height = 720
 # noctalia.togglePanel() from Luau carries no click anchor (script_api_context.h
-# togglePanelHook is id-only), so open_near_click can't work for plugin panels;
-# pin the panel where the widget lives instead.
+# togglePanelHook is id-only), so open_near_click can't work for plugin panels.
+# Centered so notification toasts (top_right) never cover the revert/keep bar.
 placement = "floating"
-position = "top_right"
+position = "center"
 
 [[widget]]
 id = "indicator"

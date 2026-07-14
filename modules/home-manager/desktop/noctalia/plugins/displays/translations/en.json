@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "poll_interval": {
+      "label": "Reconcile interval (seconds)",
+      "description": "Periodic kanshi/wl-mirror state reconcile. Output changes are event-driven and do not depend on this."
+    },
+    "kanshi_enabled": {
+      "label": "Kanshi integration"
+    },
+    "kanshi_config_dir": {
+      "label": "Kanshi config directory (empty = auto)"
+    }
+  }
+}

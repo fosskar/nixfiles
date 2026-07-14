@@ -13,13 +13,13 @@
 
 local REVERT_SECONDS = 12
 
-local pollMs = 5000
+local pollMs = 30000
 local kanshiEnabled = true
 local kanshiDirOverride = ""
 
 local function loadConfig()
-  local secs = tonumber(noctalia.getConfig("poll_interval")) or 5
-  pollMs = math.max(2, secs) * 1000
+  local secs = tonumber(noctalia.getConfig("poll_interval")) or 30
+  pollMs = math.max(5, secs) * 1000
   kanshiEnabled = noctalia.getConfig("kanshi_enabled") ~= false
   local dir = noctalia.getConfig("kanshi_config_dir")
   kanshiDirOverride = type(dir) == "string" and dir or ""
@@ -741,7 +741,8 @@ function update()
     end
     return
   end
-  fetchOutputs()
+  -- outputs are event-driven (onOutputsChanged + panel-open refresh); the
+  -- periodic tick only reconciles kanshi/wl-mirror, which have no events.
   kanshiRefresh()
   mirrorCheck()
 end
