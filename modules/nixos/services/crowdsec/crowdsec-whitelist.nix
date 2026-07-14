@@ -44,9 +44,9 @@
             ".GetMeta('http_hostname') == 'matrix.${flake-self.domains.public}' && .GetMeta('http_path') startsWith '/_matrix/'"
           )
           (probingWhitelist "nixfiles/niks3-probing-whitelist"
-            "nix cache clients burst 404s on .narinfo lookups (cache misses) that http-probing misreads as scanning"
-            "narinfo 404 bursts are normal binary cache behavior"
-            ".GetMeta('http_hostname') == 'niks3.${flake-self.domains.public}' && .GetMeta('http_path') endsWith '.narinfo'"
+            "nix cache clients burst 404s on .narinfo and nar lookups (cache misses) that http-probing misreads as scanning"
+            "narinfo/nar 404 bursts are normal binary cache behavior"
+            ".GetMeta('http_hostname') == 'niks3.${flake-self.domains.public}' && (.GetMeta('http_path') endsWith '.narinfo' || .GetMeta('http_path') startsWith '/nar/')"
           )
         ];
       };
