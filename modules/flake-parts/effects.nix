@@ -81,7 +81,7 @@ in
   flake.effects = _args: {
     onSchedule.renovate = {
       when = {
-        hour = 1;
+        hour = 20;
         minute = 0;
       };
       outputs.effects.renovate = renovate;
@@ -102,7 +102,7 @@ in
 
     onSchedule.update-flake-inputs = {
       when = {
-        hour = 4;
+        hour = 22;
         minute = 0;
       };
       outputs.effects.update-flake-inputs = mkRepoEffect "update-flake-inputs" ''
