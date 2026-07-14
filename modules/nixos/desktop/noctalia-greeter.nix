@@ -27,6 +27,7 @@
         programs.noctalia-greeter = {
           enable = true;
           package = noctalia-greeter;
+          settings.appearance.hide_logo = true;
         };
       }
       // lib.optionalAttrs (options ? preservation) {
