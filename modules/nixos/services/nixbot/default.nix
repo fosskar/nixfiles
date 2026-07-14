@@ -101,7 +101,7 @@
           # group:admin only: private build logs can leak secrets
           privateRepoViewers."*" = [ "oidc:auth.${flake-self.domains.public}:group:admin" ];
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
-          buildConcurrency = 2;
+          buildConcurrency = 4;
           evalWorkerCount = lib.mkDefault 8;
           cacheFailedBuilds = true;
 
