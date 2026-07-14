@@ -173,6 +173,8 @@ in
               apiTokenFile = varsGarage.files.api-token.path;
               signKeyFiles = [ varsKeys.files.sign-key.path ];
 
+              readProxy.enable = true;
+
               gc.enable = true;
               gc.olderThan = "720h";
             };

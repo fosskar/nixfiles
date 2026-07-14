@@ -1,9 +1,15 @@
 _: {
   flake.modules.homeManager.llm =
-    { pkgs, inputs, ... }:
     {
-      home.packages = [
-        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.amp
-      ];
+      lib,
+      pkgs,
+      inputs,
+      ...
+    }:
+    {
+      programs.amp = {
+        enable = lib.mkDefault false;
+        package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.amp;
+      };
     };
 }

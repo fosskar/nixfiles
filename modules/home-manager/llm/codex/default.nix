@@ -1,13 +1,15 @@
 _: {
   flake.modules.homeManager.llm =
     {
+      config,
+      lib,
       pkgs,
       inputs,
       ...
     }:
     {
       programs.codex = {
-        enable = true;
+        enable = lib.mkDefault false;
         package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
 
         settings = {
@@ -47,6 +49,8 @@ _: {
           ];
         };
       };
-      home.file.".codex/AGENTS.md".source = ../AGENTS.md;
+      home.file.".codex/AGENTS.md" = lib.mkIf config.programs.codex.enable {
+        source = ../AGENTS.md;
+      };
     };
 }
