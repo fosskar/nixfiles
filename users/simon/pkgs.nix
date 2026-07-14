@@ -22,6 +22,16 @@
     # media
     pkgs.spotify
 
+    # gui is qt quick; global QT_STYLE_OVERRIDE=adwaita-dark makes qqc2 try to
+    # load a nonexistent "adwaita-dark" qml style module
+    (pkgs.symlinkJoin {
+      name = "opencloud-desktop";
+      paths = [ pkgs.opencloud-desktop ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/opencloud --unset QT_STYLE_OVERRIDE
+      '';
+    })
     pkgs.obsidian
 
     pkgs.nautilus
