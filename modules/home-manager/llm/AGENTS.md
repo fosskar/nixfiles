@@ -62,7 +62,7 @@ Chat replies: smart caveman. Artifacts use normal English unless requested: code
 - prefer temporary debug comments over deletion; remove temporary debug changes before finishing
 - newline at EOF
 - lowercase assistant prose/comments/commits by default; preserve code, config values, quotes, proper nouns
-- comments: only non-obvious why; no restating code
+- comments: code is self-explanatory. default zero. NEVER describe the WHAT; only non-obvious WHY. never annotate one-line changes or single option settings. no restating code
 
 ## safety
 
