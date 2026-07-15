@@ -13,7 +13,13 @@
       services.mautrix-signal = {
         enable = true;
         # goolm avoids libolm (marked insecure in nixpkgs)
-        package = pkgs.mautrix-signal.override { withGoolm = true; };
+        package = (pkgs.mautrix-signal.override { withGoolm = true; }).overrideAttrs {
+          # Continuwuity rejects simultaneous stable and legacy MSC4190 device parameters.
+          postConfigure = ''
+            substituteInPlace vendor/maunium.net/go/mautrix/url.go \
+              --replace-fail 'query.Set("org.matrix.msc3202.device_id", string(cli.DeviceID))' ""
+          '';
+        };
         environmentFile = config.clan.core.vars.generators.mautrix-signal.files."bridge.env".path;
         settings = {
           homeserver = {
@@ -34,6 +40,7 @@
           encryption = {
             allow = true;
             default = true;
+            msc4190 = true;
             pickle_key = "$PICKLE_KEY";
           };
         };
