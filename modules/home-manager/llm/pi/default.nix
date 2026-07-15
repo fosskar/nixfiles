@@ -29,7 +29,6 @@ _: {
           packages = [
             {
               source = "git:github.com/rytswd/pi-agent-extensions";
-              extensions = [ "!permission-gate" ];
             }
             {
               # v0.10.4
