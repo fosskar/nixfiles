@@ -128,9 +128,7 @@
           LOG_LEVEL = "info";
           ROCKET_LOG = "info";
 
-          USE_SENDMAIL = true;
-          SENDMAIL_COMMAND = "/run/wrappers/bin/sendmail";
-          SMTP_FROM = "noreply@${flake-self.domains.local}";
+          SMTP_SECURITY = "starttls";
           SMTP_FROM_NAME = "Vaultwarden";
 
           SSO_PKCE = true;
@@ -143,6 +141,10 @@
           SSO_AUTH_ONLY_NOT_SESSION = true;
         };
       };
+
+      systemd.services.vaultwarden.serviceConfig.EnvironmentFile = [
+        config.clan.core.vars.generators.smtp.files."smtp-env".path
+      ];
 
       clan.core.postgresql.enable = lib.mkForce true;
       clan.core.postgresql.databases.vaultwarden = {
