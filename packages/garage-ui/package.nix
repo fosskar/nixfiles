@@ -8,20 +8,20 @@
   nix-update-script,
 }:
 let
-  version = "0.9.0";
+  version = "0.10.0";
 
   src = fetchFromGitHub {
     owner = "Noooste";
     repo = "garage-ui";
     tag = "v${version}";
-    hash = "sha256-ESRexXlR2rQhosscvgrhBpBbibrqeuoc9ueHp75+/DM=";
+    hash = "sha256-D+dAHFW9az2E8Bf6aKq5QHc8d9jOYGjSa+5q9PmPuzw=";
   };
 
   frontend = buildNpmPackage {
     pname = "garage-ui-frontend";
     inherit version src;
     sourceRoot = "${src.name}/frontend";
-    npmDepsHash = "sha256-qx7DRfjCDhtamf9NcKda4PtGsN+qNKUcTQZwZRiVMts=";
+    npmDepsHash = "sha256-j3h3YmYjmfPv+zKBkgx0n4SdqZT4/KXygREWkqL4G+8=";
     installPhase = ''
       runHook preInstall
       cp -r dist $out
