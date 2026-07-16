@@ -10,6 +10,7 @@ _: {
       HostName = "nixworker.s";
       User = "simon";
       ForwardAgent = "yes";
+      LocalForward = [ "54545 localhost:54545" ];
       RemoteForward = [
         "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra"
         "/run/user/1000/ssh-agent.sock /run/user/1000/gnupg/S.gpg-agent.ssh"
