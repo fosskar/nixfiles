@@ -31,6 +31,7 @@ let
     if hasSops then
       ''
         set -euo pipefail
+        export PATH="${lib.makeBinPath [ pkgs.age-plugin-yubikey ]}:$PATH"
         commands=$(cat "${uciBatch}")
         secrets=""
         ${lib.concatMapStringsSep "\n" (f: ''
