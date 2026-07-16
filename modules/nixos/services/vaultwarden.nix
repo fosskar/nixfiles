@@ -45,7 +45,6 @@
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
         header {
           X-Content-Type-Options "nosniff"
-          X-Frame-Options "SAMEORIGIN"
           X-Robots-Tag "noindex, nofollow, nosnippet, noarchive"
           X-Download-Options "noopen"
           X-Permitted-Cross-Domain-Policies "none"
@@ -82,15 +81,17 @@
           "oauth-client-secret-hash" = {
             owner = "authelia-main";
             group = "authelia-main";
+            restartUnits = [ "authelia-main.service" ];
           };
           "oauth-client-secret" = { };
           "admin-token" = { };
-          "sso.env" = { };
+          "sso.env".restartUnits = [ "vaultwarden.service" ];
         };
 
         runtimeInputs = [
           pkgs.pwgen
           pkgs.authelia
+          pkgs.libargon2
         ];
         script = ''
           SECRET=$(pwgen -s 64 1)
@@ -99,10 +100,11 @@
 
           ADMIN=$(pwgen -s 48 1)
           echo -n "$ADMIN" > "$out/admin-token"
+          ADMIN_HASH=$(echo -n "$ADMIN" | argon2 "$(pwgen -s 32 1)" -e -id -k 65540 -t 3 -p 4)
 
           {
             echo "SSO_CLIENT_SECRET=$SECRET"
-            echo "ADMIN_TOKEN=$ADMIN"
+            echo "ADMIN_TOKEN='$ADMIN_HASH'"
           } > "$out/sso.env"
         '';
       };
@@ -117,6 +119,7 @@
           DOMAIN = "https://${localHost}";
           ROCKET_ADDRESS = listenAddress;
           ROCKET_PORT = listenPort;
+          IP_HEADER = "X-Forwarded-For";
 
           SIGNUPS_ALLOWED = false;
           INVITATIONS_ALLOWED = true;
