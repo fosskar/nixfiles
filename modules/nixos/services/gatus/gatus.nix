@@ -33,7 +33,7 @@
               to = "gatus@nx3.eu";
               default-alert = {
                 enabled = true;
-                failure-threshold = 2;
+                failure-threshold = 5;
                 success-threshold = 2;
                 send-on-resolved = true;
               };
