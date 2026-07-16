@@ -625,6 +625,16 @@
           family = "ipv6";
           target = "ACCEPT";
         };
+        iot_mqtt = {
+          _type = "rule";
+          name = "Allow-IoT-MQTT-HomeAssistant";
+          src = "iot";
+          dest = "lan";
+          dest_ip = "192.168.10.50";
+          proto = "tcp";
+          dest_port = "1883";
+          target = "ACCEPT";
+        };
       };
     };
   };
