@@ -1,0 +1,2 @@
+# Reconnect WAN (PPPoE) nightly, before 02:00 nixbot schedules
+55 01 * * * /sbin/ifup wan

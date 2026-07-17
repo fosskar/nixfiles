@@ -47,6 +47,7 @@
   files = {
     "/etc/unbound/unbound_srv.conf" = ./files/unbound_srv.conf;
     "/etc/unbound/unbound_ext.conf" = ./files/unbound_ext.conf;
+    "/etc/crontabs/root" = ./files/crontabs-root;
   };
 
   uci = {
