@@ -20,6 +20,7 @@
       self.modules.homeManager.ghostty
       self.modules.homeManager.git
       self.modules.homeManager.gtk
+      self.modules.homeManager.hunk
       self.modules.homeManager.jujutsu
       self.modules.homeManager.llm
       self.modules.homeManager.k9s

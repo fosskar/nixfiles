@@ -19,6 +19,7 @@
         self.modules.homeManager.fzf
         self.modules.homeManager.git
         self.modules.homeManager.herdr
+        self.modules.homeManager.hunk
         self.modules.homeManager.jujutsu
         self.modules.homeManager.llm
         self.modules.homeManager.neovim
