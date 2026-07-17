@@ -22,6 +22,7 @@ _: {
       # skills shipped by upstream flake inputs; skill name -> SKILL.md source
       externalSkills = {
         herdr = "${inputs.herdr}/SKILL.md";
+        hunk-review = "${pkgs.hunk}/skills/hunk-review/SKILL.md";
       };
       skillEntries = lib.listToAttrs (
         lib.concatMap (
