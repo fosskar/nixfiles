@@ -572,6 +572,14 @@
           dest_port = "53";
           target = "ACCEPT";
         };
+        srv_ssh_router = {
+          _type = "rule";
+          name = "Allow-Srv-SSH-Router";
+          src = "srv";
+          proto = "tcp";
+          dest_port = "22";
+          target = "ACCEPT";
+        };
         srv_telegraf = {
           _type = "rule";
           name = "Allow-Srv-Telegraf";
