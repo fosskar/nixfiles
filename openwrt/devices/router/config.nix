@@ -51,7 +51,10 @@
     "/etc/telegraf.conf" = ./files/telegraf.conf;
   };
 
-  reload = [ "telegraf" ];
+  reload = [
+    "telegraf"
+    "unbound"
+  ];
 
   uci = {
     secrets.sops.files = [ ../secrets.yaml ];
@@ -239,6 +242,7 @@
             ednspacket_max = "1232";
             port = "54"; # adguard uses 53
             noresolv = "1";
+            notinterface = [ "wan" ];
             # --- netboot.xyz PXE ---
             enable_tftp = "1";
             tftp_root = "/srv/tftp";
@@ -345,7 +349,6 @@
           validator = "1";
           query_minimize = "1";
           iface_trig = "wan";
-          iface_lan = "lan";
         };
         auth_icann = {
           _type = "zone";
