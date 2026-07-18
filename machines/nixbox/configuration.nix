@@ -23,6 +23,7 @@
     self.modules.nixos.itTools
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf
+    self.modules.nixos.protomaps
     self.modules.nixos.grub
     self.modules.nixos.nvidiaGpu
     self.modules.nixos.amdCpu

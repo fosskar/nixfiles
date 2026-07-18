@@ -422,8 +422,16 @@
             name = "garage";
             input = "self";
           };
-          # cluster-wide; role-level so both nodes agree on the list.
-          roles.node.settings.buckets = [ "backup" ];
+          # cluster-wide; role-level so both nodes agree on the set.
+          roles.node.settings.buckets = {
+            backup = { };
+            # protomaps basemap for grid; served via the s3 web endpoint and
+            # exposed publicly through netbird-proxy (target: nixbox/nixworker:3902).
+            maps = {
+              website = true;
+              aliases = [ "maps.${config.flake.domains.public}" ];
+            };
+          };
           roles.node.machines = {
             "nixbox".settings = {
               capacity = "250G";
