@@ -71,14 +71,14 @@
           micsSkills.weather-cli
           micsSkills.context7-cli
         ]
-        ++ (with pkgs; [
-          curl
-          jq
-          ripgrep
-          fd
-          git
-          python3
-        ]);
+        ++ [
+          pkgs.curl
+          pkgs.jq
+          pkgs.ripgrep
+          pkgs.fd
+          pkgs.git
+          pkgs.python3
+        ];
       };
     };
 }
