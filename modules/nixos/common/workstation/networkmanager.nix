@@ -2,10 +2,8 @@
   flake.modules.nixos.workstation =
     { lib, config, ... }:
     {
-      # add wheel users to networkmanager group
       users.groups.networkmanager.members = lib.mkAfter config.users.groups.wheel.members;
 
-      # wireless regulatory database
       hardware.wirelessRegulatoryDatabase = true;
 
       networking = {

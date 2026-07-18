@@ -17,19 +17,14 @@
 
         graph_symbol = "braille";
 
-        # Graph symbol to use for graphs in cpu box, "default", "braille", "block" or "tty".
         graph_symbol_cpu = "default";
 
-        # Graph symbol to use for graphs in gpu box, "default", "braille", "block" or "tty".
         graph_symbol_gpu = "default";
 
-        # Graph symbol to use for graphs in cpu box, "default", "braille", "block" or "tty".
         graph_symbol_mem = "default";
 
-        # Graph symbol to use for graphs in cpu box, "default", "braille", "block" or "tty".
         graph_symbol_net = "default";
 
-        # Graph symbol to use for graphs in cpu box, "default", "braille", "block" or "tty".
         graph_symbol_proc = "default";
 
         shown_boxes = "cpu mem net proc";

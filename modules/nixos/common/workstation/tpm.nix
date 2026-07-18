@@ -17,7 +17,6 @@
         pkcs11.enable = lib.mkDefault false;
       };
 
-      # add wheel users to tss group for TPM access
       users.groups.tss.members = lib.mkAfter config.users.groups.wheel.members;
 
       environment.systemPackages = lib.mkIf config.security.tpm2.enable [

@@ -2,7 +2,6 @@
   flake.modules.nixos.betaflight =
     { config, lib, ... }:
     {
-      # add wheel users to plugdev group for Betaflight DFU
       users.groups.plugdev.members = lib.mkAfter config.users.groups.wheel.members;
 
       services.udev.extraRules = ''
