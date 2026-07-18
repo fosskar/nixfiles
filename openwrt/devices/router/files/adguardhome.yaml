@@ -40,3 +40,7 @@ filters:
   - enabled: true
     url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_51.txt
     name: HaGeZi's Pro++ Blocklist
+  - enabled: true
+    # blocks DoH resolver domains so clients cannot bypass filtering; DoT blocked by firewall (853)
+    url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/doh.txt
+    name: HaGeZi DoH Bypass Blocklist

@@ -553,6 +553,18 @@
           dest_port = "53";
           target = "ACCEPT";
         };
+        block_dot = {
+          _type = "rule";
+          name = "Block-DoT-Bypass";
+          src = "*";
+          dest = "wan";
+          proto = [
+            "tcp"
+            "udp"
+          ];
+          dest_port = "853";
+          target = "REJECT";
+        };
         srv_dhcp = {
           _type = "rule";
           name = "Allow-Srv-DHCP";
