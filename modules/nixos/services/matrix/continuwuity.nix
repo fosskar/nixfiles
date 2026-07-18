@@ -69,8 +69,12 @@
 
       services.matrix-continuwuity = {
         enable = true;
-        # nixos-unstable lags calver releases; drop back to pkgs.matrix-continuwuity once caught up
-        package = pkgs.small.matrix-continuwuity;
+        # nixos-unstable lags calver releases; drop back to pkgs.matrix-continuwuity once caught up.
+        # patch: upstream forces oauth-exclusive when oidc is set, breaking password
+        # login for non-OAuth clients (Grid); hybrid keeps both auth paths
+        package = pkgs.small.matrix-continuwuity.overrideAttrs (old: {
+          patches = (old.patches or [ ]) ++ [ ./oauth-hybrid.patch ];
+        });
         settings.global = {
           # apex delegates to ${publicHost} via /.well-known/matrix/server
           server_name = "fosskar.de";
@@ -113,12 +117,11 @@
             server = "${publicHost}:443";
           };
 
-          # delegated auth via authelia. WARNING: forces oauth-exclusive mode,
-          # legacy password login stops working for new client logins; family
+          # delegated auth via authelia. oauth-hybrid.patch makes this mode
+          # effective with oidc set (upstream would force exclusive): oidc
+          # clients use delegated auth, password clients (Grid) use UIA.
+          # default prompt_for_localpart = true stays on purpose so family
           # links existing accounts by confirming the matrix password once.
-          # default prompt_for_localpart = true stays on purpose for that.
-          # required field once [global.oauth] exists (no serde default upstream);
-          # value irrelevant: oidc presence forces exclusive regardless
           oauth.compatibility_mode = "hybrid";
           oauth.oidc = {
             discovery_url = "https://auth.${flake-self.domains.public}";

@@ -1,0 +1,22 @@
+Respect configured oauth.compatibility_mode with delegated OIDC.
+
+Upstream forces exclusive mode whenever [global.oauth.oidc] is set,
+which kills legacy password login for clients without OAuth support
+(Grid). Hybrid keeps both: OIDC clients use delegated auth, password
+clients hit the stored hash via UIA.
+
+--- a/src/core/config/mod.rs
++++ b/src/core/config/mod.rs
+@@ -2452,11 +2452,7 @@
+ impl OauthConfig {
+ 	#[must_use]
+ 	pub fn compatibility_mode(&self) -> OAuthMode {
+-		if self.oidc.is_some() {
+-			OAuthMode::Exclusive
+-		} else {
+-			self.compatibility_mode
+-		}
++		self.compatibility_mode
+ 	}
+ }
+ 
