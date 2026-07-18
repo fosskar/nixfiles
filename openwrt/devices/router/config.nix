@@ -51,6 +51,7 @@
     "/etc/telegraf.conf" = ./files/telegraf.conf;
     "/etc/sysctl.d/99-hardening.conf" = ./files/sysctl-hardening.conf;
     "/usr/bin/netboot-update" = ./files/netboot-update;
+    "/etc/sysupgrade.conf" = ./files/sysupgrade.conf;
   };
 
   reload = [
