@@ -31,8 +31,9 @@ dns:
 # filter lists
 filters:
   - enabled: true
-    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_44.txt
-    name: HaGeZi's Threat Intelligence Feeds
+    # full TIF (filter_44) needs >=2GB RAM in AGH; caused OOM wedge 2026-07-18
+    url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/tif.medium.txt
+    name: HaGeZi's Threat Intelligence Feeds (Medium)
   - enabled: true
     url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_45.txt
     name: HaGeZi's Allowlist Referral
