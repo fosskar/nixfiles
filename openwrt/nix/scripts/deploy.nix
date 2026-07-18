@@ -34,9 +34,16 @@ pkgs.writeShellScriptBin "openwrt-deploy" ''
         name: device:
         let
           uci = uciOutputs.${name};
-          autoReload = builtins.attrNames device.uci.settings;
-          allReload = lib.unique (autoReload ++ (device.reload or [ ]));
-          reloadList = lib.concatMapStringsSep " " lib.escapeShellArg allReload;
+          extraReloadList = lib.concatMapStringsSep " " lib.escapeShellArg device.reload;
+          secretFiles = lib.filterAttrs (
+            _remote: local: lib.hasInfix "@" (builtins.readFile local)
+          ) device.files;
+          hasSecretFiles = secretFiles != { };
+          fileSopsFiles =
+            if hasSecretFiles && device.uci.secrets.sops.files == [ ] then
+              throw "device ${name}: files contain @placeholders@ but no uci.secrets.sops.files configured"
+            else
+              device.uci.secrets.sops.files;
           hasKeys = device.authorizedKeys != [ ];
           keysFile = pkgs.writeText "authorized_keys-${name}" (
             lib.concatStringsSep "\n" device.authorizedKeys + "\n"
@@ -64,7 +71,6 @@ pkgs.writeShellScriptBin "openwrt-deploy" ''
         ''
           ${name})
             HOST="root@${device.host}"
-            RELOAD_SERVICES=(${reloadList})
             commands=$(${uci.command})
 
             if $DRY_RUN; then
@@ -151,18 +157,60 @@ pkgs.writeShellScriptBin "openwrt-deploy" ''
               fi
             ''}
 
-            ${lib.optionalString hasFiles (
-              lib.concatStringsSep "\n" (
-                lib.mapAttrsToList (remote: local: ''
-                  current_file=$(ssh "$HOST" 'cat ${remote} 2>/dev/null' || true)
-                  new_file=$(cat "${local}")
-                  if [ "$current_file" != "$new_file" ]; then
-                    echo "pushing ${remote}..."
-                    ssh "$HOST" 'mkdir -p $(dirname ${remote}) && cat > ${remote}' < "${local}"
-                  fi
-                '') device.files
-              )
-            )}
+            ${lib.optionalString hasFiles ''
+              files_changed=0
+              ${lib.optionalString hasSecretFiles ''
+                export PATH="${lib.makeBinPath [ pkgs.age-plugin-yubikey ]}:$PATH"
+                file_secrets=""
+                ${lib.concatMapStringsSep "\n" (f: ''
+                  file_secrets="$file_secrets $(${lib.getExe pkgs.sops} -d --output-type json "${f}")"
+                '') fileSopsFiles}
+                merged_secrets=$(echo "$file_secrets" | ${lib.getExe pkgs.jq} -s 'add')
+              ''}
+              ${lib.concatStringsSep "\n" (
+                lib.mapAttrsToList (
+                  remote: local:
+                  if lib.hasAttr remote secretFiles then
+                    ''
+                      current_file=$(ssh "$HOST" 'cat ${remote} 2>/dev/null' || true)
+                      new_file=$(cat "${local}")
+                      for key in $(echo "$merged_secrets" | ${lib.getExe pkgs.jq} -r 'keys[]'); do
+                        val=$(echo "$merged_secrets" | ${lib.getExe pkgs.jq} -r --arg k "$key" '.[$k]')
+                        new_file="''${new_file//@''${key}@/$val}"
+                      done
+                      remaining=$(grep -o '@[A-Za-z0-9_]\+@' <<< "$new_file" || true)
+                      if [ -n "$remaining" ]; then
+                        echo "error: unsubstituted secret placeholders in ${remote}:" >&2
+                        echo "$remaining" | sort -u >&2
+                        exit 1
+                      fi
+                      if [ "$current_file" != "$new_file" ]; then
+                        echo "pushing ${remote}..."
+                        printf '%s\n' "$new_file" | ssh "$HOST" 'mkdir -p $(dirname ${remote}) && cat > ${remote}'
+                        files_changed=1
+                      fi
+                    ''
+                  else
+                    ''
+                      current_file=$(ssh "$HOST" 'cat ${remote} 2>/dev/null' || true)
+                      new_file=$(cat "${local}")
+                      if [ "$current_file" != "$new_file" ]; then
+                        echo "pushing ${remote}..."
+                        ssh "$HOST" 'mkdir -p $(dirname ${remote}) && cat > ${remote}' < "${local}"
+                        files_changed=1
+                      fi
+                    ''
+                ) device.files
+              )}
+              ${lib.optionalString (device.reload != [ ]) ''
+                if [ "$files_changed" = 1 ]; then
+                  for svc in ${extraReloadList}; do
+                    echo "restarting $svc..."
+                    ssh "$HOST" "/etc/init.d/$svc restart 2>/dev/null || true"
+                  done
+                fi
+              ''}
+            ''}
 
             echo "done."
             ;;
