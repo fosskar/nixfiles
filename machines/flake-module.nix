@@ -426,7 +426,7 @@
           roles.node.settings.buckets = {
             backup = { };
             # protomaps basemap for grid; served via the s3 web endpoint and
-            # exposed publicly through netbird-proxy (target: nixbox/nixworker:3902).
+            # exposed publicly through netbird-proxy (peer target :3902).
             maps = {
               website = true;
               aliases = [ "maps.${config.flake.domains.public}" ];

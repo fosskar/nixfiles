@@ -66,7 +66,19 @@
             --bucket='s3://${bucket}?endpoint=http://127.0.0.1:3900&region=${region}&use_path_style=true'
 
           rm -f europe.pmtiles
+          touch ${workDir}/.bootstrapped
         '';
+      };
+
+      # first refresh on deploy (garage-layout-init pattern); the monthly timer
+      # owns every later run, so the marker only gates this kick.
+      systemd.services.protomaps-bootstrap = {
+        description = "first protomaps refresh after deploy";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "garage-buckets-init.service" ];
+        unitConfig.ConditionPathExists = "!${workDir}/.bootstrapped";
+        serviceConfig.Type = "oneshot";
+        script = "systemctl start --no-block protomaps-refresh.service";
       };
 
       systemd.timers.protomaps-refresh = {
