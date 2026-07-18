@@ -57,8 +57,10 @@
           done
           [ -n "$build" ]
 
+          # single thread: 8 threads saturated the wan link and drowned the
+          # router (dns/control plane starved) on 2026-07-18. slow is fine.
           pmtiles extract "https://build.protomaps.com/$build" europe.pmtiles \
-            --bbox=-25,34,45,72 --download-threads=8
+            --bbox=-25,34,45,72 --download-threads=1
 
           export AWS_ACCESS_KEY_ID="$(cat "$CREDENTIALS_DIRECTORY"/access_key)"
           export AWS_SECRET_ACCESS_KEY="$(cat "$CREDENTIALS_DIRECTORY"/secret_key)"
@@ -84,9 +86,9 @@
       systemd.timers.protomaps-refresh = {
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          OnCalendar = "monthly";
+          OnCalendar = "*-*-01 03:00";
           Persistent = true;
-          RandomizedDelaySec = "6h";
+          RandomizedDelaySec = "2h";
         };
       };
 
