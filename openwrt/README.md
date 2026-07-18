@@ -44,8 +44,8 @@ options not declared within a section fall back to openwrt built-in defaults.
 | `externalPackages`       | list           | `[]`     | packages to install outside official feeds               |
 | `removePackages`         | list of string | `[]`     | packages to remove (runs before install)                 |
 | `authorizedKeys`         | list of string | `[]`     | SSH public keys for /etc/dropbear                        |
-| `files`                  | attrsOf path   | `{}`     | files to push (key = remote path, val = local)           |
-| `reload`                 | list of string | `[]`     | extra services to reload (auto-derived from UCI configs) |
+| `files`                  | attrsOf path   | `{}`     | files to push (key = remote path, val = local); `@placeholder@` secrets are substituted at deploy |
+| `reload`                 | list of string | `[]`     | services to restart when a pushed file changed; UCI config reloads are automatic |
 | `uci.settings`           | attrset        | `{}`     | UCI config (replace mode)                                |
 | `uci.secrets.sops.files` | list of path   | `[]`     | sops files for `@placeholder@` substitution              |
 
@@ -89,8 +89,21 @@ uci.secrets.sops.files = [ ../secrets.yaml ];
 key = "@wifi_password@";
 ```
 
-deploy decrypts via sops, substitutes `@placeholders@`, pipes to device via SSH.
+deploy decrypts via sops, substitutes `@placeholders@` (in UCI values and pushed files), pipes to device via SSH.
 fails if unsubstituted placeholders remain.
+
+## dns (router)
+
+```
+clients ──:53──▶ adguard home ──127.0.0.1:5335──▶ unbound ──▶ authoritative servers
+                     │                               │
+                 blocklists                     local names ──▶ dnsmasq :54 (dhcp_link)
+```
+
+- **adguard home** (`:53` on all vlans, web ui `:8080`): filtering via hagezi pro++, tif medium, doh bypass list. full tif (2.2M rules) needs >=2GB ram in agh — caused the 2026-07-18 oom wedge on the 1GB gl-mt6000; keep medium.
+- **unbound** (`127.0.0.1:5335`): full recursion, no third-party resolver ever sees queries. qname minimization (`query_minimize`), strict dnssec validation (`validator`, trust anchor `root.key`), and a full local root zone copy (`auth_icann` zone, refreshed ~daily) — root servers are never queried live. `serve-expired` + aggressive prefetch answer from cache during wan outages. binds loopback only (`unbound_srv.conf`) so lan clients cannot bypass agh filtering.
+- **dnsmasq** (`:54`, lan-facing but not client-used): dhcp, tftp/pxe, and local hostname resolution; unbound forwards local names/ptr to it via `dhcp_link`.
+- **bypass prevention**: port 53 is dnat-redirected to agh on every vlan (`force dns interception` redirects), dot (853→wan) is REJECTed (`Block-DoT-Bypass`), doh resolver domains are blocked by the hagezi doh list. android "private dns" in strict hostname mode will fail — set it to automatic.
 
 ## PXE / netboot
 
