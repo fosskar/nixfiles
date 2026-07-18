@@ -63,15 +63,30 @@ Note that in garage RF2 consistent mode, **writes fail while a node is down**
 
 ## Declarative buckets
 
-`roles.node.settings.buckets` (role-level, so every node agrees on the list)
-names cluster-wide S3 buckets to create automatically — e.g. a `backup`
-bucket for generic S3 backups over the LAN instead of NFS/Samba. The
-bootstrap node creates each bucket and imports a pre-generated key with
-read+write access. The S3 API port (3900) is opened in the firewall on every
-node. Growing the list creates the new buckets on the next deploy/boot.
+`roles.node.settings.buckets` (role-level, so every node agrees on the set)
+maps bucket names to per-bucket settings for cluster-wide S3 buckets created
+automatically — e.g. a `backup` bucket for generic S3 backups over the LAN
+instead of NFS/Samba. The bootstrap node creates each bucket and imports a
+pre-generated key with read+write access. The S3 API port (3900) is opened in
+the firewall on every node. Growing the set creates the new buckets on the
+next deploy/boot.
+
+Per-bucket settings:
+
+- `website` — allow anonymous reads via the s3 web endpoint (:3902).
+- `aliases` — extra global aliases; the web endpoint routes requests whose
+  Host header matches an alias to the bucket (e.g. a public domain fronted by
+  netbird-proxy).
+
+```nix
+roles.node.settings.buckets = {
+  backup = { };
+  maps = { website = true; aliases = [ "maps.example.com" ]; };
+};
+```
 
 Per-bucket credentials live in the shared `garage-buckets` vars generator
-(run `clan vars generate` after changing the list):
+(run `clan vars generate` after changing the set):
 
 ```bash
 clan vars get <node> garage-buckets/<bucket>_access_key_id
