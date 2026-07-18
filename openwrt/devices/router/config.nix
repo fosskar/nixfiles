@@ -49,10 +49,12 @@
     "/etc/unbound/unbound_ext.conf" = ./files/unbound_ext.conf;
     "/etc/crontabs/root" = ./files/crontabs-root;
     "/etc/telegraf.conf" = ./files/telegraf.conf;
+    "/etc/sysctl.d/99-hardening.conf" = ./files/sysctl-hardening.conf;
   };
 
   reload = [
     "telegraf"
+    "sysctl"
     "unbound"
   ];
 
