@@ -1,0 +1,46 @@
+#!/bin/sh
+# rebuild /srv/tftp: netboot.xyz bootloader + nixos stable netboot images.
+# /srv/tftp is NOT preserved across sysupgrades — rerun after every flash.
+set -eu
+
+TFTP=/srv/tftp
+REL=https://github.com/nix-community/nixos-images/releases/download/nixos-26.05
+
+mkdir -p "$TFTP/nixos"
+
+echo "fetching netboot.xyz.efi..."
+curl -fsSL -o "$TFTP/netboot.xyz.efi.tmp" https://boot.netboot.xyz/ipxe/netboot.xyz.efi
+mv "$TFTP/netboot.xyz.efi.tmp" "$TFTP/netboot.xyz.efi"
+
+echo "fetching nixos kernel..."
+curl -fsSL -o "$TFTP/nixos/bzImage.tmp" "$REL/bzImage-x86_64-linux"
+mv "$TFTP/nixos/bzImage.tmp" "$TFTP/nixos/bzImage"
+
+echo "fetching nixos initrd..."
+curl -fsSL -o "$TFTP/nixos/initrd.tmp" "$REL/initrd-x86_64-linux"
+mv "$TFTP/nixos/initrd.tmp" "$TFTP/nixos/initrd"
+
+# take kernel cmdline (incl. current init= store path) from the upstream ipxe
+# script; strip the kernel url, upstream initrd= name and ${cmdline} passthrough
+cmdline=$(curl -fsSL "$REL/netboot-x86_64-linux.ipxe" \
+  | sed -n 's/^kernel [^ ]* //p' \
+  | sed -e 's/ initrd=[^ ]*//' -e 's/ ${cmdline}//')
+[ -n "$cmdline" ] || { echo "error: could not parse cmdline from upstream ipxe" >&2; exit 1; }
+
+cat > "$TFTP/custom.ipxe" <<EOF
+#!ipxe
+:custom
+menu custom netboot menu
+item nixos NixOS Installer (nixos-26.05)
+item back back to main menu
+choose target && goto \${target}
+:nixos
+kernel tftp://192.168.10.1/nixos/bzImage initrd=initrd $cmdline
+initrd tftp://192.168.10.1/nixos/initrd
+boot
+:back
+exit
+EOF
+
+echo "done:"
+ls -la "$TFTP" "$TFTP/nixos"

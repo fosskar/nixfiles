@@ -108,33 +108,31 @@ clients ──:53──▶ adguard home ──127.0.0.1:5335──▶ unbound �
 ## PXE / netboot
 
 the router runs a TFTP server (`/srv/tftp/`) and serves `netboot.xyz.efi` for PXE booting.
+boot any wired machine → network boot → netboot.xyz menu → **Custom** → **NixOS Installer** (live system in RAM: install, rescue, troubleshooting — no usb stick needed).
 
 ### files
 
 ```
 /srv/tftp/
   netboot.xyz.efi               # netboot.xyz bootloader (dhcp_boot target)
-  custom.ipxe                   # custom menu, auto-detected by netboot.xyz
+  custom.ipxe                   # custom menu, auto-detected by netboot.xyz (generated)
   nixos/
-    bzImage                     # nix-community/nixos-images kernel
-    initrd                      # nix-community/nixos-images initrd
-    boot.ipxe                   # standalone boot script (optional)
+    bzImage                     # nix-community/nixos-images kernel (stable)
+    initrd                      # nix-community/nixos-images initrd (stable)
 ```
 
-### usage
+### populating / updating
 
-PXE boot any machine → netboot.xyz menu → **Custom** → **NixOS Installer**
-
-### updating images
+everything is (re)built by the deployed script — it downloads the bootloader and the
+current nixos stable images and regenerates `custom.ipxe` with the matching `init=`
+store path parsed from the upstream ipxe script:
 
 ```bash
-ssh root@192.168.10.1
-cd /srv/tftp/nixos
-wget -O bzImage 'https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/bzImage-x86_64-linux'
-wget -O initrd 'https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/initrd-x86_64-linux'
+ssh root@192.168.10.1 sh /usr/bin/netboot-update
 ```
 
-after updating, check the [ipxe script](https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/netboot-x86_64-linux.ipxe) for updated `init=` path and update `custom.ipxe` accordingly.
+`/srv/tftp` survives reboots (overlay) but **not sysupgrades** — rerun after every
+flash. bump the release by changing `REL` in `files/netboot-update`.
 
 ### UCI config
 
