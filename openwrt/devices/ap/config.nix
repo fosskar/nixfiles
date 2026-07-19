@@ -8,6 +8,10 @@
     "luci-app-usteer"
 
     "wpad-wolfssl"
+
+    "openwisp-config"
+    "openwisp-monitoring"
+    "luci-app-openwisp"
   ];
 
   removePackages = [
@@ -49,6 +53,13 @@
         public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHN601z/tNqh+R7x9JaCDayBioT2aQs1tEGv0tOSF/wu";
         hub_url = "https://beszel.nx3.eu";
         token = "@beszel_token_ap@";
+      };
+
+      openwisp.http = {
+        _type = "controller";
+        url = "https://opensoho.nx3.eu";
+        verify_ssl = 1;
+        shared_secret = "@opensoho_shared_secret@";
       };
 
       system.system = [
