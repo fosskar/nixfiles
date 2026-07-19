@@ -128,9 +128,12 @@ in
               + "-c ${lib.escapeShellArg (nodeSettings name).capacity} ${nodeIdShort name}"
             ) nodeNames;
 
-            waitForPeers = lib.concatMapStringsSep "\n" (name: ''
+            # `garage status` lists previously-seen but unreachable peers under
+            # "FAILED NODES"; metadata writes need full RF quorum, so only the
+            # healthy section (everything before that header) counts.
+            waitForHealthyPeers = lib.concatMapStringsSep "\n" (name: ''
               for i in $(seq 1 60); do
-                garage status 2>/dev/null | grep -q ${nodeIdShort name} && break
+                garage status 2>/dev/null | sed '/FAILED NODES/q' | grep -q ${nodeIdShort name} && break
                 sleep 2
               done
             '') nodeNames;
@@ -299,7 +302,7 @@ in
                   sleep 2
                 done
 
-                ${waitForPeers}
+                ${waitForHealthyPeers}
 
                 ${assignCmds}
 
@@ -347,6 +350,7 @@ in
                 pkgs.garage_2
                 pkgs.coreutils
                 pkgs.gnugrep
+                pkgs.gnused
               ];
               environment = {
                 GARAGE_RPC_SECRET_FILE = "/run/credentials/garage-buckets-init.service/rpc_secret";
@@ -375,6 +379,8 @@ in
                   garage layout show 2>/dev/null | grep -q 'Current cluster layout version' && break
                   sleep 2
                 done
+
+                ${waitForHealthyPeers}
 
                 ${lib.concatStringsSep "\n" (
                   lib.mapAttrsToList (b: def: ''
