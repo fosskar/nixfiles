@@ -51,8 +51,8 @@
       };
 
       # exported in shellInit, not sessionVariables: herdr panes are non-login
-      # shells and never source hm-session-vars. SSH_AUTH_SOCK = yubikey agent
-      # forwarded from the attached client to a fixed path (users/simon/ssh.nix)
+      # shells and never source hm-session-vars. SSH_AUTH_SOCK = socket-relay
+      # fan-out over the per-client forwarded yubikey agents (socket-relay.nix)
       programs.fish.shellInit = ''
         set -gx SSH_AUTH_SOCK /run/user/1000/ssh-agent.sock
         set -gx BROWSER remote-open
@@ -77,7 +77,8 @@
       nix.channels = { };
     };
 
-  # let ssh RemoteForward replace a stale forwarded gpg-agent socket (yubikey-forward.nix)
+  # let a reconnecting client's RemoteForward replace its own stale per-client
+  # socket under %t/fwd (users/simon/ssh.nix)
   services.openssh.settings.StreamLocalBindUnlink = true;
 
   # simon's yubikey pubkeys (same shared generator as modules/nixos/hardware/yubikey/gpg-ssh.nix)

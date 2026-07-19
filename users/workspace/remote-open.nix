@@ -5,9 +5,11 @@
 { pkgs, lib, ... }:
 let
   remote-open = pkgs.writeShellScriptBin "remote-open" ''
-    sock="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}/remote-open.sock"
-    if [ -S "$sock" ]; then
-      printf '%s\n' "$1" | ${pkgs.socat}/bin/socat - "UNIX-CONNECT:$sock"
+    rt="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+    # the relay socket (users/workspace/socket-relay.nix) always exists; check
+    # for an actual client forward so "no client attached" stays visible here
+    if ${pkgs.coreutils}/bin/ls "$rt"/fwd/*.remote-open >/dev/null 2>&1; then
+      printf '%s\n' "$1" | ${pkgs.socat}/bin/socat - "UNIX-CONNECT:$rt/remote-open.sock"
     else
       echo "remote-open: no forwarded client socket; open manually: $1" >&2
       exit 1
