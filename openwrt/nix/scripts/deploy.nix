@@ -143,7 +143,7 @@ pkgs.writeShellScriptBin "openwrt-deploy" ''
                   echo "--- $cfg changed ---"
                   diff <(echo "$cfg_before") <(echo "$cfg_after") | grep "^[<>]" | head -20 || true
                   echo "reloading $cfg..."
-                  ssh "$HOST" "/etc/init.d/$cfg reload 2>/dev/null || /etc/init.d/$cfg restart 2>/dev/null || true"
+                  ssh "$HOST" "if [ -x /etc/init.d/$cfg ]; then /etc/init.d/$cfg reload 2>/dev/null || /etc/init.d/$cfg restart 2>/dev/null; else ubus call service event '{\"type\":\"config.change\",\"data\":{\"package\":\"$cfg\"}}' 2>/dev/null; fi || true"
                 fi
               done
             fi
