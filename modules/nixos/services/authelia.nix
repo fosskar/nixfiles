@@ -180,6 +180,7 @@
             storage.local.path = "/var/lib/authelia-main/db.sqlite3";
 
             notifier = lib.mkMerge [
+              { disable_startup_check = true; }
               (lib.mkIf smtpEnabled {
                 smtp = {
                   address = ''submission://{{ env "SMTP_HOST" }}:{{ env "SMTP_PORT" }}'';
