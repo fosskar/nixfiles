@@ -4,12 +4,20 @@
       config,
       lib,
       options,
+      pkgs,
       ...
     }:
     let
       # simon's radicale principal (see collection-root/); holds the real data.
       radicaleUser = "3aa30ef9-033e-4821-b492-2cee2a94b45b";
       collectionsRoot = "/var/lib/radicale/collections/collection-root/${radicaleUser}";
+      stagingDir = "/run/vdirsyncer-staging";
+      calendarNames = [
+        "Family"
+        "Hobby"
+        "Personal"
+        "Work"
+      ];
       emailFile = config.clan.core.vars.generators.vdirsyncer-mailbox.files."email".path;
       passwordFile = config.clan.core.vars.generators.vdirsyncer-mailbox.files."password".path;
     in
@@ -58,7 +66,13 @@
               storages = {
                 radicale_cal = {
                   type = "filesystem";
-                  path = collectionsRoot;
+                  path = "${stagingDir}/events";
+                  fileext = ".ics";
+                  read_only = true;
+                };
+                radicale_todo = {
+                  type = "filesystem";
+                  path = "${stagingDir}/todos";
                   fileext = ".ics";
                   read_only = true;
                 };
@@ -96,16 +110,55 @@
                     passwordFile
                   ];
                 };
+                mailbox_todo = {
+                  type = "caldav";
+                  # "Aufgaben" task folder; the only mailbox collection accepting VTODO.
+                  url = "https://dav.mailbox.org/caldav/MzU/";
+                  "username.fetch" = [
+                    "command"
+                    "cat"
+                    emailFile
+                  ];
+                  "password.fetch" = [
+                    "command"
+                    "cat"
+                    passwordFile
+                  ];
+                };
               };
               pairs = {
                 calendars = {
                   a = "radicale_cal";
                   b = "mailbox_cal";
+                  # radicale is the read-only source of truth; mirror always wins.
+                  conflict_resolution = "a wins";
+                  # OX rewrites items on store (adds SEQUENCE/CLASS/PRIORITY), which
+                  # vdirsyncer sees as a b-side change. default partial_sync "revert"
+                  # re-uploads forever (and 412s once OX bumps SEQUENCE); ignore it.
+                  partial_sync = "ignore";
+                  # mailbox.org stopped exposing name-based hrefs (2026-07);
+                  # collections are matched by id, so pin [alias, radicale, mailbox-id].
                   collections = [
-                    "Family"
-                    "Hobby"
-                    "Personal"
-                    "Work"
+                    [
+                      "Family"
+                      "Family"
+                      "Y2FsOi8vMC80NA"
+                    ]
+                    [
+                      "Hobby"
+                      "Hobby"
+                      "Y2FsOi8vMC80NQ"
+                    ]
+                    [
+                      "Personal"
+                      "Personal"
+                      "Y2FsOi8vMC80Ng"
+                    ]
+                    [
+                      "Work"
+                      "Work"
+                      "Y2FsOi8vMC80Nw"
+                    ]
                   ];
                   metadata = [
                     "displayname"
@@ -115,12 +168,62 @@
                 contacts = {
                   a = "radicale_card";
                   b = "mailbox_card";
-                  collections = [ "contacts" ];
+                  conflict_resolution = "a wins";
+                  partial_sync = "ignore";
+                  collections = [
+                    [
+                      "contacts"
+                      "contacts"
+                      "48"
+                    ]
+                  ];
                   metadata = [ "displayname" ];
+                };
+                # mailbox calendars reject VTODO (supported-calendar-component),
+                # so staging splits tasks out and mirrors them flat into Aufgaben.
+                todos = {
+                  a = "radicale_todo";
+                  b = "mailbox_todo";
+                  conflict_resolution = "a wins";
+                  partial_sync = "ignore";
+                  collections = null;
                 };
               };
             };
           };
+        };
+        systemd.services."vdirsyncer@mailbox-backup".serviceConfig = {
+          RuntimeDirectory = "vdirsyncer-staging";
+          ExecStartPre = pkgs.writeShellScript "vdirsyncer-stage" ''
+            set -eu
+            rm -rf ${stagingDir}/events ${stagingDir}/todos
+            mkdir -p ${stagingDir}/todos
+            stage() {
+              # OX bumps its SEQUENCE counter on every store and 412s any PUT whose
+              # SEQUENCE is lower, so radicale-side edits would deadlock (CAL-4121).
+              # pinning a large constant makes every upload win; radicale untouched.
+              ${pkgs.gawk}/bin/awk '
+                /^BEGIN:(VEVENT|VTODO)/ { inComp = 1; seen = 0 }
+                /^SEQUENCE/ && inComp   { print "SEQUENCE:9000\r"; seen = 1; next }
+                /^END:(VEVENT|VTODO)/ && inComp { if (!seen) print "SEQUENCE:9000\r"; inComp = 0 }
+                { print }
+              ' "$1" > "$2"
+            }
+            for coll in ${lib.concatStringsSep " " calendarNames}; do
+              mkdir -p "${stagingDir}/events/$coll"
+              for f in "${collectionsRoot}/$coll"/*.ics; do
+                [ -e "$f" ] || continue
+                if grep -q '^BEGIN:VTODO' "$f"; then
+                  # mailbox rejects recurring tasks (WEBDAV-1000); don't mirror them.
+                  if ${pkgs.gawk}/bin/awk '/^BEGIN:VTODO/{t=1} t && /^RRULE/{exit 1} /^END:VTODO/{t=0}' "$f"; then
+                    stage "$f" "${stagingDir}/todos/''${f##*/}"
+                  fi
+                else
+                  stage "$f" "${stagingDir}/events/$coll/''${f##*/}"
+                fi
+              done
+            done
+          '';
         };
       }
       // lib.optionalAttrs (options ? preservation) {
