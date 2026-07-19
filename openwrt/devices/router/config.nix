@@ -596,6 +596,16 @@
           dest_port = "22";
           target = "ACCEPT";
         };
+        srv_ssh_ap = {
+          _type = "rule";
+          name = "Allow-Srv-SSH-AP";
+          src = "srv";
+          dest = "lan";
+          dest_ip = "192.168.10.2";
+          proto = "tcp";
+          dest_port = "22";
+          target = "ACCEPT";
+        };
         srv_telegraf = {
           _type = "rule";
           name = "Allow-Srv-Telegraf";
