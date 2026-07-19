@@ -6,7 +6,4 @@
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{ID_SERIAL_SHORT}=="Z9CBK75S", RUN+="${pkgs.hdparm}/bin/hdparm -S 120 /dev/%k"
   '';
-
-  # cluster the weekly scrub into the nightly backup window
-  services.zfs.autoScrub.interval = "Sun *-*-* 03:40:00 Europe/Berlin";
 }

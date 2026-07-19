@@ -51,7 +51,7 @@
       services.zfs = lib.mkIf config.boot.zfs.enabled {
         autoScrub = {
           enable = lib.mkDefault true;
-          interval = lib.mkDefault "weekly";
+          interval = lib.mkDefault "monthly";
         };
         trim.enable = lib.mkDefault true;
         # zed mail auto-enables when msmtp's sendmail wrapper is present
