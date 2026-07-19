@@ -10,9 +10,6 @@
   packages = [
     "adguardhome"
 
-    ## broken & overkill
-    #"dawn"
-    #"luci-app-dawn"
     "usteer"
     "luci-app-usteer"
 
