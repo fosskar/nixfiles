@@ -165,10 +165,11 @@ all services run as `media` group with umask 0027
 
 ### networking
 
-| service  | notes                              |
-| -------- | ---------------------------------- |
-| netbird  | mesh vpn client and routing server |
-| homepage | dashboard at home.nx3.eu           |
+| service  | port | domain          | notes                              |
+| -------- | ---- | --------------- | ---------------------------------- |
+| netbird  | -    | -               | mesh vpn client and routing server |
+| homepage | -    | home.nx3.eu     | dashboard                          |
+| opensoho | 8091 | opensoho.nx3.eu | openwrt device controller          |
 
 ### backup
 
