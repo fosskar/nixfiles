@@ -37,17 +37,17 @@ options not declared within a section fall back to openwrt built-in defaults.
 
 ## device options
 
-| option                   | type           | default  | description                                              |
-| ------------------------ | -------------- | -------- | -------------------------------------------------------- |
-| `host`                   | string         | required | device IP (SSH target)                                   |
-| `packages`               | list of string | `[]`     | packages to install via apk                              |
-| `externalPackages`       | list           | `[]`     | packages to install outside official feeds               |
-| `removePackages`         | list of string | `[]`     | packages to remove (runs before install)                 |
-| `authorizedKeys`         | list of string | `[]`     | SSH public keys for /etc/dropbear                        |
+| option                   | type           | default  | description                                                                                       |
+| ------------------------ | -------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `host`                   | string         | required | device IP (SSH target)                                                                            |
+| `packages`               | list of string | `[]`     | packages to install via apk                                                                       |
+| `externalPackages`       | list           | `[]`     | packages to install outside official feeds                                                        |
+| `removePackages`         | list of string | `[]`     | packages to remove (runs before install)                                                          |
+| `authorizedKeys`         | list of string | `[]`     | SSH public keys for /etc/dropbear                                                                 |
 | `files`                  | attrsOf path   | `{}`     | files to push (key = remote path, val = local); `@placeholder@` secrets are substituted at deploy |
-| `reload`                 | list of string | `[]`     | services to restart when a pushed file changed; UCI config reloads are automatic |
-| `uci.settings`           | attrset        | `{}`     | UCI config (replace mode)                                |
-| `uci.secrets.sops.files` | list of path   | `[]`     | sops files for `@placeholder@` substitution              |
+| `reload`                 | list of string | `[]`     | services to restart when a pushed file changed; UCI config reloads are automatic                  |
+| `uci.settings`           | attrset        | `{}`     | UCI config (replace mode)                                                                         |
+| `uci.secrets.sops.files` | list of path   | `[]`     | sops files for `@placeholder@` substitution                                                       |
 
 ## UCI format
 
