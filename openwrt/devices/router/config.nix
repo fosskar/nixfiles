@@ -286,6 +286,7 @@
           start = "100";
           limit = "150";
           leasetime = "12h";
+          dhcp_option = [ "6,192.168.50.1" ];
         };
         srv = {
           _type = "dhcp";
