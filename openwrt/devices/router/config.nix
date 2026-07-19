@@ -294,6 +294,7 @@
           start = "100";
           limit = "50";
           leasetime = "12h";
+          dhcp_option = [ "6,192.168.20.1" ];
           dhcpv4 = "server";
           dhcpv6 = "server";
           ra = "server";
