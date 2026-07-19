@@ -85,6 +85,8 @@
         url = "https://opensoho.nx3.eu";
         verify_ssl = 1;
         shared_secret = "@opensoho_shared_secret@";
+        uuid = "3dd3b7dd-8e1f-43cd-aba3-5b75e05c07b6";
+        key = "@opensoho_key_router@";
       };
 
       system.system = [
