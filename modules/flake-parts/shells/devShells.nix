@@ -30,6 +30,7 @@ _: {
           packages = [
             inputs'.nixbot.packages.nixbot-effects
             pkgs.hcloud
+            pkgs.nix-fast-build
             pkgs.radicle-node
           ]
           ++ scripts;
