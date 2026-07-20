@@ -21,11 +21,8 @@
   # srvos.hardware-hetzner-cloud sets: qemuGuest, grub /dev/sda, networkd
   # srvos.server sets: emergency mode suppression
 
-  # no dev shells on this server; don't retain build-time deps in the store
-  nix.settings = {
-    keep-derivations = false;
-    keep-outputs = false;
-  };
+  # don't retain .drvs on this server (keep-outputs already defaults off)
+  nix.settings.keep-derivations = false;
 
   services.cloud-init = {
     settings = {

@@ -21,6 +21,9 @@
       # allow running unpatched binaries (editor LSPs, AppImages, etc.)
       programs.nix-ld.enable = true;
 
+      # direnv gc roots: keep build-time deps of dev shells alive
+      nix.settings.keep-outputs = lib.mkDefault true;
+
       # envfs — fuse mount on /usr/bin that resolves shebangs dynamically
       # makes #!/usr/bin/python3, #!/usr/bin/env bash, etc. work for unpatched scripts
       services.envfs.enable = lib.mkDefault true;

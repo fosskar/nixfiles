@@ -37,10 +37,6 @@
 
           download-buffer-size = lib.mkDefault (256 * 1024 * 1024); # 256 MB
 
-          # for direnv garbage-collection roots (keep-derivations already
-          # defaults to true in nix itself)
-          keep-outputs = lib.mkDefault true;
-
           warn-dirty = lib.mkDefault false;
 
           # avoid disk full
