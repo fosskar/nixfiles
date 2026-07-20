@@ -133,11 +133,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784491928,
-        "narHash": "sha256-QpFlAdQ1kJsTPN59MJSJdZHtk97O6t4KtpUVoiS0wk4=",
-        "rev": "1a062bc21a7a8447645c27a05a1110689825997f",
+        "lastModified": 1784538658,
+        "narHash": "sha256-nvxzsGfaLN0iHOYwrA3n9r2k4E4MJvMD23G0BrnBIBA=",
+        "rev": "242bec9d28dddbf7bbe38c776c598b0eac9652cc",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/1a062bc21a7a8447645c27a05a1110689825997f.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/242bec9d28dddbf7bbe38c776c598b0eac9652cc.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -437,11 +437,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1784496640,
-        "narHash": "sha256-/2kmvjMv1fdxiceAjyglxttCjvlrOJ/PP7ABLDlZ1qM=",
+        "lastModified": 1784539557,
+        "narHash": "sha256-Dh0MIMn9QpsdRZ92M3qkhAk0nKNWhg0fqMZGn9tLMeE=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "dd418284db1804d33cd3d6d51c17bbfb1ad8f685",
+        "rev": "766c617e8356b9db7efd059c48156f68ff6b8fc0",
         "type": "github"
       },
       "original": {
@@ -603,11 +603,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784498290,
-        "narHash": "sha256-XIvywJW1hghA5Y1ovuN7AEP9wjyttV5NNu1coWUTHFU=",
+        "lastModified": 1784531019,
+        "narHash": "sha256-FCCcY4QPq1r2nOJYXJlOGb7t2gHc+80SHYM81lDs2wU=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "8abc39337d30a76b62c1e3f8d0f339fa5b1ba957",
+        "rev": "626d34c44e911eef69a4ad85dc67725e59f54dd0",
         "type": "github"
       },
       "original": {
@@ -1026,11 +1026,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784482325,
-        "narHash": "sha256-u5wnbu0UBxi3uptK8lBy4vYkWtha85vtpWDeQiLdpP8=",
+        "lastModified": 1784518473,
+        "narHash": "sha256-jQYmtnl37gBGmbjUBz/fW2CgQkidf0N9U37auvHrwvE=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "9b54388744e6f3ac2e2dd573a64eef1540c6401c",
+        "rev": "0e36c582e8c445999770340869416a59d081cc05",
         "type": "github"
       },
       "original": {
