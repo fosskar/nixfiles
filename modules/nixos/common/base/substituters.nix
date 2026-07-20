@@ -1,8 +1,9 @@
 {
   flake.modules.nixos.base = {
     nix.settings = {
+      # cache.nixos.org comes from nixpkgs config/nix.nix (mkAfter); its
+      # narinfo priority 40 already beats cachix (41), so no local entry
       substituters = [
-        "https://cache.nixos.org?priority=30"
         "https://nix-community.cachix.org"
         "https://nix-gaming.cachix.org"
         "https://numtide.cachix.org"
