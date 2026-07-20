@@ -71,6 +71,7 @@ Do not use clan/deploy/network commands for discovery. Use only when task explic
 - `users/<user>/`: home-manager user composition (`simon`, `workspace`)
 - `modules/home-manager/llm/`: agent tooling; `skills/<name>/` (dir per skill, `SKILL.md` + optional siblings) and `extensions/*.ts` auto-installed into all agent dirs by home-manager; deploy = rebuild/switch
 - `openwrt/`: declarative router/ap config; uci via `openwrt/nix/uci.nix`, raw config under `openwrt/devices/<device>/files/`; lan router `192.168.10.1` runs unbound, split-horizon for `nx3.eu`, and adguardhome; config lives here, not on device
+- supporting dirs: `docs/` (decisions, netbird-exposure, topology), `images/` (live-iso, vm-base), `overlays/`, `lib/` (`scanPaths`), `sops/`, `templates/` (project scaffolds), `.archive/` (deprecated services)
 
 ## clan
 
@@ -172,7 +173,7 @@ Rules:
 - file name = secret/env filename
 - use `clan.core.vars.generators.<service>.files."<file>"`
 - manual secret path only when already in use
-- shared cross-service generator: `clan.core.vars.generators.smtp` (files `smtp-env`, username, password) reused by gatus, authelia, immich, dawarich
+- shared cross-service generator: `clan.core.vars.generators.smtp` (files `smtp-env`, username, password) reused by gatus, authelia, immich, dawarich, vaultwarden, grafana, msmtp
 
 Example:
 
