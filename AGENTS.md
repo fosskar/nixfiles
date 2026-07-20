@@ -191,6 +191,7 @@ clan.core.vars.generators.myservice = {
 - docs/text only: no build
 - simple value change: `nix eval` target option
 - structural/module/import/package changes: build touched machines
+- change spans several machines/packages: `nix develop -c nix-fast-build --skip-cached --flake .#checks.x86_64-linux.<attr>` per attr, or bare for all checks (parallel eval+build, mirrors nixbot matrix; attrs: `nixos-<machine>`, `package-<name>`, `devshell-<name>`)
 
 ```bash
 nix eval .#nixosConfigurations.<machine>.config.<option> --json
