@@ -1462,10 +1462,10 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1784455514,
-        "narHash": "sha256-zO/SLXWaHh9p8YZMz6ojUFAi6g4RKH53HlFr/SaZlYI=",
+        "lastModified": 1784577008,
+        "narHash": "sha256-7kefP1TO4T+ZjVUNc24+eYtT5crEWtZ1qIrQgZ7XN+I=",
         "ref": "refs/heads/master",
-        "rev": "da1953b92c920d3beb2cbd4914387ec3189728ae",
+        "rev": "6d78fffa9e429ff5a693fb0c275cd5cc2f84755d",
         "shallow": true,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
