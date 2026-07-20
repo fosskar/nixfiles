@@ -688,6 +688,17 @@
           dest_port = "1883";
           target = "ACCEPT";
         };
+        block_lgtv = {
+          _type = "rule";
+          # LG telemetry uses hardcoded IPs/DoH; DNS filtering alone insufficient.
+          # MAC-based so block survives IP changes; covers v4+v6.
+          name = "Block-LG-TV-WAN";
+          src = "lan";
+          src_mac = "04:09:86:54:2C:B0";
+          dest = "wan";
+          proto = "all";
+          target = "REJECT";
+        };
       };
     };
   };
