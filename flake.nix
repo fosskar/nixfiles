@@ -118,10 +118,10 @@
     # llm
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
+      inputs.bun2nix.inputs.nixpkgs.follows = "nixpkgs";
     };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
