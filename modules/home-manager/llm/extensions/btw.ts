@@ -1,14 +1,14 @@
 import {
   buildSessionContext,
   createAgentSession,
-  createExtensionRuntime,
+  DefaultResourceLoader,
+  getAgentDir,
   SessionManager,
   type AgentSession,
   type AgentSessionEvent,
   type ExtensionAPI,
   type ExtensionCommandContext,
   type ExtensionContext,
-  type ResourceLoader,
 } from "@earendil-works/pi-coding-agent";
 import {
   type AssistantMessage,
@@ -210,8 +210,13 @@ function isCustomEntry(
   );
 }
 
-function stripDynamicSystemPromptFooter(systemPrompt: string): string {
-  return systemPrompt
+function stripDynamicSystemPromptFooter(
+  systemPrompt: string | string[],
+): string {
+  const prompt = Array.isArray(systemPrompt)
+    ? systemPrompt.join("\n\n")
+    : systemPrompt;
+  return prompt
     .replace(
       /\nCurrent date and time:[^\n]*(?:\nCurrent working directory:[^\n]*)?$/u,
       "",
@@ -220,28 +225,23 @@ function stripDynamicSystemPromptFooter(systemPrompt: string): string {
     .trim();
 }
 
-function createBtwResourceLoader(
+async function createBtwResourceLoader(
   ctx: ExtensionCommandContext,
   appendSystemPrompt: string[] = [BTW_SYSTEM_PROMPT],
-): ResourceLoader {
-  const extensionsResult = {
-    extensions: [],
-    errors: [],
-    runtime: createExtensionRuntime(),
-  };
-  const systemPrompt = stripDynamicSystemPromptFooter(ctx.getSystemPrompt());
-
-  return {
-    getExtensions: () => extensionsResult,
-    getSkills: () => ({ skills: [], diagnostics: [] }),
-    getPrompts: () => ({ prompts: [], diagnostics: [] }),
-    getThemes: () => ({ themes: [], diagnostics: [] }),
-    getAgentsFiles: () => ({ agentsFiles: [] }),
-    getSystemPrompt: () => systemPrompt,
-    getAppendSystemPrompt: () => appendSystemPrompt,
-    extendResources: () => {},
-    reload: async () => {},
-  };
+): Promise<DefaultResourceLoader> {
+  const loader = new DefaultResourceLoader({
+    cwd: ctx.cwd,
+    agentDir: getAgentDir(),
+    noExtensions: true,
+    noSkills: true,
+    noPromptTemplates: true,
+    noThemes: true,
+    noContextFiles: true,
+    systemPrompt: stripDynamicSystemPromptFooter(ctx.getSystemPrompt()),
+    appendSystemPrompt,
+  });
+  await loader.reload();
+  return loader;
 }
 
 function extractText(
@@ -325,6 +325,20 @@ function formatModelRef(
   model: Pick<SessionModel, "provider" | "id" | "api">,
 ): string {
   return `${model.provider}/${model.id} (${model.api})`;
+}
+
+function isBtwModelAvailable(
+  ctx: ExtensionCommandContext,
+  model: SessionModel,
+): boolean {
+  return ctx.modelRegistry
+    .getAvailable()
+    .some(
+      (candidate) =>
+        candidate.provider === model.provider &&
+        candidate.id === model.id &&
+        candidate.api === model.api,
+    );
 }
 
 function buildBtwSeedState(
@@ -1781,9 +1795,7 @@ export default function (pi: ExtensionAPI) {
     notifyOnFallback = false,
   ): Promise<ResolvedBtwModel> {
     if (btwModelOverride) {
-      const auth =
-        await ctx.modelRegistry.getApiKeyAndHeaders(btwModelOverride);
-      if (auth.ok && auth.apiKey) {
+      if (isBtwModelAvailable(ctx, btwModelOverride)) {
         return {
           model: btwModelOverride,
           source: "override",
@@ -1939,7 +1951,7 @@ export default function (pi: ExtensionAPI) {
       thinkingLevel: settings.thinkingLevel,
       // Match pi's default coding-agent toolset (read/bash/edit/write).
       tools: ["read", "bash", "edit", "write"],
-      resourceLoader: createBtwResourceLoader(ctx),
+      resourceLoader: await createBtwResourceLoader(ctx),
     });
 
     const { messages: seedMessages, sideThreadStartIndex } = buildBtwSeedState(
@@ -2435,11 +2447,8 @@ export default function (pi: ExtensionAPI) {
       return;
     }
 
-    const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-    if (!auth.ok || !auth.apiKey) {
-      const message = auth.ok
-        ? `No credentials available for ${model.provider}/${model.id}.`
-        : auth.error;
+    if (!isBtwModelAvailable(ctx, model)) {
+      const message = `No credentials available for ${model.provider}/${model.id}.`;
       setOverlayStatus(message, ctx);
       notify(ctx, message, "error");
       await ensureOverlay(ctx);
@@ -2579,12 +2588,9 @@ export default function (pi: ExtensionAPI) {
       throw new Error(settings.fallbackReason || "No active model selected.");
     }
 
-    const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-    if (!auth.ok || !auth.apiKey) {
+    if (!isBtwModelAvailable(ctx, model)) {
       throw new Error(
-        auth.ok
-          ? `No credentials available for ${model.provider}/${model.id}.`
-          : auth.error,
+        `No credentials available for ${model.provider}/${model.id}.`,
       );
     }
 
@@ -2594,7 +2600,7 @@ export default function (pi: ExtensionAPI) {
       modelRegistry: ctx.modelRegistry as AgentSession["modelRegistry"],
       thinkingLevel: "off",
       tools: [],
-      resourceLoader: createBtwResourceLoader(ctx, [
+      resourceLoader: await createBtwResourceLoader(ctx, [
         BTW_SUMMARIZE_SYSTEM_PROMPT,
       ]),
     });
@@ -2761,4 +2767,57 @@ export default function (pi: ExtensionAPI) {
       await dispatchBtwCommand("btw:thinking", args, ctx);
     },
   });
+
+  // OMP reserves /btw and treats ":" as an argument separator.
+  const crossRuntimeAliases = [
+    {
+      name: "btw-thread",
+      target: "btw",
+      description: "Continue the extension-managed BTW side conversation.",
+    },
+    {
+      name: "btw-tangent",
+      target: "btw:tangent",
+      description: "Continue a contextless BTW tangent.",
+    },
+    {
+      name: "btw-new",
+      target: "btw:new",
+      description: "Start a fresh BTW thread.",
+    },
+    {
+      name: "btw-clear",
+      target: "btw:clear",
+      description: "Clear the BTW thread.",
+    },
+    {
+      name: "btw-inject",
+      target: "btw:inject",
+      description: "Inject the BTW thread into the main agent.",
+    },
+    {
+      name: "btw-summarize",
+      target: "btw:summarize",
+      description: "Summarize and inject the BTW thread.",
+    },
+    {
+      name: "btw-model",
+      target: "btw:model",
+      description: "Show, set, or clear the BTW-only model override.",
+    },
+    {
+      name: "btw-thinking",
+      target: "btw:thinking",
+      description: "Show, set, or clear the BTW-only thinking override.",
+    },
+  ] as const;
+
+  for (const command of crossRuntimeAliases) {
+    pi.registerCommand(command.name, {
+      description: command.description,
+      handler: async (args, ctx) => {
+        await dispatchBtwCommand(command.target, args, ctx);
+      },
+    });
+  }
 }
