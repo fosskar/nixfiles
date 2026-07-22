@@ -14,6 +14,7 @@
     self.modules.nixos.tangledKnot
     self.modules.nixos.tangledSpindle
     self.modules.nixos.homeManager
+    self.modules.nixos.nixAccessTokens
   ]
   ++ (nflib.scanPaths ./. { });
 
