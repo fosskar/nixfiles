@@ -54,24 +54,25 @@ The architectural review is rendered as a single self-contained HTML file in the
 
 ## Header
 
-Repo name, date, and a compact legend: solid box = module, dashed line = seam, red arrow = leakage, thick light-bordered box = deep module. No introduction paragraph — straight into the candidates.
+Repo name, date, and a compact legend written in ordinary language: solid box = code/configuration grouped together, dashed line = where one module hands work to another, red arrow = internal knowledge leaking between modules, thick light-bordered box = one module hiding more complexity. Keep the legend visible so the diagrams do not require prior architecture knowledge.
 
 ## Candidate card
 
-The diagrams carry the weight. Prose is sparse, plain, and uses the glossary terms (from the codebase-design skill) without ceremony.
+Use plain, concrete prose. Architecture terms may label a pattern after the report has explained what the code actually does.
 
 Each candidate is one `<article>` — dark card: `rounded-lg border border-slate-800 bg-slate-900`:
 
-- **Title** — short, names the deepening (e.g. "Collapse the Order intake pipeline"). `text-slate-100`.
-- **Badge row** — recommendation strength (`Strong` = emerald-400 on emerald-950, `Worth exploring` = amber-400 on amber-950, `Speculative` = slate-400 on slate-800), plus a tag for the dependency category (`in-process`, `local-substitutable`, `ports & adapters`, `mock`).
+- **Title** — short, names the practical result (e.g. "Keep the whole order check in one place"). `text-slate-100`.
+- **Badge row** — recommendation strength (`Strong` = emerald-400 on emerald-950, `Worth exploring` = amber-400 on amber-950, `Speculative` = slate-400 on slate-800). Add a dependency-pattern tag only when it helps the reader, and spell out what the tag means in the card.
 - **Files** — monospaced list, `font-mono text-sm text-slate-400`.
-- **Before / After diagram** — the centrepiece. Two columns, side by side. See patterns below.
-- **Problem** — one sentence. What hurts.
-- **Solution** — one sentence. What changes.
-- **Wins** — bullets, ≤6 words each. e.g. "Tests hit one interface", "Pricing logic stops leaking", "Delete 4 shallow wrappers".
+- **Before / After diagram** — two columns, side by side. Label nodes with project names and arrows with actions such as "reads", "calls", or "configures". See patterns below.
+- **What happens today** — two or three short sentences describing the concrete flow.
+- **Why this hurts** — name the maintenance or testing problem and give one representative example.
+- **What would change** — say which responsibility moves where; do not lead with an abstract pattern name.
+- **Why this is better** — short bullets connecting the change to easier edits or stronger tests. Add architecture vocabulary in parentheses only when useful, for example: "One file owns the rule (better locality)."
 - **Decision-record callout** (if applicable) — one line in an amber-tinted box (`border-amber-700 bg-amber-950 text-amber-200`).
 
-No paragraphs of explanation. If the diagram needs a paragraph to be understood, redraw the diagram.
+Diagrams support the explanation; they do not replace it. A reader should understand each candidate from the text alone, and understand each diagram without knowing the glossary.
 
 ## Diagram patterns
 
@@ -121,23 +122,32 @@ Before: a tree of function calls rendered as nested boxes. After: the same tree 
 
 ## Top recommendation section
 
-One larger card. Candidate name, one sentence on why, anchor link to its card. That's it.
+One larger card. Name the candidate, state the concrete problem it fixes, and explain why it should come first in two or three short sentences. Include an anchor link to its card.
 
 ## Tone
 
-Plain English, concise — but the architectural nouns and verbs come straight from the codebase-design skill. Concision is not an excuse to drift.
+Write for a technical maintainer who knows the project but has not studied architecture terminology.
 
-**Use exactly:** module, interface, implementation, depth, deep, shallow, seam, adapter, leverage, locality.
+Follow this order:
 
-**Never substitute:** component, service, unit (for module) · API, signature (for interface) · boundary (for seam) · layer, wrapper (for module, when you mean module).
+1. Describe the current behavior using real files, modules, options, or calls.
+2. Point out the concrete difficulty.
+3. Describe the proposed change.
+4. Explain what becomes easier.
+5. Name the architecture concept only if it adds useful precision.
 
-**Phrasings that fit the style:**
+Prefer:
 
-- "Order intake module is shallow — interface nearly matches the implementation."
-- "Pricing leaks across the seam."
-- "Deepen: one interface, one place to test."
-- "Two adapters justify the seam: HTTP in prod, in-memory in tests."
+- "Changing order validation requires edits in four files because each file owns part of the rule."
+- "Move the whole validation rule behind one `validateOrder` interface. Callers provide an order and receive errors."
+- "Tests can now exercise the complete rule through one entry point. This improves locality: related behavior lives together."
 
-**Wins bullets** name the gain in glossary terms: _"locality: bugs concentrate in one module"_, _"leverage: one interface, N call sites"_, _"interface shrinks; implementation absorbs the wrappers"_. Don't write _"easier to maintain"_ or _"cleaner code"_ — those terms aren't in the glossary and don't earn their place.
+Avoid:
 
-No hedging, no throat-clearing, no "it's worth noting that…". If a sentence could be a bullet, make it a bullet. If a bullet could be cut, cut it. If a term isn't in the codebase-design glossary, reach for one that is before inventing a new one.
+- "The module lacks locality and leverage."
+- "Deepen the seam through an adapter."
+- "The interface surface approaches implementation mass."
+
+When using **module**, **interface**, **implementation**, **depth**, **deep**, **shallow**, **seam**, **adapter**, **leverage**, or **locality**, explain the concrete meaning nearby. Do not replace accurate project terms with generic architecture terms.
+
+No throat-clearing or filler. Concise does not mean cryptic: use short sentences, concrete examples, and enough context to understand the claim without opening every file.
