@@ -17,6 +17,7 @@ import { Type } from "typebox";
 import {
   complete,
   type Api,
+  type Message,
   type UserMessage,
   type Model,
 } from "@earendil-works/pi-ai";
@@ -25,11 +26,7 @@ import type {
   ExtensionContext,
   SessionEntry,
 } from "@earendil-works/pi-coding-agent";
-import {
-  BorderedLoader,
-  convertToLlm,
-  serializeConversation,
-} from "@earendil-works/pi-coding-agent";
+import { BorderedLoader, convertToLlm } from "@earendil-works/pi-coding-agent";
 import { Text, matchesKey, visibleWidth } from "@earendil-works/pi-tui";
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";
@@ -39,7 +36,7 @@ interface AvailableModel {
   modelId: string;
   name: string;
   model: Model<Api>;
-  apiKey: string;
+  apiKey?: string;
   headers?: Record<string, string>;
 }
 
@@ -61,6 +58,125 @@ Your job is to:
 
 Focus on being helpful and providing a fresh perspective.`;
 
+const TOOL_RESULT_MAX_CHARS = 2_000;
+
+function extractContentText(content: unknown, separator = "\n"): string {
+  if (typeof content === "string") {
+    return content;
+  }
+  if (!Array.isArray(content)) {
+    return "";
+  }
+
+  return content
+    .flatMap((block) => {
+      if (!block || typeof block !== "object") {
+        return [];
+      }
+      const value = block as { type?: unknown; text?: unknown };
+      return value.type === "text" && typeof value.text === "string"
+        ? [value.text]
+        : [];
+    })
+    .join(separator);
+}
+
+function truncateToolResult(text: string): string {
+  if (text.length <= TOOL_RESULT_MAX_CHARS) {
+    return text;
+  }
+  return `${text.slice(0, TOOL_RESULT_MAX_CHARS)}\n\n[... ${text.length - TOOL_RESULT_MAX_CHARS} more characters truncated]`;
+}
+
+// OMP's legacy Pi bridge omits this Pi helper, so keep its wire format local.
+function serializeConversation(messages: Message[]): string {
+  const parts: string[] = [];
+
+  for (const message of messages) {
+    if (message.role === "user") {
+      const content = extractContentText(message.content, "");
+      if (content) {
+        parts.push(`[User]: ${content}`);
+      }
+      continue;
+    }
+
+    if (message.role === "assistant") {
+      const thinking: string[] = [];
+      const toolCalls: string[] = [];
+
+      for (const block of message.content) {
+        if (block.type === "thinking") {
+          thinking.push(block.thinking);
+        } else if (block.type === "toolCall") {
+          const args = Object.entries(
+            block.arguments as Record<string, unknown>,
+          )
+            .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
+            .join(", ");
+          toolCalls.push(`${block.name}(${args})`);
+        }
+      }
+
+      if (thinking.length > 0) {
+        parts.push(`[Assistant thinking]: ${thinking.join("\n")}`);
+      }
+      const content = extractContentText(message.content);
+      if (content) {
+        parts.push(`[Assistant]: ${content}`);
+      }
+      if (toolCalls.length > 0) {
+        parts.push(`[Assistant tool calls]: ${toolCalls.join("; ")}`);
+      }
+      continue;
+    }
+
+    if (message.role === "toolResult") {
+      const content = extractContentText(message.content, "");
+      if (content) {
+        parts.push(`[Tool result]: ${truncateToolResult(content)}`);
+      }
+    }
+  }
+
+  return parts.join("\n\n");
+}
+
+type ModelAuth =
+  | { ok: true; apiKey?: string; headers?: Record<string, string> }
+  | { ok: false; error: string };
+
+async function resolveModelAuth(
+  ctx: ExtensionContext,
+  model: Model<Api>,
+): Promise<ModelAuth> {
+  const registry = ctx.modelRegistry as unknown as {
+    getApiKeyAndHeaders?: (model: Model<Api>) => Promise<ModelAuth>;
+    getApiKey?: (model: Model<Api>) => Promise<string | undefined>;
+  };
+
+  if (registry.getApiKeyAndHeaders) {
+    return registry.getApiKeyAndHeaders(model);
+  }
+  if (registry.getApiKey) {
+    try {
+      return {
+        ok: true,
+        apiKey: await registry.getApiKey(model),
+        headers: (model as Model<Api> & { headers?: Record<string, string> })
+          .headers,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+      };
+    }
+  }
+
+  return { ok: false, error: "Model registry cannot resolve credentials." };
+}
+
 async function getAvailableModels(
   ctx: ExtensionContext,
 ): Promise<AvailableModel[]> {
@@ -71,7 +187,7 @@ async function getAvailableModels(
     // skip current model — we want a different opinion
     if (ctx.model && model.id === ctx.model.id) continue;
 
-    const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
+    const auth = await resolveModelAuth(ctx, model);
     if (!auth.ok) continue;
 
     models.push({
@@ -79,7 +195,7 @@ async function getAvailableModels(
       modelId: model.id,
       name: model.name ?? model.id,
       model,
-      apiKey: auth.apiKey ?? "",
+      apiKey: auth.apiKey,
       headers: auth.headers,
     });
   }
