@@ -7,16 +7,17 @@
 }:
 buildGoModule (finalAttrs: {
   pname = "netbird-client";
-  version = "0.74.7";
+  version = "0.75.0";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "netbird";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-Rmi54gS1yOlbBYUUit49p5WwnhfwPd/G5Wq209Wdv/4=";
+    hash = "sha256-1nFpeOWkWZIajjQU1jlSjQoxq+lyvR+rlsAxSV0vJZc=";
   };
 
-  vendorHash = "sha256-bcz8XaME182Rh346VQhTO5E3hb5WmCIjB1Q6dvOu3iY=";
+  vendorHash = "sha256-KVGCV89qGHrg2GQVw6MnftQswbdihcqozptjf5vs5BA=";
+  proxyVendor = true;
 
   nativeBuildInputs = [ installShellFiles ];
 
@@ -33,7 +34,9 @@ buildGoModule (finalAttrs: {
   postPatch = ''
     substituteInPlace client/cmd/root.go \
       --replace-fail 'unix:///var/run/netbird.sock' 'unix:///var/run/netbird/sock'
-    substituteInPlace client/ui/client_ui.go \
+    substituteInPlace client/ui/grpc.go \
+      --replace-fail 'unix:///var/run/netbird.sock' 'unix:///var/run/netbird/sock'
+    substituteInPlace client/ssh/client/client.go \
       --replace-fail 'unix:///var/run/netbird.sock' 'unix:///var/run/netbird/sock'
   '';
 
