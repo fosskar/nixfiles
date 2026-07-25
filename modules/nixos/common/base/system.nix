@@ -7,6 +7,8 @@
         "profiles/base.nix"
       ];
 
+      system.tools.nixos-generate-config.enable = false;
+
       services.journald.extraConfig = ''
         SystemMaxUse=500M
         SystemKeepFree=1G
