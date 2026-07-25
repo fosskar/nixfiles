@@ -71,7 +71,7 @@
         base-common = {
           module.name = "importer";
           roles.default = {
-            tags.nixos = { };
+            tags = [ "nixos" ];
             extraModules = [
               config.flake.modules.nixos.base
               config.flake.modules.nixos.clanMachineId
@@ -82,7 +82,7 @@
         server-common = {
           module.name = "importer";
           roles.default = {
-            tags.server = { };
+            tags = [ "server" ];
             extraModules = [
               inputs.srvos.nixosModules.server
               config.flake.modules.nixos.server
@@ -93,7 +93,7 @@
         workstation-common = {
           module.name = "importer";
           roles.default = {
-            tags.workstation = { };
+            tags = [ "workstation" ];
             extraModules = [
               inputs.srvos.nixosModules.desktop
               config.flake.modules.nixos.homeManager
@@ -108,7 +108,7 @@
         laptop-common = {
           module.name = "importer";
           roles.default = {
-            tags.laptop = { };
+            tags = [ "laptop" ];
             extraModules = [
               config.flake.modules.nixos.laptop
               config.flake.modules.nixos.fprint
@@ -122,7 +122,7 @@
             name = "emergency-access";
             input = "clan-core";
           };
-          roles.default.tags.nixos = { };
+          roles.default.tags = [ "nixos" ];
         };
 
         sshd = {
@@ -131,7 +131,7 @@
             input = "clan-core";
           };
           roles.server = {
-            tags.all = { };
+            tags = [ "all" ];
             settings = {
               authorizedKeys = {
                 simon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE";
@@ -144,7 +144,7 @@
               ];
             };
           };
-          roles.client.tags.all = { };
+          roles.client.tags = [ "all" ];
         };
 
         root-user = {
@@ -152,7 +152,7 @@
             name = "users";
             input = "clan-core";
           };
-          roles.default.tags.all = { };
+          roles.default.tags = [ "all" ];
           roles.default.settings = {
             user = "root";
             prompt = true;
@@ -209,7 +209,7 @@
             name = "trusted-nix-caches";
             input = "clan-core";
           };
-          roles.default.tags.all = { };
+          roles.default.tags = [ "all" ];
         };
 
         ## networking
@@ -239,7 +239,7 @@
         };
 
         yggdrasil = {
-          roles.default.tags.all = { };
+          roles.default.tags = [ "all" ];
         };
 
         netbird = {
@@ -256,22 +256,22 @@
             port = 51821;
           };
           roles.client = {
-            tags.all = { };
+            tags = [ "all" ];
             machines."nixbox".settings.routingFeatures = "server";
           };
         };
 
         tor = {
-          roles.server.tags.nixos = { };
+          roles.server.tags = [ "nixos" ];
         };
 
         iroh-ssh = {
           module.name = "p2p-ssh-iroh";
-          roles.server.tags.all = { };
+          roles.server.tags = [ "all" ];
         };
 
         #mycelium = {
-        #  roles.peer.tags.all = { };
+        #  roles.peer.tags = [ "all" ];
         #};
 
         #rosenpass = {
@@ -295,7 +295,7 @@
         #     input = "clan-core";
         #   };
         #   roles.default = {
-        #     tags.all = { };
+        #     tags = [ "all" ];
         #     settings = {
         #       interfaces = [
         #         "ygg"
@@ -314,7 +314,7 @@
         #     name = "dm-dns";
         #     input = "clan-core";
         #   };
-        #   roles.default.tags.all = { };
+        #   roles.default.tags = [ "all" ];
         #   roles.push.machines = {
         #     nixbox = { };
         #     gateway = { };
@@ -329,7 +329,7 @@
             input = "clan-core";
           };
           roles.default = {
-            tags.laptop = { };
+            tags = [ "laptop" ];
             settings.networks = {
               home = { };
             };
@@ -387,7 +387,7 @@
             server.machines."nixbox".settings = {
               extraTelegrafTargets = [ "openwrt.lan:9273" ];
             };
-            client.tags.server = { };
+            client.tags = [ "server" ];
           };
         };
 
@@ -398,7 +398,7 @@
           };
           roles = {
             server.machines."nixbox" = { };
-            client.tags.server = { };
+            client.tags = [ "server" ];
             client.machines."nixbox".settings = import ./nixbox/beszel-settings.nix;
           };
         };
@@ -452,7 +452,7 @@
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJGHwgucKTyUpHllRV4dHnoL5FYgqgzsVfRw9IZTJEid"
             ];
             # service no-ops client config on builder machines
-            client.tags.all = { };
+            client.tags = [ "all" ];
           };
         };
 
@@ -463,7 +463,7 @@
           };
           roles = {
             server.machines."nixworker" = { };
-            client.tags.all = { };
+            client.tags = [ "all" ];
           };
         };
 
@@ -474,7 +474,7 @@
           };
           roles = {
             server.machines."nixworker" = { };
-            client.tags.all = { };
+            client.tags = [ "all" ];
           };
         };
 
@@ -503,7 +503,7 @@
         #        "zed.cachix.org-1:/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU="
         #      ];
         #    };
-        #    client.tags.all = { };
+        #    client.tags = [ "all" ];
         #  };
         #};
 
