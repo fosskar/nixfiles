@@ -52,6 +52,10 @@ _:
                 "recursive-nix"
               ];
               auto-allocate-uids = lib.mkDefault true;
+              # the experimental feature alone only puts uid-range derivations
+              # in a cgroup; nixbot builds untrusted PR branches, so contain
+              # every build and get an atomic kill of its process tree
+              use-cgroups = lib.mkDefault true;
               system-features = lib.mkAfter [
                 "uid-range"
                 "recursive-nix"
