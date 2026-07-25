@@ -73,7 +73,5 @@
     #  };
     #})
     pkgs.libatomic_ops
-
-    pkgs.lmstudio
   ];
 }
