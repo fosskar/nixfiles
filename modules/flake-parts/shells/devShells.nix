@@ -1,4 +1,5 @@
-_: {
+{ config, ... }:
+{
   perSystem =
     {
       inputs', # flake-parts provides this (perSystem)
@@ -24,10 +25,12 @@ _: {
       devShells = {
         default = pkgs.mkShellNoCC {
           name = defaultShellName;
+          NIXBOT_URL = "https://nixbot.${config.flake.domains.public}";
           shellHook = ''
             export name="${defaultShellName}"
           '';
           packages = [
+            inputs'.nixbot.packages.nixbot-cli
             inputs'.nixbot.packages.nixbot-effects
             pkgs.hcloud
             pkgs.nix-fast-build

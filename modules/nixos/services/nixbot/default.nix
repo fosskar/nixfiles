@@ -16,6 +16,9 @@
       imports = [ inputs.nixbot.nixosModules.nixbot ];
 
       config = {
+        environment.systemPackages = [ inputs.nixbot.packages.${pkgs.system}.nixbot-cli ];
+        environment.variables.NIXBOT_URL = "https://${publicHost}";
+
         # cross-host: declared here on nixworker via the default options; nixbot
         # has no homepage/gatus locally, so these are inert until the homepage/
         # gatus host collects them across the clan.
