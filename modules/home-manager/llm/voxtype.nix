@@ -23,22 +23,23 @@
           )
         );
 
-      parakeetModel = fetchParakeetModel "parakeet-unified-en-0.6b" {
-        "decoder_joint.onnx" = "sha256-ZGSMkZNepIGenDHqiiDwEdOxyWC+OGHLi8dN8CWc2Zg=";
-        "encoder.onnx" = "sha256-UAg90LKvUDuH6o/Pn9fX3BXdoxMOQRMBfIs37QBBi6Q=";
-        "encoder.onnx.data" = "sha256-wFSyky7hOqOe2EmCo5mCLzGTMR+2/Y4eIEVmciYUvYc=";
-        "tokenizer.model" = "sha256-B9TlpjhApTqy1NEG0odHaBQ/s/vdR5OLORDS2gW/sKk=";
-        "vocab.txt" = "sha256-rmHJt0PLR8BM5vsTBEQhBkbtD0DJU8d+4YVRhZYK+U8=";
+      parakeetModel = fetchParakeetModel "parakeet-tdt-0.6b-v3" {
+        "config.json" = "sha256-ZmkDx2uXmMrywhCv1PbNYLCKjb+YAOyNejvA0hSKxGY=";
+        "decoder_joint-model.onnx" = "sha256-6Xjd9miFJxgsEP3i60uDBoQhZImF7yP3qGvnMr6HBsE=";
+        "encoder-model.onnx" = "sha256-mKdLIbTMABfB5wMDGaSpb0qVBuUPBwjzpRbQKnfJa7E=";
+        "encoder-model.onnx.data" = "sha256-miLTcsUUVcNPE0BdolILrvtxJb0WmBOXVhQj7TLSTzY=";
+        "vocab.txt" = "sha256-1YVEZ56kvGrFY9H1Ret9R0vWz6Rn8KbiwdwcfTfjw10=";
       };
-      # multilingual (incl. german) but batch-only: ships no tokenizer.model,
-      # which the cache-aware streaming pipeline needs. switch back together
-      # with streaming = false and hotkey mode = "push_to_talk"
-      # parakeetModel = fetchParakeetModel "parakeet-tdt-0.6b-v3" {
-      #   "config.json" = "sha256-ZmkDx2uXmMrywhCv1PbNYLCKjb+YAOyNejvA0hSKxGY=";
-      #   "decoder_joint-model.onnx" = "sha256-6Xjd9miFJxgsEP3i60uDBoQhZImF7yP3qGvnMr6HBsE=";
-      #   "encoder-model.onnx" = "sha256-mKdLIbTMABfB5wMDGaSpb0qVBuUPBwjzpRbQKnfJa7E=";
-      #   "encoder-model.onnx.data" = "sha256-miLTcsUUVcNPE0BdolILrvtxJb0WmBOXVhQj7TLSTzY=";
-      #   "vocab.txt" = "sha256-1YVEZ56kvGrFY9H1Ret9R0vWz6Rn8KbiwdwcfTfjw10=";
+      # english-only, but the only model that can do cache-aware streaming.
+      # needs streaming = true, the streaming_* values below, hotkey mode
+      # "toggle", and a running dotoold, else every partial pays ~700ms of
+      # uinput setup and synthetic keys leak into the focused window
+      # parakeetModel = fetchParakeetModel "parakeet-unified-en-0.6b" {
+      #   "decoder_joint.onnx" = "sha256-ZGSMkZNepIGenDHqiiDwEdOxyWC+OGHLi8dN8CWc2Zg=";
+      #   "encoder.onnx" = "sha256-UAg90LKvUDuH6o/Pn9fX3BXdoxMOQRMBfIs37QBBi6Q=";
+      #   "encoder.onnx.data" = "sha256-wFSyky7hOqOe2EmCo5mCLzGTMR+2/Y4eIEVmciYUvYc=";
+      #   "tokenizer.model" = "sha256-B9TlpjhApTqy1NEG0odHaBQ/s/vdR5OLORDS2gW/sKk=";
+      #   "vocab.txt" = "sha256-rmHJt0PLR8BM5vsTBEQhBkbtD0DJU8d+4YVRhZYK+U8=";
       # };
     in
     {
@@ -52,10 +53,7 @@
 
           hotkey = {
             enabled = true;
-            # streaming types at the cursor while recording; on libinput
-            # compositors the synthetic events clobber held-key tracking, so
-            # the PTT release never fires and the daemon hangs mid-stream
-            mode = "toggle";
+            mode = "push_to_talk";
             key = "RIGHTCTRL";
           };
 
@@ -81,13 +79,13 @@
 
           parakeet = {
             model = toString parakeetModel;
-            streaming = true;
+            streaming = false;
             # voxtype's own streaming defaults (1.5/0.5/0.5) map to mel-frame
             # counts not divisible by 8, which parakeet-rs 0.3.5 rejects at
             # startup; these are the crate's blessed values (560/56/56 frames)
-            streaming_chunk_secs = 0.56;
-            streaming_left_context_secs = 5.6;
-            streaming_right_context_secs = 0.56;
+            # streaming_chunk_secs = 0.56;
+            # streaming_left_context_secs = 5.6;
+            # streaming_right_context_secs = 0.56;
           };
           vad = {
             enabled = true;
