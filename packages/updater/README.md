@@ -29,8 +29,9 @@ Both tools refuse to run on a dirty working tree: they hard-reset and clean
 the checkout per unit. Use a scratch clone, or commit first.
 
 In production both run as nixbot scheduled effects
-(`modules/flake-parts/effects.nix`), in a throwaway clone with the token
-injected from nixbot's secrets.
+(`modules/flake-parts/effects.nix`), in the pushable checkout nixbot mounts for
+effects declaring `__nixbot_effect_checkout`, with the forge token injected
+from nixbot's secrets.
 
 ## How packages are discovered
 

@@ -2,13 +2,13 @@
 let
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
-  forgeHost = "github.com";
   repo = "fosskar/nixfiles";
 
-  # Shared plumbing for every repo-mutating scheduled effect: request
-  # nixbot's forge token (GitToken), clone with it, then run command. git
-  # redacts credentials from URLs in its output, so the token stays out of
-  # the public effect log.
+  # Shared plumbing for every repo-mutating scheduled effect: nixbot mounts a
+  # pushable clone of the effect's commit at /build/checkout (also the working
+  # directory) with an authenticated `origin`, so only the API/nix side of the
+  # forge token has to be requested here (GitToken). It is a github app
+  # installation token, so it serves nix-update and changelog enrichment too.
   mkRepoEffect =
     name: command:
     pkgs.runCommand "effect-${name}"
@@ -19,9 +19,8 @@ let
           pkgs.jq
           pkgs.nix
         ];
-        # The GitToken is a github app installation token, so it serves the
-        # direct github API calls (nix-update, changelog enrichment) too.
         secretsMap = builtins.toJSON { git.type = "GitToken"; };
+        __nixbot_effect_checkout = true;
         HOME = "/build";
       }
       ''
@@ -34,10 +33,6 @@ let
 
         git config --global user.name 'fosskar[bot]'
         git config --global user.email '300917551+fosskar[bot]@users.noreply.github.com'
-        git config --global safe.directory '*'
-
-        git clone --depth 1 --progress "https://oauth2:$token@${forgeHost}/${repo}.git" repo
-        cd repo
 
         ${command}
       '';
