@@ -116,20 +116,8 @@
                 ) inputs.self.nixosConfigurations
               );
 
-          # local packages that only build on x86_64; skip them in CI on other
-          # systems (pkgs-by-name exposes them everywhere, but they're x86-only)
-          x86OnlyPackages = [
-            "agent-desktop"
-            "arbor"
-            "brave-origin"
-            "limux"
-            "t3code"
-            "voquill"
-          ];
           packages = lib.mapAttrs' (name: pkg: lib.nameValuePair "package-${name}" pkg) (
-            lib.filterAttrs (name: _: system == "x86_64-linux" || !(lib.elem name x86OnlyPackages)) (
-              self'.packages or { }
-            )
+            lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform) (self'.packages or { })
           );
 
           devShells = lib.mapAttrs' (name: shell: lib.nameValuePair "devshell-${name}" shell) (
