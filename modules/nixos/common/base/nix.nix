@@ -39,6 +39,8 @@
 
           warn-dirty = lib.mkDefault false;
 
+          keep-going = lib.mkDefault true;
+
           # avoid disk full
           max-free = lib.mkDefault (3000 * 1024 * 1024);
           min-free = lib.mkDefault (512 * 1024 * 1024);
