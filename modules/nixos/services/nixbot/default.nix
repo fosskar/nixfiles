@@ -105,8 +105,9 @@
           privateRepoViewers."*" = [ "oidc:auth.${flake-self.domains.public}:group:admin" ];
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
           buildConcurrency = 4;
-          # 16 cores / 92G; nixos evals eat 2-5G each, 12 leaves headroom
+          # 16 cores / 92G; nixos evals eat 2-5G each, 12x4G leaves headroom
           evalWorkerCount = 12;
+          evalMaxMemorySize = 4096;
           cacheFailedBuilds = true;
 
           github = {
