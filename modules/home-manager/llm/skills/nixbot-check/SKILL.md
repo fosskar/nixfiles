@@ -95,7 +95,7 @@ nbo repo enable github/fosskar/wiki  # admin
 
 ## Effects
 
-Repos also run **effects** — hercules-ci effects from `flake.effects`
+Repos also run **effects** — hercules-ci effects from `flake.herculesCI`
 (`modules/flake-parts/effects.nix`: `renovate`, `update-pkgs`,
 `update-flake-inputs`). Neither `nbo` nor the JSON API covers effect runs; use
 the web routes:
@@ -107,19 +107,20 @@ curl -s 'https://nixbot.fosskar.eu/repos/github/fosskar/nixfiles/schedules/runs?
 curl -s https://nixbot.fosskar.eu/repos/github/fosskar/nixfiles/schedules/runs/209.txt
 ```
 
-Local repro with the `nixbot-effects` CLI (nixfiles devshell; also takes remote
-flakerefs, no checkout needed):
+Local repro with `nbo effects` (nixfiles devshell; also takes remote flakerefs,
+no checkout needed):
 
 ```bash
-nixbot-effects list [flakeref]
-nixbot-effects list-schedules [flakeref]
-nixbot-effects run .#<effect>
-nixbot-effects run-scheduled .#<schedule> <effect>
+nbo effects list-schedules [flakeref]
+nbo effects run-scheduled [flakeref#]<schedule> <effect>
 ```
+
+`nbo effects list` / `graph` / `run` cover `onPush` effects, which this repo has
+none of; their names are job-prefixed (`default.<effect>`).
 
 Two caveats for this repo's repo-mutating effects:
 
-- they declare `__nixbot_effect_checkout`, so a local run needs
+- they set `checkout = true` (nixbot's `mkEffect`), so a local run needs
   `--effect-checkout <path-to-a-clone>` or it aborts; the effect runs _in_ that
   clone, not in your working tree
 - in CI they get the GitToken secret injected and push. Locally pass
