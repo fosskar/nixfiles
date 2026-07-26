@@ -30,8 +30,15 @@
         settings = {
           timezone = "Europe/Berlin";
 
+          # summarise old turns instead of hitting the context wall
+          compression.enabled = true;
+
           # own searxng instead of the paid search apis hermes defaults to
           web.search_backend = "searxng";
+
+          # standalone plugins are opt-in; bundled platform/backend ones
+          # (matrix, searxng) auto-load and are not affected by this list
+          plugins.enabled = [ "disk-cleanup" ];
 
           model = {
             # the only alias llama-cpp preloads; models-max = 1, so naming any
