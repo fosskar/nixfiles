@@ -947,6 +947,31 @@
         "type": "github"
       }
     },
+    "nixbot_2": {
+      "inputs": {
+        "nixpkgs": [
+          "wiki",
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "wiki",
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785099231,
+        "narHash": "sha256-Z0BaMfBOFj3ysAHrW4e3vXxgWjobtvHjATSCtgaboFA=",
+        "owner": "Mic92",
+        "repo": "nixbot",
+        "rev": "a2baa3c6366bc38f72a0f2df9a6a1f44cfbe1c8a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nixbot",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "inputs": {
         "nixpkgs": [
@@ -1552,6 +1577,7 @@
         "flake-parts": [
           "flake-parts"
         ],
+        "nixbot": "nixbot_2",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -1560,11 +1586,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785013233,
-        "narHash": "sha256-bMMjZa/DgT1mFR7vyS1NmEYsKOES3gUTZwx87FYAH74=",
+        "lastModified": 1785099634,
+        "narHash": "sha256-uoq5NVmvrUpRri0IMtjzfiAZOKQ0wUKFEO4eLF/BJNo=",
         "owner": "fosskar",
         "repo": "wiki",
-        "rev": "a16e05d3ebbf4410a27f17d01c57956398b5a02f",
+        "rev": "c647373b163443822ee8460e993e9393cd6a17ae",
         "type": "github"
       },
       "original": {
