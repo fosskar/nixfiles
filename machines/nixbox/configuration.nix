@@ -9,7 +9,6 @@
     self.modules.nixos.arrStack
     self.modules.nixos.caddy
     self.modules.nixos.matrix
-    self.modules.nixos.opencrow
     self.modules.nixos.convertx
     self.modules.nixos.dawarich
     self.modules.nixos.opencloud
