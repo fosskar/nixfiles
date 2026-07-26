@@ -63,6 +63,8 @@
               hf-repo = "unsloth/Qwen3.6-27B-MTP-GGUF";
               hf-file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
               alias = "qwen3.6-27b-mtp";
+              ctx-size = 114688;
+              cache-type-v = "q4_0";
               temp = 0.7;
               top-p = 0.8;
               top-k = 20;
@@ -70,6 +72,7 @@
               min-p = 0.00;
               reasoning = "off";
               spec-type = "draft-mtp";
+              spec-draft-n-max = 2;
               cache-type-k-draft = "q4_0";
               cache-type-v-draft = "q4_0";
             };
