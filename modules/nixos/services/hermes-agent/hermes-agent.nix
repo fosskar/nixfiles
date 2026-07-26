@@ -25,6 +25,7 @@
           pkgs.agent-browser
           pkgs.chromium
           pkgs.curl
+          pkgs.himalaya
         ];
 
         settings = {
