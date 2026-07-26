@@ -118,6 +118,9 @@
           "/dev/nvidia-uvm rw"
           "/dev/nvidia-uvm-tools rw"
         ];
+
+        # intro skipper shells out to a bare `ffmpeg`
+        systemd.services.jellyfin.path = [ pkgs.jellyfin-ffmpeg ];
       };
     };
 }
