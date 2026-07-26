@@ -7,7 +7,7 @@
 }:
 {
   home-manager.users.simon =
-    { osConfig, ... }:
+    { ... }:
     {
       imports = [
         self.modules.homeManager.bash
@@ -67,11 +67,9 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
 
       # relay: monitor/approve this host's agents from phone/web/telegram;
-      # exposure happens in the netbird ui (docs/netbird-exposure.md)
-      programs.herdr.remote = {
-        enable = true;
-        tokenFile = osConfig.clan.core.vars.generators.herdr-relay.files."token".path;
-      };
+      # exposure happens in the netbird ui (docs/netbird-exposure.md), which
+      # also authenticates it — no relay token on top
+      programs.herdr.remote.enable = true;
 
       systemd.user.startServices = "sd-switch";
       nix.channels = { };
@@ -118,15 +116,6 @@
       persist = true;
       description = "kagi session link";
     };
-  };
-
-  # shared secret checked by the herdr-remote relay (websocket + http clients)
-  clan.core.vars.generators.herdr-relay = {
-    files."token".owner = "simon";
-    runtimeInputs = [ pkgs.openssl ];
-    script = ''
-      openssl rand -hex 32 > "$out/token"
-    '';
   };
 
 }

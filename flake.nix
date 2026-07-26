@@ -48,6 +48,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -172,6 +177,7 @@
     tangled.url = "git+https://tangled.org/@tangled.org/core?shallow=1";
     tangled.inputs.nixpkgs.follows = "nixpkgs";
     tangled.inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";
+    tangled.inputs.microvm.follows = "microvm";
 
     ssync = {
       url = "github:fosskar/ssync";
