@@ -19,6 +19,8 @@
       services.hermes-agent = {
         enable = true;
         addToSystemPackages = true;
+        documents."SOUL.md" = ./SOUL.md;
+
         extraPackages = [
           pkgs.agent-browser
           pkgs.chromium
@@ -27,6 +29,9 @@
 
         settings = {
           timezone = "Europe/Berlin";
+
+          # own searxng instead of the paid search apis hermes defaults to
+          web.search_backend = "searxng";
 
           model = {
             # the only alias llama-cpp preloads; models-max = 1, so naming any
@@ -44,6 +49,8 @@
         # the matrix domain is neither domains.local nor domains.public: mxids
         # live on fosskar.de, which delegates its client api to matrix.fosskar.eu
         environment = {
+          SEARXNG_URL = "https://search.${flake-self.domains.local}/";
+
           MATRIX_HOMESERVER = "https://matrix.fosskar.eu";
           MATRIX_USER_ID = "@hermes:fosskar.de";
           MATRIX_ALLOWED_USERS = "@fosskar:fosskar.de";
@@ -56,9 +63,10 @@
         };
       };
 
-      # tool calls run as the service user, so the interactive cli has to as
-      # well or it reads a different HERMES_HOME
-      environment.shellAliases.hermes = "sudo -u hermes -H hermes";
+      # -i, not -H: a login shell resets PATH to hermes' own profile. with the
+      # caller's PATH the agent's packages are not found and unreadable /root
+      # entries turn "command not found" into EACCES
+      environment.shellAliases.hermes = "sudo -iu hermes hermes";
 
       # what upstream's ubuntu container mode exists for: somewhere the agent
       # can pip/npm install at runtime
