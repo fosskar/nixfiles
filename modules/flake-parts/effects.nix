@@ -1,29 +1,26 @@
 { inputs, ... }:
 let
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  inherit (inputs.nixbot.lib.effects { inherit pkgs; }) mkEffect;
 
   repo = "fosskar/nixfiles";
 
   # Shared plumbing for every repo-mutating scheduled effect: nixbot mounts a
-  # pushable clone of the effect's commit at /build/checkout (also the working
-  # directory) with an authenticated `origin`, so only the API/nix side of the
-  # forge token has to be requested here (GitToken). It is a github app
+  # pushable clone of the effect's commit at $NIXBOT_EFFECT_CHECKOUT (also the
+  # working directory) with an authenticated `origin`, so only the API/nix side
+  # of the forge token has to be requested here (GitToken). It is a github app
   # installation token, so it serves nix-update and changelog enrichment too.
   mkRepoEffect =
     name: command:
-    pkgs.runCommand "effect-${name}"
-      {
-        nativeBuildInputs = [
-          pkgs.cacert
-          pkgs.git
-          pkgs.jq
-          pkgs.nix
-        ];
-        secretsMap = builtins.toJSON { git.type = "GitToken"; };
-        __nixbot_effect_checkout = true;
-        HOME = "/build";
-      }
-      ''
+    mkEffect {
+      name = "effect-${name}";
+      checkout = true;
+      inputs = [
+        pkgs.git
+        pkgs.nix
+      ];
+      secretsMap.git.type = "GitToken";
+      effectScript = ''
         set -euo pipefail
         token=$(jq -re '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
         export FORGE_TOKEN="$token"
@@ -36,44 +33,41 @@ let
 
         ${command}
       '';
+    };
 
-  # Renovate clones the repo itself, so this skips mkRepoEffect's clone. Tools
-  # are pinned on PATH via nativeBuildInputs (binarySource=global) instead of a
+  # Renovate clones the repo itself, so this skips mkRepoEffect's checkout.
+  # Tools are pinned on PATH via `inputs` (binarySource=global) instead of a
   # runtime `nix shell`: go for gomodTidy, nix for update-vendor-hash.sh.
-  renovate =
-    pkgs.runCommand "effect-renovate"
-      {
-        nativeBuildInputs = [
-          pkgs.renovate
-          pkgs.go
-          pkgs.nix
-          pkgs.git
-          pkgs.cacert
-          pkgs.jq
-        ];
-        secretsMap = builtins.toJSON { git.type = "GitToken"; };
-        HOME = "/build";
-      }
-      ''
-        set -euo pipefail
-        export NIX_CONFIG="experimental-features = nix-command flakes"
+  renovate = mkEffect {
+    name = "effect-renovate";
+    inputs = [
+      pkgs.renovate
+      pkgs.go
+      pkgs.nix
+      pkgs.git
+    ];
+    secretsMap.git.type = "GitToken";
+    effectScript = ''
+      set -euo pipefail
+      export NIX_CONFIG="experimental-features = nix-command flakes"
 
-        token=$(jq -re '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
-        export RENOVATE_TOKEN="$token"
-        export RENOVATE_GITHUB_COM_TOKEN="$token"
+      token=$(jq -re '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
+      export RENOVATE_TOKEN="$token"
+      export RENOVATE_GITHUB_COM_TOKEN="$token"
 
-        export RENOVATE_PLATFORM=github
-        export RENOVATE_REPOSITORIES=${repo}
-        export RENOVATE_GIT_AUTHOR='fosskar[bot] <300917551+fosskar[bot]@users.noreply.github.com>'
-        export RENOVATE_ALLOWED_COMMANDS='["^bash packages/live-ocr/update-vendor-hash\\.sh$"]'
-        export RENOVATE_BINARY_SOURCE=global
-        export LOG_LEVEL=info
+      export RENOVATE_PLATFORM=github
+      export RENOVATE_REPOSITORIES=${repo}
+      export RENOVATE_GIT_AUTHOR='fosskar[bot] <300917551+fosskar[bot]@users.noreply.github.com>'
+      export RENOVATE_ALLOWED_COMMANDS='["^bash packages/live-ocr/update-vendor-hash\\.sh$"]'
+      export RENOVATE_BINARY_SOURCE=global
+      export LOG_LEVEL=info
 
-        renovate
-      '';
+      renovate
+    '';
+  };
 in
 {
-  flake.effects = _args: {
+  flake.herculesCI = _args: {
     onSchedule.renovate = {
       when = {
         hour = 20;
