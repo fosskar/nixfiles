@@ -31,6 +31,10 @@
         settings = {
           timezone = "Europe/Berlin";
 
+          # local sqlite fact store next to the built-in MEMORY.md, which keeps
+          # loading; the only provider with no api-key path and no llm calls
+          memory.provider = "holographic";
+
           # summarise old turns instead of hitting the context wall
           compression.enabled = true;
 
