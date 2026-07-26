@@ -133,11 +133,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
-    opencrow = {
-      url = "github:pinpox/opencrow";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-    };
     mics-skills = {
       url = "github:Mic92/mics-skills";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -1141,29 +1141,6 @@
         "type": "github"
       }
     },
-    "opencrow": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1782727145,
-        "narHash": "sha256-buooDQiylOxQBO6nvATodIpC/jp9Vic+JvWYYrTCv7M=",
-        "owner": "pinpox",
-        "repo": "opencrow",
-        "rev": "b6a2b714bbb8d10f848b9f859283bb5745f7dccf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pinpox",
-        "repo": "opencrow",
-        "type": "github"
-      }
-    },
     "pkgs-by-name-for-flake-parts": {
       "locked": {
         "lastModified": 1769286518,
@@ -1293,7 +1270,6 @@
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
         "noctalia-legacy": "noctalia-legacy",
-        "opencrow": "opencrow",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "preservation": "preservation",
         "sops-nix": "sops-nix",
