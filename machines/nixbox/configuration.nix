@@ -38,6 +38,7 @@
     self.modules.nixos.miniflux
     self.modules.nixos.wiki
     self.modules.nixos.vdirsyncer
+    self.modules.nixos.talosVm
   ]
   ++ (nflib.scanPaths ./. { exclude = [ "beszel-settings.nix" ]; });
 
