@@ -4,6 +4,10 @@
     {
       environment.stub-ld.enable = lib.mkDefault false;
 
+      # few generations, small /boot (srvos server profile sets the same)
+      boot.loader.grub.configurationLimit = lib.mkDefault 5;
+      boot.loader.systemd-boot.configurationLimit = lib.mkDefault 5;
+
       systemd = {
         enableEmergencyMode = false;
         targets = {
@@ -11,6 +15,10 @@
           suspend.enable = false;
           hibernate.enable = false;
           hybrid-sleep.enable = false;
+        };
+        sleep.settings.Sleep = {
+          AllowSuspend = lib.mkDefault "no";
+          AllowHibernation = lib.mkDefault "no";
         };
         settings.Manager = {
           RuntimeWatchdogSec = lib.mkDefault "15s";

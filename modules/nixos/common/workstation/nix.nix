@@ -6,7 +6,8 @@
       ...
     }:
     {
-      # srvos.desktop sets: daemonCPUSchedPolicy = "idle"
+      # builds yield to interactive use (srvos.desktop sets the same)
+      nix.daemonCPUSchedPolicy = "idle";
 
       assertions = [
         {

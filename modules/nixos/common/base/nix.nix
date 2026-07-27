@@ -8,11 +8,15 @@
       ...
     }:
     {
-      # srvos sets: daemonCPUSchedPolicy, daemonIOSchedClass, daemonIOSchedPriority,
-      # trusted-users, optimise.automatic, nix-daemon OOMScoreAdjust
+      # srvos sets: trusted-users, optimise.automatic, nix-daemon OOMScoreAdjust
 
       nix = {
         package = lib.mkDefault pkgs.nixVersions.latest;
+
+        # de-prioritise builds so they don't starve running services
+        daemonCPUSchedPolicy = lib.mkDefault "batch";
+        daemonIOSchedClass = lib.mkDefault "idle";
+        daemonIOSchedPriority = lib.mkDefault 7;
 
         nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
