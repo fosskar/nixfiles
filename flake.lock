@@ -947,56 +947,6 @@
         "type": "github"
       }
     },
-    "nixbot_2": {
-      "inputs": {
-        "nixpkgs": [
-          "ssync",
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "ssync",
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1785066241,
-        "narHash": "sha256-IPWJe+bobQIRny0hoK1UwMx9kIG/pYM4CSOhiAGTIAI=",
-        "owner": "Mic92",
-        "repo": "nixbot",
-        "rev": "1c4e0008a8095958c91d5c83e7c2d2a04d13bcbc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "nixbot",
-        "type": "github"
-      }
-    },
-    "nixbot_3": {
-      "inputs": {
-        "nixpkgs": [
-          "ssync",
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "ssync",
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1785066241,
-        "narHash": "sha256-IPWJe+bobQIRny0hoK1UwMx9kIG/pYM4CSOhiAGTIAI=",
-        "owner": "Mic92",
-        "repo": "nixbot",
-        "rev": "1c4e0008a8095958c91d5c83e7c2d2a04d13bcbc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "nixbot",
-        "type": "github"
-      }
-    },
     "nixos-hardware": {
       "inputs": {
         "nixpkgs": [
@@ -1442,7 +1392,9 @@
     },
     "ssync": {
       "inputs": {
-        "nixbot": "nixbot_2",
+        "nixbot": [
+          "nixbot"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -1603,7 +1555,9 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "nixbot": "nixbot_3",
+        "nixbot": [
+          "nixbot"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],

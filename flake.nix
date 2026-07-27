@@ -178,6 +178,7 @@
       url = "github:fosskar/ssync";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.nixbot.follows = "nixbot";
     };
 
     wiki = {
@@ -185,6 +186,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.nixbot.follows = "nixbot";
     };
   };
 
