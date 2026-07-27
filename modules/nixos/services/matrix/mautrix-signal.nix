@@ -51,6 +51,8 @@
       systemd.services.mautrix-signal = {
         wants = [ "continuwuity.service" ];
         after = [ "continuwuity.service" ];
+        # upstream nixpkgs pre-start trips SC2086
+        enableStrictShellChecks = false;
       };
     };
 }

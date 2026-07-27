@@ -61,6 +61,11 @@
         }
       ];
 
+      # upstream nixpkgs unit scripts trip SC2155
+      systemd.services.dawarich-web.enableStrictShellChecks = false;
+      systemd.services.dawarich-init-db.enableStrictShellChecks = false;
+      systemd.services.dawarich-sidekiq-all.enableStrictShellChecks = false;
+
       services.dawarich = {
         enable = true;
         localDomain = localHost;

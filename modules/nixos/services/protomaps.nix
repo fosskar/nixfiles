@@ -62,8 +62,9 @@
           pmtiles extract "https://build.protomaps.com/$build" europe.pmtiles \
             --bbox=-25,34,45,72 --download-threads=1
 
-          export AWS_ACCESS_KEY_ID="$(cat "$CREDENTIALS_DIRECTORY"/access_key)"
-          export AWS_SECRET_ACCESS_KEY="$(cat "$CREDENTIALS_DIRECTORY"/secret_key)"
+          AWS_ACCESS_KEY_ID="$(cat "$CREDENTIALS_DIRECTORY"/access_key)"
+          AWS_SECRET_ACCESS_KEY="$(cat "$CREDENTIALS_DIRECTORY"/secret_key)"
+          export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
           pmtiles upload europe.pmtiles ${object} \
             --bucket='s3://${bucket}?endpoint=http://127.0.0.1:3900&region=${region}&use_path_style=true'
 

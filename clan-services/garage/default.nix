@@ -132,7 +132,7 @@ in
             # "FAILED NODES"; metadata writes need full RF quorum, so only the
             # healthy section (everything before that header) counts.
             waitForHealthyPeers = lib.concatMapStringsSep "\n" (name: ''
-              for i in $(seq 1 60); do
+              for _ in $(seq 1 60); do
                 garage status 2>/dev/null | sed '/FAILED NODES/q' | grep -q ${nodeIdShort name} && break
                 sleep 2
               done
@@ -297,7 +297,7 @@ in
                 ];
               };
               script = ''
-                for i in $(seq 1 60); do
+                for _ in $(seq 1 60); do
                   garage status >/dev/null 2>&1 && break
                   sleep 2
                 done
@@ -375,7 +375,7 @@ in
               script = ''
                 set -euo pipefail
 
-                for i in $(seq 1 60); do
+                for _ in $(seq 1 60); do
                   garage layout show 2>/dev/null | grep -q 'Current cluster layout version' && break
                   sleep 2
                 done

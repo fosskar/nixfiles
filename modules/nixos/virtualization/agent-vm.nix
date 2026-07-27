@@ -160,6 +160,9 @@
           CPUWeight = 20;
         };
 
+        # microvm.nix upstream script trips SC2046
+        systemd.services."microvm-set-booted@".enableStrictShellChecks = false;
+
         networking.nat = {
           enable = true;
           externalInterface = "bond0";

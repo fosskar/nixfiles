@@ -243,9 +243,11 @@
             };
 
             script = ''
-              export NB_PROXY_TOKEN=$(cat "$CREDENTIALS_DIRECTORY/proxy-token")
+              NB_PROXY_TOKEN=$(cat "$CREDENTIALS_DIRECTORY/proxy-token")
+              export NB_PROXY_TOKEN
               ${lib.optionalString cfg.crowdsec.enable ''
-                export NB_PROXY_CROWDSEC_API_KEY=$(cat "$CREDENTIALS_DIRECTORY/crowdsec-api-key")
+                NB_PROXY_CROWDSEC_API_KEY=$(cat "$CREDENTIALS_DIRECTORY/crowdsec-api-key")
+                export NB_PROXY_CROWDSEC_API_KEY
               ''}
               exec ${lib.getExe cfg.package}
             '';
@@ -307,7 +309,7 @@
             script = ''
               # wait for server to be ready
               ready=0
-              for i in $(seq 1 30); do
+              for _ in $(seq 1 30); do
                 if ${pkgs.curl}/bin/curl -sf http://localhost:${toString cfg.serverPort}/api/users >/dev/null 2>&1; then
                   ready=1
                   break

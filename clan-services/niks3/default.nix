@@ -115,7 +115,7 @@ in
                 set -euo pipefail
 
                 # wait for the local garage node and a usable cluster layout.
-                for i in $(seq 1 60); do
+                for _ in $(seq 1 60); do
                   garage layout show 2>/dev/null | grep -q 'Current cluster layout version' && break
                   sleep 2
                 done

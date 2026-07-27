@@ -162,9 +162,10 @@
 
             preStart = ''
               umask 077
-              export AUTH_SECRET=$(cat "$CREDENTIALS_DIRECTORY/auth-secret")
-              export ENCRYPTION_KEY=$(cat "$CREDENTIALS_DIRECTORY/encryption-key")
-              export OWNER_HASH=$(cat "$CREDENTIALS_DIRECTORY/owner-password-hash")
+              AUTH_SECRET=$(cat "$CREDENTIALS_DIRECTORY/auth-secret")
+              ENCRYPTION_KEY=$(cat "$CREDENTIALS_DIRECTORY/encryption-key")
+              OWNER_HASH=$(cat "$CREDENTIALS_DIRECTORY/owner-password-hash")
+              export AUTH_SECRET ENCRYPTION_KEY OWNER_HASH
               ${lib.getExe pkgs.envsubst} < ${configFile} > "${stateDir}/config.yaml"
             '';
 

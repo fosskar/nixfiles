@@ -28,6 +28,8 @@
         };
 
         systemd.services.netbird.path = [ pkgs.shadow ];
+        # upstream nixpkgs pre-start trips SC2034 (NB_* vars set for the daemon env)
+        systemd.services.netbird.enableStrictShellChecks = false;
 
         systemd.services.netbird.serviceConfig =
           lib.mkIf (!config.services.netbird.clients.default.hardened)
