@@ -21,6 +21,7 @@
         self.modules.homeManager.herdr
         self.modules.homeManager.hunk
         self.modules.homeManager.jujutsu
+        self.modules.homeManager.k9s
         self.modules.homeManager.llm
         self.modules.homeManager.neovim
         self.modules.homeManager.ripgrep
@@ -40,6 +41,8 @@
           pkgs.nil
           pkgs.nixd
           pkgs.nixfmt
+
+          pkgs.fluxcd
         ];
         sessionVariables = {
           SHELL = "${lib.getExe pkgs.fish}";
