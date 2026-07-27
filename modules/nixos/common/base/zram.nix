@@ -5,8 +5,8 @@
       # compressed swap in RAM: https://www.kernel.org/doc/Documentation/blockdev/zram.txt
       zramSwap = {
         enable = lib.mkDefault true;
-        # `zramctl` to check compression ratio
-        memoryPercent = lib.mkDefault 25;
+        # uncompressed cap; actual RAM use is a fraction (zstd), `zramctl` to check ratio
+        memoryPercent = lib.mkDefault 80;
       };
 
       # zram sysctl tuning: https://github.com/pop-os/default-settings/pull/163
