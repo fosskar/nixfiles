@@ -66,9 +66,13 @@
           http_url = "https://${localHost}";
 
           force_ldap_user_pass_reset = "always";
+        };
 
-          jwt_secret_file = config.clan.core.vars.generators.lldap.files."jwt-secret".path;
-          ldap_user_pass_file = config.clan.core.vars.generators.lldap.files."password".path;
+        # via environment, not settings: keeps the upstream start script's
+        # $LLDAP_JWT_SECRET_FILE probe defined under strict-mode set -u
+        environment = {
+          LLDAP_JWT_SECRET_FILE = config.clan.core.vars.generators.lldap.files."jwt-secret".path;
+          LLDAP_LDAP_USER_PASS_FILE = config.clan.core.vars.generators.lldap.files."password".path;
         };
 
         environmentFile = config.clan.core.vars.generators.lldap.files."envfile".path;
