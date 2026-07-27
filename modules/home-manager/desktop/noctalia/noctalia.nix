@@ -384,6 +384,11 @@
                 cy = 540.0;
                 rotation = 0.0;
               };
+              widget."lockscreen-login-box@DP-1" = {
+                type = "login_box";
+                output = "DP-1";
+                settings.layout = "compact";
+              };
             };
 
             location.auto_locate = lib.mkDefault true;
