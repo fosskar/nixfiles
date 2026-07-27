@@ -43,7 +43,10 @@
         "p8023" # Novell raw IEEE 802.3
         "can" # Controller Area Network
         "atm" # ATM
-
+        # dirty-frag / fragnesia vectors (CVE-2026-31431, CVE-2026-46300)
+        "esp4" # IPsec ESP over IPv4
+        "esp6" # IPsec ESP over IPv6
+        "rxrpc" # AF_RXRPC
       ];
     };
   };
