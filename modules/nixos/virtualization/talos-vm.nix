@@ -1,16 +1,14 @@
 {
-  # single-node talos kubernetes playground in a qemu vm. the host only
-  # provides the environment — bridge, nat, dhcp, a persistent disk — while
-  # the cluster itself is declared talos-side via machineconfig:
-  #
   #   talosctl gen config playground https://10.20.2.2:6443 --config-patch @/etc/talos-vm/patch.yaml
   #   talosctl apply-config --insecure -n 10.20.2.2 --file controlplane.yaml
   #   talosctl bootstrap -n 10.20.2.2 -e 10.20.2.2
   #   talosctl kubeconfig -n 10.20.2.2 -e 10.20.2.2
-  #   flux bootstrap github --owner=<you> --repository=<gitops> --path=clusters/talos
+  #
+  # remote: talos api <fqdn>:50000, kube api <fqdn>:16443
   flake.modules.nixos.talosVm =
     {
       config,
+      flake-self,
       options,
       lib,
       pkgs,
@@ -28,16 +26,20 @@
       vmIp = "10.20.2.2";
       vmMac = "52:54:00:74:61:6c";
       vmHostname = "kube-${config.networking.hostName}";
-      # single node: control plane must also schedule workloads; the qemu
-      # disk is virtio, so the installer must target vda, not the sda default.
-      # hostname lives in its own HostnameConfig document; auto must be
-      # switched off explicitly, the generated default is auto: stable
+      hostFqdn = "${config.networking.hostName}.${flake-self.domains.local}";
       configPatch = pkgs.writeText "talos-patch.yaml" ''
         machine:
           install:
             disk: /dev/vda
+          certSANs:
+            - ${hostFqdn}
+            - ${flake-self.hosts.${config.networking.hostName}.lan}
         cluster:
           allowSchedulingOnControlPlanes: true
+          apiServer:
+            certSANs:
+              - ${hostFqdn}
+              - ${flake-self.hosts.${config.networking.hostName}.lan}
         ---
         apiVersion: v1alpha1
         kind: HostnameConfig
@@ -94,16 +96,26 @@
           enable = true;
           externalInterface = "bond0";
           internalInterfaces = [ bridge ];
+          # yggdrasil owns 6443 on the host address
+          forwardPorts = [
+            {
+              sourcePort = 16443;
+              destination = "${vmIp}:6443";
+              proto = "tcp";
+            }
+            {
+              sourcePort = 50000;
+              destination = "${vmIp}:50000";
+              proto = "tcp";
+            }
+          ];
         };
 
-        # talos maintenance mode relies on dhcp; guests resolve via the
-        # host's upstream resolver, reached through nat
         networking.firewall.interfaces.${bridge}.allowedUDPPorts = [ 67 ];
 
-        # like agent-vm: internet stays open, private ranges are dropped so
-        # playground workloads cannot walk the lan or the netbird mesh; dns
-        # to the router passes because dhcp hands out that resolver
+        # private ranges dropped so playground workloads cannot walk the lan
         networking.firewall.extraForwardRules = ''
+          oifname "${bridge}" tcp dport { 6443, 50000 } accept
           iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} udp dport 53 accept
           iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} tcp dport 53 accept
           iifname "${bridge}" ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10 } drop
@@ -122,8 +134,6 @@
           '';
           serviceConfig = {
             StateDirectory = "talos-vm";
-            # bios falls through the blank disk to the iso on first boot;
-            # after talos installs itself the disk wins
             ExecStart = lib.concatStringsSep " " [
               (lib.getExe' pkgs.qemu_kvm "qemu-system-x86_64")
               "-machine q35,accel=kvm"
