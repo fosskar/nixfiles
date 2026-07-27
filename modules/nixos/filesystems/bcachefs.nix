@@ -22,7 +22,6 @@
     in
     lib.mkIf (unlockServices != [ ]) {
       boot.supportedFilesystems = [ "bcachefs" ];
-      boot.initrd.systemd.enable = true;
       environment.systemPackages = [ pkgs.bcachefs-tools ];
       boot.initrd.systemd.initrdBin = [ pkgs.keyutils ];
 
