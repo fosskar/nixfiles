@@ -27,14 +27,22 @@
       hostIp = "10.20.2.1";
       vmIp = "10.20.2.2";
       vmMac = "52:54:00:74:61:6c";
+      vmHostname = "kube-${config.networking.hostName}";
       # single node: control plane must also schedule workloads; the qemu
-      # disk is virtio, so the installer must target vda, not the sda default
+      # disk is virtio, so the installer must target vda, not the sda default.
+      # hostname lives in its own HostnameConfig document; auto must be
+      # switched off explicitly, the generated default is auto: stable
       configPatch = pkgs.writeText "talos-patch.yaml" ''
         machine:
           install:
             disk: /dev/vda
         cluster:
           allowSchedulingOnControlPlanes: true
+        ---
+        apiVersion: v1alpha1
+        kind: HostnameConfig
+        auto: "off"
+        hostname: ${vmHostname}
       '';
     in
     {
