@@ -102,8 +102,13 @@
 
         # like agent-vm: internet stays open, private ranges are dropped so
         # playground workloads cannot walk the lan or the netbird mesh; dns
-        # to the router passes because dhcp hands out that resolver
+        # to the router passes because dhcp hands out that resolver.
+        # netbird peers (scoped further by netbird acl) reach the talos and
+        # kubernetes apis; the accepts must precede the 100.64.0.0/10 drop,
+        # which would otherwise eat the vm's replies to mesh clients
         networking.firewall.extraForwardRules = ''
+          iifname "wt0" oifname "${bridge}" tcp dport { 6443, 50000 } accept
+          iifname "${bridge}" oifname "wt0" ct state established,related accept
           iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} udp dport 53 accept
           iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} tcp dport 53 accept
           iifname "${bridge}" ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10 } drop
