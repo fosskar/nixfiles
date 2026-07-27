@@ -950,20 +950,20 @@
     "nixbot_2": {
       "inputs": {
         "nixpkgs": [
-          "wiki",
+          "ssync",
           "nixpkgs"
         ],
         "treefmt-nix": [
-          "wiki",
+          "ssync",
           "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1785099231,
-        "narHash": "sha256-Z0BaMfBOFj3ysAHrW4e3vXxgWjobtvHjATSCtgaboFA=",
+        "lastModified": 1785066241,
+        "narHash": "sha256-IPWJe+bobQIRny0hoK1UwMx9kIG/pYM4CSOhiAGTIAI=",
         "owner": "Mic92",
         "repo": "nixbot",
-        "rev": "a2baa3c6366bc38f72a0f2df9a6a1f44cfbe1c8a",
+        "rev": "1c4e0008a8095958c91d5c83e7c2d2a04d13bcbc",
         "type": "github"
       },
       "original": {
@@ -972,7 +972,7 @@
         "type": "github"
       }
     },
-    "nixbot_2": {
+    "nixbot_3": {
       "inputs": {
         "nixpkgs": [
           "ssync",
@@ -1603,7 +1603,7 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "nixbot": "nixbot_2",
+        "nixbot": "nixbot_3",
         "nixpkgs": [
           "nixpkgs"
         ],
