@@ -4,7 +4,7 @@
   #   talosctl bootstrap -n 10.20.2.2 -e 10.20.2.2
   #   talosctl kubeconfig -n 10.20.2.2 -e 10.20.2.2
   #
-  # remote: talos api <fqdn>:50000, kube api <fqdn>:16443
+  # remote: talos api kube-<host>.<domain>:50000, kube api kube-<host>.<domain>:16443
   flake.modules.nixos.talosVm =
     {
       config,
@@ -26,20 +26,18 @@
       vmIp = "10.20.2.2";
       vmMac = "52:54:00:74:61:6c";
       vmHostname = "kube-${config.networking.hostName}";
-      hostFqdn = "${config.networking.hostName}.${flake-self.domains.local}";
+      vmFqdn = "${vmHostname}.${flake-self.domains.local}";
       configPatch = pkgs.writeText "talos-patch.yaml" ''
         machine:
           install:
             disk: /dev/vda
           certSANs:
-            - ${hostFqdn}
-            - ${flake-self.hosts.${config.networking.hostName}.lan}
+            - ${vmFqdn}
         cluster:
           allowSchedulingOnControlPlanes: true
           apiServer:
             certSANs:
-              - ${hostFqdn}
-              - ${flake-self.hosts.${config.networking.hostName}.lan}
+              - ${vmFqdn}
         ---
         apiVersion: v1alpha1
         kind: HostnameConfig
@@ -153,6 +151,16 @@
             CPUQuota = "300%";
             CPUWeight = 20;
           };
+        };
+
+        # manual trigger after patch changes: systemctl start talos-vm-config
+        systemd.services.talos-vm-config = {
+          unitConfig.ConditionPathExists = "/var/lib/talos-vm/talosconfig";
+          serviceConfig.Type = "oneshot";
+          script = ''
+            exec ${lib.getExe pkgs.talosctl} --talosconfig /var/lib/talos-vm/talosconfig \
+              -n ${vmIp} -e ${vmIp} patch machineconfig --patch @${configPatch}
+          '';
         };
 
         environment.systemPackages = [
