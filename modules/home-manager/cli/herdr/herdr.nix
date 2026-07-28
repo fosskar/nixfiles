@@ -15,6 +15,8 @@
         update.version_check = false;
         theme.name = "vesper";
         ui.toast.delivery = "herdr";
+        ui.prompt_new_tab_name = false;
+        worktrees.directory = "~/.herdr/worktrees";
         keys.command = [
           {
             key = "prefix+f";
@@ -74,6 +76,7 @@
         "nathanflurry.jj-workspace" = "NathanFlurry/herdr-plugin-jj-workspace";
         "cloudmanic.herdr-plus" = "cloudmanic/herdr-plus";
         "persiyanov.reviewr" = "persiyanov/herdr-reviewr";
+        "herdr-plugin-renamer" = "wenhanweime/herdr-plugin-renamer";
       }
       # event pusher for the relay (herdr-remote.nix); only useful on a relay host
       // lib.optionalAttrs config.programs.herdr.remote.enable {
@@ -130,6 +133,22 @@
           }
         ) herdrPlusProjects
         // {
+          # worktree auto-layout: fills every worktree workspace herdr
+          # creates/opens (worktree.created/opened events); repo = "*" matches
+          # any repo, a repo-specific layout file would win over it
+          "herdr/plugins/config/cloudmanic.herdr-plus/worktrees/default.toml".source =
+            (pkgs.formats.toml { }).generate "herdr-plus-worktree-default.toml"
+              {
+                repo = "*";
+                tabs = [
+                  {
+                    name = "agent";
+                    command = "omp";
+                  }
+                  { name = "shell"; }
+                ];
+              };
+
           # running server keeps its loaded keymap; pick up new config on switch
           "herdr/config.toml".onChange = ''
             ${herdrBin} server reload-config > /dev/null 2>&1 || true
