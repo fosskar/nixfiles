@@ -31,8 +31,10 @@ _: {
               source = "git:github.com/rytswd/pi-agent-extensions";
             }
             {
-              # v0.10.4
-              source = "git:github.com/tintinweb/pi-subagents@b717012e170f9acaa5b756456e9636d12a6e2f2a";
+              source = "git:github.com/tintinweb/pi-subagents";
+            }
+            {
+              source = "git:github.com/pasky/pi-omplike-advisor";
             }
           ];
           compaction.enabled = true;
@@ -44,6 +46,13 @@ _: {
       home.file = extensionEntries // {
         ".pi/agent/extensions/memory.ts".source = pkgs.replaceVars ../extensions/memory.ts {
           SEDIMENT_BIN = lib.getExe pkgs.local.sediment;
+        };
+        ".pi/agent/modes.json".text = builtins.toJSON {
+          modes.advisor = {
+            provider = "anthropic";
+            modelId = "claude-sonnet-5";
+            thinkingLevel = "low";
+          };
         };
       };
     };
