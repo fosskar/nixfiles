@@ -26,6 +26,7 @@ _: {
           quietStartup = true;
           enableInstallTelemetry = false;
           terminal.showTerminalProgress = true;
+          warnings.anthropicExtraUsage = false;
           packages = [
             {
               source = "git:github.com/rytswd/pi-agent-extensions";
