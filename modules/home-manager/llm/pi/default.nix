@@ -39,6 +39,12 @@ _: {
         };
       };
 
-      home.file = extensionEntries;
+      home.packages = [ pkgs.local.sediment ];
+
+      home.file = extensionEntries // {
+        ".pi/agent/extensions/memory.ts".source = pkgs.replaceVars ../extensions/memory.ts {
+          SEDIMENT_BIN = lib.getExe pkgs.local.sediment;
+        };
+      };
     };
 }
