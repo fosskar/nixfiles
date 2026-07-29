@@ -136,6 +136,13 @@
         };
       };
 
+      # oidc discovery hits authelia at startup; without ordering continuwuity
+      # loses the boot race and fails first start (recovers only via restart)
+      systemd.services.continuwuity = {
+        after = [ "authelia-main.service" ];
+        wants = [ "authelia-main.service" ];
+      };
+
       systemd.services.continuwuity.serviceConfig.LoadCredential = [
         "registration-token:${
           config.clan.core.vars.generators.continuwuity.files."registration-token".path
