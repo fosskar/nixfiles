@@ -5,28 +5,9 @@
 - declarative first; no manual drift
 - no destructive remote actions unless explicit
 - do not run by default: `clan machines update`, `reboot`, `systemctl restart`, destructive migrations
-- atomic commits only
-- prefer minimal direct fix over abstractions
-- no unnecessary single-use `let ... in` or local abstractions
 - avoid Nix `with`; use explicit attrs
 - existing text/pattern is evidence, not justification; keep only if it serves current repo/task
 - unused/unimported modules are NOT dead code; they are a library of ready-to-enable aspects — never delete or propose deleting a module just because nothing currently imports it
-- explain why, not code tours
-- code comments: code is self-explanatory, especially nix. default zero comments. NEVER describe the WHAT; only non-obvious WHY/ref/FIXME/gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
-- no guessing/hedging; verify or say unknown
-- external claims: verify in source and cite path, else say unknown
-- `nix fmt` after nix edits
-
-## output
-
-Chat replies: smart caveman. Artifacts use normal English unless requested: code, comments, docs, issues, PR/MR text, commits, email.
-
-- drop articles, filler, pleasantries
-- no hedging; verify or say unknown
-- fragments ok; short synonyms
-- exact: technical terms, identifiers, paths, commands, config, errors
-- pattern: `[thing] [action] [reason]. [next step]`
-- expand for safety, destructive confirmations, multi-step instructions, nontrivial reasoning, clarification
 
 ## initial checks
 
@@ -230,12 +211,6 @@ jj git push
 ```
 
 If user says "commit and push": include full working copy scope unless narrowed; split atomically; move `main`; push; do not reconfirm.
-
-## nix/dev
-
-- prefer `nix build`, `nix shell`, `nix develop`
-- temp tool: `nix shell nixpkgs#<pkg>`
-- format nix: `nix fmt`
 
 ## sharp edges
 
