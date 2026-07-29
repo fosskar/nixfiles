@@ -70,6 +70,14 @@ const MIN_SIMILARITY = 0.4;
 const AUTO_RECALL_LIMIT = 3;
 
 /**
+ * Extraction runs once per this many settled turns instead of every
+ * turn. Buffered turns are flushed early on session_shutdown so a chat
+ * that ends before the boundary still captures its facts. Mirrors
+ * mnemopi's retainEveryNTurns.
+ */
+const RETAIN_EVERY_N_TURNS = 4;
+
+/**
  * Per-session opt-out switch. The marker file `memory-off` lives in
  * the session directory; toggled via the /memory command. No ctx (or
  * no session dir) is treated as "memory enabled" — opt-out convention,
@@ -149,14 +157,14 @@ interface Fact {
  * fixed so `[kind] subject:` supersession via `sediment --replace`
  * stays reliable.
  */
-const EXTRACT_PROMPT = `You extract durable memory items from one assistant turn.
+const EXTRACT_PROMPT = `You extract durable memory items from recent conversation turns.
 Emit ONLY lines of the form:  KIND | SUBJECT | BODY
-Emit nothing if the turn contains no durable information.
+Emit nothing if the turns contain no durable information.
 
 KIND is one of:
   fact   — stable real-world fact about the user or their environment,
-           stated by the USER in this turn
-  pref   — user preference or convention, stated by the USER in this turn
+           stated by the USER
+  pref   — user preference or convention, stated by the USER
   id     — identifier/handle worth remembering (workflow IDs, pubkeys,
            URLs, booking codes) that appeared in user text or tool output
   howto  — a working one-line command exemplar the assistant ran successfully
@@ -366,33 +374,27 @@ async function extractFacts(
 // ── extension ────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
-  // Compaction summaries are the narrative layer — store whole.
-  pi.on("session_compact", async (event, ctx) => {
-    const summary = event.compactionEntry.summary?.trim();
-    if (isMemoryDisabled(ctx)) return;
-    if (!summary) return;
-    try {
-      await sediment(pi, ["store", summary, "--scope", "global"]);
-      await noteWrite(pi);
-    } catch (e) {
-      console.error("memory: failed to store compaction summary", e);
+  // agent_end can fire several times per user turn (retries, auto-compact),
+  // so keep only the latest scrubbed run and act once the run settles.
+  let pendingScrubbed: string | undefined;
+  // Turns accumulate here and are extracted in batches of
+  // RETAIN_EVERY_N_TURNS, or on session_shutdown, whichever comes first.
+  let turnBuffer: string[] = [];
+  let settledTurns = 0;
+
+  async function flushBuffer(ctx: ExtensionContext): Promise<void> {
+    if (turnBuffer.length === 0) return;
+    if (isMemoryDisabled(ctx)) {
+      turnBuffer = [];
+      return;
     }
-  });
-
-  // Per-turn capture: scrub → extract → store atomic facts.
-  pi.on("agent_end", async (event, ctx) => {
-    if (event.messages.length < 2) return;
-    if (isMemoryDisabled(ctx)) return;
-
-    const scrubbed = scrubTurn(
-      serializeConversation(convertToLlm(event.messages)),
-    );
-    // Only requirement: there is a user payload to attribute facts to.
-    if (!scrubbed.includes("[User]: ")) return;
+    // Keep the most recent turns when the window exceeds the cap.
+    const window = turnBuffer.join("\n\n---\n\n").slice(-EXTRACT_INPUT_CAP);
+    turnBuffer = [];
 
     let facts: Fact[];
     try {
-      facts = await extractFacts(ctx, scrubbed);
+      facts = await extractFacts(ctx, window);
     } catch (e) {
       console.error("memory: extraction failed", e);
       return;
@@ -408,6 +410,50 @@ export default function (pi: ExtensionAPI) {
       }
     }
     if (stored > 0) await noteWrite(pi, stored);
+  }
+
+  // Compaction summaries are the narrative layer — store whole.
+  pi.on("session_compact", async (event, ctx) => {
+    const summary = event.compactionEntry.summary?.trim();
+    if (isMemoryDisabled(ctx)) return;
+    if (!summary) return;
+    try {
+      await sediment(pi, ["store", summary, "--scope", "global"]);
+      await noteWrite(pi);
+    } catch (e) {
+      console.error("memory: failed to store compaction summary", e);
+    }
+  });
+
+  // Per-turn capture: scrub the latest run; a retry overwrites it.
+  pi.on("agent_end", async (event, ctx) => {
+    if (event.messages.length < 2) return;
+    if (isMemoryDisabled(ctx)) return;
+
+    const scrubbed = scrubTurn(
+      serializeConversation(convertToLlm(event.messages)),
+    );
+    // Only requirement: there is a user payload to attribute facts to.
+    if (!scrubbed.includes("[User]: ")) return;
+
+    pendingScrubbed = scrubbed;
+  });
+
+  // Buffer the settled turn; extract in batches of RETAIN_EVERY_N_TURNS.
+  pi.on("agent_settled", async (_event, ctx) => {
+    const scrubbed = pendingScrubbed;
+    pendingScrubbed = undefined;
+    if (!scrubbed) return;
+    if (isMemoryDisabled(ctx)) return;
+
+    turnBuffer.push(scrubbed);
+    settledTurns += 1;
+    if (settledTurns % RETAIN_EVERY_N_TURNS === 0) await flushBuffer(ctx);
+  });
+
+  // Flush any buffered turns before the session tears down.
+  pi.on("session_shutdown", async (_event, ctx) => {
+    await flushBuffer(ctx);
   });
 
   // Recall: inject relevant memories before each prompt.
