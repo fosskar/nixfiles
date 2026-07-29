@@ -19,6 +19,9 @@ _: {
         context = ../AGENTS.md;
 
         settings = {
+          defaultProvider = "anthropic";
+          defaultModel = "claude-opus-5";
+          defaultThinkingLevel = "medium";
           hideThinkingBlock = true;
           followUpMode = "all";
           steeringMode = "one-at-a-time";
