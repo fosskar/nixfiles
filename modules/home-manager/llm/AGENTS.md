@@ -1,25 +1,32 @@
 # instructions
 
-## output
+## language
 
-Chat: compressed prose. Cut words, keep facts. Artifacts use normal English unless requested: code, config, comments, docs, issues, PR/MR text, commits, email, quoted text.
+ASD-STE100 Simplified Technical English is a controlled writing standard for clear technical text. Write all prose in it: chat, comments, docs, commits, PR/MR text, issues, email. Follow the writing rules; ignore the approved-word dictionary (software terms are not in it). Code and config stay verbatim, not reworded. Full rule reference: <https://github.com/cfcosta/writing-styles/tree/main/asd-ste100>.
 
-- content over form: identifiers, paths, commands, config, errors exact; grammar, spelling, capitalization irrelevant
-- cut articles, filler, pleasantries, praise; fragments fine; shortest accurate word wins
-- no hedging; verify, or state uncertainty plainly
-- no invented abbreviations (`cfg`, `impl`, `req`, `res`), no causal arrows: tokenizer splits both, saves nothing, costs clarity; established acronyms fine
+STE writing rules:
+
+- one term per concept, every time; do not alternate between "panel", "client", "GUI" for the same thing
+- one idea per sentence; max 20 words for instructions, 25 for descriptions
+- active voice; name the actor: "the daemon drops", not "is dropped"
+- short paragraphs: one topic each, max six sentences
+- multi-word nouns: max three words
+
+House rules (ours, not STE):
+
+- use the identifier the code uses; no prose paraphrase of a symbol
+- identifiers, paths, commands, config, errors exact
+- cut filler, pleasantries, praise; no hedging — verify, or state uncertainty plainly
+- no invented abbreviations (`cfg`, `impl`, `req`, `res`); established acronyms fine
 - no emoji; no narrating tool calls
 - code blocks and errors verbatim; from long logs quote only the decisive line
 - reply in the language the user wrote; technical terms verbatim
-- shape: `[thing] [action] [reason]. [next step]`
-- style holds all session; no drift back to prose
-- expand when compression itself risks misreading: safety, destructive confirmations, multi-step sequences, nontrivial reasoning, clarification
-- don't write plans unless task is multi-step, risky, or user asks
+- give full detail for safety, destructive confirmations, multi-step sequences, nontrivial reasoning, clarification
 
 ## working
 
-- satisfy intent, not literal wording
 - answer the question asked; never substitute action for an answer
+- don't write plans unless task is multi-step, risky, or user asks
 - keep scope minimal; don't add unrelated work
 - push back: bad assumptions, correctness, safety, goal conflicts
 - ask on ambiguity; don't invent APIs, flags, paths, options, intent; don't silently pick
@@ -63,10 +70,14 @@ Chat: compressed prose. Cut words, keep facts. Artifacts use normal English unle
 
 - match existing style
 - use repo terms in explanations, commits, PR text, docs; source from modules, options, paths, docs, commits
-- don't invent synonyms; ask or state ambiguity when terms conflict
-- comments: code is self-explanatory. default zero. NEVER describe the WHAT; only non-obvious WHY. never annotate one-line changes or single option settings. no restating code
+- ask or state ambiguity when terms conflict
+- comments: code is self-explanatory. default zero. NEVER describe the WHAT; only non-obvious WHY/ref/FIXME/gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
 - lowercase comments/commits; preserve code, config values, quotes, proper nouns
-- commit messages: linux-kernel style, no tags/trailers, exact service/module/option names, body when useful
+- commit messages: linux-kernel style
+  - subject: imperative mood, no trailing period, ~50 chars (hard cap 72)
+  - optional `<area>: ` prefix using the exact service/module/option name
+  - blank line, then body explaining what and why (not how), wrapped ~72 cols; body only when it adds context
+  - no tags, trailers, or `Signed-off-by`
 - newline at EOF
 
 ## safety
