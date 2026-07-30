@@ -66,6 +66,25 @@
           fi
         '';
 
+      # a curl command that must succeed before the upsert runs. the *arr apps
+      # validate a download client by connecting to it, so the target has to be
+      # answering, not merely started.
+      waitFor = check: ''
+        ready=""
+        for _ in $(seq 60); do
+          if ${check} >/dev/null 2>&1; then
+            ready=yes
+            break
+          fi
+          sleep 2
+        done
+
+        if [ -z "$ready" ]; then
+          echo "not ready: ${check}" >&2
+          exit 1
+        fi
+      '';
+
       mkSyncUnit =
         {
           host,
@@ -73,6 +92,7 @@
           resource,
           entries,
           needsKeys,
+          readyChecks ? [ ],
         }:
         {
           description = "sync ${resource} into ${host}";
@@ -106,20 +126,8 @@
               own=$(cat ${keyFile host})
               base=${baseUrl host}
 
-              ready=""
-              for _ in $(seq 60); do
-                if curl -sfS -H "X-Api-Key: $own" "$base/api/${apiVersion}/system/status" >/dev/null 2>&1; then
-                  ready=yes
-                  break
-                fi
-                sleep 2
-              done
-
-              if [ -z "$ready" ]; then
-                echo "${host} api did not answer" >&2
-                exit 1
-              fi
-
+              ${waitFor ''curl -sfS -H "X-Api-Key: $own" "$base/api/${apiVersion}/system/status"''}
+              ${lib.concatMapStringsSep "\n" waitFor readyChecks}
               ${lib.concatMapStringsSep "\n" (entry: mkEntry { inherit apiVersion resource entry; }) entries}
             '';
           };
@@ -171,6 +179,9 @@
           needsKeys = [
             serviceName
             "sabnzbd"
+          ];
+          readyChecks = [
+            ''curl -sfS "${baseUrl "sabnzbd"}/api?mode=version&apikey=$(cat ${keyFile "sabnzbd"})"''
           ];
           entries = [
             {
