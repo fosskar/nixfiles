@@ -7,26 +7,13 @@
       pkgs,
       ...
     }:
-    let
-      # upstream ships a relative exec.path; polkit needs the absolute binary path
-      # so noctalia-shell's pkexec sync authorizes against this action.
-      noctalia-greeter =
-        inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
-          (old: {
-            postInstall = (old.postInstall or "") + ''
-              substituteInPlace $out/share/polkit-1/actions/org.noctalia.greeter.apply-appearance.policy \
-                --replace-fail '>noctalia-greeter-apply-appearance<' \
-                '>'"$out"'/bin/noctalia-greeter-apply-appearance<'
-            '';
-          });
-    in
     {
       imports = [ inputs.noctalia-greeter.nixosModules.default ];
 
       config = {
         programs.noctalia-greeter = {
           enable = true;
-          package = noctalia-greeter;
+          package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
           settings.appearance.hide_logo = true;
         };
       }
