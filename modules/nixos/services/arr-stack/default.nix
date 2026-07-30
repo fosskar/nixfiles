@@ -10,14 +10,16 @@
         users.groups.media = { };
 
         systemd.tmpfiles.rules = [
-          "d ${mediaRoot}/books 0775 root media -"
-          "d ${mediaRoot}/movies 0775 root media -"
-          "d ${mediaRoot}/music 0775 root media -"
-          "d ${mediaRoot}/podcasts 0775 root media -"
-          "d ${mediaRoot}/tv 0775 root media -"
-          "d ${mediaRoot}/downloads 0775 root media -"
-          "d ${mediaRoot}/downloads/incomplete 0775 root media -"
-          "d ${mediaRoot}/downloads/complete 0775 root media -"
+          # setgid: subdirs the apps create inherit group media, so UMask 0002
+          # alone does not have to carry group ownership
+          "d ${mediaRoot}/books 2775 root media -"
+          "d ${mediaRoot}/movies 2775 root media -"
+          "d ${mediaRoot}/music 2775 root media -"
+          "d ${mediaRoot}/podcasts 2775 root media -"
+          "d ${mediaRoot}/tv 2775 root media -"
+          "d ${mediaRoot}/downloads 2775 root media -"
+          "d ${mediaRoot}/downloads/incomplete 2775 root media -"
+          "d ${mediaRoot}/downloads/complete 2775 root media -"
         ];
 
         # media consumers must not start (and write into the empty mountpoint
