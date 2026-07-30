@@ -29,7 +29,7 @@ import { complete } from "@earendil-works/pi-ai";
 import { Type } from "typebox";
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { rm, writeFile } from "node:fs/promises";
+import { readdir, rm, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -37,19 +37,38 @@ const SEDIMENT_BIN = "@SEDIMENT_BIN@";
 const SEDIMENT_TIMEOUT = 10_000;
 const COMPACT_TIMEOUT = 60_000;
 
-// XDG state dir, not ~/.sediment — shareable beyond pi
+/**
+ * XDG state dir, not ~/.sediment — shareable beyond pi.
+ *
+ * The trailing `data` is load-bearing: `cli_context` derives the access
+ * database as `db_path.parent().join("access.db")`, so SEDIMENT_DB must
+ * point one level *below* the directory that should hold the store.
+ * Without it the graph, decay tracking and consolidation queue land in
+ * the XDG state root instead of beside the LanceDB tree.
+ */
 process.env.SEDIMENT_DB ??= join(
   process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state"),
   "sediment",
+  "data",
 );
 
 /**
- * Sediment auto-detects a `project_id` from cwd and silently attaches
- * it to every stored item even with `--scope global`. Spawning from `/`
- * keeps global writes actually global and stops the agent from
- * littering `.sediment/` directories in random spawn locations.
- * Recall ignores scope entirely (whole-index search, cross-project
- * hits only take a similarity penalty).
+ * Sediment auto-detects a `project_id` from cwd (via `.git` / `.sediment`
+ * markers, falling back to `get_or_create_project_id(cwd)` which writes
+ * a `.sediment/config` in the spawning directory). That id is then
+ * silently attached to every stored item even when `--scope global` is
+ * passed — `Database::store_item` clobbers `item.project_id = None`
+ * with `self.project_id`, making `--scope global` a no-op at write time.
+ * Spawning from `/` makes `find_project_root` return None and
+ * `get_or_create_project_id` fail on EACCES, so `cli_context` ends up
+ * with `project_id = None` and our global writes actually stay global.
+ *
+ * Recall ignores `--scope` entirely (sediment's `recall` subcommand has
+ * no scope flag — `search_items` matches the whole vector index and
+ * cross-project hits just take a 12.5pp similarity penalty), so the cwd
+ * does not affect what the agent recalls. Keeping every sediment child
+ * on the same cwd just stops the agent from littering `.sediment/`
+ * directories in random spawn locations.
  */
 const SEDIMENT_CWD = "/";
 
@@ -62,11 +81,19 @@ const SEDIMENT_CWD = "/";
 const SUPERSEDE_SIMILARITY = 0.7;
 
 /**
- * sediment only auto-compacts in MCP server mode; the CLI (which we
- * shell out to per fact) leaks a LanceDB index generation per write.
- * Run `compact --force` explicitly every N writes.
+ * Writes since the last compaction, above which `maintain` runs. LanceDB
+ * appends one entry to `_versions` per write, and compaction collapses them,
+ * so that directory is the write budget — no counter to keep, and it is
+ * unaffected by restarts. Counts versions, not items: a freshly compacted
+ * store has a small `_versions` whether it holds 86 memories or 10,000.
  */
 const COMPACT_EVERY = 50;
+const VERSIONS_DIR = join(
+  process.env.SEDIMENT_DB as string,
+  "items.lance",
+  "_versions",
+);
+
 const MIN_SIMILARITY = 0.4;
 const AUTO_RECALL_LIMIT = 3;
 
@@ -329,13 +356,36 @@ async function storeFact(f: Fact): Promise<void> {
   await sediment(args);
 }
 
-let writesSinceCompact = 0;
+/**
+ * Drain the near-duplicate queue, then compact, once COMPACT_EVERY writes
+ * have accumulated. Both are no-ops when there is nothing to do, so the gate
+ * exists to avoid the subprocess, not the work.
+ *
+ * Order matters. Merging is itself a write, so consolidating 27 backlogged
+ * pairs left 58 versions behind when it ran second — above the threshold, so
+ * the next flush opened the gate again. Running it first lets the same
+ * compaction reclaim its output: one pass settles at 2 versions / 11 files.
+ *
+ * Skipping the pass entirely is the expensive option: shelling out to the
+ * CLI per fact leaks a LanceDB version per write, and an unmaintained store
+ * reached 34 MB across 3319 files for 86 items.
+ *
+ * `consolidate` is a local patch (packages/sediment/consolidate-subcommand.patch);
+ * upstream drains that queue only from MCP server mode.
+ */
+async function maintain(): Promise<void> {
+  try {
+    if ((await readdir(VERSIONS_DIR)).length < COMPACT_EVERY) return;
+  } catch {
+    // No store yet, or an unreadable one — nothing to maintain.
+    return;
+  }
 
-/** Count a write and run `sediment compact --force` once the budget is hit. */
-async function noteWrite(n = 1): Promise<void> {
-  writesSinceCompact += n;
-  if (writesSinceCompact < COMPACT_EVERY) return;
-  writesSinceCompact = 0;
+  try {
+    await sediment(["consolidate"], { timeout: COMPACT_TIMEOUT });
+  } catch (e) {
+    console.error("memory: consolidate failed", e);
+  }
   try {
     await sediment(["compact", "--force"], { timeout: COMPACT_TIMEOUT });
   } catch (e) {
@@ -447,7 +497,7 @@ export default function (pi: ExtensionAPI) {
         console.error("memory: failed to store fact", f.subject, e);
       }
     }
-    if (stored > 0) await noteWrite(stored);
+    if (stored > 0) await maintain();
   }
 
   // Compaction summaries are the narrative layer — store whole.
@@ -457,7 +507,7 @@ export default function (pi: ExtensionAPI) {
     if (!summary) return;
     try {
       await sediment(["store", summary, "--scope", "global"]);
-      await noteWrite();
+      await maintain();
     } catch (e) {
       console.error("memory: failed to store compaction summary", e);
     }
