@@ -79,6 +79,12 @@
           "sonarr-api.service"
           "radarr-api.service"
         ];
+        # preStart resolves _secret into config.yml as plaintext; the nixpkgs
+        # defaults (umask 0022, state dir 0755) leave it world-readable
+        serviceConfig = {
+          UMask = "0077";
+          StateDirectoryMode = "0700";
+        };
       };
     };
   };
