@@ -189,8 +189,6 @@ nix log <store-path>
 
 ## vcs
 
-Prefer jj over git in colocated repos.
-
 Never run:
 
 - `jj restore`
@@ -228,7 +226,6 @@ If user says "commit and push": include full working copy scope unless narrowed;
 
 ## finish
 
-- `nix fmt` after nix edits
 - verify proportionally
 - track new files if any (`jj file track <path>`)
 - do not deploy/restart/update remote machines unless explicit
