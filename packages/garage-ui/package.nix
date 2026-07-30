@@ -21,7 +21,11 @@ let
     pname = "garage-ui-frontend";
     inherit version src;
     sourceRoot = "${src.name}/frontend";
-    npmDepsHash = "sha256-QlJxMdjxgAMKMny6ZFLC+lknYci5Qy+xDCEKMJhtJ5o=";
+    # upstream v0.11.1 ships a lock where 237 of 437 entries lack
+    # resolved/integrity, so fetchNpmDeps never downloads them and npm ci hits
+    # the network. this copy adds them back, upstream versions unchanged.
+    postPatch = "cp ${./package-lock.json} package-lock.json";
+    npmDepsHash = "sha256-mL+6GdZHmsRpXW9GzPgun2sN5JuLTQqA5/2jfTYvvRk=";
     installPhase = ''
       runHook preInstall
       cp -r dist $out
@@ -66,6 +70,8 @@ buildGoModule (finalAttrs: {
     inherit frontend;
     # --subpackage updates the frontend npmDepsHash, which nix-update
     # otherwise never touches (nested buildNpmPackage in a let binding).
+    # a version bump also needs ./package-lock.json regenerated from the new
+    # upstream lock, else npmConfigHook fails the consistency check.
     updateScript = nix-update-script {
       extraArgs = [
         "--subpackage"
