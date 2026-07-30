@@ -8,20 +8,24 @@
   nix-update-script,
 }:
 let
-  version = "0.10.0";
+  version = "0.11.1";
 
   src = fetchFromGitHub {
     owner = "Noooste";
     repo = "garage-ui";
     tag = "v${version}";
-    hash = "sha256-D+dAHFW9az2E8Bf6aKq5QHc8d9jOYGjSa+5q9PmPuzw=";
+    hash = "sha256-TxqR97PPQH9yciKFKKv1QWSgAYTd2eaVjQW2Gq3FLRU=";
   };
 
   frontend = buildNpmPackage {
     pname = "garage-ui-frontend";
     inherit version src;
     sourceRoot = "${src.name}/frontend";
-    npmDepsHash = "sha256-j3h3YmYjmfPv+zKBkgx0n4SdqZT4/KXygREWkqL4G+8=";
+    # upstream v0.11.1 ships a lock where 237 of 437 entries lack
+    # resolved/integrity, so fetchNpmDeps never downloads them and npm ci hits
+    # the network. this copy adds them back, upstream versions unchanged.
+    postPatch = "cp ${./package-lock.json} package-lock.json";
+    npmDepsHash = "sha256-mL+6GdZHmsRpXW9GzPgun2sN5JuLTQqA5/2jfTYvvRk=";
     installPhase = ''
       runHook preInstall
       cp -r dist $out
@@ -66,6 +70,8 @@ buildGoModule (finalAttrs: {
     inherit frontend;
     # --subpackage updates the frontend npmDepsHash, which nix-update
     # otherwise never touches (nested buildNpmPackage in a let binding).
+    # a version bump also needs ./package-lock.json regenerated from the new
+    # upstream lock, else npmConfigHook fails the consistency check.
     updateScript = nix-update-script {
       extraArgs = [
         "--subpackage"
