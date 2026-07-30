@@ -7,7 +7,7 @@ ASD-STE100 Simplified Technical English is a controlled writing standard for cle
 STE writing rules:
 
 - one term per concept, every time; do not alternate between "panel", "client", "GUI" for the same thing
-- one idea per sentence; max 20 words for instructions, 25 for descriptions
+- one idea per sentence; keep sentences short (~20 words)
 - active voice; name the actor: "the daemon drops", not "is dropped"
 - short paragraphs: one topic each, max six sentences
 - multi-word nouns: max three words
@@ -56,7 +56,7 @@ House rules (ours, not STE):
 - remove unused code only if your change made it unused
 - no docs/readme unless requested
 - state tradeoffs affecting correctness, safety, scope, maintainability
-- prefer temporary debug comments over deletion; remove temporary debug changes before finishing
+- remove temporary debug changes before finishing
 
 ## verify
 
@@ -71,7 +71,7 @@ House rules (ours, not STE):
 - match existing style
 - use repo terms in explanations, commits, PR text, docs; source from modules, options, paths, docs, commits
 - ask or state ambiguity when terms conflict
-- comments: code is self-explanatory. default zero. NEVER describe the WHAT; only non-obvious WHY/ref/FIXME/gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
+- comments: code is self-explanatory. default zero. never describe the what; only non-obvious why/ref/FIXME/gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
 - lowercase comments/commits; preserve code, config values, quotes, proper nouns
 - commit messages: linux-kernel style
   - subject: imperative mood, no trailing period, ~50 chars (hard cap 72)
