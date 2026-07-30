@@ -14,22 +14,50 @@
       listenAddress = "127.0.0.1";
       listenPort = 8085;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+
+      # add a provider by adding a line here, then rerun clan vars generate
+      servers = {
+        primary.priority = 0;
+        secondary.priority = 1;
+        tertiary.priority = 1;
+      };
+
+      # field -> prompt wording. clan only shows a description when it differs
+      # from the prompt name, otherwise it prints a generic "enter the value"
+      serverFields = {
+        host = "hostname, e.g. news.example.com";
+        username = "login username";
+        password = "login password";
+      };
+
+      secretNames = lib.concatMap (
+        server: map (field: "${server}-${field}") (lib.attrNames serverFields)
+      ) (lib.attrNames servers);
     in
+
     {
       config = {
         # --- service ---
 
+        # persist stores each prompt as a file of the same name, so clan reuses
+        # the value on later runs instead of asking again, and no script is needed
         clan.core.vars.generators.sabnzbd = {
-          files.secret = {
-            secret = true;
+          files = lib.genAttrs secretNames (_: {
             owner = "sabnzbd";
-          };
-          prompts.config = {
-            description = "sabnzbd secret ini (api keys, server credentials)";
-            type = "multiline";
-            persist = true;
-          };
-          script = "cat $prompts/config > $out/secret";
+          });
+          prompts = lib.listToAttrs (
+            lib.concatMap (
+              server:
+              lib.mapAttrsToList (
+                field: hint:
+                lib.nameValuePair "${server}-${field}" {
+                  persist = true;
+                  type = if field == "password" then "hidden" else "line";
+                  description = "${server} usenet provider ${hint}";
+                }
+              ) serverFields
+            ) (lib.attrNames servers)
+          );
         };
 
         services.sabnzbd = {
@@ -37,8 +65,33 @@
           openFirewall = false;
           group = "media";
           allowConfigWrite = true;
-          secretFiles = [ config.clan.core.vars.generators.sabnzbd.files.secret.path ];
+          # @name@ is replaced at preStart, so only the pattern reaches the store
+          secretValues = lib.listToAttrs (
+            map (
+              name: lib.nameValuePair "@${name}@" config.clan.core.vars.generators.sabnzbd.files.${name}.path
+            ) secretNames
+          );
           settings = {
+            # the provider hostname is a secret, so the ini section key must not
+            # be it. sabnzbd treats the key as an opaque id (clean_section_name
+            # in sabnzbd/config.py) and reads the address from the host field.
+            servers = lib.mapAttrs (
+              server: settings:
+              {
+                name = "@${server}-host@";
+                displayname = "@${server}-host@";
+                host = "@${server}-host@";
+                username = "@${server}-username@";
+                password = "@${server}-password@";
+                port = 563;
+                ssl = true;
+                ssl_verify = "strict";
+                connections = 25;
+                # the nullOr default renders as the literal string None
+                expire_date = "";
+              }
+              // settings
+            ) servers;
             misc = {
               port = listenPort;
               host_whitelist = "nixbox, ${localHost}";
