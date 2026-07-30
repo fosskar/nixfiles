@@ -27,6 +27,7 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import { complete } from "@earendil-works/pi-ai";
 import { Type } from "typebox";
+import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { rm, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
@@ -210,18 +211,57 @@ function parseFactLines(text: string): Fact[] {
 
 let sedimentAvailable: boolean | undefined;
 
+/**
+ * Spawn sediment directly instead of through `pi.exec`. `pi` is the
+ * session-bound extension API captured in the factory closure; it is
+ * invalidated the moment a session replacement starts tearing down, so
+ * the `session_shutdown` flush would throw mid-await. node's execFile
+ * outlives the session runtime.
+ */
+function runSediment(
+  args: string[],
+  opts: { signal?: AbortSignal; timeout?: number },
+): Promise<{ code: number; stdout: string; stderr: string; killed: boolean }> {
+  return new Promise((resolve) => {
+    execFile(
+      SEDIMENT_BIN,
+      args,
+      {
+        cwd: SEDIMENT_CWD,
+        timeout: opts.timeout ?? SEDIMENT_TIMEOUT,
+        signal: opts.signal,
+        maxBuffer: 8 * 1024 * 1024,
+      },
+      (err, stdout, stderr) => {
+        if (!err) {
+          resolve({ code: 0, stdout, stderr, killed: false });
+          return;
+        }
+        const e = err as Error & {
+          code?: number | string;
+          killed?: boolean;
+          signal?: string | null;
+        };
+        const code =
+          typeof e.code === "number" ? e.code : e.code === "ENOENT" ? 127 : 1;
+        resolve({
+          code,
+          stdout,
+          stderr: stderr || e.message,
+          killed: Boolean(e.killed) || e.signal != null,
+        });
+      },
+    );
+  });
+}
+
 async function sediment(
-  pi: ExtensionAPI,
   args: string[],
   opts: { signal?: AbortSignal; timeout?: number } = {},
 ): Promise<string> {
   if (sedimentAvailable === false) throw new Error("sediment unavailable");
 
-  const result = await pi.exec(SEDIMENT_BIN, args, {
-    signal: opts.signal,
-    timeout: opts.timeout ?? SEDIMENT_TIMEOUT,
-    cwd: SEDIMENT_CWD,
-  });
+  const result = await runSediment(args, opts);
 
   if (result.code !== 0) {
     if (result.killed || result.code === 127) sedimentAvailable = false;
@@ -239,13 +279,11 @@ interface RecallResult {
 }
 
 async function recall(
-  pi: ExtensionAPI,
   query: string,
   limit: number,
   signal?: AbortSignal,
 ): Promise<RecallResult[]> {
   const raw = await sediment(
-    pi,
     ["recall", query, "--limit", String(limit), "--json"],
     { signal },
   );
@@ -264,7 +302,7 @@ async function recall(
  * negatives leave both entries, which sediment's own dedup usually
  * collapses on the next store.
  */
-async function storeFact(pi: ExtensionAPI, f: Fact): Promise<void> {
+async function storeFact(f: Fact): Promise<void> {
   const rendered = `[${f.kind}] ${f.subject}: ${f.body}`;
   const prefix = `[${f.kind}] ${f.subject}:`;
 
@@ -274,7 +312,7 @@ async function storeFact(pi: ExtensionAPI, f: Fact): Promise<void> {
     // subject → supersede", a high-similarity body match means "subject
     // drifted but says the same thing → supersede". Both collapse onto
     // one item instead of accumulating near-duplicates.
-    const prev = await recall(pi, rendered, 3);
+    const prev = await recall(rendered, 3);
     const hit = prev.find(
       (r) =>
         r.content.startsWith(prefix) ||
@@ -288,18 +326,18 @@ async function storeFact(pi: ExtensionAPI, f: Fact): Promise<void> {
 
   const args = ["store", rendered, "--scope", "global"];
   if (replace) args.push("--replace", replace);
-  await sediment(pi, args);
+  await sediment(args);
 }
 
 let writesSinceCompact = 0;
 
 /** Count a write and run `sediment compact --force` once the budget is hit. */
-async function noteWrite(pi: ExtensionAPI, n = 1): Promise<void> {
+async function noteWrite(n = 1): Promise<void> {
   writesSinceCompact += n;
   if (writesSinceCompact < COMPACT_EVERY) return;
   writesSinceCompact = 0;
   try {
-    await sediment(pi, ["compact", "--force"], { timeout: COMPACT_TIMEOUT });
+    await sediment(["compact", "--force"], { timeout: COMPACT_TIMEOUT });
   } catch (e) {
     console.error("memory: compact failed", e);
   }
@@ -403,13 +441,13 @@ export default function (pi: ExtensionAPI) {
     let stored = 0;
     for (const f of facts) {
       try {
-        await storeFact(pi, f);
+        await storeFact(f);
         stored++;
       } catch (e) {
         console.error("memory: failed to store fact", f.subject, e);
       }
     }
-    if (stored > 0) await noteWrite(pi, stored);
+    if (stored > 0) await noteWrite(stored);
   }
 
   // Compaction summaries are the narrative layer — store whole.
@@ -418,8 +456,8 @@ export default function (pi: ExtensionAPI) {
     if (isMemoryDisabled(ctx)) return;
     if (!summary) return;
     try {
-      await sediment(pi, ["store", summary, "--scope", "global"]);
-      await noteWrite(pi);
+      await sediment(["store", summary, "--scope", "global"]);
+      await noteWrite();
     } catch (e) {
       console.error("memory: failed to store compaction summary", e);
     }
@@ -467,7 +505,7 @@ export default function (pi: ExtensionAPI) {
       // Narrative summaries stay reachable via the memory_search tool
       // but are not auto-injected — they outweigh atomic facts in the
       // embedding and would crowd the slot budget.
-      const results = (await recall(pi, key, AUTO_RECALL_LIMIT * 3))
+      const results = (await recall(key, AUTO_RECALL_LIMIT * 3))
         .filter(
           (r) =>
             r.content.startsWith("[") &&
@@ -559,7 +597,6 @@ export default function (pi: ExtensionAPI) {
       }
       try {
         const raw = await sediment(
-          pi,
           [
             "recall",
             params.query,
