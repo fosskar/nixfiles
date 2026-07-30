@@ -7,7 +7,7 @@
 - do not run by default: `clan machines update`, `reboot`, `systemctl restart`, destructive migrations
 - avoid Nix `with`; use explicit attrs
 - existing text/pattern is evidence, not justification; keep only if it serves current repo/task
-- unused/unimported modules are NOT dead code; they are a library of ready-to-enable aspects — never delete or propose deleting a module just because nothing currently imports it
+- unused/unimported modules are not dead code; they are a library of ready-to-enable aspects — never delete or propose deleting a module just because nothing currently imports it
 
 ## initial checks
 
