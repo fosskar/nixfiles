@@ -71,7 +71,7 @@ House rules (ours, not STE):
 - match existing style
 - use repo terms in explanations, commits, PR text, docs; source from modules, options, paths, docs, commits
 - ask or state ambiguity when terms conflict
-- comments: code is self-explanatory. default zero. never describe the what; only non-obvious why/ref/FIXME/gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
+- comments: default zero. write one only to state a constraint the code cannot show — non-obvious why, upstream issue ref, FIXME, gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
 - lowercase comments/commits; preserve code, config values, quotes, proper nouns
 - commit messages: linux-kernel style
   - subject: imperative mood, no trailing period, ~50 chars (hard cap 72)
