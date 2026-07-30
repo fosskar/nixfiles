@@ -16,6 +16,11 @@ rustPlatform.buildRustPackage rec {
     hash = "sha256-hINSwWJE9/Nq5QT2Y7vgFlrwz4fGVYhT4f98Eb7CS2c=";
   };
 
+  # upstream drains the consolidation queue only from mcp server mode
+  # (spawn_consolidation is called once, in src/mcp/tools.rs); the cli
+  # enqueues candidates that nothing ever processes
+  patches = [ ./consolidate-subcommand.patch ];
+
   cargoHash = "sha256-NfXChnMYyNyyT3ocdT65Ic6Iu3Zp0LtuTR/Je8FzqZc=";
 
   nativeBuildInputs = [ protobuf ];
