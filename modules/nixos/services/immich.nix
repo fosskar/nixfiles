@@ -19,6 +19,9 @@
           onnxruntime = pyPrev.onnxruntime.override {
             onnxruntime = pkgs.onnxruntime.override {
               cudaSupport = true;
+              # sharded_moe.cc includes contrib_ops/cuda/moe/ft_moe/moe_kernel.h, deleted in
+              # onnxruntime 1.27.1; that file is only compiled when nccl is enabled
+              ncclSupport = false;
               python3Packages = pyFinal;
             };
           };
