@@ -7,7 +7,7 @@ ASD-STE100 Simplified Technical English is a controlled writing standard for cle
 STE writing rules:
 
 - one term per concept, every time; do not alternate between "panel", "client", "GUI" for the same thing
-- one idea per sentence; keep sentences short (~20 words)
+- one idea or instruction per sentence; keep sentences short (~20 words)
 - active voice; name the actor: "the daemon drops", not "is dropped"
 - short paragraphs: one topic each, max six sentences
 - multi-word nouns: max three words
