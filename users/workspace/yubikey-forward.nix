@@ -3,6 +3,7 @@
 {
   programs.gpg = {
     enable = true;
+    mutableTrust = false;
     # never spawn a local gpg-agent; the socket arrives via ssh RemoteForward
     settings.no-autostart = true;
     publicKeys = [
