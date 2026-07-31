@@ -52,7 +52,7 @@
         def pam_open_wallet(password_hash: bytes) -> bool:
           try:
             bus = dbus.SessionBus()
-            proxy = bus.get_object("org.kde.ksecretd", "/ksecretd")
+            proxy = bus.get_object("org.freedesktop.impl.portal.desktop.kwallet", "/ksecretd")
             interface = dbus.Interface(proxy, "org.kde.KWallet")
             interface.pamOpen("kdewallet", dbus.ByteArray(password_hash), 0)
             for _ in range(50):
