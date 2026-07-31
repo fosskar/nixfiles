@@ -18,6 +18,7 @@
         import hashlib
         import subprocess
         import sys
+        import time
         from pathlib import Path
 
         import dbus
@@ -51,14 +52,19 @@
         def pam_open_wallet(password_hash: bytes) -> bool:
           try:
             bus = dbus.SessionBus()
-            proxy = bus.get_object("org.kde.kwalletd6", "/modules/kwalletd6")
+            proxy = bus.get_object("org.kde.ksecretd", "/ksecretd")
             interface = dbus.Interface(proxy, "org.kde.KWallet")
             interface.pamOpen("kdewallet", dbus.ByteArray(password_hash), 0)
+            for _ in range(50):
+              if interface.isOpen("kdewallet", signature="s"):
+                return True
+              time.sleep(0.1)
           except dbus.DBusException as e:
             print(f"dbus error unlocking wallet: {e}", file=sys.stderr)
             return False
-          else:
-            return True
+
+          print("wallet did not open", file=sys.stderr)
+          return False
 
 
         def main() -> None:
