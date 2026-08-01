@@ -12,6 +12,7 @@
     self.modules.nixos.convertx
     self.modules.nixos.dawarich
     self.modules.nixos.opencloud
+    self.modules.nixos.mcp
     self.modules.nixos.searxng
     self.modules.nixos.lldap
     self.modules.nixos.authelia
