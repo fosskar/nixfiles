@@ -47,7 +47,7 @@
           providers.local = {
             name = "Local";
             api = "https://llama-cpp.${flake-self.domains.local}/v1";
-            api_key = "none";
+            api_key = "no-key-required";
             default_model = "qwen3.6-35b-a3b-mtp";
             context_length = 131072;
           };
