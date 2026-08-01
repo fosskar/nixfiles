@@ -5,6 +5,7 @@
   nixfiles.agentVm = {
     services = [
       self.modules.nixos.hermesAgent
+      self.modules.nixos.signalCli
       # the virtiofs mount does not exist yet when hermes' module merges
       # environmentFiles into .env at activation, so hand the file to systemd
       # at start-up instead. hermesAgent itself knows nothing about the vm
@@ -42,11 +43,18 @@
       type = "hidden";
       persist = true;
     };
+    prompts.signal-account-number = {
+      description = "Signal account phone number in E.164 format";
+      type = "hidden";
+      persist = true;
+    };
     script = ''
       {
         echo "MATRIX_PASSWORD=$(cat "$prompts/matrix-password")"
         echo "MATRIX_RECOVERY_KEY=$(cat "$prompts/matrix-recovery-key")"
         echo "OPENROUTER_API_KEY=$(cat "$prompts/openrouter-api-key")"
+        echo "SIGNAL_ACCOUNT=$(cat "$prompts/signal-account-number")"
+        echo "SIGNAL_ALLOWED_USERS=$(cat "$prompts/signal-account-number")"
       } > "$out/.env"
     '';
   };

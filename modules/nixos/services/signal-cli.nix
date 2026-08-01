@@ -2,9 +2,8 @@
   flake.modules.nixos.signalCli =
     { pkgs, ... }:
     let
-      signalAccount = "+4915251840217";
       signalHttpListen = "127.0.0.1:18081";
-      stateDir = "/root/.local/share/signal-cli";
+      stateDir = "/var/lib/signal-cli";
       jvmArgs = [
         "-Xms64m"
         "-Xmx128m"
@@ -13,31 +12,58 @@
       ];
     in
     {
-      systemd.tmpfiles.rules = [ "d ${stateDir} 0700 root root -" ];
+      environment.systemPackages = [ pkgs.small.signal-cli ];
+
+      users.groups.signal-cli = { };
+      users.users.signal-cli = {
+        isSystemUser = true;
+        group = "signal-cli";
+        home = stateDir;
+      };
 
       systemd.services.signal-cli-daemon = {
-        description = "signal-cli daemon (external mode for OpenClaw)";
+        description = "signal-cli HTTP daemon";
         wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" ];
+        wants = [ "network-online.target" ];
+        after = [ "network-online.target" ];
 
-        environment.JAVA_TOOL_OPTIONS = builtins.concatStringsSep " " jvmArgs;
+        environment = {
+          HOME = stateDir;
+          JAVA_TOOL_OPTIONS = builtins.concatStringsSep " " jvmArgs;
+        };
 
         serviceConfig = {
           Type = "simple";
-          ExecStart = "${pkgs.small.signal-cli}/bin/signal-cli -a ${signalAccount} daemon --http ${signalHttpListen} --no-receive-stdout --ignore-stories --send-read-receipts";
+          User = "signal-cli";
+          Group = "signal-cli";
+          ExecStart = "${pkgs.small.signal-cli}/bin/signal-cli --data-dir ${stateDir} --scrub-log daemon --http ${signalHttpListen} --no-receive-stdout --ignore-stories";
           Restart = "always";
           RestartSec = "5s";
           MemoryMax = "512M";
+          StateDirectory = "signal-cli";
+          StateDirectoryMode = "0700";
+          UMask = "0077";
 
-          # hardening
+          CapabilityBoundingSet = "";
+          LockPersonality = true;
           NoNewPrivileges = true;
+          PrivateDevices = true;
           PrivateTmp = true;
-          ProtectSystem = "strict";
-          ProtectHome = false;
-          ReadWritePaths = [ stateDir ];
-          ProtectKernelTunables = true;
-          ProtectKernelModules = true;
+          ProtectClock = true;
           ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectSystem = "strict";
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+            "AF_UNIX"
+          ];
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          SystemCallArchitectures = "native";
         };
       };
     };

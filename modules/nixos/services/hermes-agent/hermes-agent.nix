@@ -79,6 +79,8 @@
         # live on fosskar.de, which delegates its client api to matrix.fosskar.eu
         environment = {
           SEARXNG_URL = "https://search.${flake-self.domains.local}/";
+          SIGNAL_HTTP_URL = "http://127.0.0.1:18081";
+          SIGNAL_ALLOW_ALL_USERS = "false";
 
           MATRIX_HOMESERVER = "https://matrix.fosskar.eu";
           MATRIX_USER_ID = "@hermes:fosskar.de";
