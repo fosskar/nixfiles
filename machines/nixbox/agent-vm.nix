@@ -9,9 +9,15 @@
       # environmentFiles into .env at activation, so hand the file to systemd
       # at start-up instead. hermesAgent itself knows nothing about the vm
       {
-        systemd.services.hermes-agent = {
-          serviceConfig.EnvironmentFile = "/run/agent-secrets/hermes.env";
-          unitConfig.RequiresMountsFor = [ "/run/agent-secrets" ];
+        systemd.services = {
+          hermes-agent = {
+            serviceConfig.EnvironmentFile = "/run/agent-secrets/hermes.env";
+            unitConfig.RequiresMountsFor = [ "/run/agent-secrets" ];
+          };
+          hermes-dashboard = {
+            serviceConfig.EnvironmentFile = "/run/agent-secrets/hermes.env";
+            unitConfig.RequiresMountsFor = [ "/run/agent-secrets" ];
+          };
         };
       }
     ];
@@ -26,8 +32,22 @@
       type = "hidden";
       persist = true;
     };
+    prompts.matrix-recovery-key = {
+      description = "Matrix recovery key for @hermes:fosskar.de";
+      type = "hidden";
+      persist = true;
+    };
+    prompts.openrouter-api-key = {
+      description = "OpenRouter API key";
+      type = "hidden";
+      persist = true;
+    };
     script = ''
-      echo "MATRIX_PASSWORD=$(cat "$prompts/matrix-password")" > "$out/.env"
+      {
+        echo "MATRIX_PASSWORD=$(cat "$prompts/matrix-password")"
+        echo "MATRIX_RECOVERY_KEY=$(cat "$prompts/matrix-recovery-key")"
+        echo "OPENROUTER_API_KEY=$(cat "$prompts/openrouter-api-key")"
+      } > "$out/.env"
     '';
   };
 }

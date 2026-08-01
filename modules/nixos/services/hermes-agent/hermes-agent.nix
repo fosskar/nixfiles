@@ -6,12 +6,15 @@
   flake.modules.nixos.hermesAgent =
     {
       config,
+      agentVm ? null,
       flake-self,
+      lib,
       pkgs,
       ...
     }:
     let
       stateDir = config.services.hermes-agent.stateDir;
+      dashboardHost = "127.0.0.1";
     in
     {
       imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -19,7 +22,6 @@
       services.hermes-agent = {
         enable = true;
         addToSystemPackages = true;
-        documents."SOUL.md" = ./SOUL.md;
 
         extraPackages = [
           pkgs.agent-browser
@@ -30,6 +32,25 @@
 
         settings = {
           timezone = "Europe/Berlin";
+          agent.reasoning_overrides."qwen3.6-35b-a3b-mtp" = "none";
+          display.personality = "none";
+
+          terminal.backend = "local";
+
+          tts.provider = "piper";
+
+          stt = {
+            provider = "local";
+            local.model = "base";
+          };
+
+          providers.local = {
+            name = "Local";
+            api = "https://llama-cpp.${flake-self.domains.local}/v1";
+            api_key = "none";
+            default_model = "qwen3.6-35b-a3b-mtp";
+            context_length = 131072;
+          };
 
           # local sqlite fact store next to the built-in MEMORY.md, which keeps
           # loading; the only provider with no api-key path and no llm calls
@@ -49,11 +70,7 @@
             # the only alias llama-cpp preloads; models-max = 1, so naming any
             # other one costs a model swap on the first request
             default = "qwen3.6-35b-a3b-mtp";
-            provider = "custom";
-            base_url = "https://llama-cpp.${flake-self.domains.local}/v1";
-            api_key = "none";
-            # what llama-cpp serves for this alias; hermes refuses anything
-            # below 64k
+            provider = "local";
             context_length = 131072;
           };
         };
@@ -65,20 +82,66 @@
 
           MATRIX_HOMESERVER = "https://matrix.fosskar.eu";
           MATRIX_USER_ID = "@hermes:fosskar.de";
+          MATRIX_DEVICE_ID = "HERMES_BOT";
           MATRIX_ALLOWED_USERS = "@fosskar:fosskar.de";
           # fail closed rather than silently falling back to plaintext when
           # crypto cannot initialise. MATRIX_ENCRYPTION is the deprecated alias
           MATRIX_E2EE_MODE = "required";
-          # a bootstrapped recovery key is written once and never logged; catch
-          # it on the persistent volume instead of losing it
-          MATRIX_RECOVERY_KEY_OUTPUT_FILE = "${stateDir}/matrix-recovery-key";
         };
       };
+
+      system.activationScripts.hermes-agent-soul = lib.stringAfter [ "hermes-agent-setup" ] ''
+        ${pkgs.coreutils}/bin/install \
+          -o ${config.services.hermes-agent.user} \
+          -g ${config.services.hermes-agent.group} \
+          -m 0660 \
+          ${./SOUL.md} \
+          ${stateDir}/.hermes/SOUL.md
+      '';
 
       # -i, not -H: a login shell resets PATH to hermes' own profile. with the
       # caller's PATH the agent's packages are not found and unreadable /root
       # entries turn "command not found" into EACCES
       environment.shellAliases.hermes = "sudo -iu hermes hermes";
+
+      systemd.services.hermes-dashboard = {
+        description = "Hermes Agent dashboard";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        unitConfig.RequiresMountsFor = [ "/run/agent-secrets" ];
+        environment = {
+          HOME = stateDir;
+          HERMES_HOME = "${stateDir}/.hermes";
+          HERMES_MANAGED = "true";
+        };
+        serviceConfig = {
+          User = "hermes";
+          Group = "hermes";
+          WorkingDirectory = config.services.hermes-agent.workingDirectory;
+          LoadCredential = "dashboard-token:/run/agent-secrets/hermes-dashboard-token";
+          ExecStart = pkgs.writeShellScript "hermes-dashboard-start" ''
+            export HERMES_DASHBOARD_SESSION_TOKEN
+            HERMES_DASHBOARD_SESSION_TOKEN="$(cat "$CREDENTIALS_DIRECTORY/dashboard-token")"
+            exec ${config.services.hermes-agent.package}/bin/hermes dashboard \
+              --no-open --host ${dashboardHost} --port 9119
+          '';
+          Restart = "always";
+          RestartSec = 5;
+          UMask = "0007";
+        };
+      };
+
+      systemd.services.hermes-dashboard-proxy = lib.mkIf (agentVm != null) {
+        description = "Hermes dashboard vsock proxy";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "hermes-dashboard.service" ];
+        serviceConfig = {
+          ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:9119,fork TCP:127.0.0.1:9119";
+          Restart = "always";
+          RestartSec = 5;
+        };
+      };
 
       # what upstream's ubuntu container mode exists for: somewhere the agent
       # can pip/npm install at runtime

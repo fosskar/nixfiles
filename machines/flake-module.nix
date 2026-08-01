@@ -336,6 +336,15 @@
           };
         };
 
+        hermes = {
+          module = {
+            name = "hermes";
+            input = "self";
+          };
+          roles.server.machines.nixbox = { };
+          roles.client.tags = [ "workstation" ];
+        };
+
         # p2p sync of pi agent sessions between the workstations and the
         # nixworker dev host. leaderless: all machines are equal peers. shared
         # age key handled by the service's own clan.vars generator.
