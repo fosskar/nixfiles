@@ -32,7 +32,6 @@
 
         settings = {
           timezone = "Europe/Berlin";
-          agent.reasoning_overrides."qwen3.6-35b-a3b-mtp" = "none";
           display.personality = "none";
 
           terminal.backend = "local";
