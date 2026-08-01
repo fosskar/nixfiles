@@ -121,7 +121,7 @@
           before = [ "microvm@agent-vm.service" ];
           serviceConfig = {
             Type = "oneshot";
-            RemainAfterExit = true;
+            RemainAfterExit = false;
           };
           script = ''
             install -d -m 0700 /var/lib/agent-vm
