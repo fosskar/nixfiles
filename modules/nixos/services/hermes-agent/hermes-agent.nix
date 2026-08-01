@@ -64,7 +64,10 @@
 
           # standalone plugins are opt-in; bundled platform/backend ones
           # (matrix, searxng) auto-load and are not affected by this list
-          plugins.enabled = [ "disk-cleanup" ];
+          plugins.enabled = [
+            "disk-cleanup"
+            "hermes-achievements"
+          ];
 
           model = {
             # the only alias llama-cpp preloads; models-max = 1, so naming any
