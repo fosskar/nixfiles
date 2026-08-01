@@ -29,7 +29,7 @@
               cache-type-k = "q8_0";
               cache-type-v = "q8_0";
             };
-            gemma4-e4b = {
+            "unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" = {
               hf-repo = "unsloth/gemma-4-E4B-it-GGUF";
               hf-file = "gemma-4-E4B-it-Q4_K_M.gguf";
               alias = "gemma4-e4b";
@@ -39,7 +39,7 @@
               top-k = 64;
               reasoning = "off";
             };
-            gemma4-12b = {
+            "unsloth/gemma-4-12b-it-GGUF:Q4_K_M" = {
               hf-repo = "unsloth/gemma-4-12b-it-GGUF";
               hf-file = "gemma-4-12b-it-Q4_K_M.gguf";
               alias = "gemma4-12b";
@@ -48,7 +48,7 @@
               top-k = 64;
               reasoning = "off";
             };
-            qwen3_6-27b = {
+            "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL" = {
               hf-repo = "unsloth/Qwen3.6-27B-GGUF";
               hf-file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
               alias = "qwen3.6-27b";
@@ -59,7 +59,7 @@
               min-p = 0.00;
               reasoning = "off";
             };
-            qwen3_6-27b-mtp = {
+            "unsloth/Qwen3.6-27B-MTP-GGUF:Q4_K_XL" = {
               hf-repo = "unsloth/Qwen3.6-27B-MTP-GGUF";
               hf-file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
               alias = "qwen3.6-27b-mtp";
@@ -76,7 +76,7 @@
               cache-type-k-draft = "q4_0";
               cache-type-v-draft = "q4_0";
             };
-            qwopus3_6-27b-v2-mtp = {
+            "Jackrong/Qwopus3.6-27B-v2-MTP-GGUF:Q4_K_M" = {
               hf-repo = "Jackrong/Qwopus3.6-27B-v2-MTP-GGUF";
               hf-file = "Qwopus3.6-27B-v2-MTP-Q4_K_M.gguf";
               alias = "qwopus3.6-27b-v2-mtp";
@@ -89,7 +89,7 @@
               cache-type-k-draft = "q4_0";
               cache-type-v-draft = "q4_0";
             };
-            qwen3_6-35b-a3b-mtp = {
+            "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:IQ4_XS" = {
               hf-repo = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF";
               hf-file = "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf";
               alias = "qwen3.6-35b-a3b-mtp";
