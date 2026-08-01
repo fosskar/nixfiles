@@ -9,7 +9,6 @@
     self.modules.nixos.systemdBoot
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.nixbot
-    self.modules.nixos.signalCli
     self.modules.nixos.radicle
     self.modules.nixos.tangledKnot
     self.modules.nixos.tangledSpindle
