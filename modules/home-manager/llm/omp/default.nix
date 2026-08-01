@@ -7,7 +7,11 @@ _: {
       ...
     }:
     let
-      extensionFiles = removeAttrs (builtins.readDir ../extensions) [ "pi-to-PI.ts" ];
+      extensionFiles = removeAttrs (builtins.readDir ../extensions) [
+        "pi-to-PI.ts"
+        # pi-only: needs SEDIMENT_BIN substitution and pi's conversation api
+        "memory.ts"
+      ];
       extensionEntries = lib.mapAttrs' (
         name: _: lib.nameValuePair ".omp/agent/extensions/${name}" { source = ../extensions/${name}; }
       ) extensionFiles;
