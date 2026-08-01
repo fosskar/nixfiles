@@ -226,6 +226,8 @@
             WEBFINGER_IOS_OIDC_CLIENT_ID = "OpenCloudIOS";
             WEBFINGER_IOS_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
             WEB_OPTION_ACCOUNT_EDIT_LINK = "https://auth.${flake-self.domains.public}/settings";
+            WEB_OPTION_DISABLE_FEEDBACK_LINK = "true";
+            WEB_OPTION_DISABLE_SPONSOR_LINK = "true";
 
             STORAGE_USERS_POSIX_ROOT = lib.mkDefault "/tank/apps/opencloud/data";
             STORAGE_USERS_POSIX_WATCH_FS = "true";
