@@ -268,7 +268,14 @@
           # caddy fronts everything a local agent consumes and runs on this
           # host, so the one reachable service points at ourselves rather than
           # across the lan
-          interfaces = forEachInstance (_: cfg: { ${cfg.bridge}.allowedTCPPorts = [ 443 ]; });
+          interfaces = forEachInstance (
+            _: cfg: {
+              ${cfg.bridge}.allowedTCPPorts = [
+                80
+                443
+              ];
+            }
+          );
 
           filterForward = true;
           # internet stays open; every private range is dropped, so a
@@ -292,7 +299,7 @@
 
         # the firewall's interface rules only add ports, so globally open ones
         # (sshd at least) stay reachable from the bridges. this chain runs
-        # before the main firewall and seals the vms' host access to 443
+        # before the main firewall and seals the vms' host access to 80/443
         networking.nftables.tables.agent-vm-seal = lib.mkIf (instances != { }) (
           let
             bridgeSet = "{ ${
@@ -307,7 +314,7 @@
               chain input {
                 type filter hook input priority filter - 1; policy accept;
                 iifname ${bridgeSet} ct state established,related accept
-                iifname ${bridgeSet} tcp dport 443 accept
+                iifname ${bridgeSet} tcp dport { 80, 443 } accept
                 iifname ${bridgeSet} counter drop
               }
             '';
