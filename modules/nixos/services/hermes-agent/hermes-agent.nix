@@ -113,7 +113,7 @@
       # -i, not -H: a login shell resets PATH to hermes' own profile. with the
       # caller's PATH the agent's packages are not found and unreadable /root
       # entries turn "command not found" into EACCES
-      environment.shellAliases.hermes = "sudo -iu hermes hermes";
+      environment.shellAliases.hermes = "sudo -iu hermes env NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
 
       systemd.services.hermes-dashboard = {
         description = "Hermes Agent dashboard";
@@ -125,6 +125,8 @@
           HOME = stateDir;
           HERMES_HOME = "${stateDir}/.hermes";
           HERMES_MANAGED = "true";
+          NPM_CONFIG_PREFIX = "${stateDir}/npm";
+          VIRTUAL_ENV = "${stateDir}/venv";
         };
         serviceConfig = {
           User = "hermes";
@@ -215,7 +217,7 @@
         pkgs.python3
       ];
 
-      environment.variables = {
+      systemd.services.hermes-agent.environment = {
         NPM_CONFIG_PREFIX = "${stateDir}/npm";
         VIRTUAL_ENV = "${stateDir}/venv";
       };
