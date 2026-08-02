@@ -44,6 +44,10 @@
             local.model = "base";
           };
 
+          skills.external_dirs = [
+            "${config.services.hermes-agent.package}/share/hermes-agent/optional-skills/devops/watchers"
+          ];
+
           providers.local = {
             name = "Local";
             api = "https://llama-cpp.${flake-self.domains.local}/v1";
