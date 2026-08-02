@@ -59,14 +59,14 @@ _: {
           '';
         };
 
-        nixfiles.agentVm = {
+        nixfiles.agentVms.hermes = {
           secrets."mcp-gateway.env" = vars.files."token.env".path;
           services = [
             (
               { lib, ... }:
               {
                 services.hermes-agent.settings.mcp_servers.nixfiles = {
-                  url = "http://${config.nixfiles.agentVm.hostIp}:${toString listenPort}/mcp/";
+                  url = "http://${config.nixfiles.agentVms.hermes.hostIp}:${toString listenPort}/mcp/";
                   headers.Authorization = "Bearer \${MCP_GATEWAY_TOKEN}";
                   elicitation = {
                     enabled = true;
@@ -118,7 +118,7 @@ _: {
             IPAddressAllow = [
               "127.0.0.0/8"
               "::1/128"
-              "${config.nixfiles.agentVm.ip}/32"
+              "${config.nixfiles.agentVms.hermes.ip}/32"
             ];
             IPAddressDeny = "any";
             LockPersonality = true;
@@ -153,7 +153,7 @@ _: {
           };
         };
 
-        networking.firewall.interfaces.${config.nixfiles.agentVm.bridge}.allowedTCPPorts = [
+        networking.firewall.interfaces.${config.nixfiles.agentVms.hermes.bridge}.allowedTCPPorts = [
           listenPort
         ];
 

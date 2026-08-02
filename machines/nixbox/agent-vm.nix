@@ -2,7 +2,9 @@
 {
   imports = [ self.modules.nixos.agentVm ];
 
-  nixfiles.agentVm = {
+  nixfiles.agentVms.hermes = {
+    id = 0;
+
     allowedTCPDestinations = [
       {
         address = "192.168.10.50";

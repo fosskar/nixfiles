@@ -75,8 +75,8 @@ _: {
             "127.0.0.0/8"
             "::1/128"
             "${flake-self.hosts.nixbox.lan}/32"
-            "${config.nixfiles.agentVm.hostIp}/32"
-            "${config.nixfiles.agentVm.dns}/32"
+            "${config.nixfiles.agentVms.hermes.hostIp}/32"
+            "${config.nixfiles.agentVms.hermes.dns}/32"
           ];
           IPAddressDeny = "any";
           LockPersonality = true;

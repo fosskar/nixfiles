@@ -27,11 +27,11 @@
         '';
       };
 
-      nixfiles.agentVm.secrets."hermes-dashboard-token" =
+      nixfiles.agentVms.hermes.secrets."hermes-dashboard-token" =
         config.clan.core.vars.generators.hermes-dashboard.files.token.path;
 
       # ssh host alias and root identity come from the agentVm module
-      environment.shellAliases.hermes = "ssh -t agent-vm -- sudo -iu hermes hermes";
+      environment.shellAliases.hermes = "ssh -t hermes -- sudo -iu hermes hermes";
 
       systemd.sockets.hermes-dashboard-forward = {
         description = "Hermes dashboard forward";
@@ -45,12 +45,12 @@
 
       systemd.services."hermes-dashboard-forward@" = {
         description = "Hermes dashboard connection forward";
-        after = [ "microvm@agent-vm.service" ];
-        requires = [ "microvm@agent-vm.service" ];
+        after = [ "microvm@hermes.service" ];
+        requires = [ "microvm@hermes.service" ];
         serviceConfig = {
           User = "microvm";
           Group = "kvm";
-          ExecStart = "${hybridVsockConnect}/bin/hermes-hybrid-vsock-connect /var/lib/microvms/agent-vm/notify.vsock 9119";
+          ExecStart = "${hybridVsockConnect}/bin/hermes-hybrid-vsock-connect /var/lib/microvms/hermes/notify.vsock 9119";
           StandardInput = "socket";
           StandardError = "journal";
           CapabilityBoundingSet = "";
