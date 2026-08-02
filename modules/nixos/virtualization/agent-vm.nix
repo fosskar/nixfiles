@@ -145,7 +145,7 @@
             install -d -m 0755 /var/lib/agent-vm/secrets
             ${lib.concatStringsSep "\n" (
               lib.mapAttrsToList (
-                name: src: "install -m 0444 ${src} /var/lib/agent-vm/secrets/${name}"
+                name: src: "install -m 0400 ${src} /var/lib/agent-vm/secrets/${name}"
               ) cfg.secrets
             )}
           '';
@@ -214,15 +214,31 @@
           # internet stays open; every private range is dropped, so a
           # compromised agent cannot walk the lan or the netbird mesh
           extraForwardRules = ''
+            iifname "${cfg.bridge}" meta nfproto ipv6 drop
             iifname "${cfg.bridge}" ip daddr ${cfg.dns} udp dport 53 accept
             iifname "${cfg.bridge}" ip daddr ${cfg.dns} tcp dport 53 accept
             ${lib.concatMapStringsSep "\n" (
               destination:
               ''iifname "${cfg.bridge}" ip daddr ${destination.address} tcp dport ${toString destination.port} accept''
             ) cfg.allowedTCPDestinations}
-            iifname "${cfg.bridge}" ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10 } drop
+            iifname "${cfg.bridge}" ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10, 169.254.0.0/16 } drop
             iifname "${cfg.bridge}" accept
             oifname "${cfg.bridge}" ct state established,related accept
+          '';
+        };
+
+        # the firewall's interface rules only add ports, so globally open ones
+        # (sshd at least) stay reachable from the bridge. this chain runs
+        # before the main firewall and seals the vm's host access to 443
+        networking.nftables.tables.agent-vm-seal = {
+          family = "inet";
+          content = ''
+            chain input {
+              type filter hook input priority filter - 1; policy accept;
+              iifname "${cfg.bridge}" ct state established,related accept
+              iifname "${cfg.bridge}" tcp dport 443 accept
+              iifname "${cfg.bridge}" counter drop
+            }
           '';
         };
       };
