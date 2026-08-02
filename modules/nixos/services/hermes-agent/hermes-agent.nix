@@ -99,11 +99,13 @@
         };
       };
 
+      # reinstalled on every activation: the soul is declarative, agent edits
+      # do not survive
       system.activationScripts.hermes-agent-soul = lib.stringAfter [ "hermes-agent-setup" ] ''
         ${pkgs.coreutils}/bin/install \
           -o ${config.services.hermes-agent.user} \
           -g ${config.services.hermes-agent.group} \
-          -m 0660 \
+          -m 0444 \
           ${./SOUL.md} \
           ${stateDir}/.hermes/SOUL.md
       '';
