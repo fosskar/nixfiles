@@ -11,7 +11,7 @@
       # srvos sets: trusted-users, optimise.automatic, nix-daemon OOMScoreAdjust
 
       nix = {
-        package = lib.mkDefault pkgs.nixVersions.latest;
+        package = lib.mkDefault pkgs.nixVersions.stable;
 
         # de-prioritise builds so they don't starve running services
         daemonCPUSchedPolicy = lib.mkDefault "batch";
