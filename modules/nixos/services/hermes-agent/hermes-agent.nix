@@ -151,6 +151,32 @@
           ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:9119,fork TCP:127.0.0.1:9119";
           Restart = "always";
           RestartSec = 5;
+          DynamicUser = true;
+          CapabilityBoundingSet = "";
+          IPAddressAllow = "localhost";
+          IPAddressDeny = "any";
+          LockPersonality = true;
+          MemoryDenyWriteExecute = true;
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          PrivateTmp = true;
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectSystem = "strict";
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_VSOCK"
+          ];
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          SystemCallArchitectures = "native";
+          UMask = "0077";
         };
       };
 
