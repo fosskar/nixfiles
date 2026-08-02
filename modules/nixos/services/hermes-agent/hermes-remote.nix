@@ -30,6 +30,9 @@
       nixfiles.agentVm.secrets."hermes-dashboard-token" =
         config.clan.core.vars.generators.hermes-dashboard.files.token.path;
 
+      # ssh host alias and root identity come from the agentVm module
+      environment.shellAliases.hermes = "ssh -t agent-vm -- sudo -iu hermes hermes";
+
       systemd.sockets.hermes-dashboard-forward = {
         description = "Hermes dashboard forward";
         wantedBy = [ "sockets.target" ];
