@@ -1,6 +1,9 @@
 { config, self, ... }:
 {
-  imports = [ self.modules.nixos.agentVm ];
+  imports = [
+    self.modules.nixos.agentVm
+    self.modules.nixos.hermesAgentMcp
+  ];
 
   nixfiles.agentVms.hermes = {
     id = 0;

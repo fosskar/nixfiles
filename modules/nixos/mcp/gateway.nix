@@ -9,7 +9,7 @@ _: {
     }:
     let
       cfg = config.services.mcpGateway;
-      listenPort = 8764;
+      listenPort = cfg.port;
       localHost = "mcp.${flake-self.domains.local}";
       vars = config.clan.core.vars.generators.mcp-gateway;
       gatewayConfig = pkgs.writeText "mcp-gateway.json" (
@@ -23,6 +23,12 @@ _: {
       );
     in
     {
+      options.services.mcpGateway.port = lib.mkOption {
+        type = lib.types.port;
+        default = 8764;
+        description = "gateway listen port; consumers use it to reach the gateway and open firewall paths.";
+      };
+
       options.services.mcpGateway.servers = lib.mkOption {
         type = lib.types.attrsOf (
           lib.types.submodule {
@@ -59,32 +65,6 @@ _: {
           '';
         };
 
-        nixfiles.agentVms.hermes = {
-          secrets."mcp-gateway.env" = vars.files."token.env".path;
-          services = [
-            (
-              { lib, ... }:
-              {
-                services.hermes-agent.settings.mcp_servers.nixfiles = {
-                  url = "http://${config.nixfiles.agentVms.hermes.hostIp}:${toString listenPort}/mcp/";
-                  headers.Authorization = "Bearer \${MCP_GATEWAY_TOKEN}";
-                  elicitation = {
-                    enabled = true;
-                    timeout = 300;
-                  };
-                };
-
-                systemd.services.hermes-agent.serviceConfig.EnvironmentFile = lib.mkAfter [
-                  "/run/agent-secrets/mcp-gateway.env"
-                ];
-                systemd.services.hermes-dashboard.serviceConfig.EnvironmentFile = lib.mkAfter [
-                  "/run/agent-secrets/mcp-gateway.env"
-                ];
-              }
-            )
-          ];
-        };
-
         systemd.services.mcp-gateway = {
           description = "MCP gateway for host integrations";
           wantedBy = [ "multi-user.target" ];
@@ -118,7 +98,6 @@ _: {
             IPAddressAllow = [
               "127.0.0.0/8"
               "::1/128"
-              "${config.nixfiles.agentVms.hermes.ip}/32"
             ];
             IPAddressDeny = "any";
             LockPersonality = true;
@@ -152,11 +131,6 @@ _: {
             UMask = "0077";
           };
         };
-
-        networking.firewall.interfaces.${config.nixfiles.agentVms.hermes.bridge}.allowedTCPPorts = [
-          listenPort
-        ];
-
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
           reverse_proxy 127.0.0.1:${toString listenPort}
         '';
