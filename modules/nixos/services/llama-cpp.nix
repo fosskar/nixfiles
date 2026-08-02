@@ -29,25 +29,6 @@
               cache-type-k = "q8_0";
               cache-type-v = "q8_0";
             };
-            "unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" = {
-              hf-repo = "unsloth/gemma-4-E4B-it-GGUF";
-              hf-file = "gemma-4-E4B-it-Q4_K_M.gguf";
-              alias = "gemma4-e4b";
-              ctx-size = 131072;
-              temp = 1.0;
-              top-p = 0.95;
-              top-k = 64;
-              reasoning = "off";
-            };
-            "unsloth/gemma-4-12b-it-GGUF:Q4_K_M" = {
-              hf-repo = "unsloth/gemma-4-12b-it-GGUF";
-              hf-file = "gemma-4-12b-it-Q4_K_M.gguf";
-              alias = "gemma4-12b";
-              temp = 1.0;
-              top-p = 0.95;
-              top-k = 64;
-              reasoning = "off";
-            };
             "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL" = {
               hf-repo = "unsloth/Qwen3.6-27B-GGUF";
               hf-file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
@@ -73,19 +54,6 @@
               reasoning = "off";
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
-              cache-type-k-draft = "q4_0";
-              cache-type-v-draft = "q4_0";
-            };
-            "Jackrong/Qwopus3.6-27B-v2-MTP-GGUF:Q4_K_M" = {
-              hf-repo = "Jackrong/Qwopus3.6-27B-v2-MTP-GGUF";
-              hf-file = "Qwopus3.6-27B-v2-MTP-Q4_K_M.gguf";
-              alias = "qwopus3.6-27b-v2-mtp";
-              parallel = 1;
-              temp = 1.0;
-              top-p = 0.95;
-              top-k = 20;
-              reasoning = "on";
-              spec-type = "draft-mtp";
               cache-type-k-draft = "q4_0";
               cache-type-v-draft = "q4_0";
             };
