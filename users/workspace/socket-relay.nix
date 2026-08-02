@@ -28,7 +28,13 @@ let
     '';
 in
 {
-  systemd.user.tmpfiles.rules = [ "d %t/fwd 0700 - - -" ];
+  # gnupg requires its socketdir to be mode 0700; when the gpg-extra relay
+  # socket creates %t/gnupg first, systemd's default 0755 makes gpg silently
+  # fall back to ~/.gnupg/S.gpg-agent and autostart an empty local agent
+  systemd.user.tmpfiles.rules = [
+    "d %t/fwd 0700 - - -"
+    "d %t/gnupg 0700 - - -"
+  ];
 
   systemd.user.sockets = lib.mapAttrs' (
     name: path:
