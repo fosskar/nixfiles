@@ -165,13 +165,23 @@
         description = "writable pip venv for the agent";
         wantedBy = [ "hermes-agent.service" ];
         before = [ "hermes-agent.service" ];
-        unitConfig.ConditionPathExists = "!${stateDir}/venv/bin/python";
         serviceConfig = {
           Type = "oneshot";
           User = "hermes";
           RemainAfterExit = true;
         };
-        script = "${pkgs.python3}/bin/python3 -m venv ${stateDir}/venv";
+        # the venv symlinks its interpreter from the store; after a python
+        # bump the old path is gone and site-packages target the wrong abi,
+        # so rebuild instead of repairing in place
+        script = ''
+          want="$(readlink -f ${pkgs.python3}/bin/python3)"
+          have="$(readlink -f ${stateDir}/venv/bin/python 2>/dev/null || true)"
+          if [ "$have" != "$want" ]; then
+            rm -rf ${stateDir}/venv
+            install -d -m 0750 ${stateDir}/venv
+            ${pkgs.python3}/bin/python3 -m venv ${stateDir}/venv
+          fi
+        '';
       };
 
       users.users.hermes.packages = [
