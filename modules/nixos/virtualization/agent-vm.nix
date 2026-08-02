@@ -47,13 +47,13 @@
         };
         mem = lib.mkOption {
           type = lib.types.int;
-          default = 2048;
-          description = "memory handed to the vm, ballooned back when idle.";
+          default = 4096;
+          description = "guest memory ceiling; free page reporting returns unused memory to the host.";
         };
         memoryMax = lib.mkOption {
           type = lib.types.str;
-          default = "4G";
-          description = "hard cap on the whole vm, enforced by the host unit.";
+          default = "4608M";
+          description = "hard cap on the whole vm unit, enforced by the host; guest ceiling plus hypervisor overhead.";
         };
         cpuQuota = lib.mkOption {
           type = lib.types.str;
