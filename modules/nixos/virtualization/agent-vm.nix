@@ -334,13 +334,11 @@
 
       users.users.root.openssh.authorizedKeys.keys = [ agentVm.adminKey ];
 
-      # an agent that wants to install things at runtime should find the usual
-      # tools already here
+      # fetch tools for whatever runs inside; language runtimes ship with the
+      # agent that needs them
       environment.systemPackages = [
         pkgs.curl
         pkgs.git
-        pkgs.nodejs
-        pkgs.python3
       ];
 
       system.stateVersion = lib.versions.majorMinor lib.version;
