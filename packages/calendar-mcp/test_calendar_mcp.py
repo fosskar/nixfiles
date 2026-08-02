@@ -68,7 +68,7 @@ work = Calendar(
     [
         Event(
             "work-event",
-            "Kita Besichtigung",
+            "team meeting",
             datetime(2026, 8, 5, 12, 30, tzinfo=timezone.utc),
             datetime(2026, 8, 5, 13, 30, tzinfo=timezone.utc),
         )
@@ -79,9 +79,10 @@ family = Calendar(
     [
         Event(
             "family-event",
-            "baby schwimmen",
-            datetime(2026, 8, 6, 9, 45),
-            datetime(2026, 8, 6, 10, 15),
+            "dentist appointment",
+            # naive on purpose: exercises floating-time localization
+            datetime(2026, 8, 6, 9, 45),  # noqa: DTZ001
+            datetime(2026, 8, 6, 10, 15),  # noqa: DTZ001
         )
     ],
 )
@@ -105,7 +106,7 @@ assert [event["uid"] for event in selected] == ["family-event"]
 assert work.searches == 1
 assert family.searches == 2
 
-matches = asyncio.run(calendar_mcp.search_events("kita", "2026-08-01", "2026-08-08"))
+matches = asyncio.run(calendar_mcp.search_events("team", "2026-08-01", "2026-08-08"))
 assert [event["uid"] for event in matches] == ["work-event"]
 
 print("calendar aggregation contract passed")
