@@ -6,6 +6,7 @@ _: {
       inputs,
       pkgs,
       lib,
+      self,
       ...
     }:
     let
@@ -16,9 +17,7 @@ _: {
         ++ lib.optionals (config.programs.codex.enable or false) [ ".codex/skills" ]
         ++ lib.optionals (config.programs.opencode.enable or false) [ ".config/opencode/skills" ];
 
-      ownSkillNames = builtins.attrNames (
-        lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.)
-      );
+      ownSkills = self.llm.skills;
       # skills shipped by upstream flake inputs; skill name -> SKILL.md source
       externalSkills = {
         herdr = "${inputs.herdr}/SKILL.md";
@@ -27,10 +26,10 @@ _: {
       skillEntries = lib.listToAttrs (
         lib.concatMap (
           dir:
-          map (name: {
+          lib.mapAttrsToList (name: source: {
             name = "${dir}/${name}";
-            value.source = ./${name};
-          }) ownSkillNames
+            value.source = source;
+          }) ownSkills
           ++ lib.mapAttrsToList (name: source: {
             name = "${dir}/${name}/SKILL.md";
             value.source = source;

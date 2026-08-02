@@ -84,6 +84,6 @@ Use these to diagnose issues the user may be having with the skill.
 
 ## Where skills live in this setup
 
-- **Private/personal skills** → `nixfiles`, `modules/home-manager/llm/skills/<name>/` — a directory per skill containing `SKILL.md` (plus optional sibling reference files). Every directory there is auto-installed into all agent skill dirs by home-manager; deploy = rebuild/switch. Frontmatter `name` must match the directory name.
+- **Private/personal skills** → `nixfiles`, `modules/llm/skills/<name>/` — a directory per skill containing `SKILL.md` (plus optional sibling reference files). Every directory there is auto-installed into all agent skill dirs by home-manager; deploy = rebuild/switch. Frontmatter `name` must match the directory name.
 - **Shareable pi skills** → the `pi-pack` repo's skill catalog, consumed as a flake input.
 - New skill file? Track it (`jj file track <path>`) and leave committing to the user.

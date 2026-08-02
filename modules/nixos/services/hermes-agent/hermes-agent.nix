@@ -46,7 +46,7 @@
 
           skills.external_dirs = [
             "${config.services.hermes-agent.package}/share/hermes-agent/optional-skills/devops/watchers"
-            "${../../../home-manager/llm/skills/kiwix-search}"
+            "${flake-self.llm.skills.kiwix-search}"
           ];
 
           providers.local = {

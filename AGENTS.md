@@ -50,7 +50,7 @@ Do not use clan/deploy/network commands for discovery. Use only when task explic
 - `machines/flake-module.nix`: clan inventory and role composition edge
 - `clan-services/<svc>/default.nix`: clan.service modules (plain dir, referenced by `modules/flake-parts/clan.nix`, not auto-imported)
 - `users/<user>/`: home-manager user composition (`simon`, `workspace`)
-- `modules/home-manager/llm/`: agent tooling; `skills/<name>/` (dir per skill, `SKILL.md` + optional siblings) and `extensions/*.ts` auto-installed into all agent dirs by home-manager; deploy = rebuild/switch
+- `modules/llm/`: everything llm-related; agent tooling (`pi/`, `omp/`, `codex/`, ...) exported as `flake.modules.homeManager.llm`, `skills/<name>/` (dir per skill, `SKILL.md` + optional siblings) and `extensions/*.ts` auto-installed into all agent dirs by home-manager (deploy = rebuild/switch); skills registry `flake.llm.skills.<name>` for nixos consumers (hermes)
 - `openwrt/`: declarative router/ap config; uci via `openwrt/nix/uci.nix`, raw config under `openwrt/devices/<device>/files/`; lan router `192.168.10.1` runs unbound, split-horizon for `nx3.eu`, and adguardhome; config lives here, not on device
 - supporting dirs: `docs/` (decisions, netbird-exposure, topology), `images/` (live-iso, vm-base), `overlays/`, `lib/` (`scanPaths`), `sops/`, `templates/` (project scaffolds), `.archive/` (deprecated services)
 

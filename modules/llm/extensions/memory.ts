@@ -14,7 +14,7 @@
  * stored whole as the narrative layer.
  *
  * Build-time: `@SEDIMENT_BIN@` is substituted by home-manager
- * (pkgs.replaceVars in modules/home-manager/llm/pi/default.nix).
+ * (pkgs.replaceVars in modules/llm/pi/default.nix).
  */
 
 import {
