@@ -113,6 +113,7 @@
 
         # private ranges dropped so playground workloads cannot walk the lan
         networking.firewall.extraForwardRules = ''
+          iifname "${bridge}" meta nfproto ipv6 drop
           oifname "${bridge}" tcp dport { 6443, 50000 } accept
           iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} udp dport 53 accept
           iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} tcp dport 53 accept
