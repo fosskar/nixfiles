@@ -183,7 +183,10 @@
 
         export HERMES_DESKTOP_REMOTE_URL="http://127.0.0.1:${toString cfg.localPort}"
         export HERMES_DESKTOP_REMOTE_TOKEN="$token"
-        exec ${desktopPackage}/bin/hermes-desktop "$@"
+        rc=0
+        ${desktopPackage}/bin/hermes-desktop "$@" || rc=$?
+        stop_tunnel
+        exit "$rc"
       '';
       desktopItem = pkgs.makeDesktopItem {
         name = "hermes-desktop-remote";
