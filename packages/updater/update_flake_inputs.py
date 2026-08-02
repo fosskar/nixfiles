@@ -13,10 +13,10 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import pipeline  # noqa: E402
-from forge import ForgeError  # noqa: E402
+import pipeline
+from forge import ForgeError
 
-from packages import run  # noqa: E402
+from packages import run
 
 _IGNORED_DIRS = {".git", "node_modules", "__pycache__"}
 

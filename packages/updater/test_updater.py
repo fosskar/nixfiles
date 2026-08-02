@@ -11,14 +11,15 @@ import unittest
 import urllib.error
 from pathlib import Path
 from types import SimpleNamespace
+from typing import ClassVar
 from unittest import mock
 
 import changelog
 import pipeline
-import update_flake_inputs  # noqa: E402
+import update_flake_inputs
 from forge import Codeberg, ForgeError, Github
 from update_flake_inputs import FlakeInput
-from update_packages import commit_message, group_packages  # noqa: E402
+from update_packages import commit_message, group_packages
 
 from packages import Package, classify, nix_update_cmd, parse_update_script
 
@@ -282,9 +283,9 @@ class TestForgeRetryStatus(unittest.TestCase):
             mock.patch("forge.time.sleep"),
             mock.patch("forge.urllib.request.urlopen", side_effect=exc),
             contextlib.redirect_stdout(io.StringIO()),
+            self.assertRaises(ForgeError) as ctx,
         ):
-            with self.assertRaises(ForgeError) as ctx:
-                cb._request("GET", "https://h/x")
+            cb._request("GET", "https://h/x")
         return ctx.exception
 
     def test_exhausted_429_carries_status(self):
@@ -425,7 +426,9 @@ class TestGithubRequestShape(unittest.TestCase):
 class TestGithubMergeIfGreen(unittest.TestCase):
     """405/409 are expected races and stay silent; other failures print."""
 
-    _GREEN = {"check_runs": [{"status": "completed", "conclusion": "success"}]}
+    _GREEN: ClassVar = {
+        "check_runs": [{"status": "completed", "conclusion": "success"}]
+    }
 
     def _merge(self, exc: Exception | None) -> str:
         gh = Github("github.com", "o", "r", "tok")

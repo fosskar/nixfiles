@@ -51,7 +51,7 @@ def default_branch(repo: Path) -> str:
 
 
 def connect(repo: Path, *, dry_run: bool) -> tuple[Forge | None, list[dict]]:
-    global BASE  # noqa: PLW0603 - resolved once per run, read by entrypoints
+    global BASE
     # Callers hard-reset the tree per unit; refuse to eat local work.
     if capture(repo=repo, cmd=["git", "status", "--porcelain"]).stdout.strip():
         sys.exit("working tree is dirty; commit or stash first")

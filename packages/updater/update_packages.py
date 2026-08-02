@@ -11,11 +11,11 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import changelog  # noqa: E402
-import pipeline  # noqa: E402
-from forge import ForgeError  # noqa: E402
+import changelog
+import pipeline
+from forge import ForgeError
 
-from packages import Package, discover, run, update  # noqa: E402
+from packages import Package, discover, run, update
 
 
 def group_packages(packages: list[Package]) -> dict[str, list[Package]]:
@@ -38,7 +38,7 @@ def commit_message(group: str, messages: list[str]) -> str:
     return f"update {group}\n\n" + "\n\n".join(messages)
 
 
-def process_group(  # noqa: PLR0913
+def process_group(
     repo: Path,
     group: str,
     pkgs: list[Package],
