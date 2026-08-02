@@ -297,9 +297,10 @@
           );
         };
 
-        # the firewall's interface rules only add ports, so globally open ones
-        # (sshd at least) stay reachable from the bridges. this chain runs
-        # before the main firewall and seals the vms' host access to 80/443
+        # the main firewall's interface rules only add ports, so globally
+        # open ones (sshd at least) stay reachable from the bridges. this
+        # chain runs before the main firewall and seals the vms' host access
+        # to each bridge's declared allowedTCPPorts
         networking.nftables.tables.agent-vm-seal = lib.mkIf (instances != { }) (
           let
             bridgeSet = "{ ${
@@ -307,6 +308,7 @@
                 lib.mapAttrsToList (_: cfg: cfg.bridge) instances
               )
             } }";
+            portsOf = cfg: lib.unique config.networking.firewall.interfaces.${cfg.bridge}.allowedTCPPorts;
           in
           {
             family = "inet";
@@ -314,7 +316,11 @@
               chain input {
                 type filter hook input priority filter - 1; policy accept;
                 iifname ${bridgeSet} ct state established,related accept
-                iifname ${bridgeSet} tcp dport { 80, 443 } accept
+                ${lib.concatStrings (
+                  lib.mapAttrsToList (_: cfg: ''
+                    iifname "${cfg.bridge}" tcp dport { ${lib.concatMapStringsSep ", " toString (portsOf cfg)} } accept
+                  '') instances
+                )}
                 iifname ${bridgeSet} counter drop
               }
             '';
