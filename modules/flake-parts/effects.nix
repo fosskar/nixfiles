@@ -31,6 +31,9 @@ let
         git config --global user.name 'fosskar[bot]'
         git config --global user.email '300917551+fosskar[bot]@users.noreply.github.com'
 
+        git config remote.origin.promisor true
+        git config remote.origin.partialclonefilter blob:none
+
         ${command}
       '';
     };
