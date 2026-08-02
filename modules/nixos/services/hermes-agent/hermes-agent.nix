@@ -25,6 +25,7 @@
 
         extraPackages = [
           pkgs.agent-browser
+          pkgs.local.blogwatcher-cli
           pkgs.chromium
           pkgs.curl
           pkgs.himalaya
