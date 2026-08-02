@@ -39,6 +39,7 @@
     self.modules.nixos.wiki
     self.modules.nixos.vdirsyncer
     self.modules.nixos.talosVm
+    self.modules.nixos.kiwix
   ]
   ++ (nflib.scanPaths ./. { exclude = [ "beszel-settings.nix" ]; });
 
