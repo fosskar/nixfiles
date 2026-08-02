@@ -3,8 +3,9 @@ from __future__ import annotations
 import contextlib
 import json
 import os
+from collections.abc import AsyncIterator
 from pathlib import Path
-from typing import Any, AsyncIterator
+from typing import Any
 
 import uvicorn
 from mcp import ClientSession, types
@@ -65,17 +66,19 @@ async def _session(
 ) -> AsyncIterator[ClientSession]:
     credentials_dir = Path(os.environ["CREDENTIALS_DIRECTORY"])
     token = _secret(credentials_dir / server["token_credential"])
-    async with create_mcp_http_client(
-        headers={"Authorization": f"Bearer {token}"}
-    ) as http_client:
-        async with streamable_http_client(server["url"], http_client=http_client) as (
+    async with (
+        create_mcp_http_client(
+            headers={"Authorization": f"Bearer {token}"}
+        ) as http_client,
+        streamable_http_client(server["url"], http_client=http_client) as (
             read,
             write,
             _,
-        ):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
-                yield session
+        ),
+        ClientSession(read, write) as session,
+    ):
+        await session.initialize()
+        yield session
 
 
 def create_server(servers: dict[str, dict[str, Any]]) -> Server:
