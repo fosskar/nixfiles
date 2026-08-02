@@ -25,6 +25,7 @@
 
         extraPackages = [
           pkgs.agent-browser
+          pkgs.local.blogwatcher-cli
           pkgs.chromium
           pkgs.curl
           pkgs.himalaya
@@ -42,6 +43,10 @@
             provider = "local";
             local.model = "base";
           };
+
+          skills.external_dirs = [
+            "${config.services.hermes-agent.package}/share/hermes-agent/optional-skills/devops/watchers"
+          ];
 
           providers.local = {
             name = "Local";

@@ -79,6 +79,23 @@
           description = "size of the volume backing /var/lib inside the vm.";
         };
 
+        allowedTCPDestinations = lib.mkOption {
+          type = lib.types.listOf (
+            lib.types.submodule {
+              options = {
+                address = lib.mkOption {
+                  type = lib.types.str;
+                };
+                port = lib.mkOption {
+                  type = lib.types.port;
+                };
+              };
+            }
+          );
+          default = [ ];
+          description = "private IPv4 TCP destinations reachable from the vm.";
+        };
+
         bridge = lib.mkOption {
           type = lib.types.str;
           default = "agentbr0";
@@ -199,6 +216,10 @@
           extraForwardRules = ''
             iifname "${cfg.bridge}" ip daddr ${cfg.dns} udp dport 53 accept
             iifname "${cfg.bridge}" ip daddr ${cfg.dns} tcp dport 53 accept
+            ${lib.concatMapStringsSep "\n" (
+              destination:
+              ''iifname "${cfg.bridge}" ip daddr ${destination.address} tcp dport ${toString destination.port} accept''
+            ) cfg.allowedTCPDestinations}
             iifname "${cfg.bridge}" ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10 } drop
             iifname "${cfg.bridge}" accept
             oifname "${cfg.bridge}" ct state established,related accept
