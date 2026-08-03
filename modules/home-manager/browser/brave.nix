@@ -2,6 +2,6 @@ _: {
   flake.modules.homeManager.brave =
     { pkgs, ... }:
     {
-      home.packages = [ pkgs.local.brave-origin ];
+      home.packages = [ pkgs.brave-origin ];
     };
 }

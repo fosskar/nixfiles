@@ -55,7 +55,7 @@ def classify(update_script: list[str] | None, has_update_sh: bool) -> str | None
 
 def _nix_update_args(repo: Path, name: str) -> list[str] | None:
     # Probe the flake attr instead of grepping package.nix: updateScript
-    # may be defined in another file (brave-origin's make-brave.nix).
+    # may be defined in another file the package imports.
     result = capture(
         repo=repo,
         cmd=["nix", "eval", f".#{name}.updateScript", "--json"],
