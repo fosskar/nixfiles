@@ -239,6 +239,12 @@
           description = "Hermes dashboard SSH tunnel";
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
+          # a tunnel that outlives the launcher (or a killed launcher) must not
+          # retry ssh forever; reset-failed in the launcher re-arms the limit
+          unitConfig = {
+            StartLimitIntervalSec = 300;
+            StartLimitBurst = 10;
+          };
           serviceConfig = {
             ExecStart = lib.concatStringsSep " " [
               "${pkgs.openssh}/bin/ssh"
