@@ -34,13 +34,13 @@ notable migrations and tradeoffs get a decision record in [docs/decisions](docs/
 
 ## machines
 
-| machine       | type        | description                | specs                                                                                          |
-| ------------- | ----------- | -------------------------- | ---------------------------------------------------------------------------------------------- |
-| simon-desktop | desktop     | daily driver workstation   | dyi: ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                                     |
-| lpt-titan     | laptop      | remote work                | framework 13: ryzen ai 5 340, radeon 840m, 32gb                                                |
-| nixbox        | home server | self-hosted services       | dyi: ryzen 7 5700x, 64gb, nvidia rtx pro 4000 backwell sff, 4x6tb + 2x960gb ssd, 2x16gb optane |
-| nixworker     | home server | ci, remote builder, cache  | minisforum ms-a2: ryzen 9 9955hx, 96gb ddr5                                                    |
-| gateway       | vps         | gw/reverse proxy (netbird) | hetzner cx23: 2vcpu, 4gb ram, 40gb ssd                                                         |
+| machine   | type        | description                | specs                                                                                          |
+| --------- | ----------- | -------------------------- | ---------------------------------------------------------------------------------------------- |
+| desktop   | desktop     | daily driver workstation   | dyi: ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                                     |
+| lpt-titan | laptop      | remote work                | framework 13: ryzen ai 5 340, radeon 840m, 32gb                                                |
+| nixbox    | home server | self-hosted services       | dyi: ryzen 7 5700x, 64gb, nvidia rtx pro 4000 backwell sff, 4x6tb + 2x960gb ssd, 2x16gb optane |
+| nixworker | home server | ci, remote builder, cache  | minisforum ms-a2: ryzen 9 9955hx, 96gb ddr5                                                    |
+| gateway   | vps         | gw/reverse proxy (netbird) | hetzner cx23: 2vcpu, 4gb ram, 40gb ssd                                                         |
 
 ## documentation
 

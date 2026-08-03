@@ -34,20 +34,20 @@ source of truth: `flake.hosts` in `modules/flake-parts/hosts.nix` — machine
 `networking.nix`, the `internet`/`wireguard` inventory instances, and feature
 modules all read from it. this table is a derived copy; update `hosts.nix` first.
 
-| machine       | IP               | method                               |
-| ------------- | ---------------- | ------------------------------------ |
-| simon-desktop | `192.168.10.100` | NixOS static, no DHCP                |
-| lpt-titan     | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
-| nixbox        | `192.168.20.200` | NixOS static, no DHCP                |
-| nixworker     | `192.168.20.210` | NixOS static, no DHCP                |
-| gateway       | `138.201.155.21` | hetzner                              |
+| machine   | IP               | method                               |
+| --------- | ---------------- | ------------------------------------ |
+| desktop   | `192.168.10.100` | NixOS static, no DHCP                |
+| lpt-titan | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
+| nixbox    | `192.168.20.200` | NixOS static, no DHCP                |
+| nixworker | `192.168.20.210` | NixOS static, no DHCP                |
+| gateway   | `138.201.155.21` | hetzner                              |
 
 servers define their own static IP in `networking.nix` with `useDHCP = false` per interface.
 the laptop keeps DHCP enabled so it works on other networks.
 
 ---
 
-## simon-desktop
+## desktop
 
 daily driver workstation (ryzen 7 7800x3d, rx 7800xt, 32gb ddr5)
 

@@ -187,14 +187,14 @@ iface(nixworker, "enp5s0f0np0", "38:05:25:30:7C:15", "10gbase-t")
 iface(nixworker, "enp5s0f1np1", "38:05:25:30:7C:16", "10gbase-t")
 iface(nixworker, "wlp6s0", "0C:91:60:9A:87:39", "ieee802.11ax")
 
-simon_desktop = device("simon-desktop", "workstation", "generic-workstation")
+desktop_dev = device("desktop", "workstation", "generic-workstation")
 ip(
     "192.168.10.100/24",
-    iface(simon_desktop, "enp14s0", "D8:43:AE:3E:5F:73", "1000base-t"),
-    "simon-desktop.lan",
+    iface(desktop_dev, "enp14s0", "D8:43:AE:3E:5F:73", "1000base-t"),
+    "desktop.lan",
 )
-iface(simon_desktop, "wlan0", "4C:82:A9:1C:BB:53", "ieee802.11ax")
-Interface.objects.filter(device=simon_desktop, name="lan").delete()
+iface(desktop_dev, "wlan0", "4C:82:A9:1C:BB:53", "ieee802.11ax")
+Interface.objects.filter(device=desktop_dev, name="lan").delete()
 
 lpt = device("lpt-titan", "laptop", "framework-13")
 ip("192.168.10.150/24", iface(lpt, "wlan0", type="ieee802.11ax"), "lpt-titan.lan")

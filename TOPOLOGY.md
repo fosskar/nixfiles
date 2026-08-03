@@ -23,13 +23,13 @@ Network/service topology of the clan, rendered by
 
 ## Hosts
 
-| Host          | Interface | Address        | Network | Icon         | Info           |
-| ------------- | --------- | -------------- | ------- | ------------ | -------------- |
-| gateway       | wan       | 138.201.155.21 | wan     | cloud-server | hetzner vps    |
-| nixbox        | bond0     | 192.168.20.200 | srv     | nixos        | home server    |
-| nixworker     | bond0     | 192.168.20.210 | srv     | nixos        | remote builder |
-| simon-desktop | lan       | 192.168.10.100 | lan     | desktop      | workstation    |
-| lpt-titan     | wlan      | 192.168.10.150 | lan     | laptop       | laptop         |
+| Host      | Interface | Address        | Network | Icon         | Info           |
+| --------- | --------- | -------------- | ------- | ------------ | -------------- |
+| gateway   | wan       | 138.201.155.21 | wan     | cloud-server | hetzner vps    |
+| nixbox    | bond0     | 192.168.20.200 | srv     | nixos        | home server    |
+| nixworker | bond0     | 192.168.20.210 | srv     | nixos        | remote builder |
+| desktop   | lan       | 192.168.10.100 | lan     | desktop      | workstation    |
+| lpt-titan | wlan      | 192.168.10.150 | lan     | laptop       | laptop         |
 
 All five hosts also carry the three p2p overlay interfaces (`wt0`/`wireguard`/`ygg`).
 

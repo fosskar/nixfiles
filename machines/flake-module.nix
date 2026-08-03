@@ -57,7 +57,7 @@
           ];
         };
 
-        "simon-desktop" = {
+        "desktop" = {
           tags = [
             "workstation"
             "home"
@@ -167,7 +167,7 @@
           };
 
           roles.default = {
-            machines."simon-desktop" = { };
+            machines."desktop" = { };
             machines."lpt-titan" = { };
             settings = {
               user = "simon";
@@ -232,7 +232,7 @@
           };
           roles.peer.machines = {
             "nixbox".settings = { };
-            "simon-desktop".settings = { };
+            "desktop".settings = { };
             "lpt-titan".settings = { };
             "nixworker".settings = { };
           };
@@ -283,7 +283,7 @@
         #      endpoint = "138.201.155.21:9999";
         #    };
         #    nixbox.settings = { };
-        #    simon-desktop.settings = { };
+        #    desktop.settings = { };
         #    lpt-titan.settings = { };
         #  };
         #};
@@ -354,7 +354,7 @@
             input = "ssync";
           };
           roles.peer.machines = {
-            "simon-desktop".settings.user = "simon";
+            "desktop".settings.user = "simon";
             "lpt-titan".settings.user = "simon";
             "nixworker".settings.user = "simon";
           };
@@ -366,7 +366,7 @@
         #    input = "clan-core";
         #  };
         #  roles.peer = {
-        #    machines."simon-desktop" = { };
+        #    machines."desktop" = { };
         #    machines."lpt-titan" = { };
         #    settings = {
         #      folders = {
@@ -420,7 +420,7 @@
           roles = {
             primary.machines."nixbox" = { };
             secondary.machines."nixworker" = { };
-            secondary.machines."simon-desktop" = { };
+            secondary.machines."desktop" = { };
           };
         };
 

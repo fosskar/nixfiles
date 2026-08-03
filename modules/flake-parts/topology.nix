@@ -73,7 +73,7 @@
             [ "wan" ]
           ];
           connections.lan = [
-            (mkConnection "simon-desktop" "lan")
+            (mkConnection "desktop" "lan")
             (mkConnection "ap" "uplink")
           ];
           connections.srv = [

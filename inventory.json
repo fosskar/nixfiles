@@ -1,6 +1,6 @@
 {
   "machines": {
-    "simon-desktop": {
+    "desktop": {
       "installedAt": 1764012235
     },
     "nixbox": {
