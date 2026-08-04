@@ -8,4 +8,6 @@
   flake.llm.skills = lib.mapAttrs (name: _: ./skills + "/${name}") (
     lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./skills)
   );
+
+  flake.llm.souls.tars = ./souls/TARS.md;
 }

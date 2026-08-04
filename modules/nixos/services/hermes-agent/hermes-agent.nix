@@ -1,23 +1,25 @@
 { inputs, ... }:
 {
-  # hermes itself, nothing about where it runs. import it on a host to run it
-  # there, or list it in an agent-vm to run it sealed off — see
-  # modules/nixos/virtualization/agent-vm.nix.
+  # runtime plumbing only; identity, model, and channels come from the clan
+  # service composing this engine with its channel aspects
   flake.modules.nixos.hermesAgent =
     {
       config,
       agentVm ? null,
-      flake-self,
+      agentContainer ? null,
       lib,
       pkgs,
       ...
     }:
     let
       stateDir = config.services.hermes-agent.stateDir;
-      dashboardHost = "127.0.0.1";
+      # containers have no vsock proxy; the host forward connects over the bridge
+      dashboardHost = if agentContainer != null then "0.0.0.0" else "127.0.0.1";
     in
     {
       imports = [ inputs.hermes-agent.nixosModules.default ];
+
+      networking.firewall.allowedTCPPorts = lib.mkIf (agentContainer != null) [ 9119 ];
 
       services.hermes-agent = {
         enable = true;
@@ -31,85 +33,18 @@
           pkgs.himalaya
         ];
 
+        # upstream's settings type does not resolve mkDefault/mkForce
+        # priorities, so these must stay plain values; personas add to
+        # settings rather than overriding these
         settings = {
-          timezone = "Europe/Berlin";
-          display.personality = "none";
-
-          terminal.backend = "local";
-
-          tts.provider = "piper";
-
-          stt = {
-            provider = "local";
-            local.model = "base";
-          };
-
-          skills.external_dirs = [
-            "${config.services.hermes-agent.package}/share/hermes-agent/optional-skills/devops/watchers"
-            "${flake-self.llm.skills.kiwix-search}"
-          ];
-
-          providers.local = {
-            name = "Local";
-            api = "https://llama-cpp.${flake-self.domains.local}/v1";
-            api_key = "no-key-required";
-            default_model = "qwen3.6-35b-a3b-mtp";
-            context_length = 131072;
-          };
-
           # local sqlite fact store next to the built-in MEMORY.md, which keeps
           # loading; the only provider with no api-key path and no llm calls
           memory.provider = "holographic";
 
           # summarise old turns instead of hitting the context wall
           compression.enabled = true;
-
-          # own searxng instead of the paid search apis hermes defaults to
-          web.search_backend = "searxng";
-
-          # standalone plugins are opt-in; bundled platform/backend ones
-          # (matrix, searxng) auto-load and are not affected by this list
-          plugins.enabled = [
-            "disk-cleanup"
-            "hermes-achievements"
-          ];
-
-          model = {
-            # the only alias llama-cpp preloads; models-max = 1, so naming any
-            # other one costs a model swap on the first request
-            default = "qwen3.6-35b-a3b-mtp";
-            provider = "local";
-            context_length = 131072;
-          };
-        };
-
-        # the matrix domain is neither domains.local nor domains.public: mxids
-        # live on fosskar.de, which delegates its client api to matrix.fosskar.eu
-        environment = {
-          SEARXNG_URL = "https://search.${flake-self.domains.local}/";
-          SIGNAL_HTTP_URL = "http://127.0.0.1:18081";
-          SIGNAL_ALLOW_ALL_USERS = "false";
-
-          MATRIX_HOMESERVER = "https://matrix.fosskar.eu";
-          MATRIX_USER_ID = "@hermes:fosskar.de";
-          MATRIX_DEVICE_ID = "HERMES_BOT";
-          MATRIX_ALLOWED_USERS = "@fosskar:fosskar.de";
-          # fail closed rather than silently falling back to plaintext when
-          # crypto cannot initialise. MATRIX_ENCRYPTION is the deprecated alias
-          MATRIX_E2EE_MODE = "required";
         };
       };
-
-      # reinstalled on every activation: the soul is declarative, agent edits
-      # do not survive
-      system.activationScripts.hermes-agent-soul = lib.stringAfter [ "hermes-agent-setup" ] ''
-        ${pkgs.coreutils}/bin/install \
-          -o ${config.services.hermes-agent.user} \
-          -g ${config.services.hermes-agent.group} \
-          -m 0444 \
-          ${./SOUL.md} \
-          ${stateDir}/.hermes/SOUL.md
-      '';
 
       # -i, not -H: a login shell resets PATH to hermes' own profile. with the
       # caller's PATH the agent's packages are not found and unreadable /root
