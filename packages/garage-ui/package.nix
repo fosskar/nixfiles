@@ -8,13 +8,13 @@
   nix-update-script,
 }:
 let
-  version = "0.11.1";
+  version = "0.11.3";
 
   src = fetchFromGitHub {
     owner = "Noooste";
     repo = "garage-ui";
     tag = "v${version}";
-    hash = "sha256-TxqR97PPQH9yciKFKKv1QWSgAYTd2eaVjQW2Gq3FLRU=";
+    hash = "sha256-ABJcdrONwAtBSvSvlL81sZUlZIfJVlleo1OtQojWaI4=";
   };
 
   frontend = buildNpmPackage {
