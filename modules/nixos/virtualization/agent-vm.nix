@@ -14,6 +14,7 @@
       config,
       flake-self,
       lib,
+      pkgs,
       self,
       ...
     }:
@@ -91,12 +92,6 @@
                     tree the vm must never see wholesale, hence copying rather than
                     sharing that tree.
                   '';
-                };
-
-                stateSize = lib.mkOption {
-                  type = lib.types.int;
-                  default = 16384;
-                  description = "size of the volume backing /var/lib inside the vm.";
                 };
 
                 allowedTCPDestinations = lib.mkOption {
@@ -197,6 +192,30 @@
               '';
             };
 
+            # migrates the retired volume image once
+            "${name}-vm-state" = {
+              description = "state dir for the ${name} vm";
+              wantedBy = [ "microvm@${name}.service" ];
+              before = [ "microvm@${name}.service" ];
+              path = [ pkgs.util-linux ];
+              serviceConfig = {
+                Type = "oneshot";
+                RemainAfterExit = false;
+              };
+              script = ''
+                install -d -m 0700 /var/lib/agent-vms/${name}
+                img=/var/lib/microvms/${name}/agent-vm-state.img
+                if [ -f "$img" ] && [ -z "$(ls -A /var/lib/agent-vms/${name})" ]; then
+                  mnt=$(mktemp -d)
+                  mount -o loop,ro "$img" "$mnt"
+                  cp -a "$mnt"/. /var/lib/agent-vms/${name}/
+                  umount "$mnt"
+                  rmdir "$mnt"
+                  mv "$img" "$img.migrated"
+                fi
+              '';
+            };
+
             # the vm cannot outgrow this even if an agent misbehaves; the in-vm
             # balloon hands unused memory back below the cap
             "microvm@${name}".serviceConfig = {
@@ -211,6 +230,7 @@
           autostart = true;
           specialArgs = {
             inherit flake-self inputs self;
+            agentContainer = null;
             agentVm = cfg // {
               inherit adminKey name;
               hasSecrets = cfg.secrets != { };
@@ -369,16 +389,15 @@
           mountPoint = "/run/agent-secrets";
           tag = "secrets";
           proto = "virtiofs";
-        };
-
-        # every agent keeps its state under /var/lib, so back the whole tree
-        # rather than making each one declare a directory
-        volumes = [
+        }
+        ++ [
           {
-            image = "agent-vm-state.img";
-            label = "agent-state";
+            # every agent keeps its state under /var/lib, so share the whole
+            # tree rather than making each one declare a directory
+            source = "/var/lib/agent-vms/${agentVm.name}";
             mountPoint = "/var/lib";
-            size = agentVm.stateSize;
+            tag = "state";
+            proto = "virtiofs";
           }
         ];
       };
