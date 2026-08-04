@@ -341,7 +341,28 @@
             name = "hermes";
             input = "self";
           };
-          roles.server.machines.nixbox = { };
+          roles.server.machines.nixbox.settings = {
+            soul = "tars";
+            mcp.enable = true;
+
+            providers = {
+              local.enable = true;
+              openrouter.enable = true;
+            };
+
+            skills = [ "kiwix-search" ];
+            packageSkills = [ "optional-skills/devops/watchers" ];
+
+            matrix = {
+              enable = true;
+              userId = "@hermes:fosskar.de";
+              allowedUsers = [ "@fosskar:fosskar.de" ];
+            };
+
+            signal.enable = true;
+
+            homeAssistant.enable = true;
+          };
           roles.client.tags = [ "workstation" ];
         };
 

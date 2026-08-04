@@ -1,82 +1,5 @@
 { inputs, ... }:
 {
-  flake.modules.nixos.hermesAgentServer =
-    {
-      config,
-      pkgs,
-      ...
-    }:
-    let
-      hybridVsockConnect = pkgs.writers.writeRustBin "hermes-hybrid-vsock-connect" {
-        rustcArgs = [
-          "-O"
-          "--edition"
-          "2021"
-        ];
-      } ./hybrid-vsock-connect.rs;
-    in
-    {
-      clan.core.vars.generators.hermes-dashboard = {
-        files.token = {
-          owner = "root";
-          group = "root";
-        };
-        runtimeInputs = [ pkgs.openssl ];
-        script = ''
-          openssl rand -hex 32 > "$out/token"
-        '';
-      };
-
-      nixfiles.agentVms.hermes.secrets."hermes-dashboard-token" =
-        config.clan.core.vars.generators.hermes-dashboard.files.token.path;
-
-      # ssh host alias and root identity come from the agentVm module
-      environment.shellAliases.hermes = "ssh -t hermes -- sudo -iu hermes hermes";
-
-      systemd.sockets.hermes-dashboard-forward = {
-        description = "Hermes dashboard forward";
-        wantedBy = [ "sockets.target" ];
-        listenStreams = [ "127.0.0.1:22100" ];
-        socketConfig = {
-          Accept = true;
-          MaxConnections = 64;
-        };
-      };
-
-      systemd.services."hermes-dashboard-forward@" = {
-        description = "Hermes dashboard connection forward";
-        after = [ "microvm@hermes.service" ];
-        requires = [ "microvm@hermes.service" ];
-        serviceConfig = {
-          User = "microvm";
-          Group = "kvm";
-          ExecStart = "${hybridVsockConnect}/bin/hermes-hybrid-vsock-connect /var/lib/microvms/hermes/notify.vsock 9119";
-          StandardInput = "socket";
-          StandardError = "journal";
-          CapabilityBoundingSet = "";
-          LockPersonality = true;
-          MemoryDenyWriteExecute = true;
-          NoNewPrivileges = true;
-          PrivateDevices = true;
-          PrivateTmp = true;
-          ProtectHome = true;
-          ProtectClock = true;
-          ProtectControlGroups = true;
-          ProtectSystem = "strict";
-          ProtectHostname = true;
-          ProtectKernelLogs = true;
-          ProtectKernelModules = true;
-          ProtectKernelTunables = true;
-          RestrictAddressFamilies = [ "AF_UNIX" ];
-          RestrictNamespaces = true;
-          RestrictRealtime = true;
-          RestrictSUIDSGID = true;
-          SystemCallArchitectures = "native";
-          UMask = "0077";
-        };
-      };
-    };
-
   flake.modules.nixos.hermesRemote =
     {
       config,
@@ -158,7 +81,7 @@
         fi
 
         token="$(${pkgs.openssh}/bin/ssh ${sshOptionsString} ${destination} \
-          cat /run/secrets/vars/hermes-dashboard/token || true)"
+          cat ${cfg.tokenPath} || true)"
         if [ -z "$token" ]; then
           stop_tunnel
           echo "hermes-desktop-remote: server returned an empty dashboard token" >&2
@@ -221,6 +144,11 @@
           type = lib.types.port;
           default = 22100;
           description = "Server loopback port for the Hermes dashboard";
+        };
+        tokenPath = lib.mkOption {
+          type = lib.types.str;
+          default = "/run/secrets/vars/hermes-dashboard/token";
+          description = "Path of the dashboard token on the server";
         };
         extraSshOptions = lib.mkOption {
           type = lib.types.listOf lib.types.str;
