@@ -43,13 +43,18 @@
         exit 1
       '';
       tunnelScript = pkgs.writeShellScript "hermes-remote-tunnel" ''
+        # probe, then exec: the launcher's port guard demands that the unit's
+        # MainPID owns the forwarded socket, so ssh must replace this shell
         for h in ${hostsString}; do
-          ${pkgs.openssh}/bin/ssh ${sshOptionsString} -N \
-            -L 127.0.0.1:${toString cfg.localPort}:127.0.0.1:${toString cfg.remotePort} \
-            "${cfg.user}@$h"
+          if ${pkgs.coreutils}/bin/timeout 5 ${pkgs.bash}/bin/bash \
+            -c "exec 3<>/dev/tcp/$h/22" 2>/dev/null; then
+            exec ${pkgs.openssh}/bin/ssh ${sshOptionsString} -N \
+              -L 127.0.0.1:${toString cfg.localPort}:127.0.0.1:${toString cfg.remotePort} \
+              "${cfg.user}@$h"
+          fi
         done
-        # every host was tried and none holds a live tunnel; fail so the
-        # unit restarts and the walk begins again at the highest priority
+        # no host answered; fail so the unit restarts and the walk begins
+        # again at the highest priority
         exit 1
       '';
       launcher = pkgs.writeShellScriptBin "hermes-desktop-remote" ''
