@@ -331,6 +331,7 @@
       # ours to set. v4 only, matching the host's v4-only forward rules
       networking = {
         useDHCP = false;
+        useHostResolvConf = false;
         defaultGateway = agentContainer.hostIp;
         nameservers = [ agentContainer.dns ];
         firewall.enable = true;
