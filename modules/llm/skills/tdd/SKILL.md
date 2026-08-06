@@ -23,6 +23,8 @@ A **seam** is the public boundary you test at: the interface where you observe b
 
 Ask: "What's the public interface, and which seams should we test?"
 
+When the interface itself is in question — its depth, seam, or exposed operations — use the `codebase-design` skill for the shared vocabulary. Consult it as reference; do not run a separate session.
+
 ## Stack toolboxes
 
 The loop is language-free; the tooling is not. Match the repo — never add a test framework the repo doesn't already have.

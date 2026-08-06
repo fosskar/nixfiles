@@ -17,6 +17,11 @@ This command is _informed_ by the project's domain model and built on a shared d
 
 ### 1. Explore
 
+**Choose the scope before you scan.** Deepening a module pays off when future changes become easier. Give more weight to code that changes frequently.
+
+- If the user names a module, subsystem, or pain point, use that scope.
+- Otherwise, inspect a useful span of version history. Start with recurring files and areas. Widen the scan when changes have no clear hot spot.
+
 Read `AGENTS.md` and any decision records in the area you're touching first.
 
 Then use sub-agents to walk the codebase. Don't follow rigid heuristics — explore organically and note where you experience friction:
@@ -61,7 +66,7 @@ Do NOT propose interfaces yet. After the file is written, ask the user: "Which o
 
 ### 3. Grilling loop
 
-Once the user picks a candidate, run the grilling skill to walk the design tree with them — constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
+Once the user picks a candidate, run the grilling skill to walk the decision tree with them — constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
 
 Side effects happen inline as decisions crystallize:
 

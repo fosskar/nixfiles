@@ -3,12 +3,14 @@ name: grilling
 description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
 ---
 
-Interview me relentlessly about every aspect of this until we reach a shared understanding. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one.
+Interview the user relentlessly until you reach a shared understanding. Map the subject as a **decision tree**. Each settled decision can expose more decisions.
 
-**Ask each question through the harness's question tool** (the structured ask/question UI with selectable options) whenever one is available — never as prose the user has to answer by typing. Options are the concrete alternatives (a), (b), …; mark your recommended answer as the default. Reasoning, trade-offs, and evidence go in the message _before_ the tool call; the option labels stay short. Fall back to prose questions only when no such tool exists.
+Work through the tree in **rounds**. The **frontier** contains every question whose prerequisites are settled. Ask the complete frontier in one round.
 
-Ask the questions one at a time, waiting for the answer on each before continuing. Asking multiple questions at once is bewildering.
+Use the harness question tool when it is available. Put all questions for the round into one tool call. Give each question concrete options and mark the recommended option. Put reasoning, trade-offs, and evidence in each option description. Use short option labels.
 
-If a _fact_ can be found by exploring the environment (filesystem, tools, etc.), look it up rather than asking me. The _decisions_, though, are mine — put each one to me and wait for my answer.
+After the user answers, recompute the frontier. Ask the next complete round. Keep a question for a later round when its answer depends on an open question.
 
-Do not act on it until I confirm we have reached a shared understanding.
+Find facts through the environment and tools. Ask the user only for decisions.
+
+The session is complete when the frontier is empty and no assumption remains. Do not act until the user confirms that you reached a shared understanding.
