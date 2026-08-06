@@ -1,5 +1,5 @@
 { self }:
-_:
+{ clanLib, ... }:
 let
   basePort = 22100;
 in
@@ -10,6 +10,10 @@ in
   manifest.description = "Hermes agent server and remote desktop clients";
   manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "AI" ];
+  manifest.exports.inputs = [
+    "peer"
+    "networking"
+  ];
 
   roles.server = {
     description = "Host the sealed Hermes agent and its loopback dashboard forward";
@@ -450,7 +454,7 @@ in
     perInstance =
       {
         instanceName,
-        meta,
+        exports,
         roles,
         ...
       }:
@@ -461,13 +465,33 @@ in
             serverNames = lib.naturalSort (lib.attrNames (roles.server.machines or { }));
             server = if lib.length serverNames == 1 then lib.head serverNames else null;
             serverSettings = (roles.server.machines.${server} or { }).settings or { };
+            # every network service exports peer.hosts per machine and
+            # networking.priority per instance; walking them here replicates
+            # `clan ssh`'s fallback order declaratively. var-typed hosts
+            # (tor onions) are machine-local secrets and are skipped.
+            peerExports = lib.mapAttrsToList (key: value: {
+              scope = clanLib.parseScope key;
+              inherit value;
+            }) (clanLib.selectExports (scope: scope.machineName == server) exports);
+            priorityOf =
+              scope:
+              ((exports.${clanLib.buildScopeKey { inherit (scope) serviceName instanceName; }} or { }).networking
+                or { }
+              ).priority or 1000;
+            tunnelHosts = lib.pipe peerExports [
+              (lib.filter (entry: (entry.value.peer.hosts or [ ]) != [ ]))
+              (lib.sort (a: b: priorityOf a.scope > priorityOf b.scope))
+              (lib.concatMap (entry: lib.filter (host: host ? plain) entry.value.peer.hosts))
+              (map (host: host.plain))
+              lib.unique
+            ];
           in
           {
             imports = [ self.modules.nixos.hermesRemote ];
 
             services.hermes-remote = lib.mkIf (server != null) {
               enable = true;
-              host = "${server}.${meta.domain}";
+              hosts = tunnelHosts;
               remotePort = basePort + (serverSettings.id or 0);
               tokenPath = "/run/secrets/vars/per-machine/${server}/${instanceName}-dashboard/token";
             };
@@ -476,6 +500,10 @@ in
               {
                 assertion = lib.length serverNames == 1;
                 message = "clan hermes client requires exactly one machine with the server role";
+              }
+              {
+                assertion = server == null || tunnelHosts != [ ];
+                message = "clan hermes client found no networking exports with a plain host for ${toString server}";
               }
             ];
           };

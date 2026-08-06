@@ -34,7 +34,24 @@
       ]
       ++ cfg.extraSshOptions;
       sshOptionsString = lib.escapeShellArgs sshOptions;
-      destination = "${cfg.user}@${cfg.host}";
+      hostsString = lib.escapeShellArgs cfg.hosts;
+      # first host that answers wins; hosts come in network-priority order
+      sshFirstHost = pkgs.writeShellScript "hermes-remote-ssh" ''
+        for h in ${hostsString}; do
+          ${pkgs.openssh}/bin/ssh ${sshOptionsString} "${cfg.user}@$h" "$@" && exit 0
+        done
+        exit 1
+      '';
+      tunnelScript = pkgs.writeShellScript "hermes-remote-tunnel" ''
+        for h in ${hostsString}; do
+          ${pkgs.openssh}/bin/ssh ${sshOptionsString} -N \
+            -L 127.0.0.1:${toString cfg.localPort}:127.0.0.1:${toString cfg.remotePort} \
+            "${cfg.user}@$h"
+        done
+        # every host was tried and none holds a live tunnel; fail so the
+        # unit restarts and the walk begins again at the highest priority
+        exit 1
+      '';
       launcher = pkgs.writeShellScriptBin "hermes-desktop-remote" ''
         set -eu
 
@@ -80,8 +97,7 @@
           exit 1
         fi
 
-        token="$(${pkgs.openssh}/bin/ssh ${sshOptionsString} ${destination} \
-          cat ${cfg.tokenPath} || true)"
+        token="$(${sshFirstHost} cat ${cfg.tokenPath} || true)"
         if [ -z "$token" ]; then
           stop_tunnel
           echo "hermes-desktop-remote: server returned an empty dashboard token" >&2
@@ -126,9 +142,9 @@
     {
       options.services.hermes-remote = {
         enable = lib.mkEnableOption "remote Hermes desktop client";
-        host = lib.mkOption {
-          type = lib.types.str;
-          description = "SSH host that runs the Hermes dashboard";
+        hosts = lib.mkOption {
+          type = lib.types.nonEmptyListOf lib.types.str;
+          description = "SSH hosts that reach the Hermes dashboard, tried in order";
         };
         user = lib.mkOption {
           type = lib.types.str;
@@ -174,14 +190,7 @@
             StartLimitBurst = 10;
           };
           serviceConfig = {
-            ExecStart = lib.concatStringsSep " " [
-              "${pkgs.openssh}/bin/ssh"
-              sshOptionsString
-              "-N"
-              "-L"
-              "127.0.0.1:${toString cfg.localPort}:127.0.0.1:${toString cfg.remotePort}"
-              destination
-            ];
+            ExecStart = tunnelScript;
             Restart = "on-failure";
             RestartSec = 5;
           };
