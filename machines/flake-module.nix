@@ -366,6 +366,20 @@
           roles.client.tags = [ "workstation" ];
         };
 
+        hermina = {
+          module = {
+            name = "hermes";
+            input = "self";
+          };
+          roles.server.machines.nixbox.settings = {
+            backend = "container";
+            id = 1;
+            providers.local.enable = true;
+            signal.enable = true;
+            homeAssistant.enable = true;
+          };
+        };
+
         # p2p sync of pi agent sessions between the workstations and the
         # nixworker dev host. leaderless: all machines are equal peers. shared
         # age key handled by the service's own clan.vars generator.
