@@ -227,10 +227,10 @@
             show-hotkey-overlay = [ ];
           };
 
-          # toggle the spaces-os pi-chat panel
+          # open the Hermes dashboard
           "Mod+A" = {
-            action.spawn = "pi-chat-toggle";
-            hotkey-overlay.title = "Toggle pi-chat";
+            action.spawn = "hermes-desktop-remote";
+            hotkey-overlay.title = "Open Hermes dashboard";
           };
 
           # toggle voxtype voice-to-text recording
