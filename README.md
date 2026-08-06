@@ -17,6 +17,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 some pieces worth a closer look:
 
+- [hermes-agent deployments](clan-services/hermes/) - self-contained clan service instances with isolated secrets, state, and networking on either a [microvm](modules/nixos/virtualization/agent-vm.nix) or a [nixos container](modules/nixos/virtualization/agent-container.nix)
 - [noctalia v5 plugins](modules/home-manager/desktop/noctalia/plugins/) - luau plugins for [noctalia-shell](https://github.com/noctalia-dev/noctalia-shell), shipped straight from the repo as a local plugin source
 - [agent extensions](modules/llm/extensions/) - typescript extensions for the pi coding agent
 - [agent skills](modules/llm/skills/) - custom skills installed into every agent's skill directory by home-manager
