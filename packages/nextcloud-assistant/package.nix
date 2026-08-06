@@ -7,11 +7,11 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "nextcloud-assistant";
-  version = "3.5.0";
+  version = "4.0.0";
 
   src = fetchurl {
     url = "https://github.com/nextcloud-releases/assistant/releases/download/v${finalAttrs.version}/assistant-v${finalAttrs.version}.tar.gz";
-    hash = "sha256-9LBikhcnYtMiy1zHHxFTPe5ekxDny3f8DnStqYFsq4k=";
+    hash = "sha256-DXxy082KQc23pALQgiMx1srSMnGppO5iIshfALLdYnE=";
   };
 
   installPhase = ''
