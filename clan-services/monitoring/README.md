@@ -7,46 +7,54 @@ inventory.instances = {
       name = "monitoring";
       input = "self";
     };
-    roles.server.machines."server".settings = {
+    roles.server.machines."nixbox".settings = {
       extraTelegrafTargets = [ "openwrt.lan:9273" ];
     };
-    roles.client.tags.server = { };
+    roles.client.tags = [ "server" ];
   };
 };
 ```
+
+The server machine must also hold the client role. The server is monitored as an
+ordinary client, over `127.0.0.1`. An assertion fails the build when the server
+machine has no client role.
 
 ## Overview
 
 `monitoring` provides central metrics/log storage with Telegraf, VictoriaMetrics, VictoriaLogs, and Grafana.
 
+The instance requires exactly one server machine. `manifest.constraints` enforces this.
+
 Server role:
 
-- requires exactly one server machine
 - imports repo monitoring modules for exporters, Grafana, VictoriaLogs, and VictoriaMetrics
 - builds VictoriaMetrics scrape configs from client role assignments
-- optionally provisions Grafana dashboards
-- enables node exporter and ZFS exporter by default
+- provisions the Grafana dashboards in `dashboards/`
+- opens the VictoriaLogs port on `ygg`
+- enables Grafana, node exporter, and ZFS exporter
 
 Client role:
 
-- requires exactly one server machine
 - imports the Telegraf module
 - exposes a Prometheus client output on `listenPort`
+- uploads the journal to VictoriaLogs on the server machine
 - opens the Telegraf port on `ygg` for non-server machines
 
 ## Settings
 
 ### `server`
 
-- `grafana.enable`: enable Grafana. defaults to `true`.
 - `retentionPeriod`: VictoriaMetrics retention in months. defaults to `3`.
 - `extraTelegrafTargets`: extra Telegraf Prometheus endpoints, as `host:port`.
-- `extraScrapeConfigs`: extra VictoriaMetrics scrape configs.
-- `extraDashboardsDir`: extra Grafana dashboard directory to provision.
 - `exporter.node.enable`: enable node exporter. defaults to `true`.
 - `exporter.zfs.enable`: enable ZFS exporter when ZFS is enabled. defaults to `true`.
+
+Scrape jobs for `extraTelegrafTargets` label the host `target`, not `machine`.
+`dashboards/unbound_adguardhome.json` selects on `target`. The other dashboards
+select on `machine`.
 
 ### `client`
 
 - `listenPort`: Telegraf Prometheus client listen port. defaults to `9273`.
-- `host`: override scrape host for this client. defaults to `<machine>.<clan-domain>` or `127.0.0.1` on the server machine.
+- `host`: override the scrape host for this client. when unset, the server
+  machine uses `127.0.0.1` and every other machine uses `<machine>.<clan-domain>`.

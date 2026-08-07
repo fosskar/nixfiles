@@ -1,9 +1,27 @@
 { self }:
+let
+  logsPort = 9428;
+
+  addressOf =
+    config: machine:
+    if machine == config.networking.hostName then
+      "127.0.0.1"
+    else
+      "${machine}.${config.clan.core.settings.domain}";
+
+  logsUrl =
+    config: machine: "http://${addressOf config machine}:${toString logsPort}/insert/journald";
+in
 {
   _class = "clan.service";
   manifest.name = "monitoring";
   manifest.description = "lightweight central monitoring via telegraf, victoriametrics, victorialogs, and grafana";
   manifest.readme = builtins.readFile ./README.md;
+
+  manifest.constraints.roles.server = {
+    minMachines = 1;
+    maxMachines = 1;
+  };
 
   roles.server = {
     description = "central monitoring server";
@@ -12,12 +30,6 @@
       { lib, ... }:
       {
         options = {
-          grafana.enable = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description = "enable grafana on monitoring server";
-          };
-
           retentionPeriod = lib.mkOption {
             type = lib.types.str;
             default = "3";
@@ -31,18 +43,6 @@
             example = [
               "192.168.10.1:9273"
             ];
-          };
-
-          extraScrapeConfigs = lib.mkOption {
-            type = lib.types.listOf lib.types.attrs;
-            default = [ ];
-            description = "extra victoriametrics scrape configs";
-          };
-
-          extraDashboardsDir = lib.mkOption {
-            type = lib.types.nullOr lib.types.path;
-            default = null;
-            description = "extra grafana dashboards directory for provisioning";
           };
 
           exporter.node.enable = lib.mkOption {
@@ -73,28 +73,19 @@
             ...
           }:
           let
-            serverMachines = lib.attrNames (roles.server.machines or { });
-            serverMachineCount = lib.length serverMachines;
             clientMachines = lib.attrNames (roles.client.machines or { });
 
             clientScrapeConfigs = map (
               machine:
               let
-                clientSettings = (roles.client.machines.${machine} or { }).settings or { };
-                port = clientSettings.listenPort or 9273;
-                host =
-                  if machine == config.networking.hostName then
-                    "127.0.0.1"
-                  else if (clientSettings.host or null) != null then
-                    clientSettings.host
-                  else
-                    "${machine}.${config.clan.core.settings.domain}";
+                clientSettings = roles.client.machines.${machine}.settings;
+                host = if clientSettings.host != null then clientSettings.host else addressOf config machine;
               in
               {
                 job_name = "telegraf-${machine}";
                 static_configs = [
                   {
-                    targets = [ "${host}:${toString port}" ];
+                    targets = [ "${host}:${toString clientSettings.listenPort}" ];
                     labels = {
                       type = "telegraf";
                       inherit machine;
@@ -113,24 +104,22 @@
                 labels = {
                   type = "telegraf";
                   source = "external";
+                  # external hosts are labelled `target`, not `machine`: dashboards/unbound_adguardhome.json
+                  # selects on it. renaming this label empties that dashboard.
                   target = targetMachine target;
                 };
               }) settings.extraTelegrafTargets;
             };
 
-            baseDashboardsDir = ./dashboards;
             dashboardEnabled = {
               "ups.json" = config.power.ups.enable && (config.power.ups.upsd.enable or false);
             };
-            baseDashboardFiles = lib.filter (file: dashboardEnabled.${file} or true) (
-              builtins.attrNames (builtins.readDir baseDashboardsDir)
+            dashboardFiles = lib.filter (file: dashboardEnabled.${file} or true) (
+              builtins.attrNames (builtins.readDir ./dashboards)
             );
-            extraDashboardFiles = lib.optionals (settings.extraDashboardsDir != null) (
-              builtins.attrNames (builtins.readDir settings.extraDashboardsDir)
-            );
-            mkDashboard = dir: file: {
+            mkDashboard = file: {
               name = "grafana-dashboards/${file}";
-              value.source = "${dir}/${file}";
+              value.source = "${./dashboards}/${file}";
             };
           in
           {
@@ -145,30 +134,20 @@
 
             assertions = [
               {
-                assertion = serverMachineCount == 1;
-                message = "monitoring requires exactly one server machine, got ${toString serverMachineCount}";
+                assertion = lib.elem config.networking.hostName clientMachines;
+                message = "monitoring: the server machine must also hold the client role";
               }
             ];
 
-            services.grafana.enable = lib.mkDefault settings.grafana.enable;
-            services.victorialogs = {
-              enable = lib.mkDefault true;
-              listenAddress = lib.mkForce "0.0.0.0:9428";
-            };
+            services.grafana.enable = lib.mkDefault true;
+            services.victorialogs.enable = lib.mkDefault true;
             services.victoriametrics.enable = lib.mkDefault true;
             services.telegraf.enable = lib.mkDefault true;
-            services.journald.upload = {
-              enable = lib.mkDefault true;
-              settings.Upload.URL = lib.mkDefault "http://127.0.0.1:9428/insert/journald";
-            };
 
-            networking.firewall.interfaces.ygg.allowedTCPPorts = [ 9428 ];
+            networking.firewall.interfaces.ygg.allowedTCPPorts = [ logsPort ];
 
             environment.etc = lib.mkIf config.services.grafana.enable (
-              builtins.listToAttrs (
-                (map (mkDashboard baseDashboardsDir) baseDashboardFiles)
-                ++ (map (mkDashboard settings.extraDashboardsDir) extraDashboardFiles)
-              )
+              builtins.listToAttrs (map mkDashboard dashboardFiles)
             );
 
             services.prometheus.exporters.node.enable = lib.mkDefault settings.exporter.node.enable;
@@ -178,9 +157,7 @@
 
             services.victoriametrics = {
               retentionPeriod = lib.mkDefault settings.retentionPeriod;
-              prometheusConfig.scrape_configs = lib.mkAfter (
-                clientScrapeConfigs ++ extraTelegrafScrapeConfig ++ settings.extraScrapeConfigs
-              );
+              prometheusConfig.scrape_configs = lib.mkAfter (clientScrapeConfigs ++ extraTelegrafScrapeConfig);
             };
           };
       };
@@ -216,7 +193,6 @@
       }:
       let
         serverMachines = builtins.attrNames (roles.server.machines or { });
-        serverMachineCount = builtins.length serverMachines;
       in
       {
         nixosModule =
@@ -231,20 +207,13 @@
               self.modules.nixos.telegraf
             ];
 
-            assertions = [
-              {
-                assertion = serverMachineCount == 1;
-                message = "monitoring requires exactly one server machine, got ${toString serverMachineCount}";
-              }
-            ];
-
             networking.firewall.interfaces.ygg.allowedTCPPorts = lib.mkIf (
               !(builtins.elem config.networking.hostName serverMachines)
             ) [ settings.listenPort ];
 
-            services.journald.upload = lib.mkIf (!(builtins.elem config.networking.hostName serverMachines)) {
+            services.journald.upload = {
               enable = lib.mkDefault true;
-              settings.Upload.URL = lib.mkDefault "http://${builtins.head serverMachines}.${config.clan.core.settings.domain}:9428/insert/journald";
+              settings.Upload.URL = lib.mkDefault (logsUrl config (builtins.head serverMachines));
             };
 
             services.telegraf = {
