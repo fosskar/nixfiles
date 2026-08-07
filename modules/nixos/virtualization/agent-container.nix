@@ -28,6 +28,7 @@
         }
       );
       bridgeOf = name: "brc-${name}";
+      forwardLib = import ./_forwards.nix { inherit lib; };
       forwardUnit = name: forward: "${name}-forward-${toString forward.listenPort}";
       # the relay only reaches the container's own address; the bridge is the
       # only network it can see
@@ -61,6 +62,8 @@
       forEachInstance = f: lib.mkMerge (lib.mapAttrsToList f instances);
     in
     {
+      imports = [ self.modules.nixos.agentForwards ];
+
       options.nixfiles.agentContainers = lib.mkOption {
         default = { };
         description = "sealed agent containers, keyed by container name.";
@@ -123,22 +126,7 @@
                 };
 
                 forwards = lib.mkOption {
-                  type = lib.types.listOf (
-                    lib.types.submodule {
-                      options = {
-                        listenAddress = lib.mkOption {
-                          type = lib.types.str;
-                          default = "127.0.0.1";
-                        };
-                        listenPort = lib.mkOption {
-                          type = lib.types.port;
-                        };
-                        guestPort = lib.mkOption {
-                          type = lib.types.port;
-                        };
-                      };
-                    }
-                  );
+                  inherit (forwardLib) type;
                   default = [ ];
                   description = "host endpoints forwarded to guest ports over the bridge.";
                 };
@@ -183,17 +171,9 @@
             assertion = lib.all (name: lib.stringLength name <= 11) (lib.attrNames instances);
             message = "nixfiles.agentContainers: container names must be at most 11 chars.";
           }
-          {
-            assertion = lib.allUnique (
-              lib.concatLists (
-                lib.mapAttrsToList (
-                  _: cfg: map (forward: "${forward.listenAddress}:${toString forward.listenPort}") cfg.forwards
-                ) instances
-              )
-            );
-            message = "nixfiles.agentContainers: forward listen endpoints must be unique.";
-          }
         ];
+
+        nixfiles.agentForwardEndpoints = forwardLib.endpointsOf instances;
 
         # root on the host is the only thing that can reach the bridges, so
         # `ssh <container-name>` from the host logs in as root

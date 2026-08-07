@@ -40,6 +40,7 @@
       tapOf = name: "tap-${name}";
       bridgeOf = name: "br-${name}";
       macOf = cfg: "02:00:00:00:20:0${toString (cfg.id + 1)}";
+      forwardLib = import ./_forwards.nix { inherit lib; };
       hybridVsockConnect = pkgs.writers.writeRustBin "agent-vm-vsock-connect" {
         rustcArgs = [
           "-O"
@@ -79,7 +80,10 @@
       forEachInstance = f: lib.mkMerge (lib.mapAttrsToList f instances);
     in
     {
-      imports = [ inputs.microvm.nixosModules.host ];
+      imports = [
+        inputs.microvm.nixosModules.host
+        self.modules.nixos.agentForwards
+      ];
 
       options.nixfiles.agentVms = lib.mkOption {
         default = { };
@@ -151,22 +155,7 @@
                 };
 
                 forwards = lib.mkOption {
-                  type = lib.types.listOf (
-                    lib.types.submodule {
-                      options = {
-                        listenAddress = lib.mkOption {
-                          type = lib.types.str;
-                          default = "127.0.0.1";
-                        };
-                        listenPort = lib.mkOption {
-                          type = lib.types.port;
-                        };
-                        guestPort = lib.mkOption {
-                          type = lib.types.port;
-                        };
-                      };
-                    }
-                  );
+                  inherit (forwardLib) type;
                   default = [ ];
                   description = "host endpoints forwarded to guest ports over vsock.";
                 };
@@ -212,17 +201,9 @@
               toString (15 - lib.stringLength (tapOf ""))
             } chars, so tap and bridge names fit IFNAMSIZ.";
           }
-          {
-            assertion = lib.allUnique (
-              lib.concatLists (
-                lib.mapAttrsToList (
-                  _: cfg: map (forward: "${forward.listenAddress}:${toString forward.listenPort}") cfg.forwards
-                ) instances
-              )
-            );
-            message = "nixfiles.agentVms: forward listen endpoints must be unique.";
-          }
         ];
+
+        nixfiles.agentForwardEndpoints = forwardLib.endpointsOf instances;
 
         # root on the host is the only thing that can reach the bridges, so
         # `ssh <vm-name>` from the host logs in as root
