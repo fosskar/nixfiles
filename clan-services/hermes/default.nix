@@ -10,6 +10,7 @@ in
   manifest.description = "Hermes agent server and remote desktop clients";
   manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "AI" ];
+  manifest.exports.out = [ "dashboard" ];
   manifest.exports.inputs = [
     "peer"
     "networking"
@@ -116,8 +117,16 @@ in
       };
 
     perInstance =
-      { instanceName, settings, ... }:
       {
+        instanceName,
+        settings,
+        mkExports,
+        ...
+      }:
+      {
+        # the client role reads this instead of deriving the port from the
+        # server's settings a second time
+        exports = mkExports { dashboard.port = basePort + settings.id; };
 
         nixosModule =
           {
@@ -358,7 +367,21 @@ in
           let
             serverNames = lib.naturalSort (lib.attrNames (roles.server.machines or { }));
             server = if lib.length serverNames == 1 then lib.head serverNames else null;
-            serverSettings = (roles.server.machines.${server} or { }).settings or { };
+            # the server role publishes its dashboard port for this instance.
+            # no fallback: a missing export is an assertion, not a silent 22100
+            dashboardExport =
+              if server == null then
+                null
+              else
+                (exports.${
+                  clanLib.buildScopeKey {
+                    serviceName = "hermes";
+                    roleName = "server";
+                    machineName = server;
+                    inherit instanceName;
+                  }
+                } or { }
+                ).dashboard or null;
             # every network service exports peer.hosts per machine and
             # networking.priority per instance; walking them here replicates
             # `clan ssh`'s fallback order declaratively. var-typed hosts
@@ -386,7 +409,7 @@ in
             services.hermes-remote = lib.mkIf (server != null) {
               enable = true;
               hosts = tunnelHosts;
-              remotePort = basePort + (serverSettings.id or 0);
+              remotePort = dashboardExport.port;
               tokenPath = "/run/secrets/vars/per-machine/${server}/${instanceName}-dashboard/token";
             };
 
@@ -398,6 +421,10 @@ in
               {
                 assertion = server == null || tunnelHosts != [ ];
                 message = "clan hermes client found no networking exports with a plain host for ${toString server}";
+              }
+              {
+                assertion = server == null || dashboardExport != null;
+                message = "clan hermes client found no dashboard export for instance ${instanceName}";
               }
             ];
           };
