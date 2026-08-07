@@ -57,6 +57,19 @@
           ];
         };
 
+        # alert while renewal can still be fixed: caddy renews at 1/3 lifetime
+        # remaining (~30d); a cert under 10d means renewal has failed for weeks
+        services.gatus.settings.endpoints = [
+          {
+            name = "Caddy TLS wildcard";
+            url = "https://caddy.${flake-self.domains.local}";
+            enabled = true;
+            alerts = [ { type = "email"; } ];
+            interval = "6h";
+            conditions = [ "[CERTIFICATE_EXPIRATION] > 240h" ];
+          }
+        ];
+
         systemd.services.caddy.serviceConfig.EnvironmentFile =
           config.clan.core.vars.generators.caddy.files."envfile".path;
       }
