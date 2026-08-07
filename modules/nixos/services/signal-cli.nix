@@ -4,11 +4,13 @@
     let
       signalHttpListen = "127.0.0.1:18081";
       stateDir = "/var/lib/signal-cli";
+      # sizing comes from the cgroup (MemoryMax); a hard MaxMetaspaceSize
+      # killed the receive thread with ClassNotFoundException on lazy class
+      # loads (attachment downloads) while systemd still saw a running unit.
+      # ExitOnOutOfMemoryError turns in-JVM OOM into an exit so Restart heals.
       jvmArgs = [
-        "-Xms64m"
-        "-Xmx128m"
-        "-XX:+UseSerialGC"
-        "-XX:MaxMetaspaceSize=64m"
+        "-XX:MaxRAMPercentage=50"
+        "-XX:+ExitOnOutOfMemoryError"
       ];
     in
     {
