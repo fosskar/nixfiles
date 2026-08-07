@@ -578,8 +578,6 @@
 
         borgbackup =
           let
-            # shared client settings for both storagebox destinations
-            rsh = "ssh -oPort=23 -i /run/secrets/vars/borgbackup/borgbackup.ssh -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
             exclude = [
               "/var/cache"
               "/var/log"
@@ -595,24 +593,24 @@
               input = "clan-core";
             };
             roles = {
-              client.machines = {
-                "gateway".settings = {
-                  startAt = "*-*-* 04:00:00";
-                  inherit exclude;
-                  destinations = {
-                    "storagebox" = {
-                      repo = "u499127-sub1@u499127.your-storagebox.de:/./gateway";
-                      inherit rsh;
+              client = {
+                machines = {
+                  "gateway".settings = {
+                    startAt = "*-*-* 04:00:00";
+                    inherit exclude;
+                    destinations = {
+                      "storagebox" = {
+                        repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./gateway";
+                      };
                     };
                   };
-                };
-                "nixbox".settings = {
-                  startAt = "*-*-* 03:00:00";
-                  exclude = exclude ++ [ "/var/lib/postgresql" ];
-                  destinations = {
-                    "storagebox" = {
-                      repo = "u499127-sub1@u499127.your-storagebox.de:/./nixbox";
-                      inherit rsh;
+                  "nixbox".settings = {
+                    startAt = "*-*-* 03:00:00";
+                    exclude = exclude ++ [ "/var/lib/postgresql" ];
+                    destinations = {
+                      "storagebox" = {
+                        repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./nixbox";
+                      };
                     };
                   };
                 };
