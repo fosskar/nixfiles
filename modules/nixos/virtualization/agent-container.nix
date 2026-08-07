@@ -209,7 +209,7 @@
         );
 
         systemd.tmpfiles.rules = lib.mapAttrsToList (
-          name: _: "d /var/lib/agent-containers/${name} 0700 root root - -"
+          name: _: "d /var/lib/agent-containers/${name} 0755 root root - -"
         ) instances;
         systemd.services = forEachInstance (
           name: cfg:

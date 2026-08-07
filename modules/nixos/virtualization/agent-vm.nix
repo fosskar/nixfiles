@@ -273,7 +273,7 @@
                 RemainAfterExit = false;
               };
               script = ''
-                install -d -m 0700 /var/lib/agent-vms/${name}
+                install -d -m 0755 /var/lib/agent-vms/${name}
                 img=/var/lib/microvms/${name}/agent-vm-state.img
                 if [ -f "$img" ] && [ -z "$(ls -A /var/lib/agent-vms/${name})" ]; then
                   mnt=$(mktemp -d)
