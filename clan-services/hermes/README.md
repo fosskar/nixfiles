@@ -24,7 +24,7 @@ Each instance is one deployment. A second instance with different settings
 
 ## Overview
 
-`hermes` runs the Hermes agent sealed on one server and connects Hermes Desktop on workstation clients to it. The service carries only mechanism; every deployment-specific fact — soul, model, channels, identity — is inventory settings.
+`hermes` runs the Hermes agent sealed on one server and connects Hermes Desktop on workstation clients to it. The service carries only mechanism; every deployment-specific fact — soul, model, channels, identity — is inventory settings. This homelab's agent policy (model, voice, search backend, plugins) is not a deployment fact and lives in `modules/nixos/services/hermes-agent/hermes-agent.nix`; `agentSettings` is merged over it.
 
 The server role:
 
@@ -32,7 +32,7 @@ The server role:
 - derives the vars generator from the instance name (`<instance>-agent`) and prompts only for enabled channels and key-bearing providers
 - stages the rendered `.env` into the sandbox
 - creates the dashboard session token with clan vars and shares it read-only
-- forwards `127.0.0.1:<22100 + id>` on the server to port `9119` inside the sandbox — vsock for microvms, TCP over the bridge for containers
+- asks the sandbox to forward `127.0.0.1:<22100 + id>` on the server to port `9119` inside it; the sandbox module owns the transport (vsock for microvms, TCP over the bridge for containers)
 - keeps the dashboard closed to the LAN
 
 Souls live in `modules/llm/souls/` and are referenced by their `flake.llm.souls` key. The instance name is also the VM name; it must be at most 11 chars so interface names fit IFNAMSIZ.

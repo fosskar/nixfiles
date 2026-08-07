@@ -3,7 +3,9 @@
   # sealed nspawn containers to run agents in — the container sibling of
   # agent-vm.nix. containers live on 10.31.x, the vms on 10.30.x. the
   # nftables sealing duplicates the agent-vm rules on purpose: two readable
-  # copies beat a shared abstraction for posture-critical rules.
+  # copies beat a shared abstraction for posture-critical rules. `forwards`
+  # is the same contract as the vm's, carried over plain tcp on the bridge
+  # instead of vsock.
   flake.modules.nixos.agentContainer =
     {
       config,
@@ -26,6 +28,36 @@
         }
       );
       bridgeOf = name: "brc-${name}";
+      forwardUnit = name: forward: "${name}-forward-${toString forward.listenPort}";
+      # the relay only reaches the container's own address; the bridge is the
+      # only network it can see
+      forwardHardening = ip: {
+        StandardInput = "socket";
+        StandardError = "journal";
+        DynamicUser = true;
+        RestrictAddressFamilies = [ "AF_INET" ];
+        IPAddressAllow = [ "${ip}/32" ];
+        IPAddressDeny = "any";
+        CapabilityBoundingSet = "";
+        LockPersonality = true;
+        MemoryDenyWriteExecute = true;
+        NoNewPrivileges = true;
+        PrivateDevices = true;
+        PrivateTmp = true;
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectSystem = "strict";
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        SystemCallArchitectures = "native";
+        UMask = "0077";
+      };
       forEachInstance = f: lib.mkMerge (lib.mapAttrsToList f instances);
     in
     {
@@ -90,6 +122,27 @@
                   description = "private IPv4 TCP destinations reachable from the container.";
                 };
 
+                forwards = lib.mkOption {
+                  type = lib.types.listOf (
+                    lib.types.submodule {
+                      options = {
+                        listenAddress = lib.mkOption {
+                          type = lib.types.str;
+                          default = "127.0.0.1";
+                        };
+                        listenPort = lib.mkOption {
+                          type = lib.types.port;
+                        };
+                        guestPort = lib.mkOption {
+                          type = lib.types.port;
+                        };
+                      };
+                    }
+                  );
+                  default = [ ];
+                  description = "host endpoints forwarded to guest ports over the bridge.";
+                };
+
                 bridge = lib.mkOption {
                   type = lib.types.str;
                   default = bridgeOf name;
@@ -130,6 +183,16 @@
             assertion = lib.all (name: lib.stringLength name <= 11) (lib.attrNames instances);
             message = "nixfiles.agentContainers: container names must be at most 11 chars.";
           }
+          {
+            assertion = lib.allUnique (
+              lib.concatLists (
+                lib.mapAttrsToList (
+                  _: cfg: map (forward: "${forward.listenAddress}:${toString forward.listenPort}") cfg.forwards
+                ) instances
+              )
+            );
+            message = "nixfiles.agentContainers: forward listen endpoints must be unique.";
+          }
         ];
 
         # root on the host is the only thing that can reach the bridges, so
@@ -149,7 +212,8 @@
           name: _: "d /var/lib/agent-containers/${name} 0700 root root - -"
         ) instances;
         systemd.services = forEachInstance (
-          name: cfg: {
+          name: cfg:
+          {
             "${name}-container-secrets" = lib.mkIf (cfg.secrets != { }) {
               description = "stage secrets for the ${name} container";
               wantedBy = [ "container@${name}.service" ];
@@ -176,6 +240,37 @@
               CPUWeight = 20;
             };
           }
+          // lib.listToAttrs (
+            map (forward: {
+              name = "${forwardUnit name forward}@";
+              value = {
+                description = "forward to ${name} guest port ${toString forward.guestPort}";
+                after = [ "container@${name}.service" ];
+                requires = [ "container@${name}.service" ];
+                serviceConfig = forwardHardening cfg.ip // {
+                  ExecStart = "${pkgs.socat}/bin/socat STDIO TCP:${cfg.ip}:${toString forward.guestPort}";
+                };
+              };
+            }) cfg.forwards
+          )
+        );
+
+        systemd.sockets = forEachInstance (
+          name: cfg:
+          lib.listToAttrs (
+            map (forward: {
+              name = forwardUnit name forward;
+              value = {
+                description = "forward to ${name} guest port ${toString forward.guestPort}";
+                wantedBy = [ "sockets.target" ];
+                listenStreams = [ "${forward.listenAddress}:${toString forward.listenPort}" ];
+                socketConfig = {
+                  Accept = true;
+                  MaxConnections = 64;
+                };
+              };
+            }) cfg.forwards
+          )
         );
 
         containers = lib.mapAttrs (name: cfg: {
@@ -185,12 +280,12 @@
           localAddress = "${cfg.ip}/${toString cfg.prefixLength}";
           specialArgs = {
             inherit flake-self inputs self;
-            # module-arg defaults like `agentVm ? null` are ignored by the
-            # module system; agent modules probing their runtime need the
-            # arg supplied explicitly
-            agentVm = null;
-            agentContainer = cfg // {
+            agentSandbox = cfg // {
               inherit adminKey name;
+              kind = "container";
+              # the host relay crosses the bridge, so a forwarded service must
+              # listen on more than loopback
+              bindAddress = "0.0.0.0";
             };
           };
           bindMounts = {
@@ -321,7 +416,7 @@
   # the host in /var/lib/agent-containers/<name>, bind-mounted at /var/lib.
   flake.modules.nixos.agentContainerBase =
     {
-      agentContainer,
+      agentSandbox,
       lib,
       pkgs,
       ...
@@ -332,9 +427,12 @@
       networking = {
         useDHCP = false;
         useHostResolvConf = false;
-        defaultGateway = agentContainer.hostIp;
-        nameservers = [ agentContainer.dns ];
+        defaultGateway = agentSandbox.hostIp;
+        nameservers = [ agentSandbox.dns ];
         firewall.enable = true;
+        # the host relay crosses the bridge, so every forwarded port has to be
+        # reachable on the container's address
+        firewall.allowedTCPPorts = map (forward: forward.guestPort) agentSandbox.forwards;
       };
 
       services.openssh = {
@@ -342,7 +440,7 @@
         settings.PasswordAuthentication = false;
       };
 
-      users.users.root.openssh.authorizedKeys.keys = [ agentContainer.adminKey ];
+      users.users.root.openssh.authorizedKeys.keys = [ agentSandbox.adminKey ];
 
       # fetch tools for whatever runs inside; language runtimes ship with
       # the agent that needs them

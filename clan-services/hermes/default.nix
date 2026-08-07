@@ -135,16 +135,7 @@ in
             isVm = settings.backend == "microvm";
             sandbox = if isVm then "agentVms" else "agentContainers";
             sandboxCfg = config.nixfiles.${sandbox}.${instanceName};
-            sandboxUnit =
-              if isVm then "microvm@${instanceName}.service" else "container@${instanceName}.service";
             forwardPort = basePort + settings.id;
-            hybridVsockConnect = pkgs.writers.writeRustBin "hermes-hybrid-vsock-connect" {
-              rustcArgs = [
-                "-O"
-                "--edition"
-                "2021"
-              ];
-            } ./hybrid-vsock-connect.rs;
           in
           {
             imports = [
@@ -154,6 +145,15 @@ in
             nixfiles.${sandbox}.${instanceName} = {
               inherit (settings) id;
 
+              # the sandbox owns the transport: vsock for microvms, tcp over the
+              # bridge for containers
+              forwards = [
+                {
+                  listenPort = forwardPort;
+                  guestPort = 9119;
+                }
+              ];
+
               allowedTCPDestinations = lib.optional settings.homeAssistant.enable {
                 inherit (settings.homeAssistant) address port;
               };
@@ -162,77 +162,21 @@ in
                 self.modules.nixos.hermesAgent
 
                 (
-                  {
-                    config,
-                    flake-self,
-                    lib,
-                    pkgs,
-                    ...
-                  }:
-                  let
-                    externalDirs =
-                      map (
-                        dir: "${config.services.hermes-agent.package}/share/hermes-agent/${dir}"
-                      ) settings.packageSkills
-                      ++ map (name: "${flake-self.llm.skills.${name}}") settings.skills;
-
-                    defaults = {
-                      timezone = "Europe/Berlin";
-                      display.personality = "none";
-                      terminal.backend = "local";
-                      tts.provider = "piper";
-                      stt = {
-                        provider = "local";
-                        local.model = "base";
-                      };
-                      # own searxng instead of the paid search apis hermes defaults to
-                      web.search_backend = "searxng";
-                      # standalone plugins are opt-in; bundled platform/backend ones
-                      # (matrix, searxng) auto-load and are not affected by this list
-                      plugins.enabled = [
-                        "disk-cleanup"
-                        "hermes-achievements"
-                      ];
-                    }
-                    // lib.optionalAttrs localProvider {
-                      providers.local = {
-                        name = "Local";
-                        api = "https://llama-cpp.${flake-self.domains.local}/v1";
-                        api_key = "no-key-required";
-                        # the only alias llama-cpp preloads; models-max = 1, so naming
-                        # any other one costs a model swap on the first request
-                        default_model = "qwen3.6-35b-a3b-mtp";
-                        context_length = 131072;
-                      };
-                      # agentSettings.model overrides this
-                      model = {
-                        default = "qwen3.6-35b-a3b-mtp";
-                        provider = "local";
-                        context_length = 131072;
-                      };
-                    };
-                  in
+                  { config, flake-self, ... }:
                   {
                     services.hermes-agent = {
-                      settings = lib.recursiveUpdate (lib.recursiveUpdate defaults settings.agentSettings) (
-                        lib.optionalAttrs (externalDirs != [ ]) { skills.external_dirs = externalDirs; }
-                      );
+                      localProvider.enable = localProvider;
 
-                      environment.SEARXNG_URL = "https://search.${flake-self.domains.local}/";
+                      skillDirs =
+                        map (
+                          dir: "${config.services.hermes-agent.package}/share/hermes-agent/${dir}"
+                        ) settings.packageSkills
+                        ++ map (name: "${flake-self.llm.skills.${name}}") settings.skills;
+
+                      overrides = settings.agentSettings;
+
+                      soul = if settings.soul == null then null else flake-self.llm.souls.${settings.soul};
                     };
-
-                    # reinstalled on every activation: the soul is declarative,
-                    # agent edits do not survive
-                    system.activationScripts.hermes-agent-soul = lib.mkIf (settings.soul != null) (
-                      lib.stringAfter [ "hermes-agent-setup" ] ''
-                        ${pkgs.coreutils}/bin/install \
-                          -o ${config.services.hermes-agent.user} \
-                          -g ${config.services.hermes-agent.group} \
-                          -m 0444 \
-                          ${flake-self.llm.souls.${settings.soul}} \
-                          ${config.services.hermes-agent.stateDir}/.hermes/SOUL.md
-                      ''
-                    );
                   }
                 )
 
@@ -325,62 +269,6 @@ in
 
             # ssh host alias and root identity come from the sandbox module
             environment.shellAliases.${instanceName} = "ssh -t ${instanceName} -- sudo -iu hermes hermes";
-
-            systemd.sockets."${instanceName}-dashboard-forward" = {
-              description = "Hermes dashboard forward";
-              wantedBy = [ "sockets.target" ];
-              listenStreams = [ "127.0.0.1:${toString forwardPort}" ];
-              socketConfig = {
-                Accept = true;
-                MaxConnections = 64;
-              };
-            };
-
-            systemd.services."${instanceName}-dashboard-forward@" = {
-              description = "Hermes dashboard connection forward";
-              after = [ sandboxUnit ];
-              requires = [ sandboxUnit ];
-              serviceConfig = {
-                StandardInput = "socket";
-                StandardError = "journal";
-                CapabilityBoundingSet = "";
-                LockPersonality = true;
-                MemoryDenyWriteExecute = true;
-                NoNewPrivileges = true;
-                PrivateDevices = true;
-                PrivateTmp = true;
-                ProtectHome = true;
-                ProtectClock = true;
-                ProtectControlGroups = true;
-                ProtectSystem = "strict";
-                ProtectHostname = true;
-                ProtectKernelLogs = true;
-                ProtectKernelModules = true;
-                ProtectKernelTunables = true;
-                RestrictNamespaces = true;
-                RestrictRealtime = true;
-                RestrictSUIDSGID = true;
-                SystemCallArchitectures = "native";
-                UMask = "0077";
-              }
-              // (
-                if isVm then
-                  {
-                    User = "microvm";
-                    Group = "kvm";
-                    ExecStart = "${hybridVsockConnect}/bin/hermes-hybrid-vsock-connect /var/lib/microvms/${instanceName}/notify.vsock 9119";
-                    RestrictAddressFamilies = [ "AF_UNIX" ];
-                  }
-                else
-                  {
-                    DynamicUser = true;
-                    ExecStart = "${pkgs.socat}/bin/socat STDIO TCP:${sandboxCfg.ip}:9119";
-                    RestrictAddressFamilies = [ "AF_INET" ];
-                    IPAddressAllow = [ "${sandboxCfg.ip}/32" ];
-                    IPAddressDeny = "any";
-                  }
-              );
-            };
 
             clan.core.vars.generators.${generator} = {
               files.".env".secret = true;

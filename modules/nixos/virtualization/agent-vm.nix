@@ -8,7 +8,10 @@
   #   nixfiles.agentVms.hermes.services = [ self.modules.nixos.hermesAgent ];
   #
   # per-instance networking (bridge, subnet, tap, mac, vsock cid) derives from
-  # the instance's id, so instances never collide.
+  # the instance's id, so instances never collide. reaching a service inside is
+  # this module's business too: `forwards` maps a host endpoint to a guest port
+  # and the whole path — socket unit, vsock connector, guest-side proxy — lives
+  # here, so callers never name a transport.
   flake.modules.nixos.agentVm =
     {
       config,
@@ -37,6 +40,42 @@
       tapOf = name: "tap-${name}";
       bridgeOf = name: "br-${name}";
       macOf = cfg: "02:00:00:00:20:0${toString (cfg.id + 1)}";
+      hybridVsockConnect = pkgs.writers.writeRustBin "agent-vm-vsock-connect" {
+        rustcArgs = [
+          "-O"
+          "--edition"
+          "2021"
+        ];
+      } ./hybrid-vsock-connect.rs;
+      forwardUnit = name: forward: "${name}-forward-${toString forward.listenPort}";
+      # the connector only shuffles bytes between the accepted socket and the
+      # vm's control socket, so it needs no address family beyond AF_UNIX
+      forwardHardening = {
+        StandardInput = "socket";
+        StandardError = "journal";
+        User = "microvm";
+        Group = "kvm";
+        RestrictAddressFamilies = [ "AF_UNIX" ];
+        CapabilityBoundingSet = "";
+        LockPersonality = true;
+        MemoryDenyWriteExecute = true;
+        NoNewPrivileges = true;
+        PrivateDevices = true;
+        PrivateTmp = true;
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectSystem = "strict";
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        SystemCallArchitectures = "native";
+        UMask = "0077";
+      };
       forEachInstance = f: lib.mkMerge (lib.mapAttrsToList f instances);
     in
     {
@@ -111,6 +150,27 @@
                   description = "private IPv4 TCP destinations reachable from the vm.";
                 };
 
+                forwards = lib.mkOption {
+                  type = lib.types.listOf (
+                    lib.types.submodule {
+                      options = {
+                        listenAddress = lib.mkOption {
+                          type = lib.types.str;
+                          default = "127.0.0.1";
+                        };
+                        listenPort = lib.mkOption {
+                          type = lib.types.port;
+                        };
+                        guestPort = lib.mkOption {
+                          type = lib.types.port;
+                        };
+                      };
+                    }
+                  );
+                  default = [ ];
+                  description = "host endpoints forwarded to guest ports over vsock.";
+                };
+
                 bridge = lib.mkOption {
                   type = lib.types.str;
                   default = bridgeOf name;
@@ -151,6 +211,16 @@
             message = "nixfiles.agentVms: vm names must be at most ${
               toString (15 - lib.stringLength (tapOf ""))
             } chars, so tap and bridge names fit IFNAMSIZ.";
+          }
+          {
+            assertion = lib.allUnique (
+              lib.concatLists (
+                lib.mapAttrsToList (
+                  _: cfg: map (forward: "${forward.listenAddress}:${toString forward.listenPort}") cfg.forwards
+                ) instances
+              )
+            );
+            message = "nixfiles.agentVms: forward listen endpoints must be unique.";
           }
         ];
 
@@ -224,15 +294,51 @@
               CPUWeight = 20;
             };
           }) instances
+          ++ lib.concatLists (
+            lib.mapAttrsToList (
+              name: cfg:
+              map (forward: {
+                "${forwardUnit name forward}@" = {
+                  description = "forward to ${name} guest port ${toString forward.guestPort}";
+                  after = [ "microvm@${name}.service" ];
+                  requires = [ "microvm@${name}.service" ];
+                  serviceConfig = forwardHardening // {
+                    ExecStart = "${hybridVsockConnect}/bin/agent-vm-vsock-connect /var/lib/microvms/${name}/notify.vsock ${toString forward.guestPort}";
+                  };
+                };
+              }) cfg.forwards
+            ) instances
+          )
+        );
+
+        systemd.sockets = forEachInstance (
+          name: cfg:
+          lib.listToAttrs (
+            map (forward: {
+              name = forwardUnit name forward;
+              value = {
+                description = "forward to ${name} guest port ${toString forward.guestPort}";
+                wantedBy = [ "sockets.target" ];
+                listenStreams = [ "${forward.listenAddress}:${toString forward.listenPort}" ];
+                socketConfig = {
+                  Accept = true;
+                  MaxConnections = 64;
+                };
+              };
+            }) cfg.forwards
+          )
         );
 
         microvm.vms = lib.mapAttrs (name: cfg: {
           autostart = true;
           specialArgs = {
             inherit flake-self inputs self;
-            agentContainer = null;
-            agentVm = cfg // {
+            agentSandbox = cfg // {
               inherit adminKey name;
+              kind = "microvm";
+              # the guest-side proxy relays vsock to loopback, so a forwarded
+              # service only ever needs to listen on loopback
+              bindAddress = "127.0.0.1";
               hasSecrets = cfg.secrets != { };
               tap = tapOf name;
               mac = macOf cfg;
@@ -353,7 +459,7 @@
   # that survives reboots so whatever is installed inside keeps its state.
   flake.modules.nixos.agentVmBase =
     {
-      agentVm,
+      agentSandbox,
       lib,
       pkgs,
       ...
@@ -361,18 +467,18 @@
     {
       microvm = {
         hypervisor = "cloud-hypervisor";
-        inherit (agentVm) vcpu mem;
+        inherit (agentSandbox) vcpu mem;
         balloon = true;
         deflateOnOOM = true;
         # cloud-hypervisor reports readiness over vsock; without a cid the host
         # unit only knows the process started, not that the vm came up
-        vsock.cid = agentVm.vsockCid;
+        vsock.cid = agentSandbox.vsockCid;
 
         interfaces = [
           {
             type = "tap";
-            id = agentVm.tap;
-            inherit (agentVm) mac;
+            id = agentSandbox.tap;
+            inherit (agentSandbox) mac;
           }
         ];
 
@@ -384,8 +490,8 @@
             proto = "virtiofs";
           }
         ]
-        ++ lib.optional agentVm.hasSecrets {
-          source = "/var/lib/agent-vm/${agentVm.name}/secrets";
+        ++ lib.optional agentSandbox.hasSecrets {
+          source = "/var/lib/agent-vm/${agentSandbox.name}/secrets";
           mountPoint = "/run/agent-secrets";
           tag = "secrets";
           proto = "virtiofs";
@@ -394,13 +500,56 @@
           {
             # every agent keeps its state under /var/lib, so share the whole
             # tree rather than making each one declare a directory
-            source = "/var/lib/agent-vms/${agentVm.name}";
+            source = "/var/lib/agent-vms/${agentSandbox.name}";
             mountPoint = "/var/lib";
             tag = "state";
             proto = "virtiofs";
           }
         ];
       };
+
+      # the host connects over vsock, so every forwarded port needs a listener
+      # on the guest side of it. the relayed service itself only binds loopback
+      systemd.services = lib.listToAttrs (
+        map (forward: {
+          name = "agent-vsock-proxy-${toString forward.guestPort}";
+          value = {
+            description = "vsock proxy for port ${toString forward.guestPort}";
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:${toString forward.guestPort},fork TCP:127.0.0.1:${toString forward.guestPort}";
+              Restart = "always";
+              RestartSec = 5;
+              DynamicUser = true;
+              CapabilityBoundingSet = "";
+              IPAddressAllow = "localhost";
+              IPAddressDeny = "any";
+              LockPersonality = true;
+              MemoryDenyWriteExecute = true;
+              NoNewPrivileges = true;
+              PrivateDevices = true;
+              PrivateTmp = true;
+              ProtectClock = true;
+              ProtectControlGroups = true;
+              ProtectHome = true;
+              ProtectHostname = true;
+              ProtectKernelLogs = true;
+              ProtectKernelModules = true;
+              ProtectKernelTunables = true;
+              ProtectSystem = "strict";
+              RestrictAddressFamilies = [
+                "AF_INET"
+                "AF_VSOCK"
+              ];
+              RestrictNamespaces = true;
+              RestrictRealtime = true;
+              RestrictSUIDSGID = true;
+              SystemCallArchitectures = "native";
+              UMask = "0077";
+            };
+          };
+        }) agentSandbox.forwards
+      );
 
       networking = {
         useDHCP = false;
@@ -411,11 +560,11 @@
       # virtio gives unpredictable enp0sN names, so match the mac we assigned.
       # v4 only: no RA-assigned v6 for the host's v4 forward rules to miss
       systemd.network.networks."10-lan" = {
-        matchConfig.MACAddress = agentVm.mac;
+        matchConfig.MACAddress = agentSandbox.mac;
         networkConfig = {
-          Address = "${agentVm.ip}/${toString agentVm.prefixLength}";
-          Gateway = agentVm.hostIp;
-          DNS = agentVm.dns;
+          Address = "${agentSandbox.ip}/${toString agentSandbox.prefixLength}";
+          Gateway = agentSandbox.hostIp;
+          DNS = agentSandbox.dns;
           IPv6AcceptRA = false;
           LinkLocalAddressing = "ipv4";
         };
@@ -436,7 +585,7 @@
         ];
       };
 
-      users.users.root.openssh.authorizedKeys.keys = [ agentVm.adminKey ];
+      users.users.root.openssh.authorizedKeys.keys = [ agentSandbox.adminKey ];
 
       # fetch tools for whatever runs inside; language runtimes ship with the
       # agent that needs them

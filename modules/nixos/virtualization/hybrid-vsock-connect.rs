@@ -83,7 +83,7 @@ fn run() -> io::Result<()> {
     let mut args = env::args();
     let program = args
         .next()
-        .unwrap_or_else(|| "hermes-hybrid-vsock-connect".to_owned());
+        .unwrap_or_else(|| "agent-vm-vsock-connect".to_owned());
     let Some(path) = args.next() else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
@@ -118,7 +118,7 @@ fn main() -> ExitCode {
     match run() {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
-            eprintln!("hermes-hybrid-vsock-connect: {error}");
+            eprintln!("agent-vm-vsock-connect: {error}");
             ExitCode::FAILURE
         }
     }
