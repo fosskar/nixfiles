@@ -73,14 +73,16 @@
             "unsloth/Qwen3.6-27B-MTP-GGUF:Q4_K_XL" = {
               model = modelPath "unsloth/Qwen3.6-27B-MTP-GGUF";
               alias = "qwen3.6-27b-mtp";
-              ctx-size = 114688;
+              ctx-size = 65536;
               cache-type-v = "q4_0";
-              temp = 0.7;
-              top-p = 0.8;
+              temp = 1.0;
+              top-p = 0.95;
               top-k = 20;
-              presence-penalty = 1.5;
               min-p = 0.00;
-              reasoning = "off";
+              reasoning = "on";
+              chat-template-kwargs = builtins.toJSON {
+                preserve_thinking = false;
+              };
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
               cache-type-k-draft = "q4_0";
