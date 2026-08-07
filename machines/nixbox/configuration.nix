@@ -43,6 +43,8 @@
   ]
   ++ (nflib.scanPaths ./. { exclude = [ "beszel-settings.nix" ]; });
 
+  services.systemdEmailAlerts.extraServices = [ "borgbackup-job-storagebox" ];
+
   environment.systemPackages = [
     pkgs.ipmitool
   ];
