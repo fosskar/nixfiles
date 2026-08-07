@@ -118,6 +118,7 @@ in
     perInstance =
       { instanceName, settings, ... }:
       {
+
         nixosModule =
           {
             config,
@@ -136,6 +137,66 @@ in
             sandbox = if isVm then "agentVms" else "agentContainers";
             sandboxCfg = config.nixfiles.${sandbox}.${instanceName};
             forwardPort = basePort + settings.id;
+
+            # one entry per channel: the aspect modules it brings, the operator
+            # prompts it needs, and the .env variables fed from those prompts.
+            # enabling a channel cannot leave one of them behind
+            channels = {
+              matrix = {
+                enable = settings.matrix.enable;
+                modules = [
+                  self.modules.nixos.hermesMatrix
+                  {
+                    services.hermes-agent.matrix = {
+                      inherit (settings.matrix) userId allowedUsers;
+                    }
+                    // lib.optionalAttrs (settings.matrix.homeserver != null) {
+                      inherit (settings.matrix) homeserver;
+                    }
+                    // lib.optionalAttrs (settings.matrix.deviceId != null) {
+                      inherit (settings.matrix) deviceId;
+                    };
+                  }
+                ];
+                prompts = {
+                  matrix-password = "matrix password for ${settings.matrix.userId}";
+                  matrix-recovery-key = "Matrix recovery key for ${settings.matrix.userId}";
+                };
+                env = {
+                  MATRIX_PASSWORD = "matrix-password";
+                  MATRIX_RECOVERY_KEY = "matrix-recovery-key";
+                };
+              };
+
+              signal = {
+                enable = settings.signal.enable;
+                modules = [ self.modules.nixos.hermesSignal ];
+                prompts.signal-account-number = "Signal account phone number in E.164 format";
+                env = {
+                  SIGNAL_ACCOUNT = "signal-account-number";
+                  SIGNAL_ALLOWED_USERS = "signal-account-number";
+                };
+              };
+
+              homeAssistant = {
+                enable = settings.homeAssistant.enable;
+                modules = [
+                  self.modules.nixos.hermesHomeAssistant
+                  { services.hermes-agent.homeAssistant.url = settings.homeAssistant.url; }
+                ];
+                prompts.home-assistant-token = "Home Assistant long-lived access token for the agent";
+                env.HASS_TOKEN = "home-assistant-token";
+                tcpDestinations = [ { inherit (settings.homeAssistant) address port; } ];
+              };
+            };
+
+            active = lib.attrValues (lib.filterAttrs (_: channel: channel.enable) channels);
+            mergeAttrsOf = field: lib.foldl' (acc: channel: acc // channel.${field} or { }) { } active;
+            hiddenPrompt = description: {
+              inherit description;
+              type = "hidden";
+              persist = true;
+            };
           in
           {
             imports = [
@@ -154,9 +215,7 @@ in
                 }
               ];
 
-              allowedTCPDestinations = lib.optional settings.homeAssistant.enable {
-                inherit (settings.homeAssistant) address port;
-              };
+              allowedTCPDestinations = lib.concatMap (channel: channel.tcpDestinations or [ ]) active;
 
               services = [
                 self.modules.nixos.hermesAgent
@@ -196,25 +255,7 @@ in
                   };
                 }
               ]
-              ++ lib.optionals settings.matrix.enable [
-                self.modules.nixos.hermesMatrix
-                {
-                  services.hermes-agent.matrix = {
-                    inherit (settings.matrix) userId allowedUsers;
-                  }
-                  // lib.optionalAttrs (settings.matrix.homeserver != null) {
-                    inherit (settings.matrix) homeserver;
-                  }
-                  // lib.optionalAttrs (settings.matrix.deviceId != null) {
-                    inherit (settings.matrix) deviceId;
-                  };
-                }
-              ]
-              ++ lib.optional settings.signal.enable self.modules.nixos.hermesSignal
-              ++ lib.optionals settings.homeAssistant.enable [
-                self.modules.nixos.hermesHomeAssistant
-                { services.hermes-agent.homeAssistant.url = settings.homeAssistant.url; }
-              ]
+              ++ lib.concatMap (channel: channel.modules) active
               ++ lib.optionals settings.mcp.enable [
                 (
                   { lib, ... }:
@@ -274,58 +315,23 @@ in
               files.".env".secret = true;
 
               prompts =
-                lib.optionalAttrs settings.matrix.enable {
-                  matrix-password = {
-                    description = "matrix password for ${settings.matrix.userId}";
-                    type = "hidden";
-                    persist = true;
-                  };
-                  matrix-recovery-key = {
-                    description = "Matrix recovery key for ${settings.matrix.userId}";
-                    type = "hidden";
-                    persist = true;
-                  };
-                }
-                // lib.optionalAttrs settings.signal.enable {
-                  signal-account-number = {
-                    description = "Signal account phone number in E.164 format";
-                    type = "hidden";
-                    persist = true;
-                  };
-                }
-                // lib.optionalAttrs settings.homeAssistant.enable {
-                  home-assistant-token = {
-                    description = "Home Assistant long-lived access token for the agent";
-                    type = "hidden";
-                    persist = true;
-                  };
-                }
+                lib.mapAttrs (_: hiddenPrompt) (mergeAttrsOf "prompts")
                 // lib.listToAttrs (
                   map (provider: {
                     name = "${provider}-api-key";
-                    value = {
-                      description = "${provider} API key";
-                      type = "hidden";
-                      persist = true;
-                    };
+                    value = hiddenPrompt "${provider} API key";
                   }) keyProviders
                 );
 
               script =
                 let
                   lines =
-                    lib.optionals settings.matrix.enable [
-                      ''echo "MATRIX_PASSWORD=$(cat "$prompts/matrix-password")"''
-                      ''echo "MATRIX_RECOVERY_KEY=$(cat "$prompts/matrix-recovery-key")"''
-                    ]
+                    lib.mapAttrsToList (variable: prompt: ''echo "${variable}=$(cat "$prompts/${prompt}")"'') (
+                      mergeAttrsOf "env"
+                    )
                     ++ map (
                       provider: ''echo "${lib.toUpper provider}_API_KEY=$(cat "$prompts/${provider}-api-key")"''
-                    ) keyProviders
-                    ++ lib.optional settings.homeAssistant.enable ''echo "HASS_TOKEN=$(cat "$prompts/home-assistant-token")"''
-                    ++ lib.optionals settings.signal.enable [
-                      ''echo "SIGNAL_ACCOUNT=$(cat "$prompts/signal-account-number")"''
-                      ''echo "SIGNAL_ALLOWED_USERS=$(cat "$prompts/signal-account-number")"''
-                    ];
+                    ) keyProviders;
                 in
                 ''
                   {
