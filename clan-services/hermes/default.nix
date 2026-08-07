@@ -99,14 +99,10 @@ in
 
           homeAssistant = {
             enable = lib.mkEnableOption "the home assistant integration";
-            url = lib.mkOption {
-              type = lib.types.str;
-              default = "http://homeassistant.lan:8123";
-            };
             address = lib.mkOption {
               type = lib.types.str;
               default = "192.168.10.50";
-              description = "home assistant IPv4 address, opened as a firewall pinhole from the vm.";
+              description = "home assistant IPv4 address; the agent's url and the firewall pinhole both derive from it.";
             };
             port = lib.mkOption {
               type = lib.types.port;
@@ -191,7 +187,9 @@ in
                 enable = settings.homeAssistant.enable;
                 modules = [
                   self.modules.nixos.hermesHomeAssistant
-                  { services.hermes-agent.homeAssistant.url = settings.homeAssistant.url; }
+                  {
+                    services.hermes-agent.homeAssistant.url = "http://${settings.homeAssistant.address}:${toString settings.homeAssistant.port}";
+                  }
                 ];
                 prompts.home-assistant-token = "Home Assistant long-lived access token for the agent";
                 env.HASS_TOKEN = "home-assistant-token";
