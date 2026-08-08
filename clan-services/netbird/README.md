@@ -27,8 +27,8 @@ inventory.instances = {
 
 Server role:
 
-- imports `self.modules.nixos.netbirdServerStack`
-- enables management, signal, relay, dashboard, embedded IdP, and proxy services
+- imports the NetBird server stack, Traefik, CrowdSec, and the public-edge CrowdSec whitelist
+- enables management, signal, relay, dashboard, embedded IdP, reverse proxy, and public-edge protection
 - generates relay secret, encryption key, and owner password with clan vars
 - configures the dashboard against the public server domain
 - configures the NetBird reverse proxy for `proxyDomain`

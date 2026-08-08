@@ -8,13 +8,8 @@
 {
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
-    self.modules.nixos.crowdsec
-    self.modules.nixos.crowdsecTraefik
-    self.modules.nixos.crowdsecWhitelist
     self.modules.nixos.grub
     self.modules.nixos.tunedVirtualGuest
-    self.modules.nixos.traefik
-    self.modules.nixos.traefikGeoblock
   ]
   ++ (nflib.scanPaths ./. { });
 

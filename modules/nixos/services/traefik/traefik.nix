@@ -29,6 +29,11 @@
               };
               websecure = {
                 address = ":443";
+                http = {
+                  middlewares = lib.optionals config.services.crowdsec.enable [ "crowdsec@file" ] ++ [
+                    "geoblock@file"
+                  ];
+                };
                 http3 = { };
               };
               metrics.address = metricsAddress;

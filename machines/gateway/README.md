@@ -46,15 +46,15 @@ three defense layers protect inbound traffic before requests reach services.
   │                                                     │
   │  entrypoint middlewares, applied to every request:   │
   │                                                     │
-  │  1. geoblock plugin                                 │
-  │     └ resolves client IP → country via geojs.io     │
-  │     └ whitelist mode: only DE allowed               │
-  │     └ non-DE → 403                                  │
-  │                                                     │
-  │  2. crowdsec bouncer plugin (live mode)             │
+  │  1. crowdsec bouncer plugin (live mode)              │
   │     └ queries crowdsec LAPI for each new IP         │
   │     └ caches result locally (default 60s)           │
   │     └ active ban decision → 403                     │
+  │                                                     │
+  │  2. geoblock plugin                                 │
+  │     └ resolves client IP → country via geojs.io     │
+  │     └ whitelist mode: only DE allowed               │
+  │     └ non-DE → 403                                  │
   │                                                     │
   │  then routing by Host + Path to localhost services  │
   └─────────────────────────────────────────────────────┘

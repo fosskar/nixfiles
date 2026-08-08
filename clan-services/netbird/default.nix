@@ -68,10 +68,15 @@
             encryptionKeyPath = config.clan.core.vars.generators.netbird-server.files."encryption-key".path;
           in
           {
-            imports = [ self.modules.nixos.netbirdServerStack ];
+            imports = [
+              self.modules.nixos.crowdsec
+              self.modules.nixos.crowdsecWhitelist
+              self.modules.nixos.netbirdServerStack
+              self.modules.nixos.traefik
+            ];
 
-            # cross-host: netbird server runs on the gateway (no homepage/gatus
-            # here); collected onto the dashboard/monitoring host.
+            # cross-host: the server role authors homepage and gatus options on its target;
+            # the dashboard and monitoring hosts collect them.
             services.homepage-dashboard.services = [
               {
                 "network" = [
