@@ -356,6 +356,7 @@
             matrix = {
               enable = true;
               userId = "@hermes:fosskar.de";
+              homeChannel = "!WzCLw1OzVNBoUFn4KwbW-9EqeKu4qps8d3wOcvXZL0g";
               allowedUsers = [ "@fosskar:fosskar.de" ];
             };
 

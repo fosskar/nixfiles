@@ -18,6 +18,10 @@ _: {
           type = lib.types.str;
           default = "HERMES_BOT";
         };
+        homeChannel = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+        };
         allowedUsers = lib.mkOption {
           type = lib.types.listOf lib.types.str;
           description = "mxids allowed to talk to the agent.";
@@ -32,6 +36,9 @@ _: {
         # fail closed rather than silently falling back to plaintext when
         # crypto cannot initialise. MATRIX_ENCRYPTION is the deprecated alias
         MATRIX_E2EE_MODE = "required";
+      }
+      // lib.optionalAttrs (cfg.homeChannel != null) {
+        MATRIX_HOME_CHANNEL = cfg.homeChannel;
       };
     };
 }

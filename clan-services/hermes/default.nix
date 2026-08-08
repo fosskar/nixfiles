@@ -93,6 +93,10 @@ in
               type = lib.types.nullOr lib.types.str;
               default = null;
             };
+            homeChannel = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+            };
           };
 
           signal.enable = lib.mkEnableOption "the signal channel";
@@ -160,6 +164,9 @@ in
                     }
                     // lib.optionalAttrs (settings.matrix.deviceId != null) {
                       inherit (settings.matrix) deviceId;
+                    }
+                    // lib.optionalAttrs (settings.matrix.homeChannel != null) {
+                      inherit (settings.matrix) homeChannel;
                     };
                   }
                 ];
