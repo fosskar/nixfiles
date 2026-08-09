@@ -1,6 +1,11 @@
 {
   flake.modules.nixos.matrix =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       clan.core.vars.generators.mautrix-signal = {
         files."bridge.env" = { };
@@ -44,6 +49,26 @@
             pickle_key = "$PICKLE_KEY";
           };
         };
+      };
+
+      # --- backup ---
+
+      # the db holds the signal device link and the portal mappings.
+      # signal-registration.yaml is the one-time manual step below, so losing it
+      # means re-registering the appservice; config.yaml comes from nix.
+      clan.core.state.mautrix-signal = {
+        folders = [ "/var/backup/mautrix-signal" ];
+        preBackupScript = ''
+          export PATH=${
+            lib.makeBinPath [
+              pkgs.sqlite
+              pkgs.coreutils
+            ]
+          }
+          mkdir -p /var/backup/mautrix-signal
+          sqlite3 /var/lib/mautrix-signal/mautrix-signal.db ".timeout 120000" ".backup '/var/backup/mautrix-signal/mautrix-signal.db'"
+          cp /var/lib/mautrix-signal/signal-registration.yaml /var/backup/mautrix-signal/
+        '';
       };
 
       # one-time: paste signal-registration.yaml into #admins via
