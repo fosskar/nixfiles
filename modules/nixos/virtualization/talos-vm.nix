@@ -164,6 +164,33 @@
           '';
         };
 
+        # --- backup ---
+
+        # the qcow2 holds etcd but is torn if copied while the vm runs. the
+        # etcd snapshot is the supported consistent export; secrets.yaml is the
+        # cluster pki and cannot be regenerated from the config.
+        clan.core.state.talos-vm = {
+          folders = [ "/var/backup/talos-vm" ];
+          preBackupScript = ''
+            export PATH=${
+              lib.makeBinPath [
+                pkgs.talosctl
+                pkgs.coreutils
+                pkgs.systemd
+              ]
+            }
+            mkdir -p /var/backup/talos-vm
+            cp /var/lib/talos-vm/secrets.yaml /var/lib/talos-vm/controlplane.yaml \
+              /var/lib/talos-vm/talosconfig /var/backup/talos-vm/
+            # a stopped vm has nothing to snapshot; a running one that fails to
+            # answer is a real error and must fail the job
+            if systemctl is-active --quiet talos-vm.service; then
+              talosctl --talosconfig /var/lib/talos-vm/talosconfig -n ${vmIp} -e ${vmIp} \
+                etcd snapshot /var/backup/talos-vm/etcd.snapshot
+            fi
+          '';
+        };
+
         environment.systemPackages = [
           pkgs.talosctl
           pkgs.kubectl
