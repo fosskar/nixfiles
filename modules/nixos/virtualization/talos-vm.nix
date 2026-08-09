@@ -166,28 +166,44 @@
 
         # --- backup ---
 
-        # the qcow2 holds etcd but is torn if copied while the vm runs. the
-        # etcd snapshot is the supported consistent export; secrets.yaml is the
-        # cluster pki and cannot be regenerated from the config.
+        # a running vm's qcow2 is torn if copied, so quiesce and take the whole
+        # state dir: the disk carries node-local volume data that no etcd
+        # snapshot holds, and secrets.yaml is cluster pki the config cannot
+        # regenerate. the etcd snapshot is taken first, while the api is still
+        # up, and rides along for a granular restore into a fresh vm.
         clan.core.state.talos-vm = {
           folders = [ "/var/backup/talos-vm" ];
           preBackupScript = ''
             export PATH=${
               lib.makeBinPath [
                 pkgs.talosctl
+                pkgs.rsync
                 pkgs.coreutils
                 pkgs.systemd
               ]
             }
             mkdir -p /var/backup/talos-vm
-            cp /var/lib/talos-vm/secrets.yaml /var/lib/talos-vm/controlplane.yaml \
-              /var/lib/talos-vm/talosconfig /var/backup/talos-vm/
+            active=""
+            if systemctl is-active --quiet talos-vm.service; then
+              active=talos-vm.service
+            fi
             # a stopped vm has nothing to snapshot; a running one that fails to
             # answer is a real error and must fail the job
-            if systemctl is-active --quiet talos-vm.service; then
+            if [ -n "$active" ]; then
               talosctl --talosconfig /var/lib/talos-vm/talosconfig -n ${vmIp} -e ${vmIp} \
                 etcd snapshot /var/backup/talos-vm/etcd.snapshot
             fi
+            restart() {
+              if [ -n "$active" ]; then
+                systemctl start --no-block $active
+              fi
+            }
+            trap restart EXIT
+            if [ -n "$active" ]; then
+              systemctl stop $active
+            fi
+            rsync -a --delete --exclude=etcd.snapshot \
+              /var/lib/talos-vm/ /var/backup/talos-vm/
           '';
         };
 
