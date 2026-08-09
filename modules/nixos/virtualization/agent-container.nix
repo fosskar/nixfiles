@@ -191,6 +191,46 @@
         systemd.tmpfiles.rules = lib.mapAttrsToList (
           name: _: "d /var/lib/agent-containers/${name} 0755 root root - -"
         ) instances;
+
+        # the sandbox dir is the guests' /var/lib. a stopped guest is
+        # consistent whatever it stores, so quiesce rather than teach this
+        # module about any particular payload. only guests that were running
+        # get restarted, so a deliberately stopped one stays stopped; the trap
+        # makes sure a failed copy still brings them back.
+        clan.core.state.agent-containers = lib.mkIf (instances != { }) {
+          folders = [ "/var/backup/agent-containers" ];
+          preBackupScript = ''
+            export PATH=${
+              lib.makeBinPath [
+                pkgs.rsync
+                pkgs.coreutils
+                pkgs.systemd
+              ]
+            }
+            active=""
+            for unit in ${
+              lib.concatMapStringsSep " " (name: "container@${name}.service") (lib.attrNames instances)
+            }; do
+              if systemctl is-active --quiet "$unit"; then
+                active="$active $unit"
+              fi
+            done
+            # --no-block: the staging copy is already frozen, so the job must
+            # not wait on the guest's readiness notification
+            restart() {
+              if [ -n "$active" ]; then
+                systemctl start --no-block $active
+              fi
+            }
+            trap restart EXIT
+            if [ -n "$active" ]; then
+              systemctl stop $active
+            fi
+            mkdir -p /var/backup/agent-containers
+            rsync -a --delete /var/lib/agent-containers/ /var/backup/agent-containers/
+          '';
+        };
+
         systemd.services = forEachInstance (
           name: cfg:
           {

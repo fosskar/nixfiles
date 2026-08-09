@@ -205,6 +205,46 @@
 
         nixfiles.agentForwardEndpoints = forwardLib.endpointsOf instances;
 
+        # the sandbox dir is the guests' /var/lib. a stopped guest is
+        # consistent whatever it stores, so quiesce rather than teach this
+        # module about any particular payload. only guests that were running
+        # get restarted, so a deliberately stopped one stays stopped; the trap
+        # makes sure a failed copy still brings them back.
+        clan.core.state.agent-vms = lib.mkIf (instances != { }) {
+          folders = [ "/var/backup/agent-vms" ];
+          preBackupScript = ''
+            export PATH=${
+              lib.makeBinPath [
+                pkgs.rsync
+                pkgs.coreutils
+                pkgs.systemd
+              ]
+            }
+            active=""
+            for unit in ${
+              lib.concatMapStringsSep " " (name: "microvm@${name}.service") (lib.attrNames instances)
+            }; do
+              if systemctl is-active --quiet "$unit"; then
+                active="$active $unit"
+              fi
+            done
+            # --no-block: the staging copy is already frozen, so the job must
+            # not wait on the guest's readiness notification (microvm@ is
+            # Type=notify with a 2m30s timeout and reports ready late)
+            restart() {
+              if [ -n "$active" ]; then
+                systemctl start --no-block $active
+              fi
+            }
+            trap restart EXIT
+            if [ -n "$active" ]; then
+              systemctl stop $active
+            fi
+            mkdir -p /var/backup/agent-vms
+            rsync -a --delete /var/lib/agent-vms/ /var/backup/agent-vms/
+          '';
+        };
+
         # root on the host is the only thing that can reach the bridges, so
         # `ssh <vm-name>` from the host logs in as root
         programs.ssh.extraConfig = lib.concatStrings (
