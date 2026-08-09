@@ -145,9 +145,14 @@
                 ]
               }
               mkdir -p /var/backup/netbird-server
-              sqlite3 /var/lib/netbird-server/store.db ".backup '/var/backup/netbird-server/store.db'"
-              sqlite3 /var/lib/netbird-server/events.db ".backup '/var/backup/netbird-server/events.db'"
-              sqlite3 /var/lib/netbird-server/idp.db ".backup '/var/backup/netbird-server/idp.db'"
+              # access_log_entries is a rolling 7-day request log: ~99% of store.db
+              # and a constant writer, so a whole-file .backup restarts forever and
+              # never completes. dump every other table as sql instead.
+              tables=$(sqlite3 /var/lib/netbird-server/store.db ".timeout 120000" \
+                "select name from sqlite_master where type = 'table' and name <> 'access_log_entries' and name not like 'sqlite_%';" | tr '\n' ' ')
+              sqlite3 /var/lib/netbird-server/store.db ".timeout 120000" ".dump $tables" > /var/backup/netbird-server/store.sql
+              sqlite3 /var/lib/netbird-server/events.db ".timeout 120000" ".backup '/var/backup/netbird-server/events.db'"
+              sqlite3 /var/lib/netbird-server/idp.db ".timeout 120000" ".backup '/var/backup/netbird-server/idp.db'"
             '';
           };
 
