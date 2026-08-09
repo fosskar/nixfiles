@@ -291,13 +291,13 @@
                 format = lib.mkDefault "{:%H:%M}\\n{:%d.%m.%y}";
               };
               workspaces = {
-                display = lib.mkDefault "name";
+                label_source = lib.mkDefault "name";
                 hide_when_empty = lib.mkDefault true;
                 empty_color = lib.mkDefault "on_surface_variant";
               };
               disk = {
                 type = "sysmon";
-                stat = "disk_pct";
+                stat = "disk_used_pct";
               };
               ram = {
                 type = "sysmon";
