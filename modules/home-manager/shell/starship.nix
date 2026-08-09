@@ -34,6 +34,7 @@ _: {
             "[─╯](bright-black)"
           ];
           add_newline = true;
+          command_timeout = 2000;
 
           cmd_duration = {
             format = "[$duration](${theme.dark.semantic.warning}) ";
