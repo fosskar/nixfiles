@@ -40,22 +40,14 @@ in
           }:
           let
             niks3Pkgs = self.inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system};
-            # friendly bucket name; webHost is an extra global alias garage uses
-            # to route the cache website (clients fetch http://<webHost>:3902).
+            # cache bucket owned by the garage clan-service: declared in the
+            # garage instance's `buckets`, key pre-generated in `garage-buckets`.
             bucketName = "niks3-cache";
-            webHost = "${config.networking.hostName}.${config.clan.core.settings.domain}";
             niks3Port = 5751;
             garageS3Port = 3900;
             garageWebPort = 3902;
             varsGarage = config.clan.core.vars.generators."niks3-garage";
             varsKeys = config.clan.core.vars.generators."niks3-private";
-            # garage cluster secrets owned by the garage clan-service; this
-            # machine must also be a garage `peer`.
-            garageShared = config.clan.core.vars.generators."garage-shared";
-            garageTokens = config.clan.core.vars.generators."garage";
-            stateDir = "/var/lib/niks3";
-            s3AccessFile = "${stateDir}/s3-access";
-            s3SecretFile = "${stateDir}/s3-secret";
           in
           {
             imports = [
@@ -83,73 +75,17 @@ in
               '';
             };
 
-            systemd.tmpfiles.rules = [
-              "d ${stateDir} 0750 niks3 niks3 -"
-            ];
-
-            # one-shot: create bucket, allow website, mint s3 key for niks3.
-            systemd.services.niks3-bucket-init = {
-              description = "niks3 garage bucket + s3 key bootstrap";
-              after = [ "garage.service" ];
-              requires = [ "garage.service" ];
-              wantedBy = [ "multi-user.target" ];
-              unitConfig.ConditionPathExists = "!${stateDir}/.bucket-initialized";
-              path = [
-                pkgs.garage_2
-                pkgs.coreutils
-                pkgs.gnugrep
-              ];
-              environment = {
-                GARAGE_RPC_SECRET_FILE = "/run/credentials/niks3-bucket-init.service/rpc_secret";
-                GARAGE_ADMIN_TOKEN_FILE = "/run/credentials/niks3-bucket-init.service/admin_token";
-              };
-              serviceConfig = {
-                Type = "oneshot";
-                RemainAfterExit = true;
-                LoadCredential = [
-                  "rpc_secret:${garageShared.files.rpc_secret.path}"
-                  "admin_token:${garageTokens.files.admin_token.path}"
-                ];
-              };
+            # private copy of the cache bucket key, owned by niks3 (the shared
+            # garage-buckets originals are root-owned).
+            clan.core.vars.generators."niks3-s3" = {
+              dependencies = [ "garage-buckets" ];
+              files.access-key.owner = "niks3";
+              files.access-key.group = "niks3";
+              files.secret-key.owner = "niks3";
+              files.secret-key.group = "niks3";
               script = ''
-                set -euo pipefail
-
-                # wait for the local garage node and a usable cluster layout.
-                for _ in $(seq 1 60); do
-                  garage layout show 2>/dev/null | grep -q 'Current cluster layout version' && break
-                  sleep 2
-                done
-
-                # create bucket if missing.
-                if ! garage bucket info ${bucketName} >/dev/null 2>&1; then
-                  garage bucket create ${bucketName}
-                fi
-
-                # website Host alias (clients read at http://${webHost}:3902).
-                garage bucket alias ${bucketName} ${webHost} 2>/dev/null || true
-
-                # enable website mode -> anonymous reads on web endpoint.
-                garage bucket website --allow ${bucketName}
-
-                # mint key if missing.
-                if ! garage key info niks3-key >/dev/null 2>&1; then
-                  garage key create niks3-key
-                fi
-
-                key_info=$(garage key info --show-secret niks3-key)
-                key_id=$(echo "$key_info" | grep -oP 'Key ID:\s*\K\S+')
-                key_secret=$(echo "$key_info" | grep -oP 'Secret key:\s*\K\S+')
-
-                # grant key read+write on bucket.
-                garage bucket allow --read --write --key niks3-key ${bucketName}
-
-                # write creds for niks3 server.
-                install -m 0640 -o niks3 -g niks3 /dev/null ${s3AccessFile}
-                install -m 0640 -o niks3 -g niks3 /dev/null ${s3SecretFile}
-                printf '%s' "$key_id" > ${s3AccessFile}
-                printf '%s' "$key_secret" > ${s3SecretFile}
-
-                touch ${stateDir}/.bucket-initialized
+                cp $in/garage-buckets/niks3-cache_access_key_id $out/access-key
+                cp $in/garage-buckets/niks3-cache_secret_access_key $out/secret-key
               '';
             };
 
@@ -166,8 +102,8 @@ in
                 bucket = bucketName;
                 region = config.networking.hostName;
                 useSSL = false;
-                accessKeyFile = s3AccessFile;
-                secretKeyFile = s3SecretFile;
+                accessKeyFile = config.clan.core.vars.generators."niks3-s3".files.access-key.path;
+                secretKeyFile = config.clan.core.vars.generators."niks3-s3".files.secret-key.path;
               };
 
               apiTokenFile = varsGarage.files.api-token.path;
@@ -179,14 +115,12 @@ in
               gc.olderThan = "720h";
             };
 
-            # niks3 server depends on bucket bootstrap + postgres.
-            systemd.services.niks3 = {
-              after = [
-                "niks3-bucket-init.service"
-                "postgresql.service"
-              ];
-              requires = [ "niks3-bucket-init.service" ];
-            };
+            # bucket + key are provisioned by garage-buckets-init on the garage
+            # bootstrap node; locally only the daemon order matters.
+            systemd.services.niks3.after = [
+              "garage.service"
+              "postgresql.service"
+            ];
 
             # postgres via clan-core wrapper (consistent with paperless/immich/etc).
             clan.core.postgresql.enable = true;

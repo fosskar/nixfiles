@@ -112,6 +112,6 @@ the node's hostname (`s3_region` defaults to it), path-style addressing.
   deleting the `cluster_layout` files in every node's metadata directory, and
   a complete rebalance. Growing from 1 node to 2, or 2 to 3, crosses that
   line — plan it as a manual migration, not a plain deploy.
-- Service-specific tenants (buckets/keys) are provisioned by the consuming
-  service (e.g. niks3 creates its own cache bucket against the local garage S3
-  endpoint); only buckets listed in `buckets` are owned by this service.
+- Service-specific tenants use the same mechanism: their bucket is declared in
+  `buckets` and the consuming service reads the pre-generated key (e.g. niks3
+  consumes the `niks3-cache` bucket).

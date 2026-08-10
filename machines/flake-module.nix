@@ -476,6 +476,12 @@
               website = true;
               aliases = [ "maps.${config.flake.domains.public}" ];
             };
+            # nix binary cache objects for niks3; clients read anonymously via
+            # the s3 web endpoint (http://nixworker.s:3902).
+            niks3-cache = {
+              website = true;
+              aliases = [ "nixworker.s" ];
+            };
           };
           roles.node.machines = {
             "nixbox".settings = {
