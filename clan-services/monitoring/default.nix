@@ -104,7 +104,7 @@ in
                 labels = {
                   type = "telegraf";
                   source = "external";
-                  target = targetMachine target;
+                  machine = targetMachine target;
                 };
               }) settings.extraTelegrafTargets;
             };

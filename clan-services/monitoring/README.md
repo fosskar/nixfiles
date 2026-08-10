@@ -49,9 +49,8 @@ Client role:
 - `exporter.node.enable`: enable node exporter. defaults to `true`.
 - `exporter.zfs.enable`: enable ZFS exporter when ZFS is enabled. defaults to `true`.
 
-Scrape jobs for `extraTelegrafTargets` label the host `target`, not `machine`.
-`dashboards/unbound_adguardhome.json` selects on `target`. The other dashboards
-select on `machine`.
+Scrape jobs for `extraTelegrafTargets` label the host `machine`, like clan
+clients, and set `source = "external"`.
 
 ### `client`
 
