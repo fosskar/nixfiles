@@ -101,6 +101,19 @@ Restore manually:
 
 4. Start the services again and delete the staging directory.
 
+## Interaction with borg excludes
+
+Backup sources are snapshot paths, not the live paths. A borg exclude
+written as a bare path never matches: `/var/log` does not match
+`/persist/.borg-backup/var/log`. Write excludes depth-insensitive with
+the `sh:` style, for example `sh:**/var/log`. The borgbackup instance in
+`machines/flake-module.nix` follows this rule.
+
+A live database inside a snapshotted folder is torn at snapshot time.
+Give such a service a dump-style `clan.core.state` entry that writes a
+consistent copy in `preBackupScript`, and add an exclude for the live
+file. See `clan.core.state.netbird-server` for the pattern.
+
 ## Settings
 
 - `folders`: live folders to snapshot before backup.
