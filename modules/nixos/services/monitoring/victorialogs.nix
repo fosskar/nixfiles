@@ -6,12 +6,12 @@
       ...
     }:
     let
-      listenPort = 9428;
+      listenPort = lib.last (lib.splitString ":" config.services.victorialogs.listenAddress);
     in
     {
       config = lib.mkIf config.services.victorialogs.enable {
         services.victorialogs = {
-          listenAddress = lib.mkDefault "0.0.0.0:${toString listenPort}";
+          listenAddress = lib.mkDefault "0.0.0.0:9428";
           extraOptions = [ "-enableTCP6" ];
         };
 
@@ -21,7 +21,7 @@
             name = "VictoriaLogs";
             type = "victoriametrics-logs-datasource";
             access = "proxy";
-            url = "http://127.0.0.1:${toString listenPort}";
+            url = "http://127.0.0.1:${listenPort}";
           }
         ];
       };

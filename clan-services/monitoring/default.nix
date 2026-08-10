@@ -104,8 +104,6 @@ in
                 labels = {
                   type = "telegraf";
                   source = "external";
-                  # external hosts are labelled `target`, not `machine`: dashboards/unbound_adguardhome.json
-                  # selects on it. renaming this label empties that dashboard.
                   target = targetMachine target;
                 };
               }) settings.extraTelegrafTargets;
@@ -141,6 +139,7 @@ in
 
             services.grafana.enable = lib.mkDefault true;
             services.victorialogs.enable = lib.mkDefault true;
+            services.victorialogs.listenAddress = "0.0.0.0:${toString logsPort}";
             services.victoriametrics.enable = lib.mkDefault true;
             services.telegraf.enable = lib.mkDefault true;
 
