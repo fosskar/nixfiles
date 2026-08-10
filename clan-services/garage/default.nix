@@ -64,7 +64,8 @@ in
             description = ''
               cluster-wide s3 buckets to create automatically, each with its own
               pre-generated read+write key in the shared `garage-buckets` vars
-              generator. set at role level so every node agrees on the set.
+              generator. must be identical on every node (asserted); set at role
+              level (roles.node.settings.buckets).
             '';
           };
         };
@@ -148,6 +149,13 @@ in
           in
           {
             imports = [ self.modules.nixos.garageUi ];
+
+            assertions = [
+              {
+                assertion = lib.all (n: (nodeSettings n).buckets == buckets) nodeNames;
+                message = "garage: buckets must be identical on every node; set them at role level (roles.node.settings.buckets).";
+              }
+            ];
 
             services.garageUi = {
               enable = settings.ui.enable;
