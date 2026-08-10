@@ -217,7 +217,7 @@ in
 
             services.telegraf = {
               enable = lib.mkDefault true;
-              extraConfig.outputs.prometheus_client = lib.mkForce [
+              extraConfig.outputs.prometheus_client = [
                 {
                   listen = ":${toString settings.listenPort}";
                   metric_version = 2;
