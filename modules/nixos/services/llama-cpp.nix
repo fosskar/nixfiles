@@ -125,9 +125,7 @@
               mmproj = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "mmproj-kquant.gguf";
               spec-draft-model = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "dflash-kquant.gguf";
               alias = "muse-glimmer-30b-dflash";
-              ctx-size = 32768;
-              cache-type-k = "q4_0";
-              cache-type-v = "q4_0";
+              ctx-size = 98304;
               temp = 1.0;
               top-p = 0.95;
               top-k = 64;
@@ -136,8 +134,6 @@
               spec-type = "draft-dflash";
               spec-draft-n-max = 15;
               spec-draft-ngl = 999;
-              cache-type-k-draft = "q4_0";
-              cache-type-v-draft = "q4_0";
             };
           };
         };
