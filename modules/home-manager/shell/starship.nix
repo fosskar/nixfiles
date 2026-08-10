@@ -44,23 +44,16 @@ _: {
             style = theme.dark.accent.primary;
           };
 
-          # jj and git integration
-          custom = {
-            jj = {
-              description = "jujutsu vcs status";
-              when = "jj --ignore-working-copy root";
-              symbol = "󰘬 ";
-              command = "jj log -r@ --no-graph --ignore-working-copy --color=never -T 'change_id.shortest()'";
-              format = "[$symbol$output](${theme.ansi.normal.magenta}) ";
-            };
-
-            git_branch = {
-              when = "git rev-parse --git-dir 2>/dev/null && ! jj --ignore-working-copy root 2>/dev/null";
-              command = "git branch --show-current 2>/dev/null || git rev-parse --short HEAD";
-              symbol = " ";
-              format = "[$symbol$output](${theme.ansi.normal.magenta}) ";
-              description = "only show git branch if not in a jj repo";
-            };
+          # jj and git integration: one command, one process chain per prompt
+          custom.vcs = {
+            description = "jj change id, or git branch outside jj repos";
+            when = true;
+            shell = [ "sh" ];
+            command = ''
+              jj log -r@ --no-graph --ignore-working-copy --color=never -T '"󰘬 " ++ change_id.shortest()' 2>/dev/null \
+                || { b=$(git branch --show-current 2>/dev/null || git rev-parse --short HEAD 2>/dev/null) && printf ' %s' "$b"; }
+            '';
+            format = "([$output](${theme.ansi.normal.magenta}) )";
           };
 
           # disable built-in git modules, using custom modules instead
