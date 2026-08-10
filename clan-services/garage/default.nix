@@ -132,10 +132,18 @@ in
             # "FAILED NODES"; metadata writes need full RF quorum, so only the
             # healthy section (everything before that header) counts.
             waitForHealthyPeers = lib.concatMapStringsSep "\n" (name: ''
+              healthy=""
               for _ in $(seq 1 60); do
-                garage status 2>/dev/null | sed '/FAILED NODES/q' | grep -q ${nodeIdShort name} && break
+                if garage status 2>/dev/null | sed '/FAILED NODES/q' | grep -q ${nodeIdShort name}; then
+                  healthy=1
+                  break
+                fi
                 sleep 2
               done
+              if [ -z "$healthy" ]; then
+                echo "peer ${name} not healthy after 120s; not applying staged layout" >&2
+                exit 1
+              fi
             '') nodeNames;
           in
           {
@@ -275,15 +283,21 @@ in
               '';
             };
 
-            # cluster layout bootstrap: runs once, on a single node, after all
-            # peers have connected. idempotent via the marker file.
+            # cluster layout reconcile: runs on every boot of the elected node
+            # (and after deploys that change it); `layout assign` stages a diff
+            # or nothing, apply only fires when garage reports staged changes.
+            # node removal stays a manual `garage layout remove`.
             systemd.services.garage-layout-init = lib.mkIf (hostName == bootstrapNode) {
-              description = "garage cluster layout init";
+              description = "garage cluster layout reconcile";
               after = [ "garage.service" ];
               requires = [ "garage.service" ];
               wantedBy = [ "multi-user.target" ];
-              unitConfig.ConditionPathExists = "!${metadataDir}/.layout-initialized";
-              path = [ pkgs.garage_2 ];
+              path = [
+                pkgs.garage_2
+                pkgs.coreutils
+                pkgs.gnugrep
+                pkgs.gnused
+              ];
               environment = {
                 GARAGE_RPC_SECRET_FILE = "/run/credentials/garage-layout-init.service/rpc_secret";
                 GARAGE_ADMIN_TOKEN_FILE = "/run/credentials/garage-layout-init.service/admin_token";
@@ -302,16 +316,13 @@ in
                   sleep 2
                 done
 
-                ${waitForHealthyPeers}
-
                 ${assignCmds}
 
-                version=$(garage layout show 2>/dev/null | grep -oP 'apply --version \K[0-9]+')
+                version=$(garage layout show 2>/dev/null | grep -oP 'apply --version \K[0-9]+' || true)
                 if [ -n "$version" ]; then
+                  ${waitForHealthyPeers}
                   garage layout apply --version "$version"
                 fi
-
-                touch ${metadataDir}/.layout-initialized
               '';
             };
 

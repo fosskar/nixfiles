@@ -10,9 +10,13 @@ no clustering, layout, or web ui. This service keeps that baseline and adds:
   is known at evaluation time — no manual `garage node connect`.
 - **Replication** across nodes for redundancy. `replication_factor` is derived
   from the number of `node` machines (1 node → RF1, 2 → RF2, 3+ → RF3).
-- **Automatic layout bootstrap**: a one-shot on a single elected node waits for
-  all nodes to connect, then assigns + applies the cluster layout. Idempotent
-  via a marker file.
+- **Declarative layout reconcile**: a one-shot on a single elected node runs on
+  every boot (and after deploys that change it), waits for the local daemon,
+  re-runs `garage layout assign` for all nodes, and applies only when garage
+  reports staged changes. Capacity and zone edits and new nodes land on the
+  next deploy; when staged changes cannot be applied (a peer is down), the
+  unit fails visibly and retries on the next boot or deploy. Node removal
+  stays a manual `garage layout remove`.
 - **Consistent metadata backups**: an lmdb snapshot is taken before backup
   instead of copying the live db (which can tear when copied hot).
 - An optional **garage-ui** (per-node `ui.enable`, default false) behind Authelia
@@ -103,6 +107,11 @@ the node's hostname (`s3_region` defaults to it), path-style addressing.
 - rpc binds all interfaces (`[::]:3901`) and advertises the node's rpc address
   (default `<machine>.s`); the rpc port is opened in the firewall. Nodes must be
   able to reach each other on it.
+- `replication_factor` is derived from the node count, and garage does not
+  support changing it on a live cluster: that needs a full cluster shutdown,
+  deleting the `cluster_layout` files in every node's metadata directory, and
+  a complete rebalance. Growing from 1 node to 2, or 2 to 3, crosses that
+  line — plan it as a manual migration, not a plain deploy.
 - Service-specific tenants (buckets/keys) are provisioned by the consuming
   service (e.g. niks3 creates its own cache bucket against the local garage S3
   endpoint); only buckets listed in `buckets` are owned by this service.
