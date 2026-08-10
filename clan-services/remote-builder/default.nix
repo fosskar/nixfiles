@@ -13,10 +13,43 @@ _:
     interface =
       { lib, ... }:
       {
-        options.extraClientKeys = lib.mkOption {
-          type = lib.types.listOf lib.types.str;
-          default = [ ];
-          description = "ssh pubkeys of non-clan clients allowed to offload builds";
+        options = {
+          extraClientKeys = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "ssh pubkeys of non-clan clients allowed to offload builds";
+          };
+          maxJobs = lib.mkOption {
+            type = lib.types.ints.positive;
+            default = 8;
+            description = "parallel builds on this builder; also advertised to clients";
+          };
+          systems = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ "x86_64-linux" ];
+            description = "systems this builder builds; advertised to clients";
+          };
+          speedFactor = lib.mkOption {
+            type = lib.types.ints.positive;
+            default = 10;
+            description = "relative builder speed advertised to clients";
+          };
+          supportedFeatures = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [
+              "nixos-test"
+              "big-parallel"
+              "kvm"
+              "uid-range"
+              "recursive-nix"
+            ];
+            description = "features advertised to clients; uid-range and recursive-nix also enable the matching nix settings on the builder";
+          };
+          gcKeepFreeGiB = lib.mkOption {
+            type = lib.types.ints.positive;
+            default = 128;
+            description = "free space target the hourly nix gc maintains on /nix/store";
+          };
         };
       };
 
@@ -44,28 +77,32 @@ _:
           in
           {
             nix.settings = {
-              max-jobs = lib.mkDefault 8;
+              max-jobs = lib.mkDefault settings.maxJobs;
               cores = lib.mkDefault 0;
-              experimental-features = lib.mkAfter [
-                "auto-allocate-uids"
-                "cgroups"
-                "recursive-nix"
-              ];
+              experimental-features = lib.mkAfter (
+                [
+                  "auto-allocate-uids"
+                  "cgroups"
+                ]
+                ++ lib.optional (lib.elem "recursive-nix" settings.supportedFeatures) "recursive-nix"
+              );
               auto-allocate-uids = lib.mkDefault true;
               # the experimental feature alone only puts uid-range derivations
               # in a cgroup; nixbot builds untrusted PR branches, so contain
               # every build and get an atomic kill of its process tree
               use-cgroups = lib.mkDefault true;
-              system-features = lib.mkAfter [
-                "uid-range"
-                "recursive-nix"
-              ];
+              system-features = lib.mkAfter (
+                lib.intersectLists [
+                  "uid-range"
+                  "recursive-nix"
+                ] settings.supportedFeatures
+              );
             };
 
             nix.gc = {
               automatic = true;
               dates = "*:45";
-              options = ''--max-freed "$((128 * 1024**3 - 1024 * $(df -P -k /nix/store | tail -n 1 | ${pkgs.gawk}/bin/awk '{ print $4 }')))"'';
+              options = ''--max-freed "$((${toString settings.gcKeepFreeGiB} * 1024**3 - 1024 * $(df -P -k /nix/store | tail -n 1 | ${pkgs.gawk}/bin/awk '{ print $4 }')))"'';
               randomizedDelaySec = "1800";
             };
 
@@ -146,22 +183,20 @@ _:
                 '';
               };
 
-              nix.buildMachines = map (builderName: {
-                hostName = "${builderName}.${config.clan.core.settings.domain}";
-                sshUser = "nix-remote-builder";
-                systems = [ "x86_64-linux" ];
-                maxJobs = 16;
-                speedFactor = 10;
-                protocol = "ssh-ng";
-                supportedFeatures = [
-                  "nixos-test"
-                  "big-parallel"
-                  "kvm"
-                  "uid-range"
-                  "recursive-nix"
-                ];
-                sshKey = config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
-              }) builderNames;
+              nix.buildMachines = map (
+                builderName:
+                let
+                  builderSettings = builderMachines.${builderName}.settings;
+                in
+                {
+                  hostName = "${builderName}.${config.clan.core.settings.domain}";
+                  sshUser = "nix-remote-builder";
+                  inherit (builderSettings) systems speedFactor supportedFeatures;
+                  inherit (builderSettings) maxJobs;
+                  protocol = "ssh-ng";
+                  sshKey = config.clan.core.vars.generators.remote-builder.files."id_ed25519".path;
+                }
+              ) builderNames;
             };
           };
       };
