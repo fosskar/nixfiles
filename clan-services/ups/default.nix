@@ -1,4 +1,9 @@
-_: {
+_:
+let
+  upsName = "eaton-ellipse";
+  secondaryUser = "upsmon-secondary";
+in
+{
   _class = "clan.service";
   manifest.name = "ups";
   manifest.description = "NUT UPS monitoring: usb-attached primary serving remote secondaries";
@@ -38,7 +43,7 @@ _: {
             enable = true;
             mode = "netserver";
 
-            ups."eaton-ellipse" = {
+            ups.${upsName} = {
               driver = "usbhid-ups";
               port = "auto";
               description = "Eaton Ellipse PRO";
@@ -54,19 +59,19 @@ _: {
             };
 
             # remote secondaries authenticate as this user
-            users.upsmon-secondary = {
+            users.${secondaryUser} = {
               passwordFile = config.clan.core.vars.generators.ups.files.password.path;
               upsmon = "secondary";
             };
 
             upsmon = {
               enable = true;
-              monitor."eaton-ellipse" = {
+              monitor.${upsName} = {
                 user = "upsmon";
                 type = "primary";
                 powerValue = 1;
                 passwordFile = config.clan.core.vars.generators.ups.files.password.path;
-                system = "eaton-ellipse@localhost";
+                system = "${upsName}@localhost";
               };
             };
 
@@ -83,6 +88,17 @@ _: {
 
           # expose upsd to secondaries over the yggdrasil mesh only
           networking.firewall.interfaces.ygg.allowedTCPPorts = [ 3493 ];
+
+          services.gatus.settings.endpoints = [
+            {
+              name = "UPS";
+              url = "tcp://${config.networking.hostName}.s:3493";
+              enabled = true;
+              interval = "5m";
+              conditions = [ "[CONNECTED] == true" ];
+              alerts = [ { type = "email"; } ];
+            }
+          ];
 
           systemd.services = {
             upsdrv = {
@@ -167,12 +183,12 @@ _: {
 
               upsmon = {
                 enable = true;
-                monitor."eaton-ellipse" = {
-                  user = "upsmon-secondary";
+                monitor.${upsName} = {
+                  user = secondaryUser;
                   type = "secondary";
                   powerValue = 1;
                   passwordFile = config.clan.core.vars.generators.ups.files.password.path;
-                  system = "eaton-ellipse@${primaryHost}";
+                  system = "${upsName}@${primaryHost}";
                 };
               };
             };

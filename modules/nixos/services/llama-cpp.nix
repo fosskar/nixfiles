@@ -32,6 +32,15 @@
             "mmproj-F16.gguf" = "71f3cbc1f7cc0f30d09d41cfa924c0060827ebc33bf15ace7e86661e856f0160";
           };
         };
+        "unsloth/Muse-Glimmer-30B-GGUF" = {
+          rev = "988969716071c538d862a7c10a2419caaafe4d9b";
+          files = {
+            "Muse-Glimmer-30B-UD-Q4_K_XL.gguf" =
+              "82bece304887a313ece08400bc030f6066c7bff5b906b0cd40308ec8a409fd38";
+            "dflash-kquant.gguf" = "27d9a805fa29b943cfb6ad4843367cd4eaaaf06bd452d8cc3e00a2cd18a677bc";
+            "mmproj-kquant.gguf" = "f48b452316f9b213758e8659444029b961a24a07f99a1abb2a9f88b06f7c00c6";
+          };
+        };
       };
       modelPath = repo: file: "${modelsDir}/${repo}/${file}";
       manifest = pkgs.writeText "llama-cpp-models.manifest" (
@@ -51,7 +60,15 @@
     {
       services.llama-cpp = {
         enable = true;
-        package = pkgs.llama-cpp.override { cudaSupport = true; };
+        package = (pkgs.llama-cpp.override { cudaSupport = true; }).overrideAttrs {
+          version = "10273-unstable-2026-08-10";
+          src = pkgs.fetchFromGitHub {
+            owner = "ggml-org";
+            repo = "llama.cpp";
+            rev = "62bf73d25c53b8161f8a22894d4f90c4aebbd7d0";
+            hash = "sha256-lnQevDxm8dFnHUuHpefvC5ieuDE1R+pHKmHFo0LfoM0=";
+          };
+        };
         openFirewall = false;
         settings = {
           host = listenAddress;
@@ -102,6 +119,25 @@
               spec-type = "draft-mtp";
               spec-draft-n-max = 3;
             };
+            "unsloth/Muse-Glimmer-30B-GGUF:Q4_K_XL" = {
+              model = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "Muse-Glimmer-30B-UD-Q4_K_XL.gguf";
+              mmproj = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "mmproj-kquant.gguf";
+              spec-draft-model = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "dflash-kquant.gguf";
+              alias = "muse-glimmer-30b-dflash";
+              ctx-size = 32768;
+              cache-type-k = "q4_0";
+              cache-type-v = "q4_0";
+              temp = 1.0;
+              top-p = 0.95;
+              top-k = 64;
+              min-p = 0.00;
+              reasoning = "on";
+              spec-type = "draft-dflash";
+              spec-draft-n-max = 15;
+              spec-draft-ngl = 999;
+              cache-type-k-draft = "q4_0";
+              cache-type-v-draft = "q4_0";
+            };
           };
         };
       };
@@ -113,8 +149,7 @@
         wants = [ "network-online.target" ];
         path = [ pkgs.curl ];
         serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
+          Type = "exec";
           StateDirectory = "llama-cpp-models";
           TimeoutStartSec = "infinity";
         };
