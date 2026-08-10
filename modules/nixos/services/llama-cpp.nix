@@ -61,13 +61,14 @@
       services.llama-cpp = {
         enable = true;
         package = (pkgs.llama-cpp.override { cudaSupport = true; }).overrideAttrs {
-          version = "10273-unstable-2026-08-10";
+          version = "10274";
           src = pkgs.fetchFromGitHub {
             owner = "ggml-org";
             repo = "llama.cpp";
             rev = "62bf73d25c53b8161f8a22894d4f90c4aebbd7d0";
             hash = "sha256-lnQevDxm8dFnHUuHpefvC5ieuDE1R+pHKmHFo0LfoM0=";
           };
+          npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
         };
         openFirewall = false;
         settings = {

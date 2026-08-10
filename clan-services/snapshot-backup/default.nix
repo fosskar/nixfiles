@@ -122,7 +122,17 @@ _:
                 };
           in
           {
-            clan.core.state.${settings.stateName} = state;
+            # folders point at snapshot paths, which are never writable restore
+            # targets (.zfs/snapshot is virtual, btrfs staging may be a ro
+            # snapshot); block clan backups restore before borg extract fails
+            # with a confusing write error.
+            clan.core.state.${settings.stateName} = state // {
+              preRestoreScript = ''
+                echo "error: clan backups restore cannot write into snapshot paths" >&2
+                echo "follow the manual procedure in clan-services/snapshot-backup/README.md" >&2
+                exit 1
+              '';
+            };
           };
       };
   };
