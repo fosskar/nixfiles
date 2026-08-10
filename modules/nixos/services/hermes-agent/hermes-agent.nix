@@ -48,12 +48,12 @@
           # models-max = 1, so naming any other one costs a model swap on the
           # first request
           default_model = "qwen3.6-35b-a3b-mtp";
-          context_length = 131072;
+          context_length = 98304;
         };
         model = {
           default = "qwen3.6-35b-a3b-mtp";
           provider = "local";
-          context_length = 131072;
+          context_length = 98304;
         };
       };
     in

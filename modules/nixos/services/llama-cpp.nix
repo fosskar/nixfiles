@@ -17,30 +17,35 @@
       # weights in place, and llama.cpp's etag check then silently re-downloads
       # the swapped file on the next model load
       models = {
-        "unsloth/Qwen3.6-27B-GGUF" = {
-          file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
-          rev = "82d411acf4a06cfb8d9b073a5211bf410bfc29bf";
-          sha256 = "ff6941ded525b34eb159496762c29dd0ec6e71dc31b74d57e75d871a03eec259";
-        };
         "unsloth/Qwen3.6-27B-MTP-GGUF" = {
-          file = "Qwen3.6-27B-UD-Q4_K_XL.gguf";
           rev = "5cb35eb3dcbf52dbce5f87dbc64df6aaffadcace";
-          sha256 = "4085665ee36d82a672a238a43f0e5643f2f0e39f2d7bd5d373f0ef10ecf53095";
+          files = {
+            "Qwen3.6-27B-IQ4_XS.gguf" = "89f2c7e4f9f91d17ba9df6f0eef67cb909bc67d91cd035291be35cd88f1848ba";
+            "mmproj-F16.gguf" = "eacf610d1ee4bd5ed0197a0777dd8f4fceb8eefa27009067c7d496cb68fbde45";
+          };
         };
         "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" = {
-          file = "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf";
           rev = "5bc3e238d916f48a861bac2f8a1990a0e9b7e98d";
-          sha256 = "df27a780435b7b45c2597536112ea3cb091f8544c3d0c3318d9f4258b31f7adf";
+          files = {
+            "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf" =
+              "df27a780435b7b45c2597536112ea3cb091f8544c3d0c3318d9f4258b31f7adf";
+            "mmproj-F16.gguf" = "71f3cbc1f7cc0f30d09d41cfa924c0060827ebc33bf15ace7e86661e856f0160";
+          };
         };
       };
-      modelPath = repo: "${modelsDir}/${repo}/${models.${repo}.file}";
+      modelPath = repo: file: "${modelsDir}/${repo}/${file}";
       manifest = pkgs.writeText "llama-cpp-models.manifest" (
         lib.concatMapStrings (
-          repo: "${repo} ${models.${repo}.file} ${models.${repo}.rev} ${models.${repo}.sha256}\n"
+          repo:
+          lib.concatMapStrings (
+            file: "${repo} ${file} ${models.${repo}.rev} ${models.${repo}.files.${file}}\n"
+          ) (lib.attrNames models.${repo}.files)
         ) (lib.attrNames models)
       );
       keepList = pkgs.writeText "llama-cpp-models.keep" (
-        lib.concatMapStrings (repo: "${repo}/${models.${repo}.file}\n") (lib.attrNames models)
+        lib.concatMapStrings (
+          repo: lib.concatMapStrings (file: "${repo}/${file}\n") (lib.attrNames models.${repo}.files)
+        ) (lib.attrNames models)
       );
     in
     {
@@ -60,39 +65,32 @@
               cache-type-k = "q8_0";
               cache-type-v = "q8_0";
             };
-            "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL" = {
-              model = modelPath "unsloth/Qwen3.6-27B-GGUF";
-              alias = "qwen3.6-27b";
+            "unsloth/Qwen3.6-27B-MTP-GGUF:IQ4_XS" = {
+              model = modelPath "unsloth/Qwen3.6-27B-MTP-GGUF" "Qwen3.6-27B-IQ4_XS.gguf";
+              mmproj = modelPath "unsloth/Qwen3.6-27B-MTP-GGUF" "mmproj-F16.gguf";
+              alias = "qwen3.6-27b-mtp";
+              # 96k + gpu mmproj measured at 22.0/24.5 GiB; 131k leaves no room for image encode
+              ctx-size = 98304;
               temp = 0.7;
               top-p = 0.8;
               top-k = 20;
+              min-p = 0.00;
               presence-penalty = 1.5;
-              min-p = 0.00;
               reasoning = "off";
-            };
-            "unsloth/Qwen3.6-27B-MTP-GGUF:Q4_K_XL" = {
-              model = modelPath "unsloth/Qwen3.6-27B-MTP-GGUF";
-              alias = "qwen3.6-27b-mtp";
-              ctx-size = 65536;
-              cache-type-v = "q4_0";
-              temp = 1.0;
-              top-p = 0.95;
-              top-k = 20;
-              min-p = 0.00;
-              reasoning = "on";
               chat-template-kwargs = builtins.toJSON {
-                preserve_thinking = false;
+                enable_thinking = false;
               };
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
-              cache-type-k-draft = "q4_0";
-              cache-type-v-draft = "q4_0";
             };
             "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:IQ4_XS" = {
-              model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF";
+              model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf";
+              mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
               alias = "qwen3.6-35b-a3b-mtp";
               load-on-startup = true;
-              ctx-size = 131072;
+              # unverified: 96k chosen over 131k to make room for the gpu mmproj;
+              # confirm fit on first load with an image request before raising
+              ctx-size = 98304;
               temp = 1.0;
               top-p = 0.95;
               top-k = 20;
@@ -102,9 +100,7 @@
                 preserve_thinking = false;
               };
               spec-type = "draft-mtp";
-              spec-draft-n-max = 2;
-              cache-type-k-draft = "q4_0";
-              cache-type-v-draft = "q4_0";
+              spec-draft-n-max = 3;
             };
           };
         };
@@ -112,8 +108,7 @@
 
       systemd.services.llama-cpp-models = {
         description = "download pinned llama.cpp models";
-        wantedBy = [ "llama-cpp.service" ];
-        before = [ "llama-cpp.service" ];
+        wantedBy = [ "multi-user.target" ];
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
         path = [ pkgs.curl ];
