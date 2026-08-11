@@ -15,7 +15,7 @@ let
     hash = "sha256-qic0onHi4HCQtG6NEARFeaB+UCFOWp3UyAeo3MRTjDU=";
   };
 
-  extracted = appimageTools.extractType2 { inherit pname version src; };
+  extracted = appimageTools.extract { inherit pname version src; };
 
   # ajv + deps — missing from upstream bundle, required by pi-coding-agent
   ajvTar = fetchurl {

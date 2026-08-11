@@ -14,19 +14,17 @@
       listenPort = 2283;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
 
-      python3Cuda = pkgs.python3.override {
-        packageOverrides = pyFinal: pyPrev: {
-          onnxruntime = pyPrev.onnxruntime.override {
-            onnxruntime = pkgs.onnxruntime.override {
-              cudaSupport = true;
-              # sharded_moe.cc includes contrib_ops/cuda/moe/ft_moe/moe_kernel.h, deleted in
-              # onnxruntime 1.27.1; that file is only compiled when nccl is enabled
-              ncclSupport = false;
-              python3Packages = pyFinal;
-            };
+      # cache.nixos-cuda.org serves builds with cudaSupport and default
+      # capabilities; host-level overrides (cudaCapabilities, packageOverrides)
+      # would miss the cache, so re-import nixpkgs with a clean cuda config
+      python3Cuda =
+        (import pkgs.path {
+          inherit (pkgs.stdenv.hostPlatform) system;
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
           };
-        };
-      };
+        }).python3;
 
     in
     {
