@@ -43,16 +43,22 @@
           name = "Local";
           api = "https://llama-cpp.${flake-self.domains.local}/v1";
           api_key = "no-key-required";
-          # must stay the alias carrying load-on-startup in
-          # modules/nixos/services/llama-cpp.nix, at that preset's ctx-size;
-          # models-max = 1, so naming any other one costs a model swap on the
-          # first request
+          # manual fallback: llama-cpp no longer preloads a model; the first
+          # request to this provider loads qwen, which only fits after
+          # docker-vllm is stopped on nixbox
           default_model = "qwen3.6-35b-a3b-mtp";
           context_length = 98304;
         };
+        providers.nemotron = {
+          name = "Nemotron";
+          api = "https://vllm.${flake-self.domains.local}/v1";
+          api_key = "no-key-required";
+          default_model = "nemotron-3.5-lightning-30b-a3b";
+          context_length = 98304;
+        };
         model = {
-          default = "qwen3.6-35b-a3b-mtp";
-          provider = "local";
+          default = "nemotron-3.5-lightning-30b-a3b";
+          provider = "nemotron";
           context_length = 98304;
         };
       };
