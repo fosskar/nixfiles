@@ -43,7 +43,7 @@ Use sub-agents to walk the infrastructure along these lenses:
 - Secrets outside the repo's generator pattern; rotation that requires archaeology.
 - Update risk: what does a bad update do to each host once deployed, and what is the rollback story?
 
-In this setup the anchors are: inventory in `machines/flake-module.nix`; state boundary = `preservation.preserveAt."/persist"` + `clan.core.state.<svc>`; probes = gatus endpoints + `systemd-email-alerts`; exposure = `*.nx3.eu` caddy vhosts (LAN) vs `*.fosskar.eu` netbird-proxy (public — configured in the netbird UI, a drift surface by design; read it via `docs/netbird-exposure.md`); secrets = `clan.core.vars.generators`; update risk = manual `clan machines update` (nixbot only opens update PRs — deployment stays manual) + NixOS generations and the preservation rollback modules.
+In this setup the anchors are: inventory in `inventory/`; state boundary = `preservation.preserveAt."/persist"` + `clan.core.state.<svc>`; probes = gatus endpoints + `systemd-email-alerts`; exposure = `*.nx3.eu` caddy vhosts (LAN) vs `*.fosskar.eu` netbird-proxy (public — configured in the netbird UI, a drift surface by design; read it via `docs/netbird-exposure.md`); secrets = `clan.core.vars.generators`; update risk = manual `clan machines update` (nixbot only opens update PRs — deployment stays manual) + NixOS generations and the preservation rollback modules.
 
 Exploration is complete when every host and every user-facing service is accounted for under every lens — it either produced a finding or is explicitly covered.
 

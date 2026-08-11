@@ -107,7 +107,7 @@ Backup sources are snapshot paths, not the live paths. A borg exclude
 written as a bare path never matches: `/var/log` does not match
 `/persist/.borg-backup/var/log`. Write excludes depth-insensitive with
 the `sh:` style, for example `sh:**/var/log`. The borgbackup instance in
-`machines/flake-module.nix` follows this rule.
+`inventory/backup.nix` follows this rule.
 
 A live database inside a snapshotted folder is torn at snapshot time.
 Give such a service a dump-style `clan.core.state` entry that writes a

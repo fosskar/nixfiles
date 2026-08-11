@@ -23,14 +23,14 @@ Source routing:
 - global service behavior: `modules/nixos/services/`
 - host-local composition and hardware: `machines/<machine>/`
 - common roles: `modules/nixos/common/`
-- clan inventory and role assignment: `machines/flake-module.nix`
-- reusable clan services: `clan-services/<service>/default.nix`
+- clan inventory and role assignment: `inventory/`
+- reusable clan services: `modules/clan-services/<service>/<service>.nix`
 - flake-level data and wiring: `modules/flake-parts/`
 - local packages: `packages/<name>/package.nix`; exposed as flake package `<name>` and `pkgs.local.<name>`
 
 Non-obvious areas:
 
-- `modules/flake-parts/clan.nix` registers `clan-services/<service>` as `clan.modules.<service>`
+- clan services export through `flake.modules."clan.service".<service>`; `modules/flake-parts/clan.nix` assigns that set to `clan.modules`
 - `modules/flake-parts/hosts.nix` is the single source of machine IPs
 - `modules/llm/` owns agent tooling, skills, souls, and extensions; pi and omp install their applicable extensions
 - `flake.llm.skills.<name>` exposes skills to NixOS consumers such as Hermes
@@ -43,7 +43,7 @@ Clan owns inventory, tags, vars, and service role assignment. Host files own hos
 - inspect inventory and service definitions before using deployment or runtime commands for discovery
 - prefer `clan.core.vars.generators`; keep service-specific secrets with the service
 - the shared SMTP generator is `clan.core.vars.generators.smtp`
-- machine IDs come from `machines/flake-module.nix`
+- machine IDs come from `inventory/inventory.nix`
 - prefer `clan ssh <machine>` for inventory machines
 - `clan ssh <machine> -c` takes an argv list; pipelines need `sh -c`
 

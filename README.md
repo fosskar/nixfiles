@@ -6,7 +6,7 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 ## features
 
-- [clan-core](https://docs.clan.lol/) - machine inventory, secrets (sops-nix/age), disk partitioning (disko), service roles and [clan-services](clan-services/)
+- [clan-core](https://docs.clan.lol/) - machine inventory, secrets (sops-nix/age), disk partitioning (disko), service roles and [clan-services](modules/clan-services/)
 - [flake-parts](https://flake.parts/) - modular flake framework
 - aspect-oriented module structure - feature modules export aspects through `flake.modules.*`, composed through clan roles and machine imports
 - [home-manager](https://github.com/nix-community/home-manager) - user environments and desktop integration
@@ -17,11 +17,11 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 
 some pieces worth a closer look:
 
-- [hermes-agent deployments](clan-services/hermes/) - self-contained clan service instances with isolated secrets, state, and networking on either a [microvm](modules/nixos/virtualization/agent-vm.nix) or a [nixos container](modules/nixos/virtualization/agent-container.nix)
+- [hermes-agent deployments](modules/clan-services/hermes/) - self-contained clan service instances with isolated secrets, state, and networking on either a [microvm](modules/nixos/virtualization/agent-vm.nix) or a [nixos container](modules/nixos/virtualization/agent-container.nix)
 - [noctalia v5 plugins](modules/home-manager/desktop/noctalia/plugins/) - luau plugins for [noctalia-shell](https://github.com/noctalia-dev/noctalia-shell), shipped straight from the repo as a local plugin source
 - [agent extensions](modules/llm/extensions/) - typescript extensions for the pi coding agent
 - [agent skills](modules/llm/skills/) - custom skills installed into every agent's skill directory by home-manager
-- [clan-services](clan-services/) - reusable clan service modules with roles and vars
+- [clan-services](modules/clan-services/) - reusable clan service modules with roles and vars
 - update automation - [scheduled effects](modules/flake-parts/effects.nix) plus an [updater pipeline](packages/updater/) keep flake inputs and local packages fresh with changelog-enriched prs, built and gated by nixbot ci
 - [local packages](packages/) - packages not in nixpkgs
 

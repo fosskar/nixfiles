@@ -55,6 +55,6 @@ kernel wireguard and direct p2p paths are measurable differences, not taste: lan
 
 ## repo wiring
 
-- `clan-services/netbird/`: clan service with `server` and `client` roles; server runs the full stack on `gateway`, clients are joined via a shared setup key (clan vars).
+- `modules/clan-services/netbird/`: clan service with `server` and `client` roles; server runs the full stack on `gateway`, clients are joined via a shared setup key (clan vars).
 - `modules/nixos/services/netbird/`: custom module set (server stack, client, reverse proxy).
-- see `clan-services/netbird/README.md` for settings and usage.
+- see `modules/clan-services/netbird/README.md` for settings and usage.

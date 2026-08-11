@@ -1,16 +1,12 @@
 {
-  self,
-  lib,
   inputs,
+  config,
   ...
 }:
 {
   imports = [ inputs.clan-core.flakeModules.default ];
 
-  # register each clan-services/<svc>/default.nix as clan.modules.<svc>
-  clan.modules = lib.mapAttrs (
-    name: _: import (self.outPath + "/clan-services/${name}") { inherit self; }
-  ) (lib.filterAttrs (_: t: t == "directory") (builtins.readDir (self.outPath + "/clan-services")));
+  clan.modules = config.flake.modules."clan.service";
 
   # clan validates manifest.exports.out against this registry, and ships only
   # its own core traits. hermes publishes the server loopback port its client

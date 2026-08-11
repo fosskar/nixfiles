@@ -106,7 +106,7 @@ The vocabulary maps onto the flake-parts aspect-module model (see the repo's `AG
 
 - **Module** — an aspect or feature module (`flake.modules.nixos.<name>`, `flake.modules.homeManager.<name>`).
 - **Interface** — everything an importer must know: with import = enable, the ideal interface is _the import line itself_. Every `enable` flag, option, or required companion setting widens it.
-- **Seam** — the composition edge: a machine's `configuration.nix` imports, or a clan role/tag assignment in `machines/flake-module.nix`.
+- **Seam** — the composition edge: a machine's `configuration.nix` imports, or a clan role/tag assignment in `inventory/`.
 - **Adapter** — a clan service role, or the per-context wiring of a multi-context aspect (nixos side vs home-manager side).
 - **Deep aspect** — one import yields the whole feature: service + homepage tile + gatus endpoint + reverse proxy + persistence + secrets (feature-owned integration). That is the repo's stated ideal.
 - **Shallow aspect** — a module that sets one or two options its single importer could set directly. Candidate for inlining — but see the caveats.

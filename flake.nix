@@ -200,7 +200,7 @@
       imports = [
         inputs.flake-parts.flakeModules.modules
         (inputs.import-tree ./modules)
-        ./machines/flake-module.nix
+        (inputs.import-tree ./inventory)
       ];
     };
 }

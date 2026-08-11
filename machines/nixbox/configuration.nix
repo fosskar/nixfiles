@@ -41,7 +41,7 @@
     self.modules.nixos.talosVm
     self.modules.nixos.kiwix
   ]
-  ++ (nflib.scanPaths ./. { exclude = [ "beszel-settings.nix" ]; });
+  ++ (nflib.scanPaths ./. { });
 
   services.systemdEmailAlerts.extraServices = [ "borgbackup-job-storagebox" ];
 
