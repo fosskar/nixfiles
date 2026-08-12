@@ -19,7 +19,6 @@
     self.modules.nixos.nixbotOidc
     self.modules.nixos.immich
     self.modules.nixos.llamaCpp
-    self.modules.nixos.vllm
     self.modules.nixos.itTools
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf

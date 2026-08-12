@@ -105,9 +105,7 @@
               model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf";
               mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
               alias = "qwen3.6-35b-a3b-mtp";
-              # vllm owns the gpu since nemotron became the hermes default;
-              # loading qwen requires stopping docker-vllm on nixbox first
-              load-on-startup = false;
+              load-on-startup = true;
               # unverified: 96k chosen over 131k to make room for the gpu mmproj;
               # confirm fit on first load with an image request before raising
               ctx-size = 98304;

@@ -43,22 +43,12 @@
           name = "Local";
           api = "https://llama-cpp.${flake-self.domains.local}/v1";
           api_key = "no-key-required";
-          # manual fallback: llama-cpp no longer preloads a model; the first
-          # request to this provider loads qwen, which only fits after
-          # docker-vllm is stopped on nixbox
           default_model = "qwen3.6-35b-a3b-mtp";
           context_length = 98304;
         };
-        providers.nemotron = {
-          name = "Nemotron";
-          api = "https://vllm.${flake-self.domains.local}/v1";
-          api_key = "no-key-required";
-          default_model = "nemotron-3.5-lightning-30b-a3b";
-          context_length = 98304;
-        };
         model = {
-          default = "nemotron-3.5-lightning-30b-a3b";
-          provider = "nemotron";
+          default = "qwen3.6-35b-a3b-mtp";
+          provider = "local";
           context_length = 98304;
         };
       };
