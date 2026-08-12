@@ -158,6 +158,10 @@
           apiVersion = "v1";
           resource = "applications";
           needsKeys = [ "prowlarr" ] ++ lib.attrNames arrs;
+          readyChecks = lib.mapAttrsToList (
+            serviceName: arr:
+            ''curl -sfS -H "X-Api-Key: $(cat ${keyFile serviceName})" "${baseUrl serviceName}/api/${arr.apiVersion}/system/status"''
+          ) arrs;
           entries = lib.mapAttrsToList (serviceName: _: {
             name = lib.toSentenceCase serviceName;
             implementation = lib.toSentenceCase serviceName;
