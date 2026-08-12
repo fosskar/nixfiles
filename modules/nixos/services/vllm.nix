@@ -121,9 +121,12 @@
           model = lib.mkDefault "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4";
           settings = {
             served-model-name = lib.mkDefault "nemotron-3.5-lightning-30b-a3b";
-            # Match the Hermes context while limiting concurrent sequences to
-            # the two users that share the 24 GB GPU.
-            max-model-len = lib.mkDefault 98304;
+            # Hermes context (98304) plus its hardcoded 65536 output cap for
+            # custom providers: vllm hard-rejects prompt+max_tokens above this
+            # with HTTP 400, and hermes retries such 400s with the same
+            # max_tokens until "max compression attempts (3) reached"
+            # (hermes-agent #49686, #51773). llama.cpp clamped instead.
+            max-model-len = lib.mkDefault 163840;
             max-num-seqs = lib.mkDefault 2;
             gpu-memory-utilization = lib.mkDefault 0.95;
             kv-cache-dtype = lib.mkDefault "fp8";
