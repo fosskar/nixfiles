@@ -80,6 +80,12 @@
         systemd.services = {
           crowdsec-update-hub.serviceConfig.ExecStartPost = lib.mkForce "+systemctl restart crowdsec.service";
 
+          # upstream race crashes crowdsec (crowdsecurity/crowdsec#4459); without
+          # a restart the traefik bouncer fails closed and 403s all ingress
+          crowdsec.serviceConfig.Restart = "on-failure";
+
+          crowdsec.unitConfig.StartLimitIntervalSec = 0;
+
           crowdsec-firewall-bouncer-register.serviceConfig = {
             StateDirectory = lib.mkForce "crowdsec-firewall-bouncer-register";
             ReadWritePaths = [ "/var/lib/crowdsec" ];
