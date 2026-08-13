@@ -14,6 +14,7 @@
     self.modules.nixos.opencloud
     self.modules.nixos.mcp
     self.modules.nixos.searxng
+    self.modules.nixos.sprout-track
     self.modules.nixos.lldap
     self.modules.nixos.authelia
     self.modules.nixos.nixbotOidc
