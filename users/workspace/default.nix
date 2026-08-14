@@ -88,6 +88,7 @@
   };
 
   programs.fish.enable = true;
+  programs.mosh.enable = true;
   programs.gnupg.agent.enable = false;
   users.users.simon.shell = pkgs.fish;
   # keep the old workspace user's uid: /home data ownership and the hardcoded
