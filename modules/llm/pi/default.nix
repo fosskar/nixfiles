@@ -37,9 +37,6 @@ _: {
             {
               source = "git:github.com/tintinweb/pi-subagents";
             }
-            {
-              source = "git:github.com/pasky/pi-omplike-advisor";
-            }
           ];
           compaction.enabled = true;
         };
@@ -50,13 +47,6 @@ _: {
       home.file = extensionEntries // {
         ".pi/agent/extensions/memory.ts".source = pkgs.replaceVars ../extensions/memory.ts {
           SEDIMENT_BIN = lib.getExe pkgs.local.sediment;
-        };
-        ".pi/agent/modes.json".text = builtins.toJSON {
-          modes.advisor = {
-            provider = "anthropic";
-            modelId = "claude-sonnet-5";
-            thinkingLevel = "low";
-          };
         };
       };
     };
