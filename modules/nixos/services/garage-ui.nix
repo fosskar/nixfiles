@@ -85,6 +85,8 @@
           wants = [ "network-online.target" ];
           wantedBy = [ "multi-user.target" ];
 
+          unitConfig.StartLimitIntervalSec = 0;
+
           environment = {
             GARAGE_UI_GARAGE_ADMIN_TOKEN_FILE = "%d/admin_token";
             GARAGE_UI_AUTH_OIDC_CLIENT_SECRET_FILE = "%d/oidc_client_secret";
@@ -94,6 +96,7 @@
           serviceConfig = {
             ExecStart = "${lib.getExe cfg.package} --config ${configFile}";
             Restart = "on-failure";
+            RestartMode = "direct";
             RestartSec = 5;
 
             LoadCredential = [
