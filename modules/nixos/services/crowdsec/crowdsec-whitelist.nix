@@ -13,6 +13,8 @@
         (map (line: lib.head (lib.splitString " " line)))
         lib.unique
       ];
+      publicIP = lib.attrByPath [ config.networking.hostName "wan" ] null flake-self.hosts;
+      trustedIPs = clanMeshIPs ++ lib.optional (publicIP != null) publicIP;
       # postoverflow (not parser-stage) whitelists: only defuse http-probing,
       # keep other scenarios (brute-force etc.) intact for these vhosts
       probingWhitelist = name: description: reason: eventCond: {
@@ -27,13 +29,13 @@
     in
     {
       services.crowdsec.localConfig = {
-        parsers.s02Enrich = lib.mkIf (clanMeshIPs != [ ]) [
+        parsers.s02Enrich = lib.mkIf (trustedIPs != [ ]) [
           {
             name = "nixfiles/clan-whitelist";
             description = "whitelist clan mesh network IPs";
             whitelist = {
               reason = "clan mesh network";
-              ip = clanMeshIPs;
+              ip = trustedIPs;
             };
           }
         ];
