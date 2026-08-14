@@ -28,10 +28,10 @@ import type {
 import { complete } from "@earendil-works/pi-ai";
 import { Type } from "typebox";
 import { execFile } from "node:child_process";
-import { existsSync } from "node:fs";
-import { readdir, rm, writeFile } from "node:fs/promises";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 const SEDIMENT_BIN = "@SEDIMENT_BIN@";
 const SEDIMENT_TIMEOUT = 10_000;
@@ -96,6 +96,18 @@ const VERSIONS_DIR = join(
 
 const MIN_SIMILARITY = 0.4;
 const AUTO_RECALL_LIMIT = 3;
+
+/**
+ * Turns that outlive their session wait here as plain text files, one
+ * per shutdown. pi awaits `session_shutdown` with no deadline, so
+ * extracting there stalls /new, /resume, /fork and quit behind a model
+ * call; a spool write is a few milliseconds and the next session drains
+ * it in the background.
+ */
+const SPOOL_DIR = join(dirname(process.env.SEDIMENT_DB as string), "spool");
+
+/** Separator between buffered turns, in memory and in a spool file. */
+const TURN_SEPARATOR = "\n\n---\n\n";
 
 /**
  * Extraction runs once per this many settled turns instead of every
@@ -466,20 +478,26 @@ export default function (pi: ExtensionAPI) {
   // so keep only the latest scrubbed run and act once the run settles.
   let pendingScrubbed: string | undefined;
   // Turns accumulate here and are extracted in batches of
-  // RETAIN_EVERY_N_TURNS, or on session_shutdown, whichever comes first.
+  // RETAIN_EVERY_N_TURNS, or spooled on session_shutdown, whichever
+  // comes first.
   let turnBuffer: string[] = [];
   let settledTurns = 0;
 
-  async function flushBuffer(ctx: ExtensionContext): Promise<void> {
-    if (turnBuffer.length === 0) return;
-    if (isMemoryDisabled(ctx)) {
-      turnBuffer = [];
-      return;
-    }
-    // Keep the most recent turns when the window exceeds the cap.
-    const window = turnBuffer.join("\n\n---\n\n").slice(-EXTRACT_INPUT_CAP);
-    turnBuffer = [];
+  // Extraction never runs on a hook the UI awaits. Work is chained onto
+  // this promise instead, so a batch flush and a spool drain cannot
+  // interleave their stores.
+  let queued: Promise<void> = Promise.resolve();
 
+  function enqueue(work: () => Promise<void>): void {
+    queued = queued.then(work).catch((e) => {
+      console.error("memory: background work failed", e);
+    });
+  }
+
+  async function extractAndStore(
+    ctx: ExtensionContext,
+    window: string,
+  ): Promise<void> {
     let facts: Fact[];
     try {
       facts = await extractFacts(ctx, window);
@@ -500,17 +518,73 @@ export default function (pi: ExtensionAPI) {
     if (stored > 0) await maintain();
   }
 
+  async function flushBuffer(ctx: ExtensionContext): Promise<void> {
+    if (turnBuffer.length === 0) return;
+    if (isMemoryDisabled(ctx)) {
+      turnBuffer = [];
+      return;
+    }
+    // Keep the most recent turns when the window exceeds the cap.
+    const window = turnBuffer.join(TURN_SEPARATOR).slice(-EXTRACT_INPUT_CAP);
+    turnBuffer = [];
+    await extractAndStore(ctx, window);
+  }
+
+  /** Write the buffer to the spool. Synchronous: the runtime is going away. */
+  function spoolBuffer(ctx: ExtensionContext): void {
+    if (turnBuffer.length === 0) return;
+    const turns = turnBuffer;
+    turnBuffer = [];
+    if (isMemoryDisabled(ctx)) return;
+    try {
+      mkdirSync(SPOOL_DIR, { recursive: true });
+      writeFileSync(
+        join(SPOOL_DIR, `${Date.now()}-${process.pid}.txt`),
+        turns.join(TURN_SEPARATOR),
+      );
+    } catch (e) {
+      console.error("memory: failed to spool turns", e);
+    }
+  }
+
+  /**
+   * Extract every spooled file left by an earlier session. A file is
+   * removed once extraction ran, including the zero-fact case; only a
+   * throw keeps it for the next attempt.
+   */
+  async function drainSpool(ctx: ExtensionContext): Promise<void> {
+    if (isMemoryDisabled(ctx)) return;
+    let names: string[];
+    try {
+      names = await readdir(SPOOL_DIR);
+    } catch {
+      return;
+    }
+    for (const name of names) {
+      const path = join(SPOOL_DIR, name);
+      try {
+        const window = (await readFile(path, "utf8")).slice(-EXTRACT_INPUT_CAP);
+        if (window.trim()) await extractAndStore(ctx, window);
+        await rm(path, { force: true });
+      } catch (e) {
+        console.error("memory: failed to drain spool file", name, e);
+      }
+    }
+  }
+
   // Compaction summaries are the narrative layer — store whole.
-  pi.on("session_compact", async (event, ctx) => {
+  pi.on("session_compact", (event, ctx) => {
     const summary = event.compactionEntry.summary?.trim();
     if (isMemoryDisabled(ctx)) return;
     if (!summary) return;
-    try {
-      await sediment(["store", summary, "--scope", "global"]);
-      await maintain();
-    } catch (e) {
-      console.error("memory: failed to store compaction summary", e);
-    }
+    enqueue(async () => {
+      try {
+        await sediment(["store", summary, "--scope", "global"]);
+        await maintain();
+      } catch (e) {
+        console.error("memory: failed to store compaction summary", e);
+      }
+    });
   });
 
   // Per-turn capture: scrub the latest run; a retry overwrites it.
@@ -536,12 +610,19 @@ export default function (pi: ExtensionAPI) {
 
     turnBuffer.push(scrubbed);
     settledTurns += 1;
-    if (settledTurns % RETAIN_EVERY_N_TURNS === 0) await flushBuffer(ctx);
+    if (settledTurns % RETAIN_EVERY_N_TURNS === 0) {
+      enqueue(() => flushBuffer(ctx));
+    }
   });
 
-  // Flush any buffered turns before the session tears down.
-  pi.on("session_shutdown", async (_event, ctx) => {
-    await flushBuffer(ctx);
+  // Hand buffered turns to the spool; the next session extracts them.
+  pi.on("session_shutdown", (_event, ctx) => {
+    spoolBuffer(ctx);
+  });
+
+  // Pick up what earlier sessions left behind, off the startup path.
+  pi.on("session_start", (_event, ctx) => {
+    enqueue(() => drainSpool(ctx));
   });
 
   // Recall: inject relevant memories before each prompt.
