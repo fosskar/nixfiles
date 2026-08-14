@@ -164,21 +164,27 @@ export default function (pi: ExtensionAPI) {
 
       const imageBase64 = await ctx.ui.custom<string | null>(
         (_tui, theme, _kb, done) => {
-          server.waitForResult().then(done);
+          let finished = false;
+          const finish = (result: string | null) => {
+            if (finished) return;
+            finished = true;
+            done(result);
+          };
+          server.waitForResult().then(finish);
           return {
             render(_width: number): string[] {
               return [
                 theme.fg("success", "sketch opened in browser"),
                 theme.fg("muted", server.url),
                 "",
-                theme.fg("dim", "press Escape to cancel"),
+                theme.fg("dim", "press Escape or Ctrl+C to cancel"),
               ];
             },
             invalidate() {},
             handleInput(data: string) {
-              if (data === "\x1b" || data === "\x1b\x1b") {
+              if (data === "\x03" || data === "\x1b" || data === "\x1b\x1b") {
                 server.close();
-                done(null);
+                finish(null);
               }
             },
           };
