@@ -16,7 +16,9 @@
       imports = [ inputs.nixbot.nixosModules.nixbot ];
 
       config = {
-        environment.systemPackages = [ inputs.nixbot.packages.${pkgs.system}.nixbot-cli ];
+        environment.systemPackages = [
+          inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli
+        ];
         environment.variables.NIXBOT_URL = "https://${publicHost}";
 
         # cross-host: declared here on nixworker via the default options; nixbot
