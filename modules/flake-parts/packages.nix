@@ -35,8 +35,14 @@
       # nix run .#updater-packages / .#updater-flake-inputs, also remotely
       # via nix run git+https://…#updater-flake-inputs (no flake input needed).
       apps = {
-        updater-packages.program = "${config.packages.updater}/bin/updater-packages";
-        updater-flake-inputs.program = "${config.packages.updater}/bin/updater-flake-inputs";
+        updater-packages = {
+          program = "${config.packages.updater}/bin/updater-packages";
+          meta.description = "update local package sources and hashes";
+        };
+        updater-flake-inputs = {
+          program = "${config.packages.updater}/bin/updater-flake-inputs";
+          meta.description = "update flake inputs";
+        };
       };
     };
 }
