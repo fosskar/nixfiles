@@ -69,11 +69,6 @@
       programs.jujutsu.settings.signing.key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
 
-      # relay: monitor/approve this host's agents from phone/web/telegram;
-      # exposure happens in the netbird ui (docs/netbird-exposure.md), which
-      # also authenticates it — no relay token on top
-      programs.herdr.remote.enable = true;
-
       systemd.user.startServices = "sd-switch";
       nix.channels = { };
     };
