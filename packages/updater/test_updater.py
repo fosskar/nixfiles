@@ -21,11 +21,27 @@ from forge import Codeberg, ForgeError, Github
 from update_flake_inputs import FlakeInput
 from update_packages import commit_message, group_packages
 
-from packages import Package, classify, nix_update_cmd, parse_update_script
+from packages import Package, classify, discover, nix_update_cmd, parse_update_script
 
 
 def pkg(name: str) -> Package:
     return Package(name, "nix-update", Path(f"packages/{name}"))
+
+
+class TestPackageDiscovery(unittest.TestCase):
+    def test_package_roots(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            classic = repo / "packages" / "classic"
+            nested = repo / "nix" / "packages" / "nested"
+            classic.mkdir(parents=True)
+            nested.mkdir(parents=True)
+
+            with mock.patch("packages._nix_update_args", return_value=["nix-update"]):
+                found = discover(repo)
+
+            self.assertEqual([package.name for package in found], ["classic", "nested"])
+            self.assertEqual([package.path for package in found], [classic, nested])
 
 
 class TestGrouping(unittest.TestCase):

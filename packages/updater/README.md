@@ -7,7 +7,7 @@ the origin remote. Two entrypoints share one pipeline
 
 | binary                 | unit                | branch                      | commit message         |
 | ---------------------- | ------------------- | --------------------------- | ---------------------- |
-| `updater-packages`     | `packages/<name>`   | `update-package-<group>`    | nix-update generated   |
+| `updater-packages`     | package directory   | `update-package-<group>`    | nix-update generated   |
 | `updater-flake-inputs` | `flake.lock` inputs | `update-flake-input-<name>` | `flake: update <name>` |
 
 ## Usage
@@ -35,10 +35,10 @@ from nixbot's secrets.
 
 ## How packages are discovered
 
-- `packages/<name>/package.nix` with `passthru.updateScript = nix-update-script { ... }`
-  -> updated via nix-update with those args (probed via `nix eval`, so the
-  attr may live in any file).
-- executable `packages/<name>/update.sh` -> run directly (nix shebang).
+- `packages/<name>/package.nix` or `nix/packages/<name>/package.nix` with
+  `passthru.updateScript = nix-update-script { ... }` -> updated via nix-update
+  with those args (probed via `nix eval`, so the attr may live in any file).
+- executable `update.sh` in either package directory -> run directly (nix shebang).
 - neither -> skipped, printed loudly.
 - opt out explicitly with `passthru.updateScript = null` (this package does).
 

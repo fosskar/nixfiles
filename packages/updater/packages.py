@@ -1,4 +1,4 @@
-"""Discover and update packages/<name>: updateScript attr -> nix-update,
+"""Discover and update package directories: updateScript attr -> nix-update,
 executable update.sh -> run it, neither -> skipped."""
 
 from __future__ import annotations
@@ -68,16 +68,23 @@ def _nix_update_args(repo: Path, name: str) -> list[str] | None:
 
 def discover(repo: Path) -> list[Package]:
     packages: list[Package] = []
-    for pkg_dir in sorted((repo / "packages").iterdir()):
-        if not pkg_dir.is_dir():
+    for root in (repo / "packages", repo / "nix" / "packages"):
+        if not root.is_dir():
             continue
-        update_sh = pkg_dir / "update.sh"
-        has_update_sh = update_sh.exists() and bool(update_sh.stat().st_mode & 0o111)
-        method = classify(_nix_update_args(repo, pkg_dir.name), has_update_sh)
-        if method is None:
-            print(f":: {pkg_dir.name} - no usable updateScript or update.sh, skipping")
-        else:
-            packages.append(Package(pkg_dir.name, method, pkg_dir))
+        for pkg_dir in sorted(root.iterdir()):
+            if not pkg_dir.is_dir():
+                continue
+            update_sh = pkg_dir / "update.sh"
+            has_update_sh = update_sh.exists() and bool(
+                update_sh.stat().st_mode & 0o111
+            )
+            method = classify(_nix_update_args(repo, pkg_dir.name), has_update_sh)
+            if method is None:
+                print(
+                    f":: {pkg_dir.name} - no usable updateScript or update.sh, skipping"
+                )
+            else:
+                packages.append(Package(pkg_dir.name, method, pkg_dir))
     return packages
 
 
@@ -115,7 +122,7 @@ def nix_update_cmd(name: str, script: list[str], msg_file: str) -> list[str]:
 
 
 def update(repo: Path, pkg: Package) -> UpdateResult:
-    rel = f"packages/{pkg.name}"
+    rel = str(pkg.path.relative_to(repo))
     if pkg.method == "nix-update":
         script = _update_script_args(repo, pkg.name)
         with tempfile.NamedTemporaryFile("r", suffix=".msg") as msg:

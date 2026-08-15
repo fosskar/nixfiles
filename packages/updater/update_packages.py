@@ -62,7 +62,7 @@ def process_group(
         if not result.changed:
             print(f":: {pkg.name} - no update")
             continue
-        rel = f"packages/{pkg.name}"
+        rel = str(pkg.path.relative_to(repo))
         run(repo=repo, cmd=["nix", "fmt", "--", rel])
         run(repo=repo, cmd=["git", "add", rel])
         # nix fmt can normalize an update.sh rewrite back to the committed
@@ -90,7 +90,7 @@ def process_group(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="update packages/ and open PRs")
+    parser = argparse.ArgumentParser(description="update packages and open PRs")
     parser.add_argument(
         "--repo", type=Path, default=Path.cwd(), help="checkout to operate on"
     )
