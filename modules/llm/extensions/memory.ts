@@ -46,31 +46,13 @@ const COMPACT_TIMEOUT = 60_000;
  * Without it the graph, decay tracking and consolidation queue land in
  * the XDG state root instead of beside the LanceDB tree.
  */
-process.env.SEDIMENT_DB ??= join(
-  process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state"),
-  "sediment",
-  "data",
-);
-
-/**
- * Sediment auto-detects a `project_id` from cwd (via `.git` / `.sediment`
- * markers, falling back to `get_or_create_project_id(cwd)` which writes
- * a `.sediment/config` in the spawning directory). That id is then
- * silently attached to every stored item even when `--scope global` is
- * passed — `Database::store_item` clobbers `item.project_id = None`
- * with `self.project_id`, making `--scope global` a no-op at write time.
- * Spawning from `/` makes `find_project_root` return None and
- * `get_or_create_project_id` fail on EACCES, so `cli_context` ends up
- * with `project_id = None` and our global writes actually stay global.
- *
- * Recall ignores `--scope` entirely (sediment's `recall` subcommand has
- * no scope flag — `search_items` matches the whole vector index and
- * cross-project hits just take a 12.5pp similarity penalty), so the cwd
- * does not affect what the agent recalls. Keeping every sediment child
- * on the same cwd just stops the agent from littering `.sediment/`
- * directories in random spawn locations.
- */
-const SEDIMENT_CWD = "/";
+const SEDIMENT_DB =
+  process.env.SEDIMENT_DB ??
+  join(
+    process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state"),
+    "sediment",
+    "data",
+  );
 
 /**
  * A `[kind] …` hit at this score is treated as the predecessor for
@@ -88,23 +70,17 @@ const SUPERSEDE_SIMILARITY = 0.7;
  * store has a small `_versions` whether it holds 86 memories or 10,000.
  */
 const COMPACT_EVERY = 50;
-const VERSIONS_DIR = join(
-  process.env.SEDIMENT_DB as string,
-  "items.lance",
-  "_versions",
-);
 
 const MIN_SIMILARITY = 0.4;
 const AUTO_RECALL_LIMIT = 3;
 
 /**
- * Turns that outlive their session wait here as plain text files, one
- * per shutdown. pi awaits `session_shutdown` with no deadline, so
- * extracting there stalls /new, /resume, /fork and quit behind a model
- * call; a spool write is a few milliseconds and the next session drains
- * it in the background.
+ * Settled turn batches wait here as plain text files. Writing the file
+ * before extraction makes the handoff durable across session replacement
+ * and process exit. A file is deleted only after extraction and all stores
+ * succeed.
  */
-const SPOOL_DIR = join(dirname(process.env.SEDIMENT_DB as string), "spool");
+const SPOOL_DIR = join(dirname(SEDIMENT_DB), "spool");
 
 /** Separator between buffered turns, in memory and in a spool file. */
 const TURN_SEPARATOR = "\n\n---\n\n";
@@ -246,70 +222,7 @@ function parseFactLines(text: string): Fact[] {
   return out;
 }
 
-// ── sediment process wrapper ─────────────────────────────────────────
-
-let sedimentAvailable: boolean | undefined;
-
-/**
- * Spawn sediment directly instead of through `pi.exec`. `pi` is the
- * session-bound extension API captured in the factory closure; it is
- * invalidated the moment a session replacement starts tearing down, so
- * the `session_shutdown` flush would throw mid-await. node's execFile
- * outlives the session runtime.
- */
-function runSediment(
-  args: string[],
-  opts: { signal?: AbortSignal; timeout?: number },
-): Promise<{ code: number; stdout: string; stderr: string; killed: boolean }> {
-  return new Promise((resolve) => {
-    execFile(
-      SEDIMENT_BIN,
-      args,
-      {
-        cwd: SEDIMENT_CWD,
-        timeout: opts.timeout ?? SEDIMENT_TIMEOUT,
-        signal: opts.signal,
-        maxBuffer: 8 * 1024 * 1024,
-      },
-      (err, stdout, stderr) => {
-        if (!err) {
-          resolve({ code: 0, stdout, stderr, killed: false });
-          return;
-        }
-        const e = err as Error & {
-          code?: number | string;
-          killed?: boolean;
-          signal?: string | null;
-        };
-        const code =
-          typeof e.code === "number" ? e.code : e.code === "ENOENT" ? 127 : 1;
-        resolve({
-          code,
-          stdout,
-          stderr: stderr || e.message,
-          killed: Boolean(e.killed) || e.signal != null,
-        });
-      },
-    );
-  });
-}
-
-async function sediment(
-  args: string[],
-  opts: { signal?: AbortSignal; timeout?: number } = {},
-): Promise<string> {
-  if (sedimentAvailable === false) throw new Error("sediment unavailable");
-
-  const result = await runSediment(args, opts);
-
-  if (result.code !== 0) {
-    if (result.killed || result.code === 127) sedimentAvailable = false;
-    throw new Error(`sediment ${args[0]} failed: ${result.stderr}`);
-  }
-
-  sedimentAvailable = true;
-  return result.stdout;
-}
+// ── sediment store ───────────────────────────────────────────────────
 
 interface RecallResult {
   content: string;
@@ -317,102 +230,164 @@ interface RecallResult {
   similarity: string;
 }
 
-async function recall(
-  query: string,
-  limit: number,
-  signal?: AbortSignal,
-): Promise<RecallResult[]> {
-  const raw = await sediment(
-    ["recall", query, "--limit", String(limit), "--json"],
-    { signal },
-  );
-  const parsed = JSON.parse(raw) as { results: RecallResult[] };
-  return parsed.results;
-}
-
 /**
- * storeFact writes one fact, replacing any existing item with the same
- * `[kind] subject:` prefix. Supersession is what keeps a stale
- * `[howto] foo:` exemplar from coexisting with its replacement.
- *
- * sediment has no native key/value lookup, so we approximate: recall on
- * the rendered prefix and treat a startsWith match as the predecessor.
- * False positives are harmless (we replace a near-duplicate); false
- * negatives leave both entries, which sediment's own dedup usually
- * collapses on the next store.
+ * Own sediment's process, storage, supersession, and maintenance rules.
+ * Callers state memory operations and do not construct sediment commands.
  */
-async function storeFact(f: Fact): Promise<void> {
-  const rendered = `[${f.kind}] ${f.subject}: ${f.body}`;
-  const prefix = `[${f.kind}] ${f.subject}:`;
+class SedimentStore {
+  private binaryMissing = false;
+  private readonly versionsDir = join(SEDIMENT_DB, "items.lance", "_versions");
 
-  let replace: string | undefined;
-  try {
-    // Recall on the full rendered fact: a prefix match means "same
-    // subject → supersede", a high-similarity body match means "subject
-    // drifted but says the same thing → supersede". Both collapse onto
-    // one item instead of accumulating near-duplicates.
-    const prev = await recall(rendered, 3);
-    const hit = prev.find(
-      (r) =>
-        r.content.startsWith(prefix) ||
-        (r.content.startsWith(`[${f.kind}] `) &&
-          parseFloat(r.similarity) >= SUPERSEDE_SIMILARITY),
+  async search(
+    query: string,
+    limit: number,
+    signal?: AbortSignal,
+  ): Promise<RecallResult[]> {
+    const raw = await this.command(
+      ["recall", query, "--limit", String(limit), "--json"],
+      { signal },
     );
-    replace = hit?.id;
-  } catch {
-    // Lookup is best-effort; fall through to plain store.
+    const parsed = JSON.parse(raw) as { results: RecallResult[] };
+    return parsed.results;
   }
 
-  const args = ["store", rendered, "--scope", "global"];
-  if (replace) args.push("--replace", replace);
-  await sediment(args);
+  async storeFacts(facts: Fact[]): Promise<void> {
+    for (const fact of facts) await this.storeFact(fact);
+    if (facts.length > 0) await this.maintain();
+  }
+
+  async storeNarrative(content: string): Promise<void> {
+    await this.command(["store", content, "--scope", "global"]);
+    await this.maintain();
+  }
+
+  /**
+   * Replace an existing item with the same `[kind] subject:` prefix.
+   * Sediment has no native key lookup, so semantic recall approximates it.
+   */
+  private async storeFact(fact: Fact): Promise<void> {
+    const rendered = `[${fact.kind}] ${fact.subject}: ${fact.body}`;
+    const prefix = `[${fact.kind}] ${fact.subject}:`;
+
+    let replace: string | undefined;
+    try {
+      const previous = await this.search(rendered, 3);
+      const hit = previous.find(
+        (result) =>
+          result.content.startsWith(prefix) ||
+          (result.content.startsWith(`[${fact.kind}] `) &&
+            parseFloat(result.similarity) >= SUPERSEDE_SIMILARITY),
+      );
+      replace = hit?.id;
+    } catch {
+      // Lookup is best-effort. A plain store can still succeed.
+    }
+
+    const args = ["store", rendered, "--scope", "global"];
+    if (replace) args.push("--replace", replace);
+    await this.command(args);
+  }
+
+  /**
+   * Drain near-duplicates before compaction after enough LanceDB writes.
+   * `consolidate` comes from packages/sediment/consolidate-subcommand.patch.
+   */
+  private async maintain(): Promise<void> {
+    try {
+      if ((await readdir(this.versionsDir)).length < COMPACT_EVERY) return;
+    } catch {
+      return;
+    }
+
+    try {
+      await this.command(["consolidate"], { timeout: COMPACT_TIMEOUT });
+    } catch (error) {
+      console.error("memory: consolidate failed", error);
+    }
+    try {
+      await this.command(["compact", "--force"], {
+        timeout: COMPACT_TIMEOUT,
+      });
+    } catch (error) {
+      console.error("memory: compact failed", error);
+    }
+  }
+
+  private async command(
+    args: string[],
+    options: { signal?: AbortSignal; timeout?: number } = {},
+  ): Promise<string> {
+    if (this.binaryMissing) throw new Error("sediment unavailable");
+
+    const result = await this.run(args, options);
+    if (result.code !== 0) {
+      if (result.missing) this.binaryMissing = true;
+      throw new Error(`sediment ${args[0]} failed: ${result.stderr}`);
+    }
+    return result.stdout;
+  }
+
+  /**
+   * Spawn sediment directly because node's execFile can outlive a pi
+   * session runtime. Sediment assigns the detected project even with
+   * `--scope global`. Running from `/` prevents project detection, keeps
+   * writes global, and avoids stray `.sediment` directories.
+   */
+  private run(
+    args: string[],
+    options: { signal?: AbortSignal; timeout?: number },
+  ): Promise<{
+    code: number;
+    stdout: string;
+    stderr: string;
+    missing: boolean;
+  }> {
+    return new Promise((resolve) => {
+      execFile(
+        SEDIMENT_BIN,
+        args,
+        {
+          cwd: "/",
+          env: { ...process.env, SEDIMENT_DB },
+          timeout: options.timeout ?? SEDIMENT_TIMEOUT,
+          signal: options.signal,
+          maxBuffer: 8 * 1024 * 1024,
+        },
+        (error, stdout, stderr) => {
+          if (!error) {
+            resolve({ code: 0, stdout, stderr, missing: false });
+            return;
+          }
+          const processError = error as Error & { code?: number | string };
+          const missing = processError.code === "ENOENT";
+          const code =
+            typeof processError.code === "number"
+              ? processError.code
+              : missing
+                ? 127
+                : 1;
+          resolve({
+            code,
+            stdout,
+            stderr: stderr || processError.message,
+            missing,
+          });
+        },
+      );
+    });
+  }
 }
 
-/**
- * Drain the near-duplicate queue, then compact, once COMPACT_EVERY writes
- * have accumulated. Both are no-ops when there is nothing to do, so the gate
- * exists to avoid the subprocess, not the work.
- *
- * Order matters. Merging is itself a write, so consolidating 27 backlogged
- * pairs left 58 versions behind when it ran second — above the threshold, so
- * the next flush opened the gate again. Running it first lets the same
- * compaction reclaim its output: one pass settles at 2 versions / 11 files.
- *
- * Skipping the pass entirely is the expensive option: shelling out to the
- * CLI per fact leaks a LanceDB version per write, and an unmaintained store
- * reached 34 MB across 3319 files for 86 items.
- *
- * `consolidate` is a local patch (packages/sediment/consolidate-subcommand.patch);
- * upstream drains that queue only from MCP server mode.
- */
-async function maintain(): Promise<void> {
-  try {
-    if ((await readdir(VERSIONS_DIR)).length < COMPACT_EVERY) return;
-  } catch {
-    // No store yet, or an unreadable one — nothing to maintain.
-    return;
-  }
-
-  try {
-    await sediment(["consolidate"], { timeout: COMPACT_TIMEOUT });
-  } catch (e) {
-    console.error("memory: consolidate failed", e);
-  }
-  try {
-    await sediment(["compact", "--force"], { timeout: COMPACT_TIMEOUT });
-  } catch (e) {
-    console.error("memory: compact failed", e);
-  }
-}
+const sedimentStore = new SedimentStore();
 
 // ── fact extraction ──────────────────────────────────────────────────
 
 /**
  * Ask the active model to pull facts out of a scrubbed turn.
  *
- * Runs as a side-call with a small token budget; failures are
- * swallowed because memory capture must never block or break the
- * user-visible conversation.
+ * Runs as a side-call with a small token budget. A failure rejects the
+ * spool job so a later session can retry it. The background queue keeps
+ * the failure out of the user-visible conversation.
  */
 async function extractFacts(
   ctx: ExtensionContext,
@@ -420,16 +395,18 @@ async function extractFacts(
   signal?: AbortSignal,
 ): Promise<Fact[]> {
   const model = ctx.model;
-  if (!model) return [];
+  if (!model) throw new Error("no active model");
 
   const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-  if (!auth.ok || !auth.apiKey) return [];
+  if (!auth.ok || !auth.apiKey) {
+    throw new Error("model authentication unavailable");
+  }
 
   const input =
     turn.length > EXTRACT_INPUT_CAP ? turn.slice(0, EXTRACT_INPUT_CAP) : turn;
 
-  // The hook itself has no deadline; a stalled provider would wedge
-  // agent_end. Chain the caller's signal with our own hard timeout.
+  // Chain the caller's signal with a hard timeout so one spool job cannot
+  // block later jobs indefinitely.
   const deadline = signal
     ? AbortSignal.any([signal, AbortSignal.timeout(EXTRACT_TIMEOUT)])
     : AbortSignal.timeout(EXTRACT_TIMEOUT);
@@ -465,7 +442,7 @@ async function extractFacts(
       .join("\n");
   } catch (e) {
     console.error("memory: extract call failed", e);
-    return [];
+    throw e;
   }
 
   return parseFactLines(text);
@@ -481,7 +458,6 @@ export default function (pi: ExtensionAPI) {
   // RETAIN_EVERY_N_TURNS, or spooled on session_shutdown, whichever
   // comes first.
   let turnBuffer: string[] = [];
-  let settledTurns = 0;
 
   // Extraction never runs on a hook the UI awaits. Work is chained onto
   // this promise instead, so a batch flush and a spool drain cannot
@@ -498,52 +474,28 @@ export default function (pi: ExtensionAPI) {
     ctx: ExtensionContext,
     window: string,
   ): Promise<void> {
-    let facts: Fact[];
-    try {
-      facts = await extractFacts(ctx, window);
-    } catch (e) {
-      console.error("memory: extraction failed", e);
-      return;
-    }
-
-    let stored = 0;
-    for (const f of facts) {
-      try {
-        await storeFact(f);
-        stored++;
-      } catch (e) {
-        console.error("memory: failed to store fact", f.subject, e);
-      }
-    }
-    if (stored > 0) await maintain();
+    const facts = await extractFacts(ctx, window);
+    await sedimentStore.storeFacts(facts);
   }
 
-  async function flushBuffer(ctx: ExtensionContext): Promise<void> {
-    if (turnBuffer.length === 0) return;
+  /** Write buffered turns before background extraction starts. */
+  function spoolBuffer(ctx: ExtensionContext): boolean {
+    if (turnBuffer.length === 0) return false;
     if (isMemoryDisabled(ctx)) {
       turnBuffer = [];
-      return;
+      return false;
     }
-    // Keep the most recent turns when the window exceeds the cap.
-    const window = turnBuffer.join(TURN_SEPARATOR).slice(-EXTRACT_INPUT_CAP);
-    turnBuffer = [];
-    await extractAndStore(ctx, window);
-  }
-
-  /** Write the buffer to the spool. Synchronous: the runtime is going away. */
-  function spoolBuffer(ctx: ExtensionContext): void {
-    if (turnBuffer.length === 0) return;
-    const turns = turnBuffer;
-    turnBuffer = [];
-    if (isMemoryDisabled(ctx)) return;
     try {
       mkdirSync(SPOOL_DIR, { recursive: true });
       writeFileSync(
         join(SPOOL_DIR, `${Date.now()}-${process.pid}.txt`),
-        turns.join(TURN_SEPARATOR),
+        turnBuffer.join(TURN_SEPARATOR),
       );
+      turnBuffer = [];
+      return true;
     } catch (e) {
       console.error("memory: failed to spool turns", e);
+      return false;
     }
   }
 
@@ -560,7 +512,7 @@ export default function (pi: ExtensionAPI) {
     } catch {
       return;
     }
-    for (const name of names) {
+    for (const name of names.sort()) {
       const path = join(SPOOL_DIR, name);
       try {
         const window = (await readFile(path, "utf8")).slice(-EXTRACT_INPUT_CAP);
@@ -568,6 +520,7 @@ export default function (pi: ExtensionAPI) {
         await rm(path, { force: true });
       } catch (e) {
         console.error("memory: failed to drain spool file", name, e);
+        return;
       }
     }
   }
@@ -579,8 +532,7 @@ export default function (pi: ExtensionAPI) {
     if (!summary) return;
     enqueue(async () => {
       try {
-        await sediment(["store", summary, "--scope", "global"]);
-        await maintain();
+        await sedimentStore.storeNarrative(summary);
       } catch (e) {
         console.error("memory: failed to store compaction summary", e);
       }
@@ -601,7 +553,7 @@ export default function (pi: ExtensionAPI) {
     pendingScrubbed = scrubbed;
   });
 
-  // Buffer the settled turn; extract in batches of RETAIN_EVERY_N_TURNS.
+  // Buffer the settled turn. Spool each complete batch before extraction.
   pi.on("agent_settled", async (_event, ctx) => {
     const scrubbed = pendingScrubbed;
     pendingScrubbed = undefined;
@@ -609,13 +561,12 @@ export default function (pi: ExtensionAPI) {
     if (isMemoryDisabled(ctx)) return;
 
     turnBuffer.push(scrubbed);
-    settledTurns += 1;
-    if (settledTurns % RETAIN_EVERY_N_TURNS === 0) {
-      enqueue(() => flushBuffer(ctx));
+    if (turnBuffer.length >= RETAIN_EVERY_N_TURNS && spoolBuffer(ctx)) {
+      enqueue(() => drainSpool(ctx));
     }
   });
 
-  // Hand buffered turns to the spool; the next session extracts them.
+  // Persist a short final batch; a later session drains it.
   pi.on("session_shutdown", (_event, ctx) => {
     spoolBuffer(ctx);
   });
@@ -636,7 +587,7 @@ export default function (pi: ExtensionAPI) {
       // Narrative summaries stay reachable via the memory_search tool
       // but are not auto-injected — they outweigh atomic facts in the
       // embedding and would crowd the slot budget.
-      const results = (await recall(key, AUTO_RECALL_LIMIT * 3))
+      const results = (await sedimentStore.search(key, AUTO_RECALL_LIMIT * 3))
         .filter(
           (r) =>
             r.content.startsWith("[") &&
@@ -727,17 +678,11 @@ export default function (pi: ExtensionAPI) {
         };
       }
       try {
-        const raw = await sediment(
-          [
-            "recall",
-            params.query,
-            "--limit",
-            String(params.limit ?? 5),
-            "--json",
-          ],
-          { signal },
+        const results = await sedimentStore.search(
+          params.query,
+          params.limit ?? 5,
+          signal,
         );
-        const { results } = JSON.parse(raw) as { results: RecallResult[] };
         if (results.length === 0) {
           return {
             content: [{ type: "text", text: "No memories found." }],
