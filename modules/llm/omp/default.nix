@@ -9,9 +9,9 @@ _: {
     let
       extensionRoot = inputs.pi-pack + "/extensions";
       extensionFiles = removeAttrs (builtins.readDir extensionRoot) [
-        "pi-to-PI.ts"
-        # pi-only: needs SEDIMENT_BIN substitution and pi's conversation api
-        "sediment-memory.ts"
+        "pi-to-PI"
+        # pi-only: needs sediment and pi's conversation api
+        "sediment-memory"
       ];
       extensionEntries = lib.mapAttrs' (
         name: _: lib.nameValuePair ".omp/agent/extensions/${name}" { source = extensionRoot + "/${name}"; }
