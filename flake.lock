@@ -726,11 +726,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1786665887,
-        "narHash": "sha256-Ye1UgeYHuUi+xagVwjGCQ1W60wfc8ZIDqhdvTml1Hn0=",
-        "rev": "96f2b99fb3bf6d5788756faf23b73087c67a4460",
+        "lastModified": 1786752088,
+        "narHash": "sha256-tmZRrERoCnWGZ9NtdPDD72kPa2kl+LmmJt194SSuU4o=",
+        "rev": "01cb364fdb88786c0059fa80a2b539aa3a54e58e",
         "type": "tarball",
-        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/96f2b99fb3bf6d5788756faf23b73087c67a4460.tar.gz"
+        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/01cb364fdb88786c0059fa80a2b539aa3a54e58e.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -740,11 +740,11 @@
     "niri-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1786626375,
-        "narHash": "sha256-Yq5bu6KDiG5xttJ9wVsE/dKQ0AvO4RYx2YQmDaYVsXg=",
+        "lastModified": 1786710356,
+        "narHash": "sha256-ptAftnlkdXaVjEzA2e1DBM9NPPDOpHtsAhOI6KzY4NY=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "720c388427c5589cc630f8188d44153d93ff8b0c",
+        "rev": "606284464d4a99bb35710fee68192bc71085ee7c",
         "type": "github"
       },
       "original": {
