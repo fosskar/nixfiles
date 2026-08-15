@@ -1141,6 +1141,38 @@
         "type": "github"
       }
     },
+    "pi-pack": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "llm-agents": [
+          "llm-agents"
+        ],
+        "nixbot": [
+          "nixbot"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786785790,
+        "narHash": "sha256-aok96tOjRCtBKZcyCPgk4+vpzPdBs47yBl7dom/KgnM=",
+        "owner": "fosskar",
+        "repo": "pi-pack",
+        "rev": "876f7ee2121ae57f21c3a9950b6c70a4b3e1a0f8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fosskar",
+        "repo": "pi-pack",
+        "type": "github"
+      }
+    },
     "pkgs-by-name-for-flake-parts": {
       "locked": {
         "lastModified": 1769286518,
@@ -1270,6 +1302,7 @@
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
         "noctalia-legacy": "noctalia-legacy",
+        "pi-pack": "pi-pack",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "preservation": "preservation",
         "sops-nix": "sops-nix",

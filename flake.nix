@@ -128,6 +128,14 @@
       inputs.systems.follows = "systems";
       inputs.bun2nix.inputs.nixpkgs.follows = "nixpkgs";
     };
+    pi-pack = {
+      url = "github:fosskar/pi-pack";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.llm-agents.follows = "llm-agents";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.nixbot.follows = "nixbot";
+      inputs.home-manager.follows = "home-manager";
+    };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
       inputs.nixpkgs.follows = "nixpkgs";

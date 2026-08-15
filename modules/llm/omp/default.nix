@@ -7,13 +7,14 @@ _: {
       ...
     }:
     let
-      extensionFiles = removeAttrs (builtins.readDir ../extensions) [
+      extensionRoot = inputs.pi-pack + "/extensions";
+      extensionFiles = removeAttrs (builtins.readDir extensionRoot) [
         "pi-to-PI.ts"
         # pi-only: needs SEDIMENT_BIN substitution and pi's conversation api
-        "memory.ts"
+        "sediment-memory.ts"
       ];
       extensionEntries = lib.mapAttrs' (
-        name: _: lib.nameValuePair ".omp/agent/extensions/${name}" { source = ../extensions/${name}; }
+        name: _: lib.nameValuePair ".omp/agent/extensions/${name}" { source = extensionRoot + "/${name}"; }
       ) extensionFiles;
 
       # declarative omp settings overlay: non-default values only (schema

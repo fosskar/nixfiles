@@ -18,6 +18,7 @@ _: {
         ++ lib.optionals (config.programs.opencode.enable or false) [ ".config/opencode/skills" ];
 
       ownSkills = self.llm.skills;
+      piSkills = removeAttrs ownSkills inputs.pi-pack.lib.skills;
       # skills shipped by upstream flake inputs; skill name -> SKILL.md source
       externalSkills = {
         herdr = "${inputs.herdr}/SKILL.md";
@@ -29,7 +30,7 @@ _: {
           lib.mapAttrsToList (name: source: {
             name = "${dir}/${name}";
             value.source = source;
-          }) ownSkills
+          }) (if dir == ".pi/agent/skills" then piSkills else ownSkills)
           ++ lib.mapAttrsToList (name: source: {
             name = "${dir}/${name}/SKILL.md";
             value.source = source;
@@ -59,6 +60,7 @@ _: {
           "db-cli"
           "gmaps-cli"
           "kagi-search"
+          "queue"
         ];
       };
     };

@@ -32,7 +32,7 @@ Non-obvious areas:
 
 - clan services export through `flake.modules."clan.service".<service>`; `modules/flake-parts/clan.nix` assigns that set to `clan.modules`
 - `modules/flake-parts/hosts.nix` is the single source of machine IPs
-- `modules/llm/` owns agent tooling, skills, souls, and extensions; pi and omp install their applicable extensions
+- `modules/llm/` owns agent tooling, local-only skills, souls, and `pi-pack` wiring; pi and omp install applicable `pi-pack` extensions
 - `flake.llm.skills.<name>` exposes skills to NixOS consumers such as Hermes
 - OpenWrt configuration belongs in `openwrt/`, not on the device
 

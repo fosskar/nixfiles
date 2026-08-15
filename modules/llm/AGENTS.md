@@ -18,7 +18,7 @@ House rules (ours, not STE):
 - identifiers, paths, commands, config, errors exact
 - cut filler, pleasantries, praise; no hedging — verify, or state uncertainty plainly
 - no invented abbreviations (`cfg`, `impl`, `req`, `res`); established acronyms fine
-- no emoji; no narrating tool calls
+- no narrating tool calls
 - code blocks and errors verbatim; from long logs quote only the decisive line
 - reply in the language the user wrote; technical terms verbatim
 - give full detail for safety, destructive confirmations, multi-step sequences, nontrivial reasoning, clarification
