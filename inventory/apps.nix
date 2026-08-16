@@ -27,7 +27,6 @@ _: {
           openrouter.enable = true;
         };
 
-        skills = [ "kiwix-search" ];
         packageSkills = [ "optional-skills/devops/watchers" ];
 
         matrix = {
