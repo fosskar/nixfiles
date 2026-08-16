@@ -94,6 +94,11 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
+    flakelet = {
+      url = "github:Mic92/flakelet";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     niks3 = {
       url = "github:Mic92/niks3";
       inputs.nixpkgs.follows = "nixpkgs";
