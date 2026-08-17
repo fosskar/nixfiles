@@ -763,11 +763,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1786752088,
-        "narHash": "sha256-tmZRrERoCnWGZ9NtdPDD72kPa2kl+LmmJt194SSuU4o=",
-        "rev": "01cb364fdb88786c0059fa80a2b539aa3a54e58e",
+        "lastModified": 1786924931,
+        "narHash": "sha256-4DE1SAxtJSiTNnt+o8bTOC4koT/itZlDX8zaKbXvIbU=",
+        "rev": "59dc01c8c5f43f7ad4e1225fd58953221d0b7780",
         "type": "tarball",
-        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/01cb364fdb88786c0059fa80a2b539aa3a54e58e.tar.gz"
+        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/59dc01c8c5f43f7ad4e1225fd58953221d0b7780.tar.gz"
       },
       "original": {
         "type": "tarball",
