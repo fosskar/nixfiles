@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
@@ -13,6 +14,13 @@ _: {
       User = "simon";
       ForwardAgent = "yes";
       LocalForward = [ "54545 localhost:54545" ];
+    };
+    settings."workspace-relay" = {
+      HostName = "nixworker.s";
+      User = "simon";
+      ControlMaster = "no";
+      ExitOnForwardFailure = "yes";
+      SessionType = "none";
       RemoteForward = [
         "/run/user/1000/fwd/%L.gpg-extra /run/user/1000/gnupg/S.gpg-agent.extra"
         "/run/user/1000/fwd/%L.ssh-agent /run/user/1000/gnupg/S.gpg-agent.ssh"
@@ -42,5 +50,19 @@ _: {
       # (e.g. nixos-rebuild-ng env sanitization, nixpkgs#493085)
       IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
     };
+  };
+
+  systemd.user.services.workspace-relay = {
+    Unit = {
+      Description = "forward local agents to the workspace";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.openssh}/bin/ssh -NT workspace-relay";
+      Restart = "always";
+      RestartSec = 10;
+    };
+    Install.WantedBy = [ "default.target" ];
   };
 }
