@@ -1312,6 +1312,29 @@
         "type": "github"
       }
     },
+    "radicle-mirror": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787004620,
+        "narHash": "sha256-2hBsTwiXt0ypyLIrzpS8coZZLKbAZvqhOlIDHSHUAfI=",
+        "owner": "Mic92",
+        "repo": "radicle-mirror",
+        "rev": "1aa40cce8970184eb1ea1b5ce44e8601b058565c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "radicle-mirror",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "clan-community": "clan-community",
@@ -1343,6 +1366,7 @@
         "pi-pack": "pi-pack",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "preservation": "preservation",
+        "radicle-mirror": "radicle-mirror",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "ssync": "ssync",
