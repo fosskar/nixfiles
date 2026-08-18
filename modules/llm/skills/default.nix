@@ -21,7 +21,7 @@ _: {
       piSkills = removeAttrs ownSkills inputs.pi-pack.lib.skills;
       # skills shipped by upstream flake inputs; skill name -> SKILL.md source
       externalSkills = {
-        herdr = "${inputs.herdr}/SKILL.md";
+        herdr = "${inputs.herdr}/skills/herdr/SKILL.md";
         hunk-review = "${pkgs.hunk}/skills/hunk-review/SKILL.md";
       };
       skillEntries = lib.listToAttrs (
