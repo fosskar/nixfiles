@@ -11,6 +11,7 @@
       publicHost = "radicle.${flake-self.domains.public}";
       mirrorPort = 4128;
       apiPort = 8080;
+      searchPort = 7700;
       explorerPort = 8090;
       anubisPort = 8097;
       publicPort = 8098;
@@ -109,14 +110,69 @@
         };
       };
 
+      services.meilisearch = {
+        enable = true;
+        listenAddress = "127.0.0.1";
+        listenPort = searchPort;
+      };
+
+      systemd.services.radicle-search = {
+        description = "Radicle repository search indexer";
+        wantedBy = [ "multi-user.target" ];
+        after = [
+          "meilisearch.service"
+          "radicle-mirror.service"
+        ];
+        requires = [
+          "meilisearch.service"
+          "radicle-mirror.service"
+        ];
+        serviceConfig = {
+          ExecStart = lib.getExe' pkgs.radicle-httpd "radicle-search";
+          Environment = [
+            "RAD_HOME=/var/lib/radicle-mirror/rad"
+            "RADICLE_SEARCH_MEILI_URL=http://127.0.0.1:${toString searchPort}"
+          ];
+          Restart = "on-failure";
+          RestartSec = 5;
+          DynamicUser = true;
+          User = "radicle-mirror";
+          StateDirectory = "radicle-mirror";
+          NoNewPrivileges = true;
+          ProtectSystem = "strict";
+          ProtectHome = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          ProtectKernelTunables = true;
+          ProtectKernelModules = true;
+          ProtectControlGroups = true;
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+            "AF_UNIX"
+          ];
+          RestrictNamespaces = true;
+          LockPersonality = true;
+          MemoryDenyWriteExecute = true;
+          SystemCallArchitectures = "native";
+        };
+      };
+
       systemd.services.radicle-httpd = {
         description = "Radicle HTTP gateway";
         wantedBy = [ "multi-user.target" ];
-        after = [ "radicle-mirror.service" ];
+        wants = [ "radicle-search.service" ];
+        after = [
+          "radicle-mirror.service"
+          "radicle-search.service"
+        ];
         requires = [ "radicle-mirror.service" ];
         serviceConfig = {
           ExecStart = "${lib.getExe pkgs.radicle-httpd} --listen 127.0.0.1:${toString apiPort}";
-          Environment = [ "RAD_HOME=/var/lib/radicle-mirror/rad" ];
+          Environment = [
+            "RAD_HOME=/var/lib/radicle-mirror/rad"
+            "RADICLE_SEARCH_URL=http://127.0.0.1:${toString searchPort}"
+          ];
           Restart = "on-failure";
           RestartSec = 5;
           DynamicUser = true;
