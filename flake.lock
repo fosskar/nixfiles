@@ -1653,11 +1653,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786927393,
-        "narHash": "sha256-DE75/iivXLwQPfgudwPFDhdkNicldQfEbOxMyUsGS3c=",
+        "lastModified": 1787024251,
+        "narHash": "sha256-DTqQzssIoII3CYIC6ASvOYS9gGmFKdvoQiRLBIKvglE=",
         "owner": "peteonrails",
         "repo": "voxtype",
-        "rev": "afc05bd2934145d26d8a17b6a8fe93618cc44b0a",
+        "rev": "10fb536ea8621f3cd197da6dcdffa54607277144",
         "type": "github"
       },
       "original": {
