@@ -127,7 +127,10 @@
         settings = herdrSettings;
       };
 
-      home.packages = [ pkgs.nodejs ];
+      home.packages = [
+        pkgs.nodejs
+        pkgs.local.druk
+      ];
 
       # attach to the remote workspace host with server-side keybindings
       home.shellAliases.herdr-workspace = "herdr --remote workspace --remote-keybindings server";
