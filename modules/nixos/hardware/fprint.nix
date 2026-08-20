@@ -1,26 +1,21 @@
 {
   flake.modules.nixos.fprint =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       services.fprintd.enable = true;
 
-      # fprint AFTER password (order 13000 > unix at 12900)
       # flow: yubikey → password → fprint
-      security.pam.services =
-        let
-          fprintService = _: {
-            fprintAuth = true;
-            rules.auth.fprintd = {
-              order = 13000;
-              control = "sufficient";
-              modulePath = "${pkgs.fprintd}/lib/security/pam_fprintd.so";
-            };
-          };
-        in
-        {
-          login = fprintService null;
-          greetd = fprintService null;
+      # only login: greetd substacks login (useDefaultRules = false upstream),
+      # so it inherits this rule
+      security.pam.services.login = {
+        fprintAuth = true;
+        rules.auth.fprintd = {
+          # relative to unix because built-in pam rule orders shift whenever
+          # upstream inserts rules (autoOrderRules)
+          order = config.security.pam.services.login.rules.auth.unix.order + 10;
+          control = "sufficient";
+          modulePath = "${pkgs.fprintd}/lib/security/pam_fprintd.so";
         };
-
+      };
     };
 }
