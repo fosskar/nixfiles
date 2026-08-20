@@ -200,6 +200,13 @@
       inputs.nixbot.follows = "nixbot";
     };
 
+    buzz-flake = {
+      url = "github:fosskar/buzz-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.nixbot.follows = "nixbot";
+    };
+
     wiki = {
       url = "github:fosskar/wiki";
       inputs.nixpkgs.follows = "nixpkgs";

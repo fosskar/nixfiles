@@ -64,6 +64,32 @@
         "type": "github"
       }
     },
+    "buzz-flake": {
+      "inputs": {
+        "nixbot": [
+          "nixbot"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787224651,
+        "narHash": "sha256-gwRZZgLhBUi3GqwbkrYB+PQZ9zQT2Z/9WjPg+JJEcF4=",
+        "owner": "fosskar",
+        "repo": "buzz-flake",
+        "rev": "f3593666094fb03c40dadcf7b09f72c037db66a2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fosskar",
+        "repo": "buzz-flake",
+        "type": "github"
+      }
+    },
     "clan-community": {
       "inputs": {
         "clan-core": [
@@ -1337,6 +1363,7 @@
     },
     "root": {
       "inputs": {
+        "buzz-flake": "buzz-flake",
         "clan-community": "clan-community",
         "clan-core": "clan-core",
         "disko": "disko",
