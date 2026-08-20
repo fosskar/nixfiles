@@ -12,6 +12,9 @@
       # cluster-wide; role-level so both nodes agree on the set.
       roles.node.settings.buckets = {
         backup = { };
+        # media and durable git data for the buzz relay (inventory/apps.nix);
+        # the relay reads it S3-locally on nixbox, no web endpoint.
+        buzz-media = { };
         # protomaps basemap for grid; served via the s3 web endpoint and
         # exposed publicly through netbird-proxy (peer target :3902).
         maps = {

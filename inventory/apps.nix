@@ -1,5 +1,31 @@
-_: {
+{ config, ... }:
+{
   flake.clan.inventory.instances = {
+    # self-hosted buzz relay; media and git data in the local garage cluster
+    # (bucket buzz-media, inventory/infra.nix). caddy vhost, homepage tile and
+    # gatus endpoint live in modules/nixos/services/buzz-relay.nix.
+    buzz = {
+      module = {
+        name = "buzz";
+        input = "buzz-flake";
+      };
+      roles.server.machines.nixbox.settings = {
+        relayUrl = "wss://buzz.${config.flake.domains.local}";
+        # default 3000 collides with convertx; buzz-relay.nix proxies this
+        bindAddress = "127.0.0.1:3010";
+        s3.endpoint = "http://127.0.0.1:3900";
+        # garage sets s3_region to the host name
+        s3.region = "nixbox";
+        # accepted risk: garage has no conditional writes (garage#1052), so
+        # the relay's git pointer-CAS startup gate fails. skipping it means
+        # buzz-hosted git repos would lose updates silently under concurrent
+        # pushes -- do not host repos through buzz; media/chat are unaffected.
+        settings.BUZZ_GIT_CONFORMANCE_PROBE = false;
+      };
+      # desktop app on the workstations, preconfigured with this relay
+      roles.client.tags = [ "workstation" ];
+    };
+
     wifi = {
       module = {
         name = "wifi";

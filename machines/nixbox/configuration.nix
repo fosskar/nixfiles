@@ -7,6 +7,7 @@
 {
   imports = [
     self.modules.nixos.arrStack
+    self.modules.nixos.buzzRelay
     self.modules.nixos.caddy
     self.modules.nixos.matrix
     self.modules.nixos.convertx
