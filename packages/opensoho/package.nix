@@ -6,13 +6,13 @@
 }:
 buildGoModule (finalAttrs: {
   pname = "opensoho";
-  version = "0.14.1";
+  version = "0.15.0";
 
   src = fetchFromGitHub {
     owner = "rubenbe";
     repo = "opensoho";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-mFnYpqeez83NFAG1wvqDrO2tjvwtK3oxmGaCaV36HuU=";
+    hash = "sha256-HFc/gkC7Qa55CfVffDRNbBE1j1eLB+tHkgbp/NZlCtw=";
   };
 
   vendorHash = "sha256-ZBdaFS3dUTgLwF2Yhc5smUxcjTYKwWNJ9UFNemN38LE=";
