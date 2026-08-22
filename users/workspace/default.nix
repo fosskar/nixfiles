@@ -24,6 +24,7 @@
         self.modules.homeManager.k9s
         self.modules.homeManager.llm
         self.modules.homeManager.neovim
+        self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
         self.modules.homeManager.shellIntegration

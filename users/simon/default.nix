@@ -31,6 +31,7 @@
       self.modules.homeManager.niri
       self.modules.homeManager.nixIndex
       self.modules.homeManager.qt
+      self.modules.homeManager.radicle
       self.modules.homeManager.rbw
       self.modules.homeManager.ripgrep
       self.modules.homeManager.shellAliases

@@ -53,6 +53,7 @@
         delegates = [
           "did:key:z6MkuikgFx2EtrJufK4vYELecHj7Qg5cTpBRZHhsb8t9M8Qq"
           "did:key:z6Mkqumzp6etEF91c57YnvHkrwq4DkUqVusTSTdychiEDLLJ"
+          "did:key:z6MkjNSSqPTQm5AnKdmgVom22nr4ZK57bj7dSm1gZeFX4MxN"
         ];
         p2pListen = [ "0.0.0.0:${toString nodePort}" ];
         p2pExternalAddresses = [ "seed.${flake-self.domains.public}:${toString nodePort}" ];
