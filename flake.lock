@@ -1546,11 +1546,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787275154,
-        "narHash": "sha256-nAP135oGmGeo1RT1Rn8rqtJpdCjd0+Wbs83tvp/1i7Q=",
+        "lastModified": 1787360919,
+        "narHash": "sha256-PX22jKzepJqAg6V8guJxr995qs0ECgM27EpZeRDt8t8=",
         "owner": "fosskar",
         "repo": "ssync",
-        "rev": "3deff422fe24a297d79f311c2a6381ca23c46702",
+        "rev": "56d2bd6b52e2ae5a012767b7fdb44fd4ad91fc43",
         "type": "github"
       },
       "original": {
