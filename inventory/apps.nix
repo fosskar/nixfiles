@@ -58,6 +58,7 @@
         matrix = {
           enable = true;
           userId = "@hermes:fosskar.de";
+          deviceId = "c14FEq9Hbv";
           homeChannel = "!WzCLw1OzVNBoUFn4KwbW-9EqeKu4qps8d3wOcvXZL0g";
           allowedUsers = [ "@fosskar:fosskar.de" ];
         };

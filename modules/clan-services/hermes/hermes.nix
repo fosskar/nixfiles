@@ -172,11 +172,11 @@
                       }
                     ];
                     prompts = {
-                      matrix-password = "matrix password for ${settings.matrix.userId}";
+                      matrix-access-token = "Matrix access token for ${settings.matrix.userId}";
                       matrix-recovery-key = "Matrix recovery key for ${settings.matrix.userId}";
                     };
                     env = {
-                      MATRIX_PASSWORD = "matrix-password";
+                      MATRIX_ACCESS_TOKEN = "matrix-access-token";
                       MATRIX_RECOVERY_KEY = "matrix-recovery-key";
                     };
                   };
