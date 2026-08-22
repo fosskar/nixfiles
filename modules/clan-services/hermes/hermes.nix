@@ -102,6 +102,24 @@
 
               signal.enable = lib.mkEnableOption "the signal channel";
 
+              buzz = {
+                enable = lib.mkEnableOption "the buzz channel";
+                channels = lib.mkOption {
+                  type = lib.types.listOf lib.types.str;
+                  default = [ ];
+                  description = "channel UUIDs to watch; empty = all joined channels.";
+                };
+                homeChannel = lib.mkOption {
+                  type = lib.types.nullOr lib.types.str;
+                  default = null;
+                };
+                allowedUsers = lib.mkOption {
+                  type = lib.types.listOf lib.types.str;
+                  default = [ ];
+                  description = "npubs or hex pubkeys allowed to talk to the agent.";
+                };
+              };
+
               homeAssistant = {
                 enable = lib.mkEnableOption "the home assistant integration";
                 address = lib.mkOption {
@@ -189,6 +207,23 @@
                       SIGNAL_ACCOUNT = "signal-account-number";
                       SIGNAL_ALLOWED_USERS = "signal-account-number";
                     };
+                  };
+
+                  buzz = {
+                    enable = settings.buzz.enable;
+                    modules = [
+                      self.modules.nixos.hermesBuzz
+                      {
+                        services.hermes-agent.buzz = {
+                          inherit (settings.buzz) channels allowedUsers;
+                        }
+                        // lib.optionalAttrs (settings.buzz.homeChannel != null) {
+                          inherit (settings.buzz) homeChannel;
+                        };
+                      }
+                    ];
+                    prompts.buzz-private-key = "Nostr private key (nsec or hex) for the agent's buzz identity";
+                    env.BUZZ_PRIVATE_KEY = "buzz-private-key";
                   };
 
                   homeAssistant = {
