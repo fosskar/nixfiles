@@ -6,146 +6,74 @@
       ...
     }:
     let
-      # kwallet tpm auto-unlock setup (one-time, as user): open kwallet once, then
-      #   echo -n 'YOUR_KWALLET_PASSWORD' | systemd-creds encrypt --user - ~/.config/kwallet-tpm/password.cred
-      # refs: mic92 dotfiles nixosModules/niri/kwallet-tpm, https://github.com/Himalian/autokdewallet
-      pythonEnv = pkgs.python3.withPackages (ps: [ ps.dbus-python ]);
+      # keyring tpm auto-unlock setup (one-time, as user): open the keyring once, then
+      #   echo -n 'YOUR_KEYRING_PASSWORD' | systemd-creds encrypt --user - ~/.config/keyring-tpm/password.cred
+      # the first unlock creates the login keyring with the credential password
+      # refs: gnome-keyring-daemon(1) --unlock, mic92 dotfiles niri/kwallet-tpm
+      keyring-tpm-unlock = pkgs.writeShellScriptBin "keyring-tpm-unlock" ''
+        if [ "$#" -ne 1 ]; then
+          echo "usage: keyring-tpm-unlock <credential-file>" >&2
+          exit 1
+        fi
+        cred="$1"
+        if [ ! -f "$cred" ]; then
+          echo "credential file not found: $cred" >&2
+          exit 1
+        fi
 
-      kwallet-tpm-unlock = pkgs.writeScriptBin "kwallet-tpm-unlock" ''
-        #!${pythonEnv}/bin/python3
-        from __future__ import annotations
+        # foreground so this unit owns the daemon and the bus name; --replace
+        # absorbs an instance that dbus activation raced in earlier
+        exec ${pkgs.gnome-keyring}/bin/gnome-keyring-daemon \
+          --foreground --replace --components=secrets --unlock \
+          < <(${pkgs.systemd}/bin/systemd-creds decrypt --user "$cred" -)
+      '';
 
-        import hashlib
-        import subprocess
-        import sys
-        import time
-        from pathlib import Path
-
-        import dbus
-
-        iterations = 50000
-        key_size = 56
-        hash_algo = "sha512"
-
-        salt_path = Path.home() / ".local/share/kwalletd/kdewallet.salt"
-
-
-        def load_salt(path: Path = salt_path) -> bytes:
-          if not path.exists():
-            raise FileNotFoundError(f"salt file not found: {path}")
-          return path.read_bytes()
-
-
-        def decrypt_password(cred_file: Path) -> bytes:
-          result = subprocess.run(
-            ["systemd-creds", "decrypt", "--user", str(cred_file), "-"],
-            capture_output=True,
-            check=True,
-          )
-          return result.stdout.strip()
-
-
-        def derive_hash(password: bytes, salt: bytes) -> bytes:
-          return hashlib.pbkdf2_hmac(hash_algo, password, salt, iterations, key_size)
-
-
-        def pam_open_wallet(password_hash: bytes) -> bool:
-          try:
-            bus = dbus.SessionBus()
-            proxy = bus.get_object("org.freedesktop.impl.portal.desktop.kwallet", "/ksecretd")
-            interface = dbus.Interface(proxy, "org.kde.KWallet")
-            interface.pamOpen("kdewallet", dbus.ByteArray(password_hash), 0)
-            for _ in range(50):
-              if interface.isOpen("kdewallet", signature="s"):
-                return True
-              time.sleep(0.1)
-          except dbus.DBusException as e:
-            print(f"dbus error unlocking wallet: {e}", file=sys.stderr)
-            return False
-
-          print("wallet did not open", file=sys.stderr)
-          return False
-
-
-        def main() -> None:
-          if len(sys.argv) != 2:
-            print(f"usage: {sys.argv[0]} <credential-file>", file=sys.stderr)
-            sys.exit(1)
-
-          cred_file = Path(sys.argv[1])
-          if not cred_file.exists():
-            print(f"credential file not found: {cred_file}", file=sys.stderr)
-            sys.exit(1)
-
-          salt = load_salt()
-          password = decrypt_password(cred_file)
-          password_hash = derive_hash(password, salt)
-
-          if not pam_open_wallet(password_hash):
-            sys.exit(1)
-
-
-        if __name__ == "__main__":
-          main()
+      keyring-unlock-verify = pkgs.writeShellScript "keyring-unlock-verify" ''
+        # fail the unit unless the default collection really reports unlocked
+        for _ in $(seq 1 100); do
+          locked=$(${pkgs.systemd}/bin/busctl --user get-property \
+            org.freedesktop.secrets \
+            /org/freedesktop/secrets/aliases/default \
+            org.freedesktop.Secret.Collection Locked 2>/dev/null) || true
+          if [ "$locked" = "b false" ]; then
+            exit 0
+          fi
+          sleep 0.2
+        done
+        echo "login keyring did not unlock" >&2
+        exit 1
       '';
     in
     {
-      # services.gnome.gnome-keyring.enable = lib.mkDefault true;
+      # gnome-keyring provides org.freedesktop.secrets; unlock at session start
+      # through tpm-sealed credentials instead of pam
+      services.gnome.gnome-keyring.enable = true;
+      programs.seahorse.enable = true;
 
-      # seahorse - gui for managing keyring secrets and keys
-      # programs.seahorse.enable = lib.mkDefault true;
-
-      # unlock keyring on login for greeters/lock screens
-      # security.pam.services = {
-      #   login.enableGnomeKeyring = lib.mkDefault true;
-      #   greetd.enableGnomeKeyring = lib.mkIf config.services.greetd.enable true;
-      #   cosmic-greeter.enableGnomeKeyring = lib.mkIf config.services.displayManager.cosmic-greeter.enable true;
-      # };
-
-      # kwallet + tpm unlock
-      services.gnome.gnome-keyring.enable = lib.mkForce false;
-      programs.seahorse.enable = lib.mkForce false;
-
-      xdg.portal = {
-        config.niri."org.freedesktop.impl.portal.Secret" = lib.mkForce "kwallet";
-        extraPortals = [ pkgs.kdePackages.kwallet ];
-      };
+      xdg.portal.config.niri."org.freedesktop.impl.portal.Secret" = lib.mkForce "gnome-keyring";
 
       environment.systemPackages = [
-        pkgs.kdePackages.kwallet
-        pkgs.kdePackages.kwalletmanager
-        kwallet-tpm-unlock
+        keyring-tpm-unlock
       ];
 
-      security.pam.services.greetd.kwallet.enable = false;
-
-      systemd.user.services = {
-        kwallet-tpm-unlock = {
-          description = "unlock kwallet using tpm-sealed credentials";
-          after = [
-            "dbus.socket"
-            "graphical-session.target"
-          ];
-          wantedBy = [ "graphical-session.target" ];
-          serviceConfig = {
-            Type = "oneshot";
-            ExecStart = "${kwallet-tpm-unlock}/bin/kwallet-tpm-unlock %h/.config/kwallet-tpm/password.cred";
-            Restart = "on-failure";
-            RestartSec = 2;
-            RestartMode = "direct";
-          };
-        };
-
-        lock-secrets-on-suspend = {
-          description = "lock secrets before suspend";
-          before = [ "sleep.target" ];
-          wantedBy = [ "sleep.target" ];
-          serviceConfig = {
-            Type = "oneshot";
-            ExecStart = pkgs.writeShellScript "lock-secrets" ''
-              ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
-            '';
-          };
+      systemd.user.services.keyring-tpm-unlock = {
+        description = "run login keyring unlocked with tpm-sealed credentials";
+        after = [ "dbus.socket" ];
+        # startup completes only once ExecStartPost sees the keyring unlocked,
+        # so session apps that ask for secrets do not race the unlock and get a
+        # password prompt
+        before = [ "graphical-session.target" ];
+        wantedBy = [ "graphical-session.target" ];
+        serviceConfig = {
+          Type = "exec";
+          # a dbus-activated --start instance has no control directory, which
+          # makes it invisible to --replace; kill strays so this unit's daemon
+          # owns the bus name (no-op at session start, nothing runs yet)
+          ExecStartPre = "-${pkgs.procps}/bin/pkill -u %u -f gnome-keyring-daemon";
+          ExecStart = "${keyring-tpm-unlock}/bin/keyring-tpm-unlock %h/.config/keyring-tpm/password.cred";
+          ExecStartPost = "${keyring-unlock-verify}";
+          Restart = "on-failure";
+          RestartSec = 2;
         };
       };
     };

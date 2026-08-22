@@ -12,10 +12,6 @@
       cfg = config.programs.noctalia;
       theme = self.themes.${self.theme};
 
-      lockSecrets = pkgs.writeShellScript "lock-secrets" ''
-        ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
-      '';
-
       noctalia =
         cmd:
         [
@@ -402,11 +398,6 @@
             notification = {
               position = lib.mkDefault "top_right";
               background_opacity = lib.mkDefault 0.80;
-            };
-
-            hooks = {
-              session_locked = toString lockSecrets;
-              session_unlocked = "kwallet-tpm-unlock $HOME/.config/kwallet-tpm/password.cred";
             };
           };
         };
