@@ -10,6 +10,7 @@
     self.modules.nixos.buzzRelay
     self.modules.nixos.caddy
     self.modules.nixos.matrix
+    self.modules.nixos.matrixAlertHook
     self.modules.nixos.convertx
     self.modules.nixos.dawarich
     self.modules.nixos.opencloud

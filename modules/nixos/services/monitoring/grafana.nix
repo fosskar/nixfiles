@@ -201,18 +201,27 @@
 
         # --- alerting ---
 
-        services.grafana.provision.alerting = lib.mkIf smtpEnabled {
+        services.grafana.provision.alerting = {
           contactPoints.settings = {
             apiVersion = 1;
+            deleteContactPoints = [
+              {
+                orgId = 1;
+                uid = "mailbox-email";
+              }
+            ];
             contactPoints = [
               {
                 orgId = 1;
-                name = "mailbox";
+                name = "matrix-alert-hook";
                 receivers = [
                   {
-                    uid = "mailbox-email";
-                    type = "email";
-                    settings.addresses = "grafana@nx3.eu";
+                    uid = "matrix-alert-hook";
+                    type = "webhook";
+                    settings = {
+                      url = "http://127.0.0.1:9088/alert";
+                      httpMethod = "POST";
+                    };
                   }
                 ];
               }
@@ -223,7 +232,7 @@
             policies = [
               {
                 orgId = 1;
-                receiver = "mailbox";
+                receiver = "matrix-alert-hook";
                 group_by = [
                   "grafana_folder"
                   "alertname"
