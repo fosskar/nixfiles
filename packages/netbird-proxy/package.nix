@@ -6,16 +6,16 @@
 }:
 buildGoModule (finalAttrs: {
   pname = "netbird-proxy";
-  version = "0.77.0";
+  version = "0.77.1";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "netbird";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-w72ylRblfC20X4h1E7vuycWziLfWE+cCHuIaf7czFb8=";
+    hash = "sha256-uGyo2J/3berl6yBCs+Qy0mXKMZNRM8o6gclBeiDxon8=";
   };
 
-  vendorHash = "sha256-kbVBjQUZUp9VZ67Ug4VWtmp2qZw5hLtxLg8utyNCNGg=";
+  vendorHash = "sha256-IGCfMhcrZqHye83zcJuDf1Hyv7X4rKybxWOiyxGuYtY=";
   proxyVendor = true;
 
   subPackages = [ "proxy/cmd/proxy" ];
