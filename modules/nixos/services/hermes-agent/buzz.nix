@@ -16,7 +16,7 @@
       options.services.hermes-agent.buzz = {
         relayUrl = lib.mkOption {
           type = lib.types.str;
-          default = "wss://buzz.${flake-self.domains.local}";
+          default = "wss://buzz.${flake-self.domains.public}";
         };
         channels = lib.mkOption {
           type = lib.types.listOf lib.types.str;

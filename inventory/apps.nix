@@ -2,17 +2,35 @@
 {
   flake.clan.inventory.instances = {
     # self-hosted buzz relay; media and git data in the local garage cluster
-    # (bucket buzz-media, inventory/infra.nix). caddy vhost, homepage tile and
-    # gatus endpoint live in modules/nixos/services/buzz-relay.nix.
+    # (bucket buzz-media, inventory/infra.nix). homepage tile and gatus
+    # endpoint live in modules/nixos/services/buzz-relay.nix. public ingress
+    # is netbird-proxy on gateway (mapping in the NetBird UI); the relay keys
+    # its community by the RELAY_URL host, so all clients use the public url
     buzz = {
       module = {
         name = "buzz";
         input = "buzz-flake";
       };
       roles.server.machines.nixbox.settings = {
-        relayUrl = "wss://buzz.${config.flake.domains.local}";
-        # default 3000 collides with convertx; buzz-relay.nix proxies this
-        bindAddress = "127.0.0.1:3010";
+        relayUrl = "wss://buzz.${config.flake.domains.public}";
+        # default 3000 collides with convertx; netbird-proxy targets this port
+        bindAddress = "0.0.0.0:3010";
+        pairingRelay = {
+          enable = true;
+          bindAddress = "0.0.0.0:5000";
+        };
+        # humans join via invite links; desktop-managed agents authenticate
+        # through NIP-OA owner delegation. only the operator and headless
+        # agents without a desktop owner attestation need roster entries
+        requireRelayMembership = true;
+        members = {
+          # simon
+          "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2" = "admin";
+          # hermes agent
+          "c53044e08959d597e548183571c957ff835ff0b4da5886700fca74023ec6fb7e" = "member";
+        };
+        settings.RELAY_OWNER_PUBKEY = "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2";
+        settings.BUZZ_ALLOW_NIP_OA_AUTH = true;
         s3.endpoint = "http://127.0.0.1:3900";
         # garage sets s3_region to the host name
         s3.region = "nixbox";

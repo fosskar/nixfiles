@@ -2,8 +2,9 @@
   flake.modules.nixos.buzzRelay =
     { flake-self, ... }:
     let
-      localHost = "buzz.${flake-self.domains.local}";
-      # bindAddress of the buzz instance (inventory/apps.nix)
+      publicHost = "buzz.${flake-self.domains.public}";
+      # bindAddress port of the buzz instance (inventory/apps.nix); local
+      # health probe only, clients use publicHost via netbird-proxy
       listenUrl = "http://127.0.0.1:3010";
     in
     {
@@ -12,7 +13,7 @@
           communication = [
             {
               Buzz = {
-                href = "https://${localHost}";
+                href = "https://${publicHost}";
                 icon = "mdi-forum";
                 description = "relay";
                 siteMonitor = listenUrl;
@@ -25,16 +26,12 @@
       services.gatus.settings.endpoints = [
         {
           name = "Buzz Relay";
-          url = "https://${localHost}/";
+          url = "https://${publicHost}/";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }
       ];
-
-      services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        reverse_proxy ${listenUrl}
-      '';
     };
 }
