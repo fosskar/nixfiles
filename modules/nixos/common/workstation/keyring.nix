@@ -43,6 +43,25 @@
         echo "login keyring did not unlock" >&2
         exit 1
       '';
+
+      # dbus activation of the secrets names must start this unit, not a bare
+      # --start daemon: a bare instance wins the bus name race at login, has no
+      # control directory (invisible to --replace) and prompts for the password.
+      # hiPrio beats gnome-keyring's own service files in the system-path merge;
+      # dbus scans system-path before package service dirs.
+      keyring-dbus-activation = lib.hiPrio (
+        pkgs.runCommand "keyring-dbus-activation" { } ''
+          mkdir -p $out/share/dbus-1/services
+          for name in org.freedesktop.secrets org.gnome.keyring org.freedesktop.impl.portal.Secret; do
+            cat > $out/share/dbus-1/services/$name.service <<EOF
+          [D-BUS Service]
+          Name=$name
+          Exec=/run/wrappers/bin/gnome-keyring-daemon --start --foreground --components=secrets
+          SystemdService=keyring-tpm-unlock.service
+          EOF
+          done
+        ''
+      );
     in
     {
       # gnome-keyring provides org.freedesktop.secrets; unlock at session start
@@ -54,6 +73,7 @@
 
       environment.systemPackages = [
         keyring-tpm-unlock
+        keyring-dbus-activation
       ];
 
       systemd.user.services.keyring-tpm-unlock = {
