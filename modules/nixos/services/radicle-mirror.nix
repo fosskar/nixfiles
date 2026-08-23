@@ -57,6 +57,7 @@
         ];
         p2pListen = [ "0.0.0.0:${toString nodePort}" ];
         p2pExternalAddresses = [ "seed.${flake-self.domains.public}:${toString nodePort}" ];
+        explorerUrl = "https://${publicHost}/nodes/${publicHost}/{rid}/commits/{sha}";
       };
 
       systemd.services.radicle-mirror = {
