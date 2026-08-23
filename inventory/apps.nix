@@ -118,7 +118,9 @@
         input = "ssync";
       };
       roles.peer.machines = {
-        "desktop".settings.user = "simon";
+        # desktop disabled: age decrypt retry loop forks ~2000 procs/sec and
+        # stalls the scx_lavd watchdog. see fosskar/ssync#109
+        # "desktop".settings.user = "simon";
         "lpt-titan".settings.user = "simon";
         "nixworker".settings.user = "simon";
       };
