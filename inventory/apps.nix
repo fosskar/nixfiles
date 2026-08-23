@@ -28,6 +28,8 @@
           "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2" = "admin";
           # hermes agent
           "c53044e08959d597e548183571c957ff835ff0b4da5886700fca74023ec6fb7e" = "member";
+          # ORouter community agent
+          "6228c04164cead71dfd9fee39a425ab88d622efb85a825fe13d1ca1886c9ee1b" = "member";
         };
         settings.RELAY_OWNER_PUBKEY = "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2";
         settings.BUZZ_ALLOW_NIP_OA_AUTH = true;

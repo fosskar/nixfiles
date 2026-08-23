@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   pkgs,
   self,
@@ -106,6 +107,44 @@
   systemd.slices."user-1000".sliceConfig = {
     MemoryMin = "16G";
     MemoryLow = "32G";
+  };
+
+  clan.core.vars.generators.workspace-buzz-orouter = {
+    files = {
+      "agent.env" = {
+        owner = "simon";
+        group = "users";
+      };
+      pubkey.secret = false;
+    };
+    runtimeInputs = [
+      inputs.buzz-flake.packages.${pkgs.stdenv.hostPlatform.system}.buzz-relay
+      pkgs.gnused
+    ];
+    script = ''
+      keys=$(buzz-admin generate-key)
+      private=$(printf '%s\n' "$keys" | sed -n 's/^Secret key:  *//p')
+      public=$(printf '%s\n' "$keys" | sed -n 's/^Public key:  *//p')
+      test -n "$private"
+      test -n "$public"
+      printf 'BUZZ_PRIVATE_KEY=%s\n' "$private" > "$out/agent.env"
+      printf '%s\n' "$public" > "$out/pubkey"
+    '';
+  };
+
+  clan.core.vars.generators.workspace-openrouter = {
+    files."openrouter.env" = {
+      owner = "simon";
+      group = "users";
+    };
+    prompts.api-key = {
+      type = "hidden";
+      persist = true;
+      description = "OpenRouter API key for workspace Buzz agents";
+    };
+    script = ''
+      printf 'OPENROUTER_API_KEY=%s\n' "$(cat "$prompts/api-key")" > "$out/openrouter.env"
+    '';
   };
 
   # session link for kagi-search skill (modules/llm/skills)
