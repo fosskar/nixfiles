@@ -29,6 +29,10 @@
           icon_theme = lib.mkDefault "Material Icon Theme";
         };
       };
-      wayland.windowManager.niri.settings.binds."Mod+Z".spawn = "zeditor";
+      wayland.windowManager.niri.settings.binds."Mod+Z".spawn = [
+        "focus-or-spawn"
+        "dev.zed.Zed"
+        "zeditor"
+      ];
     };
 }

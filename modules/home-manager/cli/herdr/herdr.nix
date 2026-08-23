@@ -3,6 +3,7 @@
     {
       inputs,
       config,
+      options,
       pkgs,
       lib,
       ...
@@ -129,6 +130,26 @@
         enable = true;
         package = herdrPackage;
         settings = herdrSettings;
+      };
+
+      # niri options only exist on desktop homes; headless consumers
+      # (users/workspace, lpt-titan) import this module without niri
+      wayland = lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
+        windowManager.niri.settings.binds."Mod+E" = {
+          _props.hotkey-overlay-title = "Attach herdr workspace";
+          spawn = [
+            "focus-or-spawn"
+            "herdr.workspace"
+            "ghostty"
+            "--class=herdr.workspace"
+            "-e"
+            "herdr"
+            "--remote"
+            "workspace"
+            "--remote-keybindings"
+            "server"
+          ];
+        };
       };
 
       home.packages = [

@@ -49,5 +49,13 @@ _: {
 
     # desktop-only startup apps
     spawn-sh-at-startup = [ [ "steam -silent" ] ];
+
+    # steam is desktop-only; running `steam` against the silent instance
+    # surfaces the main window
+    binds."Mod+S".spawn = [
+      "focus-or-spawn"
+      "steam"
+      "steam"
+    ];
   };
 }

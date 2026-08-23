@@ -8,7 +8,11 @@
         #inputs.zen-browser.homeModules.twilight
       ];
 
-      wayland.windowManager.niri.settings.binds."Mod+W".spawn = "zen-beta";
+      wayland.windowManager.niri.settings.binds."Mod+W".spawn = [
+        "focus-or-spawn"
+        "zen-beta"
+        "zen-beta"
+      ];
 
       programs.zen-browser = {
         enable = true;

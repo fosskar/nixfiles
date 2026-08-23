@@ -79,13 +79,14 @@
       home.packages = [
         pkgs.wl-clipboard
         pkgs.local.live-ocr
+        pkgs.local.niri-focus-or-spawn
       ];
 
       wayland.windowManager.niri.settings = fromNiriFlakeSettings {
         # input configuration
         input = {
           focus-follows-mouse._props.max-scroll-amount = lib.mkDefault "0%";
-          warp-mouse-to-focus = [ ];
+          warp-mouse-to-focus._props.mode = lib.mkDefault "center-xy";
           workspace-auto-back-and-forth = lib.mkDefault true;
 
           keyboard.xkb = {
@@ -229,18 +230,12 @@
 
           # open the Hermes dashboard
           "Mod+A" = {
-            action.spawn = "hermes-desktop-remote";
-            hotkey-overlay.title = "Open Hermes dashboard";
-          };
-
-          # toggle voxtype voice-to-text recording
-          "Mod+S" = {
             action.spawn = [
-              "voxtype"
-              "record"
-              "toggle"
+              "focus-or-spawn"
+              "Hermes"
+              "hermes-desktop-remote"
             ];
-            hotkey-overlay.title = "Toggle voice-to-text";
+            hotkey-overlay.title = "Open Hermes dashboard";
           };
 
           # program launches
@@ -248,7 +243,18 @@
             spawn = "ghostty";
           };
           "Mod+D".action = {
-            spawn = "webcord";
+            spawn = [
+              "focus-or-spawn"
+              "WebCord"
+              "webcord"
+            ];
+          };
+          "Mod+Y".action = {
+            spawn = [
+              "focus-or-spawn"
+              "Element"
+              "element-desktop"
+            ];
           };
 
           # media controls (not shell-specific)
