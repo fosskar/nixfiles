@@ -13,6 +13,10 @@
       herdrSettings = {
         onboarding = false;
         update.version_check = false;
+        experimental = {
+          kitty_graphics = true;
+          pane_history = true;
+        };
         theme.name = "vesper";
         ui.toast.delivery = "herdr";
         ui.status_indicators = "symbols";
