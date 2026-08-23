@@ -85,15 +85,28 @@ _: {
       };
       # json is valid yaml; yq merges it into config.yml
       ompSettingsFile = pkgs.writeText "omp-settings-overlay.json" (builtins.toJSON ompSettings);
+
+      omp = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.omp;
+
+      # buzz spawns the harness with the args from this definition; without one
+      # it runs bare `omp`, which waits for a prompt on stdin instead of
+      # speaking ACP. the absolute path keeps it resolvable from the desktop
+      # app's environment, which does not inherit the login shell PATH.
+      buzzHarness = {
+        id = "omp";
+        label = "Oh My Pi";
+        command = lib.getExe omp;
+        args = [ "acp" ];
+      };
     in
     {
-      home.packages = [
-        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.omp
-      ];
+      home.packages = [ omp ];
 
       home.file = {
         ".omp/agent/AGENTS.md".source = ../AGENTS.md;
         ".omp/agent/WATCHDOG.md".source = ./WATCHDOG.md;
+        ".local/share/xyz.block.buzz.app/custom_harnesses/omp.json".source =
+          pkgs.writeText "buzz-harness-omp.json" (builtins.toJSON buzzHarness);
       }
       // extensionEntries;
 
