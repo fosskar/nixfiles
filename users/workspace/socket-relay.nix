@@ -16,12 +16,18 @@ let
     name:
     pkgs.writeShellScript "socket-relay-${name}" ''
       # newest forward first: the client attached last is where the user sits.
-      # dead forwards (client gone, socket file left behind) fail the probe
-      # connect instantly and fall through to the next candidate.
+      # a connect-only probe cannot see a half-dead ssh connection (suspended
+      # laptop, roamed wifi): sshd still accepts on the forward socket and the
+      # relay would hang forever. instead demand a real agent reply from the
+      # client's ssh-agent forward; all forwards of one client share the same
+      # ssh connection, so agent liveness vouches for the other sockets too.
+      # ssh-add exits 1 when the agent answers "no identities"; still live.
       for s in $(${pkgs.coreutils}/bin/ls -t "$XDG_RUNTIME_DIR"/fwd/*.${name} 2>/dev/null); do
-        if ${pkgs.socat}/bin/socat -u OPEN:/dev/null UNIX-CONNECT:"$s" 2>/dev/null; then
-          exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"$s"
-        fi
+        agent="''${s%.${name}}.ssh-agent"
+        SSH_AUTH_SOCK="$agent" ${pkgs.coreutils}/bin/timeout 2 ${pkgs.openssh}/bin/ssh-add -l >/dev/null 2>&1
+        case $? in
+          0 | 1) exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"$s" ;;
+        esac
       done
       echo "socket-relay-${name}: no live client forward" >&2
       exit 1
