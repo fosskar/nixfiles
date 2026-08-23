@@ -16,6 +16,11 @@
           UseDns = false;
           # unbind gnupg sockets if they exist
           StreamLocalBindUnlink = true;
+          # reap half-dead connections (suspended client) within 90s so their
+          # RemoteForward sockets stop accepting; otherwise kernel TCP
+          # keepalive holds them for ~2h and socket relays hang on them
+          ClientAliveInterval = 30;
+          ClientAliveCountMax = 3;
         };
       };
     };
