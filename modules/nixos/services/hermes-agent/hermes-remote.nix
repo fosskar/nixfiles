@@ -16,11 +16,22 @@
         inherit (pkgs) electron;
       };
       portGuard = import ./_remote-port-guard.nix { inherit pkgs; };
+      knownHosts = pkgs.writeText "hermes-remote-known-hosts" (
+        lib.concatMapStrings (host: "${host} ${cfg.hostKey}\n") cfg.hosts
+      );
       sshOptions = [
         "-o"
         "ExitOnForwardFailure=yes"
         "-o"
         "BatchMode=yes"
+        "-o"
+        "IdentitiesOnly=yes"
+        "-o"
+        "IdentityFile=${cfg.identityFile}"
+        "-o"
+        "StrictHostKeyChecking=yes"
+        "-o"
+        "UserKnownHostsFile=${knownHosts}"
         "-o"
         "ConnectTimeout=10"
         "-o"
@@ -102,7 +113,7 @@
           exit 1
         fi
 
-        token="$(${sshFirstHost} cat ${cfg.tokenPath} || true)"
+        token="$(${sshFirstHost} hermes-token || true)"
         if [ -z "$token" ]; then
           stop_tunnel
           echo "hermes-desktop-remote: server returned an empty dashboard token" >&2
@@ -166,10 +177,13 @@
           default = 22100;
           description = "Server loopback port for the Hermes dashboard";
         };
-        tokenPath = lib.mkOption {
+        identityFile = lib.mkOption {
           type = lib.types.str;
-          default = "/run/secrets/vars/hermes-dashboard/token";
-          description = "Path of the dashboard token on the server";
+          description = "Dedicated SSH private key for Hermes remote access";
+        };
+        hostKey = lib.mkOption {
+          type = lib.types.str;
+          description = "Pinned SSH host public key for every configured host";
         };
         extraSshOptions = lib.mkOption {
           type = lib.types.listOf lib.types.str;

@@ -4,6 +4,8 @@
     { clanLib, ... }:
     let
       basePort = 22100;
+      remoteKeyGenerator = instanceName: "${instanceName}-hermes-remote-ssh";
+      remoteUser = instanceName: "hermes-remote-${instanceName}";
     in
     {
 
@@ -157,6 +159,22 @@
               let
                 generator = "${instanceName}-agent";
                 envFile = "${instanceName}.env";
+                dashboardPort = basePort + settings.id;
+                sshUser = remoteUser instanceName;
+                remotePublicKey = lib.trim (
+                  clanLib.getPublicValue {
+                    flake = config.clan.core.settings.directory;
+                    generator = remoteKeyGenerator instanceName;
+                    file = "id_ed25519.pub";
+                    default = "";
+                  }
+                );
+                tokenCommand = pkgs.writeShellScript "${instanceName}-hermes-token" ''
+                  if [ "''${SSH_ORIGINAL_COMMAND-}" != hermes-token ]; then
+                    exit 1
+                  fi
+                  exec ${pkgs.coreutils}/bin/cat /run/secrets/vars/per-machine/${config.networking.hostName}/${instanceName}-dashboard/token
+                '';
                 localProvider = settings.providers.local.enable or false;
                 keyProviders = lib.attrNames (
                   lib.filterAttrs (name: provider: provider.enable && name != "local") settings.providers
@@ -350,12 +368,24 @@
                 clan.core.vars.generators."${instanceName}-dashboard" = {
                   files.token = {
                     owner = "root";
-                    group = "root";
+                    group = sshUser;
+                    mode = "0440";
                   };
                   runtimeInputs = [ pkgs.openssl ];
                   script = ''
                     openssl rand -hex 32 > "$out/token"
                   '';
+                };
+
+                users.groups.${sshUser} = { };
+                users.users.${sshUser} = {
+                  isSystemUser = true;
+                  group = sshUser;
+                  home = "/var/empty";
+                  shell = pkgs.bashInteractive;
+                  openssh.authorizedKeys.keys =
+                    lib.optional (remotePublicKey != "")
+                      ''restrict,port-forwarding,permitopen="127.0.0.1:${toString dashboardPort}",command="${tokenCommand}" ${remotePublicKey}'';
                 };
 
                 # ssh host alias and root identity come from the sandbox module
@@ -404,7 +434,12 @@
           }:
           {
             nixosModule =
-              { lib, ... }:
+              {
+                config,
+                lib,
+                pkgs,
+                ...
+              }:
               let
                 serverNames = lib.naturalSort (lib.attrNames (roles.server.machines or { }));
                 server = if lib.length serverNames == 1 then lib.head serverNames else null;
@@ -443,15 +478,50 @@
                   (map (host: host.plain))
                   lib.unique
                 ];
+                normalUsers = lib.attrNames (lib.filterAttrs (_: user: user.isNormalUser) config.users.users);
+                clientUser = if lib.length normalUsers == 1 then lib.head normalUsers else null;
+                clientGroup = if clientUser == null then null else config.users.users.${clientUser}.group;
+                hostKey =
+                  if server == null then
+                    ""
+                  else
+                    lib.trim (
+                      clanLib.getPublicValue {
+                        flake = config.clan.core.settings.directory;
+                        machine = server;
+                        generator = "openssh";
+                        file = "ssh.id_ed25519.pub";
+                        default = "";
+                      }
+                    );
               in
               {
                 imports = [ self.modules.nixos.hermesRemote ];
 
-                services.hermes-remote = lib.mkIf (server != null) {
+                services.hermes-remote = lib.mkIf (server != null && clientUser != null) {
                   enable = true;
+                  user = remoteUser instanceName;
                   hosts = tunnelHosts;
                   remotePort = dashboardExport.port;
-                  tokenPath = "/run/secrets/vars/per-machine/${server}/${instanceName}-dashboard/token";
+                  identityFile =
+                    config.clan.core.vars.generators.${remoteKeyGenerator instanceName}.files."id_ed25519".path;
+                  inherit hostKey;
+                };
+
+                clan.core.vars.generators.${remoteKeyGenerator instanceName} = lib.mkIf (clientUser != null) {
+                  share = true;
+                  files = {
+                    "id_ed25519" = {
+                      owner = clientUser;
+                      group = clientGroup;
+                      mode = "0400";
+                    };
+                    "id_ed25519.pub".secret = false;
+                  };
+                  runtimeInputs = [ pkgs.openssh ];
+                  script = ''
+                    ssh-keygen -t ed25519 -N "" -C "hermes-remote-${instanceName}" -f "$out/id_ed25519"
+                  '';
                 };
 
                 assertions = [
@@ -466,6 +536,14 @@
                   {
                     assertion = server == null || dashboardExport != null;
                     message = "clan hermes client found no dashboard export for instance ${instanceName}";
+                  }
+                  {
+                    assertion = lib.length normalUsers == 1;
+                    message = "clan hermes client requires exactly one normal user, found ${toString (lib.length normalUsers)}";
+                  }
+                  {
+                    assertion = server == null || hostKey != "";
+                    message = "clan hermes client found no pinned SSH host key for ${toString server}";
                   }
                 ];
               };
