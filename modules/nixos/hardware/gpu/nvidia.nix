@@ -26,7 +26,8 @@
       users.groups.video.members = lib.mkAfter config.users.groups.wheel.members;
 
       hardware.nvidia = {
-        branch = "beta";
+        # beta 595.45.04 does not build against linux 7.2 (nixpkgs#554125)
+        branch = "new_feature";
         #package = config.boot.kernelPackages.nvidiaPackages.stable; # Default
         #package = config.boot.kernelPackages.nvidiaPackages.beta;
         #package = config.boot.kernelPackages.nvidiaPackages.production;
