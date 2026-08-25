@@ -181,12 +181,6 @@
       url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    noctalia-legacy = {
-      url = "github:noctalia-dev/noctalia-shell/legacy-v4";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.noctalia-qs.inputs.systems.follows = "systems";
-      inputs.noctalia-qs.inputs.treefmt-nix.follows = "treefmt-nix";
-    };
 
     tangled.url = "git+https://tangled.org/@tangled.org/core?shallow=1";
     tangled.inputs.nixpkgs.follows = "nixpkgs";

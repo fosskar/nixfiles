@@ -133,8 +133,6 @@
       };
     in
     {
-      imports = [ inputs.noctalia.homeModules.default ];
-
       config = {
         # python3: kcolorscheme template apply.py post-hook (merges scheme into kdeglobals)
         home.packages = [
@@ -164,6 +162,7 @@
 
         programs.noctalia = {
           enable = lib.mkDefault true;
+          package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
           systemd.enable = lib.mkDefault true;
           customPalettes.grey-teal = palette;
 
