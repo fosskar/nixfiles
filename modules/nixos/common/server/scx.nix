@@ -106,7 +106,10 @@
     in
     {
       services.scx = {
-        enable = true;
+        # scx_layered 1.1.3 wedges cpus on kernel 7.2: rq clock assertions fire from
+        # set_next_task_scx and the sp5100 watchdog hard-resets the box. nixbox cannot
+        # drop to 6.18 instead, bnxt_en fails page_pool_create_percpu there.
+        enable = false;
         package = pkgs.scx.rustscheds;
         scheduler = "scx_layered";
         extraArgs = [ "f:${layers}" ];

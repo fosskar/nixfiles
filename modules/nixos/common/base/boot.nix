@@ -18,7 +18,7 @@
         tmp.useTmpfs = lib.mkDefault true;
 
         loader = {
-          timeout = lib.mkDefault 0;
+          timeout = lib.mkDefault 5;
           generationsDir.copyKernels = true;
         };
       };
