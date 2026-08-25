@@ -76,6 +76,13 @@
               let
                 clientMachines = lib.attrNames (roles.client.machines or { });
 
+                telegrafMetricRelabelConfigs = [
+                  {
+                    action = "labeldrop";
+                    regex = "aof_last_bgrewrite_status|aof_last_write_status|db[0-9]+_distrib_.*|io_thread_.*|master_failover_state|maxmemory_policy|module|rdb_last_bgsave_status|redis_version|replication_role";
+                  }
+                ];
+
                 clientScrapeConfigs = map (
                   machine:
                   let
@@ -94,6 +101,7 @@
                         };
                       }
                     ];
+                    metric_relabel_configs = telegrafMetricRelabelConfigs;
                   }
                 ) clientMachines;
 

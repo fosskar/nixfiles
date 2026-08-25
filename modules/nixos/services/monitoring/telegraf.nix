@@ -79,9 +79,10 @@
               system = [ { } ];
               processes = [ { } ];
               kernel_vmstat = [ { } ];
+              timex = [ { } ];
               internal = [ { } ];
 
-              systemd_units = { };
+              systemd_units.fieldinclude = [ "active_code" ];
 
               mdstat = lib.mkIf mdraidEnabled { };
 
@@ -143,6 +144,18 @@
                     else
                       "unix://${server.unixSocket}"
                   ) redisServers;
+                  tagexclude = [ "replication_role" ];
+                  fieldexclude = [
+                    "aof_last_bgrewrite_status"
+                    "aof_last_write_status"
+                    "db*_distrib_*"
+                    "io_thread_*"
+                    "master_failover_state"
+                    "maxmemory_policy"
+                    "module"
+                    "rdb_last_bgsave_status"
+                    "redis_version"
+                  ];
                 }
               ];
 

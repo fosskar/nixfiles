@@ -22,7 +22,6 @@
 
           extraOptions = [
             "-promscrape.dropOriginalLabels=false"
-            "-selfScrapeInterval=10s"
             "-enableTCP6"
           ];
 
@@ -30,6 +29,7 @@
             [
               {
                 job_name = "victoriametrics";
+                scrape_interval = "30s";
                 static_configs = [
                   {
                     targets = [ config.services.victoriametrics.listenAddress ];
@@ -38,6 +38,13 @@
                       source = "local";
                       type = "victoriametrics";
                     };
+                  }
+                ];
+                metric_relabel_configs = [
+                  {
+                    source_labels = [ "__name__" ];
+                    regex = "flag";
+                    action = "drop";
                   }
                 ];
               }
@@ -68,6 +75,13 @@
                       source = "local";
                       type = "node-exporter";
                     };
+                  }
+                ];
+                metric_relabel_configs = [
+                  {
+                    source_labels = [ "__name__" ];
+                    regex = "node_systemd_unit_state";
+                    action = "drop";
                   }
                 ];
               }
