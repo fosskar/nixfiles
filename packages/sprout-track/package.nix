@@ -9,17 +9,17 @@
 }:
 buildNpmPackage (finalAttrs: {
   pname = "sprout-track";
-  version = "1.6.5";
+  version = "1.6.6";
   nodejs = nodejs_22;
 
   src = fetchFromGitHub {
     owner = "Oak-and-Sprout";
     repo = "sprout-track";
     rev = finalAttrs.version;
-    hash = "sha256-DVqZnTFOOxg7Eg3ZyPfcQz7/+Inmb+Yk9bqnej5cEyo=";
+    hash = "sha256-m21WcShYO9e1Bzt3NiKWAdc7dxlEnkAZSE52W1Oh9sQ=";
   };
 
-  npmDepsHash = "sha256-61vk9UMysiYHxxhf7qf1qmUh7Z1LCQ+17rMyGxD6l4Y=";
+  npmDepsHash = "sha256-DOZ27E8K2YcDGeblP2y93Si/D0C7X8+Gwg7Ue3qOhJ8=";
 
   # upstream ships no next.config; inject ours (webpack + skip type-check)
   postPatch = ''
