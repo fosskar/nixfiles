@@ -3,7 +3,7 @@
   buildNpmPackage,
   nodejs_22,
   python3,
-  prisma-engines_6,
+  prisma-engines,
   makeWrapper,
   nix-update-script,
 }:
@@ -31,11 +31,11 @@ buildNpmPackage (finalAttrs: {
     cp ${./next.config.mjs} next.config.mjs
   '';
 
-  # prisma-engines_6's setup-hook exports PRISMA_*_BINARY so `prisma
+  # prisma-engines's setup-hook exports PRISMA_*_BINARY so `prisma
   # generate` uses the local engines instead of downloading them. python3
   # is needed for better-sqlite3's node-gyp install script.
   nativeBuildInputs = [
-    prisma-engines_6
+    prisma-engines
     python3
     makeWrapper
   ];
@@ -78,16 +78,16 @@ buildNpmPackage (finalAttrs: {
     makeWrapper ${nodejs_22}/bin/node "$out/bin/sprout-track" \
       --chdir "$appDir" \
       --prefix PATH : "$appDir/node_modules/.bin" \
-      --set PRISMA_QUERY_ENGINE_LIBRARY ${prisma-engines_6}/lib/libquery_engine.node \
+      --set PRISMA_QUERY_ENGINE_LIBRARY ${prisma-engines}/lib/libquery_engine.node \
       --add-flags "$appDir/node_modules/next/dist/bin/next start"
 
     makeWrapper ${nodejs_22}/bin/node "$out/bin/sprout-track-prisma" \
       --chdir "$appDir" \
       --prefix PATH : "$appDir/node_modules/.bin" \
-      --set PRISMA_SCHEMA_ENGINE_BINARY ${prisma-engines_6}/bin/schema-engine \
-      --set PRISMA_QUERY_ENGINE_BINARY ${prisma-engines_6}/bin/query-engine \
-      --set PRISMA_QUERY_ENGINE_LIBRARY ${prisma-engines_6}/lib/libquery_engine.node \
-      --set PRISMA_FMT_BINARY ${prisma-engines_6}/bin/prisma-fmt \
+      --set PRISMA_SCHEMA_ENGINE_BINARY ${prisma-engines}/bin/schema-engine \
+      --set PRISMA_QUERY_ENGINE_BINARY ${prisma-engines}/bin/query-engine \
+      --set PRISMA_QUERY_ENGINE_LIBRARY ${prisma-engines}/lib/libquery_engine.node \
+      --set PRISMA_FMT_BINARY ${prisma-engines}/bin/prisma-fmt \
       --add-flags "$appDir/node_modules/prisma/build/index.js"
 
     runHook postInstall
