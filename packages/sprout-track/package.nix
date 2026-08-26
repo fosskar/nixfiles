@@ -19,6 +19,11 @@ buildNpmPackage (finalAttrs: {
     hash = "sha256-m21WcShYO9e1Bzt3NiKWAdc7dxlEnkAZSE52W1Oh9sQ=";
   };
 
+  # eslint 10 violates eslint-plugin-import's peer range; npm's ERESOLVE
+  # override re-resolves eslint from the registry, which the offline npm
+  # cache cannot serve (ENOTCACHED)
+  npmFlags = [ "--legacy-peer-deps" ];
+
   npmDepsHash = "sha256-DOZ27E8K2YcDGeblP2y93Si/D0C7X8+Gwg7Ue3qOhJ8=";
 
   # upstream ships no next.config; inject ours (webpack + skip type-check)
