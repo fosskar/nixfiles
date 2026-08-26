@@ -94,7 +94,10 @@
             # before prisma migrate writes into them
             "${pkgs.coreutils}/bin/mkdir -p ${stateDir}/db ${stateDir}/Files"
             "${pkgs.local.sprout-track}/bin/sprout-track-prisma migrate deploy"
-            "${pkgs.local.sprout-track}/bin/sprout-track-prisma db push --schema=prisma/log-schema.prisma --skip-generate"
+            # prisma 7 reads the datasource from the config file, not the
+            # schema: with --schema this would push the log schema onto the
+            # main database
+            "${pkgs.local.sprout-track}/bin/sprout-track-prisma db push --config prisma/log.config.ts"
             "${pkgs.local.sprout-track}/bin/sprout-track-prisma db seed"
           ];
           ExecStart = "${lib.getExe pkgs.local.sprout-track} --hostname ${listenAddress} --port ${toString listenPort}";
