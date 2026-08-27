@@ -61,12 +61,9 @@ terraform.rc
 # Backup files
 *.bak
 
-
 # Claude
 .claude
 
-# Pi ralph loops
-.ralph
-
 # Pi subagents runtime state
 .pi/subagents.json
+

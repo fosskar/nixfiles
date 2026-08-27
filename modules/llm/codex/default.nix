@@ -8,6 +8,8 @@ _: {
       ...
     }:
     {
+      programs.git.ignores = [ ".codex/" ];
+
       programs.codex = {
         enable = lib.mkDefault false;
         package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;

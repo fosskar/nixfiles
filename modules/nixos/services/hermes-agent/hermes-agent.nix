@@ -15,6 +15,18 @@
     let
       cfg = config.services.hermes-agent;
       inherit (cfg) stateDir;
+
+      rtk = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk;
+
+      # generated, not vendored, so the plugin tracks the pinned rtk. `rtk
+      # rewrite` is the single source of truth; the plugin only bridges
+      # hermes' pre_tool_call payload to it
+      rtkPlugin = pkgs.runCommand "rtk-hermes-plugin" { nativeBuildInputs = [ rtk ]; } ''
+        export HOME="$PWD"
+        rtk init -g --agent hermes
+        cp -r "$HOME/.hermes/plugins/rtk-rewrite" "$out"
+      '';
+
       defaults = {
         timezone = "Europe/Berlin";
         display.personality = "none";
@@ -31,6 +43,7 @@
         plugins.enabled = [
           "disk-cleanup"
           "hermes-achievements"
+          "rtk-rewrite"
         ];
         # local sqlite fact store next to the built-in MEMORY.md, which keeps
         # loading; the only provider with no api-key path and no llm calls
@@ -88,6 +101,7 @@
           addToSystemPackages = true;
 
           extraPackages = [
+            rtk
             pkgs.agent-browser
             pkgs.local.blogwatcher-cli
             pkgs.chromium
@@ -116,6 +130,24 @@
               ${stateDir}/.hermes/SOUL.md
           ''
         );
+
+        # user plugins live under HERMES_HOME and are gated by plugins.enabled
+        # above; both halves are required or the hook silently never registers
+        system.activationScripts.hermes-agent-rtk = lib.stringAfter [ "hermes-agent-setup" ] ''
+          ${pkgs.coreutils}/bin/install \
+            -d \
+            -o ${cfg.user} \
+            -g ${cfg.group} \
+            -m 0755 \
+            ${stateDir}/.hermes/plugins/rtk-rewrite
+          ${pkgs.coreutils}/bin/install \
+            -o ${cfg.user} \
+            -g ${cfg.group} \
+            -m 0444 \
+            ${rtkPlugin}/plugin.yaml \
+            ${rtkPlugin}/__init__.py \
+            ${stateDir}/.hermes/plugins/rtk-rewrite/
+        '';
 
         # -i, not -H: a login shell resets PATH to hermes' own profile. with the
         # caller's PATH the agent's packages are not found and unreadable /root

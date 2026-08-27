@@ -102,6 +102,8 @@ _: {
     {
       home.packages = [ omp ];
 
+      programs.git.ignores = [ ".omp/" ];
+
       home.file = {
         ".omp/agent/AGENTS.md".source = ../AGENTS.md;
         ".omp/agent/WATCHDOG.md".source = ./WATCHDOG.md;

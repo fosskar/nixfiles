@@ -22,7 +22,7 @@
         self.modules.homeManager.herdr
         self.modules.homeManager.hunk
         self.modules.homeManager.jujutsu
-        self.modules.homeManager.k9s
+        self.modules.homeManager.k8s
         self.modules.homeManager.llm
         self.modules.homeManager.neovim
         self.modules.homeManager.radicle
