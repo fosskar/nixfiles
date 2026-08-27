@@ -127,7 +127,6 @@ _: {
           "Thumbs.db"
           ".vscode"
           ".vscodium"
-          ".direnv"
           "pre-commit-config.yaml"
         ];
 

@@ -5,5 +5,7 @@
       nix-direnv.enable = true;
       silent = true;
     };
+
+    programs.git.ignores = [ ".direnv" ];
   };
 }

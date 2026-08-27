@@ -4,12 +4,21 @@ _: {
       enable = true;
 
       settings.k9s = {
-        ui = {
-          enableMouse = false; # can scroll, but dont click. true = cant scroll, but can click
-        };
         liveViewAutoRefresh = true;
-        refreshRate = 1;
-        maxConnRetry = 3;
+        refreshRate = 5;
+        maxConnRetry = 15;
+
+        ui = {
+          enableMouse = false;
+          headless = true;
+          crumbsless = true;
+        };
+
+        logger = {
+          tail = 200;
+          buffer = 1000;
+          sinceSeconds = 600;
+        };
       };
     };
   };

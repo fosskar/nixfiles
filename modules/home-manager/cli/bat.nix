@@ -5,9 +5,7 @@
       programs.bat = {
         enable = true;
 
-        config = {
-          style = "auto,header-filesize";
-        };
+        config.style = "plain";
 
         extraPackages = [
           pkgs.bat-extras.batdiff
@@ -19,7 +17,7 @@
         ];
       };
       home.shellAliases = {
-        cat = "${lib.getExe pkgs.bat} --style=plain";
+        cat = "${lib.getExe pkgs.bat} -pp";
       };
     };
 }
