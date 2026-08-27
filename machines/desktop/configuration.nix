@@ -16,9 +16,6 @@
     self.modules.nixos.deepSleep
     self.modules.nixos.docker
     self.modules.nixos.podman
-    self.modules.nixos.agentDesktop
-    self.modules.nixos.arbor
-    self.modules.nixos.limux
     self.modules.nixos.t3code
     self.modules.nixos.yubikeyGpgSsh
     self.modules.nixos.yubikeyU2f

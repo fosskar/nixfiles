@@ -14,7 +14,7 @@ the origin remote. Two entrypoints share one pipeline
 
 ```bash
 nix run .#updater -- --list                     # list updatable packages
-nix run .#updater -- --dry-run -p limux         # update one package, no push
+nix run .#updater -- --dry-run -p t3code        # update one package, no push
 nix shell .#updater -c updater-flake-inputs --list
 nix shell .#updater -c updater-flake-inputs --dry-run -i nixpkgs
 ```
