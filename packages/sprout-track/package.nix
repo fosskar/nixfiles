@@ -9,14 +9,14 @@
 }:
 buildNpmPackage (finalAttrs: {
   pname = "sprout-track";
-  version = "1.6.6";
+  version = "1.6.7";
   nodejs = nodejs_22;
 
   src = fetchFromGitHub {
     owner = "Oak-and-Sprout";
     repo = "sprout-track";
     rev = finalAttrs.version;
-    hash = "sha256-m21WcShYO9e1Bzt3NiKWAdc7dxlEnkAZSE52W1Oh9sQ=";
+    hash = "sha256-RabLtLNPHMw3MeGvvEJTRMROttpNRsPhSK09v74mfts=";
   };
 
   # eslint 10 violates eslint-plugin-import's peer range; npm's ERESOLVE
@@ -24,7 +24,7 @@ buildNpmPackage (finalAttrs: {
   # cache cannot serve (ENOTCACHED)
   npmFlags = [ "--legacy-peer-deps" ];
 
-  npmDepsHash = "sha256-DOZ27E8K2YcDGeblP2y93Si/D0C7X8+Gwg7Ue3qOhJ8=";
+  npmDepsHash = "sha256-ATnzKfZVTzGxk1MWJVd/7cZkHXLRuKl7MKzo3fNSaxg=";
 
   # upstream ships no next.config; inject ours (webpack + skip type-check)
   postPatch = ''
