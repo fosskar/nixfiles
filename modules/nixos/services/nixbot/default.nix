@@ -106,7 +106,10 @@
           # group:admin only: private build logs can leak secrets
           privateRepoViewers."*" = [ "oidc:auth.${flake-self.domains.public}:group:admin" ];
           buildSystems = lib.mkDefault [ pkgs.stdenv.hostPlatform.system ];
+          evalSystems = [ pkgs.stdenv.hostPlatform.system ];
           buildConcurrency = 4;
+          # buildGoModule buffers verbose output until Go finishes; large builds can be silent for over 20 minutes
+          buildMaxSilentTime = 3600;
           # 16 cores / 92G; nixos evals eat 2-5G each, 12x4G leaves headroom
           evalWorkerCount = 12;
           evalMaxMemorySize = 4096;
