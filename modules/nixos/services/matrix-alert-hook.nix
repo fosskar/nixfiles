@@ -8,9 +8,20 @@ _: {
         <p>
         {{ if eq .Status "firing" }}🔥 <strong>FIRING</strong>{{ else if eq .Status "resolved" }}✅ <strong>RESOLVED</strong>{{ else }}<strong>{{ .Status }}</strong>{{ end }}
         — <strong>{{ .Labels.alertname }}</strong>
+        {{- $hostKey := "" }}
+        {{- if index .Labels "machine" }}{{ $hostKey = "machine" }}{{ end }}
+        {{- if index .Labels "host" }}{{ $hostKey = "host" }}{{ end }}
+        {{- if index .Labels "_HOSTNAME" }}{{ $hostKey = "_HOSTNAME" }}{{ end }}
+        {{- with $hostKey }} on <strong>{{ index $.Labels . }}</strong>{{ end }}
         </p>
         {{ with .Annotations.summary }}<p>{{ . }}</p>{{ end }}
         {{ with .Annotations.description }}<p>{{ . }}</p>{{ end }}
+        {{- $labels := "" }}
+        {{- range $name, $value := .Labels }}
+        {{- if and (ne $name "alertname") (ne $name "grafana_folder") (ne $name $hostKey) }}
+        {{- if $labels }}{{ $labels = printf "%s, %s=%s" $labels $name $value }}{{ else }}{{ $labels = printf "%s=%s" $name $value }}{{ end }}
+        {{- end }}{{ end }}
+        {{- with $labels }}<p><code>{{ . }}</code></p>{{ end }}
         {{ with .GeneratorURL }}<p><a href="{{ . }}">Open alert in Grafana</a></p>{{ end }}
       '';
     in
