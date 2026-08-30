@@ -789,11 +789,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1787875569,
-        "narHash": "sha256-pyEPKon6Ci5iHW2Ax/NZcbhZTqMtsT6zbjtD43dbDOA=",
-        "rev": "1b963a4924a09d423ebe2a14f310155e4732813c",
+        "lastModified": 1788048331,
+        "narHash": "sha256-VjCJ65zlFtlvF/PC5fVJw5DPpUuCi1kXp3Yg7dSqPCA=",
+        "rev": "7be31d0ac346c3c4a94397c2036cdc124e421a2e",
         "type": "tarball",
-        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/1b963a4924a09d423ebe2a14f310155e4732813c.tar.gz"
+        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/7be31d0ac346c3c4a94397c2036cdc124e421a2e.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -1675,11 +1675,11 @@
     "xwayland-satellite-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1786221058,
-        "narHash": "sha256-hF2atQzapHBLX5NFqJMcKZAWHfGkKQeNu1eQr46+AGg=",
+        "lastModified": 1788035239,
+        "narHash": "sha256-ML+LVzuzFZPlCPzM/YEfDA2P9bEJJB8XlVKKYJbUPeU=",
         "owner": "Supreeeme",
         "repo": "xwayland-satellite",
-        "rev": "3bc915f09dd62bb2651a715114f9d140344bc6c1",
+        "rev": "6d0de1cedde9dc02abb8877d1b04b90a8c22c3d0",
         "type": "github"
       },
       "original": {
