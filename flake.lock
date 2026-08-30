@@ -1563,10 +1563,10 @@
         "tailwindcss-animated-src": "tailwindcss-animated-src"
       },
       "locked": {
-        "lastModified": 1788005101,
-        "narHash": "sha256-e2axhYJD7TVl5bP2teafmiTkq5nOWN7OM1sFjENRys0=",
+        "lastModified": 1788091139,
+        "narHash": "sha256-sHgNBF0maWA2LJNfs7AZd+IUF4LeBh+p5Bzd76b93tU=",
         "ref": "refs/heads/master",
-        "rev": "f2f804f3cbeaf0a17201005e08650d323dd02ea8",
+        "rev": "681b358acc7a9d21ad1d2c1961c7eacba6943abd",
         "shallow": true,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
