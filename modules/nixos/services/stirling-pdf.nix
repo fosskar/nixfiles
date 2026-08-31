@@ -2,6 +2,7 @@
   flake.modules.nixos.stirlingPdf =
     {
       flake-self,
+      pkgs,
       ...
     }:
     let
@@ -14,6 +15,19 @@
     {
       services.stirling-pdf = {
         enable = true;
+        package = pkgs.stirling-pdf.overrideAttrs (old: {
+          postPatch = (old.postPatch or "") + ''
+            substituteInPlace \
+              app/core/src/test/java/stirling/software/SPDF/controller/api/security/CertSignControllerTest.java \
+              --replace-fail 'class CertSignControllerTest {' $'@org.junit.jupiter.api.Disabled("test certificate expired on 2026-08-26")\nclass CertSignControllerTest {'
+            substituteInPlace \
+              app/core/src/test/java/stirling/software/SPDF/controller/api/security/ValidateSignatureControllerMoreTest.java \
+              --replace-fail 'class ValidateSignatureControllerMoreTest {' $'@org.junit.jupiter.api.Disabled("test certificate expired on 2026-08-26")\nclass ValidateSignatureControllerMoreTest {'
+            substituteInPlace \
+              app/core/src/test/java/stirling/software/SPDF/service/PdfSigningServiceImplTest.java \
+              --replace-fail 'class PdfSigningServiceImplTest {' $'@org.junit.jupiter.api.Disabled("test certificate expired on 2026-08-26")\nclass PdfSigningServiceImplTest {'
+          '';
+        });
         environment = {
           SERVER_PORT = toString listenPort;
           SYSTEM_ENABLEANALYTICS = "false";
