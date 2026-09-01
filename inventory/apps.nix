@@ -71,6 +71,7 @@
         providers = {
           local.enable = true;
           openrouter.enable = true;
+          opencode_go.enable = true;
         };
 
         packageSkills = [ "optional-skills/devops/watchers" ];
@@ -103,7 +104,10 @@
       roles.server.machines.nixbox.settings = {
         backend = "container";
         id = 1;
-        providers.local.enable = true;
+        providers = {
+          local.enable = true;
+          opencode_go.enable = true;
+        };
         signal.enable = true;
         homeAssistant.enable = true;
       };
