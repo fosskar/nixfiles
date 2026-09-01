@@ -7,11 +7,11 @@
 }:
 let
   pname = "t3code";
-  version = "0.0.36";
+  version = "0.0.37";
 
   src = fetchurl {
     url = "https://github.com/pingdotgg/t3code/releases/download/v${version}/T3-Code-${version}-x86_64.AppImage";
-    hash = "sha256-8Zw2zpAzMfjVkG8vkOb7quV2/eU6s34e6yAfPFDJrPE=";
+    hash = "sha256-6oiAfMxLGLLD+Fcm7xI15pW2Vqs3yOKckon3oo3jNsI=";
   };
 
   appimageContents = appimageTools.extract { inherit pname version src; };
