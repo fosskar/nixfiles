@@ -106,6 +106,7 @@
             pkgs.local.blogwatcher-cli
             pkgs.chromium
             pkgs.curl
+            pkgs.gh
             pkgs.himalaya
           ];
 
