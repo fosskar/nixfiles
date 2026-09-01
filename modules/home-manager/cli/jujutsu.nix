@@ -34,9 +34,11 @@ _: {
               };
             };
             # signing.key is set per-user; backend/behavior are common
+            # "keep" so local rewrites (fetch, snapshot, rebase) never reach for
+            # the yubikey through the agent relay; sign-on-push still signs.
             signing = {
               backend = "ssh";
-              behavior = "own";
+              behavior = "keep";
             };
             snapshot = {
               max-new-file-size = 16000000; # ~16mb
