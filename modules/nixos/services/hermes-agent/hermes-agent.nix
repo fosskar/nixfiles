@@ -220,9 +220,18 @@
           pkgs.python3
         ];
 
-        systemd.services.hermes-agent.environment = {
-          NPM_CONFIG_PREFIX = "${stateDir}/npm";
-          VIRTUAL_ENV = "${stateDir}/venv";
+        # NPM_CONFIG_PREFIX and VIRTUAL_ENV only tell the installers where to
+        # write; without their bin dirs on PATH the agent cannot run what it
+        # installed, not even pip itself
+        systemd.services.hermes-agent = {
+          environment = {
+            NPM_CONFIG_PREFIX = "${stateDir}/npm";
+            VIRTUAL_ENV = "${stateDir}/venv";
+          };
+          path = lib.mkBefore [
+            "${stateDir}/venv"
+            "${stateDir}/npm"
+          ];
         };
       };
     };
