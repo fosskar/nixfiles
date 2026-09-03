@@ -1303,11 +1303,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787996324,
-        "narHash": "sha256-ZYHZxZNIOij+3jwbDMNBoRCTOK3YYD1EHxhzWpMvDtI=",
+        "lastModified": 1788431837,
+        "narHash": "sha256-CEVZnj1UkmvczsTRQLW0V3y/w0LF56621ceOutUHvds=",
         "owner": "Mic92",
         "repo": "radicle-mirror",
-        "rev": "a571fd55d9b9e83f79b370f8cd278d27a729ccbc",
+        "rev": "560ef5f0b030a49c75591e7d368c9571bf695977",
         "type": "github"
       },
       "original": {
