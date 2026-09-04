@@ -41,22 +41,24 @@
       bridgeOf = name: "br-${name}";
       macOf = cfg: "02:00:00:00:20:0${toString (cfg.id + 1)}";
       forwardLib = import ./_forwards.nix { inherit lib; };
-      hybridVsockConnect = pkgs.writers.writeRustBin "agent-vm-vsock-connect" {
+      forwardUnit = name: forward: "${name}-forward-${toString forward.listenPort}";
+      hostForwardUnit = name: forward: "${name}-host-forward-${toString forward.vsockPort}";
+      vsockForward = pkgs.writers.writeRustBin "agent-vsock-forward" {
         rustcArgs = [
           "-O"
           "--edition"
           "2021"
         ];
-      } ./hybrid-vsock-connect.rs;
-      forwardUnit = name: forward: "${name}-forward-${toString forward.listenPort}";
-      # the connector only shuffles bytes between the accepted socket and the
-      # vm's control socket, so it needs no address family beyond AF_UNIX
+      } ./vsock-forward.rs;
       forwardHardening = {
         StandardInput = "socket";
         StandardError = "journal";
         User = "microvm";
         Group = "kvm";
-        RestrictAddressFamilies = [ "AF_UNIX" ];
+        RestrictAddressFamilies = [
+          "AF_INET"
+          "AF_VSOCK"
+        ];
         CapabilityBoundingSet = "";
         LockPersonality = true;
         MemoryDenyWriteExecute = true;
@@ -160,6 +162,19 @@
                   description = "host endpoints forwarded to guest ports over vsock.";
                 };
 
+                hostForwards = lib.mkOption {
+                  type = lib.types.listOf (
+                    lib.types.submodule {
+                      options = {
+                        vsockPort = lib.mkOption { type = lib.types.port; };
+                        targetPort = lib.mkOption { type = lib.types.port; };
+                      };
+                    }
+                  );
+                  default = [ ];
+                  description = "guest loopback ports forwarded to host ports over vsock.";
+                };
+
                 bridge = lib.mkOption {
                   type = lib.types.str;
                   default = bridgeOf name;
@@ -189,6 +204,8 @@
       };
 
       config = {
+        boot.kernelModules = lib.mkIf (instances != { }) [ "vhost_vsock" ];
+
         assertions = [
           {
             assertion = lib.allUnique (lib.mapAttrsToList (_: cfg: cfg.id) instances);
@@ -323,32 +340,68 @@
                   description = "forward to ${name} guest port ${toString forward.guestPort}";
                   after = [ "microvm@${name}.service" ];
                   requires = [ "microvm@${name}.service" ];
+                  # per-connection instances must not pile up in failed state
+                  unitConfig.CollectMode = "inactive-or-failed";
                   serviceConfig = forwardHardening // {
-                    ExecStart = "${hybridVsockConnect}/bin/agent-vm-vsock-connect /var/lib/microvms/${name}/notify.vsock ${toString forward.guestPort}";
+                    ExecStart = "${pkgs.socat}/bin/socat STDIO VSOCK-CONNECT:${toString (3 + cfg.id)}:${toString forward.guestPort}";
                   };
                 };
               }) cfg.forwards
             ) instances
           )
-        );
-
-        systemd.sockets = forEachInstance (
-          name: cfg:
-          lib.listToAttrs (
-            map (forward: {
-              name = forwardUnit name forward;
-              value = {
-                description = "forward to ${name} guest port ${toString forward.guestPort}";
-                wantedBy = [ "sockets.target" ];
-                listenStreams = [ "${forward.listenAddress}:${toString forward.listenPort}" ];
-                socketConfig = {
-                  Accept = true;
-                  MaxConnections = 64;
+          ++ lib.concatLists (
+            lib.mapAttrsToList (
+              name: cfg:
+              map (forward: {
+                "${hostForwardUnit name forward}@" = {
+                  description = "host forward for ${name} vsock port ${toString forward.vsockPort}";
+                  after = [ "microvm@${name}.service" ];
+                  requires = [ "microvm@${name}.service" ];
+                  unitConfig.CollectMode = "inactive-or-failed";
+                  serviceConfig = forwardHardening // {
+                    ExecStart = "${vsockForward}/bin/agent-vsock-forward ${toString (3 + cfg.id)} ${toString forward.targetPort}";
+                  };
                 };
-              };
-            }) cfg.forwards
+              }) cfg.hostForwards
+            ) instances
           )
         );
+
+        systemd.sockets =
+          forEachInstance (
+            name: cfg:
+            lib.listToAttrs (
+              map (forward: {
+                name = forwardUnit name forward;
+                value = {
+                  description = "forward to ${name} guest port ${toString forward.guestPort}";
+                  wantedBy = [ "sockets.target" ];
+                  listenStreams = [ "${forward.listenAddress}:${toString forward.listenPort}" ];
+                  socketConfig = {
+                    Accept = true;
+                    MaxConnections = 64;
+                  };
+                };
+              }) cfg.forwards
+            )
+          )
+          // forEachInstance (
+            name: cfg:
+            lib.listToAttrs (
+              map (forward: {
+                name = hostForwardUnit name forward;
+                value = {
+                  description = "host forward for ${name} vsock port ${toString forward.vsockPort}";
+                  wantedBy = [ "sockets.target" ];
+                  listenStreams = [ "vsock::${toString forward.vsockPort}" ];
+                  socketConfig = {
+                    Accept = true;
+                    MaxConnections = 64;
+                  };
+                };
+              }) cfg.hostForwards
+            )
+          );
 
         microvm.vms = lib.mapAttrs (name: cfg: {
           autostart = true;
@@ -487,12 +540,10 @@
     }:
     {
       microvm = {
-        hypervisor = "cloud-hypervisor";
+        hypervisor = "qemu";
         inherit (agentSandbox) vcpu mem;
         balloon = true;
         deflateOnOOM = true;
-        # cloud-hypervisor reports readiness over vsock; without a cid the host
-        # unit only knows the process started, not that the vm came up
         vsock.cid = agentSandbox.vsockCid;
 
         interfaces = [
@@ -570,6 +621,44 @@
             };
           };
         }) agentSandbox.forwards
+        ++ map (forward: {
+          name = "agent-vsock-host-proxy-${toString forward.targetPort}";
+          value = {
+            description = "host vsock proxy for port ${toString forward.targetPort}";
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:${toString forward.targetPort},bind=127.0.0.1,fork VSOCK-CONNECT:2:${toString forward.vsockPort}";
+              Restart = "always";
+              RestartSec = 5;
+              DynamicUser = true;
+              CapabilityBoundingSet = "";
+              IPAddressAllow = "localhost";
+              IPAddressDeny = "any";
+              LockPersonality = true;
+              MemoryDenyWriteExecute = true;
+              NoNewPrivileges = true;
+              PrivateDevices = true;
+              PrivateTmp = true;
+              ProtectClock = true;
+              ProtectControlGroups = true;
+              ProtectHome = true;
+              ProtectHostname = true;
+              ProtectKernelLogs = true;
+              ProtectKernelModules = true;
+              ProtectKernelTunables = true;
+              ProtectSystem = "strict";
+              RestrictAddressFamilies = [
+                "AF_INET"
+                "AF_VSOCK"
+              ];
+              RestrictNamespaces = true;
+              RestrictRealtime = true;
+              RestrictSUIDSGID = true;
+              SystemCallArchitectures = "native";
+              UMask = "0077";
+            };
+          };
+        }) agentSandbox.hostForwards
       );
 
       networking = {

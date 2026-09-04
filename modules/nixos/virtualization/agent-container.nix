@@ -267,6 +267,8 @@
                 description = "forward to ${name} guest port ${toString forward.guestPort}";
                 after = [ "container@${name}.service" ];
                 requires = [ "container@${name}.service" ];
+                # per-connection instances must not pile up in failed state
+                unitConfig.CollectMode = "inactive-or-failed";
                 serviceConfig = forwardHardening cfg.ip // {
                   ExecStart = "${pkgs.socat}/bin/socat STDIO TCP:${cfg.ip}:${toString forward.guestPort}";
                 };
