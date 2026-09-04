@@ -329,7 +329,11 @@
                       { lib, ... }:
                       {
                         services.hermes-agent.settings.mcp_servers.nixfiles = {
-                          url = "http://${sandboxCfg.hostIp}:${toString config.services.mcpGateway.port}/mcp/";
+                          url =
+                            if isVm then
+                              "http://127.0.0.1:${toString config.services.mcpGateway.port}/mcp/"
+                            else
+                              "http://${sandboxCfg.hostIp}:${toString config.services.mcpGateway.port}/mcp/";
                           headers.Authorization = "Bearer \${MCP_GATEWAY_TOKEN}";
                           elicitation = {
                             enabled = true;
@@ -355,13 +359,23 @@
                   // lib.optionalAttrs settings.mcp.enable {
                     "mcp-gateway.env" = config.clan.core.vars.generators.mcp-gateway.files."token.env".path;
                   };
+                }
+                // lib.optionalAttrs (settings.mcp.enable && isVm) {
+                  hostForwards = [
+                    {
+                      vsockPort = config.services.mcpGateway.port;
+                      targetPort = config.services.mcpGateway.port;
+                    }
+                  ];
                 };
 
-                systemd.services.mcp-gateway.serviceConfig.IPAddressAllow = lib.mkIf settings.mcp.enable [
-                  "${sandboxCfg.ip}/32"
-                ];
+                systemd.services.mcp-gateway.serviceConfig.IPAddressAllow =
+                  lib.mkIf (settings.mcp.enable && !isVm)
+                    [
+                      "${sandboxCfg.ip}/32"
+                    ];
 
-                networking.firewall.interfaces = lib.mkIf settings.mcp.enable {
+                networking.firewall.interfaces = lib.mkIf (settings.mcp.enable && !isVm) {
                   ${sandboxCfg.bridge}.allowedTCPPorts = [ config.services.mcpGateway.port ];
                 };
 
