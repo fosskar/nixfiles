@@ -248,6 +248,35 @@
         "type": "github"
       }
     },
+    "fencr": {
+      "inputs": {
+        "microvm": [
+          "microvm"
+        ],
+        "nixbot": [
+          "nixbot"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788615067,
+        "narHash": "sha256-IcZxQHnTgi6Q0MgeMtVufDg0JYiWsKCTWgCZlugR02U=",
+        "owner": "fosskar",
+        "repo": "fencr",
+        "rev": "d81b3ea208658b51ca81930e8cf65ddb005f903e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fosskar",
+        "repo": "fencr",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -1322,6 +1351,7 @@
         "clan-community": "clan-community",
         "clan-core": "clan-core",
         "disko": "disko",
+        "fencr": "fencr",
         "flake-parts": "flake-parts",
         "flakelet": "flakelet",
         "herdr": "herdr",

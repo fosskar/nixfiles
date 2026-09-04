@@ -360,8 +360,9 @@
                     "mcp-gateway.env" = config.clan.core.vars.generators.mcp-gateway.files."token.env".path;
                   };
                 }
-                // lib.optionalAttrs (settings.mcp.enable && isVm) {
-                  hostForwards = [
+                // lib.optionalAttrs isVm {
+                  egress = "open";
+                  hostForwards = lib.optionals settings.mcp.enable [
                     {
                       vsockPort = config.services.mcpGateway.port;
                       targetPort = config.services.mcpGateway.port;

@@ -53,6 +53,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    fencr = {
+      url = "github:fosskar/fencr";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.microvm.follows = "microvm";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.nixbot.follows = "nixbot";
+    };
+
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
