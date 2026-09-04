@@ -117,6 +117,7 @@
           );
 
           environment.SEARXNG_URL = "https://search.${flake-self.domains.local}/";
+
         };
 
         # reinstalled on every activation: the soul is declarative, agent edits
@@ -227,6 +228,14 @@
           environment = {
             NPM_CONFIG_PREFIX = "${stateDir}/npm";
             VIRTUAL_ENV = "${stateDir}/venv";
+            PYTHONPATH = toString (
+              pkgs.linkFarm "hermes-state-registry-fix" [
+                {
+                  name = "hermes_state_registry.py";
+                  path = "${inputs.hermes-agent}/hermes_state_registry.py";
+                }
+              ]
+            );
           };
           path = lib.mkBefore [
             "${stateDir}/venv"
