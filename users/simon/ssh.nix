@@ -12,12 +12,16 @@
     settings."workspace" = {
       HostName = "nixworker.s";
       User = "simon";
+      ConnectTimeout = 5;
+      ConnectionAttempts = 1;
       ForwardAgent = "yes";
       LocalForward = [ "54545 localhost:54545" ];
     };
     settings."workspace-relay" = {
       HostName = "nixworker.s";
       User = "simon";
+      ConnectTimeout = 5;
+      ConnectionAttempts = 1;
       ControlMaster = "no";
       ExitOnForwardFailure = "yes";
       SessionType = "none";
