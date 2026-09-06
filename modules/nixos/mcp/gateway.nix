@@ -57,11 +57,14 @@ _: {
           files = {
             token.secret = true;
             "token.env".secret = true;
+            # the header value a fencr credential injects for a sealed vm
+            authorization.secret = true;
           };
           runtimeInputs = [ pkgs.openssl ];
           script = ''
             openssl rand -hex 32 > "$out/token"
             printf 'MCP_GATEWAY_TOKEN=%s\n' "$(cat "$out/token")" > "$out/token.env"
+            printf 'Bearer %s' "$(cat "$out/token")" > "$out/authorization"
           '';
         };
 

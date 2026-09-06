@@ -180,6 +180,19 @@
                   lib.filterAttrs (name: provider: provider.enable && name != "local") settings.providers
                 );
                 isVm = settings.backend == "microvm";
+                # a vm never holds a provider key: fencr ends the tls for the
+                # provider's host and injects it there. hermes still wants a key
+                # present, for openrouter one starting with sk-or-, so a fixed
+                # non-secret stands in
+                providerHost = {
+                  openrouter = "https://openrouter.ai";
+                  opencode_go = "https://opencode.ai";
+                };
+                placeholderKey = "sk-or-fencr";
+                credentialOf = provider: "${instanceName}-${provider}";
+                # the gateway sits on host loopback, which is no name a vm can
+                # call; fencr answers this one with a certificate the vm trusts
+                mcpDomain = "mcp.fencr";
                 sandbox = if isVm then "agentVms" else "agentContainers";
                 sandboxCfg = config.nixfiles.${sandbox}.${instanceName};
                 forwardPort = basePort + settings.id;
@@ -324,6 +337,13 @@
                     }
                   ]
                   ++ lib.concatMap (channel: channel.modules) active
+                  ++ lib.optionals isVm [
+                    {
+                      services.hermes-agent.environment = lib.genAttrs (map (
+                        provider: "${lib.toUpper provider}_API_KEY"
+                      ) keyProviders) (_: placeholderKey);
+                    }
+                  ]
                   ++ lib.optionals settings.mcp.enable [
                     (
                       { lib, ... }:
@@ -331,22 +351,26 @@
                         services.hermes-agent.settings.mcp_servers.nixfiles = {
                           url =
                             if isVm then
-                              "http://127.0.0.1:${toString config.services.mcpGateway.port}/mcp/"
+                              "https://${mcpDomain}/mcp/"
                             else
                               "http://${sandboxCfg.hostIp}:${toString config.services.mcpGateway.port}/mcp/";
-                          headers.Authorization = "Bearer \${MCP_GATEWAY_TOKEN}";
                           elicitation = {
                             enabled = true;
                             timeout = 300;
                           };
+                        }
+                        // lib.optionalAttrs (!isVm) {
+                          headers.Authorization = "Bearer \${MCP_GATEWAY_TOKEN}";
                         };
 
-                        systemd.services.hermes-agent.serviceConfig.EnvironmentFile = lib.mkAfter [
-                          "/run/agent-secrets/mcp-gateway.env"
-                        ];
-                        systemd.services.hermes-dashboard.serviceConfig.EnvironmentFile = lib.mkAfter [
-                          "/run/agent-secrets/mcp-gateway.env"
-                        ];
+                        systemd.services = lib.mkIf (!isVm) {
+                          hermes-agent.serviceConfig.EnvironmentFile = lib.mkAfter [
+                            "/run/agent-secrets/mcp-gateway.env"
+                          ];
+                          hermes-dashboard.serviceConfig.EnvironmentFile = lib.mkAfter [
+                            "/run/agent-secrets/mcp-gateway.env"
+                          ];
+                        };
                       }
                     )
                   ];
@@ -356,19 +380,23 @@
                     "hermes-dashboard-token" =
                       config.clan.core.vars.generators."${instanceName}-dashboard".files.token.path;
                   }
-                  // lib.optionalAttrs settings.mcp.enable {
+                  // lib.optionalAttrs (settings.mcp.enable && !isVm) {
                     "mcp-gateway.env" = config.clan.core.vars.generators.mcp-gateway.files."token.env".path;
                   };
                 }
                 // lib.optionalAttrs isVm {
                   egress = "open";
-                  hostForwards = lib.optionals settings.mcp.enable [
-                    {
-                      vsockPort = config.services.mcpGateway.port;
-                      targetPort = config.services.mcpGateway.port;
-                    }
-                  ];
+                  credentials = map credentialOf keyProviders ++ lib.optional settings.mcp.enable "mcp-gateway";
                 };
+
+                assertions = [
+                  {
+                    assertion = !isVm || lib.all (provider: providerHost ? ${provider}) keyProviders;
+                    message = "clan hermes ${instanceName}: providerHost has no host for ${
+                      lib.concatStringsSep ", " (lib.filter (provider: !(providerHost ? ${provider})) keyProviders)
+                    }";
+                  }
+                ];
 
                 systemd.services.mcp-gateway.serviceConfig.IPAddressAllow =
                   lib.mkIf (settings.mcp.enable && !isVm)
@@ -407,7 +435,16 @@
                 environment.shellAliases.${instanceName} = "ssh -t ${instanceName} -- sudo -iu hermes hermes";
 
                 clan.core.vars.generators.${generator} = {
-                  files.".env".secret = true;
+                  # a vm gets each provider key as a fencr credential: the raw
+                  # header value in its own file, never a line in .env
+                  files = {
+                    ".env".secret = true;
+                  }
+                  // lib.optionalAttrs isVm (
+                    lib.genAttrs (map (provider: "${provider}-authorization") keyProviders) (_: {
+                      secret = true;
+                    })
+                  );
 
                   prompts =
                     lib.mapAttrs (_: hiddenPrompt) (mergeAttrsOf "prompts")
@@ -424,16 +461,44 @@
                         lib.mapAttrsToList (variable: prompt: ''echo "${variable}=$(cat "$prompts/${prompt}")"'') (
                           mergeAttrsOf "env"
                         )
-                        ++ map (
-                          provider: ''echo "${lib.toUpper provider}_API_KEY=$(cat "$prompts/${provider}-api-key")"''
-                        ) keyProviders;
+                        ++ lib.optionals (!isVm) (
+                          map (
+                            provider: ''echo "${lib.toUpper provider}_API_KEY=$(cat "$prompts/${provider}-api-key")"''
+                          ) keyProviders
+                        );
+                      authorizations = lib.optionals isVm (
+                        map (
+                          provider:
+                          ''printf 'Bearer %s' "$(cat "$prompts/${provider}-api-key")" > "$out/${provider}-authorization"''
+                        ) keyProviders
+                      );
                     in
                     ''
                       {
                         ${lib.concatStringsSep "\n  " lines}
                       } > "$out/.env"
+                      ${lib.concatStringsSep "\n" authorizations}
                     '';
                 };
+              }
+              // lib.optionalAttrs isVm {
+                fencr.credentials =
+                  lib.listToAttrs (
+                    map (provider: {
+                      name = credentialOf provider;
+                      value = {
+                        upstream = providerHost.${provider};
+                        secretFile = config.clan.core.vars.generators.${generator}.files."${provider}-authorization".path;
+                      };
+                    }) keyProviders
+                  )
+                  // lib.optionalAttrs settings.mcp.enable {
+                    mcp-gateway = {
+                      upstream = "http://127.0.0.1:${toString config.services.mcpGateway.port}";
+                      domain = mcpDomain;
+                      secretFile = config.clan.core.vars.generators.mcp-gateway.files.authorization.path;
+                    };
+                  };
               };
           };
       };

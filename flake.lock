@@ -264,11 +264,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788615067,
-        "narHash": "sha256-IcZxQHnTgi6Q0MgeMtVufDg0JYiWsKCTWgCZlugR02U=",
+        "lastModified": 1788718522,
+        "narHash": "sha256-I5FYSWf99sSpbOi6ac5nqGOCMUiTQGOCoOrohHx+FYU=",
         "owner": "fosskar",
         "repo": "fencr",
-        "rev": "d81b3ea208658b51ca81930e8cf65ddb005f903e",
+        "rev": "58f0c693fcee7da9c60376c9fc87c2495e57402f",
         "type": "github"
       },
       "original": {
@@ -1207,11 +1207,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788612574,
-        "narHash": "sha256-9rhOiNQCotWj9ufWgYdr2xIMT+yQf0MlX1fVzYyO3Uc=",
+        "lastModified": 1788682842,
+        "narHash": "sha256-5n2haCMBslUiijIsvc0oZunp3BPMduvHKV7lubtip7k=",
         "owner": "fosskar",
         "repo": "pi-pack",
-        "rev": "f68c70a6ea8424ebdd5687b15489f1751e0e4a00",
+        "rev": "bbf465d9f0daf9852a217debc846dbfb042d8419",
         "type": "github"
       },
       "original": {

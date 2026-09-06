@@ -45,7 +45,8 @@
             listenAddress = forward.listenAddress or "127.0.0.1";
             inherit (forward) listenPort guestPort;
           }) (cfg.forwards or [ ]);
-          hostForwards = map (forward: { broker = null; } // forward) (cfg.hostForwards or [ ]);
+          hostForwards = cfg.hostForwards or [ ];
+          credentials = cfg.credentials or [ ];
           # caddy fronts everything a local agent consumes and runs on the
           # host, so the reachable host service points at ourselves
           hostPorts = [
@@ -112,7 +113,7 @@
             }
             active=""
             for unit in ${
-              lib.concatMapStringsSep " " (name: "microvm@${name}.service") (lib.attrNames instances)
+              lib.concatMapStringsSep " " (name: "fencr-${name}.service") (lib.attrNames instances)
             }; do
               if systemctl is-active --quiet "$unit"; then
                 active="$active $unit"

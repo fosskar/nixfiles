@@ -24,7 +24,7 @@ secondary: github app integration gives nixbot a first-class bot identity and co
 
 after the move, a second and independent reason against codeberg landed. two proposals were put to a codeberg e. V. member vote ending 2026-07-22; both passed. the second one (358 for, 144 against, 14 abstentions, ~50% turnout) added § 2 (1) 7 to the terms of use:
 
-> you must not share projects that mostly consist of code written by "generative AI"-tools (including services such as *Claude*, *OpenAI Codex*).
+> you must not share projects that mostly consist of code written by "generative AI"-tools (including services such as _Claude_, _OpenAI Codex_).
 
 the stated grounds are unclear copyright status (§ 2 (1) 1 and 3) and missing safeguards against harmful code (§ 2 (1) 5). enforcement under § 2 (2) is content removal plus a warning, then account suspension on repeat.
 
@@ -63,4 +63,4 @@ forge neutrality is a commitment, not residue: `packages/updater/forge.py` keeps
 
 - github turns on policy or pricing that restricts API automation, or imposes terms not worth accepting
 - tangled (or a comparable independent forge) matures to automerge-grade API and reliability
-- codeberg fixes bot friction *and* the generative-ai rule is withdrawn or narrowed; either alone is not enough
+- codeberg fixes bot friction _and_ the generative-ai rule is withdrawn or narrowed; either alone is not enough

@@ -178,7 +178,7 @@
               export HERMES_DASHBOARD_SESSION_TOKEN
               HERMES_DASHBOARD_SESSION_TOKEN="$(cat "$CREDENTIALS_DIRECTORY/dashboard-token")"
               exec ${cfg.package}/bin/hermes dashboard \
-                --no-open --host ${agentSandbox.bindAddress} --port 9119
+                --no-open --host ${agentSandbox.bindAddress or "127.0.0.1"} --port 9119
             '';
             Restart = "always";
             RestartSec = 5;
