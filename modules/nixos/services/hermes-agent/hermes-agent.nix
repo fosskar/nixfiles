@@ -177,11 +177,27 @@
               export HERMES_DASHBOARD_SESSION_TOKEN
               HERMES_DASHBOARD_SESSION_TOKEN="$(cat "$CREDENTIALS_DIRECTORY/dashboard-token")"
               exec ${cfg.package}/bin/hermes dashboard \
-                --no-open --host ${agentSandbox.ip} --port 9119
+                --no-open --host 127.0.0.1 --port 9119
             '';
             Restart = "always";
             RestartSec = 5;
             UMask = "0007";
+          };
+        };
+
+        # hermes refuses any bind but loopback without an auth provider of its
+        # own, and the session token is the auth here; the sandbox reaches the
+        # dashboard at the guest's address, so a relay carries it to loopback
+        systemd.services.hermes-dashboard-relay = {
+          description = "Hermes dashboard on the sandbox address";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network-online.target" ];
+          wants = [ "network-online.target" ];
+          serviceConfig = {
+            DynamicUser = true;
+            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:9119,bind=${agentSandbox.ip},fork,reuseaddr TCP:127.0.0.1:9119";
+            Restart = "always";
+            RestartSec = 5;
           };
         };
 
