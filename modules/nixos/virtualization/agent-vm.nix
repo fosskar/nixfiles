@@ -30,22 +30,16 @@
         "mem"
         "memoryMax"
         "cpuQuota"
-        "bridge"
-        "ip"
-        "hostIp"
-        "prefixLength"
         "dns"
       ];
+      forwardLib = import ./_forwards.nix { inherit lib; };
+      forwardsOf = cfg: map (forward: { listenAddress = "127.0.0.1"; } // forward) (cfg.forwards or [ ]);
       toFencr =
         cfg:
         {
           inherit (cfg) id services secrets;
           allowedTCPDestinations = cfg.allowedTCPDestinations or [ ];
-          expose = map (forward: {
-            listenAddress = forward.listenAddress or "127.0.0.1";
-            inherit (forward) listenPort guestPort;
-          }) (cfg.forwards or [ ]);
-          hostForwards = cfg.hostForwards or [ ];
+          expose = map (forward: forward.guestPort) (forwardsOf cfg);
           credentials = cfg.credentials or [ ];
           # caddy fronts everything a local agent consumes and runs on the
           # host, so the reachable host service points at ourselves
@@ -75,11 +69,48 @@
         fencr.vms = lib.mapAttrs (_: toFencr) instances;
         fencr.adminKeys = [ adminKey ];
 
-        nixfiles.agentForwardEndpoints = lib.concatLists (
+        nixfiles.agentForwardEndpoints = forwardLib.endpointsOf (
+          lib.mapAttrs (_: cfg: { forwards = forwardsOf cfg; }) instances
+        );
+
+        # a forward is a host loopback listener relayed to the guest's address,
+        # the same shape as the container's; fencr itself only opens the port
+        systemd.services = lib.mkMerge (
           lib.mapAttrsToList (
-            _: cfg:
-            map (forward: "${forward.listenAddress or "127.0.0.1"}:${toString forward.listenPort}") (
-              cfg.forwards or [ ]
+            name: cfg:
+            lib.listToAttrs (
+              map (forward: {
+                name = "${forwardLib.unitName name forward}@";
+                value = {
+                  description = "forward to ${name} guest port ${toString forward.guestPort}";
+                  after = [ "fencr-${name}.service" ];
+                  requisite = [ "fencr-${name}.service" ];
+                  unitConfig.CollectMode = "inactive-or-failed";
+                  serviceConfig = forwardLib.hardening config.fencr.vms.${name}.ip // {
+                    ExecStart = "${pkgs.socat}/bin/socat STDIO TCP:${config.fencr.vms.${name}.ip}:${toString forward.guestPort}";
+                  };
+                };
+              }) (forwardsOf cfg)
+            )
+          ) instances
+        );
+
+        systemd.sockets = lib.mkMerge (
+          lib.mapAttrsToList (
+            name: cfg:
+            lib.listToAttrs (
+              map (forward: {
+                name = forwardLib.unitName name forward;
+                value = {
+                  description = "forward to ${name} guest port ${toString forward.guestPort}";
+                  wantedBy = [ "sockets.target" ];
+                  listenStreams = [ "${forward.listenAddress}:${toString forward.listenPort}" ];
+                  socketConfig = {
+                    Accept = true;
+                    MaxConnections = 64;
+                  };
+                };
+              }) (forwardsOf cfg)
             )
           ) instances
         );

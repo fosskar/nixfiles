@@ -24,11 +24,10 @@
           }
           {
             name = "vm";
-            comment = "microvms, talos, and nspawn containers; opaque guests, never preempt the front door";
+            comment = "fencr microvms, talos, and nspawn containers; opaque guests, never preempt the front door";
             matches = [
               [ { CgroupPrefix = "machine.slice/"; } ]
-              [ { CgroupPrefix = "system.slice/system-microvm.slice/"; } ]
-              [ { CgroupPrefix = ''system.slice/system-microvm\x2dvirtiofsd.slice/''; } ]
+              [ { CgroupPrefix = "system.slice/fencr-"; } ]
               [ { CgroupPrefix = "system.slice/talos-vm.service"; } ]
             ];
             kind.Grouped = {

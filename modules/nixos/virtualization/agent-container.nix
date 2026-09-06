@@ -29,36 +29,8 @@
       );
       bridgeOf = name: "brc-${name}";
       forwardLib = import ./_forwards.nix { inherit lib; };
-      forwardUnit = name: forward: "${name}-forward-${toString forward.listenPort}";
-      # the relay only reaches the container's own address; the bridge is the
-      # only network it can see
-      forwardHardening = ip: {
-        StandardInput = "socket";
-        StandardError = "journal";
-        DynamicUser = true;
-        RestrictAddressFamilies = [ "AF_INET" ];
-        IPAddressAllow = [ "${ip}/32" ];
-        IPAddressDeny = "any";
-        CapabilityBoundingSet = "";
-        LockPersonality = true;
-        MemoryDenyWriteExecute = true;
-        NoNewPrivileges = true;
-        PrivateDevices = true;
-        PrivateTmp = true;
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = true;
-        ProtectSystem = "strict";
-        RestrictNamespaces = true;
-        RestrictRealtime = true;
-        RestrictSUIDSGID = true;
-        SystemCallArchitectures = "native";
-        UMask = "0077";
-      };
+      forwardUnit = forwardLib.unitName;
+      forwardHardening = forwardLib.hardening;
       forEachInstance = f: lib.mkMerge (lib.mapAttrsToList f instances);
     in
     {
@@ -305,9 +277,6 @@
             agentSandbox = cfg // {
               inherit adminKey name;
               kind = "container";
-              # the host relay crosses the bridge, so a forwarded service must
-              # listen on more than loopback
-              bindAddress = "0.0.0.0";
             };
           };
           bindMounts = {

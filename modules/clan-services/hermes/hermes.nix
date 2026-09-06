@@ -320,19 +320,14 @@
                       }
                     )
 
-                    # the virtiofs mount does not exist yet when hermes' module merges
-                    # environmentFiles into .env at activation, so hand the file to systemd
-                    # at start-up instead. hermesAgent itself knows nothing about the vm
+                    # /run/agent-secrets is filled by a unit after hermes' module has
+                    # merged environmentFiles into .env at activation, so hand the file
+                    # to systemd at start-up instead. hermesAgent itself knows nothing
+                    # about the sandbox
                     {
                       systemd.services = {
-                        hermes-agent = {
-                          serviceConfig.EnvironmentFile = "/run/agent-secrets/${envFile}";
-                          unitConfig.RequiresMountsFor = [ "/run/agent-secrets" ];
-                        };
-                        hermes-dashboard = {
-                          serviceConfig.EnvironmentFile = "/run/agent-secrets/${envFile}";
-                          unitConfig.RequiresMountsFor = [ "/run/agent-secrets" ];
-                        };
+                        hermes-agent.serviceConfig.EnvironmentFile = "/run/agent-secrets/${envFile}";
+                        hermes-dashboard.serviceConfig.EnvironmentFile = "/run/agent-secrets/${envFile}";
                       };
                     }
                   ]

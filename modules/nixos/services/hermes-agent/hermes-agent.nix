@@ -161,7 +161,6 @@
           wantedBy = [ "multi-user.target" ];
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
-          unitConfig.RequiresMountsFor = [ "/run/agent-secrets" ];
           environment = {
             HOME = stateDir;
             HERMES_HOME = "${stateDir}/.hermes";
@@ -178,7 +177,7 @@
               export HERMES_DASHBOARD_SESSION_TOKEN
               HERMES_DASHBOARD_SESSION_TOKEN="$(cat "$CREDENTIALS_DIRECTORY/dashboard-token")"
               exec ${cfg.package}/bin/hermes dashboard \
-                --no-open --host ${agentSandbox.bindAddress or "127.0.0.1"} --port 9119
+                --no-open --host ${agentSandbox.ip} --port 9119
             '';
             Restart = "always";
             RestartSec = 5;
