@@ -19,7 +19,6 @@ _: {
           folders = [
             "/tank/apps"
             "/tank/backup"
-            "/tank/shares"
           ];
         };
       };

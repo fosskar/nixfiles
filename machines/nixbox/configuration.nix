@@ -1,6 +1,7 @@
 {
   self,
   nflib,
+  lib,
   pkgs,
   ...
 }:
@@ -46,7 +47,15 @@
   ]
   ++ (nflib.scanPaths ./. { });
 
-  services.systemdEmailAlerts.extraServices = [ "borgbackup-job-storagebox" ];
+  services = {
+    borgbackup.jobs.storagebox.prune.keep = lib.mkForce {
+      within = "1d";
+      daily = 3;
+      weekly = 2;
+      monthly = 0;
+    };
+    systemdEmailAlerts.extraServices = [ "borgbackup-job-storagebox" ];
+  };
 
   environment.systemPackages = [
     pkgs.ipmitool
