@@ -16,21 +16,6 @@
       inherit (cfg) stateDir;
 
       rtk = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk;
-      piper = pkgs.python312Packages.toPythonModule (
-        (pkgs.piper-tts.override {
-          python3Packages = pkgs.python312Packages;
-          withAlignment = false;
-          withHTTP = false;
-          withJapanese = false;
-          withTrain = false;
-        }).overridePythonAttrs
-          (_: {
-            # onnxruntime is already in Hermes's sealed environment; duplicate packages are rejected.
-            dependencies = [ pkgs.python312Packages.pathvalidate ];
-            nativeCheckInputs = [ pkgs.python312Packages.onnxruntime ];
-            pythonImportsCheck = [ "piper" ];
-          })
-      );
 
       # generated, not vendored, so the plugin tracks the pinned rtk. `rtk
       # rewrite` is the single source of truth; the plugin only bridges
@@ -120,9 +105,6 @@
         services.hermes-agent = {
           enable = true;
           addToSystemPackages = true;
-          package = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-            extraPythonPackages = [ piper ];
-          };
 
           extraPackages = [
             rtk
