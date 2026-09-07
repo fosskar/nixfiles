@@ -15,17 +15,12 @@
       ];
       publicIP = lib.attrByPath [ config.networking.hostName "wan" ] null flake-self.hosts;
       trustedIPs = clanMeshIPs ++ lib.optional (publicIP != null) publicIP;
-      # postoverflow (not parser-stage) whitelists: only defuse http-probing,
-      # keep other scenarios (brute-force etc.) intact for these vhosts
-      probingWhitelist = name: description: reason: eventCond: {
-        inherit name description;
-        whitelist = {
-          inherit reason;
-          expression = [
-            "evt.Overflow.Alert.Scenario == 'crowdsecurity/http-probing' && all(evt.Overflow.Alert.Events, {${eventCond}})"
-          ];
-        };
-      };
+      # one overflow can mix vhosts, so a per-vhost all() never matches;
+      # the predicate is the union and any unlisted event still bans
+      benignProbing = [
+        ".GetMeta('http_hostname') == 'niks3.${flake-self.domains.public}'"
+        ".GetMeta('http_hostname') == 'matrix.${flake-self.domains.public}' && .GetMeta('http_path') startsWith '/_matrix/'"
+      ];
     in
     {
       services.crowdsec.localConfig = {
@@ -40,16 +35,18 @@
           }
         ];
         postOverflows.s01Whitelist = [
-          (probingWhitelist "nixfiles/matrix-probing-whitelist"
-            "matrix clients burst 404s (dead remote media thumbnails, optional endpoints) that http-probing misreads as scanning"
-            "matrix API 404 bursts are normal client behavior"
-            ".GetMeta('http_hostname') == 'matrix.${flake-self.domains.public}' && .GetMeta('http_path') startsWith '/_matrix/'"
-          )
-          (probingWhitelist "nixfiles/niks3-probing-whitelist"
-            "nix cache clients burst 404s (narinfo/nar/ls cache misses) that http-probing misreads as scanning"
-            "404 bursts are normal binary cache behavior; vhost has no sensitive endpoints"
-            ".GetMeta('http_hostname') == 'niks3.${flake-self.domains.public}'"
-          )
+          {
+            name = "nixfiles/probing-whitelist";
+            description = "nix cache and matrix clients burst 404s (narinfo/nar cache misses, dead remote media thumbnails, optional endpoints) that http-probing misreads as scanning";
+            whitelist = {
+              reason = "404 bursts are normal binary cache and matrix client behavior";
+              expression = [
+                "evt.Overflow.Alert.Scenario == 'crowdsecurity/http-probing' && all(evt.Overflow.Alert.Events, {${
+                  lib.concatMapStringsSep " || " (cond: "(${cond})") benignProbing
+                }})"
+              ];
+            };
+          }
         ];
       };
     };
