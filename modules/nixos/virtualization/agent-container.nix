@@ -1,11 +1,5 @@
 { inputs, ... }:
 {
-  # sealed nspawn containers to run agents in — the container sibling of
-  # agent-vm.nix. containers live on 10.31.x, the vms on 10.30.x. the
-  # nftables sealing duplicates the agent-vm rules on purpose: two readable
-  # copies beat a shared abstraction for posture-critical rules. `forwards`
-  # is the same contract as the vm's, carried over plain tcp on the bridge
-  # instead of vsock.
   flake.modules.nixos.agentContainer =
     {
       config,
@@ -34,8 +28,6 @@
       forEachInstance = f: lib.mkMerge (lib.mapAttrsToList f instances);
     in
     {
-      imports = [ self.modules.nixos.agentForwards ];
-
       options.nixfiles.agentContainers = lib.mkOption {
         default = { };
         description = "sealed agent containers, keyed by container name.";
@@ -143,9 +135,11 @@
             assertion = lib.all (name: lib.stringLength name <= 11) (lib.attrNames instances);
             message = "nixfiles.agentContainers: container names must be at most 11 chars.";
           }
+          {
+            assertion = lib.allUnique (forwardLib.endpointsOf instances);
+            message = "agent container forwards: host listen endpoints must be unique.";
+          }
         ];
-
-        nixfiles.agentForwardEndpoints = forwardLib.endpointsOf instances;
 
         # root on the host is the only thing that can reach the bridges, so
         # `ssh <container-name>` from the host logs in as root

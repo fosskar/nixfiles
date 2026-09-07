@@ -66,7 +66,7 @@
       };
       roles.server.machines.nixbox.settings = {
         soul = "tars";
-        mcp.enable = true;
+        dashboard.enable = true;
 
         providers = {
           local.enable = true;
@@ -105,8 +105,7 @@
         input = "self";
       };
       roles.server.machines.nixbox.settings = {
-        backend = "container";
-        id = 1;
+        dashboard.enable = false;
         providers = {
           local.enable = true;
           opencode_go.enable = true;

@@ -12,7 +12,9 @@ _: {
 
       config.systemd.services = {
         hermes-agent.environment.HASS_URL = url;
-        hermes-dashboard.environment.HASS_URL = url;
+        hermes-dashboard = lib.mkIf config.services.hermes-agent.dashboard.enable {
+          environment.HASS_URL = url;
+        };
       };
     };
 }

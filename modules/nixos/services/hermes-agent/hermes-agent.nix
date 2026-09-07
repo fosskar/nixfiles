@@ -6,7 +6,6 @@
   flake.modules.nixos.hermesAgent =
     {
       config,
-      agentSandbox,
       flake-self,
       lib,
       pkgs,
@@ -17,6 +16,21 @@
       inherit (cfg) stateDir;
 
       rtk = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk;
+      piper = pkgs.python312Packages.toPythonModule (
+        (pkgs.piper-tts.override {
+          python3Packages = pkgs.python312Packages;
+          withAlignment = false;
+          withHTTP = false;
+          withJapanese = false;
+          withTrain = false;
+        }).overridePythonAttrs
+          (_: {
+            # onnxruntime is already in Hermes's sealed environment; duplicate packages are rejected.
+            dependencies = [ pkgs.python312Packages.pathvalidate ];
+            nativeCheckInputs = [ pkgs.python312Packages.onnxruntime ];
+            pythonImportsCheck = [ "piper" ];
+          })
+      );
 
       # generated, not vendored, so the plugin tracks the pinned rtk. `rtk
       # rewrite` is the single source of truth; the plugin only bridges
@@ -72,6 +86,13 @@
       options.services.hermes-agent = {
         localProvider.enable = lib.mkEnableOption "the homelab llama-cpp endpoint as the default model provider";
 
+        dashboard.enable = lib.mkEnableOption "the Hermes dashboard";
+
+        dashboardTokenFile = lib.mkOption {
+          type = lib.types.str;
+          description = "runtime file containing the dashboard session token.";
+        };
+
         soul = lib.mkOption {
           type = lib.types.nullOr lib.types.path;
           default = null;
@@ -99,6 +120,9 @@
         services.hermes-agent = {
           enable = true;
           addToSystemPackages = true;
+          package = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+            extraPythonPackages = [ piper ];
+          };
 
           extraPackages = [
             rtk
@@ -156,8 +180,9 @@
         # entries turn "command not found" into EACCES
         environment.shellAliases.hermes = "sudo -iu hermes env NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
 
-        systemd.services.hermes-dashboard = {
+        systemd.services.hermes-dashboard = lib.mkIf cfg.dashboard.enable {
           description = "Hermes Agent dashboard";
+          path = config.systemd.services.hermes-agent.path;
           wantedBy = [ "multi-user.target" ];
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
@@ -172,7 +197,7 @@
             User = "hermes";
             Group = "hermes";
             WorkingDirectory = cfg.workingDirectory;
-            LoadCredential = "dashboard-token:/run/agent-secrets/hermes-dashboard-token";
+            LoadCredential = "dashboard-token:${cfg.dashboardTokenFile}";
             ExecStart = pkgs.writeShellScript "hermes-dashboard-start" ''
               export HERMES_DASHBOARD_SESSION_TOKEN
               HERMES_DASHBOARD_SESSION_TOKEN="$(cat "$CREDENTIALS_DIRECTORY/dashboard-token")"
@@ -182,22 +207,6 @@
             Restart = "always";
             RestartSec = 5;
             UMask = "0007";
-          };
-        };
-
-        # hermes refuses any bind but loopback without an auth provider of its
-        # own, and the session token is the auth here; the sandbox reaches the
-        # dashboard at the guest's address, so a relay carries it to loopback
-        systemd.services.hermes-dashboard-relay = {
-          description = "Hermes dashboard on the sandbox address";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network-online.target" ];
-          wants = [ "network-online.target" ];
-          serviceConfig = {
-            DynamicUser = true;
-            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:9119,bind=${agentSandbox.ip},fork,reuseaddr TCP:127.0.0.1:9119";
-            Restart = "always";
-            RestartSec = 5;
           };
         };
 
@@ -231,6 +240,7 @@
           '';
         };
 
+        users.users.hermes.linger = true;
         users.users.hermes.packages = [
           pkgs.nodejs
           pkgs.python3
@@ -240,7 +250,10 @@
         # write; without their bin dirs on PATH the agent cannot run what it
         # installed, not even pip itself
         systemd.services.hermes-agent = {
+          serviceConfig.PAMName = "login";
           environment = {
+            # system users otherwise get a session that does not start a user manager.
+            XDG_SESSION_CLASS = "background";
             NPM_CONFIG_PREFIX = "${stateDir}/npm";
             VIRTUAL_ENV = "${stateDir}/venv";
             PYTHONPATH = toString (

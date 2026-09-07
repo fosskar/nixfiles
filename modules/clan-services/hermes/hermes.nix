@@ -3,7 +3,6 @@
   flake.modules."clan.service".hermes =
     { clanLib, ... }:
     let
-      basePort = 22100;
       remoteKeyGenerator = instanceName: "${instanceName}-hermes-remote-ssh";
       remoteUser = instanceName: "hermes-remote-${instanceName}";
     in
@@ -20,25 +19,18 @@
       ];
 
       roles.server = {
-        description = "Host the sealed Hermes agent and its loopback dashboard forward";
+        description = "Configure Hermes and its remote desktop endpoint";
 
         interface =
           { lib, ... }:
           {
             options = {
-              id = lib.mkOption {
-                type = lib.types.ints.between 0 8;
-                default = 0;
-                description = "agent vm instance index; derives bridge, subnet and mac.";
-              };
+              dashboard.enable = lib.mkEnableOption "the Hermes dashboard and remote desktop access";
 
-              backend = lib.mkOption {
-                type = lib.types.enum [
-                  "microvm"
-                  "container"
-                ];
-                default = "microvm";
-                description = "sandbox running the agent: a sealed microvm or a nixos container on the same bridge posture.";
+              dashboardPort = lib.mkOption {
+                type = lib.types.port;
+                default = 22100;
+                description = "host loopback endpoint published to remote desktop clients.";
               };
 
               soul = lib.mkOption {
@@ -74,8 +66,6 @@
                 default = { };
                 description = "local is the keyless homelab llama-cpp endpoint; any other enabled provider prompts for <NAME>_API_KEY.";
               };
-
-              mcp.enable = lib.mkEnableOption "mcp gateway wiring; the server host must import self.modules.nixos.mcp";
 
               matrix = {
                 enable = lib.mkEnableOption "the matrix channel";
@@ -127,7 +117,7 @@
                 address = lib.mkOption {
                   type = lib.types.str;
                   default = "192.168.10.50";
-                  description = "home assistant IPv4 address; the agent's url and the firewall pinhole both derive from it.";
+                  description = "home assistant IPv4 address used in the agent's URL.";
                 };
                 port = lib.mkOption {
                   type = lib.types.port;
@@ -147,7 +137,9 @@
           {
             # the client role reads this instead of deriving the port from the
             # server's settings a second time
-            exports = mkExports { dashboard.port = basePort + settings.id; };
+            exports = mkExports (
+              if settings.dashboard.enable then { dashboard.port = settings.dashboardPort; } else { }
+            );
 
             nixosModule =
               {
@@ -158,8 +150,8 @@
               }:
               let
                 generator = "${instanceName}-agent";
-                envFile = "${instanceName}.env";
-                dashboardPort = basePort + settings.id;
+                inherit (settings) dashboardPort;
+                application = config.nixfiles.hermes.${instanceName};
                 sshUser = remoteUser instanceName;
                 remotePublicKey = lib.trim (
                   clanLib.getPublicValue {
@@ -179,23 +171,6 @@
                 keyProviders = lib.attrNames (
                   lib.filterAttrs (name: provider: provider.enable && name != "local") settings.providers
                 );
-                isVm = settings.backend == "microvm";
-                # a vm never holds a provider key: fencr ends the tls for the
-                # provider's host and injects it there. hermes still wants a key
-                # present, for openrouter one starting with sk-or-, so a fixed
-                # non-secret stands in
-                providerHost = {
-                  openrouter = "https://openrouter.ai";
-                  opencode_go = "https://opencode.ai";
-                };
-                placeholderKey = "sk-or-fencr";
-                credentialOf = provider: "${instanceName}-${provider}";
-                # the gateway sits on host loopback, which is no name a vm can
-                # call; fencr answers this one with a certificate the vm trusts
-                mcpDomain = "mcp.fencr";
-                sandbox = if isVm then "agentVms" else "agentContainers";
-                sandboxCfg = config.nixfiles.${sandbox}.${instanceName};
-                forwardPort = basePort + settings.id;
 
                 # one entry per channel: the aspect modules it brings, the operator
                 # prompts it needs, and the .env variables fed from those prompts.
@@ -267,7 +242,6 @@
                     ];
                     prompts.home-assistant-token = "Home Assistant long-lived access token for the agent";
                     env.HASS_TOKEN = "home-assistant-token";
-                    tcpDestinations = [ { inherit (settings.homeAssistant) address port; } ];
                   };
                 };
 
@@ -280,220 +254,129 @@
                 };
               in
               {
-                imports = [
-                  (if isVm then self.modules.nixos.agentVm else self.modules.nixos.agentContainer)
-                ];
-
-                nixfiles.${sandbox}.${instanceName} = {
-                  inherit (settings) id;
-
-                  # the sandbox owns the transport: vsock for microvms, tcp over the
-                  # bridge for containers
-                  forwards = [
-                    {
-                      listenPort = forwardPort;
-                      guestPort = 9119;
-                    }
-                  ];
-
-                  allowedTCPDestinations = lib.concatMap (channel: channel.tcpDestinations or [ ]) active;
-
-                  services = [
-                    self.modules.nixos.hermesAgent
-
-                    (
-                      { config, flake-self, ... }:
-                      {
-                        services.hermes-agent = {
-                          localProvider.enable = localProvider;
-
-                          skillDirs =
-                            map (
-                              dir: "${config.services.hermes-agent.package}/share/hermes-agent/${dir}"
-                            ) settings.packageSkills
-                            ++ map (name: "${flake-self.llm.skills.${name}}") settings.skills;
-
-                          overrides = settings.agentSettings;
-
-                          soul = if settings.soul == null then null else flake-self.llm.souls.${settings.soul};
-                        };
-                      }
-                    )
-
-                    # /run/agent-secrets is filled by a unit after hermes' module has
-                    # merged environmentFiles into .env at activation, so hand the file
-                    # to systemd at start-up instead. hermesAgent itself knows nothing
-                    # about the sandbox
-                    {
-                      systemd.services = {
-                        hermes-agent.serviceConfig.EnvironmentFile = "/run/agent-secrets/${envFile}";
-                        hermes-dashboard.serviceConfig.EnvironmentFile = "/run/agent-secrets/${envFile}";
-                      };
-                    }
-                  ]
-                  ++ lib.concatMap (channel: channel.modules) active
-                  ++ lib.optionals isVm [
-                    {
-                      services.hermes-agent.environment = lib.genAttrs (map (
-                        provider: "${lib.toUpper provider}_API_KEY"
-                      ) keyProviders) (_: placeholderKey);
-                    }
-                  ]
-                  ++ lib.optionals settings.mcp.enable [
-                    (
-                      { lib, ... }:
-                      {
-                        services.hermes-agent.settings.mcp_servers.nixfiles = {
-                          url =
-                            if isVm then
-                              "https://${mcpDomain}/mcp/"
-                            else
-                              "http://${sandboxCfg.hostIp}:${toString config.services.mcpGateway.port}/mcp/";
-                          elicitation = {
-                            enabled = true;
-                            timeout = 300;
-                          };
-                        }
-                        // lib.optionalAttrs (!isVm) {
-                          headers.Authorization = "Bearer \${MCP_GATEWAY_TOKEN}";
-                        };
-
-                        systemd.services = lib.mkIf (!isVm) {
-                          hermes-agent.serviceConfig.EnvironmentFile = lib.mkAfter [
-                            "/run/agent-secrets/mcp-gateway.env"
-                          ];
-                          hermes-dashboard.serviceConfig.EnvironmentFile = lib.mkAfter [
-                            "/run/agent-secrets/mcp-gateway.env"
-                          ];
-                        };
-                      }
-                    )
-                  ];
-
-                  secrets = {
-                    ${envFile} = config.clan.core.vars.generators.${generator}.files.".env".path;
-                    "hermes-dashboard-token" =
-                      config.clan.core.vars.generators."${instanceName}-dashboard".files.token.path;
-                  }
-                  // lib.optionalAttrs (settings.mcp.enable && !isVm) {
-                    "mcp-gateway.env" = config.clan.core.vars.generators.mcp-gateway.files."token.env".path;
+                options.nixfiles.hermes.${instanceName} = {
+                  dashboard.enable = lib.mkOption {
+                    type = lib.types.bool;
+                    readOnly = true;
+                    description = "whether this instance provides dashboard access.";
                   };
-                }
-                // lib.optionalAttrs isVm {
-                  egress = "open";
-                  credentials = map credentialOf keyProviders ++ lib.optional settings.mcp.enable "mcp-gateway";
-                };
-
-                assertions = [
-                  {
-                    assertion = !isVm || lib.all (provider: providerHost ? ${provider}) keyProviders;
-                    message = "clan hermes ${instanceName}: providerHost has no host for ${
-                      lib.concatStringsSep ", " (lib.filter (provider: !(providerHost ? ${provider})) keyProviders)
-                    }";
-                  }
-                ];
-
-                systemd.services.mcp-gateway.serviceConfig.IPAddressAllow =
-                  lib.mkIf (settings.mcp.enable && !isVm)
-                    [
-                      "${sandboxCfg.ip}/32"
-                    ];
-
-                networking.firewall.interfaces = lib.mkIf (settings.mcp.enable && !isVm) {
-                  ${sandboxCfg.bridge}.allowedTCPPorts = [ config.services.mcpGateway.port ];
-                };
-
-                clan.core.vars.generators."${instanceName}-dashboard" = {
-                  files.token = {
-                    owner = "root";
-                    group = sshUser;
-                    mode = "0440";
+                  dashboardPort = lib.mkOption {
+                    type = lib.types.port;
+                    readOnly = true;
+                    description = "host loopback endpoint published to remote desktop clients.";
                   };
-                  runtimeInputs = [ pkgs.openssl ];
-                  script = ''
-                    openssl rand -hex 32 > "$out/token"
-                  '';
+                  module = lib.mkOption {
+                    type = lib.types.deferredModule;
+                    readOnly = true;
+                    description = "Hermes application module for host composition.";
+                  };
+                  providerKeysInEnvironment = lib.mkOption {
+                    type = lib.types.bool;
+                    default = true;
+                    description = "include provider API keys in the generated environment file; otherwise emit authorization files only.";
+                  };
                 };
 
-                users.groups.${sshUser} = { };
-                users.users.${sshUser} = {
-                  isSystemUser = true;
-                  group = sshUser;
-                  home = "/var/empty";
-                  shell = pkgs.bashInteractive;
-                  openssh.authorizedKeys.keys =
-                    lib.optional (remotePublicKey != "")
-                      ''restrict,port-forwarding,permitopen="127.0.0.1:${toString dashboardPort}",command="${tokenCommand}" ${remotePublicKey}'';
-                };
+                config = {
+                  nixfiles.hermes.${instanceName} = {
+                    inherit dashboardPort;
+                    dashboard.enable = settings.dashboard.enable;
+                    module = {
+                      imports = [
+                        self.modules.nixos.hermesAgent
 
-                # ssh host alias and root identity come from the sandbox module
-                environment.shellAliases.${instanceName} = "ssh -t ${instanceName} -- sudo -iu hermes hermes";
+                        (
+                          { config, flake-self, ... }:
+                          {
+                            services.hermes-agent = {
+                              localProvider.enable = localProvider;
+                              dashboard.enable = settings.dashboard.enable;
 
-                clan.core.vars.generators.${generator} = {
-                  # a vm gets each provider key as a fencr credential: the raw
-                  # header value in its own file, never a line in .env
-                  files = {
-                    ".env".secret = true;
-                  }
-                  // lib.optionalAttrs isVm (
-                    lib.genAttrs (map (provider: "${provider}-authorization") keyProviders) (_: {
-                      secret = true;
-                    })
-                  );
+                              skillDirs =
+                                map (
+                                  dir: "${config.services.hermes-agent.package}/share/hermes-agent/${dir}"
+                                ) settings.packageSkills
+                                ++ map (name: "${flake-self.llm.skills.${name}}") settings.skills;
 
-                  prompts =
-                    lib.mapAttrs (_: hiddenPrompt) (mergeAttrsOf "prompts")
-                    // lib.listToAttrs (
-                      map (provider: {
-                        name = "${provider}-api-key";
-                        value = hiddenPrompt "${provider} API key";
-                      }) keyProviders
-                    );
+                              overrides = settings.agentSettings;
 
-                  script =
-                    let
-                      lines =
-                        lib.mapAttrsToList (variable: prompt: ''echo "${variable}=$(cat "$prompts/${prompt}")"'') (
-                          mergeAttrsOf "env"
+                              soul = if settings.soul == null then null else flake-self.llm.souls.${settings.soul};
+                            };
+                          }
                         )
-                        ++ lib.optionals (!isVm) (
-                          map (
-                            provider: ''echo "${lib.toUpper provider}_API_KEY=$(cat "$prompts/${provider}-api-key")"''
-                          ) keyProviders
-                        );
-                      authorizations = lib.optionals isVm (
-                        map (
-                          provider:
-                          ''printf 'Bearer %s' "$(cat "$prompts/${provider}-api-key")" > "$out/${provider}-authorization"''
-                        ) keyProviders
-                      );
-                    in
-                    ''
-                      {
-                        ${lib.concatStringsSep "\n  " lines}
-                      } > "$out/.env"
-                      ${lib.concatStringsSep "\n" authorizations}
-                    '';
-                };
-              }
-              // lib.optionalAttrs isVm {
-                fencr.credentials =
-                  lib.listToAttrs (
-                    map (provider: {
-                      name = credentialOf provider;
-                      value = {
-                        upstream = providerHost.${provider};
-                        secretFile = config.clan.core.vars.generators.${generator}.files."${provider}-authorization".path;
-                      };
-                    }) keyProviders
-                  )
-                  // lib.optionalAttrs settings.mcp.enable {
-                    mcp-gateway = {
-                      upstream = "http://127.0.0.1:${toString config.services.mcpGateway.port}";
-                      domain = mcpDomain;
-                      secretFile = config.clan.core.vars.generators.mcp-gateway.files.authorization.path;
+                      ]
+                      ++ lib.concatMap (channel: channel.modules) active;
                     };
                   };
+
+                  clan.core.vars.generators."${instanceName}-dashboard" = lib.mkIf settings.dashboard.enable {
+                    files.token = {
+                      owner = "root";
+                      group = sshUser;
+                      mode = "0440";
+                    };
+                    runtimeInputs = [ pkgs.openssl ];
+                    script = ''
+                      openssl rand -hex 32 > "$out/token"
+                    '';
+                  };
+
+                  users.groups.${sshUser} = lib.mkIf settings.dashboard.enable { };
+                  users.users.${sshUser} = lib.mkIf settings.dashboard.enable {
+                    isSystemUser = true;
+                    group = sshUser;
+                    home = "/var/empty";
+                    shell = pkgs.bashInteractive;
+                    openssh.authorizedKeys.keys =
+                      lib.optional (remotePublicKey != "")
+                        ''restrict,port-forwarding,permitopen="127.0.0.1:${toString dashboardPort}",command="${tokenCommand}" ${remotePublicKey}'';
+                  };
+
+                  clan.core.vars.generators.${generator} = {
+                    files = {
+                      ".env".secret = true;
+                    }
+                    // lib.optionalAttrs (!application.providerKeysInEnvironment) (
+                      lib.genAttrs (map (provider: "${provider}-authorization") keyProviders) (_: {
+                        secret = true;
+                      })
+                    );
+
+                    prompts =
+                      lib.mapAttrs (_: hiddenPrompt) (mergeAttrsOf "prompts")
+                      // lib.listToAttrs (
+                        map (provider: {
+                          name = "${provider}-api-key";
+                          value = hiddenPrompt "${provider} API key";
+                        }) keyProviders
+                      );
+
+                    script =
+                      let
+                        lines =
+                          lib.mapAttrsToList (variable: prompt: ''echo "${variable}=$(cat "$prompts/${prompt}")"'') (
+                            mergeAttrsOf "env"
+                          )
+                          ++ lib.optionals application.providerKeysInEnvironment (
+                            map (
+                              provider: ''echo "${lib.toUpper provider}_API_KEY=$(cat "$prompts/${provider}-api-key")"''
+                            ) keyProviders
+                          );
+                        authorizations = lib.optionals (!application.providerKeysInEnvironment) (
+                          map (
+                            provider:
+                            ''printf 'Bearer %s' "$(cat "$prompts/${provider}-api-key")" > "$out/${provider}-authorization"''
+                          ) keyProviders
+                        );
+                      in
+                      ''
+                        {
+                          ${lib.concatStringsSep "\n  " lines}
+                        } > "$out/.env"
+                        ${lib.concatStringsSep "\n" authorizations}
+                      '';
+                  };
+                };
               };
           };
       };
