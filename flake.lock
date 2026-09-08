@@ -822,11 +822,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1788652949,
-        "narHash": "sha256-3y5uAxSRt5iKMNORZw4s4Rl76xxw06sh8P40qSyFOK4=",
-        "rev": "454c24d4ec447b9ee5439150a097f350b01cd30f",
+        "lastModified": 1788825875,
+        "narHash": "sha256-9UVUSL14g4odnHU2j/3FhhoaJmBJPh1Ku6Mhs3SdZRc=",
+        "rev": "74091365406ad4dc46d3ca1d317ff9f11fb8dac7",
         "type": "tarball",
-        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/454c24d4ec447b9ee5439150a097f350b01cd30f.tar.gz"
+        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/74091365406ad4dc46d3ca1d317ff9f11fb8dac7.tar.gz"
       },
       "original": {
         "type": "tarball",
