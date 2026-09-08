@@ -13,15 +13,13 @@
       herdrSettings = {
         onboarding = false;
         update.version_check = false;
-        experimental = {
-          kitty_graphics = true;
-          pane_history = true;
-        };
+        experimental.pane_history = true;
         theme.name = "vesper";
         ui.toast.delivery = "herdr";
         ui.status_indicators = "symbols";
         ui.prompt_new_tab_name = false;
-        worktrees.directory = "~/.herdr/worktrees";
+        ui.pane_borders = "always";
+        ui.show_agent_labels_on_pane_borders = true;
         keys.command = [
           {
             key = "prefix+shift+f";
@@ -124,11 +122,10 @@
         settings = herdrSettings;
       };
 
-      # niri options only exist on desktop homes; headless consumers
-      # (users/workspace, lpt-titan) import this module without niri
+      # users/workspace imports this module without niri
       wayland = lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
         windowManager.niri.settings.binds."Mod+E" = {
-          _props.hotkey-overlay-title = "Attach herdr workspace";
+          _props.hotkey-overlay-title = "Open herdr";
           spawn = [
             "focus-or-spawn"
             "herdr.workspace"
@@ -136,10 +133,6 @@
             "--class=herdr.workspace"
             "-e"
             "herdr"
-            "--remote"
-            "workspace"
-            "--remote-keybindings"
-            "server"
           ];
         };
       };
@@ -148,9 +141,6 @@
         pkgs.nodejs
         pkgs.local.druk
       ];
-
-      # attach to the remote workspace host with server-side keybindings
-      home.shellAliases.herdr-workspace = "herdr --remote workspace --remote-keybindings server";
 
       xdg.configFile =
         # deploy herdr-plus project templates into the plugin's config dir
