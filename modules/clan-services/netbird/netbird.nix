@@ -285,6 +285,10 @@
                           Scheme = "https";
                           Host = "${serverSettings.domain}:443";
                         };
+                        # permissive: rosenpass with capable peers (incl. netbird-proxy >= 0.78),
+                        # plain wireguard fallback for peers without it
+                        RosenpassEnabled = true;
+                        RosenpassPermissive = true;
                       };
                     };
                   };
