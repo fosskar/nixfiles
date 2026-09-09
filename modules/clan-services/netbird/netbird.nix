@@ -137,7 +137,7 @@
                 # dashboard
                 services.netbird.server.dashboard = {
                   enable = true;
-                  package = pkgs.local.netbird-dashboard;
+                  package = pkgs.netbird-dashboard;
                   managementServer = "https://${settings.domain}";
                   settings = {
                     AUTH_AUTHORITY = "https://${settings.domain}/oauth2";

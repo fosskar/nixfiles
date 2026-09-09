@@ -13,7 +13,15 @@
           # enable tray UI only on graphical clients (niri workstations);
           # headless servers don't need it
           ui.enable = lib.mkDefault (lib.attrByPath [ "programs" "niri" "enable" ] false config);
-          package = lib.mkDefault pkgs.local.netbird-client;
+          # nixpkgs patches the daemon and ui socket path but not the ssh client
+          package = lib.mkDefault (
+            pkgs.netbird.overrideAttrs (prev: {
+              postPatch = prev.postPatch + ''
+                substituteInPlace client/ssh/client/client.go \
+                  --replace-fail 'unix:///var/run/netbird.sock' 'unix:///var/run/netbird/sock'
+              '';
+            })
+          );
           clients.default = {
             name = lib.mkDefault "netbird";
             interface = lib.mkDefault "wt0";
@@ -28,6 +36,10 @@
         };
 
         systemd.services.netbird.path = [ pkgs.shadow ];
+        # upstream preStart only merges config.d into config.json on start
+        systemd.services.netbird.restartTriggers = [
+          config.environment.etc."netbird/config.d/50-nixos.json".source
+        ];
         # upstream nixpkgs pre-start trips SC2034 (NB_* vars set for the daemon env)
         systemd.services.netbird.enableStrictShellChecks = false;
 

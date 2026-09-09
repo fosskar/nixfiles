@@ -61,7 +61,6 @@ in
 
   fencr.vms = {
     hermes = {
-      id = 0;
       services = [
         (guestModule "hermes")
         {
@@ -98,7 +97,6 @@ in
       };
     };
     hermina = {
-      id = 1;
       services = [
         (guestModule "hermina")
         { services.hermes-agent.environment.OPENCODE_GO_API_KEY = "sk-or-fencr"; }
@@ -118,15 +116,15 @@ in
 
   fencr.credentials = {
     hermes-openrouter = {
-      upstream = "https://openrouter.ai";
+      provider = "openrouter";
       secretFile = generators.hermes-agent.files.openrouter-authorization.path;
     };
     hermes-opencode_go = {
-      upstream = "https://opencode.ai";
+      provider = "opencode";
       secretFile = generators.hermes-agent.files.opencode_go-authorization.path;
     };
     hermina-opencode_go = {
-      upstream = "https://opencode.ai";
+      provider = "opencode";
       secretFile = generators.hermina-agent.files.opencode_go-authorization.path;
     };
     mcp-gateway = {
