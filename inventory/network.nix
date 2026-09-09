@@ -46,6 +46,8 @@
       roles.client = {
         tags = [ "all" ];
         machines."nixbox".settings.routingFeatures = "server";
+        # exit node for remote peers
+        machines."gateway".settings.routingFeatures = "server";
       };
     };
 

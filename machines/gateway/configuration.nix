@@ -10,6 +10,7 @@
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     self.modules.nixos.grub
     self.modules.nixos.tunedVirtualGuest
+    self.modules.nixos.technitium
   ]
   ++ (nflib.scanPaths ./. { });
 
