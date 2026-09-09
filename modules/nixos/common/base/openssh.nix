@@ -4,7 +4,7 @@
     {
       services.openssh = {
         enable = true;
-        openFirewall = true;
+        openFirewall = lib.mkDefault true;
         # socket activation - srvos doesn't set this
         startWhenNeeded = lib.mkDefault true;
 
