@@ -45,9 +45,9 @@
       };
       roles.client = {
         tags = [ "all" ];
+        # routing peers for the home lan and the exit route
         machines."nixbox".settings.routingFeatures = "server";
-        # exit node for remote peers
-        machines."gateway".settings.routingFeatures = "server";
+        machines."nixworker".settings.routingFeatures = "server";
       };
     };
 
