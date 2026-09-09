@@ -148,6 +148,9 @@
                     AUTH_SILENT_REDIRECT_URI = "/nb-silent-auth";
                     NETBIRD_TOKEN_SOURCE = "idToken";
                     USE_AUTH0 = false;
+                    # sidebar hides agent network unless this build flag or the
+                    # account setting dashboard_features.agent_network is true
+                    NETBIRD_AGENT_NETWORK_ENABLED = true;
                   };
                 };
 

@@ -106,6 +106,8 @@
                     "$AUTH_REDIRECT_URI"
                     "$AUTH_SILENT_REDIRECT_URI"
                     "$AUTH_SUPPORTED_SCOPES"
+                    "$NETBIRD_AGENT_NETWORK_ENABLED"
+                    "$NETBIRD_AGENT_NETWORK_ONLY"
                     "$NETBIRD_DRAG_QUERY_PARAMS"
                     "$NETBIRD_GOOGLE_ANALYTICS_ID"
                     "$NETBIRD_GOOGLE_TAG_MANAGER_ID"
