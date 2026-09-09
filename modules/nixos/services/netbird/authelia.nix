@@ -34,6 +34,16 @@
         '';
       };
 
+      # dex (netbird's embedded idp) reads name/email from the id token and the
+      # groups claim feeds netbird's jwt group sync
+      services.authelia.instances.main.settings.identity_providers.oidc.claims_policies.netbird.id_token =
+        [
+          "name"
+          "email"
+          "preferred_username"
+          "groups"
+        ];
+
       services.authelia.instances.main.settings.identity_providers.oidc.clients = [
         {
           client_id = "netbird";
@@ -57,6 +67,8 @@
           response_types = [ "code" ];
           grant_types = [ "authorization_code" ];
           token_endpoint_auth_method = "client_secret_basic";
+          id_token_signed_response_alg = "RS256";
+          claims_policy = "netbird";
         }
       ];
     };
