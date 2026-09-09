@@ -3,7 +3,8 @@
     # authelia as external oidc connector for the netbird embedded idp.
     # the connector itself is registered once through the management api
     # (POST /api/identity-providers) with the plain secret from this
-    # generator; its id fixes the redirect uri below.
+    # generator. netbird 0.78 sends /oauth2/callback without the connector
+    # id suffix the docs list.
     {
       config,
       flake-self,
@@ -12,7 +13,6 @@
     }:
     let
       netbirdHost = "nb.${flake-self.domains.public}";
-      connectorId = "dagr55um0qvcpng6m7f0";
     in
     {
       clan.core.vars.generators.netbird-oidc = {
@@ -45,7 +45,7 @@
           consent_mode = "implicit";
           authorization_policy = "users";
           redirect_uris = [
-            "https://${netbirdHost}/oauth2/callback/${connectorId}"
+            "https://${netbirdHost}/oauth2/callback"
             "https://${netbirdHost}/oauth2/logout/callback"
           ];
           scopes = [
