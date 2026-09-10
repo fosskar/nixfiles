@@ -12,6 +12,19 @@ dns:
     - 192.168.20.1
     - 127.0.0.1
   port: 53
+  # 2026-09-10: was 100 per /24, which is one bucket for a whole vlan; nixbox
+  # and the microvms behind its nat shared it and lost a third of their
+  # queries at 60 qps, which surfaced as resolved falling back from EDNS0 and
+  # as 502s in fencr's credential proxy. measured with dnsperf: 150 qps loses
+  # 25% at 100, nothing at 1000. the whitelist below had no effect on the
+  # drops, so the limit itself has to be liveable.
+  ratelimit: 1000
+  ratelimit_subnet_len_ipv4: 32
+  ratelimit_subnet_len_ipv6: 128
+  ratelimit_whitelist:
+    # nixbox; ineffective in this adguard version, kept for intent
+    - 192.168.20.200
+    - fd8a:2e59:7bfd:20::502
   upstream_dns:
     # unbound
     - 127.0.0.1:5335
