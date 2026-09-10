@@ -147,6 +147,13 @@
             mapping.groups = "groups";
           };
         };
+
+        # nix-eval-jobs runs as a child of this unit, not nix-daemon, so the
+        # daemon's batch/idle policy does not reach evals
+        systemd.services.nixbot.serviceConfig = {
+          CPUSchedulingPolicy = "batch";
+          IOSchedulingClass = "idle";
+        };
       };
     };
 }

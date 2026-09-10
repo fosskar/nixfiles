@@ -28,4 +28,11 @@
   };
 
   programs.nix-ld.enable = true;
+
+  # ssh sessions (sshd-session lands in user.slice too) win against nixbot
+  # and remote builds under contention; idle sessions cost builds nothing
+  systemd.slices.user.sliceConfig = {
+    CPUWeight = 1000;
+    IOWeight = 1000;
+  };
 }
