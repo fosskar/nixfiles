@@ -16,6 +16,13 @@
       ConnectionAttempts = 1;
       ForwardAgent = "yes";
       LocalForward = [ "54545 localhost:54545" ];
+      # herdr's remote endpoint ssh sets no ControlPath, so it multiplexes over
+      # this master. after a suspend or wifi roam the master is half-dead (local
+      # socket accepts, tcp session gone) and every new endpoint attempt fails
+      # with "endpoint health check timed out" until it is reaped. reap fast.
+      ServerAliveInterval = 15;
+      ServerAliveCountMax = 3;
+      ControlPersist = "30s";
     };
     settings."workspace-relay" = {
       HostName = "nixworker.s";
