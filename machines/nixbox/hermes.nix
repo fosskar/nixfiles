@@ -187,23 +187,24 @@ in
           pkgs.systemd
         ]
       }
-      active=""
-      for unit in ${lib.concatMapStringsSep " " (name: "fencr-${name}.service") names}; do
-        if systemctl is-active --quiet "$unit"; then
-          active="$active $unit"
-        fi
-      done
-      restart() {
-        if [ -n "$active" ]; then
-          systemctl start --no-block $active
-        fi
+      set -eu
+      mkdir -p /var/backup
+      staging=$(mktemp -d /var/backup/agent-vms.XXXXXX)
+      checkpoint=$(basename "$staging")
+      cleanup() {
+        for name in ${lib.escapeShellArgs names}; do
+          rm -f "/var/lib/fencr-vms/$name/checkpoints/$checkpoint.img"
+        done
+        rm -rf -- "$staging"
       }
-      trap restart EXIT
-      if [ -n "$active" ]; then
-        systemctl stop $active
-      fi
+      trap cleanup EXIT
+      for name in ${lib.escapeShellArgs names}; do
+        systemctl start "fencr-$name-checkpoint@$checkpoint.service"
+        mkdir -m 0700 "$staging/$name"
+        cp -p --reflink=auto --sparse=always "/var/lib/fencr-vms/$name/checkpoints/$checkpoint.img" "$staging/$name/state.img"
+      done
       mkdir -p /var/backup/agent-vms
-      rsync -a --delete /var/lib/fencr-vms/ /var/backup/agent-vms/
+      rsync -a --sparse --delete "$staging/" /var/backup/agent-vms/
     '';
   };
 }
