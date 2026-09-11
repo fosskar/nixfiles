@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.arrStack =
     {
+      config,
       flake-self,
       lib,
       pkgs,
@@ -111,6 +112,15 @@
         };
 
         # --- systemd ---
+
+        systemd.services.jellyfin.environment = {
+          FONTCONFIG_FILE = pkgs.makeFontsConf {
+            fontDirectories = [ pkgs.dejavu_fonts.minimal ];
+            impureFontDirectories = [ ];
+            includes = [ ];
+          };
+          XDG_CACHE_HOME = config.services.jellyfin.cacheDir;
+        };
 
         systemd.services.jellyfin.serviceConfig.DeviceAllow = [
           "/dev/nvidiactl rw"
