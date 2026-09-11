@@ -67,7 +67,11 @@ _: {
               };
               "nixbox".settings = {
                 startAt = "*-*-* 03:00:00";
-                inherit exclude;
+                exclude = exclude ++ [
+                  # regenerable media; originals remain backed up: https://docs.immich.app/administration/backup-and-restore/#filesystem
+                  "sh:**/immich/encoded-video"
+                  "sh:**/immich/thumbs"
+                ];
                 destinations = {
                   "storagebox" = {
                     repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./nixbox";

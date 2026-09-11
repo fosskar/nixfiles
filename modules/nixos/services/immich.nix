@@ -142,6 +142,7 @@
             loginPageMessage = "henlo";
           };
           newVersionCheck.enabled = false;
+          backup.database.keepLastAmount = 3;
 
           passwordLogin.enabled = true;
 
