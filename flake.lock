@@ -264,11 +264,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789128014,
-        "narHash": "sha256-5o/GYuFAmRrm/aRnmTK8CWChkCTsl8t/tSUNJfoSGkU=",
+        "lastModified": 1789155123,
+        "narHash": "sha256-htJdeyjAAffhW0bBgNSQikPlqzbpbA85L1DGyj7Dwjg=",
         "owner": "fosskar",
         "repo": "fencr",
-        "rev": "0c666e4071c2e44def34d85ff7a1396d0cf78bd9",
+        "rev": "e5a9adf9ee9f53afb9f83e5d6409b944e3565567",
         "type": "github"
       },
       "original": {
@@ -599,6 +599,22 @@
       "original": {
         "type": "file",
         "url": "https://cdn.jsdelivr.net/npm/htmx-ext-ws@2.0.4"
+      }
+    },
+    "i-have-adhd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789055321,
+        "narHash": "sha256-ijQ7Mz0FbeWxlkn7rbn5JuG0e6jQeEYBkuroE2N/MZY=",
+        "owner": "ayghri",
+        "repo": "i-have-adhd",
+        "rev": "6f1f982d0a47c65899af3c5a7450b7098bc65325",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ayghri",
+        "repo": "i-have-adhd",
+        "type": "github"
       }
     },
     "ibm-plex-mono-src": {
@@ -1357,6 +1373,7 @@
         "herdr": "herdr",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
+        "i-have-adhd": "i-have-adhd",
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
         "llm-agents": "llm-agents",

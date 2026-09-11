@@ -22,6 +22,7 @@ _: {
       # skills shipped by upstream flake inputs; skill name -> SKILL.md source
       externalSkills = {
         herdr = "${inputs.herdr}/skills/herdr/SKILL.md";
+        i-have-adhd = "${inputs.i-have-adhd}/skills/i-have-adhd/SKILL.md";
         hunk-review = "${pkgs.hunk}/skills/hunk-review/SKILL.md";
         nixbot-cli = "${
           inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli

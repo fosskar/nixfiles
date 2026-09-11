@@ -161,6 +161,10 @@
       inputs.flake-parts.follows = "flake-parts";
       inputs.home-manager.follows = "home-manager";
     };
+    i-have-adhd = {
+      url = "github:ayghri/i-have-adhd";
+      flake = false;
+    };
     mics-skills = {
       url = "github:Mic92/mics-skills";
       inputs.nixpkgs.follows = "nixpkgs";
