@@ -71,20 +71,36 @@ _: {
                         [ "$fail" -eq 0 ] || exit 1
                         for folder in ${lib.escapeShellArgs settings.folders}; do
                           dataset=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE "$folder" | grep -v '^/dev')
+                          snapshots=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset") || exit 1
+                          if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${settings.snapshotName}" >/dev/null; then
+                            echo "deleting leftover zfs snapshot: $dataset@${settings.snapshotName}"
+                            ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}" || exit 1
+                          fi
                           echo "creating zfs snapshot: $dataset@${settings.snapshotName}"
-                          ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}" 2>/dev/null || true
                           ${pkgs.zfs}/bin/zfs snapshot -r "$dataset@${settings.snapshotName}"
                           ls "$folder/.zfs/snapshot/${settings.snapshotName}" >/dev/null
                         done
                       '';
                       postBackupScript = ''
+                        fail=0
                         for folder in ${lib.escapeShellArgs settings.folders}; do
-                          dataset=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE "$folder" | grep -v '^/dev' || true)
-                          if [ -n "$dataset" ]; then
+                          if ! dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder"); then
+                            echo "error: $folder is not a mounted zfs dataset" >&2
+                            fail=1
+                            continue
+                          fi
+                          if ! snapshots=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset"); then
+                            fail=1
+                            continue
+                          fi
+                          if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${settings.snapshotName}" >/dev/null; then
                             echo "destroying zfs snapshot: $dataset@${settings.snapshotName}"
-                            ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}" || true
+                            if ! ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}"; then
+                              fail=1
+                            fi
                           fi
                         done
+                        exit "$fail"
                       '';
                     }
                   else
