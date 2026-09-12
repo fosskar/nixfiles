@@ -72,6 +72,26 @@
   };
   users.users.simon.shell = pkgs.fish;
 
+  # master key for noctalia private storage (clipboard history, calendar cache);
+  # noctalia requires exactly 64 lowercase hex chars and never rotates it
+  clan.core.vars.generators.noctalia-storage = {
+    files.key.owner = "simon";
+    runtimeInputs = [ pkgs.openssl ];
+    script = ''
+      openssl rand -hex 32 > "$out/key"
+    '';
+  };
+
+  # caldav password for the noctalia opencloud calendar account
+  clan.core.vars.generators.noctalia-caldav = {
+    files.password.owner = "simon";
+    prompts.password = {
+      type = "hidden";
+      persist = true;
+      description = "opencloud caldav password for noctalia";
+    };
+  };
+
   # session link for kagi-search skill (modules/llm/skills)
   clan.core.vars.generators.kagi = {
     share = true;
