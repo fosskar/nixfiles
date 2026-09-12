@@ -10,8 +10,6 @@
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.nixbot
     self.modules.nixos.radicleMirror
-    self.modules.nixos.tangledKnot
-    self.modules.nixos.tangledSpindle
     self.modules.nixos.homeManager
     self.modules.nixos.nixAccessTokens
   ]
