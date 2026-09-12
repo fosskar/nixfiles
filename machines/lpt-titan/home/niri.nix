@@ -4,10 +4,12 @@ _: {
     # outputs managed by kanshi
 
     # workspace->output assignments
-    workspace = [
+    _children = [
       {
-        _args = [ "primary" ];
-        open-on-output = "eDP-1";
+        workspace = {
+          _args = [ "primary" ];
+          open-on-output = "eDP-1";
+        };
       }
     ];
   };

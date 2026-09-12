@@ -10,8 +10,16 @@
     let
       theme = self.themes.${self.theme};
 
-      toNodeList = lib.mapAttrsToList (name: value: value // { _args = [ (value.name or name) ]; });
-      mapMatch = match: if match == { } then { } else { _props = match; };
+      # home-manager's toKDL renders a plain list under a node name as anonymous
+      # `- { }` children, so every repeated node goes through _children instead.
+      toNodeList = lib.mapAttrsToList (
+        name: value: {
+          workspace = value // {
+            _args = [ (value.name or name) ];
+          };
+        }
+      );
+      mapMatch = match: { _props = match; };
       mapRule =
         rule:
         (removeAttrs rule [
@@ -19,8 +27,11 @@
           "excludes"
           "default-floating-position"
         ])
-        // lib.optionalAttrs (rule ? matches) { match = map mapMatch rule.matches; }
-        // lib.optionalAttrs (rule ? excludes) { exclude = map mapMatch rule.excludes; }
+        // {
+          _children =
+            map (match: { match = mapMatch match; }) (rule.matches or [ ])
+            ++ map (exclude: { exclude = mapMatch exclude; }) (rule.excludes or [ ]);
+        }
         // lib.optionalAttrs (rule ? default-floating-position) {
           default-floating-position._props = rule.default-floating-position;
         };
@@ -37,9 +48,7 @@
           _props.hotkey-overlay-title = bind.hotkey-overlay.title;
         }
         // lib.optionalAttrs (bind ? hotkey-overlay && (bind.hotkey-overlay.hidden or false)) {
-          _props.hotkey-overlay-title = {
-            _raw = "null";
-          };
+          _props.hotkey-overlay-title = null;
         };
       fromNiriFlakeSettings =
         settings:
@@ -50,30 +59,30 @@
           "window-rules"
           "layer-rules"
         ])
-        // lib.optionalAttrs (settings ? workspaces) { workspace = toNodeList settings.workspaces; }
         // lib.optionalAttrs (settings ? binds) { binds = lib.mapAttrs (_: mapBind) settings.binds; }
-        // lib.optionalAttrs (settings ? spawn-at-startup) (
-          let
-            shEntries = map (entry: [ entry.sh ]) (
-              builtins.filter (entry: entry ? sh) settings.spawn-at-startup
-            );
-            argvEntries = map (entry: entry.argv or entry.command) (
-              builtins.filter (entry: entry ? argv || entry ? command) settings.spawn-at-startup
-            );
-          in
-          lib.optionalAttrs (shEntries != [ ]) { spawn-sh-at-startup = shEntries; }
-          // lib.optionalAttrs (argvEntries != [ ]) { spawn-at-startup = argvEntries; }
-        )
-        // lib.optionalAttrs (settings ? window-rules) { window-rule = map mapRule settings.window-rules; }
-        // lib.optionalAttrs (settings ? layer-rules) { layer-rule = map mapRule settings.layer-rules; };
+        // {
+          _children =
+            toNodeList (settings.workspaces or { })
+            ++ map (entry: {
+              spawn-sh-at-startup._args = [ entry.sh ];
+            }) (builtins.filter (entry: entry ? sh) (settings.spawn-at-startup or [ ]))
+            ++ map (entry: {
+              spawn-at-startup._args = entry.argv or entry.command;
+            }) (builtins.filter (entry: entry ? argv || entry ? command) (settings.spawn-at-startup or [ ]))
+            ++ map (rule: { window-rule = mapRule rule; }) (settings.window-rules or [ ])
+            ++ map (rule: { layer-rule = mapRule rule; }) (settings.layer-rules or [ ]);
+        };
 
     in
     {
-      imports = [ inputs.niri-nix.homeModules.default ];
-
+      # home-manager's own wayland.windowManager.niri module; niri-nix supplies
+      # only the package. portals and xwayland-satellite stay with the nixos
+      # module, which already configures both for the whole session.
       wayland.windowManager.niri = {
         enable = true;
         package = inputs.niri-nix.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
+        portalPackage = null;
+        xwaylandSatellitePackage = null;
       };
 
       home.packages = [

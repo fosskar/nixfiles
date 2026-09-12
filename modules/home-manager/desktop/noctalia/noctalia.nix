@@ -146,15 +146,17 @@
 
         wayland.windowManager.niri.settings = {
           binds = shellNiriBinds;
-          window-rule = [
+          _children = [
             {
-              match = [ { _props.app-id = "dev.noctalia.Noctalia.Settings"; } ];
-              open-floating = true;
-              default-column-width = {
-                fixed = 1080;
-              };
-              default-window-height = {
-                fixed = 920;
+              window-rule = {
+                _children = [ { match._props.app-id = "dev.noctalia.Noctalia.Settings"; } ];
+                open-floating = true;
+                default-column-width = {
+                  fixed = 1080;
+                };
+                default-window-height = {
+                  fixed = 920;
+                };
               };
             }
           ];
