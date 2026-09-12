@@ -20,7 +20,20 @@ _: {
         input = "self";
       };
       roles = {
-        server.machines."nixbox" = { };
+        server.machines."nixbox".settings.extraSystems = [
+          {
+            name = "home-assistant";
+            host = "192.168.10.50";
+          }
+          {
+            name = "openwrt";
+            host = "192.168.20.1";
+          }
+          {
+            name = "openwrt-ap";
+            host = "192.168.10.2";
+          }
+        ];
         client.tags = [ "server" ];
         client.machines."nixbox".settings = {
           sensors = "-nct6798_cputin,-nct6798_auxtin0,-nct6798_auxtin2,-nct6798_auxtin4,-bnxt_en";

@@ -7,9 +7,38 @@ _: {
     roles.server = {
       description = "beszel hub server";
 
+      interface =
+        { lib, ... }:
+        {
+          options.extraSystems = lib.mkOption {
+            type = lib.types.listOf (
+              lib.types.submodule {
+                options = {
+                  name = lib.mkOption {
+                    type = lib.types.str;
+                    description = "system name shown in beszel";
+                  };
+                  host = lib.mkOption {
+                    type = lib.types.str;
+                    description = "agent host or address";
+                  };
+                  port = lib.mkOption {
+                    type = lib.types.port;
+                    default = 45876;
+                    description = "agent listen port";
+                  };
+                };
+              }
+            );
+            default = [ ];
+            description = "agents outside clan; systems missing from config.yml are deleted on hub restart";
+          };
+        };
+
       perInstance =
         {
           roles,
+          settings,
           ...
         }:
         {
@@ -45,9 +74,93 @@ _: {
                 }
               ) (lib.sort builtins.lessThan clientMachines);
 
+              beszelExtraSystems = map (system: {
+                inherit (system) name host port;
+              }) settings.extraSystems;
+
               beszelConfigYml = (pkgs.formats.yaml { }).generate "beszel-config.yml" {
-                systems = beszelClientSystems;
+                systems = beszelClientSystems ++ beszelExtraSystems;
               };
+
+              beszelSuperuserEmail = "hub@${beszelDomain}";
+
+              # alerts live only in the pocketbase db and are re-created here so
+              # every system has them without clicking through the ui
+              beszelDefaultAlerts = [
+                {
+                  name = "Status";
+                  value = 0;
+                  min = 2;
+                }
+                {
+                  name = "CPU";
+                  value = 90;
+                  min = 10;
+                }
+                {
+                  name = "Memory";
+                  value = 90;
+                  min = 10;
+                }
+                {
+                  name = "Disk";
+                  value = 90;
+                  min = 10;
+                }
+              ];
+
+              beszelApi = "http://127.0.0.1:${toString beszelPort}/api";
+
+              beszelSuperuserUpsert = pkgs.writeShellScript "beszel-superuser-upsert" ''
+                exec ${config.services.beszel.hub.package}/bin/beszel-hub superuser upsert \
+                  ${beszelSuperuserEmail} "$BESZEL_SUPERUSER_PASSWORD"
+              '';
+
+              beszelDefaultAlertsScript = pkgs.writeShellScript "beszel-default-alerts" ''
+                set -euo pipefail
+                export PATH=${
+                  lib.makeBinPath [
+                    pkgs.curl
+                    pkgs.jq
+                    pkgs.coreutils
+                  ]
+                }
+
+                for _ in $(seq 60); do
+                  if curl -sf -o /dev/null ${beszelApi}/health; then
+                    break
+                  fi
+                  sleep 1
+                done
+
+                token=$(curl -sf -X POST ${beszelApi}/collections/_superusers/auth-with-password \
+                  -H 'content-type: application/json' \
+                  -d "$(jq -cn --arg i ${beszelSuperuserEmail} --arg p "$BESZEL_SUPERUSER_PASSWORD" \
+                    '{identity: $i, password: $p}')" | jq -r .token)
+
+                systems=$(curl -sf -H "Authorization: $token" \
+                  '${beszelApi}/collections/systems/records?perPage=500&fields=id,users')
+                alerts=$(curl -sf -H "Authorization: $token" \
+                  '${beszelApi}/collections/alerts/records?perPage=500&fields=system,user,name')
+
+                jq -cn \
+                  --argjson systems "$systems" \
+                  --argjson alerts "$alerts" \
+                  --argjson defaults '${builtins.toJSON beszelDefaultAlerts}' '
+                    ($alerts.items | map("\(.user)|\(.system)|\(.name)")) as $have
+                    | [ $systems.items[] as $s
+                        | $s.users[]? as $u
+                        | $defaults[] as $d
+                        | { user: $u, system: $s.id, name: $d.name, value: $d.value, min: $d.min }
+                      ]
+                    | map(select(("\(.user)|\(.system)|\(.name)") as $k | $have | index($k) | not))
+                    | .[]' \
+                | while read -r alert; do
+                    curl -sf -o /dev/null -X POST ${beszelApi}/collections/alerts/records \
+                      -H "Authorization: $token" -H 'content-type: application/json' \
+                      -d "$alert"
+                  done
+              '';
 
             in
             {
@@ -67,6 +180,14 @@ _: {
                     authelia crypto hash generate pbkdf2 --password "$secret" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
                     echo -n "$secret" > "$out/oauth-client-secret"
                   fi
+                '';
+              };
+
+              clan.core.vars.generators.beszel-hub-superuser = {
+                files.env = { };
+                runtimeInputs = [ pkgs.pwgen ];
+                script = ''
+                  printf 'BESZEL_SUPERUSER_PASSWORD=%s\n' "$(pwgen -s 64 1)" > "$out/env"
                 '';
               };
 
@@ -114,9 +235,28 @@ _: {
 
               services.beszel.hub = {
                 enable = true;
+                package = pkgs.local.beszel;
                 host = "127.0.0.1";
                 port = beszelPort;
                 environment.APP_URL = "https://${beszelDomain}";
+                environmentFile = config.clan.core.vars.generators.beszel-hub-superuser.files.env.path;
+              };
+
+              systemd.services.beszel-default-alerts = {
+                description = "Create default beszel alerts for systems missing them";
+                wantedBy = [ "multi-user.target" ];
+                after = [ "beszel-hub.service" ];
+                requires = [ "beszel-hub.service" ];
+                serviceConfig = {
+                  Type = "oneshot";
+                  DynamicUser = true;
+                  EnvironmentFile = config.clan.core.vars.generators.beszel-hub-superuser.files.env.path;
+                  ExecStart = beszelDefaultAlertsScript;
+                  PrivateTmp = true;
+                  ProtectHome = true;
+                  ProtectSystem = "strict";
+                  NoNewPrivileges = true;
+                };
               };
 
               services.homepage-dashboard.services = [
@@ -150,7 +290,10 @@ _: {
 
               systemd.services.beszel-hub = {
                 restartTriggers = [ beszelConfigYml ];
-                serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/install -Dm0644 ${beszelConfigYml} ${config.services.beszel.hub.dataDir}/beszel_data/config.yml";
+                serviceConfig.ExecStartPre = [
+                  "${pkgs.coreutils}/bin/install -Dm0644 ${beszelConfigYml} ${config.services.beszel.hub.dataDir}/beszel_data/config.yml"
+                  beszelSuperuserUpsert
+                ];
               };
             };
         };
@@ -242,6 +385,7 @@ _: {
 
               services.beszel.agent = {
                 enable = true;
+                package = pkgs.local.beszel;
                 extraPath = [
                   pkgs.smartmontools
                 ];
