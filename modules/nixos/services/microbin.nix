@@ -10,9 +10,12 @@
     let
       serviceName = "bin";
       localHost = "${serviceName}.${flake-self.domains.local}";
-      listenAddress = "127.0.0.1";
+      publicHost = "${serviceName}.${flake-self.domains.public}";
+      # exposed publicly through netbird-proxy (target nixbox:8083 in the netbird UI),
+      # so the bind must be mesh-reachable; the LAN firewall stays closed
+      listenAddress = "0.0.0.0";
       listenPort = 8083;
-      listenUrl = "http://${listenAddress}:${toString listenPort}";
+      listenUrl = "http://127.0.0.1:${toString listenPort}";
       dataDir = "/var/lib/microbin";
     in
     {
@@ -39,7 +42,7 @@
         settings = {
           MICROBIN_BIND = listenAddress;
           MICROBIN_PORT = listenPort;
-          MICROBIN_PUBLIC_PATH = "https://${localHost}";
+          MICROBIN_PUBLIC_PATH = "https://${publicHost}";
           MICROBIN_TITLE = "MicroBin";
           # viewing shared links is open; creating pastas needs MICROBIN_UPLOADER_PASSWORD
           MICROBIN_READONLY = true;
