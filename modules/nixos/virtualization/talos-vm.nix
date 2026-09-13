@@ -20,6 +20,9 @@
         url = "https://github.com/siderolabs/talos/releases/download/v${version}/metal-amd64.iso";
         hash = "sha256-FRGuhdsHaxsro8OPvS1sVS8loZi2XRyTqtEjbQRzy9c=";
       };
+      stateDir = "/var/lib/talos-vm";
+      diskSize = "60G";
+      talosconfig = "${stateDir}/talosconfig";
       bridge = "talosbr0";
       tap = "talos0";
       hostIp = "10.20.2.1";
@@ -127,9 +130,12 @@
           wantedBy = [ "multi-user.target" ];
           after = [ "network.target" ];
           preStart = ''
-            if [ ! -f /var/lib/talos-vm/disk.qcow2 ]; then
-              ${lib.getExe' pkgs.qemu_kvm "qemu-img"} create -f qcow2 /var/lib/talos-vm/disk.qcow2 20G
+            if [ ! -f ${stateDir}/disk.qcow2 ]; then
+              ${lib.getExe' pkgs.qemu_kvm "qemu-img"} create -f qcow2 ${stateDir}/disk.qcow2 ${diskSize}
             fi
+            # grow-only: qemu-img refuses to shrink without --shrink, so a
+            # lowered diskSize fails the unit instead of eating the disk
+            ${lib.getExe' pkgs.qemu_kvm "qemu-img"} resize ${stateDir}/disk.qcow2 ${diskSize}
           '';
           serviceConfig = {
             StateDirectory = "talos-vm";
@@ -137,10 +143,10 @@
               (lib.getExe' pkgs.qemu_kvm "qemu-system-x86_64")
               "-machine q35,accel=kvm"
               "-cpu host"
-              "-smp 2"
-              "-m 4096"
+              "-smp 8"
+              "-m 16384"
               "-nographic"
-              "-drive file=/var/lib/talos-vm/disk.qcow2,if=virtio,format=qcow2"
+              "-drive file=${stateDir}/disk.qcow2,if=virtio,format=qcow2"
               "-cdrom ${iso}"
               "-boot order=cd"
               "-netdev tap,id=net0,ifname=${tap},script=no,downscript=no"
@@ -148,19 +154,32 @@
               "-device virtio-rng-pci"
             ];
             Restart = "on-failure";
-            MemoryMax = "6G";
-            CPUQuota = "300%";
+            MemoryMax = "18G";
+            CPUQuota = "900%";
             CPUWeight = 20;
           };
         };
 
         # manual trigger after patch changes: systemctl start talos-vm-config
         systemd.services.talos-vm-config = {
-          unitConfig.ConditionPathExists = "/var/lib/talos-vm/talosconfig";
+          unitConfig.ConditionPathExists = talosconfig;
           serviceConfig.Type = "oneshot";
           script = ''
-            exec ${lib.getExe pkgs.talosctl} --talosconfig /var/lib/talos-vm/talosconfig \
+            exec ${lib.getExe pkgs.talosctl} --talosconfig ${talosconfig} \
               -n ${vmIp} -e ${vmIp} patch machineconfig --patch @${configPatch}
+          '';
+        };
+
+        # gen config leaves the talos api endpoint empty; stamp it from vmIp so
+        # talosctl works without -n/-e
+        systemd.services.talos-vm-clientconfig = {
+          wantedBy = [ "multi-user.target" ];
+          after = [ "talos-vm.service" ];
+          unitConfig.ConditionPathExists = talosconfig;
+          serviceConfig.Type = "oneshot";
+          script = ''
+            ${lib.getExe pkgs.talosctl} --talosconfig ${talosconfig} config endpoint ${vmIp}
+            ${lib.getExe pkgs.talosctl} --talosconfig ${talosconfig} config node ${vmIp}
           '';
         };
 
@@ -190,7 +209,7 @@
             # a stopped vm has nothing to snapshot; a running one that fails to
             # answer is a real error and must fail the job
             if [ -n "$active" ]; then
-              talosctl --talosconfig /var/lib/talos-vm/talosconfig -n ${vmIp} -e ${vmIp} \
+              talosctl --talosconfig ${talosconfig} -n ${vmIp} -e ${vmIp} \
                 etcd snapshot /var/backup/talos-vm/etcd.snapshot
             fi
             restart() {
@@ -203,7 +222,7 @@
               systemctl stop $active
             fi
             rsync -a --delete --exclude=etcd.snapshot \
-              /var/lib/talos-vm/ /var/backup/talos-vm/
+              ${stateDir}/ /var/backup/talos-vm/
           '';
         };
 
@@ -213,11 +232,13 @@
           pkgs.fluxcd
         ];
 
+        environment.variables.TALOSCONFIG = talosconfig;
+
         environment.etc."talos-vm/patch.yaml".source = configPatch;
       }
       // lib.optionalAttrs (options ? preservation) {
         preservation.preserveAt."/persist".directories = [
-          "/var/lib/talos-vm"
+          stateDir
         ];
       };
     };
