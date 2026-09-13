@@ -71,6 +71,11 @@ _: {
                   # regenerable media; originals remain backed up: https://docs.immich.app/administration/backup-and-restore/#filesystem
                   "sh:**/immich/encoded-video"
                   "sh:**/immich/thumbs"
+                  # blob store for all buckets; replicated to nixworker and the
+                  # garage module backs up the metadata snapshot separately.
+                  # single * pins it to the snapshot root; a bare sh:**/garage
+                  # would also drop /var/backup/garage
+                  "sh:**/.zfs/snapshot/*/garage"
                 ];
                 destinations = {
                   "storagebox" = {
