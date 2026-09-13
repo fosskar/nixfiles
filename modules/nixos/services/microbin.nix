@@ -17,12 +17,17 @@
     in
     {
       clan.core.vars.generators.microbin = {
+        prompts."uploader_password" = {
+          description = "password people need to create pastas (viewing links is open)";
+          persist = true;
+        };
         files."env".restartUnits = [ "microbin.service" ];
         runtimeInputs = [ pkgs.pwgen ];
         script = ''
           {
             echo "MICROBIN_ADMIN_USERNAME=admin"
             echo "MICROBIN_ADMIN_PASSWORD=$(pwgen -s 48 1)"
+            echo "MICROBIN_UPLOADER_PASSWORD=$(cat "$prompts/uploader_password")"
           } > "$out/env"
         '';
       };
@@ -36,6 +41,8 @@
           MICROBIN_PORT = listenPort;
           MICROBIN_PUBLIC_PATH = "https://${localHost}";
           MICROBIN_TITLE = "MicroBin";
+          # viewing shared links is open; creating pastas needs MICROBIN_UPLOADER_PASSWORD
+          MICROBIN_READONLY = true;
           MICROBIN_NO_LISTING = true;
           MICROBIN_PRIVATE = true;
           MICROBIN_DEFAULT_PRIVACY = "unlisted";
@@ -89,8 +96,7 @@
       services.gatus.settings.endpoints = [
         {
           name = "MicroBin";
-          # backend check on purpose: the edge is forward-auth, authelia answers 302 without reaching the service
-          url = listenUrl;
+          url = "https://${localHost}";
           enabled = true;
           alerts = [ { type = "email"; } ];
           interval = "5m";
@@ -98,17 +104,7 @@
         }
       ];
 
-      # viewing a paste by link is open; everything else (create form, /upload,
-      # /list, /edit, /remove, /admin) goes through authelia. route list from
-      # microbin 2.1.4 src/endpoints and src/main.rs
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        @protected not path /p/* /u/* /upload/* /raw/* /file/* /url/* /qr/* /archive/* /auth/* /auth_file/* /auth_raw/* /secure_file/* /edit_private/* /submit_edit_private/* /auth_edit_private/* /auth_remove_private/* /static/*
-        ${lib.optionalString (config.services.authelia.instances.main.enable or false) ''
-          forward_auth @protected 127.0.0.1:9091 {
-            uri /api/authz/forward-auth
-            copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
-          }
-        ''}
         reverse_proxy ${listenUrl}
       '';
     };
