@@ -63,8 +63,19 @@
       systemd.services.radicle-mirror = {
         conflicts = [ "radicle-node.service" ];
         after = [ "radicle-node.service" ];
-        postStart = ''
+        # radicle-mirror rewrites config.json non-atomically at every start
+        # (updateNodeConfig in radicle.go) and keeps unknown keys, so pin
+        # before it runs: a postStart hook raced that rewrite and left an
+        # empty file, which then crash-looped every restart
+        preStart = ''
           config="$STATE_DIRECTORY/rad/config.json"
+          [ -e "$config" ] || exit 0
+          # jq exits 4 with -e when the input holds no value at all (empty file)
+          if ! ${lib.getExe pkgs.jq} -e type "$config" > /dev/null; then
+            echo "removing invalid $config so radicle-mirror re-runs rad config init"
+            rm "$config"
+            exit 0
+          fi
           temporary="$(mktemp "$STATE_DIRECTORY/rad/config.json.XXXXXX")"
           ${lib.getExe pkgs.jq} \
             --argjson repositories ${lib.escapeShellArg (builtins.toJSON seedRepositories)} \
