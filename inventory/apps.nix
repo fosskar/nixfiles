@@ -89,6 +89,8 @@
 
         signal.enable = true;
 
+        computerUse.enable = true;
+
         buzz = {
           enable = true;
           allowedUsers = [ "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2" ];

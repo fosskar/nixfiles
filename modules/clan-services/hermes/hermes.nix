@@ -94,6 +94,8 @@
 
               signal.enable = lib.mkEnableOption "the signal channel";
 
+              computerUse.enable = lib.mkEnableOption "background desktop control on a headless X display";
+
               buzz = {
                 enable = lib.mkEnableOption "the buzz channel";
                 channels = lib.mkOption {
@@ -305,6 +307,7 @@
                           }
                         )
                       ]
+                      ++ lib.optional settings.computerUse.enable self.modules.nixos.hermesComputerUse
                       ++ lib.concatMap (channel: channel.modules) active;
                     };
                   };
