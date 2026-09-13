@@ -17,18 +17,17 @@
     in
     {
       clan.core.vars.generators.microbin = {
-        files = {
-          "env".restartUnits = [ "microbin.service" ];
-          "uploader-password" = { };
+        prompts."uploader_password" = {
+          description = "password people need to create pastas (viewing links is open)";
+          persist = true;
         };
+        files."env".restartUnits = [ "microbin.service" ];
         runtimeInputs = [ pkgs.pwgen ];
         script = ''
-          UPLOADER_PW=$(pwgen -s 20 1)
-          echo -n "$UPLOADER_PW" > "$out/uploader-password"
           {
             echo "MICROBIN_ADMIN_USERNAME=admin"
             echo "MICROBIN_ADMIN_PASSWORD=$(pwgen -s 48 1)"
-            echo "MICROBIN_UPLOADER_PASSWORD=$UPLOADER_PW"
+            echo "MICROBIN_UPLOADER_PASSWORD=$(cat "$prompts/uploader_password")"
           } > "$out/env"
         '';
       };
