@@ -45,6 +45,7 @@
     self.modules.nixos.vdirsyncer
     self.modules.nixos.talosVm
     self.modules.nixos.kiwix
+    self.modules.nixos.microbin
   ]
   ++ (nflib.scanPaths ./. { });
 
