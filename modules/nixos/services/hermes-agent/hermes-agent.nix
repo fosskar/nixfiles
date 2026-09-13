@@ -113,6 +113,7 @@
             pkgs.chromium
             pkgs.curl
             pkgs.gh
+            pkgs.gitMinimal
             pkgs.himalaya
           ];
 
