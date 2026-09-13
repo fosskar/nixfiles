@@ -112,6 +112,11 @@
                   default = [ ];
                   description = "npubs or hex pubkeys allowed to talk to the agent.";
                 };
+                replyInThread = lib.mkOption {
+                  type = lib.types.bool;
+                  default = false;
+                  description = "thread replies under the triggering message; false posts flat to the channel.";
+                };
               };
 
               homeAssistant = {
@@ -223,7 +228,7 @@
                       self.modules.nixos.hermesBuzz
                       {
                         services.hermes-agent.buzz = {
-                          inherit (settings.buzz) channels allowedUsers;
+                          inherit (settings.buzz) channels allowedUsers replyInThread;
                         }
                         // lib.optionalAttrs (settings.buzz.homeChannel != null) {
                           inherit (settings.buzz) homeChannel;

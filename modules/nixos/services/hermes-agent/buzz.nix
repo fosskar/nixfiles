@@ -32,6 +32,18 @@
           type = lib.types.listOf lib.types.str;
           description = "npubs or hex pubkeys allowed to talk to the agent.";
         };
+        replyInThread = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "thread replies under the triggering message; false posts flat to the channel timeline.";
+        };
+      };
+
+      # upstream's recommended buzz defaults: only the final answer reaches the
+      # channel, not the tool log. telegram and email already default to this
+      config.services.hermes-agent.settings.display.platforms.buzz = {
+        interim_assistant_messages = false;
+        tool_progress = "off";
       };
 
       config.services.hermes-agent.environment = {
@@ -43,6 +55,7 @@
         BUZZ_ALLOW_ALL_USERS = "false";
         # in channels only respond when addressed; DMs always dispatch
         BUZZ_REQUIRE_MENTION = "true";
+        BUZZ_REPLY_IN_THREAD = lib.boolToString cfg.replyInThread;
       }
       // lib.optionalAttrs (cfg.channels != [ ]) {
         BUZZ_CHANNELS = lib.concatStringsSep "," cfg.channels;
