@@ -201,6 +201,27 @@
         "type": "github"
       }
     },
+    "cua": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789281867,
+        "narHash": "sha256-jPllz8lUaqXRYu5RcIhjay77ffrvUrz7BiaqvlM6bLc=",
+        "owner": "trycua",
+        "repo": "cua",
+        "rev": "31c2184f860bac1fd7df42a75c47053ce3be48f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trycua",
+        "repo": "cua",
+        "type": "github"
+      }
+    },
     "data-mesher": {
       "inputs": {
         "flake-parts": [
@@ -426,6 +447,26 @@
         "type": "github"
       }
     },
+    "flake-utils_3": {
+      "inputs": {
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "flakelet": {
       "inputs": {
         "adios": "adios",
@@ -474,7 +515,7 @@
     },
     "gomod2nix": {
       "inputs": {
-        "flake-utils": "flake-utils",
+        "flake-utils": "flake-utils_2",
         "nixpkgs": [
           "tangled",
           "nixpkgs"
@@ -1343,6 +1384,7 @@
         "buzz-flake": "buzz-flake",
         "clan-community": "clan-community",
         "clan-core": "clan-core",
+        "cua": "cua",
         "disko": "disko",
         "fencr": "fencr",
         "flake-parts": "flake-parts",
@@ -1651,7 +1693,7 @@
     },
     "voxtype": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils_3",
         "nixpkgs": [
           "nixpkgs"
         ]

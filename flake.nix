@@ -151,6 +151,11 @@
       inputs.nixbot.follows = "nixbot";
       inputs.home-manager.follows = "home-manager";
     };
+    cua = {
+      url = "github:trycua/cua";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.inputs.systems.follows = "systems";
+    };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
       inputs.nixpkgs.follows = "nixpkgs";
