@@ -53,3 +53,29 @@ ssh gateway.s 'nix shell nixpkgs#sqlite -c sqlite3 /var/lib/netbird-server/store
 Relevant tables: `services`, `targets`, `peers`, `proxies`, `domains`. The
 `netbird-server` binary CLI only manages proxy tokens, not service listings;
 read the store directly for discovery.
+
+## access control (mgmt state, not in this repo)
+
+Account settings, groups and policies live in the mgmt store and are set
+through the UI or `PUT /api/accounts/{id}`; the server config file has no
+knob for them. Current model, set 2026-09:
+
+- `jwt_groups_enabled: true`, `jwt_groups_claim_name: "groups"`,
+  `jwt_allow_groups: ["admin", "user"]`. Authelia emits the `groups` claim
+  for the `netbird` client (`modules/nixos/services/netbird/authelia.nix`),
+  so the Authelia groups `admin` and `user` become NetBird groups of the same
+  name and are set as the user's auto-groups on every login;
+  `groups_propagation_enabled` applies them to all peers that user logs in
+  with. Users outside those Authelia groups cannot log in.
+- the `Default` (`All -> All`) policy is disabled.
+- `admin -> All`: everything.
+- `user -> home-caddy` (tcp 80/443), `user -> home-router` (dns 53),
+  `user -> exit-home`: `*.nx3.eu`, name resolution and the exit node, each
+  with the `at home` posture check. Nothing else.
+- setup-key peers have no user and stay group-managed: `server`,
+  `workstation`, `remote` (roaming admin devices, e.g. `lpt-titan`).
+- `home-dns` nameserver group is served to `remote`, `admin`, `user`.
+
+Onboarding a new person: add them to the Authelia `user` group and approve
+the user in the mgmt UI (`user_approval_required`). No NetBird-side group
+work.
