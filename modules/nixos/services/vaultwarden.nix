@@ -15,6 +15,10 @@
       listenUrl = "http://${listenAddress}:${toString listenPort}";
     in
     {
+      security.audit.rules = [
+        "-a always,exit -F dir=/var/lib/vaultwarden -F perm=wa -F uid!=vaultwarden -k vaultwarden_tamper"
+      ];
+
       # dashboard tile + health check via the default options (collected
       # clan-wide by the homepage/gatus collectors)
       services.homepage-dashboard.services = [

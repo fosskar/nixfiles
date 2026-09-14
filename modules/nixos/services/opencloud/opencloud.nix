@@ -322,6 +322,10 @@
           path = [ pkgs.inotify-tools ];
         };
 
+        security.audit.rules = [
+          "-a always,exit -F path=${dataDir} -F perm=wa -F uid!=opencloud -k opencloud_tamper"
+        ];
+
         systemd.tmpfiles.settings."10-opencloud-data" = {
           ${dataDir}.d = {
             user = "opencloud";

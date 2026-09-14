@@ -189,6 +189,11 @@
         "video"
       ];
 
+      # top-level entries only; a recursive watch would mark every upload dir
+      security.audit.rules = [
+        "-a always,exit -F path=${config.services.immich.mediaLocation} -F perm=wa -F uid!=immich -k immich_tamper"
+      ];
+
       services.homepage-dashboard.services = [
         {
           "media" = [
