@@ -73,6 +73,19 @@
                   widget = {
                     type = "gatus";
                     url = listenUrl;
+                    # homepage renders the fields as badges on the tile; the
+                    # highlight level drives the badge color via data attribute
+                    fields = [
+                      "up"
+                      "down"
+                    ];
+                    highlight.down.numeric = [
+                      {
+                        level = "danger";
+                        when = "gt";
+                        value = 0;
+                      }
+                    ];
                   };
                 };
               }

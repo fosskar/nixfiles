@@ -20,13 +20,53 @@
       # service lists. runs only here (the homepage host reads the option for
       # services.yaml generation); no recursion since apply transforms the
       # already-merged value.
+      #
+      # modules keep declaring fine-grained groups (media, network, ...); the
+      # dashboard shows audience sections instead, so groups are folded into
+      # sections here and a few tiles are re-homed by name. sections not in
+      # the map keep their group name (tools, monitoring, arr-stack). tiles
+      # are sorted case-insensitively within a section.
       options.services.homepage-dashboard.services = lib.mkOption {
         apply =
           groups:
           let
-            names = lib.unique (lib.concatMap lib.attrNames groups);
+            sectionOf = {
+              media = "apps";
+              files = "apps";
+              communication = "apps";
+              infrastructure = "admin";
+              network = "admin";
+              code = "admin";
+              security = "admin";
+              llm = "admin";
+            };
+            tileSection = {
+              "Home Assistant" = "apps";
+              "Vaultwarden" = "apps";
+              "Buzz" = "admin";
+              "Continuwuity" = "admin";
+              "Garage" = "management";
+              "NetBird" = "management";
+              "Authelia" = "management";
+              "LLDAP" = "management";
+              "Nixbot" = "management";
+              "Radicle" = "management";
+            };
+            placed = lib.concatMap (
+              g:
+              lib.concatMap (
+                name:
+                map (tile: {
+                  section = tileSection.${lib.head (lib.attrNames tile)} or sectionOf.${name} or name;
+                  inherit tile;
+                }) g.${name}
+              ) (lib.attrNames g)
+            ) groups;
+            names = lib.unique (map (p: p.section) placed);
+            tileName = tile: lib.toLower (lib.head (lib.attrNames tile));
+            sorted = tiles: lib.sort (a: b: tileName a < tileName b) tiles;
           in
-          map (n: { ${n} = lib.concatMap (g: g.${n} or [ ]) groups; }) names;
+          map (n: { ${n} = sorted (map (p: p.tile) (lib.filter (p: p.section == n) placed)); }) names;
       };
 
       config.services.homepage-dashboard = {
@@ -39,14 +79,17 @@
           title = "home-lab dashboard";
           baseUrl = "https://${localHost}";
           startUrl = "https://${localHost}";
-          headerStyle = "underlined";
+          # customCSS (dashboard.nix) is dark-only glass; pin theme so the switcher can't break it
+          theme = "dark";
+          color = "slate";
+          headerStyle = "clean";
           useEqualHeights = true;
           iconStyle = "theme";
           hideVersion = true;
           disableUpdateCheck = true;
           disableIndexing = true;
           statusStyle = "dot";
-          cardBlur = "xl";
+          cardBlur = "lg";
         };
 
         customJS = "";

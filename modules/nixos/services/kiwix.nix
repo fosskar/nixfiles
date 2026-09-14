@@ -26,7 +26,7 @@
 
       services.homepage-dashboard.services = [
         {
-          "llm" = [
+          "tools" = [
             {
               "Kiwix" = {
                 href = "https://${localHost}";
