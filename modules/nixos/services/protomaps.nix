@@ -16,6 +16,14 @@
       publicHost = "maps.${flake-self.domains.public}";
       workDir = "/tank/scratch/protomaps";
       keys = config.clan.core.vars.generators.garage-buckets;
+      # glyphs for the protomaps basemap style, served next to the tiles so
+      # the opencloud maps app needs nothing from protomaps.github.io
+      basemapAssets = pkgs.fetchFromGitHub {
+        owner = "protomaps";
+        repo = "basemaps-assets";
+        rev = "028c18f713baecad011301ff7a69acc39bcc2ae7";
+        hash = "sha256-P52xWPZr59voAumONX/n8g15xxqgqyXYIRoZmNSawAw=";
+      };
       region = config.services.garage.settings.s3_api.s3_region;
     in
     {
@@ -158,6 +166,56 @@
                 </CORSRule>
               </CORSConfiguration>
             ''}
+        '';
+      };
+
+      # ~1000 small objects, put once per pinned revision (marker in workDir)
+      systemd.services.protomaps-fonts = {
+        description = "protomaps basemap fonts -> garage ${bucket} bucket";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "garage-buckets-init.service" ];
+        requires = [ "garage-buckets-init.service" ];
+        unitConfig = {
+          RequiresMountsFor = [ workDir ];
+          ConditionPathExists = "!${workDir}/.fonts-${baseNameOf basemapAssets}";
+        };
+        path = [
+          pkgs.coreutils
+          pkgs.curl
+          pkgs.findutils
+          pkgs.gnused
+        ];
+        serviceConfig = {
+          Type = "oneshot";
+          User = "protomaps";
+          Group = "protomaps";
+          NoNewPrivileges = true;
+          CapabilityBoundingSet = "";
+          ProtectSystem = "strict";
+          ReadWritePaths = [ workDir ];
+          ProtectHome = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+          ];
+          LoadCredential = [
+            "access_key:${keys.files."${bucket}_access_key_id".path}"
+            "secret_key:${keys.files."${bucket}_secret_access_key".path}"
+          ];
+        };
+        script = ''
+          set -euo pipefail
+          auth="$(cat "$CREDENTIALS_DIRECTORY"/access_key):$(cat "$CREDENTIALS_DIRECTORY"/secret_key)"
+          cd ${basemapAssets}/fonts
+          find . -name '*.pbf' -printf '%P\n' | while read -r f; do
+            curl -sfS --aws-sigv4 "aws:amz:${region}:s3" --user "$auth" \
+              -X PUT "http://127.0.0.1:3900/${bucket}/fonts/$(printf %s "$f" | sed 's/ /%20/g')" \
+              -H 'Content-Type: application/x-protobuf' \
+              --data-binary "@$f"
+          done
+          touch ${workDir}/.fonts-${baseNameOf basemapAssets}
         '';
       };
 

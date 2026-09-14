@@ -65,12 +65,11 @@
       # PROXY_CSP_CONFIG_FILE_LOCATION is a single generated file.
       cspConfig = {
         directives = {
-          # maps app: pmtiles from the garage bucket, default glyphs from
-          # protomaps.github.io, maplibre web workers from blob:
+          # maps app: pmtiles and glyphs from the garage bucket, maplibre web
+          # workers from blob:
           connect-src = oidcOrigins ++ [
             "blob:"
             "https://${mapsHost}/"
-            "https://protomaps.github.io/"
           ];
           worker-src = [
             "'self'"
@@ -310,6 +309,7 @@
           settings = {
             apps.maps.config = {
               tileLayerUrlTemplate = "https://${mapsHost}/protomaps.pmtiles";
+              tileLayerGlyphs = "https://${mapsHost}/fonts/{fontstack}/{range}.pbf";
               tileLayerAttribution = ''<a href="https://protomaps.com">Protomaps</a> | <a href="https://openstreetmap.org">OpenStreetMap</a>'';
               folderViewEnabled = true;
             };
