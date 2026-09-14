@@ -401,6 +401,40 @@
           "-a always,exit -F path=${dataDir} -F perm=wa -F uid!=opencloud -k opencloud_tamper"
         ];
 
+        # trash items expire after STORAGE_USERS_PURGE_TRASH_BIN_*_DELETE_BEFORE
+        # (upstream default 720h) but nothing purges them unless this cli runs
+        systemd.services.opencloud-trash-purge = {
+          description = "purge expired opencloud trash-bin items";
+          after = [ "opencloud.service" ];
+          requires = [ "opencloud.service" ];
+          environment = removeAttrs config.systemd.services.opencloud.environment [ "PATH" ];
+          serviceConfig = {
+            Type = "oneshot";
+            User = "opencloud";
+            Group = "opencloud";
+            inherit (config.systemd.services.opencloud.serviceConfig) EnvironmentFile WorkingDirectory;
+            ExecStart = "${lib.getExe config.services.opencloud.package} storage-users trash-bin purge-expired";
+            NoNewPrivileges = true;
+            CapabilityBoundingSet = "";
+            ProtectSystem = "strict";
+            ReadWritePaths = [
+              "/var/lib/opencloud"
+              dataDir
+            ];
+            ProtectHome = true;
+            PrivateTmp = true;
+            PrivateDevices = true;
+          };
+        };
+        systemd.timers.opencloud-trash-purge = {
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnCalendar = "04:30";
+            Persistent = true;
+            RandomizedDelaySec = "30m";
+          };
+        };
+
         systemd.tmpfiles.settings."10-opencloud-data" = {
           ${dataDir}.d = {
             user = "opencloud";
