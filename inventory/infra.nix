@@ -19,6 +19,8 @@
         # exposed publicly through netbird-proxy (peer target :3902).
         maps = {
           website = true;
+          # protomaps-cors sets the bucket cors rules with this key
+          owner = true;
           aliases = [ "maps.${config.flake.domains.public}" ];
         };
         # nix binary cache objects for niks3; clients read anonymously via

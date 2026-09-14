@@ -65,12 +65,59 @@
       # PROXY_CSP_CONFIG_FILE_LOCATION is a single generated file.
       cspConfig = {
         directives = {
-          connect-src = oidcOrigins;
+          # maps app: pmtiles from the garage bucket, default glyphs from
+          # protomaps.github.io, maplibre web workers from blob:
+          connect-src = oidcOrigins ++ [
+            "blob:"
+            "https://${mapsHost}/"
+            "https://protomaps.github.io/"
+          ];
+          worker-src = [
+            "'self'"
+            "blob:"
+          ];
+          child-src = [
+            "'self'"
+            "blob:"
+          ];
           frame-src = oidcOrigins ++ [ "https://collabora.${flake-self.domains.local}" ];
         };
       };
 
-      # web extensions for WEB_ASSET_APPS_PATH; restart to pick up changes
+      # web extensions for WEB_ASSET_APPS_PATH; restart to pick up changes.
+      # each release zip has a single top-level dir, so fetchzip strips it and
+      # linkFarm gives every app its own dir named like its apps.yaml key
+      webExtension =
+        {
+          pname,
+          version,
+          hash,
+        }:
+        {
+          name = pname;
+          path = pkgs.fetchzip {
+            url = "https://github.com/opencloud-eu/web-extensions/releases/download/${pname}-v${version}/${pname}-${version}.zip";
+            inherit hash;
+          };
+        };
+      webApps = pkgs.linkFarm "opencloud-web-apps" [
+        (webExtension {
+          pname = "maps";
+          version = "3.1.0";
+          hash = "sha256-rVZaF1OiJvW/XmBh7tUgTxsQ+0cn9WON2tRg+5SeTM4=";
+        })
+        (webExtension {
+          pname = "unzip";
+          version = "2.1.0";
+          hash = "sha256-9QlyazjiLv1kJIQFTS9zNDxI0wvS70wAlnH+zhy3dIE=";
+        })
+        (webExtension {
+          pname = "pastebin";
+          version = "2.1.0";
+          hash = "sha256-o1ErQWjqLlEpfO1BrfSCtUJxr8so1bHd4hgh2v/jyOo=";
+        })
+      ];
+      mapsHost = "maps.${flake-self.domains.public}";
     in
     {
       config = {
@@ -204,7 +251,7 @@
             PROXY_CSP_CONFIG_FILE_LOCATION = "${settingsFormat.generate "csp.yaml" cspConfig}";
 
             OC_OIDC_ISSUER = oidcIssuerUrl;
-            #WEB_ASSET_APPS_PATH = "${webApps}";
+            WEB_ASSET_APPS_PATH = "${webApps}";
             # idp: authelia; ocm: no federation partners
             OC_EXCLUDE_RUN_SERVICES = "idp,ocm";
             # comma-separated, so one definition: collaboration (collabora.nix),
@@ -261,6 +308,11 @@
           };
 
           settings = {
+            apps.maps.config = {
+              tileLayerUrlTemplate = "https://${mapsHost}/protomaps.pmtiles";
+              tileLayerAttribution = ''<a href="https://protomaps.com">Protomaps</a> | <a href="https://openstreetmap.org">OpenStreetMap</a>'';
+              folderViewEnabled = true;
+            };
             proxy = {
               oidc.rewrite_well_known = true;
               role_assignment = {

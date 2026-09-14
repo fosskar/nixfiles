@@ -53,6 +53,7 @@
                   lib.types.submodule {
                     options = {
                       website = lib.mkEnableOption "anonymous reads for this bucket via the s3 web endpoint (:3902)";
+                      owner = lib.mkEnableOption "owner permission for the bucket key, needed for bucket configuration such as cors rules over the s3 api";
                       aliases = lib.mkOption {
                         type = lib.types.listOf lib.types.str;
                         default = [ ];
@@ -414,7 +415,7 @@
                             "$key_id" "$(cat "$CREDENTIALS_DIRECTORY"/${b}_secret_access_key)"
                         fi
 
-                        garage bucket allow --read --write --key "$key_id" ${b}
+                        garage bucket allow --read --write ${lib.optionalString def.owner "--owner"} --key "$key_id" ${b}
                         ${lib.optionalString def.website "garage bucket website --allow ${b}"}
                         ${lib.concatMapStringsSep "\n" (a: "garage bucket alias ${b} ${a} 2>/dev/null || true") def.aliases}
                       '') buckets

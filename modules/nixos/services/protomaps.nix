@@ -108,6 +108,59 @@
         '';
       };
 
+      # browsers on other origins (opencloud maps app) read the pmtiles with
+      # range requests; garage applies the bucket cors rules on the web endpoint
+      systemd.services.protomaps-cors = {
+        description = "cors rules for the garage ${bucket} bucket";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "garage-buckets-init.service" ];
+        requires = [ "garage-buckets-init.service" ];
+        path = [
+          pkgs.coreutils
+          pkgs.curl
+        ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          User = "protomaps";
+          Group = "protomaps";
+          NoNewPrivileges = true;
+          CapabilityBoundingSet = "";
+          ProtectSystem = "strict";
+          ProtectHome = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+          ];
+          LoadCredential = [
+            "access_key:${keys.files."${bucket}_access_key_id".path}"
+            "secret_key:${keys.files."${bucket}_secret_access_key".path}"
+          ];
+        };
+        script = ''
+          set -euo pipefail
+          curl -sfS --aws-sigv4 "aws:amz:${region}:s3" \
+            --user "$(cat "$CREDENTIALS_DIRECTORY"/access_key):$(cat "$CREDENTIALS_DIRECTORY"/secret_key)" \
+            -X PUT "http://127.0.0.1:3900/${bucket}/?cors" \
+            -H 'Content-Type: application/xml' \
+            --data-binary @${pkgs.writeText "protomaps-cors.xml" ''
+              <CORSConfiguration>
+                <CORSRule>
+                  <AllowedOrigin>*</AllowedOrigin>
+                  <AllowedMethod>GET</AllowedMethod>
+                  <AllowedMethod>HEAD</AllowedMethod>
+                  <AllowedHeader>*</AllowedHeader>
+                  <ExposeHeader>Content-Range</ExposeHeader>
+                  <ExposeHeader>Content-Length</ExposeHeader>
+                  <ExposeHeader>ETag</ExposeHeader>
+                </CORSRule>
+              </CORSConfiguration>
+            ''}
+        '';
+      };
+
       # first refresh on deploy (garage-layout-init pattern); the monthly timer
       # owns every later run, so the marker only gates this kick.
       systemd.services.protomaps-bootstrap = {
