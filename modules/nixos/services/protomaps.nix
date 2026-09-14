@@ -19,6 +19,17 @@
       region = config.services.garage.settings.s3_api.s3_region;
     in
     {
+      users.users.protomaps = {
+        isSystemUser = true;
+        group = "protomaps";
+      };
+      users.groups.protomaps = { };
+      # Z: existing root-owned work dir from before the unit had its own user
+      systemd.tmpfiles.rules = [
+        "d ${workDir} 0750 protomaps protomaps -"
+        "Z ${workDir} - protomaps protomaps -"
+      ];
+
       systemd.services.protomaps-refresh = {
         description = "protomaps europe extract -> garage ${bucket} bucket";
         after = [
@@ -35,6 +46,31 @@
         serviceConfig = {
           Type = "oneshot";
           TimeoutStartSec = "12h";
+          User = "protomaps";
+          Group = "protomaps";
+          NoNewPrivileges = true;
+          CapabilityBoundingSet = "";
+          ProtectSystem = "strict";
+          ReadWritePaths = [ workDir ];
+          ProtectHome = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          ProtectKernelTunables = true;
+          ProtectKernelModules = true;
+          ProtectControlGroups = true;
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+          ];
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          LockPersonality = true;
+          SystemCallArchitectures = "native";
+          SystemCallFilter = [
+            "@system-service"
+            "~@privileged"
+          ];
           LoadCredential = [
             "access_key:${keys.files."${bucket}_access_key_id".path}"
             "secret_key:${keys.files."${bucket}_secret_access_key".path}"
@@ -42,7 +78,6 @@
         };
         script = ''
           set -euo pipefail
-          mkdir -p ${workDir}
           cd ${workDir}
 
           # builds.json lives on build-metadata.protomaps.dev, which the lan

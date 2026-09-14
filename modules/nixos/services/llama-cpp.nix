@@ -139,6 +139,14 @@
         };
       };
 
+      users.users.llama-cpp-models = {
+        isSystemUser = true;
+        group = "llama-cpp-models";
+      };
+      users.groups.llama-cpp-models = { };
+      # Z: models downloaded as root before the unit had its own user
+      systemd.tmpfiles.rules = [ "Z ${modelsDir} - llama-cpp-models llama-cpp-models -" ];
+
       systemd.services.llama-cpp-models = {
         description = "download pinned llama.cpp models";
         wantedBy = [ "multi-user.target" ];
@@ -147,8 +155,32 @@
         path = [ pkgs.curl ];
         serviceConfig = {
           Type = "exec";
+          User = "llama-cpp-models";
+          Group = "llama-cpp-models";
           StateDirectory = "llama-cpp-models";
           TimeoutStartSec = "infinity";
+          NoNewPrivileges = true;
+          CapabilityBoundingSet = "";
+          ProtectSystem = "strict";
+          ProtectHome = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          ProtectKernelTunables = true;
+          ProtectKernelModules = true;
+          ProtectControlGroups = true;
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+          ];
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          LockPersonality = true;
+          SystemCallArchitectures = "native";
+          SystemCallFilter = [
+            "@system-service"
+            "~@privileged"
+          ];
         };
         script = ''
           while read -r repo file rev sha256; do
