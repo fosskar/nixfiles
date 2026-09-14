@@ -2,7 +2,7 @@
   flake.modules.nixos.bentopdf =
     { flake-self, ... }:
     let
-      serviceName = "bento";
+      serviceName = "pdf";
       localHost = "${serviceName}.${flake-self.domains.local}";
     in
     {
