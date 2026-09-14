@@ -1,5 +1,6 @@
-# protomaps basemap for the grid app: monthly europe extract uploaded into the
-# garage `maps` bucket, served anonymously by the garage web endpoint (:3902)
+# protomaps basemap for the grid app and the opencloud maps app: quarterly
+# planet build uploaded into the garage `maps` bucket, served anonymously by
+# the garage web endpoint (:3902)
 # and exposed publicly as maps.<public> via netbird-proxy (mapping lives in the
 # netbird ui, not here).
 {
@@ -14,6 +15,7 @@
       bucket = "maps";
       object = "protomaps.pmtiles";
       publicHost = "maps.${flake-self.domains.public}";
+      localHost = "maps.${flake-self.domains.local}";
       workDir = "/tank/scratch/protomaps";
       keys = config.clan.core.vars.generators.garage-buckets;
       # glyphs for the protomaps basemap style, served next to the tiles so
@@ -39,7 +41,7 @@
       ];
 
       systemd.services.protomaps-refresh = {
-        description = "protomaps europe extract -> garage ${bucket} bucket";
+        description = "protomaps planet build -> garage ${bucket} bucket";
         after = [
           "network-online.target"
           "garage.service"
@@ -100,18 +102,19 @@
           done
           [ -n "$build" ]
 
-          # single thread: 8 threads saturated the wan link and drowned the
-          # router (dns/control plane starved) on 2026-07-18. slow is fine.
-          pmtiles extract "https://build.protomaps.com/$build" europe.pmtiles \
-            --bbox=-25,34,45,72 --download-threads=1
+          # one stream: 8 parallel downloads saturated the wan link and
+          # drowned the router (dns/control plane starved) on 2026-07-18.
+          # ~140GB, resumable
+          curl -fSL --retry 10 --retry-delay 30 --continue-at - \
+            -o planet.pmtiles "https://build.protomaps.com/$build"
 
           AWS_ACCESS_KEY_ID="$(cat "$CREDENTIALS_DIRECTORY"/access_key)"
           AWS_SECRET_ACCESS_KEY="$(cat "$CREDENTIALS_DIRECTORY"/secret_key)"
           export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
-          pmtiles upload europe.pmtiles ${object} \
+          pmtiles upload planet.pmtiles ${object} \
             --bucket='s3://${bucket}?endpoint=http://127.0.0.1:3900&region=${region}&use_path_style=true'
 
-          rm -f europe.pmtiles
+          rm -f planet.pmtiles
           touch ${workDir}/.bootstrapped
         '';
       };
@@ -219,7 +222,7 @@
         '';
       };
 
-      # first refresh on deploy (garage-layout-init pattern); the monthly timer
+      # first refresh on deploy (garage-layout-init pattern); the quarterly timer
       # owns every later run, so the marker only gates this kick.
       systemd.services.protomaps-bootstrap = {
         description = "first protomaps refresh after deploy";
@@ -233,11 +236,17 @@
       systemd.timers.protomaps-refresh = {
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          OnCalendar = "*-*-01 03:00";
+          OnCalendar = "*-01,04,07,10-01 03:00";
           Persistent = true;
           RandomizedDelaySec = "2h";
         };
       };
+
+      # lan and mesh clients read the bucket without the gateway hop; garage
+      # routes the web endpoint by host, hence the bucket alias in the inventory
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        reverse_proxy 127.0.0.1:3902
+      '';
 
       services.gatus.settings.endpoints = [
         {

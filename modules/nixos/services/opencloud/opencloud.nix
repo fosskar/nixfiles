@@ -116,7 +116,7 @@
           hash = "sha256-o1ErQWjqLlEpfO1BrfSCtUJxr8so1bHd4hgh2v/jyOo=";
         })
       ];
-      mapsHost = "maps.${flake-self.domains.public}";
+      mapsHost = "maps.${flake-self.domains.local}";
     in
     {
       config = {

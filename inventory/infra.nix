@@ -21,7 +21,10 @@
           website = true;
           # protomaps-cors sets the bucket cors rules with this key
           owner = true;
-          aliases = [ "maps.${config.flake.domains.public}" ];
+          aliases = [
+            "maps.${config.flake.domains.public}"
+            "maps.${config.flake.domains.local}"
+          ];
         };
         # nix binary cache objects for niks3; clients read anonymously via
         # the s3 web endpoint (http://nixworker.s:3902).
@@ -32,11 +35,11 @@
       };
       roles.node.machines = {
         "nixbox".settings = {
-          capacity = "250G";
+          capacity = "1T";
           dataPath = "/tank/apps/garage";
           ui.enable = true;
         };
-        "nixworker".settings.capacity = "250G";
+        "nixworker".settings.capacity = "1T";
       };
     };
 
