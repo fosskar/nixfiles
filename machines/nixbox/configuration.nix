@@ -27,6 +27,7 @@
     self.modules.nixos.itTools
     self.modules.nixos.vaultwarden
     self.modules.nixos.stirlingPdf
+    self.modules.nixos.bentopdf
     self.modules.nixos.protomaps
     self.modules.nixos.opensoho
     self.modules.nixos.grub
