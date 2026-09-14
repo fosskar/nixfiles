@@ -206,6 +206,11 @@
             OC_OIDC_ISSUER = oidcIssuerUrl;
             #WEB_ASSET_APPS_PATH = "${webApps}";
             OC_EXCLUDE_RUN_SERVICES = "idp";
+            # comma-separated, so one definition: collaboration (collabora.nix)
+            # and the clamav-backed antivirus scanner
+            OC_ADD_RUN_SERVICES = lib.concatStringsSep "," (
+              [ "collaboration" ] ++ lib.optional config.services.clamav.daemon.enable "antivirus"
+            );
             PROXY_AUTOPROVISION_ACCOUNTS = "true";
 
             PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD = "none";
@@ -241,6 +246,12 @@
             SEARCH_EXTRACTOR_TIKA_TIKA_URL = "http://127.0.0.1:${toString config.services.tika.port}";
             SEARCH_EVENTS_NUM_CONSUMERS = "2";
             FRONTEND_FULL_TEXT_SEARCH_ENABLED = "true";
+          }
+          // lib.optionalAttrs config.services.clamav.daemon.enable {
+            # scanner type, clamd socket, 100MB partial scan and delete-on-hit
+            # are the upstream defaults; each worker holds a whole file in ram
+            POSTPROCESSING_STEPS = "virusscan";
+            ANTIVIRUS_WORKERS = "2";
           };
 
           settings = {
@@ -315,8 +326,14 @@
         ];
 
         systemd.services.opencloud = {
-          after = [ "tika.service" ];
-          wants = [ "tika.service" ];
+          after = [
+            "tika.service"
+          ]
+          ++ lib.optional config.services.clamav.daemon.enable "clamav-daemon.service";
+          wants = [
+            "tika.service"
+          ]
+          ++ lib.optional config.services.clamav.daemon.enable "clamav-daemon.service";
           unitConfig.RequiresMountsFor = [ dataDir ];
           serviceConfig.ReadWritePaths = [ dataDir ];
           path = [ pkgs.inotify-tools ];

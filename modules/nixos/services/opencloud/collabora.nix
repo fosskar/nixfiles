@@ -40,7 +40,6 @@
       };
 
       services.opencloud.environment = {
-        OC_ADD_RUN_SERVICES = "collaboration";
         COLLABORATION_APP_NAME = "CollaboraOnline";
         COLLABORATION_APP_PRODUCT = "Collabora";
         COLLABORATION_APP_ADDR = "https://${officeHost}";
