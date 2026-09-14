@@ -3,7 +3,6 @@
     {
       flake-self,
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -61,25 +60,6 @@
           MICROBIN_MAX_FILE_SIZE_ENCRYPTED_MB = 128;
           MICROBIN_DISABLE_UPDATE_CHECKING = true;
         };
-      };
-
-      # consistent sqlite snapshot into /var/backup for the borg backup;
-      # attachments are plain files and are backed up from the live dir
-      clan.core.state.microbin = {
-        folders = [
-          "/var/backup/microbin"
-          "${dataDir}/microbin_data/attachments"
-        ];
-        preBackupScript = ''
-          export PATH=${
-            lib.makeBinPath [
-              pkgs.sqlite
-              pkgs.coreutils
-            ]
-          }
-          mkdir -p /var/backup/microbin
-          sqlite3 ${dataDir}/microbin_data/database.sqlite ".backup '/var/backup/microbin/database.sqlite'"
-        '';
       };
 
       services.homepage-dashboard.services = [

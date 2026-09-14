@@ -5,7 +5,6 @@
       self,
       config,
       lib,
-      osConfig,
       pkgs,
       ...
     }:
@@ -188,11 +187,6 @@
               };
             };
 
-            storage = {
-              key_source = "file";
-              key_file = osConfig.clan.core.vars.generators.noctalia-storage.files.key.path;
-            };
-
             osd = {
               position = lib.mkDefault "center_right";
               # sliders are vertical, so their placement comes from position_vertical
@@ -365,15 +359,6 @@
             calendar = {
               enabled = lib.mkDefault true;
               refresh_minutes = lib.mkDefault 15;
-              account.opencloud = {
-                type = "caldav";
-                provider = "custom";
-                name = "opencloud";
-                server_url = "https://opencloud.${self.domains.local}/caldav/";
-                username = "simon";
-                credential_source = "file";
-                password_file = osConfig.clan.core.vars.generators.noctalia-caldav.files.password.path;
-              };
             };
 
             lockscreen = {
