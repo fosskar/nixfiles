@@ -68,7 +68,7 @@
             {
               "MicroBin" = {
                 href = "https://${localHost}";
-                icon = "microbin.png";
+                icon = "sh-microbin";
                 siteMonitor = listenUrl;
               };
             }

@@ -109,7 +109,7 @@
             {
               "Dawarich" = {
                 href = "https://${localHost}";
-                icon = "dawarich.png";
+                icon = "sh-dawarich";
                 siteMonitor = listenUrl;
               };
             }

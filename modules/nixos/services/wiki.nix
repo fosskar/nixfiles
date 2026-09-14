@@ -25,7 +25,7 @@
             {
               "fosskar's bliki" = {
                 href = "https://fosskar.nx3.eu/";
-                icon = "mdi-book-open-variant";
+                icon = "https://fosskar.nx3.eu/favicon.ico";
                 siteMonitor = "https://fosskar.nx3.eu/";
               };
             }

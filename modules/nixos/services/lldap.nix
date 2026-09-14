@@ -84,7 +84,7 @@
             {
               "LLDAP" = {
                 href = "https://${localHost}";
-                icon = "lldap.png";
+                icon = "sh-lldap-light";
                 siteMonitor = listenUrl;
               };
             }

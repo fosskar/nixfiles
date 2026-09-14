@@ -38,7 +38,7 @@
               {
                 "Navidrome" = {
                   href = "https://${localHost}";
-                  icon = "navidrome.svg";
+                  icon = "sh-navidrome";
                   siteMonitor = listenUrl;
                 };
               }
