@@ -79,7 +79,7 @@
           # apex delegates to ${publicHost} via /.well-known/matrix/server
           server_name = "fosskar.de";
 
-          # all interfaces: reachable over netbird wt0; public via netbird-proxy on gateway
+          # all interfaces: netbird-proxy on gateway targets this port over wt0
           address = [ "0.0.0.0" ];
           port = [ listenPort ];
 

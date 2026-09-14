@@ -57,6 +57,7 @@ Services declare their own dashboard tile, health check, and reverse proxy defau
 - caddy has no cross-host collector; local routes use `services.caddy.virtualHosts.<host>.extraConfig`
 - public `*.fosskar.eu` ingress uses netbird-proxy on `gateway`, configured in the NetBird UI
 - public targets go directly to `peer:appPort`; bind the service to `0.0.0.0` or the NetBird interface and keep `openFirewall = false`
+- the NixOS firewall never sees `wt0` traffic: netbird inserts its own `accept` at the top of the input chain and filters the mesh with its own ACL table; do not add `wt0` firewall rules or `trustedInterfaces`
 - see `docs/netbird-exposure.md` before changing public exposure
 
 ## domains

@@ -27,10 +27,27 @@ Two distinct exposure mechanisms exist; do not conflate them:
 
 - bind `0.0.0.0:<port>` (or the wt0 IP), never `127.0.0.1`.
 - keep the LAN closed: `openFirewall = false` (or otherwise do not open the port
-  on the LAN interface). wt0 is a trusted interface, so the port is reachable
-  over the mesh only.
+  on the LAN interface).
+- do not open the port for wt0 in the NixOS firewall; it has no effect (see
+  below).
 - the public DNS name and the UI service/target are created out-of-band; the
   module change alone does not expose anything.
+
+## the NixOS firewall does not apply to wt0
+
+The netbird client inserts `iifname "wt0" accept` as the first rule of every
+foreign `input` filter chain (`nixos-fw input`, `yggdrasil-filter input`) and
+re-inserts it through a netlink monitor whenever the ruleset changes
+(`client/firewall/nftables/chains_linux.go`, `acceptExternalChainsRules`).
+`trustedInterfaces`, `allowedTCPPorts`, and `openFirewall` are therefore never
+evaluated for mesh traffic. This cannot be turned off.
+
+Mesh traffic is filtered by netbird's own `table ip netbird` /
+`netbird-acl-input-rules` chain, which ends in `drop`. The mgmt server
+generates one `proxy peer -> peer:port` rule per UI service target, plus the
+group policies. Creating a service target in the UI is what opens the port;
+nothing on the host has to change. Inspect the live rules read-only with
+`nft list ruleset | sed -n '/chain netbird-acl-input-rules/,/^\t}/p'`.
 
 ## inspect live mappings (read-only, on gateway)
 

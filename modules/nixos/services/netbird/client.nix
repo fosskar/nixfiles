@@ -83,11 +83,6 @@
             XDG_CONFIG_HOME = config.services.netbird.clients.default.dir.state;
           };
         };
-
-        # trust netbird interfaces — netbird handles access control
-        networking.firewall.trustedInterfaces = lib.mapAttrsToList (
-          _name: client: client.interface
-        ) config.services.netbird.clients;
       }
       // lib.optionalAttrs (options ? preservation) {
         preservation.preserveAt."/persist".directories = lib.mapAttrsToList (

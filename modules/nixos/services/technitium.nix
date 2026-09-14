@@ -19,7 +19,8 @@
       settings = {
         dnsServerDomain = netbirdHost;
         # netbird owns wt0:53 and resolved owns 127.0.0.53, hence the own port;
-        # nothing opens it in the firewall, so only wt0 (trusted) reaches it
+        # nothing opens it in the firewall, so only the mesh reaches it (netbird
+        # bypasses the nixos firewall for wt0, see docs/netbird-exposure.md)
         dnsServerLocalEndPoints = "0.0.0.0:${toString dnsPort},[::]:${toString dnsPort}";
         webServiceLocalAddresses = "0.0.0.0,[::]";
         webServiceHttpPort = toString webPort;

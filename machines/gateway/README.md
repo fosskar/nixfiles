@@ -36,7 +36,7 @@ three defense layers protect inbound traffic before requests reach services.
   │  nixos firewall                                     │
   │  ├ default policy: drop                             │
   │  ├ explicitly opened ports only                     │
-  │  └ wt0 (netbird tunnel): trusted interface          │
+  │  └ wt0 (netbird tunnel): bypassed, netbird ACL only │
   └──────────────────────┬──────────────────────────────┘
                          │ TCP 80 redirects to 443
                          │ TCP 443
