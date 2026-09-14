@@ -12,7 +12,7 @@
           # audio, repack), so no separate custom_formats / custom_format_groups needed
           sonarr.series = {
             base_url = "http://127.0.0.1:8989";
-            api_key._secret = "/run/arr-api-keys/sonarr.api-key";
+            api_key._secret = "/run/arr-api-keys/sonarr/api-key";
             delete_old_custom_formats = true;
             quality_definition.type = "series";
             quality_profiles = [
@@ -38,7 +38,7 @@
           };
           radarr.movies = {
             base_url = "http://127.0.0.1:7878";
-            api_key._secret = "/run/arr-api-keys/radarr.api-key";
+            api_key._secret = "/run/arr-api-keys/radarr/api-key";
             delete_old_custom_formats = true;
             quality_definition.type = "movie";
             quality_profiles = [

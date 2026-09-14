@@ -2,7 +2,10 @@
   flake.modules.nixos.arrStack =
     { lib, pkgs, ... }:
     let
-      keyFile = serviceName: "/run/arr-api-keys/${serviceName}.api-key";
+      keyFile = serviceName: "/run/arr-api-keys/${serviceName}/api-key";
+      # prowlarr writes its own key from ExecStartPost (api-keys.nix)
+      keyUnit =
+        serviceName: if serviceName == "prowlarr" then "prowlarr.service" else "${serviceName}-api.service";
 
       ports = {
         prowlarr = 9696;
@@ -96,8 +99,8 @@
         }:
         {
           description = "sync ${resource} into ${host}";
-          after = [ "${host}.service" ] ++ map (serviceName: "${serviceName}-api.service") needsKeys;
-          requires = map (serviceName: "${serviceName}-api.service") needsKeys;
+          after = [ "${host}.service" ] ++ map keyUnit needsKeys;
+          requires = map keyUnit needsKeys;
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             Type = "oneshot";
