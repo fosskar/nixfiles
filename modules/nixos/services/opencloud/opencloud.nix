@@ -205,11 +205,17 @@
 
             OC_OIDC_ISSUER = oidcIssuerUrl;
             #WEB_ASSET_APPS_PATH = "${webApps}";
-            OC_EXCLUDE_RUN_SERVICES = "idp";
-            # comma-separated, so one definition: collaboration (collabora.nix)
-            # and the clamav-backed antivirus scanner
+            # idp: authelia; ocm: no federation partners
+            OC_EXCLUDE_RUN_SERVICES = "idp,ocm";
+            # comma-separated, so one definition: collaboration (collabora.nix),
+            # the application audit log (json to the journal) and the
+            # clamav-backed antivirus scanner
             OC_ADD_RUN_SERVICES = lib.concatStringsSep "," (
-              [ "collaboration" ] ++ lib.optional config.services.clamav.daemon.enable "antivirus"
+              [
+                "collaboration"
+                "audit"
+              ]
+              ++ lib.optional config.services.clamav.daemon.enable "antivirus"
             );
             PROXY_AUTOPROVISION_ACCOUNTS = "true";
 
