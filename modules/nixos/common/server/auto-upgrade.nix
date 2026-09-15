@@ -65,7 +65,9 @@
           [ -d "$src" ] || git init -q --bare -b main "$src"
           git -c safe.directory='*' -C "$src" fetch -q "$storage" "$rev"
           git -C "$src" update-ref refs/heads/main "$rev"
-          out=$(nix eval --raw "git+file://$src?ref=main#nixosConfigurations.${machine}.config.system.build.toplevel.outPath")
+          # rev pinned: a bare ref=main would reuse nix's cached ref lookup for
+          # up to tarball-ttl and evaluate the previous rev
+          out=$(nix eval --raw "git+file://$src?ref=main&rev=$rev#nixosConfigurations.${machine}.config.system.build.toplevel.outPath")
           if [ "$out" = "$(readlink /run/current-system)" ]; then
             echo "autoupgrade: $out is already running; skipping"
             exit 1
