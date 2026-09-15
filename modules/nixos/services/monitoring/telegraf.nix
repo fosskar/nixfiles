@@ -19,6 +19,7 @@
       redisSocketServers = lib.filterAttrs (_: server: server.port == 0) redisServers;
 
       isVM = lib.any (m: m == "xen-blkfront" || m == "virtio_console") config.boot.initrd.kernelModules;
+      nvidiaEnabled = config.hardware.nvidia.enabled or false;
 
       ipv6DadCheck = pkgs.writeShellScript "ipv6-dad-check" ''
         ${pkgs.iproute2}/bin/ip --json addr | \
@@ -95,6 +96,10 @@
               ];
 
               sensors = lib.mkIf (!isVM) [ { } ];
+
+              nvidia_smi = lib.mkIf nvidiaEnabled [
+                { bin_path = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi"; }
+              ];
 
               smart = lib.mkIf (!isVM) [
                 {
