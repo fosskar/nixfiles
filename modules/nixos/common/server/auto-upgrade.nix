@@ -116,8 +116,10 @@
           enable = true;
           privateKey = vars.files.key.path;
           publicKey = vars.files."key.pub".value;
-          # outbound only: the node fetches from the seed and serves nobody
+          # outbound only: the node fetches from the seed and serves nobody.
+          # not 8776: on gateway netbird-proxy binds *:8776 for seed.fosskar.eu
           node.listenAddress = "127.0.0.1";
+          node.listenPort = 18776;
           settings.node = {
             alias = machine;
             connect = [ seedAddress ];
