@@ -35,6 +35,11 @@
             acme_dns desec {
               token {env.DESEC_TOKEN}
             }
+            servers {
+              metrics {
+                per_host
+              }
+            }
           '';
           extraConfig = ''
             (authelia) {
@@ -46,6 +51,15 @@
           '';
           virtualHosts."*.${flake-self.domains.local}".extraConfig = "";
         };
+
+        # per-host request and status metrics from the admin endpoint
+        services.telegraf.extraConfig.inputs.prometheus = [
+          {
+            urls = [ "http://127.0.0.1:2019/metrics" ];
+            metric_version = 2;
+            fieldinclude = [ "caddy_http_*" ];
+          }
+        ];
 
         networking.firewall = {
           allowedTCPPorts = [
