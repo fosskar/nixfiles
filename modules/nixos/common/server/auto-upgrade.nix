@@ -16,7 +16,10 @@
       radHome = "/var/lib/radicle";
       storage = "${cfg.radHome}/storage/${rid}";
       srcDir = "/var/lib/nixos-upgrade/src";
-      stampFile = "/run/current-system/source-lastModified";
+      # mtime of the current generation link: when the running system was
+      # deployed, by this timer or by clan. clan evaluates from a path: store
+      # copy, so flake-self carries no lastModified to stamp the commit with
+      currentGeneration = "/nix/var/nix/profiles/$(readlink /nix/var/nix/profiles/system)";
       cache = "http://nixworker.${config.clan.core.settings.domain}:3902";
       machine = config.clan.core.settings.machine.name;
       vars = config.clan.core.vars.generators.radicle-node;
@@ -30,7 +33,9 @@
 
       # ExecCondition: exit 1 skips the run quietly, 255 fails the unit so the
       # failure notification fires. the verified rev is pinned into srcDir so
-      # nixos-rebuild cannot pick up a main that moved after verification
+      # nixos-rebuild cannot pick up a main that moved after verification.
+      # forward-only: main must be committed after the running generation was
+      # deployed, so a manual deploy of newer local work is not reverted
       guard = pkgs.writeShellApplication {
         name = "nixos-upgrade-guard";
         runtimeInputs = [
@@ -52,15 +57,19 @@
             exit 255
           fi
           remote=$(git -c safe.directory='*' -C "$storage" log -1 --format=%ct "$rev")
-          current=$(cat ${stampFile} 2>/dev/null || echo 0)
+          current=$(stat -c %Y "${currentGeneration}")
           if [ "$remote" -le "$current" ]; then
-            echo "autoupgrade: main $rev ($remote) is not newer than the running system ($current); skipping"
+            echo "autoupgrade: main $rev ($remote) predates the running generation ($current); skipping"
             exit 1
           fi
           [ -d "$src" ] || git init -q --bare -b main "$src"
           git -c safe.directory='*' -C "$src" fetch -q "$storage" "$rev"
           git -C "$src" update-ref refs/heads/main "$rev"
           out=$(nix eval --raw "git+file://$src?ref=main#nixosConfigurations.${machine}.config.system.build.toplevel.outPath")
+          if [ "$out" = "$(readlink /run/current-system)" ]; then
+            echo "autoupgrade: $out is already running; skipping"
+            exit 1
+          fi
           if ! nix path-info --store ${cache} "$out" > /dev/null; then
             echo "autoupgrade: $out for $rev is not in ${cache}; skipping"
             exit 1
@@ -69,24 +78,6 @@
         '';
       };
 
-      # rad-system from the nixpkgs module is only on the system path; the same
-      # nsenter into the confined node is needed for the control socket
-      seedScript = pkgs.writeShellApplication {
-        name = "radicle-seed-nixfiles";
-        runtimeInputs = [
-          pkgs.util-linux
-          config.systemd.package
-          config.services.radicle.package
-        ];
-        text = ''
-          exec nsenter -a \
-            -t "$(systemctl show -P MainPID radicle-node.service)" \
-            -S "$(systemctl show -P UID radicle-node.service)" \
-            -G "$(systemctl show -P GID radicle-node.service)" \
-            env HOME=${radHome} RAD_HOME=${radHome} \
-            rad seed rad:${rid} --scope all
-        '';
-      };
     in
     {
       options.nixfiles.autoUpgrade = {
@@ -127,19 +118,11 @@
           };
         };
 
-        systemd.services.radicle-seed-nixfiles = lib.mkIf cfg.node.enable {
-          description = "seed nixfiles on the local radicle node";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "radicle-node.service" ];
-          requires = [ "radicle-node.service" ];
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            ExecStart = lib.getExe seedScript;
-            # the control socket appears a moment after the node's main pid
-            Restart = "on-failure";
-            RestartSec = 10;
-          };
+        # seeding writes the policy database; done before the node opens it,
+        # because rad seed against the running node locked the database and
+        # the node exited with "database is locked"
+        systemd.services.radicle-node = lib.mkIf cfg.node.enable {
+          serviceConfig.ExecStartPre = "${lib.getExe' config.services.radicle.package "rad"} seed rad:${rid} --scope all";
         };
 
         system.autoUpgrade = {
@@ -150,10 +133,6 @@
           randomizedDelaySec = "1h";
           allowReboot = false;
         };
-
-        system.systemBuilderCommands = ''
-          echo -n ${toString (flake-self.lastModified or 0)} > $out/source-lastModified
-        '';
 
         systemd.services.nixos-upgrade.serviceConfig = {
           ExecCondition = lib.getExe guard;
