@@ -38,7 +38,7 @@ _: {
         MATRIX_E2EE_MODE = "required";
       }
       // lib.optionalAttrs (cfg.homeChannel != null) {
-        MATRIX_HOME_CHANNEL = cfg.homeChannel;
+        MATRIX_HOME_ROOM = cfg.homeChannel;
       };
     };
 }
