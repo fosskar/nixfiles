@@ -75,6 +75,7 @@
           host = listenAddress;
           port = listenPort;
           n-gpu-layers = 999;
+          metrics = true;
           models-max = 1;
           models-preset = (pkgs.formats.ini { }).generate "llama-cpp-models-preset.ini" {
             "*" = {
@@ -226,6 +227,14 @@
           alerts = [ { type = "email"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
+        }
+      ];
+
+      services.telegraf.extraConfig.inputs.prometheus = [
+        {
+          urls = [ "${listenUrl}/metrics" ];
+          metric_version = 2;
+          fieldinclude = [ "llamacpp:*" ];
         }
       ];
 
