@@ -1,4 +1,5 @@
-_: {
+{ config, ... }:
+{
   flake.clan.inventory.instances = {
     monitoring = {
       module = {
@@ -9,6 +10,19 @@ _: {
       roles = {
         server.machines."nixbox".settings = {
           extraTelegrafTargets = [ "openwrt.lan:9273" ];
+          # public certs come from traefik and netbird-proxy on gateway, one per
+          # host; the local wildcard is checked by gatus in caddy.nix
+          certificateSources = map (host: "https://${host}${config.flake.domains.public}:443") [
+            ""
+            "auth."
+            "buzz."
+            "maps."
+            "matrix."
+            "nb."
+            "nixbot."
+            "radicle."
+            "seed."
+          ];
         };
         client.tags = [ "server" ];
       };

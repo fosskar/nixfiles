@@ -37,6 +37,19 @@
                 description = "victoriametrics retention in months";
               };
 
+              logRetentionPeriod = lib.mkOption {
+                type = lib.types.str;
+                default = "30d";
+                description = "victorialogs retention; a bare number means months";
+              };
+
+              certificateSources = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                description = "tls endpoints whose certificate expiry telegraf tracks, as https://host:port";
+                example = [ "https://example.org:443" ];
+              };
+
               extraTelegrafTargets = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
                 default = [ ];
@@ -143,6 +156,10 @@
                 services.grafana.enable = lib.mkDefault true;
                 services.victorialogs.enable = lib.mkDefault true;
                 services.victorialogs.listenAddress = "0.0.0.0:${toString logsPort}";
+                services.victorialogs.extraOptions = [ "-retentionPeriod=${settings.logRetentionPeriod}" ];
+                services.telegraf.extraConfig.inputs.x509_cert = lib.mkIf (settings.certificateSources != [ ]) [
+                  { sources = settings.certificateSources; }
+                ];
                 services.victoriametrics.enable = lib.mkDefault true;
                 services.telegraf.enable = lib.mkDefault true;
 

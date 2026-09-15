@@ -45,6 +45,8 @@ Client role:
 ### `server`
 
 - `retentionPeriod`: VictoriaMetrics retention in months. defaults to `3`.
+- `logRetentionPeriod`: VictoriaLogs retention. defaults to `30d`.
+- `certificateSources`: TLS endpoints (`https://host:port`) whose certificate expiry telegraf tracks as `x509_cert_*`.
 - `extraTelegrafTargets`: extra Telegraf Prometheus endpoints, as `host:port`.
 - `exporter.zfs.enable`: enable ZFS exporter when ZFS is enabled. defaults to `true`.
 
