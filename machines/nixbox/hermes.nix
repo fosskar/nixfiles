@@ -177,6 +177,20 @@ in
   );
   environment.shellAliases = lib.genAttrs names (name: "ssh -t ${name} -- sudo -iu hermes hermes");
 
+  # per-vm cpu/rss for the fencr dashboard; the glob needs include_systemd_children
+  services.telegraf.extraConfig.inputs.procstat = [
+    {
+      systemd_unit = "fencr-*.service";
+      include_systemd_children = true;
+      fieldinclude = [
+        "cpu_usage"
+        "memory_rss"
+        "num_threads"
+        "created_at"
+      ];
+    }
+  ];
+
   clan.core.state.agent-vms = {
     folders = [ "/var/backup/agent-vms" ];
     preBackupScript = ''
