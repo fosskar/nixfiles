@@ -9,14 +9,14 @@
 }:
 let
   pname = "druk";
-  version = "1.25.0";
+  version = "1.27.2";
 in
 stdenv.mkDerivation {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/letstri/druk/releases/download/v${version}/druk-linux-x64.tar.gz";
-    hash = "sha256-RgPjusdimH2XbXlSiAMAcQDl5VIBiw0X67EHykB9+kE=";
+    hash = "sha256-6XSaG7D/kOmvPstFXFeNJCGGm7IM8g1uAtUUnV505eA=";
   };
 
   sourceRoot = ".";
@@ -35,7 +35,6 @@ stdenv.mkDerivation {
 
     install -Dm755 druk $out/bin/druk
     install -Dm444 THIRD_PARTY_NOTICES.md -t $out/share/doc/druk
-    install -Dm444 PDFIUM_LICENSE -t $out/share/doc/druk
 
     runHook postInstall
   '';
