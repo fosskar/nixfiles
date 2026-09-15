@@ -25,7 +25,7 @@
             {
               "fosskar's bliki" = {
                 href = "https://fosskar.nx3.eu/";
-                icon = "https://fosskar.nx3.eu/favicon.ico";
+                icon = "https://fosskar.nx3.eu/icon.svg";
                 siteMonitor = "https://fosskar.nx3.eu/";
               };
             }
