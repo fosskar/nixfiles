@@ -5,6 +5,7 @@ _: {
       imports = [
         self.modules.nixos.mcpGateway
         self.modules.nixos.mcpCalendar
+        self.modules.nixos.mcpGrafana
       ];
     };
 }
