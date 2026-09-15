@@ -90,6 +90,7 @@ def create_server(servers: dict[str, dict[str, Any]]) -> Server:
         for server_name, server in servers.items():
             async with _session(server_name, server) as session:
                 result = await session.list_tools()
+            hidden = server.get("hidden_tools", [])
             tools.extend(
                 tool.model_copy(
                     update={
@@ -98,6 +99,7 @@ def create_server(servers: dict[str, dict[str, Any]]) -> Server:
                     }
                 )
                 for tool in result.tools
+                if tool.name not in hidden
             )
         return tools
 
@@ -105,6 +107,8 @@ def create_server(servers: dict[str, dict[str, Any]]) -> Server:
     async def call_tool(name: str, arguments: dict[str, Any]) -> types.CallToolResult:
         server_name, tool_name = _split_tool(name, servers)
         server = servers[server_name]
+        if tool_name in server.get("hidden_tools", []):
+            raise ValueError(f"unknown MCP gateway tool: {name}")
         if tool_name in server.get("approval_tools", []):
             request = gateway.request_context
             result = await request.session.elicit_form(

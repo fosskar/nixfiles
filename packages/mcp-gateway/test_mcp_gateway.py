@@ -32,6 +32,11 @@ class Downstream:
                     description="list events",
                     inputSchema={"type": "object"},
                 ),
+                types.Tool(
+                    name="delete_calendar",
+                    description="delete calendar",
+                    inputSchema={"type": "object"},
+                ),
             ]
         )
 
@@ -85,10 +90,24 @@ async def main():
                 "url": "http://127.0.0.1:8765/mcp",
                 "token_credential": "downstream-calendar",
                 "approval_tools": ["create_event"],
+                "hidden_tools": ["delete_calendar"],
             }
         }
     )
     handler = gateway.request_handlers[types.CallToolRequest]
+    list_handler = gateway.request_handlers[types.ListToolsRequest]
+
+    listed = await list_handler(types.ListToolsRequest(method="tools/list"))
+    assert [tool.name for tool in listed.root.tools] == [
+        "calendar__create_event",
+        "calendar__list_events",
+    ]
+
+    hidden_client = Client("accept")
+    hidden = await call(handler, hidden_client, "calendar__delete_calendar", {})
+    assert hidden.root.isError is True
+    assert downstream.calls == []
+    assert hidden_client.prompts == []
 
     rejected_client = Client("decline")
     rejected = await call(

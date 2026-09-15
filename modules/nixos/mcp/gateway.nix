@@ -17,6 +17,7 @@ _: {
           servers = lib.mapAttrs (name: server: {
             inherit (server) url;
             approval_tools = server.approvalTools;
+            hidden_tools = server.hiddenTools;
             token_credential = "downstream-${name}";
           }) cfg.servers;
         }
@@ -38,6 +39,11 @@ _: {
               approvalTools = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
                 default = [ ];
+              };
+              hiddenTools = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                description = "downstream tools neither listed nor callable through the gateway.";
               };
             };
           }
