@@ -1,15 +1,6 @@
 {
   flake.modules.nixos.exporter = {
     services.prometheus.exporters = {
-      node = {
-        port = 9100;
-        openFirewall = false;
-        enabledCollectors = [
-          "systemd"
-          "processes"
-        ];
-      };
-
       nginx = {
         port = 9113;
         openFirewall = false;

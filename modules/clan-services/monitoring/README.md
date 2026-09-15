@@ -31,7 +31,7 @@ Server role:
 - builds VictoriaMetrics scrape configs from client role assignments
 - provisions the Grafana dashboards in `dashboards/`
 - opens the VictoriaLogs port on `ygg`
-- enables Grafana, node exporter, and ZFS exporter
+- enables Grafana and ZFS exporter
 
 Client role:
 
@@ -46,7 +46,6 @@ Client role:
 
 - `retentionPeriod`: VictoriaMetrics retention in months. defaults to `3`.
 - `extraTelegrafTargets`: extra Telegraf Prometheus endpoints, as `host:port`.
-- `exporter.node.enable`: enable node exporter. defaults to `true`.
 - `exporter.zfs.enable`: enable ZFS exporter when ZFS is enabled. defaults to `true`.
 
 Scrape jobs for `extraTelegrafTargets` label the host `machine`, like clan

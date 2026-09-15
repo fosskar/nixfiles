@@ -64,28 +64,6 @@
                 ];
               }
             ]
-            ++ lib.optionals config.services.prometheus.exporters.node.enable [
-              {
-                job_name = "node-exporter";
-                static_configs = [
-                  {
-                    targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
-                    labels = {
-                      machine = config.networking.hostName;
-                      source = "local";
-                      type = "node-exporter";
-                    };
-                  }
-                ];
-                metric_relabel_configs = [
-                  {
-                    source_labels = [ "__name__" ];
-                    regex = "node_systemd_unit_state";
-                    action = "drop";
-                  }
-                ];
-              }
-            ]
           );
         };
 

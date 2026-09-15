@@ -73,7 +73,6 @@
               [ { CgroupPrefix = "system.slice/victoriametrics.service"; } ]
               [ { CgroupPrefix = "system.slice/victorialogs.service"; } ]
               [ { CgroupPrefix = "system.slice/telegraf.service"; } ]
-              [ { CgroupPrefix = "system.slice/prometheus-node-exporter.service"; } ]
               [ { CgroupPrefix = "system.slice/beszel-agent.service"; } ]
             ];
             kind.Confined = {

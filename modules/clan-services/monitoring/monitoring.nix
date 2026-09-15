@@ -46,12 +46,6 @@
                 ];
               };
 
-              exporter.node.enable = lib.mkOption {
-                type = lib.types.bool;
-                default = true;
-                description = "enable node exporter on monitoring server";
-              };
-
               exporter.zfs.enable = lib.mkOption {
                 type = lib.types.bool;
                 default = true;
@@ -158,7 +152,6 @@
                   builtins.listToAttrs (map mkDashboard dashboardFiles)
                 );
 
-                services.prometheus.exporters.node.enable = lib.mkDefault settings.exporter.node.enable;
                 services.prometheus.exporters.zfs.enable = lib.mkDefault (
                   settings.exporter.zfs.enable && (config.boot.supportedFilesystems.zfs or false)
                 );
