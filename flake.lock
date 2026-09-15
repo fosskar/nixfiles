@@ -811,11 +811,11 @@
         "spectrum": "spectrum"
       },
       "locked": {
-        "lastModified": 1789387382,
-        "narHash": "sha256-WhBnNmOaxwntBhp/aateJNWlH+y5z2fWFbIH/5gONJY=",
+        "lastModified": 1789506833,
+        "narHash": "sha256-4L8SOCF84de1irB72Ka9VHcu9wrAJ9Amuey4lU9oh4Y=",
         "owner": "microvm-nix",
         "repo": "microvm.nix",
-        "rev": "614e9541186d724438edfd91c3bbc8474dd1b76e",
+        "rev": "187b0a390ee054028106a674e7b01b1cb940cbba",
         "type": "github"
       },
       "original": {
