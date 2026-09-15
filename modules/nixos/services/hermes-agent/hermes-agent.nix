@@ -56,12 +56,12 @@
           api = "https://llama-cpp.${flake-self.domains.local}/v1";
           api_key = "no-key-required";
           default_model = "qwen3.6-35b-a3b-mtp";
-          context_length = 98304;
+          context_length = 163840;
         };
         model = {
           default = "qwen3.6-35b-a3b-mtp";
           provider = "local";
-          context_length = 98304;
+          context_length = 163840;
         };
       };
     in
