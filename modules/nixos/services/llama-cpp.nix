@@ -106,9 +106,9 @@
               mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
               alias = "qwen3.6-35b-a3b-mtp";
               load-on-startup = true;
-              # unverified: 96k chosen over 131k to make room for the gpu mmproj;
-              # confirm fit on first load with an image request before raising
-              ctx-size = 98304;
+              # unified kv shared by all 4 slots. 96k with mtp left 2990 MiB free;
+              # confirm fit with an image request before raising further
+              ctx-size = 163840;
               temp = 1.0;
               top-p = 0.95;
               top-k = 20;
@@ -117,8 +117,10 @@
               chat-template-kwargs = builtins.toJSON {
                 preserve_thinking = false;
               };
-              spec-type = "draft-mtp";
-              spec-draft-n-max = 3;
+              # mtp disabled: its draft kv (~1.2 GiB measured at 32k) buys more
+              # context for concurrent users than the ~2x decode speedup is worth
+              # spec-type = "draft-mtp";
+              # spec-draft-n-max = 3;
             };
             "unsloth/Muse-Glimmer-30B-GGUF:Q4_K_XL" = {
               model = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "Muse-Glimmer-30B-UD-Q4_K_XL.gguf";
