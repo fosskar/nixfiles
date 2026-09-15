@@ -10,6 +10,17 @@
       healthUrl = "${listenUrl}/health";
     in
     {
+      # the buzz-flake service creates the database via ensureDatabases but
+      # does not register it for clan dump/restore
+      clan.core.postgresql.databases.buzz = {
+        create.enable = false;
+        restore.stopOnRestore = [
+          "buzz-relay.service"
+          "buzz-pair-relay.service"
+          "redis-buzz.service"
+        ];
+      };
+
       services.homepage-dashboard.services = [
         {
           communication = [
