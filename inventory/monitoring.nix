@@ -12,16 +12,14 @@
           extraTelegrafTargets = [ "openwrt.lan:9273" ];
           # public certs come from traefik and netbird-proxy on gateway, one per
           # host; the local wildcard is checked by gatus in caddy.nix
-          certificateSources = map (host: "https://${host}${config.flake.domains.public}:443") [
-            ""
-            "auth."
-            "buzz."
-            "maps."
-            "matrix."
-            "nb."
-            "nixbot."
-            "radicle."
-            "seed."
+          certificateSources = map (host: "https://${host}.${config.flake.domains.public}:443") [
+            "auth"
+            "buzz"
+            "maps"
+            "matrix"
+            "nb"
+            "nixbot"
+            "radicle"
           ];
         };
         client.tags = [ "server" ];

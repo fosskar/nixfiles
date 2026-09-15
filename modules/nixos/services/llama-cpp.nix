@@ -12,6 +12,7 @@
       listenAddress = "127.0.0.1";
       listenPort = 18080;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+      startupModelAlias = "qwen3.6-35b-a3b-mtp";
       modelsDir = "/var/lib/llama-cpp-models";
       # pinned to immutable HF revisions: resolve/main lets upstream re-upload
       # weights in place, and llama.cpp's etag check then silently re-downloads
@@ -105,7 +106,7 @@
             "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:IQ4_XS" = {
               model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf";
               mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
-              alias = "qwen3.6-35b-a3b-mtp";
+              alias = startupModelAlias;
               load-on-startup = true;
               # unified kv shared by all 4 slots. 96k with mtp left 2990 MiB free;
               # confirm fit with an image request before raising further
@@ -230,9 +231,10 @@
         }
       ];
 
+      # the router answers /metrics only for a named model instance
       services.telegraf.extraConfig.inputs.prometheus = [
         {
-          urls = [ "${listenUrl}/metrics" ];
+          urls = [ "${listenUrl}/metrics?model=${startupModelAlias}" ];
           metric_version = 2;
           fieldinclude = [ "llamacpp:*" ];
         }

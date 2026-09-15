@@ -187,6 +187,8 @@ in
         "memory_rss"
         "num_threads"
         "created_at"
+        "running"
+        "pid_count"
       ];
     }
   ];

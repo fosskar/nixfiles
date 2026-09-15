@@ -98,7 +98,11 @@
               sensors = lib.mkIf (!isVM) [ { } ];
 
               nvidia_smi = lib.mkIf nvidiaEnabled [
-                { bin_path = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi"; }
+                {
+                  bin_path = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi";
+                  # power state flips between P0 and P8 and would split every series
+                  tagexclude = [ "pstate" ];
+                }
               ];
 
               smart = lib.mkIf (!isVM) [

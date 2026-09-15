@@ -60,7 +60,9 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -120,7 +122,9 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -172,7 +176,9 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -232,7 +238,9 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -284,7 +292,9 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -336,7 +346,9 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -411,7 +423,7 @@
           "datasource": "VictoriaMetrics",
           "expr": "nvidia_smi_memory_total",
           "legendFormat": "total",
-          "refId": "A",
+          "refId": "B",
           "range": true
         }
       ]
@@ -470,14 +482,14 @@
           "datasource": "VictoriaMetrics",
           "expr": "nvidia_smi_utilization_memory",
           "legendFormat": "memory bus %",
-          "refId": "A",
+          "refId": "B",
           "range": true
         },
         {
           "datasource": "VictoriaMetrics",
           "expr": "nvidia_smi_power_draw",
           "legendFormat": "watt",
-          "refId": "A",
+          "refId": "C",
           "range": true
         }
       ]
@@ -536,7 +548,7 @@
           "datasource": "VictoriaMetrics",
           "expr": "sum(rate(llamacpp:tokens_predicted_total[5m]))",
           "legendFormat": "generated tok/s",
-          "refId": "A",
+          "refId": "B",
           "range": true
         }
       ]
@@ -595,7 +607,7 @@
           "datasource": "VictoriaMetrics",
           "expr": "llamacpp:predicted_tokens_seconds",
           "legendFormat": "generate tok/s",
-          "refId": "A",
+          "refId": "B",
           "range": true
         }
       ]
@@ -707,7 +719,7 @@
           "datasource": "VictoriaMetrics",
           "expr": "llamacpp:requests_deferred",
           "legendFormat": "deferred",
-          "refId": "A",
+          "refId": "B",
           "range": true
         }
       ]
@@ -716,7 +728,11 @@
   "preload": false,
   "refresh": "30s",
   "schemaVersion": 42,
-  "tags": ["llama-cpp", "gpu", "telegraf"],
+  "tags": [
+    "llama-cpp",
+    "gpu",
+    "telegraf"
+  ],
   "templating": {
     "list": []
   },
