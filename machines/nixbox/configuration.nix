@@ -28,7 +28,6 @@
     self.modules.nixos.vaultwarden
     self.modules.nixos.bentopdf
     self.modules.nixos.protomaps
-    self.modules.nixos.opensoho
     self.modules.nixos.grub
     self.modules.nixos.nvidiaGpu
     self.modules.nixos.amdCpu
