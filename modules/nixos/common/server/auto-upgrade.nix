@@ -129,7 +129,7 @@
           enable = true;
           flake = "git+file://${srcDir}?ref=main";
           # after the borg jobs on nixbox (03:00) and gateway (04:00)
-          dates = "05:00";
+          dates = "06:00";
           randomizedDelaySec = "1h";
           allowReboot = false;
         };
