@@ -23,7 +23,7 @@ _: {
       externalSkills = {
         herdr = "${inputs.herdr}/skills/herdr/SKILL.md";
         i-have-adhd = "${inputs.i-have-adhd}/skills/i-have-adhd/SKILL.md";
-        hunk-review = "${pkgs.hunk}/skills/hunk-review/SKILL.md";
+        hunk-review = "${pkgs.hunk}/share/skills/hunk/hunk-review/SKILL.md";
         nixbot-cli = "${
           inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli
         }/share/skills/nixbot-cli/SKILL.md";
