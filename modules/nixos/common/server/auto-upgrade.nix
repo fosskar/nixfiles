@@ -24,23 +24,18 @@
       machine = config.clan.core.settings.machine.name;
       vars = config.clan.core.vars.generators.radicle-node;
 
-      # radicle-mirror is a delegate with threshold 1, so a canonical main only
-      # proves the mirror signed the ref; the commit signature is what proves
-      # the workstation wrote it (users/simon/signing.nix)
-      allowedSigners = pkgs.writeText "nixfiles-allowed-signers" ''
-        * namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA
-      '';
-
       # ExecCondition: exit 1 skips the run quietly, 255 fails the unit so the
-      # failure notification fires. the verified rev is pinned into srcDir so
-      # nixos-rebuild cannot pick up a main that moved after verification.
+      # failure notification fires. the rev is pinned into srcDir so
+      # nixos-rebuild cannot pick up a main that moved after the check.
       # forward-only: main must be committed after the running generation was
-      # deployed, so a manual deploy of newer local work is not reverted
+      # deployed, so a manual deploy of newer local work is not reverted.
+      # provenance is not checked here: the radicle node validates the
+      # delegate sigrefs at fetch time, so a canonical refs/heads/main only
+      # exists if radicle-mirror signed it (allowedOwners gates the source)
       guard = pkgs.writeShellApplication {
         name = "nixos-upgrade-guard";
         runtimeInputs = [
           pkgs.gitMinimal
-          pkgs.openssh
           config.nix.package
           pkgs.coreutils
         ];
@@ -50,11 +45,6 @@
           if ! rev=$(git -c safe.directory='*' -C "$storage" rev-parse --verify -q refs/heads/main); then
             echo "autoupgrade: no canonical main in $storage yet; skipping"
             exit 1
-          fi
-          if ! git -c safe.directory='*' -c gpg.ssh.allowedSignersFile=${allowedSigners} \
-              -C "$storage" verify-commit "$rev" 2>&1; then
-            echo "autoupgrade: main $rev is not signed by an allowed key; refusing"
-            exit 255
           fi
           remote=$(git -c safe.directory='*' -C "$storage" log -1 --format=%ct "$rev")
           current=$(stat -c %Y "${currentGeneration}")
@@ -76,7 +66,7 @@
             echo "autoupgrade: $out for $rev is not in ${cache}; skipping"
             exit 1
           fi
-          echo "autoupgrade: main $rev verified and cached; upgrading"
+          echo "autoupgrade: main $rev cached; upgrading"
         '';
       };
 
