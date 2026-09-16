@@ -130,8 +130,9 @@
         system.autoUpgrade = {
           enable = true;
           flake = "git+file://${srcDir}?ref=main";
-          # after the borg jobs on nixbox (03:00) and gateway (04:00)
-          dates = "06:00";
+          # local time; the servers run UTC. after the borg jobs on nixbox
+          # (03:00 UTC) and gateway (04:00 UTC)
+          dates = "06:00 Europe/Berlin";
           randomizedDelaySec = "1h";
           allowReboot = false;
         };
