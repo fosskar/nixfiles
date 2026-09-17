@@ -10,7 +10,7 @@
         anthropic = "anthropic";
         openai = "openai";
         openrouter = "openrouter";
-        opencode_go = "opencode";
+        opencode_go = "opencode-go";
       };
       # the hermes dashboard binds loopback only; fencr forwards guest ports
       # bound on the bridge address

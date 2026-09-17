@@ -7,7 +7,10 @@ _: {
         self.modules.nixos.mcpCalendar
         self.modules.nixos.mcpGrafana
       ];
-      fencr.mcpGateway.enable = true;
+      fencr.mcpGateway = {
+        enable = true;
+        approvalMode = "client";
+      };
       preservation.preserveAt."/persist".directories = [ "/var/lib/fencr-mcp" ];
     };
 }
