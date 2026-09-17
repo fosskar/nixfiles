@@ -5,10 +5,13 @@
       config,
       pkgs,
       inputs,
+      self,
       ...
     }:
     {
       # srvos sets: trusted-users, optimise.automatic, nix-daemon OOMScoreAdjust
+
+      srvos.flake = self;
 
       nix = {
         package = lib.mkDefault pkgs.nixVersions.stable;
@@ -45,10 +48,6 @@
 
           keep-going = lib.mkDefault true;
 
-          # avoid disk full
-          max-free = lib.mkDefault (3000 * 1024 * 1024);
-          min-free = lib.mkDefault (512 * 1024 * 1024);
-
           builders-use-substitutes = lib.mkDefault true;
 
           # zfs already provides transactional consistency, skip redundant fsync
@@ -59,12 +58,6 @@
         gc = {
           automatic = lib.mkDefault (!(config.programs.nh.clean.enable or false));
           options = lib.mkDefault "--delete-older-than 15d";
-        };
-        # batch dedup via nix-optimise.timer instead of write-time
-        # auto-optimise-store (per-build overhead, EMLINK noise on btrfs)
-        optimise = {
-          automatic = lib.mkDefault true;
-          dates = lib.mkDefault [ "12:00" ];
         };
       };
 

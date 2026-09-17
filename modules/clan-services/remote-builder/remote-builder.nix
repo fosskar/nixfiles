@@ -45,11 +45,6 @@ _: {
                 ];
                 description = "features advertised to clients; uid-range and recursive-nix also enable the matching nix settings on the builder";
               };
-              gcKeepFreeGiB = lib.mkOption {
-                type = lib.types.ints.positive;
-                default = 128;
-                description = "free space target the hourly nix gc maintains on /nix/store";
-              };
             };
           };
 
@@ -97,13 +92,6 @@ _: {
                       "recursive-nix"
                     ] settings.supportedFeatures
                   );
-                };
-
-                nix.gc = {
-                  automatic = true;
-                  dates = "*:45";
-                  options = ''--max-freed "$((${toString settings.gcKeepFreeGiB} * 1024**3 - 1024 * $(df -P -k /nix/store | tail -n 1 | ${pkgs.gawk}/bin/awk '{ print $4 }')))"'';
-                  randomizedDelaySec = "1800";
                 };
 
                 security.pam.loginLimits = [

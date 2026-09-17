@@ -17,6 +17,11 @@
 
   srvos.boot.consoles = [ "tty0" ];
 
+  nix.settings = {
+    min-free = 500 * 1024 * 1024 * 1024;
+    max-free = 550 * 1024 * 1024 * 1024;
+  };
+
   # radicle-mirror conflicts with radicle-node.service and already seeds
   # nixfiles; upgrade from its storage instead of a second node
   nixfiles.autoUpgrade = {
