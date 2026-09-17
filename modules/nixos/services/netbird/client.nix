@@ -27,6 +27,27 @@
             interface = lib.mkDefault "wt0";
             hardened = lib.mkDefault false;
             port = lib.mkDefault 51820;
+            # ICE must not gather yggdrasil addresses: netbird picked a
+            # 200::/7 candidate pair for gateway<->nixbox, which carried no
+            # wireguard handshake while still reporting "Connected P2P".
+            # config.d merges by key, so upstream's defaults are repeated here
+            config.IFaceBlackList = [
+              "wt0"
+              "wt"
+              "utun"
+              "tun0"
+              "zt"
+              "ZeroTier"
+              "wg"
+              "ts"
+              "Tailscale"
+              "tailscale"
+              "docker"
+              "veth"
+              "br-"
+              "lo"
+              "ygg"
+            ];
             # netbird >=0.66 logs profile-manager warnings without HOME/XDG
             environment = {
               HOME = lib.mkDefault config.services.netbird.clients.default.dir.state;
