@@ -60,7 +60,7 @@
           if ${pkgs.coreutils}/bin/timeout 5 ${pkgs.bash}/bin/bash \
             -c "exec 3<>/dev/tcp/$h/22" 2>/dev/null; then
             exec ${pkgs.openssh}/bin/ssh ${sshOptionsString} -N \
-              -L 127.0.0.1:${toString cfg.localPort}:127.0.0.1:${toString cfg.remotePort} \
+              -L 127.0.0.1:${toString cfg.localPort}:${cfg.remoteAddress} \
               "${cfg.user}@$h"
           fi
         done
@@ -172,10 +172,10 @@
           default = 23100;
           description = "Client loopback port for the Hermes dashboard tunnel";
         };
-        remotePort = lib.mkOption {
-          type = lib.types.port;
-          default = 22100;
-          description = "Server loopback port for the Hermes dashboard";
+        remoteAddress = lib.mkOption {
+          type = lib.types.str;
+          example = "10.99.0.2:9119";
+          description = "host:port the dashboard listens on, as seen from the server";
         };
         identityFile = lib.mkOption {
           type = lib.types.str;

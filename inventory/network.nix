@@ -4,6 +4,19 @@
 }:
 {
   flake.clan.inventory.instances = {
+    wifi = {
+      module = {
+        name = "wifi";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags = [ "laptop" ];
+        settings.networks = {
+          home = { };
+        };
+      };
+    };
+
     internet = {
       roles.default.machines = builtins.mapAttrs (_: host: {
         settings.host = host.wan or host.lan;

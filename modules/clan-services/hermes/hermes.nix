@@ -5,6 +5,16 @@
     let
       remoteKeyGenerator = instanceName: "${instanceName}-hermes-remote-ssh";
       remoteUser = instanceName: "hermes-remote-${instanceName}";
+      # hermes provider name -> fencr credential provider preset
+      fencrProviders = {
+        anthropic = "anthropic";
+        openai = "openai";
+        openrouter = "openrouter";
+        opencode_go = "opencode";
+      };
+      # the hermes dashboard binds loopback only; fencr forwards guest ports
+      # bound on the bridge address
+      dashboardGuestPort = 9119;
     in
     {
 
@@ -12,7 +22,6 @@
       manifest.description = "Hermes agent server and remote desktop clients";
       manifest.readme = builtins.readFile ./README.md;
       manifest.categories = [ "AI" ];
-      manifest.exports.out = [ "dashboard" ];
       manifest.exports.inputs = [
         "peer"
         "networking"
@@ -27,10 +36,11 @@
             options = {
               dashboard.enable = lib.mkEnableOption "the Hermes dashboard and remote desktop access";
 
-              dashboardPort = lib.mkOption {
-                type = lib.types.port;
-                default = 22100;
-                description = "host loopback endpoint published to remote desktop clients.";
+              mcp.allow = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                example = [ "calendar.*" ];
+                description = "gateway tools this agent may use, as <server>.<tool> globs; empty leaves it without the gateway. needs self.modules.nixos.mcp on the server.";
               };
 
               soul = lib.mkOption {
@@ -138,16 +148,9 @@
           {
             instanceName,
             settings,
-            mkExports,
             ...
           }:
           {
-            # the client role reads this instead of deriving the port from the
-            # server's settings a second time
-            exports = mkExports (
-              if settings.dashboard.enable then { dashboard.port = settings.dashboardPort; } else { }
-            );
-
             nixosModule =
               {
                 config,
@@ -157,9 +160,13 @@
               }:
               let
                 generator = "${instanceName}-agent";
-                inherit (settings) dashboardPort;
-                application = config.nixfiles.hermes.${instanceName};
+                generators = config.clan.core.vars.generators;
                 sshUser = remoteUser instanceName;
+                vm = config.fencr.vms.${instanceName};
+                vmHost = "${instanceName}.fencr";
+                dashboardAddress = "${vmHost}:${toString dashboardGuestPort}";
+                credentialName = provider: "${instanceName}-${provider}";
+                mcp = settings.mcp.allow != [ ];
                 remotePublicKey = lib.trim (
                   clanLib.getPublicValue {
                     flake = config.clan.core.settings.directory;
@@ -261,32 +268,108 @@
                 };
               in
               {
+                imports = [ self.modules.nixos.fencr ];
+
                 options.nixfiles.hermes.${instanceName} = {
                   dashboard.enable = lib.mkOption {
                     type = lib.types.bool;
                     readOnly = true;
                     description = "whether this instance provides dashboard access.";
                   };
-                  dashboardPort = lib.mkOption {
-                    type = lib.types.port;
-                    readOnly = true;
-                    description = "host loopback endpoint published to remote desktop clients.";
-                  };
                   module = lib.mkOption {
                     type = lib.types.deferredModule;
                     readOnly = true;
                     description = "Hermes application module for host composition.";
                   };
-                  providerKeysInEnvironment = lib.mkOption {
-                    type = lib.types.bool;
-                    default = true;
-                    description = "include provider API keys in the generated environment file; otherwise emit authorization files only.";
-                  };
                 };
 
                 config = {
+                  networking.hosts.${vm.ip} = [ vmHost ];
+                  # the build sandbox lacks this runtime account; only the check uses root.
+                  networking.nftables.preCheckRuleset = lib.mkIf settings.dashboard.enable ''
+                    substituteInPlace ruleset.conf \
+                      --replace-fail 'meta skuid != "${sshUser}"' 'meta skuid != 0'
+                  '';
+                  networking.nftables.tables."${instanceName}-dashboard" = lib.mkIf settings.dashboard.enable {
+                    family = "inet";
+                    content = ''
+                      chain output {
+                        type filter hook output priority filter - 2; policy accept;
+                        ip daddr ${vm.ip} tcp dport ${toString dashboardGuestPort} meta skuid != "${sshUser}" counter drop
+                      }
+                    '';
+                  };
+
+                  fencr.vms.${instanceName} = {
+                    services = [
+                      config.nixfiles.hermes.${instanceName}.module
+                      {
+                        services.hermes-agent.settings.mcp_servers.gateway = lib.mkIf mcp {
+                          url = "https://mcp.fencr/mcp/";
+                        };
+                        services.hermes-agent.dashboardTokenFile = lib.mkIf settings.dashboard.enable "/run/agent-secrets/${instanceName}-dashboard-token";
+                        systemd.services = {
+                          hermes-agent.serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
+                          hermes-dashboard = lib.mkIf settings.dashboard.enable {
+                            serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
+                          };
+                          hermes-dashboard-relay = lib.mkIf settings.dashboard.enable {
+                            description = "Hermes dashboard on the guest address";
+                            wantedBy = [ "multi-user.target" ];
+                            after = [ "network-online.target" ];
+                            wants = [ "network-online.target" ];
+                            serviceConfig = {
+                              DynamicUser = true;
+                              ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:${toString dashboardGuestPort},bind=${vm.ip},fork,reuseaddr TCP:127.0.0.1:${toString dashboardGuestPort}";
+                              Restart = "always";
+                              RestartSec = 5;
+                            };
+                          };
+                        };
+                      }
+                    ];
+                    specialArgs = {
+                      inherit self;
+                      inherit (self) inputs;
+                      flake-self = self;
+                    };
+                    inbound = lib.optional settings.dashboard.enable dashboardGuestPort;
+                    outbound = [
+                      "internet"
+                      # the host's own https: local search and llama-cpp
+                      "host:443"
+                    ]
+                    ++ lib.optional settings.homeAssistant.enable "${settings.homeAssistant.address}:${toString settings.homeAssistant.port}";
+                    mcp = {
+                      enable = mcp;
+                      inherit (settings.mcp) allow;
+                    };
+                    credentials = map credentialName keyProviders;
+                    secrets = {
+                      "${instanceName}.env" = generators.${generator}.files.".env".path;
+                    }
+                    // lib.optionalAttrs settings.dashboard.enable {
+                      "${instanceName}-dashboard-token" = generators."${instanceName}-dashboard".files.token.path;
+                    };
+                  };
+
+                  # the proxy sets the real header for the provider's domain;
+                  # guestEnv hands the vm a placeholder so hermes accepts the
+                  # provider without a key
+                  fencr.credentials = lib.listToAttrs (
+                    map (provider: {
+                      name = credentialName provider;
+                      value = {
+                        provider =
+                          fencrProviders.${provider}
+                            or (throw "hermes: no fencr credential provider for ${provider}; extend fencrProviders");
+                        secretFile = generators.${generator}.files."${provider}-authorization".path;
+                        guestEnv = "${lib.toUpper provider}_API_KEY";
+                      };
+                    }) keyProviders
+                  );
+
                   nixfiles.hermes.${instanceName} = {
-                    inherit dashboardPort;
                     dashboard.enable = settings.dashboard.enable;
                     module = {
                       imports = [
@@ -337,18 +420,16 @@
                     shell = pkgs.bashInteractive;
                     openssh.authorizedKeys.keys =
                       lib.optional (remotePublicKey != "")
-                        ''restrict,port-forwarding,permitopen="127.0.0.1:${toString dashboardPort}",command="${tokenCommand}" ${remotePublicKey}'';
+                        ''restrict,port-forwarding,permitopen="${dashboardAddress}",command="${tokenCommand}" ${remotePublicKey}'';
                   };
 
                   clan.core.vars.generators.${generator} = {
                     files = {
                       ".env".secret = true;
                     }
-                    // lib.optionalAttrs (!application.providerKeysInEnvironment) (
-                      lib.genAttrs (map (provider: "${provider}-authorization") keyProviders) (_: {
-                        secret = true;
-                      })
-                    );
+                    // lib.genAttrs (map (provider: "${provider}-authorization") keyProviders) (_: {
+                      secret = true;
+                    });
 
                     prompts =
                       lib.mapAttrs (_: hiddenPrompt) (mergeAttrsOf "prompts")
@@ -361,21 +442,13 @@
 
                     script =
                       let
-                        lines =
-                          lib.mapAttrsToList (variable: prompt: ''echo "${variable}=$(cat "$prompts/${prompt}")"'') (
-                            mergeAttrsOf "env"
-                          )
-                          ++ lib.optionals application.providerKeysInEnvironment (
-                            map (
-                              provider: ''echo "${lib.toUpper provider}_API_KEY=$(cat "$prompts/${provider}-api-key")"''
-                            ) keyProviders
-                          );
-                        authorizations = lib.optionals (!application.providerKeysInEnvironment) (
-                          map (
-                            provider:
-                            ''printf 'Bearer %s' "$(cat "$prompts/${provider}-api-key")" > "$out/${provider}-authorization"''
-                          ) keyProviders
+                        lines = lib.mapAttrsToList (variable: prompt: ''echo "${variable}=$(cat "$prompts/${prompt}")"'') (
+                          mergeAttrsOf "env"
                         );
+                        authorizations = map (
+                          provider:
+                          ''printf 'Bearer %s' "$(cat "$prompts/${provider}-api-key")" > "$out/${provider}-authorization"''
+                        ) keyProviders;
                       in
                       ''
                         {
@@ -409,21 +482,7 @@
               let
                 serverNames = lib.naturalSort (lib.attrNames (roles.server.machines or { }));
                 server = if lib.length serverNames == 1 then lib.head serverNames else null;
-                # the server role publishes its dashboard port for this instance.
-                # no fallback: a missing export is an assertion, not a silent 22100
-                dashboardExport =
-                  if server == null then
-                    null
-                  else
-                    (exports.${
-                      clanLib.buildScopeKey {
-                        serviceName = "hermes";
-                        roleName = "server";
-                        machineName = server;
-                        inherit instanceName;
-                      }
-                    } or { }
-                    ).dashboard or null;
+                dashboard = server != null && roles.server.machines.${server}.settings.dashboard.enable;
                 # every network service exports peer.hosts per machine and
                 # networking.priority per instance; walking them here replicates
                 # `clan ssh`'s fallback order declaratively. var-typed hosts
@@ -468,7 +527,8 @@
                   enable = true;
                   user = remoteUser instanceName;
                   hosts = tunnelHosts;
-                  remotePort = dashboardExport.port;
+                  # the server resolves <instance>.fencr to the vm
+                  remoteAddress = "${instanceName}.fencr:${toString dashboardGuestPort}";
                   identityFile =
                     config.clan.core.vars.generators.${remoteKeyGenerator instanceName}.files."id_ed25519".path;
                   inherit hostKey;
@@ -500,8 +560,8 @@
                     message = "clan hermes client found no networking exports with a plain host for ${toString server}";
                   }
                   {
-                    assertion = server == null || dashboardExport != null;
-                    message = "clan hermes client found no dashboard export for instance ${instanceName}";
+                    assertion = dashboard;
+                    message = "clan hermes client: instance ${instanceName} has dashboard.enable = false on ${toString server}";
                   }
                   {
                     assertion = lib.length normalUsers == 1;

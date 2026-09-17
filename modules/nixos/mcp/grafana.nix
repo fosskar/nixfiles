@@ -36,7 +36,8 @@ _: {
           '';
         };
 
-        services.mcpGateway.servers.grafana = {
+        fencr.mcpGateway.servers.grafana = {
+          service = "grafana-mcp.service";
           url = "http://127.0.0.1:${toString listenPort}/mcp";
           tokenFile = vars.files.token.path;
           # dashboards and datasources are provisioned from this repo

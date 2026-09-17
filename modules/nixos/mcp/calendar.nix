@@ -34,7 +34,8 @@ _: {
         '';
       };
 
-      services.mcpGateway.servers.calendar = {
+      fencr.mcpGateway.servers.calendar = {
+        service = "calendar-mcp.service";
         url = "http://127.0.0.1:${toString listenPort}/mcp";
         tokenFile = vars.files.token.path;
         approvalTools = [

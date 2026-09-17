@@ -46,19 +46,6 @@
       roles.client.tags = [ "workstation" ];
     };
 
-    wifi = {
-      module = {
-        name = "wifi";
-        input = "clan-core";
-      };
-      roles.default = {
-        tags = [ "laptop" ];
-        settings.networks = {
-          home = { };
-        };
-      };
-    };
-
     hermes = {
       module = {
         name = "hermes";
@@ -67,6 +54,10 @@
       roles.server.machines.nixbox.settings = {
         soul = "tars";
         dashboard.enable = true;
+        mcp.allow = [
+          "calendar.*"
+          "grafana.*"
+        ];
 
         providers = {
           local.enable = true;
@@ -108,6 +99,7 @@
       };
       roles.server.machines.nixbox.settings = {
         dashboard.enable = false;
+        mcp.allow = [ "calendar.*" ];
         providers = {
           local.enable = true;
           opencode_go.enable = true;
