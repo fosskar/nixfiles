@@ -123,7 +123,7 @@
         ready=false
         for _ in $(${pkgs.coreutils}/bin/seq 1 60); do
           if printf 'header = "X-Hermes-Session-Token: %s"\n' "$token" |
-            ${pkgs.curl}/bin/curl --config - --fail --silent --output /dev/null \
+            ${pkgs.curl}/bin/curl --config - --fail --silent --output /dev/null --max-time 2 \
               "http://127.0.0.1:${toString cfg.localPort}/api/sessions"; then
             ready=true
             break
