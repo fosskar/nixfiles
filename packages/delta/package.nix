@@ -20,11 +20,11 @@
 }:
 let
   pname = "delta";
-  version = "0.1.1-nightly.20260820.13";
+  version = "0.16.0";
 
   src = requireFile {
     name = "delta-linux-x86_64.tar.gz";
-    hash = "sha256-v8daBywEBtvj379BHpYCCh0klR+n76hW/xAZ9SLY8LQ=";
+    hash = "sha256-CJdYlrkxL7xK1cIp9bCxDoyU8QEImNnFAihzBEIAVTw=";
     message = ''
       Download the x86_64 Linux archive from https://delta.dev/download and add it with:
         nix store add-file delta-linux-x86_64.tar.gz
@@ -60,8 +60,10 @@ stdenvNoCC.mkDerivation {
     cp -a share/icons/. $out/share/icons/
     cp share/applications/dev.zed.Delta.desktop $out/share/applications/
 
+    # upstream's Exec is "delta cli open %U", which exits with a clap error when
+    # the launcher passes no URL; "delta [DIR_OR_URL]" handles both cases
     substituteInPlace $out/share/applications/dev.zed.Delta.desktop \
-      --replace-fail "Exec=delta " "Exec=delta-app "
+      --replace-fail "Exec=delta cli open " "Exec=delta-app "
 
     cat > $out/bin/delta-app <<EOF
     #!${runtimeShell}
