@@ -8,6 +8,7 @@
       ...
     }:
     {
+      key = "nixfiles.fencr";
       imports = [ flake-self.inputs.fencr.nixosModules.fencr ];
 
       # whoever is root on the host is root in its vms; the clan sshd
