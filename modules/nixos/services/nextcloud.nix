@@ -3,7 +3,6 @@
     {
       flake-self,
       config,
-      inputs,
       lib,
       pkgs,
       ...
@@ -15,7 +14,6 @@
       listenPort = 8009;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
       oidcIssuerUrl = "https://auth.${flake-self.domains.public}";
-      nixfilesPackages = inputs.self.packages.${pkgs.stdenv.hostPlatform.system};
       tankDisks = [
         "/dev/sda"
         "/dev/sdc"
@@ -148,7 +146,6 @@
             groupfolders
             tasks
             ;
-          news = nixfilesPackages.nextcloud-news;
         };
         extraAppsEnable = true;
 

@@ -51,14 +51,14 @@ class TestGrouping(unittest.TestCase):
         self.assertEqual(len(groups["netbird"]), 2)
 
     def test_singleton_keeps_full_name(self):
-        groups = group_packages([pkg("garage-ui"), pkg("voquill")])
-        self.assertEqual(list(groups), ["garage-ui", "voquill"])
+        groups = group_packages([pkg("garage-ui"), pkg("example")])
+        self.assertEqual(list(groups), ["example", "garage-ui"])
 
 
 class TestCommitMessage(unittest.TestCase):
     def test_single(self):
         self.assertEqual(
-            commit_message("voquill", ["voquill: 1 -> 2"]), "voquill: 1 -> 2"
+            commit_message("example", ["example: 1 -> 2"]), "example: 1 -> 2"
         )
 
     def test_group_gets_header(self):
@@ -611,7 +611,7 @@ class TestClassify(unittest.TestCase):
 class TestNixUpdateCmd(unittest.TestCase):
     def test_store_path_head_stripped_args_kept(self):
         cmd = nix_update_cmd(
-            "brave-origin",
+            "garage-ui",
             ["/nix/store/abc-nix-update/bin/nix-update", "--version-regex", "v(.*)"],
             "/tmp/m.msg",
         )
@@ -624,14 +624,14 @@ class TestNixUpdateCmd(unittest.TestCase):
                 "--flake",
                 "--write-commit-message",
                 "/tmp/m.msg",
-                "brave-origin",
+                "garage-ui",
             ],
         )
 
     def test_bare_nix_update_head(self):
-        cmd = nix_update_cmd("voquill", ["nix-update", "--flake"], "/tmp/m.msg")
+        cmd = nix_update_cmd("example", ["nix-update", "--flake"], "/tmp/m.msg")
         self.assertEqual(cmd[:2], ["nix-update", "--flake"])
-        self.assertEqual(cmd[-1], "voquill")
+        self.assertEqual(cmd[-1], "example")
 
     def test_foreign_head_drops_args(self):
         # a list updateScript not headed by nix-update: args are not
