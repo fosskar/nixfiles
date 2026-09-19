@@ -1,6 +1,7 @@
 {
   flake.modules.homeManager.herdr =
     {
+      config,
       inputs,
       options,
       pkgs,
@@ -104,6 +105,21 @@
         };
       };
 
+      # `herdr machine add` writes this client-side catalog imperatively; nix
+      # owns it instead. herdr only needs a stable 32-hex id per entry, so
+      # derive it from the target to keep it identical across hosts and
+      # rebuilds.
+      herdrEndpoints = pkgs.writers.writeJSON "herdr-endpoints.json" {
+        version = 1;
+        ssh = map (machine: {
+          id = builtins.hashString "md5" machine;
+          label = machine;
+          target = machine;
+          session = "default";
+          enabled = true;
+        }) config.programs.herdr.machines;
+      };
+
       # tools used by plugin installers and their build commands
       pluginInstallPath = lib.makeBinPath [
         pkgs.git
@@ -116,87 +132,103 @@
       ];
     in
     {
-      programs.herdr = {
-        enable = true;
-        package = herdrPackage;
-        settings = herdrSettings;
+      options.programs.herdr.machines = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        example = [ "workspace" ];
+        description = "ssh targets listed next to Local in the herdr sidebar.";
       };
 
-      # users/workspace imports this module without niri
-      wayland = lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
-        windowManager.niri.settings.binds."Mod+E" = {
-          _props.hotkey-overlay-title = "Open herdr";
-          spawn = [
-            "focus-or-spawn"
-            "herdr.workspace"
-            "ghostty"
-            "--class=herdr.workspace"
-            "-e"
-            "herdr"
-          ];
+      config = {
+        programs.herdr = {
+          enable = true;
+          package = herdrPackage;
+          settings = herdrSettings;
         };
+
+        # users/workspace imports this module without niri
+        wayland = lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
+          windowManager.niri.settings.binds."Mod+E" = {
+            _props.hotkey-overlay-title = "Open herdr";
+            spawn = [
+              "focus-or-spawn"
+              "herdr.workspace"
+              "ghostty"
+              "--class=herdr.workspace"
+              "-e"
+              "herdr"
+            ];
+          };
+        };
+
+        home.packages = [
+          pkgs.nodejs
+          pkgs.local.druk
+        ];
+
+        xdg.configFile =
+          # deploy herdr-plus project templates into the plugin's config dir
+          lib.mapAttrs' (
+            fileName: project:
+            lib.nameValuePair "herdr/plugins/config/cloudmanic.herdr-plus/projects/${fileName}.toml" {
+              source = (pkgs.formats.toml { }).generate "herdr-plus-project-${fileName}.toml" project;
+            }
+          ) herdrPlusProjects
+          // {
+            # worktree auto-layout: fills every worktree workspace herdr
+            # creates/opens (worktree.created/opened events); repo = "*" matches
+            # any repo, a repo-specific layout file would win over it
+            "herdr/plugins/config/cloudmanic.herdr-plus/worktrees/default.toml".source =
+              (pkgs.formats.toml { }).generate "herdr-plus-worktree-default.toml"
+                {
+                  repo = "*";
+                  tabs = [
+                    {
+                      name = "agent";
+                      command = "omp";
+                    }
+                    { name = "shell"; }
+                  ];
+                };
+
+            # running server keeps its loaded keymap; pick up new config on switch
+            "herdr/config.toml".onChange = ''
+              ${herdrBin} server reload-config > /dev/null 2>&1 || true
+            '';
+          };
+
+        home.activation.herdrMachines = lib.mkIf (config.programs.herdr.machines != [ ]) (
+          lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            run install -Dm644 ${herdrEndpoints} \
+              "''${XDG_STATE_HOME:-$HOME/.local/state}/herdr/client/endpoints.json"
+          ''
+        );
+
+        # install plugins at their pinned commits through herdr's offline global
+        # registry. The socket override avoids a protocol mismatch with a server
+        # that is still running the previous Nix generation during activation.
+        # installs are best-effort: a plugin may need a newer toolchain than
+        # nixpkgs ships, which must not abort the whole home-manager generation.
+        home.activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          offlineSocket="''${XDG_RUNTIME_DIR:-/tmp}/herdr-plugin-activation-$$.sock"
+          if installed=$(HERDR_SOCKET_PATH="$offlineSocket" ${herdrBin} plugin list --json 2>/dev/null); then
+            ${lib.concatStrings (
+              lib.mapAttrsToList (id: plugin: ''
+                if ! printf '%s' "$installed" | ${pkgs.jq}/bin/jq -e \
+                  '.result.plugins[] | select(.plugin_id == "${id}" and .source.resolved_commit == "${plugin.rev}")' \
+                  > /dev/null; then
+                  run env PATH="${pluginInstallPath}:$PATH" HERDR_SOCKET_PATH="$offlineSocket" \
+                    ${herdrBin} plugin install ${plugin.source} --ref ${plugin.rev} --yes \
+                    || warnEcho "herdr plugin install ${plugin.source} failed; continuing"
+                fi
+              '') herdrPlugins
+            )}
+          else
+            warnEcho "herdr plugin registry unreadable; skipping plugin install (${
+              lib.concatStringsSep ", " (map (plugin: plugin.source) (lib.attrValues herdrPlugins))
+            })"
+          fi
+        '';
       };
-
-      home.packages = [
-        pkgs.nodejs
-        pkgs.local.druk
-      ];
-
-      xdg.configFile =
-        # deploy herdr-plus project templates into the plugin's config dir
-        lib.mapAttrs' (
-          fileName: project:
-          lib.nameValuePair "herdr/plugins/config/cloudmanic.herdr-plus/projects/${fileName}.toml" {
-            source = (pkgs.formats.toml { }).generate "herdr-plus-project-${fileName}.toml" project;
-          }
-        ) herdrPlusProjects
-        // {
-          # worktree auto-layout: fills every worktree workspace herdr
-          # creates/opens (worktree.created/opened events); repo = "*" matches
-          # any repo, a repo-specific layout file would win over it
-          "herdr/plugins/config/cloudmanic.herdr-plus/worktrees/default.toml".source =
-            (pkgs.formats.toml { }).generate "herdr-plus-worktree-default.toml"
-              {
-                repo = "*";
-                tabs = [
-                  {
-                    name = "agent";
-                    command = "omp";
-                  }
-                  { name = "shell"; }
-                ];
-              };
-
-          # running server keeps its loaded keymap; pick up new config on switch
-          "herdr/config.toml".onChange = ''
-            ${herdrBin} server reload-config > /dev/null 2>&1 || true
-          '';
-        };
-
-      # install plugins at their pinned commits through herdr's offline global
-      # registry. The socket override avoids a protocol mismatch with a server
-      # that is still running the previous Nix generation during activation.
-      # installs are best-effort: a plugin may need a newer toolchain than
-      # nixpkgs ships, which must not abort the whole home-manager generation.
-      home.activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        offlineSocket="''${XDG_RUNTIME_DIR:-/tmp}/herdr-plugin-activation-$$.sock"
-        if installed=$(HERDR_SOCKET_PATH="$offlineSocket" ${herdrBin} plugin list --json 2>/dev/null); then
-          ${lib.concatStrings (
-            lib.mapAttrsToList (id: plugin: ''
-              if ! printf '%s' "$installed" | ${pkgs.jq}/bin/jq -e \
-                '.result.plugins[] | select(.plugin_id == "${id}" and .source.resolved_commit == "${plugin.rev}")' \
-                > /dev/null; then
-                run env PATH="${pluginInstallPath}:$PATH" HERDR_SOCKET_PATH="$offlineSocket" \
-                  ${herdrBin} plugin install ${plugin.source} --ref ${plugin.rev} --yes \
-                  || warnEcho "herdr plugin install ${plugin.source} failed; continuing"
-              fi
-            '') herdrPlugins
-          )}
-        else
-          warnEcho "herdr plugin registry unreadable; skipping plugin install (${
-            lib.concatStringsSep ", " (map (plugin: plugin.source) (lib.attrValues herdrPlugins))
-          })"
-        fi
-      '';
     };
 }

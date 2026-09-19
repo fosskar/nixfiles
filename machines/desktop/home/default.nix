@@ -11,6 +11,7 @@
       self.modules.homeManager.noctalia
     ]
     ++ nflib.scanPaths ./. { };
+    programs.herdr.machines = [ "workspace" ];
     programs.noctalia.settings.lockscreen_widgets.widget = {
       "lockscreen-login-box@DP-1" = {
         type = "login_box";
