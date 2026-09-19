@@ -17,6 +17,11 @@
 
       rtk = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk;
 
+      # the preset id /v1/models reports, not its alias: hermes lists the
+      # configured name next to the discovered id, so an alias shows the one
+      # model twice in the picker
+      localModel = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:IQ4_XS";
+
       # generated, not vendored, so the plugin tracks the pinned rtk. `rtk
       # rewrite` is the single source of truth; the plugin only bridges
       # hermes' pre_tool_call payload to it
@@ -55,13 +60,13 @@
           name = "Local";
           api = "https://llama-cpp.${flake-self.domains.local}/v1";
           api_key = "no-key-required";
-          default_model = "qwen3.6-35b-a3b-mtp";
-          context_length = 163840;
+          default_model = localModel;
         };
+        # no context_length: hermes reads llama.cpp's meta.n_ctx from /v1/models,
+        # so the window follows ctx-size in the llamaCpp module
         model = {
-          default = "qwen3.6-35b-a3b-mtp";
+          default = localModel;
           provider = "local";
-          context_length = 163840;
         };
       };
     in
