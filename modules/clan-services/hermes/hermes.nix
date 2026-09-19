@@ -304,8 +304,10 @@
                     services = [
                       config.nixfiles.hermes.${instanceName}.module
                       {
-                        services.hermes-agent.settings.mcp_servers.gateway = lib.mkIf mcp {
-                          url = "https://mcp.fencr/mcp/";
+                        # settings deep-merges definitions but does not resolve
+                        # priorities, so mkIf would land in the json verbatim
+                        services.hermes-agent.settings.mcp_servers = lib.optionalAttrs mcp {
+                          fencr-gateway.url = "https://mcp.fencr/mcp/";
                         };
                         services.hermes-agent.dashboardTokenFile = lib.mkIf settings.dashboard.enable "/run/agent-secrets/${instanceName}-dashboard-token";
                         systemd.services = {
