@@ -162,9 +162,9 @@
                 generator = "${instanceName}-agent";
                 generators = config.clan.core.vars.generators;
                 sshUser = remoteUser instanceName;
-                vm = config.fencr.vms.${instanceName};
-                vmHost = "${instanceName}.fencr";
-                dashboardAddress = "${vmHost}:${toString dashboardGuestPort}";
+                sandbox = config.fencr.sandboxes.${instanceName};
+                sandboxHost = "${instanceName}.fencr";
+                dashboardAddress = "${sandboxHost}:${toString dashboardGuestPort}";
                 credentialName = provider: "${instanceName}-${provider}";
                 mcp = settings.mcp.allow != [ ];
                 remotePublicKey = lib.trim (
@@ -284,7 +284,7 @@
                 };
 
                 config = {
-                  networking.hosts.${vm.ip} = [ vmHost ];
+                  networking.hosts.${sandbox.ip} = [ sandboxHost ];
                   # the build sandbox lacks this runtime account; only the check uses root.
                   networking.nftables.preCheckRuleset = lib.mkIf settings.dashboard.enable ''
                     substituteInPlace ruleset.conf \
@@ -295,12 +295,12 @@
                     content = ''
                       chain output {
                         type filter hook output priority filter - 2; policy accept;
-                        ip daddr ${vm.ip} tcp dport ${toString dashboardGuestPort} meta skuid != "${sshUser}" counter drop
+                        ip daddr ${sandbox.ip} tcp dport ${toString dashboardGuestPort} meta skuid != "${sshUser}" counter drop
                       }
                     '';
                   };
 
-                  fencr.vms.${instanceName} = {
+                  fencr.sandboxes.${instanceName} = {
                     services = [
                       config.nixfiles.hermes.${instanceName}.module
                       {
@@ -320,7 +320,7 @@
                             wants = [ "network-online.target" ];
                             serviceConfig = {
                               DynamicUser = true;
-                              ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:${toString dashboardGuestPort},bind=${vm.ip},fork,reuseaddr TCP:127.0.0.1:${toString dashboardGuestPort}";
+                              ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:${toString dashboardGuestPort},bind=${sandbox.ip},fork,reuseaddr TCP:127.0.0.1:${toString dashboardGuestPort}";
                               Restart = "always";
                               RestartSec = 5;
                             };
@@ -354,7 +354,7 @@
                   };
 
                   # the proxy sets the real header for the provider's domain;
-                  # guestEnv hands the vm a placeholder so hermes accepts the
+                  # guestEnv hands the sandbox a placeholder so hermes accepts the
                   # provider without a key
                   fencr.credentials = lib.listToAttrs (
                     map (provider: {
@@ -527,7 +527,7 @@
                   enable = true;
                   user = remoteUser instanceName;
                   hosts = tunnelHosts;
-                  # the server resolves <instance>.fencr to the vm
+                  # the server resolves <instance>.fencr to the sandbox
                   remoteAddress = "${instanceName}.fencr:${toString dashboardGuestPort}";
                   identityFile =
                     config.clan.core.vars.generators.${remoteKeyGenerator instanceName}.files."id_ed25519".path;
