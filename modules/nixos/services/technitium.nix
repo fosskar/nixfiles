@@ -16,6 +16,9 @@
       webPort = 5380;
       api = "http://127.0.0.1:${toString webPort}/api";
       netbirdHost = "gateway.nb.${flake-self.domains.public}";
+      # netbird private reverse-proxy service (mesh-only, access groups
+      # workstation/remote/home-server), configured in the netbird UI
+      dashboardHost = "technitium.${flake-self.domains.public}";
       settings = {
         dnsServerDomain = netbirdHost;
         # netbird owns wt0:53 and resolved owns 127.0.0.53, hence the own port;
@@ -126,9 +129,9 @@
             "network" = [
               {
                 "Technitium DNS" = {
-                  href = "http://${netbirdHost}:${toString webPort}";
+                  href = "https://${dashboardHost}";
                   icon = "technitium.svg";
-                  siteMonitor = "http://${netbirdHost}:${toString webPort}";
+                  siteMonitor = "https://${dashboardHost}";
                 };
               }
             ];
@@ -146,6 +149,22 @@
             interval = "5m";
           }
         ];
+
+        # exit-node dns: peers tunnelling 0.0.0.0/0 through this host keep the
+        # resolver their wifi handed out, so port 53 inside the tunnel is
+        # rewritten to technitium. netbird has no exit-node-aware dns
+        # (netbirdio/netbird#4025); a nameserver group would also apply at
+        # home. after the rewrite the packet is local input, so the netbird
+        # acl still needs a policy allowing the peer to reach ${toString dnsPort}
+        networking.nftables.tables.technitium-exit-dns = {
+          family = "inet";
+          content = ''
+            chain prerouting {
+              type nat hook prerouting priority dstnat; policy accept;
+              iifname "wt0" meta l4proto { tcp, udp } th dport 53 redirect to :${toString dnsPort}
+            }
+          '';
+        };
 
         # DynamicUser service: state lives in /var/lib/private/technitium-dns-server,
         # covered by host-level /var/lib preservation.
