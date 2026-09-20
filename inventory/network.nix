@@ -58,9 +58,12 @@
       };
       roles.client = {
         tags = [ "all" ];
-        # routing peers for the home lan and the exit route
+        # routing peers: nixbox and nixworker for the home lan, gateway for
+        # the exit route (0.0.0.0/0 must not be routed from inside the lan,
+        # the route acl has no destination match for a /0)
         machines."nixbox".settings.routingFeatures = "server";
         machines."nixworker".settings.routingFeatures = "server";
+        machines."gateway".settings.routingFeatures = "server";
       };
     };
 
