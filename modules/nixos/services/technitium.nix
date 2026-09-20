@@ -155,13 +155,21 @@
         # rewritten to technitium. netbird has no exit-node-aware dns
         # (netbirdio/netbird#4025); a nameserver group would also apply at
         # home. after the rewrite the packet is local input, so the netbird
-        # acl still needs a policy allowing the peer to reach ${toString dnsPort}
+        # acl still needs a policy allowing the peer to reach ${toString dnsPort}.
+        # android "private dns: automatic" tries dns-over-tls first and only
+        # falls back to plain 53 when 853 is unreachable, so 853 is dropped.
+        # a prerouting hook is used because netbird prepends a wt0 accept to
+        # every foreign input/forward chain (chains_linux.go isExternalChain)
         networking.nftables.tables.technitium-exit-dns = {
           family = "inet";
           content = ''
             chain prerouting {
               type nat hook prerouting priority dstnat; policy accept;
-              iifname "wt0" meta l4proto { tcp, udp } th dport 53 redirect to :${toString dnsPort}
+              iifname "wt0" meta l4proto { tcp, udp } th dport 53 counter redirect to :${toString dnsPort}
+            }
+            chain block-dot {
+              type filter hook prerouting priority mangle; policy accept;
+              iifname "wt0" tcp dport 853 counter drop
             }
           '';
         };
