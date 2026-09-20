@@ -30,15 +30,12 @@
           pkgs.imagemagick
         ];
 
+        # computer_use is in every platform composite and gated on this
+        # variable; no toolset entry needed
         environment = {
           DISPLAY = display;
           HERMES_CUA_DRIVER_CMD = lib.getExe driver;
         };
-
-        settings.toolsets = [
-          "hermes-cli"
-          "computer_use"
-        ];
       };
 
       systemd.services.hermes-xvfb = {
