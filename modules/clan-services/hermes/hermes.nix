@@ -61,6 +61,12 @@
                 description = "keys into flake.llm.skills.";
               };
 
+              catalogPlugins = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                description = "hermes plugin-catalog entries to install and enable, by catalog name.";
+              };
+
               packageSkills = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
                 default = [ ];
@@ -389,6 +395,8 @@
                                   dir: "${config.services.hermes-agent.package}/share/hermes-agent/${dir}"
                                 ) settings.packageSkills
                                 ++ map (name: "${flake-self.llm.skills.${name}}") settings.skills;
+
+                              inherit (settings) catalogPlugins;
 
                               overrides = settings.agentSettings;
 

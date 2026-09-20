@@ -67,6 +67,11 @@
 
         packageSkills = [ "optional-skills/devops/watchers" ];
 
+        catalogPlugins = [
+          "hermes-memory-ui"
+          "hermes-terminal"
+        ];
+
         matrix = {
           enable = true;
           userId = "@hermes:fosskar.de";
@@ -77,8 +82,6 @@
             "@alerts:fosskar.de"
           ];
         };
-
-        signal.enable = true;
 
         computerUse.enable = true;
 

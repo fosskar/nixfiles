@@ -25,11 +25,46 @@
       # generated, not vendored, so the plugin tracks the pinned rtk. `rtk
       # rewrite` is the single source of truth; the plugin only bridges
       # hermes' pre_tool_call payload to it
-      rtkPlugin = pkgs.runCommand "rtk-hermes-plugin" { nativeBuildInputs = [ rtk ]; } ''
+      rtkPlugin = pkgs.runCommand "rtk-rewrite" { nativeBuildInputs = [ rtk ]; } ''
         export HOME="$PWD"
         rtk init -g --agent hermes
         cp -r "$HOME/.hermes/plugins/rtk-rewrite" "$out"
       '';
+
+      # top-level scalar of a flat yaml file; enough for catalog entries and
+      # plugin manifests, including the json-styled ones (hermes-terminal)
+      yamlField =
+        file: key:
+        let
+          matches = lib.filter (m: m != null) (
+            map (line: builtins.match " *\"?${key}\"?: *\"?([^\",]*)\"?,? *" line) (
+              lib.splitString "\n" (builtins.readFile file)
+            )
+          );
+        in
+        if matches == [ ] then "" else lib.head (lib.head matches);
+
+      # the catalog entry is the pin: repo + 40-hex sha, reviewed upstream and
+      # bumped with the hermes-agent input. a full rev keeps fetchGit pure.
+      # plugins.enabled matches the manifest name, which need not equal the
+      # catalog key (hermes-memory-wiki ships as memory-wiki)
+      catalogPlugin =
+        name:
+        let
+          entry = "${inputs.hermes-agent}/plugin-catalog/${name}.yaml";
+          src = fetchGit {
+            url = yamlField entry "repo";
+            rev = yamlField entry "sha";
+            allRefs = true;
+          };
+          root = "${src}/${yamlField entry "subdir"}";
+        in
+        {
+          package = pkgs.runCommand name { } "cp -r ${root} $out";
+          pluginName = yamlField "${root}/plugin.yaml" "name";
+        };
+
+      catalogPlugins = map catalogPlugin cfg.catalogPlugins;
 
       defaults = {
         timezone = "Europe/Berlin";
@@ -48,7 +83,8 @@
           "disk-cleanup"
           "hermes-achievements"
           "rtk-rewrite"
-        ];
+        ]
+        ++ map (plugin: plugin.pluginName) catalogPlugins;
         # local sqlite fact store next to the built-in MEMORY.md, which keeps
         # loading; the only provider with no api-key path and no llm calls
         memory.provider = "holographic";
@@ -89,6 +125,12 @@
           description = "SOUL.md to install read-only on every activation.";
         };
 
+        catalogPlugins = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = "entries of hermes' plugin-catalog/ to install and enable, by catalog name.";
+        };
+
         skillDirs = lib.mkOption {
           type = lib.types.listOf lib.types.str;
           default = [ ];
@@ -111,8 +153,15 @@
           enable = true;
           addToSystemPackages = true;
 
+          # symlinked into HERMES_HOME/plugins and gated by plugins.enabled
+          # above; both halves are required or the hook silently never registers
+          extraPlugins = [ rtkPlugin ] ++ map (plugin: plugin.package) catalogPlugins;
+
           extraPackages = [
             rtk
+            # lazy optional-dep installs into HERMES_LAZY_INSTALL_TARGET go
+            # through uv; without it the pip tier fails on the store env
+            pkgs.uv
             pkgs.agent-browser
             pkgs.local.blogwatcher-cli
             pkgs.chromium
@@ -132,6 +181,15 @@
 
         };
 
+        # managed scope: the declared settings are pinned per leaf from
+        # /etc/hermes, and everything else in HERMES_HOME/config.yaml stays
+        # writable by the agent and the ui. HERMES_MANAGED=false below lifts
+        # upstream's blanket refusal of config writes; hermes update stays
+        # refused by its own /nix/store check
+        environment.etc."hermes/config.yaml".source =
+          (pkgs.formats.yaml { }).generate "hermes-managed-config.yaml"
+            config.services.hermes-agent.settings;
+
         # reinstalled on every activation: the soul is declarative, agent edits
         # do not survive
         system.activationScripts.hermes-agent-soul = lib.mkIf (cfg.soul != null) (
@@ -145,28 +203,10 @@
           ''
         );
 
-        # user plugins live under HERMES_HOME and are gated by plugins.enabled
-        # above; both halves are required or the hook silently never registers
-        system.activationScripts.hermes-agent-rtk = lib.stringAfter [ "hermes-agent-setup" ] ''
-          ${pkgs.coreutils}/bin/install \
-            -d \
-            -o ${cfg.user} \
-            -g ${cfg.group} \
-            -m 0755 \
-            ${stateDir}/.hermes/plugins/rtk-rewrite
-          ${pkgs.coreutils}/bin/install \
-            -o ${cfg.user} \
-            -g ${cfg.group} \
-            -m 0444 \
-            ${rtkPlugin}/plugin.yaml \
-            ${rtkPlugin}/__init__.py \
-            ${stateDir}/.hermes/plugins/rtk-rewrite/
-        '';
-
         # -i, not -H: a login shell resets PATH to hermes' own profile. with the
         # caller's PATH the agent's packages are not found and unreadable /root
         # entries turn "command not found" into EACCES
-        environment.shellAliases.hermes = "sudo -iu hermes env NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
+        environment.shellAliases.hermes = "sudo -iu hermes env HERMES_MANAGED=false HERMES_LAZY_INSTALL_TARGET=${stateDir}/lazy-deps NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
 
         systemd.services.hermes-dashboard = lib.mkIf cfg.dashboard.enable {
           description = "Hermes Agent dashboard";
@@ -177,7 +217,8 @@
           environment = {
             HOME = stateDir;
             HERMES_HOME = "${stateDir}/.hermes";
-            HERMES_MANAGED = "true";
+            HERMES_MANAGED = "false";
+            HERMES_LAZY_INSTALL_TARGET = "${stateDir}/lazy-deps";
             NPM_CONFIG_PREFIX = "${stateDir}/npm";
             VIRTUAL_ENV = "${stateDir}/venv";
           };
@@ -203,6 +244,7 @@
         systemd.tmpfiles.rules = [
           "d ${stateDir}/venv 0750 hermes hermes - -"
           "d ${stateDir}/npm 0750 hermes hermes - -"
+          "d ${stateDir}/lazy-deps 0750 hermes hermes - -"
         ];
 
         systemd.services.hermes-venv = {
@@ -242,6 +284,8 @@
           environment = {
             # system users otherwise get a session that does not start a user manager.
             XDG_SESSION_CLASS = "background";
+            HERMES_MANAGED = lib.mkForce "false";
+            HERMES_LAZY_INSTALL_TARGET = "${stateDir}/lazy-deps";
             NPM_CONFIG_PREFIX = "${stateDir}/npm";
             VIRTUAL_ENV = "${stateDir}/venv";
             PYTHONPATH = toString (
