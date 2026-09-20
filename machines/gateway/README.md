@@ -166,10 +166,13 @@ internal-only services never exposed:
 
 ## non-HTTP services
 
-SSH (22), yggdrasil (6443, 6445-6446), wireguard (51820-51821), and STUN (3478)
-don't go through traefik. they pass through hetzner firewall → crowdsec nftables
-blacklist → nixos firewall → directly to the service. SSH is further protected by
-crowdsec's sshd scenarios (brute-force, impossible travel).
+yggdrasil (6443, 6445-6446), wireguard (51820-51821), and STUN (3478) don't go
+through traefik. they pass through hetzner firewall → crowdsec nftables
+blacklist → nixos firewall → directly to the service.
+
+SSH (22) is not opened in the nixos firewall (`services.openssh.openFirewall =
+false`); sshd is reachable only over wireguard, yggdrasil, netbird (`wt0`) and
+p2p-ssh-iroh. the hetzner firewall entry for TCP 22 is therefore unused.
 
 ## persistence
 
