@@ -64,6 +64,8 @@ buildGo127Module (finalAttrs: {
       skippedTests = [
         # This subtest assumes enough host CPUs for an 8s CPU delta over 1s to stay below 100%.
         "TestServiceUpdateCPUPercent/subsequent_call_calculates_CPU_percentage"
+        # Expects TMPDIR not to be btrfs; the sandbox build dir is btrfs on our builders.
+        "TestIoctlDeviceSizeFailure"
       ]
       ++ lib.optionals stdenv.hostPlatform.isDarwin [
         "TestCollectorStartHelpers/nvidia-smi_collector"
