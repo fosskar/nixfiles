@@ -1,8 +1,10 @@
 {
   flake.modules.nixos.server = {
-    nix.gc = {
+    services.harmonia.gc = {
+      enable = true;
       automatic = true;
-      options = "--delete-older-than 14d";
+      deleteOlderThan = "14d";
+      keepRecent = "1d";
     };
   };
 }

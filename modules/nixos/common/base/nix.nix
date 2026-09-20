@@ -51,9 +51,11 @@
           fsync-metadata = lib.mkDefault ((config.fileSystems."/".fsType or "") != "zfs");
         };
 
-        # disable if nh.clean is enabled (it handles gc instead)
+        # disable if nh.clean or harmonia-gc is enabled (they handle gc instead)
         gc = {
-          automatic = lib.mkDefault (!(config.programs.nh.clean.enable or false));
+          automatic = lib.mkDefault (
+            !((config.programs.nh.clean.enable or false) || config.services.harmonia.gc.automatic)
+          );
           options = lib.mkDefault "--delete-older-than 15d";
         };
       };
