@@ -115,6 +115,9 @@
           evalMaxMemorySize = 4096;
           cacheFailedBuilds = true;
 
+          # hold pull requests from outside contributors until a repo writer approves ci
+          prApproval.enable = true;
+
           github = {
             enable = true;
             appId = 4238312;
