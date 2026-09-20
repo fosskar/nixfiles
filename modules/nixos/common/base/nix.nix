@@ -61,7 +61,7 @@
         };
       };
 
-      # weekly cleanup of stale gcroots/temproots not covered by nix.gc/nh clean
+      # unroot result links older than 30 days; nix-store --gc only drops dangling ones
       systemd.timers.nix-cleanup-gcroots = {
         timerConfig = {
           OnCalendar = [ "weekly" ];
@@ -73,14 +73,7 @@
       systemd.services.nix-cleanup-gcroots = {
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = [
-            # delete automatic gcroots older than 30 days
-            "${pkgs.findutils}/bin/find /nix/var/nix/gcroots/auto /nix/var/nix/gcroots/per-user -type l -mtime +30 -delete"
-            # delete stale temproots (leftover from interrupted builds)
-            "${pkgs.findutils}/bin/find /nix/var/nix/temproots -type f -mtime +10 -delete"
-            # delete broken symlinks in gcroots
-            "${pkgs.findutils}/bin/find /nix/var/nix/gcroots -xtype l -delete"
-          ];
+          ExecStart = "${pkgs.findutils}/bin/find /nix/var/nix/gcroots/auto -type l -mtime +30 -delete";
         };
       };
     };
