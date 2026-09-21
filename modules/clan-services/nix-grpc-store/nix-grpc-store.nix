@@ -1,7 +1,7 @@
 { self, ... }:
 {
   flake.modules."clan.service".nix-grpc-store =
-    { lib, ... }:
+    _:
     let
       port = 50051;
       caGenerator = "nix-grpc-store-ca";
