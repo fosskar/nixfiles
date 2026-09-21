@@ -7,11 +7,11 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "nextcloud-workflow-ocr";
-  version = "1.34.1";
+  version = "1.35.0";
 
   src = fetchurl {
     url = "https://github.com/R0Wi-DEV/workflow_ocr/releases/download/v${finalAttrs.version}/workflow_ocr.tar.gz";
-    hash = "sha256-BKmJtTQWVErp2DNbayu7FktrTkD4TqqHxMcN7gLnLWY=";
+    hash = "sha256-WgyV0DswWR0KxuqY7AboKpdW+1A8mk05zMwWi/0VnwM=";
   };
 
   installPhase = ''
