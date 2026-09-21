@@ -16,6 +16,10 @@
       radHome = "/var/lib/radicle";
       storage = "${cfg.radHome}/storage/${rid}";
       srcDir = "/var/lib/nixos-upgrade/src";
+      # toplevel of the last generation this timer deployed. a running system
+      # that differs from it was deployed by hand (clan machines update) and
+      # may carry work that is not on main yet; never replace it silently
+      lastUpgraded = "/var/lib/nixos-upgrade/toplevel";
       # mtime of the current generation link: when the running system was
       # deployed, by this timer or by clan. clan evaluates from a path: store
       # copy, so flake-self carries no lastModified to stamp the commit with
@@ -58,9 +62,15 @@
           # rev pinned: a bare ref=main would reuse nix's cached ref lookup for
           # up to tarball-ttl and evaluate the previous rev
           out=$(nix eval --raw "git+file://$src?ref=main&rev=$rev#nixosConfigurations.${machine}.config.system.build.toplevel.outPath")
-          if [ "$out" = "$(readlink /run/current-system)" ]; then
+          running=$(readlink /run/current-system)
+          if [ "$out" = "$running" ]; then
             echo "autoupgrade: $out is already running; skipping"
+            echo "$running" > ${lastUpgraded}
             exit 1
+          fi
+          if [ -f ${lastUpgraded} ] && [ "$(cat ${lastUpgraded})" != "$running" ]; then
+            echo "autoupgrade: $running was deployed manually and main does not match it; refusing to replace it (push the deployed state to main to resume)" >&2
+            exit 255
           fi
           if ! nix path-info --store ${cache} "$out" > /dev/null; then
             echo "autoupgrade: $out for $rev is not in ${cache}; skipping"
@@ -129,6 +139,9 @@
 
         systemd.services.nixos-upgrade.serviceConfig = {
           ExecCondition = lib.getExe guard;
+          ExecStartPost = "${pkgs.writeShellScript "nixos-upgrade-record" ''
+            ${pkgs.coreutils}/bin/readlink /run/current-system > ${lastUpgraded}
+          ''}";
           StateDirectory = "nixos-upgrade";
         };
       };
