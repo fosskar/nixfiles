@@ -537,9 +537,10 @@
             margin-bottom: 0.35rem;
           }
           /* the plate is 4.5rem centred in a 6rem card, so the first icon
-             starts 0.75rem in; indent the header to that edge */
+             starts 0.75rem in; indent the header to that edge plus the 0.25rem
+             card padding */
           :is(#layout-groups, #services) .services-group > button {
-            padding-left: 0.75rem;
+            padding-left: 1rem;
           }
 
           /* bookmarks */
