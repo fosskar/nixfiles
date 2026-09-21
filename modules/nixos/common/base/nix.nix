@@ -5,13 +5,10 @@
       config,
       pkgs,
       inputs,
-      self,
       ...
     }:
     {
       # srvos sets: trusted-users, optimise.automatic, nix-daemon OOMScoreAdjust
-
-      srvos.flake = self;
 
       nix = {
         package = lib.mkDefault pkgs.nixVersions.stable;
