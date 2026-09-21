@@ -3,6 +3,12 @@
   config,
   ...
 }:
+let
+  # only declared by the srvos profiles, so it cannot live in modules.nixos.base
+  srvosFlake = {
+    srvos.flake = inputs.self;
+  };
+in
 {
   flake.clan.inventory.instances = {
     base-common = {
@@ -22,6 +28,7 @@
         tags = [ "server" ];
         extraModules = [
           inputs.srvos.nixosModules.server
+          srvosFlake
           config.flake.modules.nixos.server
         ];
       };
@@ -33,6 +40,7 @@
         tags = [ "workstation" ];
         extraModules = [
           inputs.srvos.nixosModules.desktop
+          srvosFlake
           config.flake.modules.nixos.homeManager
           config.flake.modules.nixos.workstation
           config.flake.modules.nixos.nixAccessTokens
