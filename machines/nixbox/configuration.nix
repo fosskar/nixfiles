@@ -37,7 +37,6 @@
     self.modules.nixos.smtp
     self.modules.nixos.gatus
     self.modules.nixos.msmtp
-    self.modules.nixos.systemdEmailAlerts
     self.modules.nixos.miniflux
     self.modules.nixos.netbirdAuthelia
     self.modules.nixos.wiki
@@ -55,7 +54,6 @@
       weekly = 2;
       monthly = 0;
     };
-    systemdEmailAlerts.extraServices = [ "borgbackup-job-storagebox" ];
   };
 
   environment.systemPackages = [
