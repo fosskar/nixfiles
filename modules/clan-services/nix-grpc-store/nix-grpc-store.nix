@@ -95,13 +95,13 @@
                   "uid-range"
                   "recursive-nix"
                 ];
-                description = "features advertised to clients; the builder must provide them (see remote-builder's builder role)";
+                description = "features advertised to clients; uid-range and recursive-nix also enable the matching nix settings on the builder";
               };
             };
           };
 
         perInstance =
-          { roles, ... }:
+          { roles, settings, ... }:
           {
             nixosModule =
               {
@@ -148,6 +148,37 @@
                 };
 
                 networking.firewall.allowedTCPPorts = [ port ];
+
+                nix.settings = {
+                  max-jobs = lib.mkDefault settings.maxJobs;
+                  cores = lib.mkDefault 0;
+                  experimental-features = lib.mkAfter (
+                    [
+                      "auto-allocate-uids"
+                      "cgroups"
+                    ]
+                    ++ lib.optional (lib.elem "recursive-nix" settings.supportedFeatures) "recursive-nix"
+                  );
+                  auto-allocate-uids = lib.mkDefault true;
+                  # nixbot builds untrusted pull requests here; contain every
+                  # build in a cgroup so its process tree dies atomically
+                  use-cgroups = lib.mkDefault true;
+                  system-features = lib.mkAfter (
+                    lib.intersectLists [
+                      "uid-range"
+                      "recursive-nix"
+                    ] settings.supportedFeatures
+                  );
+                };
+
+                security.pam.loginLimits = [
+                  {
+                    domain = "nix-grpc-daemon";
+                    item = "nofile";
+                    type = "-";
+                    value = "20480";
+                  }
+                ];
               };
           };
       };

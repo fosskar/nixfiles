@@ -25,9 +25,9 @@ Builder role:
   certificates signed by the clan CA
 - `trustClients = true`; access rules grant `trusted` only to the client
   machines' certificate CNs (their machine names)
-- does not configure the daemon's build features (`uid-range`,
-  `recursive-nix`, cgroups, `max-jobs`); the `remote-builder` builder role
-  owns those and stays assigned to the same machine
+- enables the build features the advertised `supportedFeatures` need
+  (`auto-allocate-uids`, cgroups, `uid-range`, `recursive-nix`) and sets
+  `max-jobs` from `maxJobs`
 
 Client role:
 

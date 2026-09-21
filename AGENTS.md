@@ -81,8 +81,8 @@ Services declare their own dashboard tile, health check, and reverse proxy defau
 - keep `networking.hostId` stable on ZFS machines
 - public NetBird mappings live in the UI; inspect them read-only in `/var/lib/netbird-server/store.db` on `gateway`
 - `netbird expose` can expose a loopback service through a peer-created tunnel; permanent peer targets cannot use loopback
-- remote-builder `sshUser = "nix-remote-builder"` needs a real shell; nologin breaks `ssh-ng`
-- test remote-builder use with `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`
+- clan machines offload builds through `nix-grpc-store` (`grpc://nixworker.s:50051`, mTLS from clan vars); the `remote-builder` module is unused but kept
+- test builder use with `nix build nixpkgs#hello --no-link --option substitute false --max-jobs 0 -L`
 - Harmonia cache options use `services.harmonia.cache.*`
 - Grafana OIDC role mapping needs `groups` in `id_token`
 - do not force `--build-host localhost` in shell wrappers

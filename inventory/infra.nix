@@ -43,19 +43,6 @@
       };
     };
 
-    remote-builder = {
-      module = {
-        name = "remote-builder";
-        input = "self";
-      };
-      # builder role only: it owns the daemon's build features on nixworker
-      # and the ssh path for the one non-clan client. clan machines offload
-      # through nix-grpc-store below
-      roles.builder.machines."nixworker".settings.extraClientKeys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJGHwgucKTyUpHllRV4dHnoL5FYgqgzsVfRw9IZTJEid"
-      ];
-    };
-
     nix-grpc-store = {
       module = {
         name = "nix-grpc-store";
