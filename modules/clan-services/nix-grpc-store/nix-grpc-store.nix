@@ -148,11 +148,13 @@
                   }) clientMachines;
                 };
 
-                networking.firewall.allowedTCPPorts = [ port ];
+                # clients dial the yggdrasil address, so that is the only
+                # interface that needs the port; ygg traffic is already limited
+                # to clan peers by the yggdrasil service
+                networking.firewall.interfaces.ygg.allowedTCPPorts = [ port ];
 
                 nix.settings = {
                   max-jobs = lib.mkDefault settings.maxJobs;
-                  cores = lib.mkDefault 0;
                   experimental-features = lib.mkAfter (
                     [
                       "auto-allocate-uids"
