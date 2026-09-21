@@ -48,7 +48,7 @@
             name = "Seerr";
             url = "https://${localHost}";
             enabled = true;
-            alerts = [ { type = "email"; } ];
+            alerts = [ { type = "matrix"; } ];
             interval = "5m";
             conditions = [ "[STATUS] == 200" ];
           }

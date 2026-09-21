@@ -78,7 +78,7 @@
             name = "Caddy TLS wildcard";
             url = "https://caddy.${flake-self.domains.local}";
             enabled = true;
-            alerts = [ { type = "email"; } ];
+            alerts = [ { type = "matrix"; } ];
             interval = "6h";
             conditions = [ "[CERTIFICATE_EXPIRATION] > 240h" ];
           }

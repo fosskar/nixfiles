@@ -56,7 +56,7 @@
           name = "Wyoming Piper";
           url = "https://${localHost}/api/info";
           enabled = true;
-          alerts = [ { type = "email"; } ];
+          alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }

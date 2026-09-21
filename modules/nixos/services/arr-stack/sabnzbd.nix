@@ -144,7 +144,7 @@
             # backend check on purpose: the edge is forward-auth, authelia answers 302 without reaching the service
             url = listenUrl;
             enabled = true;
-            alerts = [ { type = "email"; } ];
+            alerts = [ { type = "matrix"; } ];
             interval = "5m";
             conditions = [ "[STATUS] == 200" ];
           }

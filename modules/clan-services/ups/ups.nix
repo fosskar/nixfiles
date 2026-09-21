@@ -96,7 +96,7 @@ _: {
                   enabled = true;
                   interval = "5m";
                   conditions = [ "[CONNECTED] == true" ];
-                  alerts = [ { type = "email"; } ];
+                  alerts = [ { type = "matrix"; } ];
                 }
               ];
 

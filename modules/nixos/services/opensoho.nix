@@ -34,7 +34,7 @@
           name = "OpenSOHO";
           url = "https://${localHost}/api/health";
           enabled = true;
-          alerts = [ { type = "email"; } ];
+          alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }

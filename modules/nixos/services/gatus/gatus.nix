@@ -24,13 +24,12 @@
               type = "sqlite";
               path = "/var/lib/gatus/gatus.db";
             };
-            alerting.email = {
-              from = "$SMTP_FROM";
-              username = "$SMTP_USER";
-              password = "$SMTP_PASSWORD";
-              host = "$SMTP_HOST";
-              port = "$SMTP_PORT";
-              to = "gatus@nx3.eu";
+            # same @alerts account and room as matrix-alert-hook (grafana);
+            # the homeserver runs on this host, so talk to it directly
+            alerting.matrix = {
+              server-url = "http://127.0.0.1:6167";
+              access-token = "$MX_TOKEN";
+              internal-room-id = "!V9AbNBfBhczqH2WRQr_0wAT6q6ycq7tfSFuw9nM7t3s";
               default-alert = {
                 enabled = true;
                 failure-threshold = 5;
@@ -60,7 +59,7 @@
         '';
 
         systemd.services.gatus.serviceConfig.EnvironmentFile =
-          config.clan.core.vars.generators.smtp.files."smtp-env".path;
+          config.clan.core.vars.generators.matrix-alert-hook.files.env.path;
 
         services.homepage-dashboard.services = [
           {

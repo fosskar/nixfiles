@@ -280,7 +280,7 @@ _: {
                   enabled = true;
                   interval = "5m";
                   conditions = [ "[STATUS] == 200" ];
-                  alerts = [ { type = "email"; } ];
+                  alerts = [ { type = "matrix"; } ];
                 }
               ];
 

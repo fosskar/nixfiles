@@ -225,7 +225,7 @@
           name = "llama.cpp";
           url = "https://${localHost}/health";
           enabled = true;
-          alerts = [ { type = "email"; } ];
+          alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }

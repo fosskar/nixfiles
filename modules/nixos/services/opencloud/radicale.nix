@@ -72,7 +72,7 @@
             url = "tcp://127.0.0.1:5232";
             conditions = [ "[CONNECTED] == true" ];
             enabled = true;
-            alerts = [ { type = "email"; } ];
+            alerts = [ { type = "matrix"; } ];
             interval = "5m";
           }
         ];

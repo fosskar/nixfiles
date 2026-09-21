@@ -282,7 +282,7 @@
           name = "Radicle";
           url = "https://${publicHost}/";
           enabled = true;
-          alerts = [ { type = "email"; } ];
+          alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }

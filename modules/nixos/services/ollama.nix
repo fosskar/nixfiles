@@ -48,7 +48,7 @@
           name = "Ollama";
           url = "https://${localHost}/api/tags";
           enabled = true;
-          alerts = [ { type = "email"; } ];
+          alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }

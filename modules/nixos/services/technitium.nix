@@ -142,7 +142,7 @@
             url = "tcp://${netbirdHost}:${toString dnsPort}";
             conditions = [ "[CONNECTED] == true" ];
             enabled = true;
-            alerts = [ { type = "email"; } ];
+            alerts = [ { type = "matrix"; } ];
             interval = "5m";
           }
         ];

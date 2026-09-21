@@ -60,7 +60,7 @@
           name = "ConvertX";
           url = "https://${localHost}/healthcheck";
           enabled = true;
-          alerts = [ { type = "email"; } ];
+          alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }

@@ -203,7 +203,7 @@
             name = "vLLM";
             url = "https://${localHost}/health";
             enabled = cfg.autoStart;
-            alerts = [ { type = "email"; } ];
+            alerts = [ { type = "matrix"; } ];
             interval = "5m";
             conditions = [ "[STATUS] == 200" ];
           }

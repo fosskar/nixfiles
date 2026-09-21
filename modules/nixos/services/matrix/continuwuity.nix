@@ -176,7 +176,7 @@
           name = "Continuwuity";
           url = "https://${publicHost}/_matrix/client/versions";
           enabled = true;
-          alerts = [ { type = "email"; } ];
+          alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
         }
