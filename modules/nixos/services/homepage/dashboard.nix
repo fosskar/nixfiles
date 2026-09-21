@@ -536,6 +536,11 @@
             color: rgba(226, 232, 240, 0.65);
             margin-bottom: 0.35rem;
           }
+          /* the plate is 4.5rem centred in a 6rem card, so the first icon
+             starts 0.75rem in; indent the header to that edge */
+          :is(#layout-groups, #services) .services-group > button {
+            padding-left: 0.75rem;
+          }
 
           /* bookmarks */
           :is(#layout-groups, #bookmarks) {
