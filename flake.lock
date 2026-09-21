@@ -995,6 +995,29 @@
         "type": "github"
       }
     },
+    "nix-grpc-store": {
+      "inputs": {
+        "niks3": [
+          "niks3"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790009663,
+        "narHash": "sha256-Ga/1u9Mcd5AhzEY55/oXA5gmnKDAu5XTu+IZRlZgZSk=",
+        "owner": "Mic92",
+        "repo": "nix-grpc-store",
+        "rev": "04ee6855ff7e6bc5379a83240180684e3f1c0405",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-grpc-store",
+        "type": "github"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -1401,6 +1424,7 @@
         "niks3": "niks3",
         "niri-nix": "niri-nix",
         "nix-gaming": "nix-gaming",
+        "nix-grpc-store": "nix-grpc-store",
         "nix-index-database": "nix-index-database",
         "nixbot": "nixbot",
         "nixos-hardware": "nixos-hardware",

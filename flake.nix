@@ -115,6 +115,12 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
+    nix-grpc-store = {
+      url = "github:Mic92/nix-grpc-store";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.niks3.follows = "niks3";
+    };
+
     # browser nightly
     #zed-nightly = {
     #  url = "github:zed-industries/zed";
