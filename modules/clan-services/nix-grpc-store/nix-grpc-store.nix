@@ -171,15 +171,6 @@
                     ] settings.supportedFeatures
                   );
                 };
-
-                security.pam.loginLimits = [
-                  {
-                    domain = "nix-grpc-daemon";
-                    item = "nofile";
-                    type = "-";
-                    value = "20480";
-                  }
-                ];
               };
           };
       };
