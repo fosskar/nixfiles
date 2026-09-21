@@ -131,7 +131,8 @@
 
                 services.nix-grpc-daemon = {
                   enable = true;
-                  listen = "0.0.0.0:${toString port}";
+                  # clients dial <builder>.<domain>, which resolves to the yggdrasil v6 address
+                  listen = "[::]:${toString port}";
                   tls = {
                     certFile = vars.${certGenerator}.files."cert.pem".path;
                     keyFile = vars.${certGenerator}.files."key.pem".path;
