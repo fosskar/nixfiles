@@ -43,6 +43,8 @@
             tileSection = {
               "Home Assistant" = "apps";
               "Vaultwarden" = "apps";
+              "llama.cpp" = "tools";
+              "HP Printer" = "tools";
               "Buzz" = "admin";
               "Continuwuity" = "admin";
               "Garage" = "management";
