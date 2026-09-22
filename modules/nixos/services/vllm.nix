@@ -1,6 +1,7 @@
 {
-  # NVIDIA publishes the required vLLM release as a CUDA container before
-  # nixpkgs can package it. This aspect runs that pinned image with Podman.
+  # upstream publishes each vLLM release as a CUDA container before nixpkgs
+  # can package it (torch bump, nixpkgs #549327). This aspect runs that
+  # pinned image with Podman.
   flake.modules.nixos.vllm =
     {
       flake-self,
@@ -15,12 +16,14 @@
       commandLine = lib.cli.toCommandLineGNU { } cfg.settings;
     in
     {
+      imports = [ flake-self.modules.nixos.podman ];
+
       options.services.vllm = {
 
         image = lib.mkOption {
           type = lib.types.str;
-          default = "docker.io/vllm/vllm-openai@sha256:0a51ea5b4ae2dc5d81890e5173f54203d2a3ae0cfffe51b8fd2afd4391bfd967";
-          description = "OCI image for the vLLM server. The default digest is v0.27.1.";
+          default = "docker.io/vllm/vllm-openai@sha256:8a69ffad015f138d7170c4ddc429e230a3bc1c1719f67e14324749df200a4b90";
+          description = "OCI image for the vLLM server. The default digest is v0.30.0.";
         };
 
         autoStart = lib.mkOption {
@@ -31,7 +34,7 @@
 
         model = lib.mkOption {
           type = lib.types.str;
-          example = "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4";
+          example = "unsloth/Qwen3.8-27B-NVFP4";
           description = ''
             Model served by `vllm serve`: a Hugging Face repository id or an
             absolute path to a local model directory. Hugging Face downloads
@@ -118,9 +121,11 @@
 
       config = {
         services.vllm = {
-          model = lib.mkDefault "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4";
+          # W4A16 with calibrated fp8 kv scales; the 19.5 GB checkpoint is
+          # the largest Qwen3.8-27B quant that leaves kv cache room on 24 GB
+          model = lib.mkDefault "RedHatAI/Qwen3.8-27B-INT4";
           settings = {
-            served-model-name = lib.mkDefault "nemotron-3.5-lightning-30b-a3b";
+            served-model-name = lib.mkDefault "qwen3.8-27b";
             # Hermes context (98304) plus its hardcoded 65536 output cap for
             # custom providers: vllm hard-rejects prompt+max_tokens above this
             # with HTTP 400, and hermes retries such 400s with the same
@@ -131,22 +136,14 @@
             gpu-memory-utilization = lib.mkDefault 0.95;
             kv-cache-dtype = lib.mkDefault "fp8";
             enable-prefix-caching = lib.mkDefault true;
-            moe-backend = lib.mkDefault "marlin";
-            mamba-backend = lib.mkDefault "flashinfer";
-            mamba-cache-mode = lib.mkDefault "align";
-            reasoning-parser = lib.mkDefault "nemotron_v3";
-            default-chat-template-kwargs = lib.mkDefault (
-              builtins.toJSON {
-                enable_thinking = true;
-                force_nonempty_content = true;
-              }
-            );
-            tool-call-parser = lib.mkDefault "qwen3_coder";
+            reasoning-parser = lib.mkDefault "qwen3";
+            # template default is xhigh; hermes does not send chat_template_kwargs
+            default-chat-template-kwargs = lib.mkDefault (builtins.toJSON { reasoning_effort = "low"; });
+            tool-call-parser = lib.mkDefault "qwen3_xml";
             enable-auto-tool-choice = lib.mkDefault true;
           };
         };
         hardware.nvidia-container-toolkit.enable = true;
-        virtualisation.docker.enable = true;
 
         systemd.tmpfiles.rules = [
           "d /var/lib/vllm/huggingface 0755 root root -"
@@ -154,7 +151,7 @@
         ];
 
         virtualisation.oci-containers = {
-          backend = "docker";
+          backend = "podman";
           containers.vllm = {
             inherit (cfg) autoStart;
             inherit (cfg) image;
@@ -180,7 +177,7 @@
           };
         };
 
-        systemd.services.docker-vllm.serviceConfig.RestartSec = 30;
+        systemd.services.podman-vllm.serviceConfig.RestartSec = 30;
 
         networking.firewall.allowedTCPPorts = lib.optional cfg.openFirewall cfg.settings.port;
 
