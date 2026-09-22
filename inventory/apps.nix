@@ -87,6 +87,7 @@
 
         buzz = {
           enable = true;
+          homeChannel = "a3588d98-e11c-4401-8a5d-738e89a115da";
           allowedUsers = [ "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2" ];
         };
 
