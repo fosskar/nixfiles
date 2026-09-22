@@ -8,20 +8,20 @@
   nix-update-script,
 }:
 let
-  version = "0.12.1";
+  version = "0.13.0";
 
   src = fetchFromGitHub {
     owner = "Noooste";
     repo = "garage-ui";
     tag = "v${version}";
-    hash = "sha256-9c99QU9OdpcZL30wJWBZP55Eq4O5gui8rW+EOKKw+Sg=";
+    hash = "sha256-YqMKQEcF2quv7ir7xWNfojM/ZMPsXwWyC6N5mStc/WE=";
   };
 
   frontend = buildNpmPackage {
     pname = "garage-ui-frontend";
     inherit version src;
     sourceRoot = "${src.name}/frontend";
-    npmDepsHash = "sha256-ZjiCmQdo2fVqK6IEo/BFoYQZ8eZB1poxZ6M3L294++U=";
+    npmDepsHash = "sha256-lFuANabOi3pb1mxUg4B/K6d6B+wxfRTLOe40WlQwoMU=";
     installPhase = ''
       runHook preInstall
       cp -r dist $out
@@ -34,7 +34,7 @@ buildGoModule (finalAttrs: {
   inherit version src;
   sourceRoot = "${finalAttrs.src.name}/backend";
 
-  vendorHash = "sha256-w1ESuQkFw10X3v/L4iHq6DwxCc9Wbu6h/ujzJqHOipM=";
+  vendorHash = "sha256-HSDpfmNbV0a2hNC0TytrzcDjJZpnUFbSZ1mtnt60JRw=";
 
   nativeBuildInputs = [
     go-swag
