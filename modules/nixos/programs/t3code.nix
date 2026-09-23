@@ -1,7 +1,10 @@
+{ inputs, ... }:
 {
   flake.modules.nixos.t3code =
     { pkgs, ... }:
     {
-      environment.systemPackages = [ pkgs.local.t3code ];
+      environment.systemPackages = [
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.t3code-desktop
+      ];
     };
 }
