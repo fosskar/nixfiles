@@ -27,6 +27,8 @@
       ControlMaster = "no";
       ExitOnForwardFailure = "yes";
       SessionType = "none";
+      ServerAliveInterval = 5;
+      ServerAliveCountMax = 3;
       RemoteForward = [
         "/run/user/1000/fwd/%L.gpg-extra /run/user/1000/gnupg/S.gpg-agent.extra"
         "/run/user/1000/fwd/%L.ssh-agent /run/user/1000/gnupg/S.gpg-agent.ssh"
