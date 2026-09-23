@@ -44,6 +44,7 @@
       };
       # desktop app on the workstations, preconfigured with this relay
       roles.client.tags = [ "workstation" ];
+      roles.client.settings.channel = "main";
     };
 
     hermes = {
