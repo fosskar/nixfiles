@@ -93,6 +93,19 @@
                 enabled = lib.mkDefault false;
               };
 
+              # traefik connects from loopback; the listener still binds all
+              # interfaces because the combined server drops the listenAddress host
+              reverseProxy = {
+                trustedHTTPProxies = lib.mkDefault [
+                  "127.0.0.1/32"
+                  "::1/128"
+                ];
+                trustedPeers = lib.mkDefault [
+                  "127.0.0.1/32"
+                  "::1/128"
+                ];
+              };
+
               auth = {
                 issuer = lib.mkDefault "https://${cfg.domain}/oauth2";
                 dashboardRedirectURIs = lib.mkDefault [
