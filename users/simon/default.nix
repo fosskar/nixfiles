@@ -72,6 +72,26 @@
   };
   users.users.simon.shell = pkgs.fish;
 
+  # user units cannot order after suspend.target; reconnect right after wake
+  # instead of waiting for ServerAlive to declare the old connection dead
+  systemd.services.workspace-relay-resume =
+    let
+      sleepTargets = [
+        "suspend.target"
+        "hibernate.target"
+        "hybrid-sleep.target"
+        "suspend-then-hibernate.target"
+      ];
+    in
+    {
+      description = "Restart simon's workspace-relay after resume";
+      after = sleepTargets;
+      wantedBy = sleepTargets;
+      unitConfig.ConditionPathExists = "/run/user/1000/bus";
+      serviceConfig.Type = "oneshot";
+      script = "${pkgs.systemd}/bin/systemctl --user --machine=simon@ try-restart workspace-relay.service";
+    };
+
   # master key for noctalia private storage (clipboard history, calendar cache);
   # noctalia requires exactly 64 lowercase hex chars and never rotates it
   clan.core.vars.generators.noctalia-storage = {
