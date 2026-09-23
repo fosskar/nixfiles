@@ -235,7 +235,7 @@ _: {
 
               services.beszel.hub = {
                 enable = true;
-                package = pkgs.local.beszel;
+                package = pkgs.beszel;
                 host = "127.0.0.1";
                 port = beszelPort;
                 environment.APP_URL = "https://${beszelDomain}";
@@ -385,7 +385,7 @@ _: {
 
               services.beszel.agent = {
                 enable = true;
-                package = pkgs.local.beszel;
+                package = pkgs.beszel;
                 extraPath = [
                   pkgs.smartmontools
                 ];
