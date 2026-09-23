@@ -1,4 +1,4 @@
-# open URLs sent by remote ssh/herdr sessions in the local browser. the
+# open URLs and files sent from the workspace host in the local browser. the
 # workspace host forwards its /run/user/1000/remote-open.sock here via ssh
 # RemoteForward (ssh.nix); the remote-open shim in users/workspace writes
 # one URL per connection.

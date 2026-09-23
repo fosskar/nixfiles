@@ -1,7 +1,8 @@
 # forward browser-open requests to the attached ssh client: agent logins
 # (claude, gh auth, ...) call $BROWSER or xdg-open, the URL travels through
 # the RemoteForward socket (users/simon/ssh.nix) and opens on the
-# desktop/laptop that is currently attached via ssh or herdr --remote.
+# desktop/laptop with the newest live workspace-relay forward
+# (socket-relay.nix).
 { pkgs, lib, ... }:
 let
   remote-open = pkgs.writeShellScriptBin "remote-open" ''
