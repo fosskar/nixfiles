@@ -68,6 +68,31 @@
         # again at the highest priority
         exit 1
       '';
+      # the env pair HERMES_DESKTOP_REMOTE_URL/_TOKEN locks Settings -> Gateways
+      # in the app, so seed connection.json once instead; the app migrates it
+      # into its connections.json registry and owns it afterwards
+      seedConnection = pkgs.writeShellScript "hermes-desktop-seed-connection" ''
+        set -eu
+        dir="''${XDG_CONFIG_HOME:-$HOME/.config}/Hermes"
+        file="$dir/connection.json"
+        if [ -e "$file" ]; then
+          exit 0
+        fi
+        umask 077
+        ${pkgs.coreutils}/bin/mkdir -p "$dir"
+        tmp="$(${pkgs.coreutils}/bin/mktemp "$dir/.connection.json.XXXXXX")"
+        ${pkgs.jq}/bin/jq -n --arg url "$1" --rawfile token /dev/stdin '{
+          mode: "remote",
+          remote: {
+            url: $url,
+            authMode: "token",
+            token: { encoding: "plain", value: $token }
+          },
+          profiles: {}
+        }' > "$tmp"
+        ${pkgs.coreutils}/bin/mv --no-clobber "$tmp" "$file"
+        ${pkgs.coreutils}/bin/rm -f "$tmp"
+      '';
       launcher = pkgs.writeShellScriptBin "hermes-desktop-remote" ''
         set -eu
 
@@ -136,8 +161,7 @@
           exit 1
         fi
 
-        export HERMES_DESKTOP_REMOTE_URL="http://127.0.0.1:${toString cfg.localPort}"
-        export HERMES_DESKTOP_REMOTE_TOKEN="$token"
+        printf '%s' "$token" | ${seedConnection} "http://127.0.0.1:${toString cfg.localPort}"
         rc=0
         ${desktopPackage}/bin/hermes-desktop "$@" || rc=$?
         stop_tunnel
