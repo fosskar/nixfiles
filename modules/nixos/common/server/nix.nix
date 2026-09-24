@@ -3,7 +3,7 @@
     services.harmonia.gc = {
       enable = true;
       automatic = true;
-      deleteOlderThan = "14d";
+      deleteOlderThan = "7d";
       keepRecent = "1d";
     };
   };
