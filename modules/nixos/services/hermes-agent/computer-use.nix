@@ -16,6 +16,33 @@
       display = ":99";
       driver = inputs.cua.packages.${pkgs.stdenv.hostPlatform.system}.cua-driver;
       inherit (config.services.hermes-agent) user group;
+      # bot desktop (the Screen pane): tools/bot_desktop/launcher.sh runs its
+      # own Xvnc + Xfce per profile, separate from the Xvfb display below
+      botDesktop = pkgs.buildEnv {
+        name = "hermes-bot-desktop";
+        paths = [
+          pkgs.tigervnc
+          pkgs.xfwm4
+          pkgs.xfce4-panel
+          pkgs.xfdesktop
+          pkgs.xfce4-settings
+          pkgs.xfce4-terminal
+          pkgs.xfconf
+          pkgs.dbus
+          pkgs.xauth
+          pkgs.xdpyinfo
+          pkgs.setxkbmap
+          pkgs.xprop
+          pkgs.xsetroot
+          pkgs.xset
+          pkgs.adwaita-icon-theme
+          pkgs.hicolor-icon-theme
+        ];
+        pathsToLink = [
+          "/bin"
+          "/share"
+        ];
+      };
     in
     {
       # owns org.a11y.Bus on the session bus; without it cua-driver captures
@@ -28,6 +55,7 @@
           driver
           # capture.rs shells out to `import` for window screenshots
           pkgs.imagemagick
+          botDesktop
         ];
 
         # computer_use is in every platform composite and gated on this
@@ -35,6 +63,9 @@
         environment = {
           DISPLAY = display;
           HERMES_CUA_DRIVER_CMD = lib.getExe driver;
+          # dbus-run-session finds xfconfd only through XDG_DATA_DIRS; without
+          # it xfce ignores the launcher's seeded panel and theme config
+          XDG_DATA_DIRS = "${botDesktop}/share";
         };
       };
 
