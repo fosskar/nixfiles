@@ -113,6 +113,7 @@
                 disableDeletion = false;
                 editable = true;
                 options.path = "/etc/grafana-dashboards";
+                options.foldersFromFilesStructure = true;
               }
             ];
           };

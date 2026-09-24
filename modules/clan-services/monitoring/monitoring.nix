@@ -125,15 +125,23 @@
                   }) settings.extraTelegrafTargets;
                 };
 
+                # grafana turns each subdirectory into a folder; titles match the alert rule folders
                 dashboardEnabled = {
-                  "ups.json" = config.power.ups.enable && (config.power.ups.upsd.enable or false);
+                  "UPS/ups.json" = config.power.ups.enable && (config.power.ups.upsd.enable or false);
                 };
                 dashboardFiles = lib.filter (file: dashboardEnabled.${file} or true) (
-                  builtins.attrNames (builtins.readDir ./dashboards)
+                  lib.concatMap (
+                    folder:
+                    map (file: "${folder}/${file}") (builtins.attrNames (builtins.readDir ./dashboards/${folder}))
+                  ) (builtins.attrNames (builtins.readDir ./dashboards))
                 );
-                mkDashboard = file: {
+                dashboardSources = {
+                  "Nix/niks3.json" = self.inputs.niks3.dashboards.niks3;
+                }
+                // lib.genAttrs dashboardFiles (file: "${./dashboards}/${file}");
+                mkDashboard = file: source: {
                   name = "grafana-dashboards/${file}";
-                  value.source = "${./dashboards}/${file}";
+                  value = { inherit source; };
                 };
               in
               {
@@ -166,7 +174,7 @@
                 networking.firewall.interfaces.ygg.allowedTCPPorts = [ logsPort ];
 
                 environment.etc = lib.mkIf config.services.grafana.enable (
-                  builtins.listToAttrs (map mkDashboard dashboardFiles)
+                  lib.mapAttrs' mkDashboard dashboardSources
                 );
 
                 services.prometheus.exporters.zfs.enable = lib.mkDefault (
