@@ -149,6 +149,14 @@
                   package = niks3Pkgs.niks3;
                 };
 
+                services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
+                  {
+                    urls = [ "http://127.0.0.1:${toString niks3Port}/metrics" ];
+                    metric_version = 2;
+                    fieldinclude = [ "niks3_*" ];
+                  }
+                ];
+
                 # firewall: niks3 server + garage web endpoint (anonymous reads).
                 networking.firewall.allowedTCPPorts = [
                   niks3Port
