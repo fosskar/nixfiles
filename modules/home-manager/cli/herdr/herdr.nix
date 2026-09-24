@@ -21,6 +21,49 @@
         ui.prompt_new_tab_name = false;
         ui.pane_borders = "always";
         ui.show_agent_labels_on_pane_borders = true;
+        # herdr's default rows plus the herdr-projects rows `herdr-projects configure` would add
+        ui.sidebar.agents.rows = [
+          [
+            "state_icon"
+            "machine"
+            "workspace"
+            "tab"
+          ]
+          [ "agent" ]
+          [
+            {
+              token = "$hp_state";
+              rules = [
+                {
+                  starts_with = "needs you";
+                  fg = "#f38ba8";
+                  bold = true;
+                }
+                {
+                  starts_with = "review";
+                  fg = "#f9e2af";
+                }
+              ];
+            }
+          ]
+          [
+            {
+              token = "$hp_activity";
+              dim = true;
+            }
+          ]
+        ];
+        ui.sidebar.spaces.rows = [
+          [
+            "state_icon"
+            "workspace"
+          ]
+          [
+            "branch"
+            "git_status"
+          ]
+          [ { token = "$hp"; } ]
+        ];
         keys.command = [
           {
             key = "prefix+shift+f";
@@ -64,6 +107,12 @@
             command = "cloudmanic.herdr-plus.quick-actions";
             description = "herdr-plus: quick actions";
           }
+          {
+            key = "prefix+a";
+            type = "plugin_action";
+            command = "herdr-projects.open-popup";
+            description = "Projects";
+          }
         ];
       };
 
@@ -83,6 +132,10 @@
         "cloudmanic.herdr-plus" = {
           source = "cloudmanic/herdr-plus";
           rev = "a9aca9da3ca6d7406f3d878a1df1c1b9775e2723";
+        };
+        "herdr-projects" = {
+          source = "eliasstravik/herdr-projects";
+          rev = "bf72c9e20b5dbd5681c866c95ff0dd1700d4f23d";
         };
       };
 
