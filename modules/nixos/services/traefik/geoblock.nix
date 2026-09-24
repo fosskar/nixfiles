@@ -13,8 +13,7 @@
       logAllowedRequests = false;
       logApiRequests = false;
       api = "https://get.geojs.io/v1/ip/country/{ip}";
-      apiTimeoutMs = 750;
-      cacheSize = 25;
+      cacheSize = 1000;
       forceMonthlyUpdate = true;
       allowUnknownCountries = false;
       blackListMode = false;
