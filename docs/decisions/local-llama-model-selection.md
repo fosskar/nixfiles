@@ -1,136 +1,75 @@
 # local llama.cpp model selection
 
-nixbox runs `llama.cpp` on an NVIDIA RTX PRO 4000 Blackwell SFF Edition with 24 GB VRAM. the local assistant workload is pi-chat/tool use: calendar, messages, location, web search, Deutsche Bahn, and similar short interactive tasks. default model selection prioritizes low latency, stable tool/chat behavior, and enough VRAM headroom over maximum dense-model quality.
-
-## service settings used for comparison
-
-current server presets use:
-
-- `n-gpu-layers = 999`
-- `models-max = 1`
-- `flash-attn = "on"`
-- `cache-type-k = "q8_0"`
-- `cache-type-v = "q8_0"`
-- default `ctx-size = 32768`
-
-MTP presets additionally use:
-
-- `spec-type = "draft-mtp"`
-- `cache-type-k-draft = "q4_0"`
-- `cache-type-v-draft = "q4_0"`
-
-`qwen3_6-35b-a3b-mtp` was tested manually but is not a configured default because it leaves too little VRAM headroom.
-
-## raw llama-bench throughput
-
-`llama-bench` was run on nixbox against downloaded GGUFs with:
-
-- prompt sizes: `512,2048`
-- generation sizes: `128,512`
-- repetitions: `5`
-- `flash-attn = on`
-- `cache-type-k/v = q8_0`
-- `n-gpu-layers = 999`
-
-| model                  | prompt 512 t/s | prompt 2048 t/s | gen 128 t/s | gen 512 t/s |
-| ---------------------- | -------------: | --------------: | ----------: | ----------: |
-| `gemma4-e4b`           |         5015.7 |          5042.5 |        90.4 |        87.9 |
-| `gemma4-12b`           |         2060.7 |          1985.2 |        43.2 |        42.3 |
-| `qwen3_6-27b`          |          827.7 |           812.5 |        19.6 |        19.4 |
-| `qwen3_6-27b-mtp`      |          829.2 |           825.6 |        19.7 |        19.5 |
-| `qwopus3_6-27b-v2-mtp` |          831.7 |           826.3 |        20.8 |        20.4 |
-| `qwen3_6-35b-a3b`      |         2425.7 |          2358.4 |        98.0 |        94.9 |
-
-`llama-bench` does not exercise server speculative decoding behavior from `spec-type = draft-mtp`; it measures raw GGUF throughput.
-
-## server latency and MTP behavior
-
-server benchmark used the live `llama.cpp` server path with one loaded model at a time, fixed prompt, `max_tokens = 128`, and 3 requests per model.
-
-| model                  | avg latency | avg generation t/s | avg output tokens | finish reason |
-| ---------------------- | ----------: | -----------------: | ----------------: | ------------- |
-| `gemma4-e4b`           |       0.70s |              90.96 |              48.7 | `stop`        |
-| `gemma4-12b`           |       1.15s |              44.23 |              45.7 | `stop`        |
-| `qwen3_6-35b-a3b`      |       1.19s |              93.17 |              91.3 | `stop`        |
-| `qwen3_6-27b-mtp`      |       3.27s |              26.24 |              76.0 | `stop`        |
-| `qwen3_6-27b`          |       4.45s |              20.08 |              82.3 | `stop`        |
-| `qwopus3_6-27b-v2-mtp` |       4.49s |              30.78 |             128.0 | `length`      |
-
-MTP helped the dense Qwen 27B server path:
-
-- `qwen3_6-27b`: 20.08 t/s, 4.45s average latency
-- `qwen3_6-27b-mtp`: 26.24 t/s, 3.27s average latency
-
-`qwopus3_6-27b-v2-mtp` generated fastest among the 27B dense variants but hit `max_tokens` on every run. it is kept for coding/reasoning experiments, not as the default low-latency assistant model.
-
-## VRAM usage at ctx-size 32768
-
-measured with the live server after loading each model and after one short request. idle VRAM was 4 MiB used / 23984 MiB free.
-
-| model                  | loaded VRAM | after request | free after request |
-| ---------------------- | ----------: | ------------: | -----------------: |
-| `gemma4-e4b`           |    6208 MiB |      6224 MiB |          17765 MiB |
-| `gemma4-12b`           |    8588 MiB |      8598 MiB |          15391 MiB |
-| `qwen3_6-27b`          |   19444 MiB |     19464 MiB |           4525 MiB |
-| `qwen3_6-27b-mtp`      |   21800 MiB |     21860 MiB |           2129 MiB |
-| `qwopus3_6-27b-v2-mtp` |   18958 MiB |     18976 MiB |           5013 MiB |
-| `qwen3_6-35b-a3b`      |   22706 MiB |     22722 MiB |           1267 MiB |
-| `qwen3_6-35b-a3b-mtp`  |   23908 MiB |     23958 MiB |             31 MiB |
-
-MTP cost for Qwen 35B-A3B at `ctx-size = 32768` was about 1242 MiB over non-MTP. that leaves only 31 MiB free after a short request, so it is technically loadable but not operationally safe.
-
-## Qwen 35B-A3B context stress test
-
-non-MTP `qwen3_6-35b-a3b` was stress-tested with `q8_0` KV and server auto parallelism (`n_parallel = 4`).
-
-| ctx-size | loaded VRAM | after request | free after request | result    |
-| -------: | ----------: | ------------: | -----------------: | --------- |
-|    32768 |   22706 MiB |     22716 MiB |           1273 MiB | ok        |
-|    49152 |   22924 MiB |     22934 MiB |           1055 MiB | ok        |
-|    65536 |   23142 MiB |     23152 MiB |            837 MiB | ok        |
-|    81920 |   23360 MiB |     23370 MiB |            619 MiB | ok        |
-|    98304 |   23578 MiB |     23588 MiB |            401 MiB | ok        |
-|   114688 |   23796 MiB |     23806 MiB |            183 MiB | ok, tight |
-|   131072 |   23764 MiB |     23774 MiB |            215 MiB | ok, tight |
-|   163840 |           — |             — |                  — | OOM       |
-
-OOM at `ctx-size = 163840` included:
-
-```text
-cudaMalloc failed: out of memory
-failed to allocate CUDA0 buffer of size 902804096
-GGML_ASSERT(buffer) failed
-```
-
-MTP `qwen3_6-35b-a3b-mtp` was tested with the same base settings plus draft KV `q4_0`:
-
-| ctx-size | loaded VRAM | after request | free after request | result        |
-| -------: | ----------: | ------------: | -----------------: | ------------- |
-|    32768 |   23908 MiB |     23958 MiB |             31 MiB | ok, too tight |
-|    49152 |           — |             — |                  — | OOM           |
+nixbox runs `llama.cpp` on an NVIDIA RTX PRO 4000 Blackwell SFF Edition (24467 MiB VRAM), a Ryzen 7 5700X (8 cores, PCIe 4.0) and 64 GB RAM. the workload is two hermes instances (`hermes`, `hermina`) doing assistant work: tool calls, calendar, email sorting, morning reports, root-cause research. no coding. latency per request matters more than maximum quality.
 
 ## decision
 
-use `qwen3_6-35b-a3b` as the default local assistant model.
+default model: `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:Q4_K_XL` (alias `qwen3.6-35b-a3b-mtp`, `load-on-startup`), with:
 
-reasons:
+- `spec-type = "draft-mtp"`, `spec-draft-n-max = 2`
+- `parallel = 2`: one slot per hermes instance, 122880 tokens each
+- `ctx-size = 245760`
+- `ubatch-size = 2048`
+- no `n-gpu-layers`/`n-cpu-moe`: `--fit` (default on) moves expert tensors to system RAM until the model fits, 12 layers at this context
+- `load-mode = "none"` for all presets, so offloaded experts live in process memory instead of evictable page cache
+- `mmproj` stays on the GPU
+- `q8_0` KV cache
 
-- server latency is close to `gemma4-e4b` while using a larger Qwen MoE model.
-- generation speed is the best among configured non-MTP candidates: about 93 t/s in server testing.
-- output stops normally under the fixed short assistant prompt.
-- at `ctx-size = 32768` with `q8_0` KV it leaves about 1.27 GiB free after a short request.
+kept as secondary presets:
 
-keep these secondary models:
+- `UD-Q6_K` (alias `qwen3.6-35b-a3b-q6k-mtp`): higher quality, ~30% slower
+- `qwen3.6-27b-mtp`: dense 27B with MTP, pinned to `n-gpu-layers = 999` because fit's margin would move 3 of 66 layers to CPU although everything fits
 
-- `gemma4-e4b`: ultra-low-latency fallback.
-- `gemma4-12b`: small dense comparison model.
-- `qwen3_6-27b-mtp`: dense Qwen MTP comparison; MTP improves server latency over non-MTP 27B.
-- `qwopus3_6-27b-v2-mtp`: coding/reasoning experiment, not default assistant, because it tends to fill `max_tokens`.
+this replaces the earlier default of `UD-IQ4_XS` without MTP and without offload.
 
-reject `qwen3_6-35b-a3b-mtp` as default for now. it is too close to the VRAM limit with the current `q8_0` KV policy and `ctx-size = 32768`, and OOMs at `ctx-size = 49152`.
+## why Q4_K_XL over IQ4_XS
+
+unsloth's KLD benchmark for 35B-A3B (mean KLD vs BF16, lower is better):
+
+| quant      | file size | mean KLD |
+| ---------- | --------: | -------: |
+| UD-IQ4_XS  |   18.2 GB |   ~0.032 |
+| UD-Q4_K_S  |   21.4 GB |   ~0.015 |
+| UD-Q4_K_XL |   22.9 GB |   ~0.012 |
+| UD-Q5_K_S  |   25.5 GB |  ~0.0077 |
+| UD-Q5_K_XL |   27.2 GB |  ~0.0068 |
+| UD-Q6_K    |   30.0 GB |  ~0.0052 |
+
+IQ4_XS → Q4_K_XL is the largest quality step per GB. with MTP plus expert offload, Q4_K_XL runs at about the speed IQ4_XS had fully on the GPU without MTP.
+
+## measurements
+
+all runs except the last row: `ctx-size = 163840`, `parallel = 2`, MTP n-max 2, `q8_0` KV, `mmproj` on GPU. peak VRAM includes a 3840×2160 image request. decode is the mean of three 768-token answers at temp 1.0; run-to-run noise is about ±5%.
+
+| config                                   | peak VRAM | decode t/s | prompt t/s | process RAM |
+| ---------------------------------------- | --------: | ---------: | ---------: | ----------: |
+| IQ4_XS, no MTP, no offload (old default) | 20518 MiB |       99.4 |       2154 |           — |
+| Q4_K_XL `n-cpu-moe 4`                    |       OOM |          — |          — |           — |
+| Q4_K_XL `n-cpu-moe 6`, ubatch 512        | 23462 MiB |       97.4 |       1290 |           — |
+| Q4_K_XL `n-cpu-moe 8`, ubatch 512        | 22536 MiB |       92.1 |       1147 |           — |
+| Q4_K_XL `n-cpu-moe 12`, ubatch 512       | 20680 MiB |       81.3 |        944 |           — |
+| Q4_K_XL `n-cpu-moe 8`, ubatch 2048       | 23278 MiB |       87.1 |       2046 |     5.8 GiB |
+| Q4_K_XL fit (9 layers), ubatch 2048      | 23182 MiB |       86.2 |       1887 |     5.9 GiB |
+| Q6_K `n-cpu-moe 16`, ubatch 2048         | 23780 MiB |       61.8 |       1484 |    12.2 GiB |
+| Q6_K fit (18 layers), ubatch 2048        | 23068 MiB |       60.8 |       1318 |    12.8 GiB |
+| Q4_K_XL fit (12 layers), ctx 245760      | 23136 MiB |       82.6 |       1736 |     7.5 GiB |
+
+other findings:
+
+- `ubatch-size` 512 → 2048 raised prompt speed 68% for ~730 MiB VRAM. with offloaded experts, llama.cpp copies those weights over PCIe once per ubatch; larger ubatches mean fewer copies. decode is unaffected.
+- MTP on the MoE model: +23% decode fully on GPU (unsloth reports 1.15–1.25x for MoE). with 4 offloaded layers it still recovered the offload cost (106 vs 87 t/s without MTP). n-max 3 was slower than 2.
+- MTP on the dense 27B: 22.9 → 41.4 t/s (+81%), draft acceptance ~84%.
+- `load-mode none` vs mmap: same speed within noise.
+- `--fit` picks the same offload as manual tuning and adapts when `ctx-size` changes. it only adjusts options that are not set, so a global `n-gpu-layers` disables it.
+- KV cache costs ~15 MiB per 1k tokens of `ctx-size`.
+- with `parallel` set, KV is not unified: each slot gets `ctx-size / parallel`, and `/v1/models` reports the per-slot `n_ctx`, which hermes uses for its window. unified KV (`parallel` auto) shares one pool; VRAM is the same either way.
+- `--cache-ram` (default 8192 MiB) saves slot state to RAM and restores matching prefixes: a 13k-token prompt evicted from both slots came back in 0.1 s instead of 11.4 s. three conversations on two slots all kept their cache.
+- `mmproj` on CPU frees ~1.5 GB VRAM but a 4k image takes ~106 s to encode instead of ~10 s. rejected.
 
 ## accepted tradeoffs
 
-- `qwen3_6-35b-a3b` has less VRAM headroom than Gemma or 27B models, so only one large model should be loaded at a time.
-- `ctx-size = 32768` is the safe default. `65536` works for Qwen 35B-A3B but reduces free VRAM to about 837 MiB after a short request.
-- MTP is not universally better. it can improve t/s, but wall-clock latency still depends on output length and VRAM headroom.
+- at `ctx-size = 245760`, prompt speed is ~20% below the old IQ4_XS default and decode ~17% below. 163840 would recover ~5% decode and ~10% prompt speed but caps each slot at 81920.
+- VRAM headroom during an image request is ~1.3 GiB; fit keeps the margin when context changes.
+- offloaded experts use ~7.5 GiB of system RAM.
+- Q6_K would cost ~30% decode and ~27% prompt speed; its quality gain shows mostly in exact long outputs, which the assistant workload rarely needs.
+- hermes sends `reasoning_effort: medium`, which llama-server ignores (only `none` is handled), so thinking length is left to the model. observed requests generate 57–1067 tokens including the answer, so a reasoning budget was not worth adding.

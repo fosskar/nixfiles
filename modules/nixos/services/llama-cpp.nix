@@ -28,18 +28,10 @@
         "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" = {
           rev = "5bc3e238d916f48a861bac2f8a1990a0e9b7e98d";
           files = {
-            "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf" =
-              "df27a780435b7b45c2597536112ea3cb091f8544c3d0c3318d9f4258b31f7adf";
+            "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf" =
+              "55983c5a75a1ab969824077b3bb3de4146e82a9234072b48ad4e8f92ad3fe9f1";
+            "Qwen3.6-35B-A3B-UD-Q6_K.gguf" = "49935b04ad883c2f3d4da61f65b609d447dad67d0b08453b90abb09a1bb35464";
             "mmproj-F16.gguf" = "71f3cbc1f7cc0f30d09d41cfa924c0060827ebc33bf15ace7e86661e856f0160";
-          };
-        };
-        "unsloth/Muse-Glimmer-30B-GGUF" = {
-          rev = "988969716071c538d862a7c10a2419caaafe4d9b";
-          files = {
-            "Muse-Glimmer-30B-UD-Q4_K_XL.gguf" =
-              "82bece304887a313ece08400bc030f6066c7bff5b906b0cd40308ec8a409fd38";
-            "dflash-kquant.gguf" = "27d9a805fa29b943cfb6ad4843367cd4eaaaf06bd452d8cc3e00a2cd18a677bc";
-            "mmproj-kquant.gguf" = "f48b452316f9b213758e8659444029b961a24a07f99a1abb2a9f88b06f7c00c6";
           };
         };
       };
@@ -75,7 +67,6 @@
         settings = {
           host = listenAddress;
           port = listenPort;
-          n-gpu-layers = 999;
           metrics = true;
           models-max = 1;
           models-preset = (pkgs.formats.ini { }).generate "llama-cpp-models-preset.ini" {
@@ -84,6 +75,7 @@
               flash-attn = "on";
               cache-type-k = "q8_0";
               cache-type-v = "q8_0";
+              load-mode = "none";
             };
             "unsloth/Qwen3.6-27B-MTP-GGUF:IQ4_XS" = {
               model = modelPath "unsloth/Qwen3.6-27B-MTP-GGUF" "Qwen3.6-27B-IQ4_XS.gguf";
@@ -91,6 +83,8 @@
               alias = "qwen3.6-27b-mtp";
               # 96k + gpu mmproj measured at 22.0/24.5 GiB; 131k leaves no room for image encode
               ctx-size = 98304;
+              # fit's margin would move 3 of 66 layers to cpu although all fit
+              n-gpu-layers = 999;
               temp = 0.7;
               top-p = 0.8;
               top-k = 20;
@@ -103,14 +97,17 @@
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
             };
-            "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:IQ4_XS" = {
-              model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "Qwen3.6-35B-A3B-UD-IQ4_XS.gguf";
+            "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:Q4_K_XL" = {
+              model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
               mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
               alias = startupModelAlias;
               load-on-startup = true;
-              # unified kv shared by all 4 slots. 96k with mtp left 2990 MiB free;
-              # confirm fit with an image request before raising further
-              ctx-size = 163840;
+              # 2 slots of 122880 each; kv is only unified when parallel is auto.
+              # fit offloads 12 expert layers, peak 23136/24467 MiB with a 4k image.
+              # ubatch 2048 cuts per-chunk expert copies over pcie: +68% prompt speed
+              ctx-size = 245760;
+              parallel = 2;
+              ubatch-size = 2048;
               temp = 1.0;
               top-p = 0.95;
               top-k = 20;
@@ -119,25 +116,27 @@
               chat-template-kwargs = builtins.toJSON {
                 preserve_thinking = false;
               };
-              # mtp disabled: its draft kv (~1.2 GiB measured at 32k) buys more
-              # context for concurrent users than the ~2x decode speedup is worth
-              # spec-type = "draft-mtp";
-              # spec-draft-n-max = 3;
+              spec-type = "draft-mtp";
+              spec-draft-n-max = 2;
             };
-            "unsloth/Muse-Glimmer-30B-GGUF:Q4_K_XL" = {
-              model = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "Muse-Glimmer-30B-UD-Q4_K_XL.gguf";
-              mmproj = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "mmproj-kquant.gguf";
-              spec-draft-model = modelPath "unsloth/Muse-Glimmer-30B-GGUF" "dflash-kquant.gguf";
-              alias = "muse-glimmer-30b-dflash";
-              ctx-size = 98304;
+            "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:Q6_K" = {
+              model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "Qwen3.6-35B-A3B-UD-Q6_K.gguf";
+              mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
+              alias = "qwen3.6-35b-a3b-q6k-mtp";
+              # fit offloads 18 expert layers, peak 23068/24467 MiB with a 4k image
+              ctx-size = 163840;
+              parallel = 2;
+              ubatch-size = 2048;
               temp = 1.0;
               top-p = 0.95;
-              top-k = 64;
+              top-k = 20;
               min-p = 0.00;
               reasoning = "on";
-              spec-type = "draft-dflash";
-              spec-draft-n-max = 15;
-              spec-draft-ngl = 999;
+              chat-template-kwargs = builtins.toJSON {
+                preserve_thinking = false;
+              };
+              spec-type = "draft-mtp";
+              spec-draft-n-max = 2;
             };
           };
         };

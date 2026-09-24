@@ -20,7 +20,7 @@
       # the preset id /v1/models reports, not its alias: hermes lists the
       # configured name next to the discovered id, so an alias shows the one
       # model twice in the picker
-      localModel = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:IQ4_XS";
+      localModel = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:Q4_K_XL";
 
       # generated, not vendored, so the plugin tracks the pinned rtk. `rtk
       # rewrite` is the single source of truth; the plugin only bridges
@@ -97,12 +97,15 @@
           api = "https://llama-cpp.${flake-self.domains.local}/v1";
           api_key = "no-key-required";
           default_model = localModel;
+          context_length = null;
         };
-        # no context_length: hermes reads llama.cpp's meta.n_ctx from /v1/models,
-        # so the window follows ctx-size in the llamaCpp module
+        # null context_length: hermes reads llama.cpp's per-slot meta.n_ctx from
+        # /v1/models, so the window follows the llamaCpp module. the explicit null
+        # overrides stale pins left in the writable HERMES_HOME/config.yaml
         model = {
           default = localModel;
           provider = "local";
+          context_length = null;
         };
       };
     in
