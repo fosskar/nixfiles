@@ -40,7 +40,21 @@
     };
 
     yggdrasil = {
-      roles.default.tags = [ "all" ];
+      roles.default = {
+        tags = [ "all" ];
+        # clan-core sets the yggdrasil 0.3 name AllowedEncryptionPublicKeys, which
+        # 0.5 ignores, so inbound peering is open to any key. drop once
+        # https://git.clan.lol/clan/clan-core/issues/8144 is fixed; eval fails then
+        extraModules = [
+          (
+            { config, ... }:
+            {
+              services.yggdrasil.settings.AllowedPublicKeys =
+                config.services.yggdrasil.settings.AllowedEncryptionPublicKeys;
+            }
+          )
+        ];
+      };
     };
 
     netbird = {
