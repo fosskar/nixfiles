@@ -11,8 +11,11 @@
       cfg = config.services.hermes-remote;
       hermesAgent = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
       desktopPackage = pkgs.callPackage ./_desktop.nix {
-        inherit (hermesAgent.passthru) hermesNpmLib;
+        inherit (hermesAgent.passthru) hermesNpmLib installStampFile;
         inherit hermesAgent;
+        generatedIcons = pkgs.callPackage "${inputs.hermes-agent}/nix/icons.nix" {
+          venv = hermesAgent.passthru.hermesVenv;
+        };
         inherit (pkgs) electron;
       };
       portGuard = import ./_remote-port-guard.nix { inherit pkgs; };

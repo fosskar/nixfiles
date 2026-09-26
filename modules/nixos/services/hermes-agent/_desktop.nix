@@ -8,6 +8,8 @@
   hermesNpmLib,
   electron,
   hermesAgent,
+  installStampFile,
+  generatedIcons,
   ...
 }:
 let
@@ -31,6 +33,11 @@ let
     dirs = [
       "apps/desktop"
       "apps/shared"
+      "scripts/build/desktop.mjs"
+      "scripts/build/freshness.mjs"
+      "scripts/build/frontend-common.mjs"
+      "scripts/msix-shared.mjs"
+      "scripts/release-content-types.json"
     ];
     pname = "hermes-desktop-renderer";
     doCheck = true;
@@ -38,23 +45,26 @@ let
     buildPhase = ''
       runHook preBuild
 
-      mkdir -p apps/desktop/build
       patchShebangs .
 
-      pushd apps/desktop
-        npm exec -- tsc -b
-        npm exec -- vite build
-        node scripts/bundle-electron-main.mjs
-        ${lib.getExe hermesNpmLib.node-gyp} rebuild \
-          --directory=../../node_modules/node-pty \
-          --build-from-source \
-          --runtime=electron \
-          --target=${electron.version} \
-          --nodedir=${electron.headers} \
-          --disturl="" \
-          --offline
-        node scripts/stage-native-deps.mjs ${targetPlatform} ${targetArch}
-      popd
+      ${lib.getExe hermesNpmLib.node-gyp} rebuild \
+        --directory=node_modules/node-pty \
+        --build-from-source \
+        --runtime=electron \
+        --target=${electron.version} \
+        --arch=${targetArch} \
+        --nodedir=${electron.headers} \
+        --disturl="" \
+        --offline
+
+      node apps/desktop/scripts/stage-native-deps.mjs \
+        --source "$PWD" --out "$TMPDIR/desktop-native-deps" \
+        --platform ${targetPlatform} --arch ${targetArch}
+      node scripts/build/desktop.mjs \
+        --source "$PWD" --out "$PWD/apps/desktop/dist" \
+        --icons ${generatedIcons} --stamp ${installStampFile} \
+        --native-deps "$TMPDIR/desktop-native-deps" \
+        --platform ${targetPlatform} --typecheck
 
       runHook postBuild
     '';
@@ -78,7 +88,7 @@ let
       runHook preInstall
       mkdir -p $out
       cp -rn apps/desktop/dist $out/
-      echo '{"schemaVersion":1,"commit":"nix-dummy-commit","branch":"nix","dirty":false,"source":"nix"}' > $out/install-stamp.json
+      cp ${installStampFile} $out/install-stamp.json
       cp -n apps/desktop/package.json $out/
       runHook postInstall
     '';
