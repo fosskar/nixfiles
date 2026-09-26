@@ -388,7 +388,10 @@
             }
           ];
 
-          # netbird proxy needs zero timeouts for long-lived tunnel connections
+          # signal and management.ProxyService are bidirectional grpc streams: a
+          # nonzero readTimeout cuts their request body. traefik has no
+          # header-only timeout, so connections that never send a byte are held
+          # forever; traefik-connlimit bounds that per source address
           services.traefik.staticConfigOptions = {
             entryPoints.websecure = {
               allowACMEByPass = true;
@@ -402,6 +405,20 @@
               responseHeaderTimeout = "0s";
               idleConnTimeout = "0s";
             };
+          };
+
+          # busiest legitimate source held 14 connections in 2026-09
+          networking.nftables.tables.traefik-connlimit = {
+            family = "inet";
+            content = ''
+              set conn4 { type ipv4_addr; flags dynamic; size 65535; }
+              set conn6 { type ipv6_addr; flags dynamic; size 65535; }
+              chain input {
+                type filter hook input priority filter - 1; policy accept;
+                tcp dport 443 ct state new add @conn4 { ip saddr ct count over 128 } counter reject with tcp reset
+                tcp dport 443 ct state new add @conn6 { ip6 saddr and ffff:ffff:ffff:ffff:: ct count over 128 } counter reject with tcp reset
+              }
+            '';
           };
 
           services.traefik.dynamicConfigOptions = {
