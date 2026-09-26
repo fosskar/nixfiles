@@ -467,6 +467,26 @@
         "type": "github"
       }
     },
+    "flake-utils_4": {
+      "inputs": {
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "flakelet": {
       "inputs": {
         "adios": "adios",
@@ -515,7 +535,7 @@
     },
     "gomod2nix": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils_3",
         "nixpkgs": [
           "tangled",
           "nixpkgs"
@@ -735,6 +755,27 @@
       "original": {
         "owner": "nix-community",
         "repo": "lanzaboote",
+        "type": "github"
+      }
+    },
+    "laya": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790336131,
+        "narHash": "sha256-gvmO+8HKG6NQYP6fqhiNXj6MKtGpC6kojb7wdsSKMoc=",
+        "owner": "NandhaKishorM",
+        "repo": "laya",
+        "rev": "4066d5d5fbf08b66c6757ddeedbd797bd7655bc0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NandhaKishorM",
+        "repo": "laya",
         "type": "github"
       }
     },
@@ -1418,6 +1459,7 @@
         "i-have-adhd": "i-have-adhd",
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
+        "laya": "laya",
         "llm-agents": "llm-agents",
         "microvm": "microvm",
         "mics-skills": "mics-skills",
@@ -1717,7 +1759,7 @@
     },
     "voxtype": {
       "inputs": {
-        "flake-utils": "flake-utils_3",
+        "flake-utils": "flake-utils_4",
         "nixpkgs": [
           "nixpkgs"
         ]

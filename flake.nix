@@ -61,6 +61,12 @@
       inputs.nixbot.follows = "nixbot";
     };
 
+    laya = {
+      url = "github:NandhaKishorM/laya";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.inputs.systems.follows = "systems";
+    };
+
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";

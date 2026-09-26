@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Decide</title>
+    <link rel="stylesheet" href="theme.css" />
+    <style>
+      :root {
+        --soft: color-mix(in srgb, var(--accent) 14%, transparent);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 16px/1.45 var(--font);
+      }
+      .app {
+        height: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: 16px;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px 24px;
+      }
+      h1 {
+        font-size: 28px;
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
+      .lead {
+        color: var(--muted);
+        margin: 0;
+      }
+      .examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+      .examples span {
+        font-size: 14px;
+        color: var(--muted);
+        margin-right: 2px;
+      }
+      .examples button {
+        border: 1px solid var(--line);
+        background: var(--card);
+        color: inherit;
+        font: inherit;
+        font-size: 14px;
+        border-radius: 999px;
+        padding: 4px 12px;
+        cursor: pointer;
+      }
+      .examples button:hover {
+        border-color: var(--accent);
+      }
+      .panels {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 16px;
+        min-height: 0;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 18px;
+        padding: 20px;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .form {
+        overflow-y: auto;
+        container-type: inline-size;
+      }
+      .label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .step::before {
+        content: attr(data-n) " · ";
+        color: var(--accent);
+      }
+      .types {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .type {
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 8px;
+        cursor: pointer;
+        background: none;
+        color: inherit;
+        font: inherit;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .type[aria-pressed="true"] {
+        border-color: var(--accent);
+        background: var(--soft);
+      }
+      input[type="text"],
+      textarea {
+        width: 100%;
+        font: inherit;
+        color: inherit;
+        background: var(--field);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 9px 12px;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -1px;
+        border-color: transparent;
+      }
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      @container (max-width: 440px) {
+        .options {
+          grid-template-columns: 1fr;
+        }
+      }
+      .opt {
+        display: flex;
+        gap: 6px;
+      }
+      .opt button {
+        flex: none;
+        width: 38px;
+        border: 1px solid var(--line);
+        background: none;
+        color: var(--muted);
+        border-radius: 10px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4px 12px;
+        margin-top: 6px;
+      }
+      .add {
+        border: 0;
+        background: none;
+        color: var(--accent);
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 0;
+        white-space: nowrap;
+      }
+      .hint {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .grow {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 110px;
+      }
+      .grow textarea {
+        flex: 1;
+        resize: none;
+      }
+      .decide {
+        flex: 1;
+        border: 0;
+        border-radius: 14px;
+        padding: 16px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        font: inherit;
+        font-size: 20px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .decide:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      .actions {
+        flex: none;
+        display: flex;
+        gap: 8px;
+      }
+      .clear {
+        flex: none;
+        border: 2px solid var(--line);
+        border-radius: 14px;
+        padding: 0 20px;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .clear:hover {
+        color: var(--ink);
+        border-color: var(--muted);
+      }
+      .result {
+        justify-content: center;
+        container-type: inline-size;
+        padding: 28px;
+      }
+      .empty {
+        text-align: center;
+        color: var(--muted);
+      }
+      .out {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .hero {
+        text-align: center;
+      }
+      .answer {
+        font-size: clamp(44px, 18cqi, 132px);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0;
+        line-height: 1;
+        overflow-wrap: anywhere;
+      }
+      .answer.yes {
+        color: var(--yes);
+      }
+      .answer.no {
+        color: var(--no);
+      }
+      .sure {
+        color: var(--muted);
+        font-size: clamp(16px, 4cqi, 22px);
+        margin: 12px 0 0;
+      }
+      .bars {
+        margin-top: 28px;
+      }
+      .bar {
+        margin: 14px 0;
+      }
+      .bar div:first-child {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 17px;
+      }
+      .track {
+        height: 12px;
+        background: var(--field);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 4px;
+      }
+      .fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 999px;
+      }
+      .warn {
+        flex: none;
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0;
+        text-align: center;
+      }
+      .error {
+        color: var(--no);
+        text-align: center;
+      }
+      @media (max-width: 700px) {
+        html,
+        body {
+          height: auto;
+        }
+        .app {
+          height: auto;
+        }
+        .panels {
+          grid-template-columns: 1fr;
+        }
+        .options {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div>
+          <h1>Decide</h1>
+          <p class="lead">
+            Ask a question about a text and get an answer in a moment.
+          </p>
+        </div>
+        <div class="examples" id="examples"><span>Try:</span></div>
+      </header>
+
+      <div class="panels">
+        <div class="card form">
+          <div>
+            <div class="label step">What kind of answer?</div>
+            <div class="types">
+              <button class="type" data-type="noul" aria-pressed="true">
+                yes or no
+              </button>
+              <button class="type" data-type="choice" aria-pressed="false">
+                pick one
+              </button>
+              <button class="type" data-type="score" aria-pressed="false">
+                rate it
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="label step">Your question</div>
+            <input
+              type="text"
+              id="question"
+              placeholder="e.g. Is the person happy?"
+            />
+          </div>
+
+          <div id="options-box" hidden>
+            <div class="label step" id="options-title">Possible answers</div>
+            <div class="options" id="options"></div>
+            <div class="row">
+              <button class="add" id="add-option">+ Add answer</button>
+              <span class="hint" id="options-hint"></span>
+            </div>
+          </div>
+
+          <div class="grow">
+            <div class="label step">The text to decide about</div>
+            <textarea
+              id="text"
+              placeholder="Paste a message, a recipe, a review …"
+            ></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="clear" id="clear">clear</button>
+            <button class="decide" id="decide">Decide</button>
+          </div>
+        </div>
+
+        <div class="card result">
+          <div class="out" id="result"></div>
+          <p class="warn">
+            Answers come from a small model and can be wrong. Double-check
+            anything important.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const $ = (s) => document.querySelector(s);
+      let type = "noul";
+
+      const EXAMPLES = [
+        {
+          label: "Veggie or not?",
+          type: "noul",
+          question: "Does this recipe contain meat?",
+          text: "Fry the onions, add the minced beef and tomatoes, and let it simmer for an hour.",
+        },
+        {
+          label: "Movie genre",
+          type: "choice",
+          question: "Which movie genre fits this plot?",
+          options: ["Horror", "Comedy", "Romance", "Sci-fi"],
+          text: "A lonely robot left to clean up an abandoned Earth falls in love with a sleek probe sent to find signs of life.",
+        },
+        {
+          label: "What mood?",
+          type: "choice",
+          question: "What mood is this person in?",
+          options: ["Happy", "Grumpy", "Excited", "Sleepy"],
+          text: "I just burnt the toast, missed the bus and now it's raining. Great start to the day.",
+        },
+        {
+          label: "How spicy?",
+          type: "score",
+          question: "How spicy does this sound?",
+          options: ["Mild", "Medium", "Hot", "Dragon breath"],
+          text: "Made with ghost peppers and extra chili flakes. Eat at your own risk!",
+        },
+      ];
+
+      function empty() {
+        $("#result").innerHTML =
+          `<p class="empty">Your answer will show up here.</p>`;
+      }
+
+      function setType(t) {
+        type = t;
+        document
+          .querySelectorAll(".type")
+          .forEach((b) => b.setAttribute("aria-pressed", b.dataset.type === t));
+        $("#options-box").hidden = t === "noul";
+        if (t === "choice") {
+          $("#options-title").textContent = "Possible answers";
+          $("#options-hint").textContent = "The answer will be one of these.";
+        } else if (t === "score") {
+          $("#options-title").textContent = "Levels, from lowest to highest";
+          $("#options-hint").textContent = "Start with the lowest level.";
+        }
+        [...document.querySelectorAll(".step")]
+          .filter((l) => !l.closest("[hidden]"))
+          .forEach((l, i) => (l.dataset.n = i + 1));
+        if (t !== "noul" && optionValues().length === 0) {
+          setOptions(t === "score" ? ["Low", "Medium", "High"] : ["", ""]);
+        }
+        empty();
+      }
+
+      function optionRow(value) {
+        const row = document.createElement("div");
+        row.className = "opt";
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = value;
+        input.placeholder = "Answer";
+        const del = document.createElement("button");
+        del.textContent = "×";
+        del.title = "Remove";
+        del.onclick = () => row.remove();
+        row.append(input, del);
+        return row;
+      }
+
+      function setOptions(values) {
+        $("#options").replaceChildren(...values.map(optionRow));
+      }
+
+      function optionValues() {
+        return [...document.querySelectorAll("#options input")]
+          .map((i) => i.value.trim())
+          .filter(Boolean);
+      }
+
+      function esc(s) {
+        return String(s).replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      }
+
+      function bar(label, p) {
+        const pct = Math.round(p * 100);
+        return `<div class="bar"><div><span>${esc(label)}</span><span>${pct}%</span></div>
+    <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+      }
+
+      function show(html) {
+        $("#result").innerHTML = html;
+      }
+
+      async function decide() {
+        const question = $("#question").value.trim();
+        const text = $("#text").value.trim();
+        const options = optionValues();
+        if (!question)
+          return show(`<p class="error">Please write a question.</p>`);
+        if (!text)
+          return show(
+            `<p class="error">Please add the text to decide about.</p>`,
+          );
+        if (type !== "noul" && options.length < 2)
+          return show(`<p class="error">Please add at least two answers.</p>`);
+        if (new Set(options).size !== options.length)
+          return show(`<p class="error">Each answer must be different.</p>`);
+
+        const q = { type, instructions: question };
+        if (type === "choice")
+          q.criteria = Object.fromEntries(options.map((o) => [o, ""]));
+        if (type === "score") q.criteria = options;
+
+        const btn = $("#decide");
+        btn.disabled = true;
+        btn.textContent = "Thinking …";
+        try {
+          const res = await fetch("/predict", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ state: { text }, questions: { q } }),
+          });
+          const data = await res.json();
+          if (!res.ok)
+            throw new Error(
+              data.detail ? JSON.stringify(data.detail) : res.statusText,
+            );
+          render(data.answers.q);
+        } catch (e) {
+          show(`<p class="error">Something went wrong: ${esc(e.message)}</p>`);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Decide";
+        }
+      }
+
+      function render(a) {
+        let answer,
+          cls = "",
+          sure,
+          entries;
+        if (a.type === "noul") {
+          const yes = a.noul >= 0.5;
+          answer = yes ? "Yes" : "No";
+          cls = yes ? "yes" : "no";
+          sure = yes ? a.noul : 1 - a.noul;
+          entries = [
+            ["Yes", a.noul],
+            ["No", 1 - a.noul],
+          ];
+        } else if (a.type === "choice") {
+          answer = a.choice;
+          sure = a.answer_confidence;
+          entries = Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]);
+        } else {
+          entries = Object.entries(a.probabilities).map(([i, p]) => [
+            a.legend[i],
+            p,
+          ]);
+          [answer, sure] = entries.reduce((m, e) => (e[1] > m[1] ? e : m));
+        }
+        show(`<div class="hero"><p class="answer ${cls}">${esc(answer)}</p><p class="sure">${Math.round(sure * 100)}% sure</p></div>
+    <div class="bars">${entries.map(([k, p]) => bar(k, p)).join("")}</div>`);
+      }
+
+      document
+        .querySelectorAll(".type")
+        .forEach((b) => (b.onclick = () => setType(b.dataset.type)));
+      $("#add-option").onclick = () => $("#options").append(optionRow(""));
+      $("#decide").onclick = decide;
+      $("#clear").onclick = () => {
+        $("#question").value = "";
+        $("#text").value = "";
+        setType(type);
+        setOptions(type === "score" ? ["", "", ""] : ["", ""]);
+      };
+
+      $("#examples").append(
+        ...EXAMPLES.map((ex) => {
+          const b = document.createElement("button");
+          b.textContent = ex.label;
+          b.onclick = () => {
+            setOptions(ex.options || []);
+            setType(ex.type);
+            $("#question").value = ex.question;
+            $("#text").value = ex.text;
+          };
+          return b;
+        }),
+      );
+
+      setType("noul");
+    </script>
+  </body>
+</html>
