@@ -157,7 +157,8 @@
                   pkgs.coreutils
                 ]
               }
-              mkdir -p /var/backup/netbird-server
+              umask 077
+              install -d -m 0700 /var/backup/netbird-server
               # access_log_entries is a rolling 7-day request log: ~99% of store.db
               # and a constant writer, so a whole-file .backup restarts forever and
               # never completes. dump every other table as sql instead.
