@@ -50,6 +50,13 @@ _: {
         };
         roles = {
           client = {
+            # clan-core's restore pipes `y` into borg, which would also accept a
+            # repository swapped for an unknown unencrypted one; answer no here
+            extraModules = [
+              {
+                services.borgbackup.jobs.storagebox.environment.BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK = "no";
+              }
+            ];
             machines = {
               "gateway".settings = {
                 startAt = "*-*-* 04:00:00";
