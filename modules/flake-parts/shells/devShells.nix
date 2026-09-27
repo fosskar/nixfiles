@@ -33,7 +33,6 @@
             inputs'.nixbot.packages.nixbot-cli
             pkgs.hcloud
             pkgs.nix-fast-build
-            pkgs.radicle-node
           ]
           ++ scripts;
         };
