@@ -118,6 +118,14 @@
                 # boot-time tmpfiles can't resolve the DynamicUser `garage`.
                 placeNodeKey = pkgs.writeShellScript "garage-place-node-key" ''
                   set -euo pipefail
+                  # both paths are writable by the garage uid; install would follow a
+                  # symlink planted there and chown its target
+                  for d in ${metadataDir} ${settings.dataPath}; do
+                    if [ -L "$d" ]; then
+                      echo "garage-place-node-key: $d is a symlink, refusing" >&2
+                      exit 1
+                    fi
+                  done
                   install -d -m 0700 -o garage -g garage ${metadataDir} ${settings.dataPath}
                   install -m 0600 -o garage -g garage \
                     ${nodeKeyGen.files."node_key_${hostName}".path} ${metadataDir}/node_key
