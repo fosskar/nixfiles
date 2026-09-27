@@ -43,7 +43,6 @@
 
       services.radicle-mirror = {
         enable = true;
-        package = flake-self.inputs.radicle-mirror.packages.${pkgs.stdenv.hostPlatform.system}.default;
         addr = "127.0.0.1:${toString mirrorPort}";
         ghAppId = 4631493;
         ghAppKeyPath = "${credentialsDirectory}/gh-app-key";
