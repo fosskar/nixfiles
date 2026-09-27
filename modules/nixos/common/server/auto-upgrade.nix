@@ -50,7 +50,9 @@
             echo "autoupgrade: no canonical main in $storage yet; skipping"
             exit 1
           fi
-          remote=$(git -c safe.directory='*' -C "$storage" log -1 --format=%ct "$rev")
+          # storage and its git config belong to the radicle uid; a repo-level
+          # log.showSignature would run its gpg.program here as root
+          remote=$(git -c safe.directory='*' -C "$storage" log -1 --no-show-signature --format=%ct "$rev")
           current=$(stat -c %Y "${currentGeneration}")
           if [ "$remote" -le "$current" ]; then
             echo "autoupgrade: main $rev ($remote) predates the running generation ($current); skipping"
