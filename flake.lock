@@ -1305,11 +1305,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790386386,
-        "narHash": "sha256-xhp+Xnw/uR8kzYsvyngz/rRTb6HcGBVjLp5YUNoKpD0=",
+        "lastModified": 1790472819,
+        "narHash": "sha256-fM4iWntIQ4bFknt3IIg0e14k8YUKo8CRvkhE0oYbK5Y=",
         "owner": "fosskar",
         "repo": "pi-pack",
-        "rev": "dbcca95193b381f3abad6e65712fe71f13bc6c3a",
+        "rev": "cb0e1598c334cff2e71c4f17271d210b7e561dc8",
         "type": "github"
       },
       "original": {
