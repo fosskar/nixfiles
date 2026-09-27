@@ -766,11 +766,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790336131,
-        "narHash": "sha256-gvmO+8HKG6NQYP6fqhiNXj6MKtGpC6kojb7wdsSKMoc=",
+        "lastModified": 1790537237,
+        "narHash": "sha256-RMkI9YX78gQhHR38xvnFqRAL2OCVvWh9EQhmNg10iXs=",
         "owner": "NandhaKishorM",
         "repo": "laya",
-        "rev": "4066d5d5fbf08b66c6757ddeedbd797bd7655bc0",
+        "rev": "9d955671415fc19f069b9cc998928075c1f255ec",
         "type": "github"
       },
       "original": {
