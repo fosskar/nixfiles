@@ -18,11 +18,12 @@
       # weights in place, and llama.cpp's etag check then silently re-downloads
       # the swapped file on the next model load
       models = {
-        "unsloth/Qwen3.6-27B-MTP-GGUF" = {
-          rev = "5cb35eb3dcbf52dbce5f87dbc64df6aaffadcace";
+        "unsloth/Qwen3.8-27B-GGUF" = {
+          rev = "4ca720788d1e01f1bff70c033e0d0028fd02e502";
           files = {
-            "Qwen3.6-27B-IQ4_XS.gguf" = "89f2c7e4f9f91d17ba9df6f0eef67cb909bc67d91cd035291be35cd88f1848ba";
-            "mmproj-F16.gguf" = "eacf610d1ee4bd5ed0197a0777dd8f4fceb8eefa27009067c7d496cb68fbde45";
+            "Qwen3.8-27B-UD-Q4_K_M.gguf" = "322e194ff79741c7baa497c240f677f54b201b0efab44ca8e50f122b39123482";
+            "MTP/mtp-Qwen3.8-27B-Q4_0.gguf" = "50d9ce5a6da381bbcfb31061cf73df94a90e6faf8efeddee379a9cb8f1501c6e";
+            "mmproj-F16.gguf" = "cbb841a9ee0636b2ec172f5bb8df2ea8dfeb01e90fe7c6126581d662a0b4e43e";
           };
         };
         "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" = {
@@ -77,22 +78,27 @@
               cache-type-v = "q8_0";
               load-mode = "none";
             };
-            "unsloth/Qwen3.6-27B-MTP-GGUF:IQ4_XS" = {
-              model = modelPath "unsloth/Qwen3.6-27B-MTP-GGUF" "Qwen3.6-27B-IQ4_XS.gguf";
-              mmproj = modelPath "unsloth/Qwen3.6-27B-MTP-GGUF" "mmproj-F16.gguf";
-              alias = "qwen3.6-27b-mtp";
-              # 96k + gpu mmproj measured at 22.0/24.5 GiB; 131k leaves no room for image encode
-              ctx-size = 98304;
-              # fit's margin would move 3 of 66 layers to cpu although all fit
+            "unsloth/Qwen3.8-27B-GGUF:Q4_K_M" = {
+              model = modelPath "unsloth/Qwen3.8-27B-GGUF" "Qwen3.8-27B-UD-Q4_K_M.gguf";
+              mmproj = modelPath "unsloth/Qwen3.8-27B-GGUF" "mmproj-F16.gguf";
+              # vision is rare; encoding on the cpu frees vram for context
+              mmproj-offload = false;
+              spec-draft-model = modelPath "unsloth/Qwen3.8-27B-GGUF" "MTP/mtp-Qwen3.8-27B-Q4_0.gguf";
+              alias = "qwen3.8-27b-mtp";
+              # one slot per hermes instance, both drawing on the shared 90k
+              ctx-size = 92160;
+              parallel = 2;
+              kv-unified = true;
               n-gpu-layers = 999;
-              temp = 0.7;
-              top-p = 0.8;
+              temp = 1.0;
+              top-p = 0.95;
               top-k = 20;
               min-p = 0.00;
-              presence-penalty = 1.5;
-              reasoning = "off";
+              presence-penalty = 0.0;
+              reasoning = "on";
               chat-template-kwargs = builtins.toJSON {
-                enable_thinking = false;
+                reasoning_effort = "low";
+                preserve_thinking = false;
               };
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
