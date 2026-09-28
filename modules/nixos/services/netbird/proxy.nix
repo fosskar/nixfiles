@@ -279,12 +279,19 @@
               RestrictSUIDSGID = true;
               AmbientCapabilities = [ "CAP_NET_ADMIN" ];
               CapabilityBoundingSet = [ "CAP_NET_ADMIN" ];
-              User = "netbird";
-              Group = "netbird";
+              # not netbird: the internet-facing proxy must not read netbird-server state
+              User = "netbird-proxy";
+              Group = "netbird-proxy";
             };
 
             stopIfChanged = false;
           };
+
+          users.users.netbird-proxy = {
+            isSystemUser = true;
+            group = "netbird-proxy";
+          };
+          users.groups.netbird-proxy = { };
 
           systemd.tmpfiles.rules = [ "d ${credentialsDir} 0700 root root -" ];
 
@@ -494,8 +501,8 @@
           preservation.preserveAt."/persist".directories = [
             {
               directory = "/var/lib/netbird-proxy";
-              user = "netbird";
-              group = "netbird";
+              user = "netbird-proxy";
+              group = "netbird-proxy";
             }
             {
               directory = credentialsDir;
