@@ -126,6 +126,9 @@
                   # nothing on the public domain uses forward-auth, only oidc on
                   # this host; a domain-wide cookie reached every public upstream
                   domain = publicHost;
+                  # a new name: browsers still hold the old domain-wide
+                  # authelia_session and send it first, which loops the login
+                  name = "authelia_session_portal";
                   authelia_url = "https://${publicHost}";
                 }
               ];
