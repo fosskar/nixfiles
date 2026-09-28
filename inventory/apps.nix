@@ -23,6 +23,9 @@
         # through NIP-OA owner delegation. only the operator and headless
         # agents without a desktop owner attestation need roster entries
         requireRelayMembership = true;
+        # false lets any REST request claim a pubkey via X-Pubkey, including
+        # the admin's; the desktop, cli and agents sign NIP-98 anyway
+        requireAuthToken = true;
         members = {
           # simon
           "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2" = "admin";
