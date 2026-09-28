@@ -60,7 +60,7 @@
 
         # computer_use is in every platform composite and gated on this
         # variable; no toolset entry needed
-        environment = {
+        managed.environment = {
           DISPLAY = display;
           HERMES_CUA_DRIVER_CMD = lib.getExe driver;
           # dbus-run-session finds xfconfd only through XDG_DATA_DIRS; without

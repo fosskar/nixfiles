@@ -41,12 +41,12 @@
 
       # upstream's recommended buzz defaults: only the final answer reaches the
       # channel, not the tool log. telegram and email already default to this
-      config.services.hermes-agent.settings.display.platforms.buzz = {
+      config.services.hermes-agent.managed.settings.display.platforms.buzz = {
         interim_assistant_messages = false;
         tool_progress = "off";
       };
 
-      config.services.hermes-agent.environment = {
+      config.services.hermes-agent.managed.environment = {
         BUZZ_RELAY_URL = cfg.relayUrl;
         # pinned store path; the adapter's fallback chain (PATH, ~/bin/buzz)
         # never fires

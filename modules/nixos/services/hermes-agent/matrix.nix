@@ -28,7 +28,7 @@ _: {
         };
       };
 
-      config.services.hermes-agent.environment = {
+      config.services.hermes-agent.managed.environment = {
         MATRIX_HOMESERVER = cfg.homeserver;
         MATRIX_USER_ID = cfg.userId;
         MATRIX_DEVICE_ID = cfg.deviceId;

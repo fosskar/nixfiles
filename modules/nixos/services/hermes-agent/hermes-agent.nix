@@ -66,6 +66,20 @@
 
       catalogPlugins = map catalogPlugin cfg.catalogPlugins;
 
+      settingsFormat = pkgs.formats.yaml { };
+
+      # hermes' managed scope (hermes_cli/managed_scope.py): these keys are
+      # pinned over HERMES_HOME/config.yaml and .env, and the agent and the
+      # dashboard cannot change them. upstream's settings and environment stay
+      # empty, so activation copies no nix value into HERMES_HOME and a key
+      # removed here leaves nothing behind
+      managedDir = pkgs.linkFarm "hermes-managed" {
+        "config.yaml" = settingsFormat.generate "hermes-managed-config.yaml" cfg.managed.settings;
+        ".env" = pkgs.writeText "hermes-managed.env" (
+          lib.concatLines (lib.mapAttrsToList (name: value: "${name}=${value}") cfg.managed.environment)
+        );
+      };
+
       defaults = {
         timezone = "Europe/Berlin";
         display.personality = "none";
@@ -144,10 +158,23 @@
           type = lib.types.attrsOf lib.types.raw;
           default = { };
           description = ''
-            merged over this module's settings defaults. upstream's settings type
-            deep-merges definitions but ignores mkDefault/mkForce priorities, so
-            precedence is spelled out here rather than left to module order.
+            merged over this module's settings defaults. precedence is spelled
+            out here rather than left to module order.
           '';
+        };
+
+        managed = {
+          settings = lib.mkOption {
+            inherit (settingsFormat) type;
+            default = { };
+            description = "config.yaml keys pinned through hermes' managed scope.";
+          };
+
+          environment = lib.mkOption {
+            type = lib.types.attrsOf lib.types.str;
+            default = { };
+            description = ".env entries pinned through hermes' managed scope. not secret: the store is world-readable.";
+          };
         };
       };
 
@@ -176,22 +203,16 @@
 
           # skillDirs comes from the deployment's skill selection, so it wins
           # over overrides
-          settings = lib.recursiveUpdate (lib.recursiveUpdate defaults cfg.overrides) (
+          managed.settings = lib.recursiveUpdate (lib.recursiveUpdate defaults cfg.overrides) (
             lib.optionalAttrs (cfg.skillDirs != [ ]) { skills.external_dirs = cfg.skillDirs; }
           );
 
-          environment.SEARXNG_URL = "https://search.${flake-self.domains.local}/";
-
+          managed.environment.SEARXNG_URL = "https://search.${flake-self.domains.local}/";
         };
 
-        # managed scope: the declared settings are pinned per leaf from
-        # /etc/hermes, and everything else in HERMES_HOME/config.yaml stays
-        # writable by the agent and the ui. HERMES_MANAGED=false below lifts
-        # upstream's blanket refusal of config writes; hermes update stays
-        # refused by its own /nix/store check
-        environment.etc."hermes/config.yaml".source =
-          (pkgs.formats.yaml { }).generate "hermes-managed-config.yaml"
-            config.services.hermes-agent.settings;
+        # HERMES_MANAGED=false below lifts upstream's blanket refusal of
+        # config writes; managedDir pins only the declared keys. hermes update
+        # stays refused by its own /nix/store check
 
         # reinstalled on every activation: the soul is declarative, agent edits
         # do not survive
@@ -209,7 +230,7 @@
         # -i, not -H: a login shell resets PATH to hermes' own profile. with the
         # caller's PATH the agent's packages are not found and unreadable /root
         # entries turn "command not found" into EACCES
-        environment.shellAliases.hermes = "sudo -iu hermes env HERMES_MANAGED=false HERMES_LAZY_INSTALL_TARGET=${stateDir}/lazy-deps NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
+        environment.shellAliases.hermes = "sudo -iu hermes env HERMES_MANAGED=false HERMES_MANAGED_DIR=${managedDir} HERMES_LAZY_INSTALL_TARGET=${stateDir}/lazy-deps NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
 
         systemd.services.hermes-dashboard = lib.mkIf cfg.dashboard.enable {
           description = "Hermes Agent dashboard";
@@ -221,6 +242,7 @@
             HOME = stateDir;
             HERMES_HOME = "${stateDir}/.hermes";
             HERMES_MANAGED = "false";
+            HERMES_MANAGED_DIR = "${managedDir}";
             HERMES_LAZY_INSTALL_TARGET = "${stateDir}/lazy-deps";
             NPM_CONFIG_PREFIX = "${stateDir}/npm";
             VIRTUAL_ENV = "${stateDir}/venv";
@@ -288,6 +310,7 @@
             # system users otherwise get a session that does not start a user manager.
             XDG_SESSION_CLASS = "background";
             HERMES_MANAGED = lib.mkForce "false";
+            HERMES_MANAGED_DIR = "${managedDir}";
             HERMES_LAZY_INSTALL_TARGET = "${stateDir}/lazy-deps";
             NPM_CONFIG_PREFIX = "${stateDir}/npm";
             VIRTUAL_ENV = "${stateDir}/venv";

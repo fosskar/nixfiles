@@ -52,7 +52,7 @@
               agentSettings = lib.mkOption {
                 type = lib.types.attrsOf lib.types.raw;
                 default = { };
-                description = "merged into services.hermes-agent.settings: model, providers, tts, plugins, ...";
+                description = "merged into services.hermes-agent.managed.settings: model, providers, tts, plugins, ...";
               };
 
               skills = lib.mkOption {
@@ -310,9 +310,7 @@
                     services = [
                       config.nixfiles.hermes.${instanceName}.module
                       {
-                        # settings deep-merges definitions but does not resolve
-                        # priorities, so mkIf would land in the json verbatim
-                        services.hermes-agent.settings.mcp_servers = lib.optionalAttrs mcp {
+                        services.hermes-agent.managed.settings.mcp_servers = lib.mkIf mcp {
                           fencr-gateway.url = "https://mcp.fencr/mcp/";
                         };
                         services.hermes-agent.dashboardTokenFile = lib.mkIf settings.dashboard.enable "/run/agent-secrets/${instanceName}-dashboard-token";
