@@ -106,7 +106,8 @@
                 clan.core.vars.generators.netbird-server = {
                   files."relay-secret" = { };
                   files."encryption-key" = { };
-                  files."owner-password" = { }; # plain password — for dashboard login
+                  # plain password for dashboard login; the host only needs the hash
+                  files."owner-password".deploy = false;
                   files."owner-password-hash".secret = false;
 
                   runtimeInputs = [
