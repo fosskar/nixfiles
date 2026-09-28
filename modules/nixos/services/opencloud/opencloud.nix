@@ -86,36 +86,18 @@
       # web extensions for WEB_ASSET_APPS_PATH; restart to pick up changes.
       # each release zip has a single top-level dir, so fetchzip strips it and
       # linkFarm gives every app its own dir named like its apps.yaml key
-      webExtension =
-        {
-          pname,
-          version,
-          hash,
-        }:
-        {
-          name = pname;
-          path = pkgs.fetchzip {
-            url = "https://github.com/opencloud-eu/web-extensions/releases/download/${pname}-v${version}/${pname}-${version}.zip";
-            inherit hash;
-          };
-        };
-      webApps = pkgs.linkFarm "opencloud-web-apps" [
-        (webExtension {
-          pname = "maps";
-          version = "3.1.0";
-          hash = "sha256-rVZaF1OiJvW/XmBh7tUgTxsQ+0cn9WON2tRg+5SeTM4=";
-        })
-        (webExtension {
-          pname = "unzip";
-          version = "2.2.0";
-          hash = "sha256-xAUKQSSVN+LdO+QX/2mU8kmUn4fcjNQhB0HB9Gi0V3Q=";
-        })
-        (webExtension {
-          pname = "pastebin";
-          version = "2.1.0";
-          hash = "sha256-o1ErQWjqLlEpfO1BrfSCtUJxr8so1bHd4hgh2v/jyOo=";
-        })
-      ];
+      webApps = pkgs.linkFarm "opencloud-web-apps" (
+        map
+          (app: {
+            name = app;
+            path = pkgs.local."opencloud-web-${app}".src;
+          })
+          [
+            "maps"
+            "unzip"
+            "pastebin"
+          ]
+      );
       mapsHost = "maps.${flake-self.domains.local}";
     in
     {

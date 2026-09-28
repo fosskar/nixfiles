@@ -10,13 +10,7 @@
       configFile = config.environment.etc."crowdsec/config.yaml".source;
       apiKeyFile = "/var/lib/crowdsec/traefik-bouncer.key";
       pluginModule = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
-      # local plugin pinned by hash instead of a runtime download by tag
-      pluginSrc = pkgs.fetchFromGitHub {
-        owner = "maxlerebourg";
-        repo = "crowdsec-bouncer-traefik-plugin";
-        tag = "v1.7.1";
-        hash = "sha256-hefOKDVsBxn+rCAylPHqbCNfPMbU/vtO4QpiftIPcUU=";
-      };
+      pluginSrc = pkgs.local.traefik-plugin-crowdsec-bouncer.src;
       bouncerName = "crowdsec-traefik-bouncer";
     in
     {

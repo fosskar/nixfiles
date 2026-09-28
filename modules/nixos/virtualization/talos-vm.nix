@@ -15,11 +15,7 @@
       ...
     }:
     let
-      version = "1.13.5";
-      iso = pkgs.fetchurl {
-        url = "https://github.com/siderolabs/talos/releases/download/v${version}/metal-amd64.iso";
-        hash = "sha256-FRGuhdsHaxsro8OPvS1sVS8loZi2XRyTqtEjbQRzy9c=";
-      };
+      iso = pkgs.local.talos-metal-iso.src;
       stateDir = "/var/lib/talos-vm";
       diskSize = "60G";
       talosconfig = "${stateDir}/talosconfig";

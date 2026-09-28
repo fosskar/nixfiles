@@ -3,13 +3,7 @@
     { pkgs, ... }:
     let
       moduleName = "github.com/PascalMinder/geoblock";
-      # local plugin pinned by hash instead of a runtime download by tag
-      src = pkgs.fetchFromGitHub {
-        owner = "PascalMinder";
-        repo = "geoblock";
-        tag = "v0.3.8";
-        hash = "sha256-afooxatN7TomMg0TF7PISHK1VwiZxj1Et825rXprBqU=";
-      };
+      src = pkgs.local.traefik-plugin-geoblock.src;
     in
     {
       services.traefik.staticConfigOptions.experimental.localPlugins.geoblock = {
