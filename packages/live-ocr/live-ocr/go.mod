@@ -3,13 +3,14 @@ module live-ocr
 go 1.25.0
 
 require (
-	gioui.org v0.10.2
+	gioui.org v0.10.3
 	github.com/otiai10/gosseract/v2 v2.4.1
 )
 
 require (
 	gioui.org/shader v1.0.9 // indirect
-	github.com/go-text/typesetting v0.3.4 // indirect
+	github.com/go-text/typesetting v0.3.5 // indirect
+	github.com/godbus/dbus/v5 v5.2.2 // indirect
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
 	golang.org/x/exp/shiny v0.0.0-20260410095643-746e56fc9e2f // indirect
 	golang.org/x/image v0.39.0 // indirect
