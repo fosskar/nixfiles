@@ -15,7 +15,7 @@
       # than nixpkgs ships; cpu torch keeps the gpu free for llama-cpp
       laya = ps.buildPythonPackage {
         pname = "laya";
-        version = "0.3.20";
+        version = (fromTOML (builtins.readFile "${inputs.laya}/pyproject.toml")).project.version;
         src = inputs.laya;
         pyproject = true;
         build-system = [ ps.setuptools ];
