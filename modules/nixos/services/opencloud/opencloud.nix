@@ -107,8 +107,8 @@
         })
         (webExtension {
           pname = "unzip";
-          version = "2.1.0";
-          hash = "sha256-9QlyazjiLv1kJIQFTS9zNDxI0wvS70wAlnH+zhy3dIE=";
+          version = "2.2.0";
+          hash = "sha256-xAUKQSSVN+LdO+QX/2mU8kmUn4fcjNQhB0HB9Gi0V3Q=";
         })
         (webExtension {
           pname = "pastebin";
