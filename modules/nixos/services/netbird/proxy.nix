@@ -17,6 +17,7 @@
         (pkgs.formats.yaml { }).generate "crowdsec.yaml"
           config.services.crowdsec.settings.general;
       inherit (cfg.crowdsec) apiKeyFile;
+      tcpPorts = lib.concatMapStringsSep ", " toString ([ 443 ] ++ cfg.publicTCPPorts);
       bouncerName = "netbird-proxy";
     in
     {
@@ -413,10 +414,14 @@
             content = ''
               set conn4 { type ipv4_addr; flags dynamic; size 65535; }
               set conn6 { type ipv6_addr; flags dynamic; size 65535; }
+              set quic4 { type ipv4_addr; flags dynamic; size 65535; }
+              set quic6 { type ipv6_addr; flags dynamic; size 65535; }
               chain input {
                 type filter hook input priority filter - 1; policy accept;
-                tcp dport 443 ct state new add @conn4 { ip saddr ct count over 128 } counter reject with tcp reset
-                tcp dport 443 ct state new add @conn6 { ip6 saddr and ffff:ffff:ffff:ffff:: ct count over 128 } counter reject with tcp reset
+                tcp dport { ${tcpPorts} } ct state new add @conn4 { ip saddr ct count over 128 } counter reject with tcp reset
+                tcp dport { ${tcpPorts} } ct state new add @conn6 { ip6 saddr and ffff:ffff:ffff:ffff:: ct count over 128 } counter reject with tcp reset
+                udp dport 443 ct state new add @quic4 { ip saddr ct count over 128 } counter drop
+                udp dport 443 ct state new add @quic6 { ip6 saddr and ffff:ffff:ffff:ffff:: ct count over 128 } counter drop
               }
             '';
           };
