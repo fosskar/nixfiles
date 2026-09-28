@@ -42,6 +42,10 @@
     '';
   };
 
+  # the daemon's 0666 socket lets any local uid run unprivileged rpcs such as
+  # `netbird down`; only root uses it here
+  systemd.services.netbird.serviceConfig.RuntimeDirectoryMode = "0750";
+
   # don't retain .drvs on this server (keep-outputs already defaults off)
   nix.settings.keep-derivations = false;
 
