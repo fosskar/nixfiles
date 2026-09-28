@@ -58,6 +58,9 @@
                   ];
                 };
                 http3 = { };
+                # readTimeout is 0 for netbird's grpc streams; this bounds how
+                # many a single connection can hold open (default 250)
+                http2.maxConcurrentStreams = 64;
               };
               metrics.address = metricsAddress;
             };
