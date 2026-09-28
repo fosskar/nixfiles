@@ -14,8 +14,10 @@
       pluginSrc = pkgs.fetchFromGitHub {
         owner = "maxlerebourg";
         repo = "crowdsec-bouncer-traefik-plugin";
-        tag = "v1.7.1";
-        hash = "sha256-hefOKDVsBxn+rCAylPHqbCNfPMbU/vtO4QpiftIPcUU=";
+        # not 1.7.x: its crowdsecAppsecUnreadableBodyBlock default rejects
+        # grpc streams, which cut netbird management and signal
+        tag = "v1.4.6";
+        hash = "sha256-r4T+0mT9YHmfu/nFhvjpyiz/Z7ViF3yLJKmOuwbnK60=";
       };
       bouncerName = "crowdsec-traefik-bouncer";
     in
