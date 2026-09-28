@@ -22,13 +22,6 @@
     max-free = 550 * 1024 * 1024 * 1024;
   };
 
-  # radicle-mirror conflicts with radicle-node.service and already seeds
-  # nixfiles; upgrade from its storage instead of a second node
-  nixfiles.autoUpgrade = {
-    node.enable = false;
-    radHome = "/var/lib/radicle-mirror/rad";
-  };
-
   # reap half-dead client connections (suspended laptop) within 90s so their
   # RemoteForward sockets stop accepting; otherwise kernel TCP keepalive holds
   # them for ~2h and the socket relays (users/workspace) hang on them
