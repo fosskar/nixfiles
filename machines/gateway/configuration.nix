@@ -24,6 +24,24 @@
     ygg.allowedTCPPorts = [ 22 ];
   };
 
+  # netbird exit clients get the internet, not gateway's overlays or the
+  # hetzner metadata service. mdns and yggdrasil multicast serve lan peers,
+  # which this vps has none of
+  networking.nftables.tables.gateway-edge = {
+    family = "inet";
+    content = ''
+      chain input {
+        type filter hook input priority filter - 1; policy accept;
+        iifname "eth0" udp dport { 5353, 9001 } drop
+      }
+      chain forward {
+        type filter hook forward priority filter - 1; policy accept;
+        iifname "wt0" oifname { "ygg", "wireguard" } drop
+        iifname "wt0" ip daddr 169.254.0.0/16 drop
+      }
+    '';
+  };
+
   # don't retain .drvs on this server (keep-outputs already defaults off)
   nix.settings.keep-derivations = false;
 

@@ -55,6 +55,8 @@
           )
         ];
       };
+      # no lan peers on a hetzner vps; peering uses the static peers
+      roles.default.machines."gateway".settings.multicastInterfaces = [ ];
     };
 
     netbird = {
