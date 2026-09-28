@@ -42,6 +42,7 @@ _: {
             };
             snapshot = {
               max-new-file-size = 16000000; # ~16mb
+              auto-update-stale = true;
             };
             init = {
               default_branch = "main";
