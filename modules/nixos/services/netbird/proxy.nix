@@ -168,6 +168,10 @@
               Group = config.services.crowdsec.group;
               ReadWritePaths = [ "/var/lib/crowdsec" ];
               ExecStartPost = "+${pkgs.writeShellScript "fix-netbird-proxy-bouncer-key" ''
+                if [ -L ${apiKeyFile} ]; then
+                  echo "${apiKeyFile} is a symlink, refusing" >&2
+                  exit 1
+                fi
                 chgrp netbird ${apiKeyFile}
                 chmod 0640 ${apiKeyFile}
               ''}";

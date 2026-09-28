@@ -82,6 +82,10 @@
             Group = config.services.crowdsec.group;
             ReadWritePaths = [ "/var/lib/crowdsec" ];
             ExecStartPost = "+${pkgs.writeShellScript "fix-traefik-bouncer-key" ''
+              if [ -L /var/lib/crowdsec/traefik-bouncer.key ]; then
+                echo "/var/lib/crowdsec/traefik-bouncer.key is a symlink, refusing" >&2
+                exit 1
+              fi
               chgrp traefik /var/lib/crowdsec/traefik-bouncer.key
               chmod 0640 /var/lib/crowdsec/traefik-bouncer.key
               systemctl try-restart traefik.service
