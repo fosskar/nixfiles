@@ -27,10 +27,14 @@
           ];
         };
         # nix binary cache objects for niks3; clients read anonymously via
-        # the s3 web endpoint (http://nixworker.s:3902).
+        # the s3 web endpoint (http://nixworker.s:3902). the public cache
+        # maps niks3.<public> here too, so only reads leave the mesh
         niks3-cache = {
           website = true;
-          aliases = [ "nixworker.s" ];
+          aliases = [
+            "nixworker.s"
+            "niks3.${config.flake.domains.public}"
+          ];
         };
       };
       roles.node.machines = {
