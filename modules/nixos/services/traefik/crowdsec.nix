@@ -9,6 +9,14 @@
     let
       configFile = config.environment.etc."crowdsec/config.yaml".source;
       apiKeyFile = "/var/lib/crowdsec/traefik-bouncer.key";
+      pluginModule = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
+      # local plugin pinned by hash instead of a runtime download by tag
+      pluginSrc = pkgs.fetchFromGitHub {
+        owner = "maxlerebourg";
+        repo = "crowdsec-bouncer-traefik-plugin";
+        tag = "v1.7.1";
+        hash = "sha256-hefOKDVsBxn+rCAylPHqbCNfPMbU/vtO4QpiftIPcUU=";
+      };
       bouncerName = "crowdsec-traefik-bouncer";
     in
     {
@@ -34,10 +42,7 @@
 
         services.traefik = {
           staticConfigOptions = {
-            experimental.plugins.crowdsec-bouncer = {
-              moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
-              version = "v1.4.6";
-            };
+            experimental.localPlugins.crowdsec-bouncer.moduleName = pluginModule;
           };
           dynamicConfigOptions.http.middlewares.crowdsec.plugin.crowdsec-bouncer = {
             enabled = true;
@@ -54,6 +59,12 @@
             ];
           };
         };
+
+        systemd.tmpfiles.rules = [
+          "L+ ${config.services.traefik.dataDir}/plugins-local/src/${pluginModule} - - - - ${pluginSrc}"
+        ];
+        # the static config names the module, not the version
+        systemd.services.traefik.restartTriggers = [ pluginSrc ];
 
         systemd.services.crowdsec-traefik-bouncer-register = {
           description = "register crowdsec traefik bouncer";
