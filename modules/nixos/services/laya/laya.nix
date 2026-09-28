@@ -11,23 +11,14 @@
       listenPort = 18091;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
       ps = pkgs.python3Packages;
-      # upstream's nix/package.nix pins torch-bin, which needs a newer cuda
-      # than nixpkgs ships; cpu torch keeps the gpu free for llama-cpp
-      laya = ps.buildPythonPackage {
-        pname = "laya";
-        version = (fromTOML (builtins.readFile "${inputs.laya}/pyproject.toml")).project.version;
-        src = inputs.laya;
-        pyproject = true;
-        build-system = [ ps.setuptools ];
-        dependencies = [
-          ps.torch
-          ps.transformers
-          ps.safetensors
-          ps.huggingface-hub
-          ps.numpy
-        ];
-        pythonImportsCheck = [ "laya" ];
-      };
+      # upstream pins the prebuilt cuda torch-bin; laya runs on cpu here so
+      # the gpu stays with llama-cpp
+      inherit
+        (pkgs.callPackage "${inputs.laya}/nix/package.nix" {
+          python3Packages = ps.overrideScope (_: prev: { torch-bin = prev.torch; });
+        })
+        laya
+        ;
       python = pkgs.python3.withPackages (_: [
         laya
         ps.fastapi
