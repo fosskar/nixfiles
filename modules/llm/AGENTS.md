@@ -64,4 +64,7 @@ Use plain English expository prose.
   - blank line, then body explaining what and why (not how), wrapped ~72 cols; body only when it adds context
   - no tags, trailers, or `Signed-off-by`
 - atomic commits
-- prefer jj over git in colocated repos
+- prefer jj over git when the repo uses jj
+- in jj repos, work in your own workspace (`jj workspace add`), never the default one
+- bookmark your work; unbookmarked commits are not done
+- before reporting done, list unpushed work: `jj log -r 'heads(mutable() ~ ::remote_bookmarks() ~ empty())'`
