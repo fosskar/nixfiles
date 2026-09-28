@@ -163,7 +163,6 @@
                   publicTCPPorts = settings.proxyTCPPorts;
                   managementAddress = "http://127.0.0.1:8081";
                   addr = ":8443";
-                  tokenFile = "/var/lib/netbird-server/proxy-token";
                   allowInsecure = true; # connecting over localhost
                 };
               };

@@ -13,6 +13,8 @@
       cfg = config.services.netbird.server.proxy;
       serverCfg = config.services.netbird.server;
       stateDir = "/var/lib/netbird-proxy";
+      # root-only, so no service uid can swap a credential source for a symlink
+      credentialsDir = "/var/lib/netbird-proxy-credentials";
       configFile =
         (pkgs.formats.yaml { }).generate "crowdsec.yaml"
           config.services.crowdsec.settings.general;
@@ -63,6 +65,7 @@
 
         tokenFile = lib.mkOption {
           type = lib.types.str;
+          default = "${credentialsDir}/proxy-token";
           description = "path to file containing the proxy access token (nbx_...)";
         };
 
@@ -115,7 +118,7 @@
           };
           apiKeyFile = lib.mkOption {
             type = lib.types.str;
-            default = "/var/lib/crowdsec/netbird-proxy-bouncer.key";
+            default = config.clan.core.vars.generators.netbird-proxy-crowdsec.files.api-key.path;
             description = "path to file containing the bouncer API key";
           };
         };
@@ -145,21 +148,15 @@
             before = [ "netbird-proxy.service" ];
             after = [ "crowdsec.service" ];
             wants = [ "crowdsec.service" ];
+            # the key comes from vars, so re-registering with it is idempotent
             script = ''
               cscli=${lib.getExe' config.services.crowdsec.package "cscli"}
               if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
-                if [ -f ${apiKeyFile} ]; then
-                  echo "bouncer already registered, key exists"
-                  exit 0
-                fi
-                echo "bouncer registered but key missing, re-registering"
                 $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
               fi
-              rm -f '${apiKeyFile}'
-              if ! $cscli -c ${configFile} bouncers add --output raw -- ${lib.escapeShellArg bouncerName} >${apiKeyFile}; then
-                rm -f '${apiKeyFile}'
-                exit 1
-              fi
+              $cscli -c ${configFile} bouncers add --key "$(cat "$CREDENTIALS_DIRECTORY/api-key")" -- ${lib.escapeShellArg bouncerName} >/dev/null
+              # key file written by the previous runtime-generated setup
+              rm -f /var/lib/crowdsec/netbird-proxy-bouncer.key
             '';
             serviceConfig = {
               Type = "oneshot";
@@ -167,14 +164,7 @@
               User = config.services.crowdsec.user;
               Group = config.services.crowdsec.group;
               ReadWritePaths = [ "/var/lib/crowdsec" ];
-              ExecStartPost = "+${pkgs.writeShellScript "fix-netbird-proxy-bouncer-key" ''
-                if [ -L ${apiKeyFile} ]; then
-                  echo "${apiKeyFile} is a symlink, refusing" >&2
-                  exit 1
-                fi
-                chgrp netbird ${apiKeyFile}
-                chmod 0640 ${apiKeyFile}
-              ''}";
+              LoadCredential = [ "api-key:${apiKeyFile}" ];
               LockPersonality = true;
               PrivateDevices = true;
               ProcSubset = "pid";
@@ -296,13 +286,23 @@
             stopIfChanged = false;
           };
 
+          systemd.tmpfiles.rules = [ "d ${credentialsDir} 0700 root root -" ];
+
+          clan.core.vars.generators.netbird-proxy-crowdsec = lib.mkIf cfg.crowdsec.enable {
+            files.api-key = { };
+            runtimeInputs = [ pkgs.openssl ];
+            script = ''
+              openssl rand -hex 32 | tr -d '\n' > "$out/api-key"
+            '';
+          };
+
           # generate proxy access token on first boot
           systemd.services.netbird-proxy-token = {
             description = "generate netbird proxy access token";
             after = [ "netbird-server.service" ];
             requires = [ "netbird-server.service" ];
             wantedBy = [ "multi-user.target" ];
-            unitConfig.ConditionPathExists = "!/var/lib/netbird-server/proxy-token";
+            unitConfig.ConditionFileNotEmpty = "!${cfg.tokenFile}";
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true;
@@ -310,12 +310,22 @@
               Group = "netbird";
               StateDirectory = "netbird-server";
               UMask = "0077";
+              # pid1 writes the token into the root-only directory; the script
+              # prints nothing else on stdout
+              StandardOutput = "truncate:${cfg.tokenFile}";
             };
             script = ''
-              # wait for server to be ready
+              # token from the previous setup, which kept it in netbird-server state
+              old=/var/lib/netbird-server/proxy-token
+              if [ -s "$old" ]; then
+                cat "$old"
+                rm "$old"
+                exit 0
+              fi
+              # wait for server to be ready; /api/instance answers without auth
               ready=0
               for _ in $(seq 1 30); do
-                if ${pkgs.curl}/bin/curl -sf http://localhost:${toString cfg.serverPort}/api/users >/dev/null 2>&1; then
+                if ${pkgs.curl}/bin/curl -sf http://localhost:${toString cfg.serverPort}/api/instance >/dev/null 2>&1; then
                   ready=1
                   break
                 fi
@@ -332,8 +342,7 @@
                 echo "failed to create netbird proxy token" >&2
                 exit 1
               fi
-              echo -n "$TOKEN" > /var/lib/netbird-server/proxy-token
-              chmod 600 /var/lib/netbird-server/proxy-token
+              printf '%s' "$TOKEN"
             '';
           };
 
@@ -487,6 +496,10 @@
               directory = "/var/lib/netbird-proxy";
               user = "netbird";
               group = "netbird";
+            }
+            {
+              directory = credentialsDir;
+              mode = "0700";
             }
           ];
         }
