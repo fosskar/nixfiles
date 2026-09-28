@@ -60,11 +60,7 @@
           };
         };
 
-        systemd.tmpfiles.rules = [
-          "L+ ${config.services.traefik.dataDir}/plugins-local/src/${pluginModule} - - - - ${pluginSrc}"
-        ];
-        # the static config names the module, not the version
-        systemd.services.traefik.restartTriggers = [ pluginSrc ];
+        nixfiles.traefik.localPlugins.${pluginModule} = pluginSrc;
 
         systemd.services.crowdsec-traefik-bouncer-register = {
           description = "register crowdsec traefik bouncer";

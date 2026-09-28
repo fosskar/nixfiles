@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.traefik =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
     let
       moduleName = "github.com/PascalMinder/geoblock";
       # local plugin pinned by hash instead of a runtime download by tag
@@ -15,11 +15,7 @@
       services.traefik.staticConfigOptions.experimental.localPlugins.geoblock = {
         inherit moduleName;
       };
-      systemd.tmpfiles.rules = [
-        "L+ ${config.services.traefik.dataDir}/plugins-local/src/${moduleName} - - - - ${src}"
-      ];
-      # the static config names the module, not the version
-      systemd.services.traefik.restartTriggers = [ src ];
+      nixfiles.traefik.localPlugins.${moduleName} = src;
 
       services.traefik.dynamicConfigOptions.http.middlewares.geoblock.plugin.geoblock = {
         allowLocalRequests = true;

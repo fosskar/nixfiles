@@ -5,6 +5,7 @@
       config,
       lib,
       options,
+      pkgs,
       ...
     }:
     let
@@ -12,7 +13,29 @@
       metricsAddress = "127.0.0.1:8082";
     in
     {
+      options.nixfiles.traefik.localPlugins = lib.mkOption {
+        type = lib.types.attrsOf lib.types.package;
+        default = { };
+        description = "plugin sources by module name, loaded via experimental.localPlugins";
+      };
+
       config = {
+        # traefik reads plugins-local/src/<module> relative to its working
+        # directory; a store tree needs no runtime setup in the traefik-owned
+        # state dir, where tmpfiles refuses root-owned paths
+        systemd.services.traefik.serviceConfig.WorkingDirectory =
+          lib.mkIf (config.nixfiles.traefik.localPlugins != { })
+            (
+              lib.mkForce (
+                pkgs.linkFarm "traefik-local-plugins" (
+                  lib.mapAttrsToList (moduleName: src: {
+                    name = "plugins-local/src/${moduleName}";
+                    path = src;
+                  }) config.nixfiles.traefik.localPlugins
+                )
+              )
+            );
+
         services.traefik = {
           enable = true;
 
