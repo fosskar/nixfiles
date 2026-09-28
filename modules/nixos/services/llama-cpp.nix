@@ -22,7 +22,8 @@
           rev = "4ca720788d1e01f1bff70c033e0d0028fd02e502";
           files = {
             "Qwen3.8-27B-UD-Q4_K_M.gguf" = "322e194ff79741c7baa497c240f677f54b201b0efab44ca8e50f122b39123482";
-            "MTP/mtp-Qwen3.8-27B-Q4_0.gguf" = "50d9ce5a6da381bbcfb31061cf73df94a90e6faf8efeddee379a9cb8f1501c6e";
+            "MTP/mtp-Qwen3.8-27B-Q4_0.gguf" =
+              "50d9ce5a6da381bbcfb31061cf73df94a90e6faf8efeddee379a9cb8f1501c6e";
             "mmproj-F16.gguf" = "cbb841a9ee0636b2ec172f5bb8df2ea8dfeb01e90fe7c6126581d662a0b4e43e";
           };
         };
