@@ -14,10 +14,8 @@
       pluginSrc = pkgs.fetchFromGitHub {
         owner = "maxlerebourg";
         repo = "crowdsec-bouncer-traefik-plugin";
-        # not 1.7.x: its crowdsecAppsecUnreadableBodyBlock default rejects
-        # grpc streams, which cut netbird management and signal
-        tag = "v1.4.6";
-        hash = "sha256-r4T+0mT9YHmfu/nFhvjpyiz/Z7ViF3yLJKmOuwbnK60=";
+        tag = "v1.7.1";
+        hash = "sha256-hefOKDVsBxn+rCAylPHqbCNfPMbU/vtO4QpiftIPcUU=";
       };
       bouncerName = "crowdsec-traefik-bouncer";
     in
@@ -53,6 +51,9 @@
             crowdsecMode = "live";
             crowdsecAppsecEnabled = true;
             crowdsecAppsecHost = "127.0.0.1:7422";
+            # since v1.7 the default rejects requests whose body appsec cannot
+            # read; every netbird grpc stream is one
+            crowdsecAppsecUnreadableBodyBlock = false;
             forwardedHeadersTrustedIPs = [
               "127.0.0.1/32"
               "10.0.0.0/8"
