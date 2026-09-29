@@ -32,19 +32,10 @@ type processor struct {
 // upload is conditional on the etag read before the download, so a change by
 // a user in the meantime wins and the job is dropped.
 func (p *processor) process(ctx context.Context, ev *uploadReady, log *slog.Logger) error {
-	auth, err := p.gwc.Authenticate(ctx, &gateway.AuthenticateRequest{
-		Type:         "serviceaccounts",
-		ClientId:     p.serviceAccountID,
-		ClientSecret: p.serviceSecret,
-	})
+	ctx, token, err := p.authenticate(ctx)
 	if err != nil {
-		return fmt.Errorf("authenticate: %w", err)
+		return err
 	}
-	if auth.GetStatus().GetCode() != rpc.Code_CODE_OK {
-		return fmt.Errorf("authenticate: %s %s", auth.GetStatus().GetCode(), auth.GetStatus().GetMessage())
-	}
-	token := auth.GetToken()
-	ctx = metadata.AppendToOutgoingContext(ctx, "x-access-token", token)
 
 	st, err := p.gwc.Stat(ctx, &provider.StatRequest{Ref: ev.FileRef})
 	if err != nil {
@@ -101,6 +92,22 @@ func (p *processor) process(ctx context.Context, ev *uploadReady, log *slog.Logg
 	}
 	log.Info("replaced with ocr version", "size_before", info.GetSize(), "size_after", out.Size())
 	return nil
+}
+
+func (p *processor) authenticate(ctx context.Context) (context.Context, string, error) {
+	auth, err := p.gwc.Authenticate(ctx, &gateway.AuthenticateRequest{
+		Type:         "serviceaccounts",
+		ClientId:     p.serviceAccountID,
+		ClientSecret: p.serviceSecret,
+	})
+	if err != nil {
+		return nil, "", fmt.Errorf("authenticate: %w", err)
+	}
+	if auth.GetStatus().GetCode() != rpc.Code_CODE_OK {
+		return nil, "", fmt.Errorf("authenticate: %s %s", auth.GetStatus().GetCode(), auth.GetStatus().GetMessage())
+	}
+	token := auth.GetToken()
+	return metadata.AppendToOutgoingContext(ctx, "x-access-token", token), token, nil
 }
 
 func (p *processor) download(ctx context.Context, token string, ref *provider.Reference, dst string) error {

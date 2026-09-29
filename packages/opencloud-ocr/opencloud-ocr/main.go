@@ -65,6 +65,13 @@ func run() error {
 		languages:        languages,
 	}
 
+	if len(os.Args) > 1 {
+		if os.Args[1] != "backfill" {
+			return fmt.Errorf("unknown command %q", os.Args[1])
+		}
+		return backfill(ctx, p)
+	}
+
 	nc, err := nats.Connect(natsAddress, nats.Name(consumerName), nats.MaxReconnects(-1))
 	if err != nil {
 		return err
