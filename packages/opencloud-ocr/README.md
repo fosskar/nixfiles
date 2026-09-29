@@ -9,6 +9,7 @@ adds a text layer to scanned pdfs in opencloud. each pdf without text is run thr
 - skips failed uploads, non-pdfs, events without an executing user (changes made directly on disk) and its own uploads
 - skips pdfs that ocrmypdf already wrote (`OCRmyPDF` as creator), so a file where ocr found no text is not processed again
 - runs `ocrmypdf` in default mode with `deu+eng`. exit 6 (page already has text), 8 (encrypted) and 2 (unreadable) leave the file alone, so born-digital pdfs and mixed pdfs are never rewritten
+- passes `--tagged-pdf-mode ignore`: scanner apps also produce tagged pdfs, and tagged office exports still stop at exit 6
 - uploads with `If-Match` on the etag read before the download. if the file changed, is locked, was deleted or is over quota, the job is dropped and the user's version wins
 - gateway errors are retried up to 5 times, one minute apart. ocrmypdf failures are not retried
 

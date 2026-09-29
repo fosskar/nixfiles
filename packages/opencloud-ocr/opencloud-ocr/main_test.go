@@ -148,3 +148,15 @@ func TestProcessedByOCRmyPDF(t *testing.T) {
 		}
 	}
 }
+
+func TestOCRIgnoresTaggedPDFs(t *testing.T) {
+	bin := t.TempDir()
+	script := "#!/bin/sh\ncase \" $* \" in *' --tagged-pdf-mode ignore '*) exit 0 ;; esac\nexit 7\n"
+	if err := os.WriteFile(filepath.Join(bin, "ocrmypdf"), []byte(script), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", bin)
+	if _, err := ocr(context.Background(), languages, "in.pdf", "out.pdf"); err != nil {
+		t.Fatalf("ocrmypdf was not called with --tagged-pdf-mode ignore: %v", err)
+	}
+}

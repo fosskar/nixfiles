@@ -21,12 +21,15 @@ const (
 // has text on a page, so born-digital pdfs and this service's own output are
 // never rewritten. skip is non-empty when the file is left alone.
 //
+// tagged pdfs are not refused: scanner apps produce them too, and a tagged
+// office export still stops at the text check.
+//
 // ocrmypdf's output is not forwarded: ghostscript prints a pdf/a notice per
 // overprint operation, up to tens of thousands of lines for one file, which
 // made journald drop this service's own messages. only the last line is kept
 // for the error of a failed run.
 func ocr(ctx context.Context, languages, src, dst string) (skip string, err error) {
-	cmd := exec.CommandContext(ctx, "ocrmypdf", "--output-type", "pdfa", "--language", languages, src, dst)
+	cmd := exec.CommandContext(ctx, "ocrmypdf", "--output-type", "pdfa", "--tagged-pdf-mode", "ignore", "--language", languages, src, dst)
 	out := &tail{max: 4096}
 	cmd.Stdout = out
 	cmd.Stderr = out
