@@ -6,6 +6,7 @@ import contextlib
 import email.message
 import io
 import json
+import subprocess
 import tempfile
 import unittest
 import urllib.error
@@ -17,11 +18,19 @@ from unittest import mock
 import changelog
 import pipeline
 import update_flake_inputs
+import update_packages
 from forge import Codeberg, ForgeError, Github
 from update_flake_inputs import FlakeInput
 from update_packages import commit_message, group_packages
 
-from packages import Package, classify, discover, nix_update_cmd, parse_update_script
+from packages import (
+    Package,
+    UpdateResult,
+    classify,
+    discover,
+    nix_update_cmd,
+    parse_update_script,
+)
 
 
 def pkg(name: str) -> Package:
@@ -66,6 +75,64 @@ class TestCommitMessage(unittest.TestCase):
         self.assertEqual(msg.splitlines()[0], "update netbird")
         self.assertIn("a: 1 -> 2", msg)
         self.assertIn("b: 1 -> 2", msg)
+
+
+class TestProcessGroupFailure(unittest.TestCase):
+    """A failing group member must not discard earlier members' updates."""
+
+    def test_failed_member_reset_alone(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            git = ["git", "-c", "user.name=t", "-c", "user.email=t@t"]
+            for name in ("a-one", "a-two"):
+                (repo / "packages" / name).mkdir(parents=True)
+                (repo / "packages" / name / "package.nix").write_text("old\n")
+            for cmd in (
+                ["git", "init", "-q", "-b", "main"],
+                ["git", "add", "."],
+                [*git, "commit", "-qm", "init"],
+                ["git", "update-ref", "refs/remotes/origin/main", "HEAD"],
+            ):
+                subprocess.run(cmd, cwd=repo, check=True)
+
+            def fake_update(repo: Path, pkg: Package) -> UpdateResult:
+                (pkg.path / "package.nix").write_text("new\n")
+                if pkg.name == "a-two":
+                    raise subprocess.CalledProcessError(1, "nix-update")
+                return UpdateResult(pkg.name, True, f"{pkg.name}: 1 -> 2")
+
+            def fake_run(cmd, repo, check=True):
+                if cmd[0] == "nix":
+                    return SimpleNamespace(returncode=0)
+                if cmd[:2] == ["git", "commit"]:
+                    cmd = [*git, *cmd[1:]]
+                return subprocess.run(cmd, cwd=repo, check=check)
+
+            pkgs = [
+                Package(n, "nix-update", repo / "packages" / n)
+                for n in ("a-one", "a-two")
+            ]
+            with (
+                mock.patch("update_packages.update", side_effect=fake_update),
+                mock.patch("update_packages.run", side_effect=fake_run),
+                mock.patch("update_packages.pipeline.publish", return_value=None),
+                contextlib.redirect_stdout(io.StringIO()),
+            ):
+                update_packages.process_group(repo, "a", pkgs, None, [])
+
+            show = subprocess.run(
+                ["git", "show", "--name-only", "--format=%s", "HEAD"],
+                cwd=repo,
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.split()
+            self.assertEqual(
+                show, ["a-one:", "1", "->", "2", "packages/a-one/package.nix"]
+            )
+            self.assertEqual(
+                (repo / "packages" / "a-two" / "package.nix").read_text(), "old\n"
+            )
 
 
 class TestChangelog(unittest.TestCase):

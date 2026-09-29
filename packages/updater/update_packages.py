@@ -52,17 +52,18 @@ def process_group(
 
     messages: list[str] = []
     for pkg in pkgs:
+        rel = str(pkg.path.relative_to(repo))
         try:
             result = update(repo, pkg)
         except subprocess.CalledProcessError:
             print(f":: {pkg.name} - update failed (see error above), skipping")
-            run(repo=repo, cmd=["git", "reset", "--hard"], check=False)
-            run(repo=repo, cmd=["git", "clean", "-fd"], check=False)
+            # restore only this package: earlier group members are staged
+            run(repo=repo, cmd=["git", "checkout", "HEAD", "--", rel])
+            run(repo=repo, cmd=["git", "clean", "-fd", "--", rel])
             continue
         if not result.changed:
             print(f":: {pkg.name} - no update")
             continue
-        rel = str(pkg.path.relative_to(repo))
         run(repo=repo, cmd=["nix", "fmt", "--", rel])
         run(repo=repo, cmd=["git", "add", rel])
         # nix fmt can normalize an update.sh rewrite back to the committed

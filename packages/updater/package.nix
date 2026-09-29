@@ -26,6 +26,8 @@ python3.pkgs.buildPythonApplication {
     runHook postCheck
   '';
 
+  nativeCheckInputs = [ git ];
+
   installPhase = ''
     runHook preInstall
 
