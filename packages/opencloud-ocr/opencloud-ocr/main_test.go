@@ -131,3 +131,20 @@ func TestOCRErrorKeepsLastLine(t *testing.T) {
 		t.Fatalf("err = %v, want %q", err, want)
 	}
 }
+
+func TestProcessedByOCRmyPDF(t *testing.T) {
+	dir := t.TempDir()
+	for name, content := range map[string]string{
+		"ocrmypdf.pdf": "%PDF-1.7\n1 0 obj << /Creator (OCRmyPDF 17.11.0 / OCRmyPDF fpdf2 + Tesseract OCR 5.5.3) >>",
+		"scan.pdf":     "%PDF-1.4\n1 0 obj << /Creator (Canon iR-ADV) >>",
+	} {
+		path := filepath.Join(dir, name)
+		if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		got, err := processedByOCRmyPDF(path)
+		if err != nil || got != (name == "ocrmypdf.pdf") {
+			t.Fatalf("%s: got %v, %v", name, got, err)
+		}
+	}
+}

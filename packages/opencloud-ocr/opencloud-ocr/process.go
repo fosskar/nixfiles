@@ -69,6 +69,14 @@ func (p *processor) process(ctx context.Context, ev *uploadReady, log *slog.Logg
 	if err := p.download(ctx, token, ref, src); err != nil {
 		return err
 	}
+	done, err := processedByOCRmyPDF(src)
+	if err != nil {
+		return err
+	}
+	if done {
+		log.Info("skipped", "reason", "already processed by ocrmypdf")
+		return nil
+	}
 	skip, err := ocr(ctx, p.languages, src, dst)
 	if err != nil {
 		return permanentError{err}

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -61,4 +63,16 @@ func (t *tail) Write(p []byte) (int, error) {
 func (t *tail) lastLine() string {
 	s := strings.TrimSpace(string(t.buf))
 	return s[strings.LastIndexByte(s, '\n')+1:]
+}
+
+// processedByOCRmyPDF reports whether the pdf was written by ocrmypdf, whose
+// output names it as creator in plain text. such a file needs no second run:
+// when ocr found no text on its pages, default mode would otherwise accept it
+// again and every backfill would upload another identical version.
+func processedByOCRmyPDF(path string) (bool, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return false, err
+	}
+	return bytes.Contains(data, []byte("OCRmyPDF")), nil
 }
