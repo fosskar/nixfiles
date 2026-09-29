@@ -38,11 +38,6 @@ _: {
         service = "calendar-mcp.service";
         url = "http://127.0.0.1:${toString listenPort}/mcp";
         tokenFile = vars.files.token.path;
-        approvalTools = [
-          "create_event"
-          "delete_event"
-          "update_event"
-        ];
       };
 
       systemd.services.calendar-mcp = {

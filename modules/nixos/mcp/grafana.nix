@@ -46,15 +46,6 @@ _: {
             "create_datasource"
             "update_datasource"
           ];
-          # alerting_manage_* also cover list/get; the gateway gates by tool name
-          approvalTools = [
-            "create_folder"
-            "alerting_manage_rules"
-            "alerting_manage_routing"
-            "alerting_manage_silences"
-            "create_annotation"
-            "update_annotation"
-          ];
         };
 
         systemd.services.grafana-mcp = {
