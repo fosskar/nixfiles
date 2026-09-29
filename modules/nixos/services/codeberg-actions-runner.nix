@@ -83,11 +83,13 @@
             users.groups.forgejo-runner.gid = runnerUid;
 
             nix = {
-              nixPath = [ "nixpkgs=${pkgs.path}" ];
-              settings.experimental-features = [
-                "nix-command"
-                "flakes"
-              ];
+              settings = {
+                nix-path = [ "nixpkgs=${pkgs.path}" ];
+                experimental-features = [
+                  "nix-command"
+                  "flakes"
+                ];
+              };
             };
 
             systemd.services.forgejo-runner = {

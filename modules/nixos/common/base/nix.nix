@@ -18,11 +18,11 @@
         daemonIOSchedClass = lib.mkDefault "idle";
         daemonIOSchedPriority = lib.mkDefault 7;
 
-        nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
-
         channel.enable = lib.mkDefault false;
 
         settings = {
+          nix-path = [ "nixpkgs=${inputs.nixpkgs}" ];
+
           experimental-features = [
             "nix-command"
             "flakes"
