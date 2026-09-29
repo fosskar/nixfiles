@@ -8,30 +8,8 @@ from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 import anyio
-import uvicorn
 from caldav import DAVClient
 from mcp.server.fastmcp import FastMCP
-
-
-class BearerAuth:
-    def __init__(self, app: Any, token: str) -> None:
-        self.app = app
-        self.authorization = f"Bearer {token}".encode()
-
-    async def __call__(self, scope: dict[str, Any], receive: Any, send: Any) -> None:
-        if scope["type"] == "http":
-            headers = dict(scope.get("headers", []))
-            if headers.get(b"authorization") != self.authorization:
-                await send(
-                    {
-                        "type": "http.response.start",
-                        "status": 401,
-                        "headers": [(b"content-type", b"text/plain")],
-                    }
-                )
-                await send({"type": "http.response.body", "body": b"Unauthorized"})
-                return
-        await self.app(scope, receive, send)
 
 
 def _secret(name: str) -> str:
@@ -152,10 +130,6 @@ async def _run(function: Any, *args: Any) -> Any:
 mcp = FastMCP(
     "calendar",
     instructions="Read and manage the user's CalDAV calendars.",
-    host=os.environ.get("CALENDAR_MCP_HOST", "127.0.0.1"),
-    port=int(os.environ.get("CALENDAR_MCP_PORT", "8765")),
-    stateless_http=True,
-    json_response=True,
 )
 
 
@@ -325,9 +299,7 @@ async def delete_event(calendar: str, uid: str) -> dict[str, str]:
 
 
 def main() -> None:
-    token = _secret("CALENDAR_MCP_TOKEN_FILE")
-    app = BearerAuth(mcp.streamable_http_app(), token)
-    uvicorn.run(app, host=mcp.settings.host, port=mcp.settings.port, log_level="info")
+    mcp.run("stdio")
 
 
 if __name__ == "__main__":
