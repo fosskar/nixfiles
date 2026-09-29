@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"path"
@@ -48,7 +49,7 @@ func backfill(ctx context.Context, p *processor) error {
 		ev    *uploadReady
 	}
 	var jobs []job
-	failed := 0
+	failed, unprocessable := 0, 0
 	for _, space := range spaces {
 		err := walk(listCtx, p.gwc, space.GetRoot(), func(info *provider.ResourceInfo) {
 			name := path.Base(info.GetPath())
@@ -68,12 +69,19 @@ func backfill(ctx context.Context, p *processor) error {
 			return ctx.Err()
 		}
 		log := slog.With("space", j.space, "file", j.ev.Filename, "n", fmt.Sprintf("%d/%d", i+1, len(jobs)))
-		if err := p.process(ctx, j.ev, log); err != nil {
+		var permanent permanentError
+		err := p.process(ctx, j.ev, log)
+		switch {
+		case err == nil:
+		case errors.As(err, &permanent):
+			unprocessable++
+			log.Warn("cannot process", "error", err)
+		default:
 			failed++
 			log.Error("failed", "error", err)
 		}
 	}
-	slog.Info("backfill done", "pdfs", len(jobs), "failed", failed)
+	slog.Info("backfill done", "pdfs", len(jobs), "unprocessable", unprocessable, "failed", failed)
 	if failed > 0 {
 		return fmt.Errorf("%d failures", failed)
 	}
