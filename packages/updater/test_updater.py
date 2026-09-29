@@ -46,11 +46,13 @@ class TestPackageDiscovery(unittest.TestCase):
             classic.mkdir(parents=True)
             nested.mkdir(parents=True)
 
-            with mock.patch("packages._nix_update_args", return_value=["nix-update"]):
+            scripts = {"classic": ["nix-update"], "nested": ["nix-update"]}
+            with mock.patch("packages._update_scripts", return_value=scripts):
                 found = discover(repo)
 
             self.assertEqual([package.name for package in found], ["classic", "nested"])
             self.assertEqual([package.path for package in found], [classic, nested])
+            self.assertEqual(found[0].update_args, ["nix-update"])
 
 
 class TestGrouping(unittest.TestCase):
@@ -657,25 +659,20 @@ class TestConnectDispatch(unittest.TestCase):
 
 
 class TestParseUpdateScript(unittest.TestCase):
-    """parse_update_script reads captured `nix eval .#<pkg>.updateScript --json`."""
+    """parse_update_script reads one decoded `updateScript` from the eval."""
 
     def test_nix_update_script_list_form(self):
-        out = json.dumps(
-            ["/nix/store/abc-nix-update/bin/nix-update", "--version-regex", "v(.*)"]
-        )
-        self.assertEqual(
-            parse_update_script(out),
-            ["/nix/store/abc-nix-update/bin/nix-update", "--version-regex", "v(.*)"],
-        )
+        value = ["/nix/store/abc-nix-update/bin/nix-update", "--version-regex", "v(.*)"]
+        self.assertEqual(parse_update_script(value), value)
 
     def test_path_form_rejected(self):
         # updateScript = ./update.sh evals to a store-path string, not a list;
         # handled by the update.sh fallback instead.
-        self.assertIsNone(parse_update_script(json.dumps("/nix/store/x-src/update.sh")))
+        self.assertIsNone(parse_update_script("/nix/store/x-src/update.sh"))
 
     def test_null_rejected(self):
         # passthru.updateScript = null opts a package out
-        self.assertIsNone(parse_update_script("null"))
+        self.assertIsNone(parse_update_script(None))
 
 
 class TestClassify(unittest.TestCase):

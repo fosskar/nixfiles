@@ -4,6 +4,7 @@ executable update.sh -> run it, neither -> skipped."""
 from __future__ import annotations
 
 import json
+import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -16,6 +17,7 @@ class Package:
     name: str
     method: str  # "nix-update" or "script"
     path: Path
+    update_args: list[str] | None = None
 
 
 @dataclass
@@ -25,10 +27,9 @@ class UpdateResult:
     message: str | None = None
 
 
-def parse_update_script(nix_eval_json: str) -> list[str] | None:
+def parse_update_script(value: object) -> list[str] | None:
     # Only the nix-update-script list form is usable here; a path form
     # (updateScript = ./update.sh) is handled by the update.sh fallback.
-    value = json.loads(nix_eval_json)
     return value if isinstance(value, list) else None
 
 
@@ -40,20 +41,30 @@ def classify(update_script: list[str] | None, has_update_sh: bool) -> str | None
     return None
 
 
-def _nix_update_args(repo: Path, name: str) -> list[str] | None:
-    # Probe the flake attr instead of grepping package.nix: updateScript
-    # may be defined in another file the package imports.
-    result = capture(
-        repo=repo,
-        cmd=["nix", "eval", f".#{name}.updateScript", "--json"],
-        check=False,
+def _update_scripts(repo: Path) -> dict[str, object]:
+    # Probe the flake attrs instead of grepping package.nix: updateScript
+    # may be defined in another file the package imports. One eval for all
+    # packages; stderr stays visible if it fails.
+    system = capture(repo=repo, cmd=["nix", "config", "show", "system"]).stdout
+    result = subprocess.run(
+        [
+            "nix",
+            "eval",
+            "--json",
+            f".#packages.{system.strip()}",
+            "--apply",
+            "builtins.mapAttrs (_: p: p.updateScript or null)",
+        ],
+        cwd=repo,
+        stdout=subprocess.PIPE,
+        text=True,
+        check=True,
     )
-    if result.returncode != 0:
-        return None
-    return parse_update_script(result.stdout)
+    return json.loads(result.stdout)
 
 
 def discover(repo: Path) -> list[Package]:
+    scripts = _update_scripts(repo)
     packages: list[Package] = []
     for root in (repo / "packages", repo / "nix" / "packages"):
         if not root.is_dir():
@@ -65,13 +76,14 @@ def discover(repo: Path) -> list[Package]:
             has_update_sh = update_sh.exists() and bool(
                 update_sh.stat().st_mode & 0o111
             )
-            method = classify(_nix_update_args(repo, pkg_dir.name), has_update_sh)
+            args = parse_update_script(scripts.get(pkg_dir.name))
+            method = classify(args, has_update_sh)
             if method is None:
                 print(
                     f":: {pkg_dir.name} - no usable updateScript or update.sh, skipping"
                 )
             else:
-                packages.append(Package(pkg_dir.name, method, pkg_dir))
+                packages.append(Package(pkg_dir.name, method, pkg_dir, args))
     return packages
 
 
@@ -86,14 +98,6 @@ def _git_touched(repo: Path, rel: str) -> bool:
     return bool(
         capture(repo=repo, cmd=["git", "status", "--porcelain", rel]).stdout.strip()
     )
-
-
-def _update_script_args(repo: Path, name: str) -> list[str]:
-    args = _nix_update_args(repo, name)
-    if args is None:
-        msg = f"{name}: updateScript vanished or changed shape since discovery"
-        raise RuntimeError(msg)
-    return args
 
 
 def _is_nix_update(arg: str) -> bool:
@@ -111,9 +115,8 @@ def nix_update_cmd(name: str, script: list[str], msg_file: str) -> list[str]:
 def update(repo: Path, pkg: Package) -> UpdateResult:
     rel = str(pkg.path.relative_to(repo))
     if pkg.method == "nix-update":
-        script = _update_script_args(repo, pkg.name)
         with tempfile.NamedTemporaryFile("r", suffix=".msg") as msg:
-            run(repo=repo, cmd=nix_update_cmd(pkg.name, script, msg.name))
+            run(repo=repo, cmd=nix_update_cmd(pkg.name, pkg.update_args, msg.name))
             message = Path(msg.name).read_text().strip() or None
         changed = _git_touched(repo, rel)
         return UpdateResult(pkg.name, changed, message if changed else None)
