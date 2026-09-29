@@ -75,6 +75,11 @@ class Forge:
                 msg = f"{method} {url} -> {e.code}: {detail}"
                 raise ForgeError(msg, status=e.code) from e
             except (urllib.error.URLError, TimeoutError) as e:
+                # the server may have acted on a write before the connection
+                # failed; retrying could e.g. open a duplicate PR.
+                if method != "GET":
+                    msg = f"{method} {url}: {e}"
+                    raise ForgeError(msg) from e
                 if delay is None:
                     break
                 print(f":: request error ({method} {url}): {e}; retrying in {delay}s")

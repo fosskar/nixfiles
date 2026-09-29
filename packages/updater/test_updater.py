@@ -365,17 +365,22 @@ class TestParseOrigin(unittest.TestCase):
 
 
 class TestForgeRetryStatus(unittest.TestCase):
-    def _exhaust(self, exc: Exception) -> ForgeError:
+    def _exhaust(self, exc: Exception, method: str = "GET") -> ForgeError:
         cb = Codeberg("h", "o", "r", "tok")
+        self.urlopen = mock.Mock(side_effect=exc)
         with (
             mock.patch("forge._BACKOFF", (0,)),
             mock.patch("forge.time.sleep"),
-            mock.patch("forge.urllib.request.urlopen", side_effect=exc),
+            mock.patch("forge.urllib.request.urlopen", self.urlopen),
             contextlib.redirect_stdout(io.StringIO()),
             self.assertRaises(ForgeError) as ctx,
         ):
-            cb._request("GET", "https://h/x")
+            cb._request(method, "https://h/x")
         return ctx.exception
+
+    def test_write_not_retried_on_network_error(self):
+        self._exhaust(urllib.error.URLError("down"), method="POST")
+        self.assertEqual(self.urlopen.call_count, 1)
 
     def test_exhausted_429_carries_status(self):
         err = urllib.error.HTTPError(
