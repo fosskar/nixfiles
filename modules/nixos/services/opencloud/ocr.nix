@@ -65,6 +65,9 @@
         description = "ocr scanned pdfs already stored in opencloud";
         after = [ "opencloud.service" ];
         requires = [ "opencloud.service" ];
+        # a switch would otherwise restart a running backfill and, since it
+        # is a oneshot, wait for the whole run to finish
+        restartIfChanged = false;
         serviceConfig = serviceConfig // {
           Type = "oneshot";
           ExecStart = "${lib.getExe pkgs.local.opencloud-ocr} backfill";
