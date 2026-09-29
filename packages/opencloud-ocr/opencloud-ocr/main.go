@@ -83,12 +83,15 @@ func run() error {
 		AckPolicy:     jetstream.AckExplicitPolicy,
 		AckWait:       5 * time.Minute,
 		MaxDeliver:    maxDeliver,
-		MaxAckPending: 1,
+		MaxAckPending: 20,
 	})
 	if err != nil {
 		return fmt.Errorf("consumer %s on %s: %w", consumerName, stream, err)
 	}
-	msgs, err := cons.Messages()
+	// events waiting for a retry count against MaxAckPending, so it is above
+	// one to keep a failing file from blocking the queue. fetching one event
+	// at a time keeps buffered events from timing out during a long ocr run.
+	msgs, err := cons.Messages(jetstream.PullMaxMessages(1))
 	if err != nil {
 		return err
 	}
