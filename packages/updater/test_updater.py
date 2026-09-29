@@ -103,8 +103,11 @@ class TestProcessGroupFailure(unittest.TestCase):
                     raise subprocess.CalledProcessError(1, "nix-update")
                 return UpdateResult(pkg.name, True, f"{pkg.name}: 1 -> 2")
 
+            nix_calls: list[list[str]] = []
+
             def fake_run(cmd, repo, check=True):
                 if cmd[0] == "nix":
+                    nix_calls.append(cmd)
                     return SimpleNamespace(returncode=0)
                 if cmd[:2] == ["git", "commit"]:
                     cmd = [*git, *cmd[1:]]
@@ -135,6 +138,7 @@ class TestProcessGroupFailure(unittest.TestCase):
             self.assertEqual(
                 (repo / "packages" / "a-two" / "package.nix").read_text(), "old\n"
             )
+            self.assertEqual(nix_calls, [["nix", "fmt", "--", "packages/a-one"]])
 
 
 class TestChangelog(unittest.TestCase):

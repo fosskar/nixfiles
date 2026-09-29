@@ -13,7 +13,7 @@ import changelog
 import pipeline
 from pipeline import run
 
-from packages import Package, discover, update
+from packages import Package, UpdateResult, discover, update
 
 
 def group_packages(packages: list[Package]) -> dict[str, list[Package]]:
@@ -46,22 +46,30 @@ def process_group(
     branch = f"update-package-{group}"
     pipeline.checkout(repo, branch)
 
-    messages: list[str] = []
+    updated: list[tuple[str, UpdateResult]] = []
     for pkg in pkgs:
         rel = str(pkg.path.relative_to(repo))
         try:
             result = update(repo, pkg)
         except subprocess.CalledProcessError:
             print(f":: {pkg.name} - update failed (see error above), skipping")
-            # restore only this package: earlier group members are staged
+            # restore only this package: earlier group members are updated
             run(repo=repo, cmd=["git", "checkout", "HEAD", "--", rel])
             run(repo=repo, cmd=["git", "clean", "-fd", "--", rel])
             continue
         if not result.changed:
             print(f":: {pkg.name} - no update")
             continue
-        run(repo=repo, cmd=["nix", "fmt", "--", rel])
-        run(repo=repo, cmd=["git", "add", rel])
+        updated.append((rel, result))
+
+    if not updated:
+        return None
+
+    rels = [rel for rel, _ in updated]
+    run(repo=repo, cmd=["nix", "fmt", "--", *rels])
+    run(repo=repo, cmd=["git", "add", *rels])
+    messages: list[str] = []
+    for rel, result in updated:
         # nix fmt can normalize an update.sh rewrite back to the committed
         # content, leaving nothing staged.
         staged = run(
@@ -70,12 +78,12 @@ def process_group(
             check=False,
         )
         if staged.returncode == 0:
-            print(f":: {pkg.name} - no update")
+            print(f":: {result.name} - no update")
             continue
         messages.append(
             changelog.fix_stale_urls(result.message)
             if result.message
-            else f"update {pkg.name}"
+            else f"update {result.name}"
         )
 
     if not messages:
