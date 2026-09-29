@@ -53,7 +53,12 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	conn, err := grpc.NewClient(gatewayAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	// the grpc default of 4 MiB is too small to list large folders; this is
+	// the limit reva's own clients use
+	conn, err := grpc.NewClient(gatewayAddress,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(10240000)),
+	)
 	if err != nil {
 		return err
 	}
