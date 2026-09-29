@@ -22,20 +22,25 @@ func backfill(ctx context.Context, p *processor) error {
 	if err != nil {
 		return err
 	}
-	res, err := p.gwc.ListStorageSpaces(listCtx, &provider.ListStorageSpacesRequest{
-		Opaque: &types.Opaque{Map: map[string]*types.OpaqueEntry{
-			"unrestricted": {Decoder: "plain", Value: []byte("true")},
-		}},
-		Filters: []*provider.ListStorageSpacesRequest_Filter{
-			{Type: provider.ListStorageSpacesRequest_Filter_TYPE_SPACE_TYPE, Term: &provider.ListStorageSpacesRequest_Filter_SpaceType{SpaceType: "personal"}},
-			{Type: provider.ListStorageSpacesRequest_Filter_TYPE_SPACE_TYPE, Term: &provider.ListStorageSpacesRequest_Filter_SpaceType{SpaceType: "project"}},
-		},
-	})
-	if err != nil {
-		return fmt.Errorf("list spaces: %w", err)
-	}
-	if res.GetStatus().GetCode() != rpc.Code_CODE_OK {
-		return fmt.Errorf("list spaces: %s %s", res.GetStatus().GetCode(), res.GetStatus().GetMessage())
+	// one request per type: the gateway keeps filters in a map keyed by filter
+	// type, so a second space type filter replaces the first
+	var spaces []*provider.StorageSpace
+	for _, spaceType := range []string{"personal", "project"} {
+		res, err := p.gwc.ListStorageSpaces(listCtx, &provider.ListStorageSpacesRequest{
+			Opaque: &types.Opaque{Map: map[string]*types.OpaqueEntry{
+				"unrestricted": {Decoder: "plain", Value: []byte("true")},
+			}},
+			Filters: []*provider.ListStorageSpacesRequest_Filter{
+				{Type: provider.ListStorageSpacesRequest_Filter_TYPE_SPACE_TYPE, Term: &provider.ListStorageSpacesRequest_Filter_SpaceType{SpaceType: spaceType}},
+			},
+		})
+		if err != nil {
+			return fmt.Errorf("list %s spaces: %w", spaceType, err)
+		}
+		if res.GetStatus().GetCode() != rpc.Code_CODE_OK {
+			return fmt.Errorf("list %s spaces: %s %s", spaceType, res.GetStatus().GetCode(), res.GetStatus().GetMessage())
+		}
+		spaces = append(spaces, res.GetStorageSpaces()...)
 	}
 
 	type job struct {
@@ -44,7 +49,7 @@ func backfill(ctx context.Context, p *processor) error {
 	}
 	var jobs []job
 	failed := 0
-	for _, space := range res.GetStorageSpaces() {
+	for _, space := range spaces {
 		err := walk(listCtx, p.gwc, space.GetRoot(), func(info *provider.ResourceInfo) {
 			name := path.Base(info.GetPath())
 			if strings.EqualFold(path.Ext(name), ".pdf") {
@@ -56,7 +61,7 @@ func backfill(ctx context.Context, p *processor) error {
 			slog.Error("listing space", "space", space.GetName(), "error", err)
 		}
 	}
-	slog.Info("backfill listed", "spaces", len(res.GetStorageSpaces()), "pdfs", len(jobs))
+	slog.Info("backfill listed", "spaces", len(spaces), "pdfs", len(jobs))
 
 	for i, j := range jobs {
 		if ctx.Err() != nil {
