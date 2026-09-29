@@ -4,18 +4,16 @@
 from __future__ import annotations
 
 import argparse
-import os
 import subprocess
 import sys
+from functools import partial
 from pathlib import Path
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import changelog
 import pipeline
-from forge import ForgeError
+from pipeline import run
 
-from packages import Package, discover, run, update
+from packages import Package, discover, update
 
 
 def group_packages(packages: list[Package]) -> dict[str, list[Package]]:
@@ -46,9 +44,7 @@ def process_group(
     prs: list[dict],
 ) -> int | None:
     branch = f"update-package-{group}"
-    run(repo=repo, cmd=["git", "reset", "--hard"])
-    run(repo=repo, cmd=["git", "clean", "-fd"])
-    run(repo=repo, cmd=["git", "switch", "-C", branch, f"origin/{pipeline.BASE}"])
+    pipeline.checkout(repo, branch)
 
     messages: list[str] = []
     for pkg in pkgs:
@@ -117,37 +113,14 @@ def main() -> int:
 
     forge, prs = pipeline.connect(repo, dry_run=args.dry_run)
 
-    # Isolate each group: one failing package/group must not abort the
-    # rest of the run. All groups are attempted; a failure still fails the
-    # run (red) so it is visible, without blocking the others.
-    failures: list[str] = []
-    touched: list[int] = []
-    for group, pkgs in group_packages(packages).items():
-        try:
-            index = process_group(repo, group, pkgs, forge, prs)
-            if index is not None:
-                touched.append(index)
-        except ForgeError as e:
-            if e.status == 429:
-                # branch state is already reconciled next run (push dedupe +
-                # missing-PR creation); a throttled forge is not a failure.
-                print(f":: {group} - rate limited, deferred to next run: {e}")
-            else:
-                print(f":: {group} - FAILED, skipping: {e}")
-                failures.append(group)
-        except Exception as e:  # noqa: BLE001
-            print(f":: {group} - FAILED, skipping: {e}")
-            failures.append(group)
-
-    # automerge scheduled after CI already went green never fires (Forgejo
-    # is event-driven; the merge endpoint's rate-limit backoff makes that
-    # the common case here). CI is done by now: merge whatever is green.
-    pipeline.sweep(forge, touched)
-
-    if failures:
-        print(f":: {len(failures)} group(s) failed: {', '.join(failures)}")
-        return 1
-    return 0
+    return pipeline.run_units(
+        {
+            group: partial(process_group, repo, group, pkgs, forge, prs)
+            for group, pkgs in group_packages(packages).items()
+        },
+        forge,
+        "group",
+    )
 
 
 if __name__ == "__main__":

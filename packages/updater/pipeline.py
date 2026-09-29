@@ -3,15 +3,29 @@
 from __future__ import annotations
 
 import os
+import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 import changelog
-from forge import Codeberg, Forge, Github
-
-from packages import capture, run
+from forge import Codeberg, Forge, ForgeError, Github
 
 BASE = "main"
+
+
+def run(
+    cmd: list[str], repo: Path, check: bool = True
+) -> subprocess.CompletedProcess[str]:
+    # Stream stdout/stderr straight to the effect log so command output
+    # (nix-update errors, git progress) is visible live.
+    return subprocess.run(cmd, cwd=repo, text=True, check=check)
+
+
+def capture(
+    cmd: list[str], repo: Path, check: bool = True
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(cmd, cwd=repo, capture_output=True, text=True, check=check)
 
 
 def read_token() -> str:
@@ -66,6 +80,20 @@ def connect(repo: Path, *, dry_run: bool) -> tuple[Forge | None, list[dict]]:
     return forge, forge.open_pulls()
 
 
+def checkout(repo: Path, branch: str) -> None:
+    """Recreate `branch` from the base branch on a clean tree."""
+    run(repo=repo, cmd=["git", "reset", "--hard"])
+    run(repo=repo, cmd=["git", "clean", "-fd"])
+    run(repo=repo, cmd=["git", "switch", "-C", branch, f"origin/{BASE}"])
+
+
+def _find_pr(prs: list[dict], branch: str) -> dict | None:
+    return next(
+        (p for p in prs if p["head"]["ref"] == branch and p["base"]["ref"] == BASE),
+        None,
+    )
+
+
 def publish(
     repo: Path,
     branch: str,
@@ -74,9 +102,8 @@ def publish(
     prs: list[dict],
 ) -> int | None:
     """Push HEAD as `branch`, open/refresh its PR; returns the PR number."""
-    name = branch
     if forge is None:
-        print(f":: {name} - dry-run, not pushing\n{message}\n")
+        print(f":: {branch} - dry-run, not pushing\n{message}\n")
         return None
 
     # The effect clone is `--depth 1` of main only, so the remote-tracking
@@ -118,8 +145,8 @@ def publish(
         ).stdout.strip()
         == message.strip()
     ):
-        print(f":: {name} - remote branch up to date, skipping push")
-        existing = next((p for p in prs if p["head"]["ref"] == branch), None)
+        print(f":: {branch} - remote branch up to date, skipping push")
+        existing = _find_pr(prs, branch)
         if existing is not None:
             # existing PR whose checks finished before automerge was scheduled
             # (green race) is stuck forever; one targeted attempt unsticks it.
@@ -151,10 +178,7 @@ def publish(
     # so the PR body is not blank.
     body = changelog.enrich(rest or message)
 
-    existing = next(
-        (p for p in prs if p["head"]["ref"] == branch and p["base"]["ref"] == BASE),
-        None,
-    )
+    existing = _find_pr(prs, branch)
     if existing is None:
         pr = forge.create_pull(title=title, head=branch, base=BASE, body=body)
         prs.append(pr)
@@ -176,3 +200,39 @@ def sweep(forge: Forge | None, indexes: list[int]) -> None:
         return
     for index in indexes:
         forge.merge_if_green(index)
+
+
+def run_units(
+    units: dict[str, Callable[[], int | None]], forge: Forge | None, kind: str
+) -> int:
+    """Process each unit in isolation, then sweep touched PRs; exit code."""
+    # One failing unit must not abort the rest of the run. All units are
+    # attempted; a failure still fails the run (red) so it is visible.
+    failures: list[str] = []
+    touched: list[int] = []
+    for unit, process in units.items():
+        try:
+            index = process()
+            if index is not None:
+                touched.append(index)
+        except ForgeError as e:
+            if e.status == 429:
+                # branch state is already reconciled next run (push dedupe +
+                # missing-PR creation); a throttled forge is not a failure.
+                print(f":: {unit} - rate limited, deferred to next run: {e}")
+            else:
+                print(f":: {unit} - FAILED, skipping: {e}")
+                failures.append(unit)
+        except Exception as e:  # noqa: BLE001
+            print(f":: {unit} - FAILED, skipping: {e}")
+            failures.append(unit)
+
+    # automerge scheduled after CI already went green never fires (Forgejo
+    # is event-driven; the merge endpoint's rate-limit backoff makes that
+    # the common case here). CI is done by now: merge whatever is green.
+    sweep(forge, touched)
+
+    if failures:
+        print(f":: {len(failures)} {kind}(s) failed: {', '.join(failures)}")
+        return 1
+    return 0

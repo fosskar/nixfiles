@@ -4,10 +4,11 @@ executable update.sh -> run it, neither -> skipped."""
 from __future__ import annotations
 
 import json
-import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+
+from pipeline import capture, run
 
 
 @dataclass
@@ -22,20 +23,6 @@ class UpdateResult:
     name: str
     changed: bool
     message: str | None = None
-
-
-def run(
-    cmd: list[str], repo: Path, check: bool = True
-) -> subprocess.CompletedProcess[str]:
-    # Stream stdout/stderr straight to the effect log so command output
-    # (nix-update errors, git progress) is visible live.
-    return subprocess.run(cmd, cwd=repo, text=True, check=check)
-
-
-def capture(
-    cmd: list[str], repo: Path, check: bool = True
-) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(cmd, cwd=repo, capture_output=True, text=True, check=check)
 
 
 def parse_update_script(nix_eval_json: str) -> list[str] | None:

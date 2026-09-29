@@ -30,7 +30,7 @@ class Forge:
 
     api: str
 
-    def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
+    def __init__(self, token: str) -> None:
         self._token = token
 
     def _headers(self) -> dict[str, str]:
@@ -104,7 +104,7 @@ class Forge:
 
 class Codeberg(Forge):
     def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
-        super().__init__(host, owner, repo, token)
+        super().__init__(token)
         self.api = f"https://{host}/api/v1/repos/{owner}/{repo}"
 
     def _headers(self) -> dict[str, str]:
@@ -150,7 +150,7 @@ class Codeberg(Forge):
 
 class Github(Forge):
     def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
-        super().__init__(host, owner, repo, token)
+        super().__init__(token)
         self.api = f"https://api.github.com/repos/{owner}/{repo}"
 
     def _headers(self) -> dict[str, str]:

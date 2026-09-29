@@ -6,17 +6,13 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import json
-import os
 import sys
 from dataclasses import dataclass
+from functools import partial
 from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 import pipeline
-from forge import ForgeError
-
-from packages import run
+from pipeline import run
 
 _IGNORED_DIRS = {".git", "node_modules", "__pycache__"}
 
@@ -95,9 +91,7 @@ def commit_message(inp: FlakeInput, old: dict | None, new: dict | None) -> str:
 def process_input(
     repo: Path, inp: FlakeInput, forge: pipeline.Forge | None, prs: list[dict]
 ) -> int | None:
-    run(repo=repo, cmd=["git", "reset", "--hard"])
-    run(repo=repo, cmd=["git", "clean", "-fd"])
-    run(repo=repo, cmd=["git", "switch", "-C", inp.branch, f"origin/{pipeline.BASE}"])
+    pipeline.checkout(repo, inp.branch)
 
     lock_rel = f"{inp.flake_dir}/flake.lock" if inp.flake_dir != "." else "flake.lock"
     old = _locked_rev(repo, inp)
@@ -147,34 +141,11 @@ def main() -> int:
 
     forge, prs = pipeline.connect(repo, dry_run=args.dry_run)
 
-    failures: list[str] = []
-    touched: list[int] = []
-    for inp in inputs:
-        try:
-            index = process_input(repo, inp, forge, prs)
-            if index is not None:
-                touched.append(index)
-        except ForgeError as e:
-            if e.status == 429:
-                # branch state is already reconciled next run (push dedupe +
-                # missing-PR creation); a throttled forge is not a failure.
-                print(f":: {inp.unit} - rate limited, deferred to next run: {e}")
-            else:
-                print(f":: {inp.unit} - FAILED, skipping: {e}")
-                failures.append(inp.unit)
-        except Exception as e:  # noqa: BLE001
-            print(f":: {inp.unit} - FAILED, skipping: {e}")
-            failures.append(inp.unit)
-
-    # automerge scheduled after CI already went green never fires (Forgejo
-    # is event-driven; the merge endpoint's rate-limit backoff makes that
-    # the common case here). CI is done by now: merge whatever is green.
-    pipeline.sweep(forge, touched)
-
-    if failures:
-        print(f":: {len(failures)} input(s) failed: {', '.join(failures)}")
-        return 1
-    return 0
+    return pipeline.run_units(
+        {inp.unit: partial(process_input, repo, inp, forge, prs) for inp in inputs},
+        forge,
+        "input",
+    )
 
 
 if __name__ == "__main__":
