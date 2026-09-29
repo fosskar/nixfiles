@@ -64,7 +64,7 @@ func (p *processor) process(ctx context.Context, ev *uploadReady, log *slog.Logg
 		return nil
 	}
 	// the id survives a rename or move while ocrmypdf runs, the path does not
-	ref := &provider.Reference{ResourceId: info.GetId()}
+	ref := &provider.Reference{ResourceId: info.GetId(), Path: "."}
 	etag := info.GetEtag()
 
 	dir, err := os.MkdirTemp("", "opencloud-ocr-")
