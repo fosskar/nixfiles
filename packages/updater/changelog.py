@@ -12,6 +12,7 @@ _COMPARE = re.compile(
     r"https://github\.com/([^/\s]+)/([^/\s]+)/compare/(\S+?)\.\.\.(\S+)"
 )
 _TITLE = re.compile(r"^\S+: (\S+) -> (\S+)$")
+_SHA = re.compile(r"[0-9a-f]{40}")
 _cache: dict[tuple[str, str, str], str | None] = {}
 
 
@@ -67,7 +68,8 @@ def enrich(message: str, max_len: int = 3000) -> str:
     out = message
     seen: set[tuple[str, str]] = set()
     for owner, repo, _old, new in _COMPARE.findall(message):
-        if (repo, new) in seen:
+        # flake input diffs compare commit shas, which never name a release
+        if (repo, new) in seen or _SHA.fullmatch(new):
             continue
         seen.add((repo, new))
         body = _release_body(owner, repo, new)

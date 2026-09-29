@@ -149,6 +149,12 @@ class TestChangelog(unittest.TestCase):
             out = changelog.enrich(self.COMPARE, max_len=100)
         self.assertIn("(truncated)", out)
 
+    def test_commit_sha_skips_lookup(self):
+        msg = f"Diff: https://github.com/o/r/compare/{'a' * 40}...{'b' * 40}"
+        with mock.patch.object(changelog, "_release_body") as body:
+            self.assertEqual(changelog.enrich(msg), msg)
+        body.assert_not_called()
+
     def test_no_notes_no_details(self):
         with mock.patch.object(changelog, "_release_body", return_value=None):
             out = changelog.enrich(self.COMPARE)

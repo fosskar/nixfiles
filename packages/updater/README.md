@@ -53,8 +53,9 @@ and opens one PR per root input. Units are named `<input>` for the root
 flake and `<dir>#<input>` for nested flakes; `--exclude` takes fnmatch
 globs on unit names (repeatable, e.g. `--exclude 'templates/*#*'`).
 `follows`-indirections are skipped (nothing to update). GitHub inputs get
-a `Diff:` compare URL in the commit message, which the changelog
-enrichment expands into release notes in the PR body.
+a `Diff:` compare URL in the commit message. It compares commit shas, so
+the changelog enrichment skips it; release notes are inlined only for
+package updates whose `Diff:` URL names a tag.
 
 ## PR lifecycle
 
