@@ -1,5 +1,6 @@
 {
   lib,
+  stdenvNoCC,
   python3,
   makeWrapper,
   nix-update,
@@ -8,10 +9,9 @@
   openssh,
   cacert,
 }:
-python3.pkgs.buildPythonApplication {
+stdenvNoCC.mkDerivation {
   pname = "updater";
   version = "0.1.0";
-  pyproject = false;
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -19,6 +19,8 @@ python3.pkgs.buildPythonApplication {
   };
 
   nativeBuildInputs = [ makeWrapper ];
+
+  doCheck = true;
 
   checkPhase = ''
     runHook preCheck
@@ -54,10 +56,6 @@ python3.pkgs.buildPythonApplication {
 
     runHook postInstall
   '';
-
-  # buildPythonApplication injects a default nix-update updateScript;
-  # this package is local-only (path src, no fetcher) and cannot be updated.
-  passthru.updateScript = null;
 
   meta = {
     description = "update packages/ and flake inputs, one Codeberg PR per unit";

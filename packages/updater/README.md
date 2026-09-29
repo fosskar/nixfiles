@@ -40,7 +40,7 @@ from nixbot's secrets.
   with those args (probed via `nix eval`, so the attr may live in any file).
 - executable `update.sh` in either package directory -> run directly (nix shebang).
 - neither -> skipped, printed loudly.
-- opt out explicitly with `passthru.updateScript = null` (this package does).
+- opt out explicitly with `passthru.updateScript = null`.
 
 Packages sharing a name prefix (`netbird-*`) are grouped into one branch/PR
 to keep the PR count down (originally because Codeberg's anti-spam rejected

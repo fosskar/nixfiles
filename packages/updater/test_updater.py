@@ -674,7 +674,7 @@ class TestParseUpdateScript(unittest.TestCase):
         self.assertIsNone(parse_update_script(json.dumps("/nix/store/x-src/update.sh")))
 
     def test_null_rejected(self):
-        # the updater package itself sets passthru.updateScript = null
+        # passthru.updateScript = null opts a package out
         self.assertIsNone(parse_update_script("null"))
 
 
