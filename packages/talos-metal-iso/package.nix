@@ -6,11 +6,11 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "talos-metal-iso";
-  version = "1.13.5";
+  version = "1.14.1";
 
   src = fetchurl {
     url = "https://github.com/siderolabs/talos/releases/download/v${finalAttrs.version}/metal-amd64.iso";
-    hash = "sha256-FRGuhdsHaxsro8OPvS1sVS8loZi2XRyTqtEjbQRzy9c=";
+    hash = "sha256-6ymgo8SbGaaaK+EeS6BswIN/xhpSivYv6i6APrnm0Z8=";
   };
 
   dontUnpack = true;
