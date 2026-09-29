@@ -386,6 +386,9 @@ class TestForgeRetryStatus(unittest.TestCase):
     def test_exhausted_urlerror_has_no_status(self):
         self.assertIsNone(self._exhaust(urllib.error.URLError("down")).status)
 
+    def test_read_timeout_retried(self):
+        self.assertIn("retries exhausted", str(self._exhaust(TimeoutError("read"))))
+
 
 class TestPublishSkipPush(unittest.TestCase):
     """Remote branch already up to date: never push, but ensure a PR exists."""

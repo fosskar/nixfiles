@@ -8,6 +8,8 @@ import re
 import urllib.error
 import urllib.request
 
+from forge import TIMEOUT
+
 _COMPARE = re.compile(
     r"https://github\.com/([^/\s]+)/([^/\s]+)/compare/(\S+?)\.\.\.(\S+)"
 )
@@ -51,14 +53,14 @@ def _release_body(owner: str, repo: str, tag: str) -> str | None:
             headers["Authorization"] = f"Bearer {token}"
         req = urllib.request.Request(url, headers=headers)
         try:
-            with urllib.request.urlopen(req) as resp:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
                 body = (json.load(resp).get("body") or "").strip() or None
             break
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 continue
             break
-        except urllib.error.URLError:
+        except (urllib.error.URLError, TimeoutError):
             break
     _cache[key] = body
     return body

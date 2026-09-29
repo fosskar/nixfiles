@@ -14,6 +14,9 @@ from typing import Any
 # growth probes short burst limits cheaply and still outlasts a
 # minutes-scale bucket (185s cumulative before the final attempt).
 _BACKOFF = (5, 15, 45, 120)
+# generous: a stalled connection must not hang the effect, a slow forge
+# must not fail it.
+TIMEOUT = 120
 
 
 class ForgeError(Exception):
@@ -46,7 +49,7 @@ class Forge:
             if data is not None:
                 req.add_header("Content-Type", "application/json")
             try:
-                with urllib.request.urlopen(req) as resp:
+                with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
                     raw = resp.read()
                     return json.loads(raw) if raw else None
             except urllib.error.HTTPError as e:
@@ -71,7 +74,7 @@ class Forge:
                 detail = e.read().decode(errors="replace")
                 msg = f"{method} {url} -> {e.code}: {detail}"
                 raise ForgeError(msg, status=e.code) from e
-            except urllib.error.URLError as e:
+            except (urllib.error.URLError, TimeoutError) as e:
                 if delay is None:
                     break
                 print(f":: request error ({method} {url}): {e}; retrying in {delay}s")
