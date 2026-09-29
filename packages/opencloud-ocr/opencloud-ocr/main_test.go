@@ -117,3 +117,17 @@ func TestReadServiceAccount(t *testing.T) {
 		t.Fatal("expected an error without service account")
 	}
 }
+
+func TestOCRErrorKeepsLastLine(t *testing.T) {
+	bin := t.TempDir()
+	script := "#!/bin/sh\ni=0\nwhile [ $i -lt 5000 ]; do echo 'overprint mode not set'; i=$((i+1)); done\necho 'PdfiumError: Failed to fill bitmap rectangle.' >&2\nexit 15\n"
+	if err := os.WriteFile(filepath.Join(bin, "ocrmypdf"), []byte(script), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", bin)
+	_, err := ocr(context.Background(), languages, "in.pdf", "out.pdf")
+	want := "ocrmypdf exited with 15: PdfiumError: Failed to fill bitmap rectangle."
+	if err == nil || err.Error() != want {
+		t.Fatalf("err = %v, want %q", err, want)
+	}
+}
