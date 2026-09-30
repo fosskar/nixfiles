@@ -5,6 +5,7 @@
   # machines/*/networking.nix, feature-module trusted proxies.
   flake.hosts = {
     gateway.wan = "138.201.155.21";
+    gateway.wan6 = "2a01:4f8:c17:b207::1";
     nixbox.lan = "192.168.20.200";
     nixworker.lan = "192.168.20.210";
     desktop.lan = "192.168.10.100";
