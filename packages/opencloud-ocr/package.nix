@@ -10,7 +10,7 @@ buildGoModule {
 
   src = ./opencloud-ocr;
 
-  vendorHash = "sha256-3fWW0NnNqK+LhOen4VjUjm/6ScXU4Ut1tfGHMo11ZOk=";
+  vendorHash = "sha256-hOGpciYrGSbeHrltTWKqm2l3tYdAdtiEjTuCIBcDRns=";
 
   env.CGO_ENABLED = 0;
 
