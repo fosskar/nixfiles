@@ -236,7 +236,8 @@ _: {
 
               systemd.services.beszel-default-alerts = {
                 description = "Create default beszel alerts for systems missing them";
-                wantedBy = [ "multi-user.target" ];
+                # rerun on every hub (re)start, which is when config.yml systems appear
+                wantedBy = [ "beszel-hub.service" ];
                 after = [ "beszel-hub.service" ];
                 requires = [ "beszel-hub.service" ];
                 serviceConfig = {
