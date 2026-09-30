@@ -61,7 +61,7 @@ let
       export RENOVATE_PLATFORM=github
       export RENOVATE_REPOSITORIES=${repo}
       export RENOVATE_GIT_AUTHOR='fosskar[bot] <300917551+fosskar[bot]@users.noreply.github.com>'
-      export RENOVATE_ALLOWED_COMMANDS='["^bash packages/live-ocr/update-vendor-hash\\.sh$"]'
+      export RENOVATE_ALLOWED_COMMANDS='["^bash packages/update-vendor-hash\\.sh (live-ocr|opencloud-ocr)$"]'
       export RENOVATE_BINARY_SOURCE=global
       export LOG_LEVEL=info
 

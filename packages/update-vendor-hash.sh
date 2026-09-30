@@ -8,12 +8,13 @@ set -euo pipefail
 export NIX_CONFIG="experimental-features = nix-command flakes"
 export NIX_REMOTE=daemon
 
-pkg=packages/live-ocr/package.nix
+name=$1
+pkg=packages/$name/package.nix
 
 sed -i -E 's/vendorHash = "sha256-[^"]+";/vendorHash = lib.fakeHash;/' "$pkg"
 
 set +e
-output=$(nix build .#live-ocr -L 2>&1)
+output=$(nix build ".#$name" -L 2>&1)
 status=$?
 set -e
 
@@ -26,4 +27,4 @@ fi
 
 sed -i "s|vendorHash = lib\.fakeHash;|vendorHash = \"$hash\";|" "$pkg"
 
-nix build .#live-ocr -L
+nix build ".#$name" -L

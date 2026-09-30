@@ -28,11 +28,25 @@
       "matchFileNames": ["packages/live-ocr/live-ocr/go.mod"],
       "postUpdateOptions": ["gomodTidy"],
       "postUpgradeTasks": {
-        "commands": ["bash packages/live-ocr/update-vendor-hash.sh"],
+        "commands": ["bash packages/update-vendor-hash.sh live-ocr"],
         "fileFilters": [
           "packages/live-ocr/package.nix",
           "packages/live-ocr/live-ocr/go.mod",
           "packages/live-ocr/live-ocr/go.sum"
+        ],
+        "executionMode": "branch"
+      }
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchFileNames": ["packages/opencloud-ocr/opencloud-ocr/go.mod"],
+      "postUpdateOptions": ["gomodTidy"],
+      "postUpgradeTasks": {
+        "commands": ["bash packages/update-vendor-hash.sh opencloud-ocr"],
+        "fileFilters": [
+          "packages/opencloud-ocr/package.nix",
+          "packages/opencloud-ocr/opencloud-ocr/go.mod",
+          "packages/opencloud-ocr/opencloud-ocr/go.sum"
         ],
         "executionMode": "branch"
       }
