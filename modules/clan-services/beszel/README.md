@@ -26,6 +26,8 @@ Server role:
 
 - enables the Beszel hub on `127.0.0.1:8090`
 - writes hub `config.yml` from client role assignments
+- generates icmp monitors from every client machine to every other client machine on each clan network that exports a plain host for it
+- reconciles network monitors with the generated list and `monitors` through the hub api on every hub start
 - exposes the hub through Caddy at `beszel.<local-domain>`
 - adds Authelia OIDC client config
 - adds Homepage and Gatus entries when those services are enabled
@@ -39,6 +41,10 @@ Client role:
 - passes filesystem, sensor, SMART, and Podman settings to the agent
 
 ## Settings
+
+### `server`
+
+- `monitors`: extra network monitors on top of the generated icmp ones, run by agents, each with `system` (beszel system name), `target`, `protocol` (`icmp`, `tcp`, `http`, `dns`), `port` (tcp only) and `interval` in seconds (default `60`). monitors missing from the list are deleted, including ones added in the ui.
 
 ### `client`
 
