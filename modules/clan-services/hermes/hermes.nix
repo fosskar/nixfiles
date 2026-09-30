@@ -185,7 +185,7 @@
                   if [ "''${SSH_ORIGINAL_COMMAND-}" != hermes-token ]; then
                     exit 1
                   fi
-                  exec ${pkgs.coreutils}/bin/cat /run/secrets/vars/per-machine/${config.networking.hostName}/${instanceName}-dashboard/token
+                  exec ${pkgs.coreutils}/bin/cat ${generators."${instanceName}-dashboard".files.token.path}
                 '';
                 localProvider = settings.providers.local.enable or false;
                 keyProviders = lib.attrNames (
