@@ -424,7 +424,7 @@
 
                         garage bucket allow --read --write ${lib.optionalString def.owner "--owner"} --key "$key_id" ${b}
                         ${lib.optionalString def.website "garage bucket website --allow ${b}"}
-                        ${lib.concatMapStringsSep "\n" (a: "garage bucket alias ${b} ${a} 2>/dev/null || true") def.aliases}
+                        ${lib.concatMapStringsSep "\n" (a: "garage bucket alias ${b} ${a}") def.aliases}
                       '') buckets
                     )}
                   '';
