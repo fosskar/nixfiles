@@ -280,9 +280,13 @@ _: {
 
                 beszelApiJob = description: script: {
                   inherit description;
-                  # reruns on every hub (re)start, which is when config.yml systems
-                  # appear, and on deploys that change the script
-                  wantedBy = [ "beszel-hub.service" ];
+                  # beszel-hub.service reruns it on every hub (re)start, which is when
+                  # config.yml systems appear; multi-user.target lets a switch start
+                  # it, and RemainAfterExit makes a switch restart it when it changes
+                  wantedBy = [
+                    "multi-user.target"
+                    "beszel-hub.service"
+                  ];
                   partOf = [ "beszel-hub.service" ];
                   after = [ "beszel-hub.service" ];
                   requires = [ "beszel-hub.service" ];
