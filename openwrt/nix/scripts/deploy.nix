@@ -61,7 +61,7 @@ pkgs.writeShellScriptBin "openwrt-deploy" ''
           externalPackageInstall = lib.concatMapStringsSep "\n" (pkg: ''
             echo "ensuring external package ${pkg.name}..."
             ssh -o ConnectTimeout=5 "$HOST" ${
-              lib.escapeShellArg "{ ${externalPackageCheck pkg}; } >/dev/null 2>&1 || { ${pkg.installCommand}; }"
+              lib.escapeShellArg "{\n${externalPackageCheck pkg}\n} >/dev/null 2>&1 || {\n${pkg.installCommand}\n}"
             }
           '') device.externalPackages;
           hasRemove = device.removePackages != [ ];
