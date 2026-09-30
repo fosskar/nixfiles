@@ -4,6 +4,7 @@
       config,
       lib,
       inputs,
+      nflib,
       pkgs,
       ...
     }:
@@ -30,12 +31,8 @@
         '';
 
         extraSpecialArgs = {
-          inherit inputs;
+          inherit inputs nflib;
           inherit (inputs) self;
-          nflib = import "${inputs.self}/lib" {
-            inherit lib;
-            inherit (inputs) self;
-          };
         };
 
         sharedModules = [
