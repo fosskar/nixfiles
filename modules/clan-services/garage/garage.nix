@@ -315,16 +315,12 @@
                     pkgs.gnugrep
                     pkgs.gnused
                   ];
-                  environment = {
-                    GARAGE_RPC_SECRET_FILE = "/run/credentials/garage-layout-init.service/rpc_secret";
-                    GARAGE_ADMIN_TOKEN_FILE = "/run/credentials/garage-layout-init.service/admin_token";
-                  };
+                  environment.GARAGE_RPC_SECRET_FILE = "/run/credentials/garage-layout-init.service/rpc_secret";
                   serviceConfig = {
                     Type = "oneshot";
                     RemainAfterExit = true;
                     LoadCredential = [
                       "rpc_secret:${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}"
-                      "admin_token:${config.clan.core.vars.generators.garage.files.admin_token.path}"
                     ];
                   };
                   script = ''
@@ -380,16 +376,12 @@
                     pkgs.gnugrep
                     pkgs.gnused
                   ];
-                  environment = {
-                    GARAGE_RPC_SECRET_FILE = "/run/credentials/garage-buckets-init.service/rpc_secret";
-                    GARAGE_ADMIN_TOKEN_FILE = "/run/credentials/garage-buckets-init.service/admin_token";
-                  };
+                  environment.GARAGE_RPC_SECRET_FILE = "/run/credentials/garage-buckets-init.service/rpc_secret";
                   serviceConfig = {
                     Type = "oneshot";
                     RemainAfterExit = true;
                     LoadCredential = [
                       "rpc_secret:${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}"
-                      "admin_token:${config.clan.core.vars.generators.garage.files.admin_token.path}"
                     ]
                     ++ lib.concatMap (b: [
                       "${b}_access_key_id:${
