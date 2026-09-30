@@ -123,14 +123,19 @@ _: {
 
                 # every agent pings every other agent machine on each network that
                 # exports a plain host for it; var hosts such as tor onions are skipped
+                # yggdrasil exports raw addresses but writes <machine>.<clan domain>
+                # into /etc/hosts on every member, so probe that name instead
                 peerHosts =
                   machine:
-                  lib.pipe (clanLib.selectExports (scope: scope.machineName == machine) exports) [
-                    lib.attrValues
-                    (lib.concatMap (export: export.peer.hosts or [ ]))
-                    (lib.filter (host: host ? plain))
-                    (map (host: host.plain))
-                  ];
+                  lib.concatLists (
+                    lib.mapAttrsToList (
+                      key: export:
+                      if (clanLib.parseScope key).serviceName == "clan-core/yggdrasil" then
+                        [ "${machine}.${config.clan.core.settings.domain}" ]
+                      else
+                        map (host: host.plain) (lib.filter (host: host ? plain) (export.peer.hosts or [ ]))
+                    ) (clanLib.selectExports (scope: scope.machineName == machine) exports)
+                  );
 
                 meshMonitors = lib.concatMap (
                   agent:
