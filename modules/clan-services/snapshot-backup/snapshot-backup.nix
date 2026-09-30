@@ -26,18 +26,6 @@ _: {
                 ];
                 description = "filesystem snapshot implementation";
               };
-
-              stateName = lib.mkOption {
-                type = lib.types.strMatching "^[a-zA-Z0-9_-]+$";
-                default = "snapshot-backup";
-                description = "clan.core.state entry name";
-              };
-
-              snapshotName = lib.mkOption {
-                type = lib.types.str;
-                default = "borg-backup";
-                description = "snapshot name";
-              };
             };
           };
 
@@ -47,10 +35,11 @@ _: {
             nixosModule =
               { pkgs, ... }:
               let
+                snapshotName = "borg-backup";
                 state =
                   if settings.snapshotType == "zfs" then
                     {
-                      folders = map (folder: "${folder}/.zfs/snapshot/${settings.snapshotName}") settings.folders;
+                      folders = map (folder: "${folder}/.zfs/snapshot/${snapshotName}") settings.folders;
                       preBackupScript = ''
                         fail=0
                         for folder in ${lib.escapeShellArgs settings.folders}; do
@@ -63,7 +52,7 @@ _: {
                           # child dataset mountpoints appear empty; refuse to back up
                           # a dataset whose children would silently vanish.
                           if [ "$(${pkgs.zfs}/bin/zfs list -H -o name -d 1 "$dataset" | wc -l)" -gt 1 ]; then
-                            echo "error: $dataset has child datasets; their data would be missing from $folder/.zfs/snapshot/${settings.snapshotName}" >&2
+                            echo "error: $dataset has child datasets; their data would be missing from $folder/.zfs/snapshot/${snapshotName}" >&2
                             fail=1
                           fi
                         done
@@ -71,13 +60,13 @@ _: {
                         for folder in ${lib.escapeShellArgs settings.folders}; do
                           dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder")
                           snapshots=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset")
-                          if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${settings.snapshotName}" >/dev/null; then
-                            echo "deleting leftover zfs snapshot: $dataset@${settings.snapshotName}"
-                            ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}"
+                          if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
+                            echo "deleting leftover zfs snapshot: $dataset@${snapshotName}"
+                            ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${snapshotName}"
                           fi
-                          echo "creating zfs snapshot: $dataset@${settings.snapshotName}"
-                          ${pkgs.zfs}/bin/zfs snapshot -r "$dataset@${settings.snapshotName}"
-                          ls "$folder/.zfs/snapshot/${settings.snapshotName}" >/dev/null
+                          echo "creating zfs snapshot: $dataset@${snapshotName}"
+                          ${pkgs.zfs}/bin/zfs snapshot -r "$dataset@${snapshotName}"
+                          ls "$folder/.zfs/snapshot/${snapshotName}" >/dev/null
                         done
                       '';
                       postBackupScript = ''
@@ -92,9 +81,9 @@ _: {
                             fail=1
                             continue
                           fi
-                          if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${settings.snapshotName}" >/dev/null; then
-                            echo "destroying zfs snapshot: $dataset@${settings.snapshotName}"
-                            if ! ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}"; then
+                          if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
+                            echo "destroying zfs snapshot: $dataset@${snapshotName}"
+                            if ! ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${snapshotName}"; then
                               fail=1
                             fi
                           fi
@@ -104,7 +93,7 @@ _: {
                     }
                   else
                     {
-                      folders = map (folder: "${folder}/.${settings.snapshotName}") settings.folders;
+                      folders = map (folder: "${folder}/.${snapshotName}") settings.folders;
                       preBackupScript = ''
                         fail=0
                         for folder in ${lib.escapeShellArgs settings.folders}; do
@@ -115,7 +104,7 @@ _: {
                         done
                         [ "$fail" -eq 0 ] || exit 1
                         for folder in ${lib.escapeShellArgs settings.folders}; do
-                          snapshot="$folder/.${settings.snapshotName}"
+                          snapshot="$folder/.${snapshotName}"
                           if [ -d "$snapshot" ]; then
                             echo "deleting leftover btrfs snapshot: $snapshot"
                             ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$snapshot"
@@ -128,7 +117,7 @@ _: {
                       postBackupScript = ''
                         fail=0
                         for folder in ${lib.escapeShellArgs settings.folders}; do
-                          snapshot="$folder/.${settings.snapshotName}"
+                          snapshot="$folder/.${snapshotName}"
                           if [ -d "$snapshot" ]; then
                             echo "deleting btrfs snapshot: $snapshot"
                             if ! ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$snapshot"; then
@@ -145,7 +134,7 @@ _: {
                 # targets (.zfs/snapshot is virtual, btrfs staging may be a ro
                 # snapshot); block clan backups restore before borg extract fails
                 # with a confusing write error.
-                clan.core.state.${settings.stateName} = state // {
+                clan.core.state.snapshot-backup = state // {
                   preRestoreScript = ''
                     echo "error: clan backups restore cannot write into snapshot paths" >&2
                     echo "follow the manual procedure in modules/clan-services/snapshot-backup/README.md" >&2

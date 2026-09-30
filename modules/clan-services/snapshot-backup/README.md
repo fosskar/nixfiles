@@ -118,5 +118,3 @@ file. See `clan.core.state.netbird-server` for the pattern.
 
 - `folders`: live folders to snapshot before backup.
 - `snapshotType`: filesystem implementation, either `zfs` or `btrfs`.
-- `stateName`: `clan.core.state` entry name. defaults to `snapshot-backup`.
-- `snapshotName`: snapshot name. defaults to `borg-backup`.
