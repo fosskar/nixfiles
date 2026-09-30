@@ -59,7 +59,7 @@
               ];
 
               build_systems = [ pkgs.stdenv.hostPlatform.system ];
-              eval_systems = [ ];
+              eval_systems = [ pkgs.stdenv.hostPlatform.system ];
               build_concurrency = 4;
               eval_worker_count = 12;
               eval_max_memory_size = 4096;
