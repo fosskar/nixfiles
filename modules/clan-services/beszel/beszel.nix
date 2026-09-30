@@ -58,28 +58,23 @@ _: {
               beszelClientSystems = map (
                 machine:
                 let
-                  clientSettings = (roles.client.machines.${machine} or { }).settings or { };
+                  clientSettings = roles.client.machines.${machine}.settings;
+                in
+                {
+                  name = machine;
                   host =
-                    if (clientSettings.host or null) != null then
+                    if clientSettings.host != null then
                       clientSettings.host
                     else if machine == config.networking.hostName then
                       "127.0.0.1"
                     else
                       "${machine}.${config.clan.core.settings.domain}";
-                  port = clientSettings.port or 18876;
-                in
-                {
-                  name = machine;
-                  inherit host port;
+                  inherit (clientSettings) port;
                 }
               ) (lib.sort builtins.lessThan clientMachines);
 
-              beszelExtraSystems = map (system: {
-                inherit (system) name host port;
-              }) settings.extraSystems;
-
               beszelConfigYml = (pkgs.formats.yaml { }).generate "beszel-config.yml" {
-                systems = beszelClientSystems ++ beszelExtraSystems;
+                systems = beszelClientSystems ++ settings.extraSystems;
               };
 
               beszelSuperuserEmail = "hub@${beszelDomain}";
@@ -175,11 +170,9 @@ _: {
                   pkgs.authelia
                 ];
                 script = ''
-                  if [ ! -s "$out/oauth-client-secret" ] || [ ! -s "$out/oauth-client-secret-hash" ]; then
-                    secret=$(pwgen -s 64 1)
-                    authelia crypto hash generate pbkdf2 --password "$secret" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
-                    echo -n "$secret" > "$out/oauth-client-secret"
-                  fi
+                  secret=$(pwgen -s 64 1)
+                  authelia crypto hash generate pbkdf2 --password "$secret" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
+                  echo -n "$secret" > "$out/oauth-client-secret"
                 '';
               };
 
@@ -235,7 +228,6 @@ _: {
 
               services.beszel.hub = {
                 enable = true;
-                package = pkgs.beszel;
                 host = "127.0.0.1";
                 port = beszelPort;
                 environment.APP_URL = "https://${beszelDomain}";
@@ -363,7 +355,6 @@ _: {
             {
               config,
               lib,
-              pkgs,
               ...
             }:
             {
@@ -385,10 +376,7 @@ _: {
 
               services.beszel.agent = {
                 enable = true;
-                package = pkgs.beszel;
-                extraPath = [
-                  pkgs.smartmontools
-                ];
+                smartmon.enable = true;
                 environment = {
                   LISTEN = toString settings.port;
                   FILESYSTEM = settings.filesystem;
@@ -409,17 +397,11 @@ _: {
               };
 
               systemd.services.beszel-agent.serviceConfig = {
-                AmbientCapabilities = "CAP_SYS_RAWIO CAP_SYS_ADMIN";
-                CapabilityBoundingSet = "CAP_SYS_RAWIO CAP_SYS_ADMIN";
                 SupplementaryGroups = [
-                  "disk"
                   "video"
                   "render"
                 ]
                 ++ lib.optionals config.virtualisation.podman.enable [ "podman" ];
-                PrivateDevices = lib.mkForce false;
-                PrivateUsers = lib.mkForce false;
-                NoNewPrivileges = lib.mkForce false;
                 BindReadOnlyPaths = [ "/run/dbus/system_bus_socket" ];
               };
             };
