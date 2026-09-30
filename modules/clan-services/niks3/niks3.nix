@@ -140,15 +140,6 @@
                   authTokenFile = varsGarage.files.api-token.path;
                 };
 
-                # ----- nixbot niks3 upload -----
-                # disabled: nix post-build-hook already uploads local nixbot builds.
-                services.nixbot.niks3 = lib.mkIf config.services.nixbot.enable {
-                  enable = false;
-                  serverUrl = "http://127.0.0.1:${toString niks3Port}";
-                  authTokenFile = varsGarage.files.api-token.path;
-                  package = niks3Pkgs.niks3;
-                };
-
                 services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
                   {
                     urls = [ "http://127.0.0.1:${toString niks3Port}/metrics" ];
