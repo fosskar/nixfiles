@@ -61,6 +61,7 @@
             nixosModule =
               {
                 config,
+                flake-self,
                 pkgs,
                 ...
               }:
@@ -130,7 +131,7 @@
                   package = pkgs.netbird-combined;
                   authSecretFile = relaySecretPath;
                   encryptionKeyFile = encryptionKeyPath;
-                  ownerEmail = "admin@fosskar.eu";
+                  ownerEmail = "admin@${flake-self.domains.public}";
                   ownerPasswordHashFile =
                     config.clan.core.vars.generators.netbird-server.files."owner-password-hash".path;
                 };
