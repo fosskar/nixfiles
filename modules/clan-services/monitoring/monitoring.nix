@@ -127,7 +127,7 @@
 
                 # grafana turns each subdirectory into a folder; titles match the alert rule folders
                 dashboardEnabled = {
-                  "UPS/ups.json" = config.power.ups.enable && (config.power.ups.upsd.enable or false);
+                  "UPS/ups.json" = config.power.ups.enable && config.power.ups.upsd.enable;
                 };
                 dashboardFiles = lib.filter (file: dashboardEnabled.${file} or true) (
                   lib.concatMap (
@@ -145,11 +145,10 @@
                 };
               in
               {
-                # server-only modules; telegraf comes via client role (all server-tagged machines)
+                # server-only modules; telegraf and journald upload come via the client role
                 imports = [
                   self.modules.nixos.exporter
                   self.modules.nixos.grafana
-                  self.modules.nixos.journaldUpload
                   self.modules.nixos.victoriaLogs
                   self.modules.nixos.victoriaMetrics
                 ];
@@ -169,7 +168,6 @@
                   { sources = settings.certificateSources; }
                 ];
                 services.victoriametrics.enable = lib.mkDefault true;
-                services.telegraf.enable = lib.mkDefault true;
 
                 networking.firewall.interfaces.ygg.allowedTCPPorts = [ logsPort ];
 
