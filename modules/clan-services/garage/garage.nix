@@ -288,9 +288,8 @@
 
                 # back up a consistent lmdb snapshot, not the live meta db.
                 clan.core.state.garage = {
-                  folders = lib.mkForce [ "/var/backup/garage" ];
+                  folders = [ "/var/backup/garage" ];
                   preBackupScript = ''
-                    set -euo pipefail
                     export GARAGE_RPC_SECRET_FILE=${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}
                     ${pkgs.garage_2}/bin/garage meta snapshot
                     newest=$(ls -dt ${metadataDir}/snapshots/*/ | head -1)
