@@ -3,6 +3,17 @@ _: {
     let
       upsName = "eaton-ellipse";
       secondaryUser = "upsmon-secondary";
+
+      passwordGenerator =
+        { pkgs, ... }:
+        {
+          clan.core.vars.generators.ups = {
+            share = true;
+            files.password.secret = true;
+            runtimeInputs = [ pkgs.openssl ];
+            script = "openssl rand -hex 32 > $out/password";
+          };
+        };
     in
     {
       manifest.name = "ups";
@@ -14,14 +25,9 @@ _: {
 
         perInstance = _: {
           nixosModule =
+            { config, lib, ... }:
             {
-              config,
-              lib,
-              pkgs,
-              ...
-            }:
-            {
-              environment.systemPackages = [ pkgs.nut ];
+              imports = [ passwordGenerator ];
 
               # nut config files don't need to be world-readable; silences upsd
               # "world readable" warning. upsmon.conf and upsd.users already 0400.
@@ -30,13 +36,6 @@ _: {
                 "nut/ups.conf".mode = lib.mkForce "0640";
                 "nut/upsd.conf".mode = lib.mkForce "0640";
                 "nut/upssched.conf".mode = lib.mkForce "0640";
-              };
-
-              clan.core.vars.generators.ups = {
-                share = true;
-                files.password.secret = true;
-                runtimeInputs = [ pkgs.openssl ];
-                script = "openssl rand -hex 32 > $out/password";
               };
 
               power.ups = {
@@ -149,12 +148,7 @@ _: {
           { roles, ... }:
           {
             nixosModule =
-              {
-                config,
-                lib,
-                pkgs,
-                ...
-              }:
+              { config, lib, ... }:
               let
                 primaryMachines = lib.attrNames (roles.primary.machines or { });
                 primaryHost =
@@ -164,17 +158,10 @@ _: {
                     "${lib.head primaryMachines}.s";
               in
               {
-                environment.systemPackages = [ pkgs.nut ];
+                imports = [ passwordGenerator ];
 
                 environment.etc = {
                   "nut/nut.conf".mode = lib.mkForce "0640";
-                };
-
-                clan.core.vars.generators.ups = {
-                  share = true;
-                  files.password.secret = true;
-                  runtimeInputs = [ pkgs.openssl ];
-                  script = "openssl rand -hex 32 > $out/password";
                 };
 
                 power.ups = {
