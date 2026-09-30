@@ -204,6 +204,7 @@
                 networking.firewall.allowedTCPPorts = [
                   rpcPort
                   s3Port
+                  webPort
                 ];
 
                 systemd.services.garage = {

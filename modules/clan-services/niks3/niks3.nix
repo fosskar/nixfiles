@@ -46,7 +46,6 @@
                 bucketName = "niks3-cache";
                 niks3Port = 5751;
                 garageS3Port = 3900;
-                garageWebPort = 3902;
                 varsGarage = config.clan.core.vars.generators."niks3-garage";
                 varsKeys = config.clan.core.vars.generators."niks3-private";
               in
@@ -148,11 +147,7 @@
                   }
                 ];
 
-                # firewall: niks3 server + garage web endpoint (anonymous reads).
-                networking.firewall.allowedTCPPorts = [
-                  niks3Port
-                  garageWebPort
-                ];
+                networking.firewall.allowedTCPPorts = [ niks3Port ];
               };
           };
       };

@@ -107,6 +107,7 @@ the node's hostname (`s3_region` defaults to it), path-style addressing.
 - rpc binds all interfaces (`[::]:3901`) and advertises the node's rpc address
   (default `<machine>.s`); the rpc port is opened in the firewall. Nodes must be
   able to reach each other on it.
+- the web endpoint port (3902) is opened in the firewall on every node.
 - `replication_factor` is derived from the node count, and garage does not
   support changing it on a live cluster: that needs a full cluster shutdown,
   deleting the `cluster_layout` files in every node's metadata directory, and

@@ -27,7 +27,7 @@ Server role:
 - configures PostgreSQL for `niks3`
 - enables `niks3-auto-upload` as a Nix post-build hook
 - generates a binary cache signing key and an API token with clan vars
-- opens the `niks3` API port and Garage web port
+- opens the `niks3` API port; the `garage` service opens the Garage web port
 
 Client role:
 
