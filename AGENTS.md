@@ -72,7 +72,7 @@ Services declare their own dashboard tile, health check, and reverse proxy defau
 - docs-only changes need no build
 - evaluate simple option changes with `nix eval .#nixosConfigurations.<machine>.config.<option> --json`
 - build structural module or import changes with `nix build .#nixosConfigurations.<machine>.config.system.build.toplevel`
-- for several targets, use `nix develop -c nix-fast-build --skip-cached --flake .#checks.x86_64-linux.<attr>`; check names include `nixos-<machine>`, `home-<name>`, `package-<name>`, and `devshell-<name>`
+- for several targets, use `nix develop -c nix-fast-build --skip-cached --flake .#checks.x86_64-linux.<attr>`; check names include `nixos-<machine>`, `package-<name>`, and `devshell-<name>`
 
 ## sharp edges
 

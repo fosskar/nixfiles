@@ -6,7 +6,6 @@
 
   perSystem =
     {
-      config,
       lib,
       pkgs,
       self',
@@ -14,14 +13,10 @@
       ...
     }:
     {
-      # `nix fmt` uses the treefmt wrapper configured below
-      formatter = config.treefmt.build.wrapper;
-
       treefmt = {
         # don't expose as flake check; nixbot would gate PR merge on it.
-        # run via `nix fmt` / pre-commit instead.
+        # run via `nix fmt` instead.
         flakeCheck = false;
-        projectRootFile = "flake.nix";
         settings.global.excludes = [
           "*.gitignore"
           "*.pub"
@@ -71,48 +66,26 @@
           statix.enable = true;
           shfmt.enable = true;
           shellcheck.enable = true;
-          yamlfmt.enable = true;
           taplo.enable = true;
           gofmt.enable = true;
           rustfmt.enable = true;
+          ruff-check = {
+            enable = true;
+            extendSelect = [ "I" ];
+          };
+          ruff-format.enable = true;
         };
-        settings.formatter.ruff-check = {
-          command = pkgs.ruff;
-          includes = [
-            "*.py"
-            "*.pyi"
-          ];
-          options = [
-            "check"
-            "--no-cache"
-            "--fix"
-            "--extend-select"
-            "I"
-          ];
-        };
-        settings.formatter.ruff-format = {
-          command = pkgs.ruff;
-          includes = [
-            "*.py"
-            "*.pyi"
-          ];
-          options = [
-            "format"
-            "--no-cache"
-          ];
-        };
+        settings.formatter.ruff-check.options = [ "--no-cache" ];
+        settings.formatter.ruff-format.options = [ "--no-cache" ];
       };
 
       checks =
         let
-          # machines deliberately excluded from CI builds
-          excludedMachines = [ ];
-
           nixosMachines =
             lib.mapAttrs' (name: cfg: lib.nameValuePair "nixos-${name}" cfg.config.system.build.toplevel)
               (
                 lib.filterAttrs (
-                  name: cfg: !(lib.elem name excludedMachines) && cfg.pkgs.stdenv.hostPlatform.system == system
+                  _: cfg: cfg.pkgs.stdenv.hostPlatform.system == system
                 ) inputs.self.nixosConfigurations
               );
 
@@ -123,11 +96,7 @@
           devShells = lib.mapAttrs' (name: shell: lib.nameValuePair "devshell-${name}" shell) (
             self'.devShells or { }
           );
-
-          homeConfigurations = lib.mapAttrs' (
-            name: home: lib.nameValuePair "home-${name}" home.activation-script
-          ) ((self'.legacyPackages or { }).homeConfigurations or { });
         in
-        nixosMachines // packages // devShells // homeConfigurations;
+        nixosMachines // packages // devShells;
     };
 }
