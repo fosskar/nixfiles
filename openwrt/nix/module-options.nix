@@ -30,7 +30,7 @@
             checkCommand = lib.mkOption {
               type = lib.types.str;
               default = "";
-              description = "remote shell command that succeeds when the package is installed";
+              description = "remote shell command that succeeds when the package is installed and needs no update";
             };
             installCommand = lib.mkOption {
               type = lib.types.str;

@@ -51,16 +51,18 @@ pkgs.writeShellScriptBin "openwrt-deploy" ''
           hasPackages = device.packages != [ ];
           packageList = lib.concatStringsSep " " device.packages;
           hasExternalPackages = device.externalPackages != [ ];
+          externalPackageCheck =
+            pkg: if pkg.checkCommand != "" then pkg.checkCommand else "apk info -e ${pkg.name}";
           externalPackageDryRun = lib.concatMapStringsSep "\n" (pkg: ''
             echo "# external package: ${pkg.name}"
-            echo "# check: ${if pkg.checkCommand != "" then pkg.checkCommand else "apk info -e ${pkg.name}"}"
-            echo "# install: ${pkg.installCommand}"
+            echo ${lib.escapeShellArg "# check: ${externalPackageCheck pkg}"}
+            echo ${lib.escapeShellArg "# install: ${pkg.installCommand}"}
           '') device.externalPackages;
           externalPackageInstall = lib.concatMapStringsSep "\n" (pkg: ''
             echo "ensuring external package ${pkg.name}..."
-            ssh -o ConnectTimeout=5 "$HOST" '${
-              if pkg.checkCommand != "" then pkg.checkCommand else "apk info -e ${pkg.name}"
-            } >/dev/null 2>&1 || { ${pkg.installCommand}; }'
+            ssh -o ConnectTimeout=5 "$HOST" ${
+              lib.escapeShellArg "{ ${externalPackageCheck pkg}; } >/dev/null 2>&1 || { ${pkg.installCommand}; }"
+            }
           '') device.externalPackages;
           hasRemove = device.removePackages != [ ];
           removeList = lib.concatStringsSep " " device.removePackages;
