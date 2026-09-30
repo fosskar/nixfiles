@@ -54,8 +54,7 @@ _: {
                       preBackupScript = ''
                         fail=0
                         for folder in ${lib.escapeShellArgs settings.folders}; do
-                          dataset=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE "$folder" | grep -v '^/dev' || true)
-                          if [ -z "$dataset" ]; then
+                          if ! dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder"); then
                             echo "error: $folder is not a mounted zfs dataset" >&2
                             fail=1
                             continue
@@ -70,11 +69,11 @@ _: {
                         done
                         [ "$fail" -eq 0 ] || exit 1
                         for folder in ${lib.escapeShellArgs settings.folders}; do
-                          dataset=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE "$folder" | grep -v '^/dev')
-                          snapshots=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset") || exit 1
+                          dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder")
+                          snapshots=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset")
                           if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${settings.snapshotName}" >/dev/null; then
                             echo "deleting leftover zfs snapshot: $dataset@${settings.snapshotName}"
-                            ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}" || exit 1
+                            ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${settings.snapshotName}"
                           fi
                           echo "creating zfs snapshot: $dataset@${settings.snapshotName}"
                           ${pkgs.zfs}/bin/zfs snapshot -r "$dataset@${settings.snapshotName}"
@@ -127,13 +126,17 @@ _: {
                         done
                       '';
                       postBackupScript = ''
+                        fail=0
                         for folder in ${lib.escapeShellArgs settings.folders}; do
                           snapshot="$folder/.${settings.snapshotName}"
                           if [ -d "$snapshot" ]; then
                             echo "deleting btrfs snapshot: $snapshot"
-                            ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$snapshot"
+                            if ! ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$snapshot"; then
+                              fail=1
+                            fi
                           fi
                         done
+                        exit "$fail"
                       '';
                     };
               in
