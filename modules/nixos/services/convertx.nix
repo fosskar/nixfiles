@@ -31,6 +31,10 @@
           HIDE_HISTORY = "true";
         };
         serviceConfig = {
+          # convertx passes only a port to Bun.serve, which then binds
+          # 0.0.0.0; the converters need no network
+          IPAddressAllow = "localhost";
+          IPAddressDeny = "any";
           ExecStart = lib.getExe pkgs.convertx;
           Group = "convertx";
           Restart = "on-failure";
