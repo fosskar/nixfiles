@@ -131,6 +131,18 @@
 
         # intro skipper shells out to a bare `ffmpeg`
         systemd.services.jellyfin.path = [ pkgs.jellyfin-ffmpeg ];
+
+        # the bind address exists only in network.xml; jellyfin writes the file
+        # on first start
+        systemd.services.jellyfin.preStart = ''
+          network=${config.services.jellyfin.configDir}/network.xml
+          if [ -e "$network" ]; then
+            ${lib.getExe pkgs.xmlstarlet} ed -L \
+              -d '/NetworkConfiguration/LocalNetworkAddresses/*' \
+              -s '/NetworkConfiguration/LocalNetworkAddresses' -t elem -n string -v ${listenAddress} \
+              "$network"
+          fi
+        '';
       };
     };
 }
