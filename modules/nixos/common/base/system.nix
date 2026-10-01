@@ -12,9 +12,6 @@
       # shellcheck all unit scripts at build time
       systemd.enableStrictShellChecks = lib.mkDefault true;
 
-      environment = {
-        variables.EDITOR = lib.mkForce "nvim --clean";
-        ldso32 = null;
-      };
+      environment.ldso32 = null;
     };
 }

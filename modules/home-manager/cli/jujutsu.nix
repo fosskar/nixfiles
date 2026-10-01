@@ -15,7 +15,7 @@ _: {
               inherit email name;
             };
 
-            ui.editor = "nvim";
+            ui.editor = "micro";
             git = {
               sign-on-push = true;
             };

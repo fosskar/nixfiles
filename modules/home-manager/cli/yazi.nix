@@ -23,7 +23,7 @@
           opener = {
             edit = [
               {
-                run = ''nvim "$@"'';
+                run = ''micro "$@"'';
                 desc = "$EDITOR";
                 block = true;
                 for = "unix";

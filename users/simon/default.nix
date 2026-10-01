@@ -27,7 +27,6 @@
       #self.modules.homeManager.ladybird
       self.modules.homeManager.mpris-proxy
       self.modules.homeManager.mpv
-      self.modules.homeManager.neovim
       self.modules.homeManager.niri
       self.modules.homeManager.nixIndex
       self.modules.homeManager.qt
@@ -59,9 +58,8 @@
           SHELL = "${lib.getExe pkgs.fish}";
           TERMINAL = "${lib.getExe pkgs.ghostty}";
           BROWSER = "zen";
-          VISUAL = "${lib.getExe pkgs.zed-editor}";
-          EDITOR = "${lib.getExe pkgs.neovim}";
-          KUBE_EDITOR = "${lib.getExe pkgs.neovim}";
+          # --wait: git, jj and sudoedit prefer VISUAL and need it to block
+          VISUAL = "${lib.getExe pkgs.zed-editor} --wait";
           NH_HOME_FLAKE = "/home/simon/Projects/nixfiles";
         };
       };

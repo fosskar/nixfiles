@@ -42,7 +42,7 @@ _: {
           column.ui = "auto";
           commit.verbose = true;
           color.ui = true;
-          core.editor = "nvim";
+          core.editor = "micro";
           diff = {
             algorithm = "histogram";
             colorMoved = "plain";

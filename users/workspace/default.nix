@@ -24,7 +24,6 @@
         self.modules.homeManager.jujutsu
         self.modules.homeManager.k8s
         self.modules.homeManager.llm
-        self.modules.homeManager.neovim
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
@@ -48,7 +47,7 @@
         sessionVariables = {
           SHELL = "${lib.getExe pkgs.fish}";
           BROWSER = "remote-open";
-          EDITOR = "${lib.getExe pkgs.neovim}";
+          EDITOR = "${lib.getExe pkgs.micro}";
         };
 
         stateVersion = "25.11";
@@ -60,7 +59,7 @@
       programs.fish.shellInit = ''
         set -gx SSH_AUTH_SOCK /run/user/1000/ssh-agent.sock
         set -gx BROWSER remote-open
-        set -gx EDITOR ${lib.getExe pkgs.neovim}
+        set -gx EDITOR ${lib.getExe pkgs.micro}
       '';
 
       # sign with the yubikey via the forwarded agent socket (same key as
