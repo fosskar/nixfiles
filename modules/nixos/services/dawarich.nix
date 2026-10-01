@@ -89,6 +89,8 @@
         ];
 
         environment = {
+          # rails server reads BINDING; puma.rb alone binds 0.0.0.0
+          BINDING = listenAddress;
           TIME_ZONE = "Europe/Berlin";
 
           OIDC_CLIENT_ID = "dawarich";
