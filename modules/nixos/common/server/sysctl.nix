@@ -16,7 +16,6 @@
 
         # additional TCP hardening for servers
         "net.ipv4.tcp_rfc1337" = 1;
-        "net.ipv4.tcp_timestamps" = 0;
 
         # TCP Fast Open enabled for servers (incoming and outgoing)
         "net.ipv4.tcp_fastopen" = 3;
