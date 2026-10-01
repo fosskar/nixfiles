@@ -20,6 +20,11 @@ _: {
 
       services.radicle.node.enable = true;
 
+      # a crashed node leaves its control socket behind, and radicle-node then
+      # refuses to start for good; systemd never runs a second instance
+      systemd.user.services.radicle-node.Service.ExecStartPre =
+        "${pkgs.coreutils}/bin/rm -f %h/.radicle/node/control.sock";
+
       home.packages = [
         (pkgs.writeShellScriptBin "rad-delegate" ''
           set -euo pipefail
