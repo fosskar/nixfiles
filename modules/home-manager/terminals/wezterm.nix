@@ -57,7 +57,6 @@ _: {
             top = "0"
           },
           default_cursor_style = "BlinkingBar",
-          enable_scroll_bar = false,
           warn_about_missing_glyphs = false,
           enable_tab_bar = true,
           use_fancy_tab_bar = true,
