@@ -155,8 +155,6 @@
                 $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
               fi
               $cscli -c ${configFile} bouncers add --key "$(cat "$CREDENTIALS_DIRECTORY/api-key")" -- ${lib.escapeShellArg bouncerName} >/dev/null
-              # key file written by the previous runtime-generated setup
-              rm -f /var/lib/crowdsec/netbird-proxy-bouncer.key
             '';
             serviceConfig = {
               Type = "oneshot";
@@ -322,13 +320,6 @@
               StandardOutput = "truncate:${cfg.tokenFile}";
             };
             script = ''
-              # token from the previous setup, which kept it in netbird-server state
-              old=/var/lib/netbird-server/proxy-token
-              if [ -s "$old" ]; then
-                cat "$old"
-                rm "$old"
-                exit 0
-              fi
               # wait for server to be ready; /api/instance answers without auth
               ready=0
               for _ in $(seq 1 30); do
