@@ -122,7 +122,6 @@ _: {
           "Thumbs.db"
           ".vscode"
           ".vscodium"
-          "pre-commit-config.yaml"
         ];
 
         # signing.key is set per-user; format/signByDefault are common
