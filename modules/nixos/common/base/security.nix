@@ -16,7 +16,6 @@
           "integrity"
           "apparmor"
           "bpf"
-          "tomoyo"
           "selinux"
         ];
       };

@@ -2,9 +2,6 @@
   flake.modules.nixos.base = _: {
     boot = {
       kernelParams = [
-        # Only allow signed kernel modules - harder to load malicious modules
-        "module.sig_enforce=1"
-
         # make stack-based attacks on the kernel harder
         "randomize_kstack_offset=on"
 
