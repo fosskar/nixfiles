@@ -40,6 +40,23 @@ func main() {
 	}
 }
 
+// opencloud starts its embedded nats server after the opencloud unit is up,
+// so the first connect can come too early
+func connectNATS(ctx context.Context) (*nats.Conn, error) {
+	for {
+		nc, err := nats.Connect(natsAddress, nats.Name(consumerName), nats.MaxReconnects(-1))
+		if !errors.Is(err, nats.ErrNoServers) {
+			return nc, err
+		}
+		slog.Info("waiting for nats", "address", natsAddress)
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-time.After(2 * time.Second):
+		}
+	}
+}
+
 func run() error {
 	credentials := os.Getenv("CREDENTIALS_DIRECTORY")
 	if credentials == "" {
@@ -77,7 +94,7 @@ func run() error {
 		return backfill(ctx, p)
 	}
 
-	nc, err := nats.Connect(natsAddress, nats.Name(consumerName), nats.MaxReconnects(-1))
+	nc, err := connectNATS(ctx)
 	if err != nil {
 		return err
 	}
