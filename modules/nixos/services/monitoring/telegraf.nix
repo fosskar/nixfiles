@@ -170,7 +170,7 @@
 
               exec = [
                 {
-                  commands = [ ipv6DadCheck ] ++ lib.optional zfsEnabled zpoolHealth;
+                  commands = map lib.singleton ([ ipv6DadCheck ] ++ lib.optional zfsEnabled zpoolHealth);
                   data_format = "influx";
                 }
               ];
