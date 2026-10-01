@@ -23,7 +23,10 @@
           openFirewall = false;
         };
 
-        systemd.services.seerr.serviceConfig.UMask = "0027";
+        systemd.services.seerr = {
+          environment.HOST = listenAddress;
+          serviceConfig.UMask = "0027";
+        };
 
         # --- homepage ---
 
