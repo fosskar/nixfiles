@@ -25,7 +25,17 @@
           inherit listenPort;
         };
 
-        systemd.services.bazarr.serviceConfig.UMask = "0002";
+        systemd.services.bazarr = {
+          serviceConfig.UMask = "0002";
+          # the bind address exists only in bazarr's own config.yaml (no flag,
+          # no env); bazarr writes the file on first start
+          preStart = ''
+            config=${config.services.bazarr.dataDir}/config/config.yaml
+            if [ -e "$config" ]; then
+              ${lib.getExe pkgs.yq-go} -i '.general.ip = "${listenAddress}"' "$config"
+            fi
+          '';
+        };
 
         # --- homepage ---
 
