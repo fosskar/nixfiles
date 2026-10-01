@@ -10,7 +10,7 @@
         useDHCP = lib.mkDefault false;
         useNetworkd = lib.mkForce false;
 
-        # fallback dns servers (privacy-focused, non-us)
+        # primary dns servers (privacy-focused, non-us); fallbacks are below
         nameservers = [
           # mullvad swedish
           "194.242.2.2"
@@ -61,5 +61,19 @@
       };
 
       systemd.network.enable = lib.mkForce false;
+
+      # used only when neither the primary servers nor the link's servers answer
+      services.resolved.settings.Resolve.FallbackDNS = [
+        # cloudflare
+        "1.1.1.1"
+        "1.0.0.1"
+        "2606:4700:4700::1111"
+        "2606:4700:4700::1001"
+        # google
+        "8.8.8.8"
+        "8.8.4.4"
+        "2001:4860:4860::8888"
+        "2001:4860:4860::8844"
+      ];
     };
 }
