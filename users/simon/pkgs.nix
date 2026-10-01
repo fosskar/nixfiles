@@ -24,15 +24,14 @@
     # media
     pkgs.spotify
 
-    # gui is qt quick; global QT_STYLE_OVERRIDE=adwaita-dark makes qqc2 try to
-    # load a nonexistent "adwaita-dark" qml style module, and the session's
-    # QML2_IMPORT_PATH (per-user profile qml dirs) hides QtQuick.Controls
+    # gui is qt quick; the session's QML2_IMPORT_PATH (per-user profile qml
+    # dirs) hides QtQuick.Controls
     (pkgs.symlinkJoin {
       name = "opencloud-desktop";
       paths = [ pkgs.opencloud-desktop ];
       buildInputs = [ pkgs.makeWrapper ];
       postBuild = ''
-        wrapProgram $out/bin/opencloud --unset QT_STYLE_OVERRIDE --unset QML2_IMPORT_PATH
+        wrapProgram $out/bin/opencloud --unset QML2_IMPORT_PATH
       '';
     })
     pkgs.obsidian
