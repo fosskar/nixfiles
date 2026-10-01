@@ -13,6 +13,21 @@
     ++ nflib.scanPaths ./. { };
     programs.herdr.machines = [ "workspace" ];
     programs.noctalia.settings.lockscreen_widgets.widget = {
+      clock_main = {
+        type = "clock";
+        output = "DP-1";
+        cx = 1720.0;
+        cy = 360.0;
+        rotation = 0.0;
+        settings.format = "{:%H:%M}";
+      };
+      weather_main = {
+        type = "weather";
+        output = "DP-1";
+        cx = 1720.0;
+        cy = 540.0;
+        rotation = 0.0;
+      };
       "lockscreen-login-box@DP-1" = {
         type = "login_box";
         output = "DP-1";

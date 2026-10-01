@@ -364,29 +364,9 @@
               tint_intensity = lib.mkDefault 0.50;
             };
 
-            lockscreen_widgets = {
-              enabled = lib.mkDefault true;
-              widget.clock_main = {
-                type = "clock";
-                output = "DP-1";
-                cx = 1720.0;
-                cy = 360.0;
-                rotation = 0.0;
-                settings.format = "{:%H:%M}";
-              };
-              widget.weather_main = {
-                type = "weather";
-                output = "DP-1";
-                cx = 1720.0;
-                cy = 540.0;
-                rotation = 0.0;
-              };
-              widget."lockscreen-login-box@DP-1" = {
-                type = "login_box";
-                output = "DP-1";
-                settings.layout = "compact";
-              };
-            };
+            # widgets and login boxes are placed per output in absolute
+            # coordinates, so each machine declares its own in machines/<machine>/home
+            lockscreen_widgets.enabled = lib.mkDefault true;
 
             location.auto_locate = lib.mkDefault true;
 
