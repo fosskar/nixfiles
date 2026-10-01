@@ -12,19 +12,11 @@
       dataDir = config.services.opencloud.environment.STORAGE_USERS_POSIX_ROOT;
       serviceName = "opencloud";
       localHost = "${serviceName}.${flake-self.domains.local}";
-      publicHost = "${serviceName}.${flake-self.domains.public}";
-      listenAddress = "0.0.0.0";
+      listenAddress = "127.0.0.1";
       listenPort = 9200;
       webListenPort = 9201;
-      listenUrl = "http://127.0.0.1:${toString listenPort}";
+      listenUrl = "http://${listenAddress}:${toString listenPort}";
       oidcIssuerUrl = "https://auth.${flake-self.domains.public}";
-
-      publicHostUris = [
-        "https://${publicHost}/"
-        "https://${publicHost}/oidc-callback.html"
-        "https://${publicHost}/oidc-silent-redirect.html"
-        "https://${publicHost}/web-oidc-callback"
-      ];
 
       oidcOrigins = [
         "https://auth.${flake-self.domains.local}"
@@ -161,8 +153,7 @@
                 "https://${localHost}/oidc-callback.html"
                 "https://${localHost}/oidc-silent-redirect.html"
                 "https://${localHost}/web-oidc-callback"
-              ]
-              ++ publicHostUris;
+              ];
             }
           )
           (
