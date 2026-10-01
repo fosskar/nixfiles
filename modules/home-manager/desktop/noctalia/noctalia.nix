@@ -204,14 +204,11 @@
               source = lib.mkDefault "custom";
               custom_palette = lib.mkDefault "grey-teal";
               templates = {
+                # niri, gtk3/gtk4, btop and wezterm are themed in nix; their
+                # templates rewrite those home-manager-owned files at runtime
                 builtin_ids = [
-                  "niri"
                   "qt"
                   "kcolorscheme"
-                  "gtk4"
-                  "btop"
-                  "gtk3"
-                  "wezterm"
                 ];
                 community_ids = [
                   "zathura"
