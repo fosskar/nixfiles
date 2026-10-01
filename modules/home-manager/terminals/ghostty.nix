@@ -1,25 +1,15 @@
 _: {
   flake.modules.homeManager.ghostty =
-    {
-      self,
-      pkgs,
-      lib,
-      ...
-    }:
+    { self, lib, ... }:
     let
       t = self.themes.${self.theme};
     in
     {
       programs.ghostty = {
         enable = true;
-        package = pkgs.ghostty;
 
         installBatSyntax = true;
         installVimSyntax = true;
-
-        enableBashIntegration = true;
-        enableFishIntegration = true;
-        enableZshIntegration = true;
 
         themes.grey-teal = {
           background = t.dark.bg.base;
