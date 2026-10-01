@@ -8,7 +8,6 @@
 
       networking = {
         useDHCP = lib.mkDefault false;
-        dhcpcd.enable = lib.mkDefault false;
         useNetworkd = lib.mkForce false;
 
         # fallback dns servers (privacy-focused, non-us)
