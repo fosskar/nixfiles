@@ -22,10 +22,7 @@
       home.file.".cli-proxy-api/config.yaml".source = configFile;
 
       systemd.user.services.cli-proxy-api = {
-        Unit = {
-          Description = "CLIProxyAPI";
-          After = [ "network-online.target" ];
-        };
+        Unit.Description = "CLIProxyAPI";
 
         Service = {
           ExecStart = "${package}/bin/cli-proxy-api -config %h/.cli-proxy-api/config.yaml";
