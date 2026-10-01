@@ -12,7 +12,7 @@
           showSearchSuggestions = true;
           hideVisitURL = false;
           provider = "custom";
-          url = "https://search.nx3.eu/search?q=";
+          url = "https://search.${flake-self.domains.local}/search?q=";
         };
 
         # sections come from the apply in homepage.nix; bookmarks carry no tab
@@ -75,6 +75,10 @@
                   icon = "mdi-server-network";
                 };
               }
+            ];
+          }
+          {
+            "tools" = [
               {
                 "HP Printer" = {
                   href = "http://192.168.10.153";
@@ -84,7 +88,7 @@
             ];
           }
           {
-            "code" = [
+            "apps" = [
               {
                 "Home Assistant" = {
                   href = "http://homeassistant.lan:8123";
@@ -191,7 +195,7 @@
           {
             search = {
               provider = "custom";
-              url = "https://search.nx3.eu/search?q=";
+              url = "https://search.${flake-self.domains.local}/search?q=";
               target = "_blank";
               showSearchSuggestions = true;
             };
