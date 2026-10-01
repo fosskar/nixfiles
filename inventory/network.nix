@@ -66,10 +66,7 @@
       roles.server.machines."gateway".settings = {
         domain = "nb.${config.flake.domains.public}";
         proxyDomain = "proxy.${config.flake.domains.public}";
-        proxyTCPPorts = [
-          8776
-          2222
-        ];
+        proxyTCPPorts = [ 8776 ];
         port = 51821;
       };
       roles.client = {
