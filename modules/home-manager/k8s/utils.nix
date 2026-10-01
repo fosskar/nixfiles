@@ -6,9 +6,9 @@ _: {
         # helm wrapped with the only plugins worth having: diff for previewing
         # upgrades (helmfile needs it too), secrets to inline sops values
         (pkgs.wrapHelm pkgs.kubernetes-helm {
-          plugins = with pkgs.kubernetes-helmPlugins; [
-            helm-diff
-            helm-secrets
+          plugins = [
+            pkgs.kubernetes-helmPlugins.helm-diff
+            pkgs.kubernetes-helmPlugins.helm-secrets
           ];
         })
         pkgs.kubectl
