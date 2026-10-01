@@ -3,6 +3,7 @@
     {
       flake-self,
       config,
+      lib,
       pkgs,
       ...
     }:
@@ -156,6 +157,38 @@
       # to the service, and DynamicUser can't create the dir under it
       systemd.services.continuwuity.serviceConfig.ReadWritePaths = [ "/tank/backup/continuwuity" ];
       systemd.tmpfiles.rules = [ "d /tank/backup/continuwuity 0700 continuwuity continuwuity -" ];
+
+      # rocksdb has no offline export and the online backup is an admin-room
+      # command, so copy the stopped database for borg
+      clan.core.state.continuwuity = {
+        folders = [ "/var/backup/continuwuity" ];
+        preBackupScript = ''
+          export PATH=${
+            lib.makeBinPath [
+              pkgs.coreutils
+              pkgs.systemd
+            ]
+          }
+          systemctl stop continuwuity.service
+          trap 'systemctl start continuwuity.service' EXIT
+          rm -rf /var/backup/continuwuity
+          cp -a /var/lib/private/continuwuity /var/backup/continuwuity
+        '';
+        preRestoreScript = ''
+          ${pkgs.systemd}/bin/systemctl stop continuwuity.service
+        '';
+        postRestoreScript = ''
+          export PATH=${
+            lib.makeBinPath [
+              pkgs.coreutils
+              pkgs.systemd
+            ]
+          }
+          rm -rf /var/lib/private/continuwuity
+          cp -a /var/backup/continuwuity /var/lib/private/continuwuity
+          systemctl start continuwuity.service
+        '';
+      };
 
       services.homepage-dashboard.services = [
         {
