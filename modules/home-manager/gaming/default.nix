@@ -25,12 +25,6 @@
           ${pkgs.snixembed}/bin/snixembed &
         '';
       };
-
-      xdg.configHome =
-        let
-          x = builtins.getEnv "XDG_CONFIG_HOME";
-        in
-        if x != "" then x else "${builtins.getEnv "HOME"}/.config";
     in
     {
       home.packages = [
@@ -38,7 +32,7 @@
         star-citizen
       ];
 
-      home.file."${xdg.configHome}/vkBasalt/vkBasalt.conf".text = ''
+      xdg.configFile."vkBasalt/vkBasalt.conf".text = ''
         effects = cas
         toggleKey = F5
         enableOnLaunch = True
