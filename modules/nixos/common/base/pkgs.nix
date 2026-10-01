@@ -5,13 +5,10 @@
       environment = {
         defaultPackages = lib.mkForce [ ]; # no extra default packages are installed
         systemPackages = [
-          pkgs.coreutils
           pkgs.curl
           pkgs.dnsutils
           pkgs.fd
-          pkgs.findutils
           pkgs.lsof
-          pkgs.gitMinimal
           pkgs.jq
           pkgs.openssl
           pkgs.tcpdump
