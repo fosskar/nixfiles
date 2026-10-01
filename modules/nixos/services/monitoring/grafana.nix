@@ -205,12 +205,6 @@
         services.grafana.provision.alerting = {
           contactPoints.settings = {
             apiVersion = 1;
-            deleteContactPoints = [
-              {
-                orgId = 1;
-                uid = "mailbox-email";
-              }
-            ];
             contactPoints = [
               {
                 orgId = 1;
