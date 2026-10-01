@@ -28,6 +28,7 @@
 
       zfs = {
         port = 9134;
+        listenAddress = "127.0.0.1";
         openFirewall = false;
       };
     };
