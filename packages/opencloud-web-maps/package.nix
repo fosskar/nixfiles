@@ -6,11 +6,11 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencloud-web-maps";
-  version = "3.1.0";
+  version = "3.1.1";
 
   src = fetchzip {
     url = "https://github.com/opencloud-eu/web-extensions/releases/download/maps-v${finalAttrs.version}/maps-${finalAttrs.version}.zip";
-    hash = "sha256-rVZaF1OiJvW/XmBh7tUgTxsQ+0cn9WON2tRg+5SeTM4=";
+    hash = "sha256-cF7KOUuDnCsvaBVVcC5znTVGgG5fKqSJ0xyKMCbbe1U=";
   };
 
   dontConfigure = true;
