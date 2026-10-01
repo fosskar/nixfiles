@@ -256,8 +256,6 @@
             PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME = "name";
             PROXY_AUTOPROVISION_CLAIM_GROUPS = "groups";
             PROXY_USER_CS3_CLAIM = "username";
-            PROXY_ROLE_ASSIGNMENT_DRIVER = "oidc";
-            PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM = "groups";
             GRAPH_ASSIGN_DEFAULT_USER_ROLE = "false";
             GRAPH_USERNAME_MATCH = "none";
             WEBFINGER_WEB_OIDC_CLIENT_ID = "OpenCloudWeb";
