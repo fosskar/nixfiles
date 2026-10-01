@@ -120,8 +120,6 @@
                   domain = flake-self.domains.local;
                   authelia_url = "https://${localHost}";
                 }
-              ]
-              ++ [
                 {
                   # nothing on the public domain uses forward-auth, only oidc on
                   # this host; a domain-wide cookie reached every public upstream
@@ -198,7 +196,6 @@
                 };
               })
               (lib.mkIf (!smtpEnabled) {
-                # notifier.filesystem.filename = "/var/lib/authelia-main/notifications.txt";
                 filesystem.filename = "/var/lib/authelia-main/notifications.txt";
               })
             ];

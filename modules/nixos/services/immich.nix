@@ -110,15 +110,6 @@
 
         openFirewall = false;
 
-        database = {
-          enable = true;
-          createDB = true;
-        };
-
-        redis.enable = true;
-
-        # `null` will give access to all devices.
-        # You may want to restrict this by using something like `[ "/dev/dri/renderD128" ]`
         accelerationDevices = [
           "/dev/nvidia0"
           "/dev/nvidiactl"
@@ -158,8 +149,8 @@
 
           notifications.smtp = {
             enabled = true;
-            from = "Immich <noreply@nx3.eu>";
-            replyTo = "noreply@nx3.eu";
+            from = "Immich <noreply@${flake-self.domains.local}>";
+            replyTo = "noreply@${flake-self.domains.local}";
             transport = {
               ignoreCert = false;
               host = "smtp.mailbox.org";
