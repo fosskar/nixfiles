@@ -34,11 +34,7 @@
         group = "protomaps";
       };
       users.groups.protomaps = { };
-      # Z: existing root-owned work dir from before the unit had its own user
-      systemd.tmpfiles.rules = [
-        "d ${workDir} 0750 protomaps protomaps -"
-        "Z ${workDir} - protomaps protomaps -"
-      ];
+      systemd.tmpfiles.rules = [ "d ${workDir} 0750 protomaps protomaps -" ];
 
       systemd.services.protomaps-refresh = {
         description = "protomaps planet build -> garage ${bucket} bucket";
@@ -251,7 +247,7 @@
       services.gatus.settings.endpoints = [
         {
           name = "Maps";
-          # HEAD: the object is ~30GB; a body check would download it.
+          # HEAD: the object is ~140GB; a body check would download it.
           url = "https://${publicHost}/${object}";
           method = "HEAD";
           group = "public";

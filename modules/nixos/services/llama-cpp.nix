@@ -154,8 +154,6 @@
         group = "llama-cpp-models";
       };
       users.groups.llama-cpp-models = { };
-      # Z: models downloaded as root before the unit had its own user
-      systemd.tmpfiles.rules = [ "Z ${modelsDir} - llama-cpp-models llama-cpp-models -" ];
 
       systemd.services.llama-cpp-models = {
         description = "download pinned llama.cpp models";
