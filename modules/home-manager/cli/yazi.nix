@@ -1,11 +1,6 @@
 {
   flake.modules.homeManager.yazi =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+    { lib, pkgs, ... }:
     {
       home.packages = [ pkgs.exiftool ];
 
@@ -14,37 +9,17 @@
         shellWrapperName = "y";
 
         settings = {
-          manager = {
-            layout = [
+          mgr = {
+            ratio = [
               0
               4
               4
             ];
-            sort_by = "alphabetical";
-            sort_sensitive = false;
-            sort_reverse = false;
-            sort_dir_first = true;
             linemode = "size";
             show_hidden = true;
-            show_symlink = true;
           };
 
-          preview = {
-            tab_size = 2;
-            max_width = 600;
-            max_height = 900;
-            image_filter = "triangle";
-            image_quality = 90;
-            sixel_fraction = 15;
-            ueberzug_scale = 1;
-            ueberzug_offset = [
-              0
-              0
-              0
-              0
-            ];
-            cache_dir = "${config.xdg.cacheHome}";
-          };
+          preview.image_quality = 90;
           opener = {
             edit = [
               {
@@ -74,11 +49,6 @@
                 run = ''${lib.getExe pkgs.mpv} "$@"'';
                 orphan = true;
                 for = "unix";
-              }
-              {
-                run = ''${lib.getExe pkgs.mpv} "%1"'';
-                orphan = true;
-                for = "windows";
               }
               {
                 run = ''${lib.getExe pkgs.mediainfo} "$1"; echo "Press enter to exit"; read _'';
