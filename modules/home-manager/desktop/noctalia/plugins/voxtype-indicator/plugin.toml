@@ -1,7 +1,7 @@
 id = "fosskar/voxtype"
 name = "Voxtype"
 version = "1.0.0"
-plugin_api = 3
+plugin_api = 24
 author = "fosskar"
 license = "MIT"
 tags = ["voice", "dictation"]
