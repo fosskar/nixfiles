@@ -19,7 +19,10 @@
         services.gatus = {
           enable = true;
           settings = {
-            web.port = listenPort;
+            web = {
+              address = listenAddress;
+              port = listenPort;
+            };
             storage = {
               type = "sqlite";
               path = "/var/lib/gatus/gatus.db";
