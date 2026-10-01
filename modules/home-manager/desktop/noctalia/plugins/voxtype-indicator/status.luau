@@ -29,14 +29,8 @@ local function render()
     barWidget.setVisible(not hideIdle)
   end
 
-  local tooltip = state.tooltip or "Voxtype"
-  if state.model ~= nil and state.model ~= "" then
-    tooltip = tooltip .. "\nModel: " .. state.model
-  end
-  if state.backend ~= nil and state.backend ~= "" then
-    tooltip = tooltip .. "\nBackend: " .. state.backend
-  end
-  barWidget.setTooltip(tooltip)
+  -- the --extended tooltip already lists model, device and backend
+  barWidget.setTooltip(state.tooltip or "Voxtype")
 end
 
 function onClick()
