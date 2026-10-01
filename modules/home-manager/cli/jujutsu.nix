@@ -15,18 +15,9 @@ _: {
               inherit email name;
             };
 
-            ui = {
-              default-command = "log"; # or status. log is more verboses
-              editor = "nvim";
-              graph = {
-                style = "curved";
-              };
-            };
+            ui.editor = "nvim";
             git = {
               sign-on-push = true;
-            };
-            fetch = {
-              prune = true;
             };
             remotes = {
               origin = {
@@ -43,9 +34,6 @@ _: {
             snapshot = {
               max-new-file-size = 16000000; # ~16mb
               auto-update-stale = true;
-            };
-            init = {
-              default_branch = "main";
             };
           };
         };
