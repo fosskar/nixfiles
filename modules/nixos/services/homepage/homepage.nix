@@ -95,6 +95,9 @@
         customJS = "";
       };
 
+      # the next.js standalone server binds HOSTNAME, else 0.0.0.0
+      config.systemd.services.homepage-dashboard.environment.HOSTNAME = listenAddress;
+
       config.services.caddy.virtualHosts.${localHost}.extraConfig = ''
         reverse_proxy ${listenUrl}
       '';
