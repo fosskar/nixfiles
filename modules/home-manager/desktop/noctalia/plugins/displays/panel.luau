@@ -661,6 +661,10 @@ end)
 
 noctalia.state.watch("kanshi", function(value)
   if type(value) == "table" then
+    -- a profile change (switch, hotplug) makes the selection follow kanshi again
+    if value.active ~= kanshiState.active then
+      userPickedProfile = false
+    end
     kanshiState = value
     if not userPickedProfile then
       selectedProfile = kanshiState.active or ""

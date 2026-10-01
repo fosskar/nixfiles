@@ -438,6 +438,11 @@ fetchOutputs = function()
     if lastOutputCount ~= -1 and (lastOutputCount ~= outputCount or lastEnabledCount ~= enabledCount) then
       hotplugNonce += 1
       noctalia.state.set("hotplug", hotplugNonce)
+      -- the revert snapshot describes the old monitor set; replaying it would
+      -- address missing outputs and undo the layout kanshi just applied
+      if lastOutputCount ~= outputCount and revert.pending then
+        clearRevert()
+      end
     end
     lastOutputCount = outputCount
     lastEnabledCount = enabledCount
@@ -491,14 +496,11 @@ local function kanshiRefresh()
     return
   end
   parseProfiles()
+  -- kanshictl status prints "Current profile: <name>", or "(none)"
   noctalia.runAsync("kanshictl status", function(res)
     kanshi.available = res.exitCode == 0
-    if kanshi.available then
-      local json = noctalia.json.decode(res.stdout)
-      kanshi.active = type(json) == "table" and json.current_profile or ""
-    else
-      kanshi.active = ""
-    end
+    local active = kanshi.available and (res.stdout or ""):match("Current profile: ([^\n]+)") or nil
+    kanshi.active = (active ~= nil and active ~= "(none)") and active or ""
     publishKanshi()
   end, 5000)
 end
