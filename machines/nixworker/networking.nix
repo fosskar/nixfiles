@@ -2,9 +2,9 @@
 {
   networking = {
     useDHCP = false;
-    nameservers = [ "192.168.20.1" ];
+    nameservers = [ flake-self.router.srv ];
     defaultGateway = {
-      address = "192.168.20.1";
+      address = flake-self.router.srv;
       interface = "bond0";
     };
 

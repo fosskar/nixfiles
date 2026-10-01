@@ -9,8 +9,8 @@
       };
       ipv4 = {
         method = "manual";
-        address1 = "${flake-self.hosts.desktop.lan}/24,192.168.10.1";
-        dns = "192.168.10.1;";
+        address1 = "${flake-self.hosts.desktop.lan}/24,${flake-self.router.lan}";
+        dns = "${flake-self.router.lan};";
       };
       ipv6.method = "auto";
     };

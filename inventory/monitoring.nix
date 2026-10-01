@@ -71,7 +71,7 @@
           }
           {
             name = "openwrt";
-            host = "192.168.20.1";
+            host = config.flake.router.srv;
           }
           {
             name = "openwrt-ap";

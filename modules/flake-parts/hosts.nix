@@ -11,4 +11,12 @@
     desktop.lan = "192.168.10.100";
     lpt-titan.lan = "192.168.10.150";
   };
+
+  # the openwrt router's address on each network; gateway and dns (adguard)
+  # for the machines there. outside flake.hosts, which the clan inventory
+  # treats as a list of machines
+  flake.router = {
+    lan = "192.168.10.1";
+    srv = "192.168.20.1";
+  };
 }

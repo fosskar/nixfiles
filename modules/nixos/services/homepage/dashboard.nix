@@ -33,7 +33,7 @@
             "network" = [
               {
                 "OpenWrt Router" = {
-                  href = "https://192.168.10.1";
+                  href = "https://${flake-self.router.lan}";
                   icon = "openwrt.svg";
                 };
               }
@@ -45,7 +45,7 @@
               }
               {
                 "AdGuard Home" = {
-                  href = "http://192.168.10.1:8080";
+                  href = "http://${flake-self.router.lan}:8080";
                   icon = "adguard-home.svg";
                 };
               }
