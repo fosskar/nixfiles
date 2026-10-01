@@ -1,6 +1,11 @@
 _: {
   flake.modules.nixos.hermesMatrix =
-    { config, lib, ... }:
+    {
+      config,
+      flake-self,
+      lib,
+      ...
+    }:
     let
       cfg = config.services.hermes-agent.matrix;
     in
@@ -8,7 +13,7 @@ _: {
       options.services.hermes-agent.matrix = {
         homeserver = lib.mkOption {
           type = lib.types.str;
-          default = "https://matrix.fosskar.eu";
+          default = "https://matrix.${flake-self.domains.public}";
         };
         userId = lib.mkOption {
           type = lib.types.str;
