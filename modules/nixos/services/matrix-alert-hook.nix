@@ -45,7 +45,9 @@ _: {
         environment = {
           HTTP_ADDRESS = listenAddress;
           HTTP_PORT = toString listenPort;
-          MX_HOMESERVER = "https://matrix.fosskar.eu";
+          # the homeserver runs on this host; the public url would route alerts
+          # through gateway and netbird, which may be what is failing
+          MX_HOMESERVER = "http://127.0.0.1:6167";
           MX_ID = "@alerts:fosskar.de";
           MX_ROOMID = "!V9AbNBfBhczqH2WRQr_0wAT6q6ycq7tfSFuw9nM7t3s";
           MX_MSG_TEMPLATE = messageTemplate;
