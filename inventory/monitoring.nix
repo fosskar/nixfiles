@@ -55,11 +55,13 @@
             target = "https://niks3.${config.flake.domains.public}/nix-cache-info";
             protocol = "http";
           }
-          # home uplink; compare with the generated nixbox -> gateway internet probe
+          # the router agent resolves through adguard home on 127.0.0.1:53 and
+          # unbound behind it; clan machines go through systemd-resolved, whose
+          # cache and fallback servers would hide an adguard outage
           {
-            system = "nixbox";
-            target = "1.1.1.1";
-            protocol = "icmp";
+            system = "openwrt";
+            target = "cache.nixos.org";
+            protocol = "dns";
           }
         ];
         server.machines."nixbox".settings.extraSystems = [

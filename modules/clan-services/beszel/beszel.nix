@@ -123,14 +123,19 @@ _: {
 
                 # every agent pings every other agent machine on each network that
                 # exports a plain host for it; var hosts such as tor onions are skipped
+                # yggdrasil exports raw addresses but writes <machine>.<clan domain>
+                # into /etc/hosts on every member, so probe that name instead
                 peerHosts =
                   machine:
-                  lib.pipe (clanLib.selectExports (scope: scope.machineName == machine) exports) [
-                    lib.attrValues
-                    (lib.concatMap (export: export.peer.hosts or [ ]))
-                    (lib.filter (host: host ? plain))
-                    (map (host: host.plain))
-                  ];
+                  lib.concatLists (
+                    lib.mapAttrsToList (
+                      key: export:
+                      if (clanLib.parseScope key).serviceName == "clan-core/yggdrasil" then
+                        [ "${machine}.${config.clan.core.settings.domain}" ]
+                      else
+                        map (host: host.plain) (lib.filter (host: host ? plain) (export.peer.hosts or [ ]))
+                    ) (clanLib.selectExports (scope: scope.machineName == machine) exports)
+                  );
 
                 meshMonitors = lib.concatMap (
                   agent:
@@ -280,9 +285,13 @@ _: {
 
                 beszelApiJob = description: script: {
                   inherit description;
-                  # reruns on every hub (re)start, which is when config.yml systems
-                  # appear, and on deploys that change the script
-                  wantedBy = [ "beszel-hub.service" ];
+                  # beszel-hub.service reruns it on every hub (re)start, which is when
+                  # config.yml systems appear; multi-user.target lets a switch start
+                  # it, and RemainAfterExit makes a switch restart it when it changes
+                  wantedBy = [
+                    "multi-user.target"
+                    "beszel-hub.service"
+                  ];
                   partOf = [ "beszel-hub.service" ];
                   after = [ "beszel-hub.service" ];
                   requires = [ "beszel-hub.service" ];
