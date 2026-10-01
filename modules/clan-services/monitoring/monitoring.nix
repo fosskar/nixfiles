@@ -180,7 +180,7 @@
                 );
 
                 services.victoriametrics = {
-                  retentionPeriod = lib.mkDefault settings.retentionPeriod;
+                  inherit (settings) retentionPeriod;
                   prometheusConfig.scrape_configs = lib.mkAfter (clientScrapeConfigs ++ extraTelegrafScrapeConfig);
                 };
               };
