@@ -178,16 +178,18 @@ in
                   (lib.hasAttrByPath [ "boot" "lanzaboote" "enable" ] options) && config.boot.lanzaboote.enable
                 ) config.boot.lanzaboote.pkiBundle
               )
-              ++ lib.optional true {
-                directory = "/var/lib/sops-nix";
-                how = "bindmount";
-                inInitrd = true;
-              }
-              ++ lib.optional true {
-                directory = "/etc/secret-vars";
-                how = "bindmount";
-                inInitrd = true;
-              };
+              ++ [
+                {
+                  directory = "/var/lib/sops-nix";
+                  how = "bindmount";
+                  inInitrd = true;
+                }
+                {
+                  directory = "/etc/secret-vars";
+                  how = "bindmount";
+                  inInitrd = true;
+                }
+              ];
 
             # clan machine-id is store-provided + kernel cmdline, no persistence needed
             files = lib.optional (!(config.clan.core.settings.machine-id.enable or false)) {
