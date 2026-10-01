@@ -42,7 +42,6 @@ _: {
               {
                 config,
                 pkgs,
-                lib,
                 ...
               }:
               {
@@ -64,7 +63,7 @@ _: {
                   ];
                 };
 
-                nix.settings.allowed-users = lib.mkAfter [ "harmonia" ];
+                nix.settings.extra-allowed-users = [ "harmonia" ];
                 networking.firewall.allowedTCPPorts = [ settings.port ];
               };
           };

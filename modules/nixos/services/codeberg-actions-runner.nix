@@ -52,7 +52,7 @@
       };
       users.groups.forgejo-runner.gid = runnerUid;
 
-      nix.settings.allowed-users = [ "forgejo-runner" ];
+      nix.settings.extra-allowed-users = [ "forgejo-runner" ];
 
       containers.codeberg-actions-runner = {
         autoStart = true;
