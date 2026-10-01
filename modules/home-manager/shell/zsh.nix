@@ -44,7 +44,7 @@
           docs = "$HOME/Documents";
           pics = "$HOME/Pictures";
           vids = "$HOME/Videos";
-          nix = "$HOME/code/nixfiles";
+          nix = "$HOME/Projects/nixfiles";
         };
 
         initContent = ''
