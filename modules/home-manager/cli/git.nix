@@ -15,10 +15,6 @@ _: {
         name = "fosskar";
         email = "fosskar@noreply.codeberg.org";
       };
-      tangled = {
-        name = "fosskar";
-        email = "fosskar.educated493@passmail.net";
-      };
     in
     {
       home.packages = [
@@ -57,7 +53,6 @@ _: {
             all = true;
             prune = true;
             pruneTags = true;
-            auto = true;
             parallel = 10;
           };
           github.user = defaultName;
@@ -94,7 +89,7 @@ _: {
             ca = "commit --amend";
             cm = "commit -m";
             co = "checkout";
-            cb = "checkout --branch";
+            cb = "checkout -b";
             cl = "clone";
             d = "diff";
             ds = "diff --staged";
@@ -153,16 +148,6 @@ _: {
             condition = "hasconfig:remote.*.url:ssh://git@github.com/**";
             contents.user = github;
           }
-          # gitlab (ssh)
-          # {
-          #   condition = "hasconfig:remote.*.url:git@gitlab.com:*/**";
-          #   contents.user = gitlab;
-          # }
-          # gitlab (https)
-          # {
-          #   condition = "hasconfig:remote.*.url:https://gitlab.com/**";
-          #   contents.user = gitlab;
-          # }
           # codeberg (ssh)
           {
             condition = "hasconfig:remote.*.url:git@codeberg.org:*/**";
@@ -177,21 +162,6 @@ _: {
           {
             condition = "hasconfig:remote.*.url:ssh://git@codeberg.org/**";
             contents.user = codeberg;
-          }
-          # tangled (ssh)
-          {
-            condition = "hasconfig:remote.*.url:git@tangled.sh:*/**";
-            contents.user = tangled;
-          }
-          # tangled (https)
-          {
-            condition = "hasconfig:remote.*.url:https://tangled.sh/**";
-            contents.user = tangled;
-          }
-          # tangled (ssh://)
-          {
-            condition = "hasconfig:remote.*.url:ssh://git@tangled.sh/**";
-            contents.user = tangled;
           }
         ];
       };
