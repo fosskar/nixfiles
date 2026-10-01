@@ -5,9 +5,8 @@ _: {
       mp = "mkdir -p";
       fcd = "cd $(find -type d | fzf)";
       cls = "clear";
-      ll = "ls -lah -color";
-      la = "ls -A -color";
-      grep = "grep --color";
+      ll = "ls -lah --color=auto";
+      la = "ls -A --color=auto";
       # forbidden on restricted forwarded gpg-agent sockets and fights yubikey pinentry
       #gpg = "gpg --pinentry-mode loopback";
 

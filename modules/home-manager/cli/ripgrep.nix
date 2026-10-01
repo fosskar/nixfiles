@@ -24,7 +24,7 @@
       };
 
       home.shellAliases = {
-        grep = lib.mkForce (lib.getExe config.programs.ripgrep.package);
+        grep = lib.getExe config.programs.ripgrep.package;
       };
     };
 }
