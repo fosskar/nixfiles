@@ -1,8 +1,9 @@
-{ pkgs, ... }:
 {
-  flake.modules.homeManager.ladybird = _: {
-    home.packages = [
-      pkgs.ladybird
-    ];
-  };
+  flake.modules.homeManager.ladybird =
+    { pkgs, ... }:
+    {
+      home.packages = [
+        pkgs.ladybird
+      ];
+    };
 }
