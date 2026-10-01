@@ -2,13 +2,14 @@ _: {
   flake.modules.nixos.msmtp =
     {
       config,
+      flake-self,
       pkgs,
       ...
     }:
     let
       smtpHost = "smtp.mailbox.org";
       smtpPort = 587;
-      smtpFrom = "noreply@nx3.eu";
+      smtpFrom = "noreply@${flake-self.domains.local}";
       varsPath = config.clan.core.vars.generators.smtp;
     in
     {

@@ -80,7 +80,7 @@
         smtp = {
           host = "smtp.mailbox.org";
           port = 587;
-          fromAddress = "noreply@nx3.eu";
+          fromAddress = "noreply@${flake-self.domains.local}";
         };
 
         extraEnvFiles = [

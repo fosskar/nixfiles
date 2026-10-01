@@ -1,15 +1,17 @@
 {
   flake.modules.nixos.wiki =
     {
+      flake-self,
       inputs,
       pkgs,
       ...
     }:
     let
       port = 8086;
+      localHost = "fosskar.${flake-self.domains.local}";
     in
     {
-      services.caddy.virtualHosts."fosskar.nx3.eu".extraConfig = ''
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
         reverse_proxy 127.0.0.1:${toString port}
       '';
 
@@ -24,9 +26,9 @@
           "tools" = [
             {
               "fosskar's bliki" = {
-                href = "https://fosskar.nx3.eu/";
-                icon = "https://fosskar.nx3.eu/icon.svg";
-                siteMonitor = "https://fosskar.nx3.eu/";
+                href = "https://${localHost}/";
+                icon = "https://${localHost}/icon.svg";
+                siteMonitor = "https://${localHost}/";
               };
             }
           ];

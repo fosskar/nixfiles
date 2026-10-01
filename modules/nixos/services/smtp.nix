@@ -1,10 +1,10 @@
 {
   flake.modules.nixos.smtp =
-    _:
+    { flake-self, ... }:
     let
       smtpHost = "smtp.mailbox.org";
       smtpPort = 587;
-      smtpFrom = "noreply@nx3.eu";
+      smtpFrom = "noreply@${flake-self.domains.local}";
     in
     {
       config = {
