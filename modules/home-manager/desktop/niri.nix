@@ -12,13 +12,6 @@
 
       # home-manager's toKDL renders a plain list under a node name as anonymous
       # `- { }` children, so every repeated node goes through _children instead.
-      toNodeList = lib.mapAttrsToList (
-        name: value: {
-          workspace = value // {
-            _args = [ (value.name or name) ];
-          };
-        }
-      );
       mapMatch = match: { _props = match; };
       mapRule =
         rule:
@@ -44,16 +37,12 @@
         // lib.optionalAttrs (bind ? allow-inhibiting) { _props.allow-inhibiting = bind.allow-inhibiting; }
         // lib.optionalAttrs (bind ? cooldown-ms) { _props.cooldown-ms = bind.cooldown-ms; }
         // lib.optionalAttrs (bind ? repeat) { _props.repeat = bind.repeat; }
-        // lib.optionalAttrs (bind ? hotkey-overlay && bind.hotkey-overlay ? title) {
+        // lib.optionalAttrs (bind ? hotkey-overlay) {
           _props.hotkey-overlay-title = bind.hotkey-overlay.title;
-        }
-        // lib.optionalAttrs (bind ? hotkey-overlay && (bind.hotkey-overlay.hidden or false)) {
-          _props.hotkey-overlay-title = null;
         };
       fromNiriFlakeSettings =
         settings:
         (removeAttrs settings [
-          "workspaces"
           "binds"
           "spawn-at-startup"
           "window-rules"
@@ -62,13 +51,9 @@
         // lib.optionalAttrs (settings ? binds) { binds = lib.mapAttrs (_: mapBind) settings.binds; }
         // {
           _children =
-            toNodeList (settings.workspaces or { })
-            ++ map (entry: {
+            map (entry: {
               spawn-sh-at-startup._args = [ entry.sh ];
-            }) (builtins.filter (entry: entry ? sh) (settings.spawn-at-startup or [ ]))
-            ++ map (entry: {
-              spawn-at-startup._args = entry.argv or entry.command;
-            }) (builtins.filter (entry: entry ? argv || entry ? command) (settings.spawn-at-startup or [ ]))
+            }) (settings.spawn-at-startup or [ ])
             ++ map (rule: { window-rule = mapRule rule; }) (settings.window-rules or [ ])
             ++ map (rule: { layer-rule = mapRule rule; }) (settings.layer-rules or [ ]);
         };
