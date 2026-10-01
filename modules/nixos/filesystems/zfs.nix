@@ -2,6 +2,7 @@
   flake.modules.nixos.zfs =
     {
       config,
+      flake-self,
       lib,
       pkgs,
       ...
@@ -57,7 +58,7 @@
         # zed mail auto-enables when msmtp's sendmail wrapper is present
         # (services.zfs.zed.enableMail default). only the recipient is missing.
         zed.settings = {
-          ZED_EMAIL_ADDR = [ "zfs@nx3.eu" ];
+          ZED_EMAIL_ADDR = [ "zfs@${flake-self.domains.local}" ];
           ZED_NOTIFY_VERBOSE = true;
         };
         autoSnapshot = {
