@@ -26,7 +26,6 @@ _: {
           require-secmem = true;
           no-symkey-cache = true;
           armor = true;
-          use-agent = true;
           throw-keyids = true;
           pinentry-mode = "ask";
         };
@@ -39,10 +38,6 @@ _: {
         enableExtraSocket = true;
         defaultCacheTtl = 86400; # 24 hours
         maxCacheTtl = 604800; # 7 days
-        extraConfig = ''
-          ttyname $GPG_TTY
-          allow-loopback-pinentry
-        '';
       };
     };
 }
