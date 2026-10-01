@@ -48,12 +48,7 @@
             # since v1.7 the default rejects requests whose body appsec cannot
             # read; every netbird grpc stream is one
             crowdsecAppsecUnreadableBodyBlock = false;
-            forwardedHeadersTrustedIPs = [
-              "127.0.0.1/32"
-              "10.0.0.0/8"
-              "172.16.0.0/12"
-              "192.168.0.0/16"
-            ];
+            forwardedHeadersTrustedIPs = [ "127.0.0.1/32" ];
           };
         };
 
