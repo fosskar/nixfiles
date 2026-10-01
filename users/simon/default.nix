@@ -35,7 +35,6 @@
       self.modules.homeManager.rbw
       self.modules.homeManager.ripgrep
       self.modules.homeManager.shellAliases
-      self.modules.homeManager.shellIntegration
       self.modules.homeManager.starship
       self.modules.homeManager.tmux
       self.modules.homeManager.voxtype

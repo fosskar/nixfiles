@@ -28,7 +28,6 @@
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
-        self.modules.homeManager.shellIntegration
         self.modules.homeManager.starship
         self.modules.homeManager.yazi
         self.modules.homeManager.zellij
