@@ -89,55 +89,5 @@
       roles.server.tags = [ "all" ];
     };
 
-    #mycelium = {
-    #  roles.peer.tags = [ "all" ];
-    #};
-
-    #rosenpass = {
-    #  module.name = "rosenpass";
-    #  module.input = "self";
-    #  roles.peer.machines = {
-    #    gateway.settings = {
-    #      listenPort = 9999;
-    #      endpoint = "138.201.155.21:9999";
-    #    };
-    #    nixbox.settings = { };
-    #    desktop.settings = { };
-    #    lpt-titan.settings = { };
-    #  };
-    #};
-
-    # disabled until statelessdns or endpoint exports make this useful.
-    # data-mesher = {
-    #   module = {
-    #     name = "data-mesher";
-    #     input = "clan-core";
-    #   };
-    #   roles.default = {
-    #     tags = [ "all" ];
-    #     settings = {
-    #       interfaces = [
-    #         "ygg"
-    #         "wireguard"
-    #       ];
-    #     };
-    #   };
-    #   roles.bootstrap.machines = {
-    #     nixbox = { };
-    #     gateway = { };
-    #   };
-    # };
-
-    # dm-dns = {
-    #   module = {
-    #     name = "dm-dns";
-    #     input = "clan-core";
-    #   };
-    #   roles.default.tags = [ "all" ];
-    #   roles.push.machines = {
-    #     nixbox = { };
-    #     gateway = { };
-    #   };
-    # };
   };
 }

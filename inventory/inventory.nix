@@ -19,8 +19,6 @@
       description = "personal nix infrastructure";
     };
 
-    #vars.settings.age.postQuantum = true;
-
     secrets.age.plugins = [
       "age-plugin-yubikey"
     ];

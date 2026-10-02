@@ -126,36 +126,11 @@
         input = "ssync";
       };
       roles.peer.machines = {
-        # desktop disabled: age decrypt retry loop forks ~2000 procs/sec and
+        # no desktop: age decrypt retry loop forks ~2000 procs/sec and
         # stalls the scx_lavd watchdog. see fosskar/ssync#109
-        # "desktop".settings.user = "simon";
         "lpt-titan".settings.user = "simon";
         "nixworker".settings.user = "simon";
       };
     };
-
-    #syncthing = {
-    #  module = {
-    #    name = "syncthing";
-    #    input = "clan-core";
-    #  };
-    #  roles.peer = {
-    #    machines."desktop" = { };
-    #    machines."lpt-titan" = { };
-    #    settings = {
-    #      folders = {
-    #        # add folders here, e.g.:
-    #        documents = {
-    #          path = "/home/simon/documents";
-    #          type = "sendreceive";
-    #        };
-    #        #zen-browser = {
-    #        #  path = "/home/simon/.zen";
-    #        #  type = "sendreceive";
-    #        #};
-    #      };
-    #    };
-    #  };
-    #};
   };
 }
