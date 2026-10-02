@@ -28,4 +28,8 @@
   hardware.amdgpu.overdrive.enable = lib.mkForce false;
 
   clan.core.deployment.requireExplicitUpdate = true;
+
+  # trial ahead of an immutable /etc: userborn already writes to
+  # /var/lib/nixos, mutableUsers stays forced on by preservation
+  system.etc.overlay.enable = true;
 }
