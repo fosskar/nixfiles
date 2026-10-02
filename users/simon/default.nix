@@ -6,6 +6,8 @@
   ...
 }:
 {
+  imports = [ self.modules.nixos.llm ];
+
   home-manager.users.simon = {
     imports = [
       self.modules.homeManager.bash
@@ -106,17 +108,6 @@
       type = "hidden";
       persist = true;
       description = "opencloud caldav password for noctalia";
-    };
-  };
-
-  # session link for kagi-search skill (modules/llm/skills)
-  clan.core.vars.generators.kagi = {
-    share = true;
-    files."session-link".owner = "simon";
-    prompts."session-link" = {
-      type = "hidden";
-      persist = true;
-      description = "kagi session link";
     };
   };
 }

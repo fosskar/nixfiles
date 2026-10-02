@@ -1,4 +1,18 @@
 _: {
+  # session link for the kagi-search skill below; hosts whose users import
+  # homeManager.llm import this
+  flake.modules.nixos.llm = {
+    clan.core.vars.generators.kagi = {
+      share = true;
+      files."session-link".owner = "simon";
+      prompts."session-link" = {
+        type = "hidden";
+        persist = true;
+        description = "kagi session link";
+      };
+    };
+  };
+
   flake.modules.homeManager.llm =
     {
       config,

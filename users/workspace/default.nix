@@ -7,6 +7,8 @@
   ...
 }:
 {
+  imports = [ self.modules.nixos.llm ];
+
   home-manager.users.simon =
     { ... }:
     {
@@ -144,16 +146,4 @@
       printf 'OPENROUTER_API_KEY=%s\n' "$(cat "$prompts/api-key")" > "$out/openrouter.env"
     '';
   };
-
-  # session link for kagi-search skill (modules/llm/skills)
-  clan.core.vars.generators.kagi = {
-    share = true;
-    files."session-link".owner = "simon";
-    prompts."session-link" = {
-      type = "hidden";
-      persist = true;
-      description = "kagi session link";
-    };
-  };
-
 }
