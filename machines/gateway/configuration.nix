@@ -49,6 +49,9 @@
   # don't retain .drvs on this server (keep-outputs already defaults off)
   nix.settings.keep-derivations = false;
 
+  # mutable etc overlay, as on lpt-titan
+  system.etc.overlay.enable = true;
+
   services.cloud-init = {
     settings = {
       preserve_hostname = true;
