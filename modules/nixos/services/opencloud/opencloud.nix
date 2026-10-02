@@ -349,10 +349,49 @@
           }
         '';
 
-        clan.core.state.opencloud.folders = [
-          "/etc/opencloud"
-          "/var/lib/opencloud"
-        ];
+        # idm.boltdb, the nats stores and the space metadata change while
+        # opencloud runs; copy them out of a zfs snapshot so borg gets one
+        # consistent point in time without stopping the service
+        clan.core.state.opencloud = {
+          folders = [
+            "/etc/opencloud"
+            "/var/backup/opencloud"
+          ];
+          preBackupScript = ''
+            export PATH=${
+              lib.makeBinPath [
+                pkgs.coreutils
+                pkgs.gnugrep
+                pkgs.util-linux
+                config.boot.zfs.package
+              ]
+            }
+            snapshot="$(findmnt -n -o SOURCE /persist)@opencloud-backup"
+            if zfs list -H -o name -t snapshot "''${snapshot%@*}" | grep -qxF "$snapshot"; then
+              zfs destroy "$snapshot"
+            fi
+            zfs snapshot "$snapshot"
+            trap 'zfs destroy "$snapshot"' EXIT
+            rm -rf /var/backup/opencloud
+            cp -a /persist/.zfs/snapshot/opencloud-backup/var/lib/opencloud /var/backup/opencloud
+          '';
+          preRestoreScript = ''
+            ${pkgs.systemd}/bin/systemctl stop opencloud.service
+          '';
+          postRestoreScript = ''
+            export PATH=${
+              lib.makeBinPath [
+                pkgs.coreutils
+                pkgs.findutils
+                pkgs.systemd
+              ]
+            }
+            # the directory itself is a preservation bind mount
+            find /var/lib/opencloud -mindepth 1 -delete
+            cp -a /var/backup/opencloud/. /var/lib/opencloud/
+            systemctl start opencloud.service
+          '';
+        };
 
         systemd.services.opencloud = {
           after = [
