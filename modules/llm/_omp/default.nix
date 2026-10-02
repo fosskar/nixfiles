@@ -22,7 +22,6 @@ _: {
       # deployed 1:1 if none exists).
       ompSettings = {
         setupVersion = 1;
-        theme.dark = "custom";
         statusLine = {
           transparent = true;
           # thinking level as glyph-only model icon, no " · <level>" tail
@@ -88,6 +87,18 @@ _: {
 
       omp = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.omp;
 
+      # omp loads pi extensions; rtk.nix generates the same file for pi
+      rtkExtension =
+        pkgs.runCommand "rtk-omp-extension"
+          {
+            nativeBuildInputs = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk ];
+          }
+          ''
+            export HOME="$PWD"
+            rtk init -g --agent pi
+            cp "$HOME/.pi/agent/extensions/rtk.ts" "$out"
+          '';
+
       # buzz spawns the harness with the args from this definition; without one
       # it runs bare `omp`, which waits for a prompt on stdin instead of
       # speaking ACP. the absolute path keeps it resolvable from the desktop
@@ -107,6 +118,7 @@ _: {
       home.file = {
         ".omp/agent/AGENTS.md".source = ../AGENTS.md;
         ".omp/agent/WATCHDOG.md".source = ./WATCHDOG.md;
+        ".omp/agent/extensions/rtk.ts".source = rtkExtension;
         ".local/share/xyz.block.buzz.app/custom_harnesses/omp.json".source =
           pkgs.writeText "buzz-harness-omp.json" (builtins.toJSON buzzHarness);
       }

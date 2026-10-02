@@ -21,9 +21,6 @@ _: {
     {
       home.packages = [ rtk ];
 
-      home.file = {
-        ".pi/agent/extensions/rtk.ts".source = rtkExtension;
-        ".omp/agent/extensions/rtk.ts".source = rtkExtension;
-      };
+      home.file.".pi/agent/extensions/rtk.ts".source = rtkExtension;
     };
 }
