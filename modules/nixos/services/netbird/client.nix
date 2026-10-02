@@ -52,6 +52,8 @@
             environment = {
               HOME = lib.mkDefault config.services.netbird.clients.default.dir.state;
               XDG_CONFIG_HOME = lib.mkDefault config.services.netbird.clients.default.dir.state;
+              # no /etc/ssh/ssh_config.d/99-netbird.conf; `netbird ssh` keeps working
+              NB_DISABLE_SSH_CONFIG = "true";
             };
           };
         };
