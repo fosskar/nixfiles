@@ -1,4 +1,5 @@
 {
+  lib,
   stdenvNoCC,
   fetchFromGitHub,
   nix-update-script,
@@ -36,5 +37,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   meta = {
     description = "Country-based geoblocking middleware plugin for traefik";
     homepage = "https://github.com/PascalMinder/geoblock";
+    license = lib.licenses.asl20;
   };
 })
