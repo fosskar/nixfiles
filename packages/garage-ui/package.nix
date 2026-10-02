@@ -52,7 +52,8 @@ buildGoModule (finalAttrs: {
     "-X main.version=${version}"
   ];
 
-  doCheck = false;
+  # behind the smoke build tag, they test a garage started by docker compose
+  excludedPackages = [ "tests/smoke" ];
 
   # routes.go hardcodes FrontendPath=./frontend/dist (cwd-relative); ship dist
   # alongside and pin cwd with --chdir.
