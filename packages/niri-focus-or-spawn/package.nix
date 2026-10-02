@@ -3,6 +3,7 @@
   stdenv,
   fetchFromGitHub,
   go,
+  nix-update-script,
 }:
 stdenv.mkDerivation {
   pname = "niri-focus-or-spawn";
@@ -30,6 +31,8 @@ stdenv.mkDerivation {
     install -Dm755 focus-or-spawn $out/bin/focus-or-spawn
     runHook postInstall
   '';
+
+  passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
 
   meta = {
     description = "focus a niri window by exact app-id, or spawn the command and focus the new window";
