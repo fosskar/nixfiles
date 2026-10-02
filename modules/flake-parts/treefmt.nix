@@ -89,14 +89,23 @@
                 ) inputs.self.nixosConfigurations
               );
 
-          packages = lib.mapAttrs' (name: pkg: lib.nameValuePair "package-${name}" pkg) (
-            lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform) (self'.packages or { })
+          availablePackages = lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform) (
+            self'.packages or { }
           );
+
+          packages = lib.mapAttrs' (name: pkg: lib.nameValuePair "package-${name}" pkg) availablePackages;
+
+          packageTests = lib.concatMapAttrs (
+            name: pkg:
+            lib.mapAttrs' (test: drv: lib.nameValuePair "package-${name}-test-${test}" drv) (
+              pkg.passthru.tests or { }
+            )
+          ) availablePackages;
 
           devShells = lib.mapAttrs' (name: shell: lib.nameValuePair "devshell-${name}" shell) (
             self'.devShells or { }
           );
         in
-        nixosMachines // packages // devShells;
+        nixosMachines // packages // packageTests // devShells;
     };
 }
