@@ -1,8 +1,6 @@
 { pkgs, ... }:
 {
   programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
     # per-client forward paths (%L = this client's hostname); the socket-relay
     # units on the workspace host (users/workspace/socket-relay.nix) fan the
     # fixed consumer paths out to the newest live forward, so several clients
@@ -43,17 +41,6 @@
     };
     settings."*" = {
       User = "root";
-      AddKeysToAgent = "no";
-      ControlMaster = "auto";
-      ControlPath = "/tmp/ssh-%u-%r@%h:%p";
-      ControlPersist = "10m";
-      ServerAliveInterval = 60;
-      ServerAliveCountMax = 3;
-      Compression = true;
-      # FIXME: Work around gpg-agent smartcard signing failures with hostbound pubkey auth.
-      PubkeyAuthentication = "unbound";
-      UpdateHostKeys = "yes";
-      StrictHostKeyChecking = "accept-new";
       # ensure ssh finds gpg-agent even when SSH_AUTH_SOCK is stripped
       # (e.g. nixos-rebuild-ng env sanitization, nixpkgs#493085)
       IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
