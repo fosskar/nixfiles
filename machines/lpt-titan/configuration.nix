@@ -8,6 +8,7 @@
 {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
+    self.modules.nixos.perlless
     self.modules.nixos.noctalia-greeter
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
