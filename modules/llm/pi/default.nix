@@ -16,14 +16,13 @@ _: {
         settings = {
           defaultProvider = "anthropic";
           defaultModel = "claude-opus-5-5";
-          defaultThinkingLevel = "medium";
           hideThinkingBlock = true;
           followUpMode = "all";
-          steeringMode = "one-at-a-time";
-          theme = "custom";
-          quietStartup = true;
+          theme = "grey-teal";
+          quietStartup = "header";
+          collapseChangelog = true;
           enableInstallTelemetry = false;
-          terminal.showTerminalProgress = true;
+          defaultTools = [ "+codemode" ];
           warnings.anthropicExtraUsage = false;
           packages = [
             {
@@ -31,7 +30,6 @@ _: {
               extensions = [ "-statusline/index.ts" ];
             }
           ];
-          compaction.enabled = true;
         };
       };
     };
