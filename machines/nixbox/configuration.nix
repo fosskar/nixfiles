@@ -61,8 +61,5 @@
     pkgs.ipmitool
   ];
 
-  boot.kernelModules = [
-    "nct6775"
-    "kvm-amd"
-  ];
+  boot.kernelModules = [ "nct6775" ];
 }
