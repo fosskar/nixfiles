@@ -99,12 +99,6 @@ _: {
         cardBg = t.dark.bg.surface;
         infoBg = t.dark.bg.elevated;
       };
-      piTheme = {
-        "$schema" =
-          "https://raw.githubusercontent.com/earendil-works/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";
-        name = "custom";
-        inherit vars colors export;
-      };
       # omp extends the pi token set: statusLine segments + pythonMode
       ompTheme = {
         name = "custom";
@@ -129,9 +123,6 @@ _: {
       };
     in
     {
-      home.file.".pi/agent/themes/custom.json".source = pkgs.writeText "pi-theme-custom.json" (
-        builtins.toJSON piTheme
-      );
       home.file.".omp/agent/themes/custom.json".source = pkgs.writeText "omp-theme-custom.json" (
         builtins.toJSON ompTheme
       );
