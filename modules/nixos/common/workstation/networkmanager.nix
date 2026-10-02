@@ -29,6 +29,9 @@
 
         networkmanager = {
           enable = lib.mkDefault true;
+          # declared profiles live in /run; keep hand-made ones out of /etc, in
+          # the persisted state dir, so an immutable /etc can't lose them
+          settings.keyfile.path = "/var/lib/NetworkManager/system-connections";
           # use systemd-resolved for DNS (enabled in base/network.nix)
           dns = lib.mkDefault "systemd-resolved";
           # on workstations, let NM manage normal desktop interfaces incl ethernet
