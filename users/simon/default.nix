@@ -14,6 +14,7 @@
       self.modules.homeManager.bat
       self.modules.homeManager.brave
       self.modules.homeManager.btop
+      self.modules.homeManager.cursor
       self.modules.homeManager.dircolors
       self.modules.homeManager.direnv
       self.modules.homeManager.editorconfig
