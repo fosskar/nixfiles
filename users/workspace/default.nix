@@ -7,7 +7,10 @@
   ...
 }:
 {
-  imports = [ self.modules.nixos.llm ];
+  imports = [
+    self.modules.nixos.llm
+    self.modules.nixos.workspaceHost
+  ];
 
   home-manager.users.simon =
     { ... }:
@@ -31,6 +34,7 @@
         self.modules.homeManager.shellAliases
         self.modules.homeManager.ssh
         self.modules.homeManager.starship
+        self.modules.homeManager.workspaceHost
         self.modules.homeManager.yazi
         self.modules.homeManager.zellij
       ]
@@ -49,7 +53,6 @@
         ];
         sessionVariables = {
           SHELL = "${lib.getExe pkgs.fish}";
-          BROWSER = "remote-open";
           EDITOR = "${lib.getExe pkgs.micro}";
         };
 
@@ -57,11 +60,8 @@
       };
 
       # exported in shellInit, not sessionVariables: herdr panes are non-login
-      # shells and never source hm-session-vars. SSH_AUTH_SOCK = socket-relay
-      # fan-out over the per-client forwarded yubikey agents (socket-relay.nix)
+      # shells and never source hm-session-vars
       programs.fish.shellInit = ''
-        set -gx SSH_AUTH_SOCK /run/user/1000/ssh-agent.sock
-        set -gx BROWSER remote-open
         set -gx EDITOR ${lib.getExe pkgs.micro}
       '';
 
@@ -76,26 +76,11 @@
       nix.channels = { };
     };
 
-  # let a reconnecting client's RemoteForward replace its own stale per-client
-  # socket under %t/fwd (users/simon/ssh.nix)
-  services.openssh.settings.StreamLocalBindUnlink = true;
-
-  # simon's yubikey pubkeys (same shared generator as modules/nixos/hardware/yubikey/gpg-ssh.nix)
-  clan.core.vars.generators.yubikey = {
-    share = true;
-    files = {
-      "gpg-pubkey.asc".secret = false;
-      "id_yubikey.pub".secret = false;
-    };
-    script = "true";
-  };
-
   programs.fish.enable = true;
   programs.mosh.enable = true;
-  programs.gnupg.agent.enable = false;
   users.users.simon.shell = pkgs.fish;
   # keep the old workspace user's uid: /home data ownership and the hardcoded
-  # /run/user/1000 gpg-agent forward path (users/simon/ssh.nix) survive the rename
+  # /run/user/1000 gpg-agent forward path (modules/home-manager/workspace/client.nix) survive the rename
   users.users.simon.uid = 1000;
 
   # reserve RAM for the interactive dev user against nix builds. MemoryMin/Low

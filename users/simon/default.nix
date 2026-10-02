@@ -9,6 +9,7 @@
   imports = [
     self.modules.nixos.llm
     self.modules.nixos.noctalia
+    self.modules.nixos.workspaceClient
   ];
 
   home-manager.users.simon = {
@@ -45,6 +46,7 @@
       self.modules.homeManager.starship
       self.modules.homeManager.tmux
       self.modules.homeManager.voxtype
+      self.modules.homeManager.workspaceClient
       self.modules.homeManager.udiskie
       self.modules.homeManager.wezterm
       self.modules.homeManager.yazi
@@ -76,24 +78,4 @@
     };
   };
   users.users.simon.shell = pkgs.fish;
-
-  # user units cannot order after suspend.target; reconnect right after wake
-  # instead of waiting for ServerAlive to declare the old connection dead
-  systemd.services.workspace-relay-resume =
-    let
-      sleepTargets = [
-        "suspend.target"
-        "hibernate.target"
-        "hybrid-sleep.target"
-        "suspend-then-hibernate.target"
-      ];
-    in
-    {
-      description = "Restart simon's workspace-relay after resume";
-      after = sleepTargets;
-      wantedBy = sleepTargets;
-      unitConfig.ConditionPathExists = "/run/user/1000/bus";
-      serviceConfig.Type = "oneshot";
-      script = "${pkgs.systemd}/bin/systemctl --user --machine=simon@ try-restart workspace-relay.service";
-    };
 }

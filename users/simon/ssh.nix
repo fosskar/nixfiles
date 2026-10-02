@@ -1,38 +1,5 @@
-{ pkgs, ... }:
-{
+_: {
   programs.ssh = {
-    # per-client forward paths (%L = this client's hostname); the socket-relay
-    # units on the workspace host (users/workspace/socket-relay.nix) fan the
-    # fixed consumer paths out to the newest live forward, so several clients
-    # can stay attached at once: gpg-agent extra socket (clan update, sops
-    # decrypt via local yubikey), the yubikey ssh agent (git push, ssh to clan
-    # machines) and the remote-open browser socket
-    settings."workspace" = {
-      HostName = "nixworker.s";
-      User = "simon";
-      ConnectTimeout = 5;
-      ConnectionAttempts = 1;
-      ForwardAgent = "yes";
-      LocalForward = [ "54545 localhost:54545" ];
-      ServerAliveInterval = 15;
-      ServerAliveCountMax = 3;
-    };
-    settings."workspace-relay" = {
-      HostName = "nixworker.s";
-      User = "simon";
-      ConnectTimeout = 5;
-      ConnectionAttempts = 1;
-      ControlMaster = "no";
-      ExitOnForwardFailure = "yes";
-      SessionType = "none";
-      ServerAliveInterval = 5;
-      ServerAliveCountMax = 3;
-      RemoteForward = [
-        "/run/user/1000/fwd/%L.gpg-extra /run/user/1000/gnupg/S.gpg-agent.extra"
-        "/run/user/1000/fwd/%L.ssh-agent /run/user/1000/gnupg/S.gpg-agent.ssh"
-        "/run/user/1000/fwd/%L.remote-open /run/user/1000/remote-open.sock"
-      ];
-    };
     # tangled knot push: public DNS points at the gateway, so reach nixworker's
     # knot sshd directly over the netbird mesh.
     settings."knot.fosskar.eu" = {
@@ -45,19 +12,5 @@
       # (e.g. nixos-rebuild-ng env sanitization, nixpkgs#493085)
       IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
     };
-  };
-
-  systemd.user.services.workspace-relay = {
-    Unit = {
-      Description = "forward local agents to the workspace";
-      After = [ "network-online.target" ];
-      Wants = [ "network-online.target" ];
-    };
-    Service = {
-      ExecStart = "${pkgs.openssh}/bin/ssh -NT workspace-relay";
-      Restart = "always";
-      RestartSec = 10;
-    };
-    Install.WantedBy = [ "default.target" ];
   };
 }

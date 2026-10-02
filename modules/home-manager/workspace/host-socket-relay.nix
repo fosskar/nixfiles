@@ -1,9 +1,11 @@
 # multiplex per-client RemoteForward sockets behind the fixed paths consumers
 # use. each attached client forwards its sockets to $XDG_RUNTIME_DIR/fwd/
-# <hostname>.<name> (users/simon/ssh.nix); every connection to a fixed path is
+# <hostname>.<name> (client.nix); every connection to a fixed path is
 # relayed to the newest still-live forward. desktop and laptop can stay
 # attached simultaneously; a forgotten session on one never blocks the other.
-{ pkgs, lib, ... }:
+_: {
+  flake.modules.homeManager.workspaceHost =
+    { pkgs, lib, ... }:
 let
   # relay name -> fixed socket path (relative to $XDG_RUNTIME_DIR) consumers
   # connect to: gpg (sops, clan update), ssh (git push, clan ssh), remote-open
@@ -65,4 +67,5 @@ in
       };
     }
   ) relays;
+    };
 }

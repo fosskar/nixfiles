@@ -1,6 +1,8 @@
-# gpg via simon's forwarded gpg-agent socket (users/simon/ssh.nix); no key material here
-{ osConfig, ... }:
-{
+# gpg via the client's forwarded gpg-agent socket (client.nix); no key material here
+_: {
+  flake.modules.homeManager.workspaceHost =
+    { osConfig, ... }:
+    {
   programs.gpg = {
     enable = true;
     mutableTrust = false;
@@ -18,4 +20,5 @@
   # no-autostart also blocks keyboxd; force keyboxd off (gpg falls back to
   # pubring.kbx) instead of the gpg-generated common.conf with use-keyboxd
   home.file.".gnupg/common.conf".text = "";
+    };
 }

@@ -1,9 +1,11 @@
 # open URLs and files sent from the workspace host in the local browser. the
 # workspace host forwards its /run/user/1000/remote-open.sock here via ssh
-# RemoteForward (ssh.nix); the remote-open shim in users/workspace writes
-# one URL per connection.
-{ pkgs, ... }:
-{
+# RemoteForward (client.nix); the remote-open shim in host-remote-open.nix
+# writes one URL per connection.
+_: {
+  flake.modules.homeManager.workspaceClient =
+    { pkgs, ... }:
+    {
   systemd.user.sockets.remote-open = {
     Unit.Description = "remote xdg-open socket";
     Socket = {
@@ -45,4 +47,5 @@
       );
     };
   };
+    };
 }
