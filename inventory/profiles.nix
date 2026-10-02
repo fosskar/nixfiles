@@ -18,6 +18,7 @@ in
         extraModules = [
           config.flake.modules.nixos.base
           config.flake.modules.nixos.clanMachineId
+          config.flake.modules.nixos.immutable
         ];
       };
     };

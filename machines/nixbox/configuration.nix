@@ -29,7 +29,6 @@
     self.modules.nixos.bentopdf
     self.modules.nixos.protomaps
     self.modules.nixos.grub
-    self.modules.nixos.perlless
     self.modules.nixos.nvidiaGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.tunedServerPowersave
@@ -64,6 +63,4 @@
 
   boot.kernelModules = [ "nct6775" ];
 
-  # mutable etc overlay, as on lpt-titan and gateway
-  system.etc.overlay.enable = true;
 }

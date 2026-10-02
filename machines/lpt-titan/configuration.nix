@@ -8,7 +8,6 @@
 {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-    self.modules.nixos.perlless
     self.modules.nixos.noctalia-greeter
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
@@ -29,8 +28,4 @@
   hardware.amdgpu.overdrive.enable = lib.mkForce false;
 
   clan.core.deployment.requireExplicitUpdate = true;
-
-  # trial ahead of an immutable /etc: userborn already writes to
-  # /var/lib/nixos, mutableUsers stays forced on by preservation
-  system.etc.overlay.enable = true;
 }

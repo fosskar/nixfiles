@@ -9,7 +9,6 @@
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     self.modules.nixos.grub
-    self.modules.nixos.perlless
     self.modules.nixos.tunedVirtualGuest
   ]
   ++ (nflib.scanPaths ./. { });
@@ -49,9 +48,6 @@
 
   # don't retain .drvs on this server (keep-outputs already defaults off)
   nix.settings.keep-derivations = false;
-
-  # mutable etc overlay, as on lpt-titan
-  system.etc.overlay.enable = true;
 
   services.cloud-init = {
     settings = {
