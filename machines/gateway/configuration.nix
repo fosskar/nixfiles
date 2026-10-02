@@ -9,6 +9,7 @@
   imports = [
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     self.modules.nixos.grub
+    self.modules.nixos.perlless
     self.modules.nixos.tunedVirtualGuest
   ]
   ++ (nflib.scanPaths ./. { });
