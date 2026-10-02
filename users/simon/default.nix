@@ -30,6 +30,7 @@
       self.modules.homeManager.mpris-proxy
       self.modules.homeManager.mpv
       self.modules.homeManager.niri
+      self.modules.homeManager.psd
       self.modules.homeManager.nixIndex
       self.modules.homeManager.qt
       self.modules.homeManager.radicle
