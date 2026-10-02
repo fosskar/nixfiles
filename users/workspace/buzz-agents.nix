@@ -1,6 +1,7 @@
 {
   inputs,
   osConfig,
+  self,
   ...
 }:
 {
@@ -8,7 +9,7 @@
 
   services.buzz-agents = {
     enable = true;
-    relayUrl = "wss://buzz.fosskar.eu";
+    relayUrl = "wss://buzz.${self.domains.public}";
     # DMs are always owner-gated in buzz-acp (author_allowed); without this
     # every direct message is dropped. respondTo still governs channels
     ownerPubkey = "1c9f5bb1b4adb233b8c383c1ee98cf40a90d6194d63bee11e6d332955836e6a2";
