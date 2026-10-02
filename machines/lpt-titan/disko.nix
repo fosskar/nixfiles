@@ -28,11 +28,6 @@
       content = {
         type = "gpt";
         partitions = {
-          #"boot" = {
-          #  size = "1M";
-          #  type = "EF02"; # for grub MBR
-          #  priority = 1;
-          #};
           "ESP" = {
             type = "EF00";
             size = "1G";
