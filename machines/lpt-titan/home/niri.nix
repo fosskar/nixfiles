@@ -1,5 +1,5 @@
 _: {
-  # desktop-specific niri settings
+  # laptop-specific niri settings
   wayland.windowManager.niri.settings = {
     # outputs managed by kanshi
 
