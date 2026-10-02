@@ -25,10 +25,7 @@ _: {
           defaultTools = [ "+codemode" ];
           warnings.anthropicExtraUsage = false;
           packages = [
-            {
-              source = "git:github.com/rytswd/pi-agent-extensions";
-              extensions = [ "-statusline/index.ts" ];
-            }
+            { source = "git:github.com/rytswd/pi-agent-extensions"; }
           ];
         };
       };
