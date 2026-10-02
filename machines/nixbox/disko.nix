@@ -26,10 +26,11 @@
         path = "/boot-fallback";
       }
     ];
-    # tank pool members (flash1/flash2 + optane slogs) are declared below;
-    # disko only manages the root pool. tank datasets are legacy-mountpoint
-    # and declared in fileSystems, so nixos generates zfs-import-tank.service
-    # plus real .mount units; services depend on them via RequiresMountsFor.
+    # disko manages only the root pool on flash1/flash2. tank (raidz2 on the
+    # four hdds, log mirror on the optane slog partitions below) was created
+    # by hand; its datasets are legacy-mountpoint and declared in fileSystems,
+    # so nixos generates zfs-import-tank.service plus real .mount units;
+    # services depend on them via RequiresMountsFor.
   };
 
   fileSystems = {
