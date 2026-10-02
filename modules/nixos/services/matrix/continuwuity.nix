@@ -159,20 +159,29 @@
       systemd.tmpfiles.rules = [ "d /tank/backup/continuwuity 0700 continuwuity continuwuity -" ];
 
       # rocksdb has no offline export and the online backup is an admin-room
-      # command, so copy the stopped database for borg
+      # command. copy the database out of a zfs snapshot instead of stopping
+      # it: a restart floods systemd-resolved with the startup netburst, the
+      # oidc discovery then fails and continuwuity crash-loops. rocksdb
+      # recovers a crash-consistent copy through its wal
       clan.core.state.continuwuity = {
         folders = [ "/var/backup/continuwuity" ];
         preBackupScript = ''
           export PATH=${
             lib.makeBinPath [
               pkgs.coreutils
-              pkgs.systemd
+              pkgs.gnugrep
+              pkgs.util-linux
+              config.boot.zfs.package
             ]
           }
-          systemctl stop continuwuity.service
-          trap 'systemctl start continuwuity.service' EXIT
+          snapshot="$(findmnt -n -o SOURCE /persist)@continuwuity-backup"
+          if zfs list -H -o name -t snapshot "''${snapshot%@*}" | grep -qxF "$snapshot"; then
+            zfs destroy "$snapshot"
+          fi
+          zfs snapshot "$snapshot"
+          trap 'zfs destroy "$snapshot"' EXIT
           rm -rf /var/backup/continuwuity
-          cp -a /var/lib/private/continuwuity /var/backup/continuwuity
+          cp -a /persist/.zfs/snapshot/continuwuity-backup/var/lib/private/continuwuity /var/backup/continuwuity
         '';
         preRestoreScript = ''
           ${pkgs.systemd}/bin/systemctl stop continuwuity.service
