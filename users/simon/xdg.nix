@@ -3,12 +3,10 @@
   ...
 }:
 let
-  # only enable portal in home-manager if not already managed by nixos
-
   browser = [ "zen-beta.desktop" ];
   pdf = [ "org.pwmt.zathura.desktop" ];
   fileManager = [ "org.gnome.Nautilus.desktop" ];
-  editor = [ "dev.zed.Zed-Nightly.desktop" ];
+  editor = [ "dev.zed.Zed.desktop" ];
   imageViewer = [ "imv.desktop" ];
   mediaPlayer = [ "mpv.desktop" ];
 
@@ -48,7 +46,6 @@ let
     "image/webp" = imageViewer;
 
     "x-scheme-handler/spotify" = [ "spotify.desktop" ];
-    "x-scheme-handler/discord" = [ "WebCord.desktop" ];
   };
 in
 {

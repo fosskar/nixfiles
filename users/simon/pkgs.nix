@@ -2,12 +2,8 @@
 {
   home.packages = [
     # desktop apps
-    #webcord-vencord
     # small channel: signal hard-expires old clients; stay ahead of the cutoff
     pkgs.small.signal-desktop
-    #protonvpn-gui
-    #protonvpn-cli
-    #filen-desktop
 
     (pkgs.symlinkJoin {
       name = "element-desktop";
@@ -23,6 +19,7 @@
 
     # media
     pkgs.spotify
+    pkgs.imv
 
     # gui is qt quick; the session's QML2_IMPORT_PATH (per-user profile qml
     # dirs) hides QtQuick.Controls
@@ -39,41 +36,5 @@
     pkgs.nautilus
 
     pkgs.ausweisapp
-
-    # audio
-    #teamspeak3
-  ]
-  ++ [
-
-    #keepassxc
-    # gaming
-    #gamescope
-    #r2modman
-    #lutris
-    #wineWowPackages.stable
-    #wineWowPackages.waylandFull
-    #winetricks
-    #protontricks
-    #bottles
-    #path-of-building
-    #gfn-electron
-
-    # needed for graphene installer
-    #android-udev-rules
-    #android-tools
-
-    # drone
-    # Override betaflight-configurator to use an older nwjs version
-    # commented out due to qtwebengine-5.15.19 insecurity issues
-    #(betaflight-configurator.override {
-    #  nwjs = pkgs.nwjs.overrideAttrs rec {
-    #    version = "0.84.0";
-    #    src = pkgs.fetchurl {
-    #      url = "https://dl.nwjs.io/v${version}/nwjs-v${version}-linux-x64.tar.gz";
-    #      hash = "sha256-VIygMzCPTKzLr47bG1DYy/zj0OxsjGcms0G1BkI/TEI=";
-    #    };
-    #  };
-    #})
-    pkgs.libatomic_ops
   ];
 }
