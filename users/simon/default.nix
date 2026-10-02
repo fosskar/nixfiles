@@ -6,7 +6,10 @@
   ...
 }:
 {
-  imports = [ self.modules.nixos.llm ];
+  imports = [
+    self.modules.nixos.llm
+    self.modules.nixos.noctalia
+  ];
 
   home-manager.users.simon = {
     imports = [
@@ -93,24 +96,4 @@
       serviceConfig.Type = "oneshot";
       script = "${pkgs.systemd}/bin/systemctl --user --machine=simon@ try-restart workspace-relay.service";
     };
-
-  # master key for noctalia private storage (clipboard history, calendar cache);
-  # noctalia requires exactly 64 lowercase hex chars and never rotates it
-  clan.core.vars.generators.noctalia-storage = {
-    files.key.owner = "simon";
-    runtimeInputs = [ pkgs.openssl ];
-    script = ''
-      openssl rand -hex 32 > "$out/key"
-    '';
-  };
-
-  # caldav password for the noctalia opencloud calendar account
-  clan.core.vars.generators.noctalia-caldav = {
-    files.password.owner = "simon";
-    prompts.password = {
-      type = "hidden";
-      persist = true;
-      description = "opencloud caldav password for noctalia";
-    };
-  };
 }
