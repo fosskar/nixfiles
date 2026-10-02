@@ -1,5 +1,4 @@
 # GL.iNet GL-MT6000 (flint 2) — main router
-# TODO: run `nix run .#openwrt-fetch-router` to dump current config, then adjust below
 {
   host = "192.168.10.1";
 
@@ -28,14 +27,14 @@
     "luci-app-sqm"
 
     "zram-swap"
-
-    "openwisp-config"
-    "openwisp-monitoring"
-    "luci-app-openwisp"
   ];
 
   removePackages = [
-    "wpad-basic-wolfssl" # gets replaced by full wpad-wolfssl package, because some options missing that needed by DAWN
+    "wpad-basic-wolfssl"
+    "luci-app-openwisp"
+    "openwisp-config"
+    "openwisp-monitoring"
+    "netjson-monitoring"
   ];
 
   externalPackages = [
@@ -82,15 +81,6 @@
         public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHN601z/tNqh+R7x9JaCDayBioT2aQs1tEGv0tOSF/wu";
         hub_url = "https://beszel.nx3.eu";
         token = "@beszel_token_router@";
-      };
-
-      openwisp.http = {
-        _type = "controller";
-        url = "https://opensoho.nx3.eu";
-        verify_ssl = 1;
-        shared_secret = "@opensoho_shared_secret@";
-        uuid = "3dd3b7dd-8e1f-43cd-aba3-5b75e05c07b6";
-        key = "@opensoho_key_router@";
       };
 
       system.system = [

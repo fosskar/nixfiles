@@ -8,14 +8,14 @@
     "luci-app-usteer"
 
     "wpad-wolfssl"
-
-    "openwisp-config"
-    "openwisp-monitoring"
-    "luci-app-openwisp"
   ];
 
   removePackages = [
-    "wpad-basic-wolfssl" # gets replaced by full wpad-wolfssl package, because some options missing that needed by DAWN
+    "wpad-basic-wolfssl"
+    "luci-app-openwisp"
+    "openwisp-config"
+    "openwisp-monitoring"
+    "netjson-monitoring"
   ];
 
   externalPackages = [
@@ -57,15 +57,6 @@
         public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHN601z/tNqh+R7x9JaCDayBioT2aQs1tEGv0tOSF/wu";
         hub_url = "https://beszel.nx3.eu";
         token = "@beszel_token_ap@";
-      };
-
-      openwisp.http = {
-        _type = "controller";
-        url = "https://opensoho.nx3.eu";
-        verify_ssl = 1;
-        shared_secret = "@opensoho_shared_secret@";
-        uuid = "acbe5924-6d06-4d6d-bac1-5df5c6fa26da";
-        key = "@opensoho_key_ap@";
       };
 
       system.system = [
@@ -160,11 +151,6 @@
           ieee80211k = "1";
           bss_transition = "1";
         };
-      };
-
-      prometheus-node-exporter-lua.main = {
-        _type = "prometheus-node-exporter-lua";
-        listen_interface = "lan";
       };
     };
   };
