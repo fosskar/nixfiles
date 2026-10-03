@@ -1,3 +1,19 @@
+let
+  # router and rpc server must run the same build: the rpc protocol is versioned
+  pinned =
+    pkgs: package:
+    package.overrideAttrs {
+      version = "11371";
+      src = pkgs.fetchFromGitHub {
+        owner = "ggml-org";
+        repo = "llama.cpp";
+        rev = "99b95488cac0f00ce3f05af113a8c1e287753f87";
+        hash = "sha256-DbFgp028eMgQLNfKu2p4hFRWK5bmJPUNPYIAWvI120U=";
+      };
+      npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
+    };
+  rpcPort = 50052;
+in
 {
   flake.modules.nixos.llamaCpp =
     {
@@ -61,16 +77,12 @@
     {
       services.llama-cpp = {
         enable = true;
-        package = pkgs.llama-cpp-cuda.overrideAttrs {
-          version = "11371";
-          src = pkgs.fetchFromGitHub {
-            owner = "ggml-org";
-            repo = "llama.cpp";
-            rev = "99b95488cac0f00ce3f05af113a8c1e287753f87";
-            hash = "sha256-DbFgp028eMgQLNfKu2p4hFRWK5bmJPUNPYIAWvI120U=";
-          };
-          npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
-        };
+        package = pinned pkgs (
+          pkgs.llama-cpp.override {
+            cudaSupport = true;
+            rpcSupport = true;
+          }
+        );
         openFirewall = false;
         settings = {
           host = listenAddress;
@@ -154,13 +166,16 @@
             "ggml-org/Laya-GGUF:Q8_0" = {
               model = modelPath "ggml-org/Laya-GGUF" "Laya-Q8_0.gguf";
               alias = "laya";
+              # runs on the arc b50 in nixworker (llamaCppRpcServer); the child
+              # still opens a cuda context of ~220 MiB here
+              rpc = "${flake-self.hosts.nixworker.lan}:${toString rpcPort}";
+              device = "RPC0";
               n-gpu-layers = 999;
               # laya evaluates a whole prompt in one ubatch, so ubatch caps the
-              # state at 4096 tokens; 4096 needs 906 MiB vram, bf16 or 8192 do
-              # not fit next to qwen
-              ctx-size = 4096;
-              batch-size = 4096;
-              ubatch-size = 4096;
+              # state; 8192 is the model's context length
+              ctx-size = 8192;
+              batch-size = 8192;
+              ubatch-size = 8192;
               parallel = 1;
             };
           };
@@ -264,6 +279,80 @@
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
         reverse_proxy ${listenUrl}
+      '';
+    };
+
+  # exposes the arc gpu to the nixbox llama-cpp router over ggml rpc
+  flake.modules.nixos.llamaCppRpcServer =
+    {
+      config,
+      flake-self,
+      pkgs,
+      ...
+    }:
+    let
+      package = pinned pkgs (
+        pkgs.llama-cpp.override {
+          vulkanSupport = true;
+          rpcSupport = true;
+        }
+      );
+      listenAddress = flake-self.hosts.${config.networking.hostName}.lan;
+    in
+    {
+      systemd.services.ggml-rpc-server = {
+        description = "ggml rpc server for the llama-cpp router";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        # only the intel icd, so the amd igpu is not exposed and the arc is Vulkan0
+        environment = {
+          VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json";
+          LLAMA_CACHE = "/var/cache/ggml-rpc-server";
+        };
+        serviceConfig = {
+          ExecStart = "${package}/bin/ggml-rpc-server --host ${listenAddress} --port ${toString rpcPort} --device Vulkan0 --cache";
+          DynamicUser = true;
+          SupplementaryGroups = [ "render" ];
+          CacheDirectory = "ggml-rpc-server";
+          Restart = "on-failure";
+          RestartSec = 5;
+
+          CapabilityBoundingSet = "";
+          DeviceAllow = [ "char-drm rw" ];
+          DevicePolicy = "closed";
+          LockPersonality = true;
+          NoNewPrivileges = true;
+          PrivateTmp = true;
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectSystem = "strict";
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+            "AF_UNIX"
+            "AF_NETLINK"
+          ];
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          SystemCallArchitectures = "native";
+          SystemCallFilter = [
+            "@system-service"
+            "~@privileged"
+          ];
+          UMask = "0077";
+        };
+      };
+
+      # rpc has no authentication; only the router host may connect
+      networking.firewall.extraInputRules = ''
+        ip saddr ${flake-self.hosts.nixbox.lan} tcp dport ${toString rpcPort} accept
       '';
     };
 }

@@ -8,6 +8,7 @@
     self.modules.nixos.btrfs
     self.modules.nixos.systemdBoot
     self.modules.nixos.intelGpu
+    self.modules.nixos.llamaCppRpcServer
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.nixbot
     self.modules.nixos.radicleMirror
