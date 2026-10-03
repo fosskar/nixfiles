@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.arrStack =
     {
+      config,
       flake-self,
       lib,
       pkgs,
@@ -15,6 +16,58 @@
     in
     {
       config = {
+        # --- oidc ---
+
+        clan.core.vars.generators.audiobookshelf = {
+          files."oauth-client-secret-hash" = {
+            owner = "authelia-main";
+            group = "authelia-main";
+          };
+          # audiobookshelf keeps its oidc settings in its database, set via the
+          # web ui; read this with `clan vars get` and paste it there
+          files."oauth-client-secret".deploy = false;
+          runtimeInputs = [
+            pkgs.pwgen
+            pkgs.authelia
+          ];
+          script = ''
+            SECRET=$(pwgen -s 64 1)
+            authelia crypto hash generate pbkdf2 --password "$SECRET" | tail -1 | cut -d' ' -f2 > "$out/oauth-client-secret-hash"
+            echo -n "$SECRET" > "$out/oauth-client-secret"
+          '';
+        };
+
+        services.authelia.instances.main.settings.identity_providers.oidc.clients = [
+          {
+            client_id = serviceName;
+            client_name = "Audiobookshelf";
+            client_secret = "{{ secret \"${
+              config.clan.core.vars.generators.audiobookshelf.files."oauth-client-secret-hash".path
+            }\" }}";
+            public = false;
+            consent_mode = "implicit";
+            authorization_policy = "users";
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            redirect_uris = [
+              "https://${localHost}/auth/openid/callback"
+              "https://${localHost}/auth/openid/mobile-redirect"
+              "audiobookshelf://oauth"
+            ];
+            scopes = [
+              "openid"
+              "profile"
+              "email"
+              "groups"
+            ];
+            response_types = [ "code" ];
+            grant_types = [ "authorization_code" ];
+            access_token_signed_response_alg = "none";
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "client_secret_basic";
+          }
+        ];
+
         # --- service ---
 
         services.audiobookshelf = {
