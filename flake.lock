@@ -1479,6 +1479,7 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "preservation": "preservation",
         "radicle-mirror": "radicle-mirror",
+        "sofka": "sofka",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "ssync": "ssync",
@@ -1546,6 +1547,29 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "sofka": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790000286,
+        "narHash": "sha256-J3GlSIRhRc7f+4AWuk+zzsi5ySPx8qmxPLqXUh5jFQI=",
+        "owner": "nklmilojevic",
+        "repo": "sofka",
+        "rev": "e23826001140302b754a3c3ed0e59c3b4b389b9a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nklmilojevic",
+        "repo": "sofka",
         "type": "github"
       }
     },
