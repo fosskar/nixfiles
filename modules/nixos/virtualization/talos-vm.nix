@@ -91,7 +91,7 @@
 
         networking.nat = {
           enable = true;
-          externalInterface = "bond0";
+          externalInterface = config.networking.defaultGateway.interface;
           internalInterfaces = [ bridge ];
           # yggdrasil owns 6443 on the host address
           forwardPorts = [
