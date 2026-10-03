@@ -3,7 +3,6 @@
     {
       flake-self,
       config,
-      lib,
       pkgs,
       ...
     }:
@@ -158,44 +157,19 @@
       systemd.services.continuwuity.serviceConfig.ReadWritePaths = [ "/tank/backup/continuwuity" ];
       systemd.tmpfiles.rules = [ "d /tank/backup/continuwuity 0700 continuwuity continuwuity -" ];
 
-      # rocksdb has no offline export and the online backup is an admin-room
-      # command. copy the database out of a zfs snapshot instead of stopping
-      # it: a restart floods systemd-resolved with the startup netburst, the
-      # oidc discovery then fails and continuwuity crash-loops. rocksdb
-      # recovers a crash-consistent copy through its wal
+      # borg reads the rocksdb database while continuwuity writes it, so a
+      # restore may need rocksdb wal recovery or fail. stopping continuwuity
+      # for the backup is no option: a restart floods systemd-resolved with
+      # the startup netburst, the oidc discovery then fails and continuwuity
+      # crash-loops
       clan.core.state.continuwuity = {
-        folders = [ "/var/backup/continuwuity" ];
-        preBackupScript = ''
-          export PATH=${
-            lib.makeBinPath [
-              pkgs.coreutils
-              pkgs.gnugrep
-              pkgs.util-linux
-              config.boot.zfs.package
-            ]
-          }
-          snapshot="$(findmnt -n -o SOURCE /persist)@continuwuity-backup"
-          if zfs list -H -o name -t snapshot "''${snapshot%@*}" | grep -qxF "$snapshot"; then
-            zfs destroy "$snapshot"
-          fi
-          zfs snapshot "$snapshot"
-          trap 'zfs destroy "$snapshot"' EXIT
-          rm -rf /var/backup/continuwuity
-          cp -a /persist/.zfs/snapshot/continuwuity-backup/var/lib/private/continuwuity /var/backup/continuwuity
-        '';
+        folders = [ "/var/lib/private/continuwuity" ];
         preRestoreScript = ''
           ${pkgs.systemd}/bin/systemctl stop continuwuity.service
+          ${pkgs.coreutils}/bin/rm -rf /var/lib/private/continuwuity
         '';
         postRestoreScript = ''
-          export PATH=${
-            lib.makeBinPath [
-              pkgs.coreutils
-              pkgs.systemd
-            ]
-          }
-          rm -rf /var/lib/private/continuwuity
-          cp -a /var/backup/continuwuity /var/lib/private/continuwuity
-          systemctl start continuwuity.service
+          ${pkgs.systemd}/bin/systemctl start continuwuity.service
         '';
       };
 
