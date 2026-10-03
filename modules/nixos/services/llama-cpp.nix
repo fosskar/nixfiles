@@ -309,6 +309,7 @@ in
         environment = {
           VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json";
           LLAMA_CACHE = "/var/cache/ggml-rpc-server";
+          XDG_CACHE_HOME = "/var/cache/ggml-rpc-server";
         };
         serviceConfig = {
           ExecStart = "${package}/bin/ggml-rpc-server --host ${listenAddress} --port ${toString rpcPort} --device Vulkan0 --cache";
