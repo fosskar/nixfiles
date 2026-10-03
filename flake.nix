@@ -194,6 +194,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    sofka = {
+      url = "github:nklmilojevic/sofka";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+
     # wm
     niri-nix = {
       url = "https://codeberg.org/BANanaD3V/niri-nix/archive/main.tar.gz";

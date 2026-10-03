@@ -32,6 +32,7 @@
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
+        self.modules.homeManager.sofka
         self.modules.homeManager.ssh
         self.modules.homeManager.starship
         self.modules.homeManager.workspaceHost
