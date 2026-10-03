@@ -35,6 +35,7 @@
               "sabnzbd"
               "jellyfin"
               "navidrome"
+              "audiobookshelf"
             ]
             (_: {
               unitConfig.RequiresMountsFor = [ mediaRoot ];
