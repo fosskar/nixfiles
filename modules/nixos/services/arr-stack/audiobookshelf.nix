@@ -50,8 +50,8 @@
             require_pkce = true;
             pkce_challenge_method = "S256";
             redirect_uris = [
-              "https://${localHost}/auth/openid/callback"
-              "https://${localHost}/auth/openid/mobile-redirect"
+              "https://${localHost}/audiobookshelf/auth/openid/callback"
+              "https://${localHost}/audiobookshelf/auth/openid/mobile-redirect"
               "audiobookshelf://oauth"
             ];
             scopes = [
