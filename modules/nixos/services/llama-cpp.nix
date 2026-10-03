@@ -36,6 +36,12 @@
             "mmproj-F16.gguf" = "71f3cbc1f7cc0f30d09d41cfa924c0060827ebc33bf15ace7e86661e856f0160";
           };
         };
+        "ggml-org/Laya-GGUF" = {
+          rev = "da4b4753d62197659d8c90103cd4c43bef9afea6";
+          files = {
+            "Laya-Q8_0.gguf" = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
+          };
+        };
       };
       modelPath = repo: file: "${modelsDir}/${repo}/${file}";
       manifest = pkgs.writeText "llama-cpp-models.manifest" (
@@ -55,22 +61,22 @@
     {
       services.llama-cpp = {
         enable = true;
-        package = (pkgs.llama-cpp.override { cudaSupport = true; }).overrideAttrs {
-          version = "10274";
+        package = pkgs.llama-cpp-cuda.overrideAttrs {
+          version = "11371";
           src = pkgs.fetchFromGitHub {
             owner = "ggml-org";
             repo = "llama.cpp";
-            rev = "62bf73d25c53b8161f8a22894d4f90c4aebbd7d0";
-            hash = "sha256-lnQevDxm8dFnHUuHpefvC5ieuDE1R+pHKmHFo0LfoM0=";
+            rev = "99b95488cac0f00ce3f05af113a8c1e287753f87";
+            hash = "sha256-DbFgp028eMgQLNfKu2p4hFRWK5bmJPUNPYIAWvI120U=";
           };
-          npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+          npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
         };
         openFirewall = false;
         settings = {
           host = listenAddress;
           port = listenPort;
           metrics = true;
-          models-max = 1;
+          models-max = 2;
           models-preset = (pkgs.formats.ini { }).generate "llama-cpp-models-preset.ini" {
             "*" = {
               ctx-size = 32768;
@@ -144,6 +150,18 @@
               };
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
+            };
+            "ggml-org/Laya-GGUF:Q8_0" = {
+              model = modelPath "ggml-org/Laya-GGUF" "Laya-Q8_0.gguf";
+              alias = "laya";
+              n-gpu-layers = 999;
+              # laya evaluates a whole prompt in one ubatch, so ubatch caps the
+              # state at 4096 tokens; 4096 needs 906 MiB vram, bf16 or 8192 do
+              # not fit next to qwen
+              ctx-size = 4096;
+              batch-size = 4096;
+              ubatch-size = 4096;
+              parallel = 1;
             };
           };
         };

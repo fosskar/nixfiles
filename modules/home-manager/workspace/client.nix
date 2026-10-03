@@ -46,6 +46,16 @@ _: {
           ServerAliveInterval = 15;
           ServerAliveCountMax = 3;
         };
+        # no forwards: the t3code desktop app opens its own connection, which
+        # cannot bind ports an open "workspace" session already holds
+        "workspace-t3" = {
+          HostName = "nixworker.s";
+          User = "simon";
+          ConnectTimeout = 5;
+          ConnectionAttempts = 1;
+          ServerAliveInterval = 15;
+          ServerAliveCountMax = 3;
+        };
         "workspace-relay" = {
           HostName = "nixworker.s";
           User = "simon";

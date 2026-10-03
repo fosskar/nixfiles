@@ -32,8 +32,10 @@
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
+        self.modules.homeManager.sofka
         self.modules.homeManager.ssh
         self.modules.homeManager.starship
+        self.modules.homeManager.t3codeServer
         self.modules.homeManager.workspaceHost
         self.modules.homeManager.yazi
         self.modules.homeManager.zellij
@@ -78,6 +80,7 @@
 
   programs.fish.enable = true;
   users.users.simon.shell = pkgs.fish;
+  users.users.simon.linger = true;
   # keep the old workspace user's uid: /home data ownership and the hardcoded
   # /run/user/1000 gpg-agent forward path (modules/home-manager/workspace/client.nix) survive the rename
   users.users.simon.uid = 1000;
