@@ -57,6 +57,20 @@
             '';
           };
         };
+
+      # FIXME: drop once upstream includes grpc before nix in its tests; abseil
+      # 20260817 collides with nix's MakeError macro
+      patchedPackageSet =
+        pkgs: nixPackages:
+        (pkgs.callPackage "${self.inputs.nix-grpc-store}/nix/packages" { inherit nixPackages; })
+        .overrideScope
+          (
+            _: prev: {
+              default = prev.default.overrideAttrs (old: {
+                patches = (old.patches or [ ]) ++ [ ./abseil-make-error.patch ];
+              });
+            }
+          );
     in
     {
       manifest.name = "nix-grpc-store";
@@ -131,6 +145,7 @@
 
                 services.nix-grpc-daemon = {
                   enable = true;
+                  package = (patchedPackageSet pkgs pkgs.nix.libs).default;
                   # clients dial <builder>.<domain>, which resolves to the yggdrasil v6 address
                   listen = "[::]:${toString port}";
                   tls = {
@@ -213,6 +228,7 @@
 
                 config = lib.mkIf (!isBuilder) {
                   programs.nix-grpc-store.enable = true;
+                  programs.nix-grpc-store.packageSet = patchedPackageSet pkgs config.nix.package.libs;
                   nix.distributedBuilds = lib.mkDefault true;
 
                   systemd.tmpfiles.rules = [
