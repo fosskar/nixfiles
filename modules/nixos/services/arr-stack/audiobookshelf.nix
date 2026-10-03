@@ -78,6 +78,8 @@
           group = "media";
         };
 
+        systemd.services.audiobookshelf.serviceConfig.UMask = "0002";
+
         # --- homepage ---
 
         services.homepage-dashboard.services = [
@@ -117,7 +119,12 @@
         # --- backup ---
 
         clan.core.state.audiobookshelf = {
-          folders = [ "/var/backup/audiobookshelf" ];
+          # covers and author images; cache, streams, and logs are rebuildable
+          folders = [
+            "/var/backup/audiobookshelf"
+            "/var/lib/audiobookshelf/metadata/items"
+            "/var/lib/audiobookshelf/metadata/authors"
+          ];
           preBackupScript = ''
             export PATH=${
               lib.makeBinPath [
@@ -126,6 +133,8 @@
               ]
             }
             mkdir -p /var/backup/audiobookshelf
+            # audiobookshelf creates these on first library scan; borg fails on missing paths
+            install -d -o audiobookshelf -g media /var/lib/audiobookshelf/metadata/items /var/lib/audiobookshelf/metadata/authors
             sqlite3 /var/lib/audiobookshelf/config/absdatabase.sqlite ".backup '/var/backup/audiobookshelf/absdatabase.sqlite'"
           '';
         };
