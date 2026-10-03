@@ -26,8 +26,14 @@ _: {
     };
 
   flake.modules.homeManager.noctalia =
-    { osConfig, self, ... }:
     {
+      lib,
+      osConfig,
+      self,
+      ...
+    }:
+    # hosts outside the clan (nixwork) import this aspect without the vars
+    lib.optionalAttrs (osConfig ? clan) {
       programs.noctalia.settings = {
         storage = {
           key_source = "file";
