@@ -517,16 +517,17 @@
         btn.disabled = true;
         btn.textContent = "Thinking …";
         try {
-          const res = await fetch("/predict", {
+          const res = await fetch("/v1/systemone", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ state: { text }, questions: { q } }),
+            body: JSON.stringify({
+              model: "laya",
+              state: { text },
+              questions: { q },
+            }),
           });
           const data = await res.json();
-          if (!res.ok)
-            throw new Error(
-              data.detail ? JSON.stringify(data.detail) : res.statusText,
-            );
+          if (!res.ok) throw new Error(data.error?.message ?? res.statusText);
           render(data.answers.q);
         } catch (e) {
           show(`<p class="error">Something went wrong: ${esc(e.message)}</p>`);
@@ -552,7 +553,7 @@
           ];
         } else if (a.type === "choice") {
           answer = a.choice;
-          sure = a.answer_confidence;
+          sure = a.confidence;
           entries = Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]);
         } else {
           entries = Object.entries(a.probabilities).map(([i, p]) => [

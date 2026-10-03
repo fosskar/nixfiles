@@ -1,29 +1,15 @@
-{ inputs, ... }:
 {
   flake.modules.nixos.laya =
     {
+      config,
       flake-self,
       pkgs,
       ...
     }:
     let
       localHost = "laya.${flake-self.domains.local}";
-      listenPort = 18091;
-      listenUrl = "http://127.0.0.1:${toString listenPort}";
-      ps = pkgs.python3Packages;
-      # upstream pins the prebuilt cuda torch-bin; laya runs on cpu here so
-      # the gpu stays with llama-cpp
-      inherit
-        (pkgs.callPackage "${inputs.laya}/nix/package.nix" {
-          python3Packages = ps.overrideScope (_: prev: { torch-bin = prev.torch; });
-        })
-        laya
-        ;
-      python = pkgs.python3.withPackages (_: [
-        laya
-        ps.fastapi
-        ps.uvicorn
-      ]);
+      llamaCpp = config.services.llama-cpp.settings;
+      listenUrl = "http://${llamaCpp.host}:${toString llamaCpp.port}";
       themeCss = pkgs.writeText "theme.css" (
         import ./_theme-css.nix flake-self.themes.${flake-self.theme}
       );
@@ -34,50 +20,6 @@
       '';
     in
     {
-      systemd.services.laya = {
-        description = "Laya typed-decision playground";
-        wantedBy = [ "multi-user.target" ];
-        after = [ "network-online.target" ];
-        wants = [ "network-online.target" ];
-        environment.HF_HOME = "/var/lib/laya/huggingface";
-        serviceConfig = {
-          ExecStart = "${python}/bin/python ${inputs.laya}/examples/server.py --host 127.0.0.1 --port ${toString listenPort} --device cpu";
-          DynamicUser = true;
-          StateDirectory = "laya";
-          Restart = "on-failure";
-          RestartSec = 5;
-
-          CapabilityBoundingSet = "";
-          LockPersonality = true;
-          NoNewPrivileges = true;
-          PrivateDevices = true;
-          PrivateTmp = true;
-          ProtectClock = true;
-          ProtectControlGroups = true;
-          ProtectHome = true;
-          ProtectHostname = true;
-          ProtectKernelLogs = true;
-          ProtectKernelModules = true;
-          ProtectKernelTunables = true;
-          ProtectProc = "invisible";
-          ProtectSystem = "strict";
-          RestrictAddressFamilies = [
-            "AF_INET"
-            "AF_INET6"
-            "AF_UNIX"
-          ];
-          RestrictNamespaces = true;
-          RestrictRealtime = true;
-          RestrictSUIDSGID = true;
-          SystemCallArchitectures = "native";
-          SystemCallFilter = [
-            "@system-service"
-            "~@privileged"
-          ];
-          UMask = "0077";
-        };
-      };
-
       services.homepage-dashboard.services = [
         {
           "tools" = [
@@ -85,7 +27,7 @@
               "Laya" = {
                 href = "https://${localHost}";
                 icon = "mdi-scale-balance";
-                siteMonitor = listenUrl;
+                siteMonitor = "${listenUrl}/health";
               };
             }
           ];
@@ -103,10 +45,10 @@
         }
       ];
 
-      # the upstream playground at / targets developers; serve a plain form
-      # instead and pass only the api through
+      # laya is served by the llama-cpp router; pass only the decision api
+      # through and serve a plain form instead of the llama.cpp web ui
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        handle /predict {
+        handle /v1/systemone {
           reverse_proxy ${listenUrl}
         }
         handle /health {
