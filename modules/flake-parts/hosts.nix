@@ -7,7 +7,9 @@
     gateway.wan = "138.201.155.21";
     gateway.wan6 = "2a01:4f8:c17:b207::1";
     nixbox.lan = "192.168.20.200";
+    nixbox.direct = "10.30.0.1";
     nixworker.lan = "192.168.20.210";
+    nixworker.direct = "10.30.0.2";
     desktop.lan = "192.168.10.100";
     lpt-titan.lan = "192.168.10.150";
   };

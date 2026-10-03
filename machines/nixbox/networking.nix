@@ -6,27 +6,28 @@
     useDHCP = false;
     defaultGateway = {
       address = flake-self.router.srv;
-      interface = "bond0";
+      interface = "enp36s0f0np0";
     };
     nameservers = [ flake-self.router.srv ];
 
-    bonds.bond0 = {
-      interfaces = [
-        "enp36s0f0np0"
-        "enp36s0f1np1"
-      ];
-      driverOptions = {
-        mode = "active-backup";
-        miimon = "100";
-      };
-    };
-
-    interfaces.bond0 = {
+    interfaces.enp36s0f0np0 = {
       useDHCP = false;
       ipv4.addresses = [
         {
           address = flake-self.hosts.nixbox.lan;
           prefixLength = 24;
+        }
+      ];
+    };
+
+    # direct 10g link to nixworker; carries the llama-cpp rpc traffic
+    interfaces.enp36s0f1np1 = {
+      useDHCP = false;
+      mtu = 9000;
+      ipv4.addresses = [
+        {
+          address = flake-self.hosts.nixbox.direct;
+          prefixLength = 30;
         }
       ];
     };
