@@ -12,6 +12,16 @@ _: {
     {
       home.packages = [ pkgs.local.t3code ];
 
+      # the desktop's ssh environment runs ~/.t3/runtime/versions/<its version>/t3
+      # and downloads the upstream release archive when that is missing; serve
+      # it the local build instead. it then reuses the running service below
+      home.file = {
+        ".t3/runtime/versions/${pkgs.local.t3code.version}/t3".source = "${pkgs.local.t3code}/bin/t3";
+        ".t3/runtime/versions/${pkgs.local.t3code.version}/.install-complete".text = ''
+          ${pkgs.local.t3code.version}
+        '';
+      };
+
       systemd.user.services.t3code = {
         Unit.Description = "T3 Code server";
         Service = {
