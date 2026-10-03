@@ -1,7 +1,6 @@
 {
   self,
   nflib,
-  pkgs,
   ...
 }:
 {
@@ -41,6 +40,4 @@
     CPUWeight = 1000;
     IOWeight = 1000;
   };
-
-  services.postgresql.package = pkgs.postgresql_18;
 }
