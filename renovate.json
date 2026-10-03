@@ -24,6 +24,10 @@
       "groupName": "template dependencies"
     },
     {
+      "matchPackageNames": ["github.com/otiai10/gosseract/v2"],
+      "abandonmentThreshold": null
+    },
+    {
       "matchManagers": ["gomod"],
       "matchFileNames": ["packages/live-ocr/live-ocr/go.mod"],
       "postUpdateOptions": ["gomodTidy"],
