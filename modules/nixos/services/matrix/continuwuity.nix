@@ -157,22 +157,6 @@
       systemd.services.continuwuity.serviceConfig.ReadWritePaths = [ "/tank/backup/continuwuity" ];
       systemd.tmpfiles.rules = [ "d /tank/backup/continuwuity 0700 continuwuity continuwuity -" ];
 
-      # borg reads the rocksdb database while continuwuity writes it, so a
-      # restore may need rocksdb wal recovery or fail. stopping continuwuity
-      # for the backup is no option: a restart floods systemd-resolved with
-      # the startup netburst, the oidc discovery then fails and continuwuity
-      # crash-loops
-      clan.core.state.continuwuity = {
-        folders = [ "/var/lib/private/continuwuity" ];
-        preRestoreScript = ''
-          ${pkgs.systemd}/bin/systemctl stop continuwuity.service
-          ${pkgs.coreutils}/bin/rm -rf /var/lib/private/continuwuity
-        '';
-        postRestoreScript = ''
-          ${pkgs.systemd}/bin/systemctl start continuwuity.service
-        '';
-      };
-
       services.homepage-dashboard.services = [
         {
           "communication" = [
