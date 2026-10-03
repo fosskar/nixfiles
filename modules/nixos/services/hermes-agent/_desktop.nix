@@ -73,7 +73,7 @@ let
       runHook preCheck
 
       pushd apps/desktop
-        npm run postbuild
+        node scripts/assert-dist-built.mjs
         STAGED_PTY_NODE="./dist/node_modules/node-pty/build/Release/pty.node"
         if [ ! -f "$STAGED_PTY_NODE" ]; then
           echo "FATAL: Missing staged node-pty native binary at $STAGED_PTY_NODE"
