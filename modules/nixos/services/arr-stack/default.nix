@@ -13,6 +13,8 @@
           # setgid: subdirs the apps create inherit group media, so UMask 0002
           # alone does not have to carry group ownership
           "d ${mediaRoot}/books 2775 root media -"
+          "d ${mediaRoot}/books/audiobooks 2775 root media -"
+          "d ${mediaRoot}/books/ebooks 2775 root media -"
           "d ${mediaRoot}/movies 2775 root media -"
           "d ${mediaRoot}/music 2775 root media -"
           "d ${mediaRoot}/podcasts 2775 root media -"
