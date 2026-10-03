@@ -1,0 +1,30 @@
+diff --git a/tests/farm-client-test.cc b/tests/farm-client-test.cc
+index af12f9e..2164f10 100644
+--- a/tests/farm-client-test.cc
++++ b/tests/farm-client-test.cc
+@@ -16,6 +16,10 @@
+ #include <nlohmann/json.hpp> // IWYU pragma: keep
+ #include <nlohmann/json_fwd.hpp>
+ 
++// abseil's status_internal::MakeError must be declared before nix's
++// MakeError macro exists
++#include <grpcpp/grpcpp.h>
++
+ #include <nix/util/error.hh>
+ #include <nix/util/file-system.hh>
+ 
+diff --git a/tests/oidc-test.cc b/tests/oidc-test.cc
+index bfe18a3..81474db 100644
+--- a/tests/oidc-test.cc
++++ b/tests/oidc-test.cc
+@@ -24,6 +24,10 @@
+ #include <nlohmann/json.hpp> // NOLINT(misc-include-cleaner): json_fwd.hpp only declares.
+ #include <nlohmann/json_fwd.hpp>
+ 
++// abseil's status_internal::MakeError must be declared before nix's
++// MakeError macro exists
++#include <grpcpp/grpcpp.h>
++
+ #include <nix/util/base-n.hh>
+ #include <nix/util/file-system.hh>
+ 
