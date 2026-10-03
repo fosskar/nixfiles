@@ -45,6 +45,7 @@
     self.modules.nixos.talosVm
     self.modules.nixos.kiwix
     self.modules.nixos.microbin
+    self.modules.nixos.yuvomi
   ]
   ++ (nflib.scanPaths ./. { });
 
