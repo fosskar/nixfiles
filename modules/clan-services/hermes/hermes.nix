@@ -21,7 +21,7 @@
       manifest.name = "hermes";
       manifest.description = "Hermes agent server and remote desktop clients";
       manifest.readme = builtins.readFile ./README.md;
-      manifest.categories = [ "AI" ];
+      manifest.categories = [ "Utility" ];
       manifest.exports.inputs = [
         "peer"
         "networking"

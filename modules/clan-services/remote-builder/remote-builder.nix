@@ -5,7 +5,7 @@ _: {
       manifest.name = "remote-builder";
       manifest.description = "nix remote build server/client wiring";
       manifest.readme = builtins.readFile ./README.md;
-      manifest.categories = [ "Developer Tools" ];
+      manifest.categories = [ "Development" ];
 
       roles.builder = {
         description = "remote nix builder host";

@@ -22,7 +22,7 @@ _: {
       manifest.name = "harmonia";
       manifest.description = "serve local nix store as binary cache";
       manifest.readme = builtins.readFile ./README.md;
-      manifest.categories = [ "Nix Tools" ];
+      manifest.categories = [ "Development" ];
 
       roles.server = {
         description = "harmonia binary cache server";

@@ -24,7 +24,7 @@
       manifest.name = "niks3";
       manifest.description = "self-hosted nix binary cache via niks3 with bundled garage s3 backend";
       manifest.readme = builtins.readFile ./README.md;
-      manifest.categories = [ "Nix Tools" ];
+      manifest.categories = [ "Development" ];
 
       roles.server = {
         description = "niks3 server with bundled garage s3 backend";

@@ -62,7 +62,7 @@
       manifest.name = "nix-grpc-store";
       manifest.description = "nix remote builds over grpc with mtls";
       manifest.readme = builtins.readFile ./README.md;
-      manifest.categories = [ "Developer Tools" ];
+      manifest.categories = [ "Development" ];
 
       roles.builder = {
         description = "machine running nix-grpc-daemon for the clan's builds";
