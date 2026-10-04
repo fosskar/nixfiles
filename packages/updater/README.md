@@ -101,6 +101,7 @@ package updates whose `Diff:` URL names a tag.
 | ------------------------ | --------------------------------------------- |
 | `update_packages.py`     | entrypoint: packages/                         |
 | `update_flake_inputs.py` | entrypoint: flake.lock inputs                 |
+| `update_effect.py`       | entrypoint: nixbot effect setup, then updater |
 | `pipeline.py`            | shared: token, dirty guard, push/PR/automerge |
 | `packages.py`            | package discovery + nix-update/update.sh runs |
 | `forge.py`               | forge REST clients (GitHub, Codeberg/Forgejo) |

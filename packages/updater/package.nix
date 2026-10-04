@@ -6,10 +6,8 @@
   nix-update,
   nix,
   git,
-  jq,
   openssh,
   cacert,
-  coreutils,
 }:
 stdenvNoCC.mkDerivation {
   pname = "updater";
@@ -17,10 +15,7 @@ stdenvNoCC.mkDerivation {
 
   src = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.unions [
-      (lib.fileset.fileFilter (f: f.hasExt "py") ./.)
-      ./effect.sh
-    ];
+    fileset = lib.fileset.fileFilter (f: f.hasExt "py") ./.;
   };
 
   nativeBuildInputs = [ makeWrapper ];
@@ -40,9 +35,10 @@ stdenvNoCC.mkDerivation {
 
     mkdir -p $out/lib/updater $out/bin
     cp changelog.py forge.py packages.py pipeline.py \
-      update_packages.py update_flake_inputs.py $out/lib/updater/
+      update_packages.py update_flake_inputs.py update_effect.py \
+      $out/lib/updater/
 
-    for entry in update_packages update_flake_inputs; do
+    for entry in update_packages update_flake_inputs update_effect; do
       bin="updater-''${entry#update_}"
       bin="''${bin//_/-}"
       makeWrapper ${python3}/bin/python3 $out/bin/$bin \
@@ -58,16 +54,6 @@ stdenvNoCC.mkDerivation {
         --set-default SSL_CERT_FILE "${cacert}/etc/ssl/certs/ca-bundle.crt" \
         --set-default PYTHONUNBUFFERED 1
     done
-
-    install -Dm755 effect.sh $out/bin/updater-effect
-    wrapProgram $out/bin/updater-effect \
-      --prefix PATH : $out/bin:${
-        lib.makeBinPath [
-          coreutils
-          git
-          jq
-        ]
-      }
 
     runHook postInstall
   '';
