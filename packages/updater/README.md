@@ -31,7 +31,23 @@ the checkout per unit. Use a scratch clone, or commit first.
 In production both run as nixbot scheduled effects
 (`modules/flake-parts/effects.nix`), in the pushable checkout nixbot mounts for
 effects declaring `__nixbot_effect_checkout`, with the forge token injected
-from nixbot's secrets.
+from nixbot's secrets. `updater-effect packages|flake-inputs` does the effect
+setup (tokens, `NIX_CONFIG`, bot git identity, partial-clone config, removing
+nixbot's `hercules-ci.headers` from the checkout) and then runs the updater.
+Other repos use it without a flake input:
+
+```nix
+mkEffect {
+  name = "effect-update-flake-inputs";
+  checkout = true;
+  inputs = [ pkgs.nix ];
+  secretsMap.git.type = "GitToken";
+  effectScript = ''
+    nix --extra-experimental-features 'nix-command flakes' \
+      run github:fosskar/nixfiles#updater-effect -- flake-inputs
+  '';
+}
+```
 
 ## How packages are discovered
 

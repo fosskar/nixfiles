@@ -6,8 +6,10 @@
   nix-update,
   nix,
   git,
+  jq,
   openssh,
   cacert,
+  coreutils,
 }:
 stdenvNoCC.mkDerivation {
   pname = "updater";
@@ -15,7 +17,10 @@ stdenvNoCC.mkDerivation {
 
   src = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.fileFilter (f: f.hasExt "py") ./.;
+    fileset = lib.fileset.unions [
+      (lib.fileset.fileFilter (f: f.hasExt "py") ./.)
+      ./effect.sh
+    ];
   };
 
   nativeBuildInputs = [ makeWrapper ];
@@ -53,6 +58,16 @@ stdenvNoCC.mkDerivation {
         --set-default SSL_CERT_FILE "${cacert}/etc/ssl/certs/ca-bundle.crt" \
         --set-default PYTHONUNBUFFERED 1
     done
+
+    install -Dm755 effect.sh $out/bin/updater-effect
+    wrapProgram $out/bin/updater-effect \
+      --prefix PATH : $out/bin:${
+        lib.makeBinPath [
+          coreutils
+          git
+          jq
+        ]
+      }
 
     runHook postInstall
   '';

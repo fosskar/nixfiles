@@ -12,40 +12,21 @@
         gitName = "fosskar[bot]";
         gitEmail = "300917551+fosskar[bot]@users.noreply.github.com";
 
-        # Shared plumbing for every repo-mutating scheduled effect: nixbot mounts a
-        # pushable clone of the effect's commit at $NIXBOT_EFFECT_CHECKOUT (also the
-        # working directory) with an authenticated `origin`, so only the API/nix side
-        # of the forge token has to be requested here (GitToken). It is a github app
-        # installation token, so it serves nix-update and changelog enrichment too.
+        # nixbot mounts a pushable clone of the effect's commit at
+        # $NIXBOT_EFFECT_CHECKOUT (also the working directory) with an
+        # authenticated `origin`; updater-effect does the rest of the setup.
         mkRepoEffect =
           name: command:
           mkEffect {
             name = "effect-${name}";
             checkout = true;
             inputs = [
-              pkgs.git
               pkgs.nix
               config.packages.updater
             ];
             secretsMap.git.type = "GitToken";
             effectScript = ''
               set -euo pipefail
-              token=$(jq -re '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
-              export FORGE_TOKEN="$token"
-              export GITHUB_TOKEN="$token"
-              export NIX_CONFIG="experimental-features = nix-command flakes
-              access-tokens = github.com=$token"
-
-              git config --global user.name '${gitName}'
-              git config --global user.email '${gitEmail}'
-
-              git config remote.origin.promisor true
-              git config remote.origin.partialclonefilter blob:none
-
-              # nixbot's mkEffect setup hook writes the state API auth header
-              # into $PWD, the checkout; unused here and it dirties the tree
-              rm hercules-ci.headers
-
               ${command}
             '';
           };
@@ -96,7 +77,7 @@
             minute = 0;
           };
           outputs.effects.update-pkgs = mkRepoEffect "update-pkgs" ''
-            updater-packages
+            updater-effect packages
           '';
         };
 
@@ -106,7 +87,7 @@
             minute = 0;
           };
           outputs.effects.update-flake-inputs = mkRepoEffect "update-flake-inputs" ''
-            updater-flake-inputs
+            updater-effect flake-inputs
           '';
         };
       }

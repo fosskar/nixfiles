@@ -43,6 +43,10 @@
           program = "${config.packages.updater}/bin/updater-flake-inputs";
           meta.description = "update flake inputs";
         };
+        updater-effect = {
+          program = "${config.packages.updater}/bin/updater-effect";
+          meta.description = "run an updater inside a nixbot effect checkout";
+        };
       };
     };
 }
