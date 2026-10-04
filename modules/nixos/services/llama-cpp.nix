@@ -180,10 +180,18 @@ in
               model = modelPath "Hob-forge/Kolibri-1-GGUF" "Kolibri-1-Q4_K_M.gguf";
               alias = startupModelAlias;
               load-on-startup = true;
-              # 47.5 GB does not fit the 4000 alone; fit spreads it over the
-              # 4000, the arc b50 in nixworker, and cpu experts
+              # attention and kv stay on the 4000; only routed experts move to
+              # the arc b50 in nixworker and the cpu. fit would instead put
+              # whole layers on the b50 behind the network
               rpc = "${flake-self.hosts.nixworker.direct}:${toString rpcPort}";
               device = "CUDA0,RPC0";
+              tensor-split = "1,0";
+              n-gpu-layers = 999;
+              override-tensor = lib.concatStringsSep "," [
+                "blk\\.(2[2-9]|3[0-3])\\.ffn_(up|down|gate)_exps=RPC0[${flake-self.hosts.nixworker.direct}:${toString rpcPort}]"
+                "blk\\.(3[4-9]|4[0-9])\\.ffn_(up|down|gate)_exps=CPU"
+              ];
+              fit = "off";
               temp = 1.0;
               top-p = 0.97;
               top-k = 128;
