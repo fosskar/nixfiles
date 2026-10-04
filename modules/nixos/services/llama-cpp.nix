@@ -11,6 +11,14 @@ let
         hash = "sha256-DbFgp028eMgQLNfKu2p4hFRWK5bmJPUNPYIAWvI120U=";
       };
       npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
+      # kolibri1 is not upstream yet (ggml-org/llama.cpp#29922); the patch
+      # only loads ggufs converted by that repo
+      patches = [
+        (pkgs.fetchurl {
+          url = "https://huggingface.co/Hob-forge/Kolibri-1-GGUF/resolve/a542f8dfe9083e8924d381a1645347bf10b67632/kolibri1-llama.cpp.patch";
+          hash = "sha256-4NF8JqA3hKgmfLFqcofotOfXmZebWEM0dwv362IMZqo=";
+        })
+      ];
     };
   rpcPort = 50052;
 in
@@ -28,7 +36,7 @@ in
       listenAddress = "127.0.0.1";
       listenPort = 18080;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
-      startupModelAlias = "qwen3.6-35b-a3b-mtp";
+      startupModelAlias = "kolibri-1";
       modelsDir = "/var/lib/llama-cpp-models";
       # pinned to immutable HF revisions: resolve/main lets upstream re-upload
       # weights in place, and llama.cpp's etag check then silently re-downloads
@@ -50,6 +58,12 @@ in
               "55983c5a75a1ab969824077b3bb3de4146e82a9234072b48ad4e8f92ad3fe9f1";
             "Qwen3.6-35B-A3B-UD-Q6_K.gguf" = "49935b04ad883c2f3d4da61f65b609d447dad67d0b08453b90abb09a1bb35464";
             "mmproj-F16.gguf" = "71f3cbc1f7cc0f30d09d41cfa924c0060827ebc33bf15ace7e86661e856f0160";
+          };
+        };
+        "Hob-forge/Kolibri-1-GGUF" = {
+          rev = "a542f8dfe9083e8924d381a1645347bf10b67632";
+          files = {
+            "Kolibri-1-Q4_K_M.gguf" = "c2ac1301424441ef210b6de50ce25e8ccf69f86494df53d6ba52ed558456062e";
           };
         };
         "ggml-org/Laya-GGUF" = {
@@ -125,8 +139,7 @@ in
             "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:Q4_K_XL" = {
               model = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
               mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
-              alias = startupModelAlias;
-              load-on-startup = true;
+              alias = "qwen3.6-35b-a3b-mtp";
               # 2 slots of 122880 each; kv is only unified when parallel is auto.
               # fit offloads 12 expert layers, peak 23136/24467 MiB with a 4k image.
               # ubatch 2048 cuts per-chunk expert copies over pcie: +68% prompt speed
@@ -162,6 +175,19 @@ in
               };
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
+            };
+            "Hob-forge/Kolibri-1-GGUF:Q4_K_M" = {
+              model = modelPath "Hob-forge/Kolibri-1-GGUF" "Kolibri-1-Q4_K_M.gguf";
+              alias = startupModelAlias;
+              load-on-startup = true;
+              # 47.5 GB does not fit the 4000 alone; fit spreads it over the
+              # 4000, the arc b50 in nixworker, and cpu experts
+              rpc = "${flake-self.hosts.nixworker.direct}:${toString rpcPort}";
+              device = "CUDA0,RPC0";
+              temp = 1.0;
+              top-p = 0.97;
+              top-k = 128;
+              reasoning = "on";
             };
             "ggml-org/Laya-GGUF:Q8_0" = {
               model = modelPath "ggml-org/Laya-GGUF" "Laya-Q8_0.gguf";
