@@ -240,7 +240,6 @@
               music.name = "music";
               audiobooks.name = "audiobooks";
               ebooks.name = "ebooks";
-              shelfmark.name = "shelfmark";
               podcasts = {
                 name = "podcasts";
                 script = "Default";
