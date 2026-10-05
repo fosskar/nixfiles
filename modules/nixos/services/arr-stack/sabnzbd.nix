@@ -103,7 +103,8 @@
               movies.name = "movies";
               tv.name = "tv";
               music.name = "music";
-              books.name = "books";
+              audiobooks.name = "audiobooks";
+              ebooks.name = "ebooks";
               podcasts = {
                 name = "podcasts";
                 script = "Default";
