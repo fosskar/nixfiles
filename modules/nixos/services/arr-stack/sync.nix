@@ -1,6 +1,11 @@
 {
   flake.modules.nixos.arrStack =
-    { lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       keyFile = serviceName: "/run/arr-api-keys/${serviceName}/api-key";
       # prowlarr writes its own key from ExecStartPost (api-keys.nix)
@@ -16,6 +21,7 @@
         sabnzbd = 8085;
       };
       baseUrl = serviceName: "http://127.0.0.1:${toString ports.${serviceName}}";
+      audiobookshelfUrl = "http://127.0.0.1:13378/audiobookshelf";
 
       # an entry is upserted by name. an existing resource is used as the base
       # so anything set in the ui and not declared here survives; only declared
@@ -26,6 +32,10 @@
           resource,
           entry,
         }:
+        let
+          # top-level json computed at runtime: key -> file holding the value
+          topFiles = entry.topFiles or { };
+        in
         ''
           overrides=$(jq -n --argjson lit ${lib.escapeShellArg (builtins.toJSON entry.fields)}${
             lib.concatStrings (
@@ -52,9 +62,13 @@
 
           body=$(printf '%s' "$start" | jq -ce \
             --arg name ${lib.escapeShellArg entry.name} \
-            --argjson top ${lib.escapeShellArg (builtins.toJSON entry.top)} \
+            --argjson top ${lib.escapeShellArg (builtins.toJSON entry.top)}${
+              lib.concatStrings (lib.mapAttrsToList (key: path: " --slurpfile topfile_${key} ${path}") topFiles)
+            } \
             --argjson ov "$overrides" '
-              . * $top
+              . * $top${
+                lib.concatStrings (lib.mapAttrsToList (key: _: " | .${key} = $topfile_${key}[0]") topFiles)
+              }
               | .name = $name
               | .fields |= map(.name as $field | if ($ov | has($field)) then .value = $ov[$field] else . end)')
 
@@ -97,11 +111,17 @@
           entries,
           needsKeys,
           readyChecks ? [ ],
+          # keys that are not under /run/arr-api-keys: name -> file, read from
+          # $CREDENTIALS_DIRECTORY/<name>
+          credentials ? { },
+          extraUnits ? [ ],
+          # shell run after the ready checks, before the upserts
+          prepare ? "",
         }:
         {
           description = "sync ${resource} into ${host}";
-          after = [ "${host}.service" ] ++ map keyUnit needsKeys;
-          requires = map keyUnit needsKeys;
+          after = [ "${host}.service" ] ++ map keyUnit needsKeys ++ extraUnits;
+          requires = map keyUnit needsKeys ++ extraUnits;
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             Type = "oneshot";
@@ -117,6 +137,7 @@
               "AF_INET6"
             ];
             CapabilityBoundingSet = "";
+            LoadCredential = lib.mapAttrsToList (name: path: "${name}:${path}") credentials;
             ExecStart = pkgs.writeShellScript "sync-${host}-${resource}" ''
               set -eu
               export PATH=${
@@ -132,6 +153,7 @@
 
               ${waitFor ''curl -sfS -H "X-Api-Key: $own" "$base/api/${apiVersion}/system/status"''}
               ${lib.concatMapStringsSep "\n" waitFor readyChecks}
+              ${prepare}
               ${lib.concatMapStringsSep "\n" (entry: mkEntry { inherit apiVersion resource entry; }) entries}
             '';
           };
@@ -166,6 +188,60 @@
     in
     {
       config.systemd.services = {
+        # chaptarr tells audiobookshelf exactly which files it imported, renamed
+        # or deleted. the mappings pair chaptarr root folders with audiobookshelf
+        # library folders by path; both only exist at runtime.
+        chaptarr-audiobookshelf-sync = mkSyncUnit {
+          host = "chaptarr";
+          apiVersion = "v1";
+          resource = "notification";
+          needsKeys = [ "chaptarr" ];
+          credentials.audiobookshelf-api-key =
+            config.clan.core.vars.generators.audiobookshelf-api.files.api-key.path;
+          extraUnits = [ "audiobookshelf.service" ];
+          readyChecks = [ ''curl -sfS "${audiobookshelfUrl}/status"'' ];
+          prepare = ''
+            abs_key=$(cat "$CREDENTIALS_DIRECTORY/audiobookshelf-api-key")
+            roots=$(curl -sfS -H "X-Api-Key: $own" "$base/api/v1/rootfolder")
+            libraries=$(curl -sfS -H "Authorization: Bearer $abs_key" "${audiobookshelfUrl}/api/libraries")
+            jq -nce --argjson roots "$roots" --argjson libraries "$libraries" '
+              [ $roots[] as $root
+                | $libraries.libraries[] as $library
+                | $library.folders[]
+                | select(.fullPath == $root.path)
+                | { RootFolderId: $root.id,
+                    MediaType: (if $root.folderType == 2 then "ebook" else "audiobook" end),
+                    LibraryId: $library.id,
+                    LibraryFolderId: .id,
+                    LibraryFolderPath: .fullPath } ]
+              | if length == 0 then error("no audiobookshelf folder matches a chaptarr root folder") else . end
+            ' > /tmp/audiobookshelf-library-mappings
+          '';
+          entries = [
+            {
+              name = "AudioBookShelf";
+              implementation = "AudioBookShelf";
+              top = {
+                onReleaseImport = true;
+                onUpgrade = true;
+                onRename = true;
+                onBookFileDelete = true;
+                onBookFileDeleteForUpgrade = true;
+              };
+              fields = {
+                host = "127.0.0.1";
+                port = 13378;
+                useSsl = false;
+                urlBase = "/audiobookshelf";
+              };
+              secretFields.apiKey = "$CREDENTIALS_DIRECTORY/audiobookshelf-api-key";
+              # chaptarr takes the mappings from this top-level field and
+              # overwrites libraryMappingsJson with it
+              topFiles.audioBookShelfLibraryMappings = "/tmp/audiobookshelf-library-mappings";
+            }
+          ];
+        };
+
         prowlarr-app-sync = mkSyncUnit {
           host = "prowlarr";
           apiVersion = "v1";
