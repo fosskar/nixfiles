@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo/logo.png" width="200px" alt="nixfiles logo"/>
+  <img src="docs/logo/logo.svg" width="120px" alt="nixfiles logo"/>
 </p>
 
 [![nixbot](https://nixbot.fosskar.eu/badge/a90f69ca-78e7-4d60-b303-b411de630dcc.svg)](https://nixbot.fosskar.eu/repos/github/fosskar/nixfiles)
