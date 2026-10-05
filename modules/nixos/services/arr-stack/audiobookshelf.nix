@@ -80,6 +80,70 @@
 
         systemd.services.audiobookshelf.serviceConfig.UMask = "0002";
 
+        # --- email ---
+
+        # audiobookshelf keeps email settings only in its database and its api
+        # keys are created by a logged-in admin, so the key is entered once
+        clan.core.vars.generators.audiobookshelf-api = {
+          prompts.api-key = {
+            description = "audiobookshelf admin api key (settings > api keys)";
+            type = "hidden";
+            persist = true;
+          };
+          files.api-key.restartUnits = [ "audiobookshelf-email-sync.service" ];
+        };
+
+        # e-reader devices stay in the ui; the patch only sets the fields it sends
+        systemd.services.audiobookshelf-email-sync = {
+          description = "sync smtp settings into audiobookshelf";
+          after = [ "audiobookshelf.service" ];
+          requires = [ "audiobookshelf.service" ];
+          wantedBy = [ "multi-user.target" ];
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            DynamicUser = true;
+            EnvironmentFile = config.clan.core.vars.generators.smtp.files."smtp-env".path;
+            LoadCredential = "api-key:${config.clan.core.vars.generators.audiobookshelf-api.files.api-key.path}";
+            ProtectSystem = "strict";
+            ProtectHome = true;
+            PrivateDevices = true;
+            NoNewPrivileges = true;
+            RestrictAddressFamilies = [
+              "AF_INET"
+              "AF_INET6"
+            ];
+            CapabilityBoundingSet = "";
+            ExecStart = pkgs.writeShellScript "audiobookshelf-email-sync" ''
+              set -eu
+              export PATH=${
+                lib.makeBinPath [
+                  pkgs.coreutils
+                  pkgs.curl
+                  pkgs.jq
+                ]
+              }
+
+              key=$(cat "$CREDENTIALS_DIRECTORY/api-key")
+              base=${listenUrl}/audiobookshelf
+
+              for _ in $(seq 60); do
+                curl -sf "$base/status" >/dev/null && break
+                sleep 2
+              done
+
+              # port 587 is starttls, so secure stays off
+              jq -n \
+                --arg host "$SMTP_HOST" --argjson port "$SMTP_PORT" \
+                --arg user "$SMTP_USER" --arg pass "$SMTP_PASSWORD" --arg from "$SMTP_FROM" \
+                '{host: $host, port: $port, secure: false, rejectUnauthorized: true, user: $user, pass: $pass, fromAddress: $from}' \
+                | curl -sfS -X PATCH -H "Authorization: Bearer $key" -H 'Content-Type: application/json' \
+                    --data-binary @- "$base/api/emails/settings" >/dev/null
+              echo "updated audiobookshelf email settings"
+            '';
+          };
+        };
+
         # --- homepage ---
 
         services.homepage-dashboard.services = [
