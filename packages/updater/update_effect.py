@@ -33,7 +33,10 @@ def setup(repo: Path) -> None:
     run(repo=repo, cmd=["git", "config", "--global", "user.name", BOT_NAME])
     run(repo=repo, cmd=["git", "config", "--global", "user.email", BOT_EMAIL])
     run(repo=repo, cmd=["git", "config", "remote.origin.promisor", "true"])
-    run(repo=repo, cmd=["git", "config", "remote.origin.partialclonefilter", "blob:none"])
+    run(
+        repo=repo,
+        cmd=["git", "config", "remote.origin.partialclonefilter", "blob:none"],
+    )
 
 
 def main() -> int:
