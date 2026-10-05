@@ -12,6 +12,7 @@
         sonarr = 8989;
         radarr = 7878;
         lidarr = 8686;
+        chaptarr = 8789;
         sabnzbd = 8085;
       };
       baseUrl = serviceName: "http://127.0.0.1:${toString ports.${serviceName}}";
@@ -139,18 +140,27 @@
       arrs = {
         sonarr = {
           apiVersion = "v3";
-          categoryField = "tvCategory";
-          category = "tv";
+          prowlarrApp = "Sonarr";
+          categories.tvCategory = "tv";
         };
         radarr = {
           apiVersion = "v3";
-          categoryField = "movieCategory";
-          category = "movies";
+          prowlarrApp = "Radarr";
+          categories.movieCategory = "movies";
         };
         lidarr = {
           apiVersion = "v1";
-          categoryField = "musicCategory";
-          category = "music";
+          prowlarrApp = "Lidarr";
+          categories.musicCategory = "music";
+        };
+        # prowlarr has no chaptarr app; chaptarr keeps the readarr v1 api
+        chaptarr = {
+          apiVersion = "v1";
+          prowlarrApp = "Readarr";
+          categories = {
+            audiobookCategory = "audiobooks";
+            ebookCategory = "ebooks";
+          };
         };
       };
     in
@@ -165,9 +175,9 @@
             serviceName: arr:
             ''curl -sfS -H "X-Api-Key: $(cat ${keyFile serviceName})" "${baseUrl serviceName}/api/${arr.apiVersion}/system/status"''
           ) arrs;
-          entries = lib.mapAttrsToList (serviceName: _: {
+          entries = lib.mapAttrsToList (serviceName: arr: {
             name = lib.toSentenceCase serviceName;
-            implementation = lib.toSentenceCase serviceName;
+            implementation = arr.prowlarrApp;
             top.syncLevel = "fullSync";
             fields = {
               prowlarrUrl = baseUrl "prowlarr";
@@ -199,8 +209,8 @@
               fields = {
                 host = "localhost";
                 port = ports.sabnzbd;
-                ${arr.categoryField} = arr.category;
-              };
+              }
+              // arr.categories;
               secretFields.apiKey = keyFile "sabnzbd";
             }
           ];
