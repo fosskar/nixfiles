@@ -98,6 +98,12 @@
               download_dir = "${mediaRoot}/downloads/incomplete";
               complete_dir = "${mediaRoot}/downloads/complete";
               permissions = "770";
+              # trash-guides sabnzbd basic setup: keep nzbs for duplicate
+              # detection and retries, tag duplicates, and abort encrypted rars
+              # so the arrs search again instead of leaving a paused job
+              nzb_backup_dir = "history";
+              no_dupes = 4;
+              pause_on_pwrar = 2;
               # list and abort action from trash-guides sabnzbd basic setup; fake
               # releases ship executables, and a failed job makes the arrs
               # blocklist the release and search again
