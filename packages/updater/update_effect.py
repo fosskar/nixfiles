@@ -35,10 +35,6 @@ def setup(repo: Path) -> None:
     run(repo=repo, cmd=["git", "config", "remote.origin.promisor", "true"])
     run(repo=repo, cmd=["git", "config", "remote.origin.partialclonefilter", "blob:none"])
 
-    # nixbot's mkEffect setup hook writes the state API auth header into
-    # $PWD, the checkout; unused here and it dirties the tree
-    (repo / "hercules-ci.headers").unlink(missing_ok=True)
-
 
 def main() -> int:
     if len(sys.argv) < 2 or sys.argv[1] not in UPDATERS:
