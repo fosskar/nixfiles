@@ -59,7 +59,10 @@
           lib.mkBefore [
             {
               domain = [ localHost ];
-              subject = [ "group:admin" ];
+              subject = [
+                "group:admin"
+                "group:user"
+              ];
               policy = "one_factor";
             }
             {
