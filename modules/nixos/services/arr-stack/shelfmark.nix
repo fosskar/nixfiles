@@ -108,7 +108,7 @@
 
         services.homepage-dashboard.services = [
           {
-            "arr-stack" = [
+            "apps" = [
               {
                 "Shelfmark" = {
                   href = "https://${localHost}";
