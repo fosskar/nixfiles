@@ -25,6 +25,7 @@
           enable = true;
           openFirewall = false;
           group = "media";
+          extraPackages = [ pkgs.ffmpeg ];
           # the unit runs with ProtectSystem=strict
           extraReadWritePaths = [
             "${mediaRoot}/books"
