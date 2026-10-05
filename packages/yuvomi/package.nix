@@ -8,16 +8,16 @@
 }:
 buildNpmPackage (finalAttrs: {
   pname = "yuvomi";
-  version = "2.71.0";
+  version = "2.73.0";
 
   src = fetchFromGitHub {
     owner = "ulsklyc";
     repo = "yuvomi";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-ioBJVOdbPNa65qLWZAWmUZ61bbv3iTKlxgbpn6Vr4FY=";
+    hash = "sha256-66+2tiQtH+o+cVd0T3YC1I7ZBeuVWxAV2sf+vdycN6A=";
   };
 
-  npmDepsHash = "sha256-aJ+IKQXzV0yPvlT5IKOMlEcyeD+mjF1WmAtRr16j8Mk=";
+  npmDepsHash = "sha256-917gSpVS6m4hWnQ5hPk1Aztvw75ZeF7DLPJCqgjJdLw=";
 
   nodejs = nodejs_24;
 
