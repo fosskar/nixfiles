@@ -444,8 +444,17 @@
         };
       }
       // lib.optionalAttrs (options ? preservation) {
+        # only the file `opencloud init` writes: a persisted /etc/opencloud would
+        # hide the etc overlay's generated yaml files
+        preservation.preserveAt."/persist".files = [
+          {
+            file = "/etc/opencloud/opencloud.yaml";
+            user = "opencloud";
+            group = "opencloud";
+            mode = "0600";
+          }
+        ];
         preservation.preserveAt."/persist".directories = [
-          "/etc/opencloud"
           {
             directory = "/var/lib/opencloud";
             user = "opencloud";
