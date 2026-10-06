@@ -22,7 +22,7 @@
           enable = true;
           openFirewall = false;
           group = "media";
-          inherit listenPort;
+          settings.general.port = listenPort;
         };
 
         systemd.services.bazarr = {
