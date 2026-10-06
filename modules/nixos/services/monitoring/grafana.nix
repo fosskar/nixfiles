@@ -99,7 +99,7 @@
           openFirewall = false;
 
           declarativePlugins = [
-            pkgs.grafanaPlugins.victoriametrics-metrics-datasource
+            pkgs.grafanaPlugins.prometheus
             pkgs.grafanaPlugins.victoriametrics-logs-datasource
           ];
 
