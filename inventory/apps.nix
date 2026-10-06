@@ -149,24 +149,15 @@ in
         (
           { config, lib, ... }:
           {
-            services.nixlens.apps = lib.mergeAttrsList (
-              lib.concatMap (
-                group:
-                lib.concatLists (
-                  lib.mapAttrsToList (
-                    section: tiles:
-                    map (lib.mapAttrs (
-                      _: tile: {
-                        url = tile.href;
-                        icon = tile.icon or "";
-                        category = section;
-                        description = tile.description or "";
-                      }
-                    )) tiles
-                  ) group
-                )
-              ) config.services.homepage-dashboard.services
-            );
+            services.nixlens.apps = lib.concatMapAttrs (
+              section: tiles:
+              lib.mapAttrs (_: tile: {
+                url = tile.href;
+                icon = tile.icon or "";
+                category = section;
+                description = tile.description or "";
+              }) (lib.mergeAttrsList tiles)
+            ) (lib.mergeAttrsList config.services.homepage-dashboard.services);
             services.nixlens.smart.enable = true;
             services.nixlens.hub = {
               categories = [
