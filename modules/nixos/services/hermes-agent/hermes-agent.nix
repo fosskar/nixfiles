@@ -183,6 +183,13 @@
           enable = true;
           addToSystemPackages = true;
 
+          # upstream commits version 0.0.0 and only release jobs stamp the real
+          # one; the flake package keeps 0.0.0, which fails every catalog
+          # plugin's requires_hermes. bump with the hermes-agent input
+          package = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+            version = "0.21.5";
+          };
+
           # symlinked into HERMES_HOME/plugins and gated by plugins.enabled
           # above; both halves are required or the hook silently never registers
           extraPlugins = [ rtkPlugin ] ++ map (plugin: plugin.package) catalogPlugins;
