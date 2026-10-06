@@ -1,4 +1,7 @@
 { config, ... }:
+let
+  localDomain = config.flake.domains.local;
+in
 {
   flake.clan.inventory.instances = {
     # self-hosted buzz relay; media and git data in the local garage cluster
@@ -131,6 +134,76 @@
         "lpt-titan".settings.user = "simon";
         "nixworker".settings.user = "simon";
       };
+    };
+
+    # the hub runs next to homepage and lists its tiles, already merged
+    # across hosts and folded into sections there; agents report system
+    # and storage over yggdrasil
+    nixlens = {
+      module = {
+        name = "@fosskar/nixlens";
+        input = "nixlens";
+      };
+      roles.hub.machines.nixbox = { };
+      roles.hub.extraModules = [
+        (
+          { config, lib, ... }:
+          {
+            services.nixlens.apps = lib.mergeAttrsList (
+              lib.concatMap (
+                group:
+                lib.concatLists (
+                  lib.mapAttrsToList (
+                    section: tiles:
+                    map (lib.mapAttrs (
+                      _: tile: {
+                        url = tile.href;
+                        icon = tile.icon or "";
+                        category = section;
+                        description = tile.description or "";
+                      }
+                    )) tiles
+                  ) group
+                )
+              ) config.services.homepage-dashboard.services
+            );
+            services.nixlens.smart.enable = true;
+            services.nixlens.hub = {
+              categories = [
+                "apps"
+                "tools"
+                "management"
+                "monitoring"
+                "admin"
+                "arr-stack"
+              ];
+              adminGroups = [ "admin" ];
+              categoryGroups = {
+                admin = [ "admin" ];
+                arr-stack = [ "admin" ];
+                management = [ "admin" ];
+              };
+            };
+            services.caddy.virtualHosts."nixlens.${localDomain}".extraConfig = ''
+              import authelia
+              reverse_proxy 127.0.0.1:${toString config.services.nixlens.port}
+            '';
+          }
+        )
+      ];
+      roles.agent.machines = {
+        nixworker = { };
+        gateway = { };
+      };
+      roles.agent.extraModules = [
+        (
+          { config, ... }:
+          {
+            networking.firewall.interfaces.ygg.allowedTCPPorts = [ config.services.nixlens.port ];
+            services.nixlens.smart.enable = true;
+          }
+        )
+      ];
     };
   };
 }

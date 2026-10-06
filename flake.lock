@@ -1100,6 +1100,32 @@
         "type": "github"
       }
     },
+    "nixlens": {
+      "inputs": {
+        "nixbot": [
+          "nixbot"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791266054,
+        "narHash": "sha256-8jVPe1eaNL0Ygw6QmzDm9p6DQ5LOhHAz4OWCeRjqlbw=",
+        "owner": "fosskar",
+        "repo": "nixlens",
+        "rev": "6d1871f7a04a04031744d739267ef0a346059098",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fosskar",
+        "repo": "nixlens",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "inputs": {
         "nixpkgs": [
@@ -1427,6 +1453,7 @@
         "nix-grpc-store": "nix-grpc-store",
         "nix-index-database": "nix-index-database",
         "nixbot": "nixbot",
+        "nixlens": "nixlens",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-small": "nixpkgs-small",
