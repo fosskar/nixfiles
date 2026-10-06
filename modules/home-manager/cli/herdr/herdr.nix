@@ -61,6 +61,7 @@
           [
             "branch"
             "git_status"
+            { token = "$jj_bookmark"; }
           ]
           [ { token = "$hp"; } ]
         ];
@@ -281,6 +282,8 @@
               lib.concatStringsSep ", " (map (plugin: plugin.source) (lib.attrValues herdrPlugins))
             })"
           fi
+          run env HERDR_SOCKET_PATH="$offlineSocket" \
+            ${herdrBin} plugin link ${pkgs.local.herdr-jj}/share/herdr-jj
         '';
       };
     };
