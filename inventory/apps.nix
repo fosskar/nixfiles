@@ -145,6 +145,23 @@ in
         input = "nixlens";
       };
       roles.hub.machines.nixbox = { };
+      roles.hub.settings = {
+        smart.enable = true;
+        categories = [
+          "apps"
+          "tools"
+          "management"
+          "monitoring"
+          "admin"
+          "arr-stack"
+        ];
+        adminGroups = [ "admin" ];
+        categoryGroups = {
+          admin = [ "admin" ];
+          arr-stack = [ "admin" ];
+          management = [ "admin" ];
+        };
+      };
       roles.hub.extraModules = [
         (
           { config, lib, ... }:
@@ -158,23 +175,6 @@ in
                 description = tile.description or "";
               }) (lib.mergeAttrsList tiles)
             ) (lib.mergeAttrsList config.services.homepage-dashboard.services);
-            services.nixlens.smart.enable = true;
-            services.nixlens.hub = {
-              categories = [
-                "apps"
-                "tools"
-                "management"
-                "monitoring"
-                "admin"
-                "arr-stack"
-              ];
-              adminGroups = [ "admin" ];
-              categoryGroups = {
-                admin = [ "admin" ];
-                arr-stack = [ "admin" ];
-                management = [ "admin" ];
-              };
-            };
             services.caddy.virtualHosts."nixlens.${localDomain}".extraConfig = ''
               import authelia
               reverse_proxy 127.0.0.1:${toString config.services.nixlens.port}
@@ -186,12 +186,12 @@ in
         nixworker = { };
         gateway = { };
       };
+      roles.agent.settings.smart.enable = true;
       roles.agent.extraModules = [
         (
           { config, ... }:
           {
             networking.firewall.interfaces.ygg.allowedTCPPorts = [ config.services.nixlens.port ];
-            services.nixlens.smart.enable = true;
           }
         )
       ];
