@@ -16,6 +16,8 @@
         # don't take the network down during nixos-rebuild switch
         services.systemd-networkd.stopIfChanged = false;
         services.systemd-resolved.stopIfChanged = false;
+        services.yggdrasil.stopIfChanged = false;
+        services.p2p-ssh-iroh-iroh-ssh.stopIfChanged = false;
         # resolved opens one udp socket per upstream transaction; a lookup burst
         # past the 1024 default hits EMFILE in accept4 and sd-event disables the
         # varlink listener for good, after which every nss lookup on the host
