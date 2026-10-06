@@ -168,7 +168,7 @@ in
               alias = "laya";
               # runs on the arc b50 in nixworker (llamaCppRpcServer); the child
               # still opens a cuda context of ~220 MiB here
-              rpc = "${flake-self.hosts.nixworker.direct}:${toString rpcPort}";
+              rpc = "${flake-self.hosts.nixworker.lan}:${toString rpcPort}";
               device = "RPC0";
               n-gpu-layers = 999;
               # laya evaluates a whole prompt in one ubatch, so ubatch caps the
@@ -297,7 +297,7 @@ in
           rpcSupport = true;
         }
       );
-      listenAddress = flake-self.hosts.${config.networking.hostName}.direct;
+      listenAddress = flake-self.hosts.${config.networking.hostName}.lan;
     in
     {
       systemd.services.ggml-rpc-server = {
@@ -353,7 +353,7 @@ in
 
       # rpc has no authentication; only the router host may connect
       networking.firewall.extraInputRules = ''
-        ip saddr ${flake-self.hosts.nixbox.direct} tcp dport ${toString rpcPort} accept
+        ip saddr ${flake-self.hosts.nixbox.lan} tcp dport ${toString rpcPort} accept
       '';
     };
 }

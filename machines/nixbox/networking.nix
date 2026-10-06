@@ -19,18 +19,6 @@
         }
       ];
     };
-
-    # direct 10g link to nixworker; carries the llama-cpp rpc traffic
-    interfaces.enp36s0f1np1 = {
-      useDHCP = false;
-      mtu = 9000;
-      ipv4.addresses = [
-        {
-          address = flake-self.hosts.nixbox.direct;
-          prefixLength = 30;
-        }
-      ];
-    };
   };
 
   systemd.network.networks = {
