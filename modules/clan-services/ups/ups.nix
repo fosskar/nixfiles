@@ -162,6 +162,9 @@ _: {
 
                 environment.etc = {
                   "nut/nut.conf".mode = lib.mkForce "0640";
+                  # the module links it to /run/nut/upsd.users, which only upsd's
+                  # prestart writes; a netclient runs no upsd
+                  "nut/upsd.users".enable = false;
                 };
 
                 power.ups = {
