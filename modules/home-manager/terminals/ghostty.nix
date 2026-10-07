@@ -49,5 +49,11 @@ _: {
           focus-follows-mouse = true;
         };
       };
+
+      # programs.ghostty.systemd puts the package in dbus.packages, which links
+      # its service file into ~/.local/share/dbus-1/services. with
+      # useUserPackages dbus-broker already finds it in the per-user profile
+      # and logs a duplicate name
+      dbus.packages = lib.mkForce [ ];
     };
 }
