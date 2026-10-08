@@ -18,6 +18,7 @@ nix build .#openwrt-uci-<device>                # inspect generated batch file
 ## devices
 
 add a device by creating `devices/<name>/config.nix` — auto-discovered.
+shared settings live in `profiles/` and are imported by device configs; `profiles/roaming.nix` holds the wifi roaming contract.
 
 | device   | model             | role    |
 | -------- | ----------------- | ------- |

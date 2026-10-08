@@ -1,5 +1,10 @@
 # GL.iNet GL-MT6000 (flint 2) — main router
+let
+  roaming = import ../../profiles/roaming.nix;
+in
 {
+  imports = [ roaming.module ];
+
   host = "192.168.10.1";
 
   authorizedKeys = [
@@ -8,11 +13,6 @@
 
   packages = [
     "adguardhome"
-
-    "usteer"
-    "luci-app-usteer"
-
-    "wpad-wolfssl"
 
     "irqbalance"
 
@@ -30,7 +30,6 @@
   ];
 
   removePackages = [
-    "wpad-basic-wolfssl"
     "luci-app-openwisp"
     "openwisp-config"
     "openwisp-monitoring"
@@ -89,12 +88,6 @@
           hostname = "openwrt";
         }
       ];
-
-      usteer.usteer = {
-        _type = "usteer";
-        roam_scan_snr = "-65";
-        signal_diff_threshold = "8";
-      };
 
       network = {
         globals = {
@@ -183,18 +176,7 @@
           country = "DE";
         };
         # main wifi — 2.4GHz
-        main_2g = {
-          _type = "wifi-iface";
-          device = "radio0";
-          network = "lan";
-          mode = "ap";
-          ssid = "@wifi_ssid_main@";
-          key = "@wifi_password_main@";
-          encryption = "sae-mixed";
-          ieee80211r = "1";
-          ieee80211k = "1";
-          bss_transition = "1";
-        };
+        main_2g = roaming.wifiIface "radio0";
         # IoT wifi — hidden, 2.4GHz only, separate network
         iot = {
           _type = "wifi-iface";
@@ -217,18 +199,7 @@
           country = "DE";
         };
         # main wifi — 5GHz
-        main_5g = {
-          _type = "wifi-iface";
-          device = "radio1";
-          network = "lan";
-          mode = "ap";
-          ssid = "@wifi_ssid_main@";
-          key = "@wifi_password_main@";
-          encryption = "sae-mixed";
-          ieee80211r = "1";
-          ieee80211k = "1";
-          bss_transition = "1";
-        };
+        main_5g = roaming.wifiIface "radio1";
       };
 
       dhcp = {

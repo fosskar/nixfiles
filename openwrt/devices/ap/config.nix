@@ -1,17 +1,14 @@
 # Zyxel NWA50AX Pro AP — dumb AP mode
 # static ip: 192.168.10.2, gateway: 192.168.10.1 (main router)
+let
+  roaming = import ../../profiles/roaming.nix;
+in
 {
+  imports = [ roaming.module ];
+
   host = "192.168.10.2";
 
-  packages = [
-    "usteer"
-    "luci-app-usteer"
-
-    "wpad-wolfssl"
-  ];
-
   removePackages = [
-    "wpad-basic-wolfssl"
     "luci-app-openwisp"
     "openwisp-config"
     "openwisp-monitoring"
@@ -66,12 +63,6 @@
         }
       ];
 
-      usteer.usteer = {
-        _type = "usteer";
-        roam_scan_snr = "-65";
-        signal_diff_threshold = "8";
-      };
-
       network = {
         globals = {
           _type = "globals";
@@ -116,18 +107,7 @@
           cell_density = "1";
           country = "DE";
         };
-        main0_2g = {
-          _type = "wifi-iface";
-          device = "radio0";
-          network = "lan";
-          mode = "ap";
-          ssid = "@wifi_ssid_main@";
-          key = "@wifi_password_main@";
-          encryption = "sae-mixed";
-          ieee80211r = "1";
-          ieee80211k = "1";
-          bss_transition = "1";
-        };
+        main0_2g = roaming.wifiIface "radio0";
 
         radio1 = {
           _type = "wifi-device";
@@ -139,18 +119,7 @@
           cell_density = "1";
           country = "DE";
         };
-        main1_5g = {
-          _type = "wifi-iface";
-          device = "radio1";
-          network = "lan";
-          mode = "ap";
-          ssid = "@wifi_ssid_main@";
-          key = "@wifi_password_main@";
-          encryption = "sae-mixed";
-          ieee80211r = "1";
-          ieee80211k = "1";
-          bss_transition = "1";
-        };
+        main1_5g = roaming.wifiIface "radio1";
       };
     };
   };
