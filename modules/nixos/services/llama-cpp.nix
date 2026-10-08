@@ -1,17 +1,4 @@
 let
-  # router and rpc server must run the same build: the rpc protocol is versioned
-  pinned =
-    pkgs: package:
-    package.overrideAttrs {
-      version = "11371";
-      src = pkgs.fetchFromGitHub {
-        owner = "ggml-org";
-        repo = "llama.cpp";
-        rev = "99b95488cac0f00ce3f05af113a8c1e287753f87";
-        hash = "sha256-DbFgp028eMgQLNfKu2p4hFRWK5bmJPUNPYIAWvI120U=";
-      };
-      npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
-    };
   rpcPort = 50052;
 in
 {
@@ -77,12 +64,11 @@ in
     {
       services.llama-cpp = {
         enable = true;
-        package = pinned pkgs (
-          pkgs.llama-cpp.override {
-            cudaSupport = true;
-            rpcSupport = true;
-          }
-        );
+        package = pkgs.local.llama-cpp.override {
+          inherit pkgs;
+          cudaSupport = true;
+          rpcSupport = true;
+        };
         openFirewall = false;
         settings = {
           host = listenAddress;
@@ -291,12 +277,11 @@ in
       ...
     }:
     let
-      package = pinned pkgs (
-        pkgs.llama-cpp.override {
-          vulkanSupport = true;
-          rpcSupport = true;
-        }
-      );
+      package = pkgs.local.llama-cpp.override {
+        inherit pkgs;
+        vulkanSupport = true;
+        rpcSupport = true;
+      };
       listenAddress = flake-self.hosts.${config.networking.hostName}.lan;
     in
     {
