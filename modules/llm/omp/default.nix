@@ -119,7 +119,6 @@ _: {
 
       home.file = {
         ".omp/agent/AGENTS.md".source = ../AGENTS.md;
-        ".omp/agent/WATCHDOG.md".source = ./WATCHDOG.md;
         ".omp/agent/extensions/rtk.ts".source = rtkExtension;
         ".local/share/xyz.block.buzz.app/custom_harnesses/omp.json".source =
           pkgs.writeText "buzz-harness-omp.json" (builtins.toJSON buzzHarness);
