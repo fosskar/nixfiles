@@ -200,6 +200,25 @@
           settings = herdrSettings;
         };
 
+        # herdr's claude integration installer cannot edit the nix-owned
+        # settings.json; declare what `herdr integration install claude` writes
+        programs.claude-code = lib.mkIf config.programs.claude-code.enable {
+          hooks."herdr-agent-state.sh" =
+            builtins.readFile "${inputs.herdr}/src/integration/assets/claude/herdr-agent-state.sh";
+          settings.hooks.SessionStart = [
+            {
+              matcher = "^(startup|resume|clear|compact|fork)$";
+              hooks = [
+                {
+                  type = "command";
+                  command = "bash '${config.programs.claude-code.configDir}/hooks/herdr-agent-state.sh' session";
+                  timeout = 10;
+                }
+              ];
+            }
+          ];
+        };
+
         # users/workspace imports this module without niri
         wayland = lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
           windowManager.niri.settings.binds."Mod+E" = {
