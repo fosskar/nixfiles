@@ -48,6 +48,8 @@
                     "uBlock0@raymondhill.net" = "ublock-origin";
                     "{446900e4-71c2-419f-a6a7-df9c091e268b}" = "bitwarden-password-manager";
                     "addon@simplelogin" = "simplelogin";
+                    "78272b6fa58f4a1abaac99321d503a20@proton.me" = "proton-pass";
+                    "clipper@obsidian.md" = "web-clipper-obsidian";
                     "search@kagi.com" = "kagi-search-for-firefox";
                   };
             };
