@@ -50,7 +50,7 @@
             "--config"
             "${pkgs.writeText "flake-edit.toml" ''
               [follow]
-              ignore = ["zed.nixpkgs", "llm-agents.nixpkgs"]
+              ignore = ["zed.nixpkgs", "llm-agents.nixpkgs", "llm-agents.bun2nix.nixpkgs"]
             ''}"
             "follow"
           ];

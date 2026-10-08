@@ -147,7 +147,6 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
-      inputs.bun2nix.inputs.nixpkgs.follows = "nixpkgs";
     };
     pi-pack = {
       url = "github:fosskar/pi-pack";

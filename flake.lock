@@ -39,6 +39,7 @@
           "flake-parts"
         ],
         "nixpkgs": [
+          "llm-agents",
           "nixpkgs"
         ],
         "systems": [
