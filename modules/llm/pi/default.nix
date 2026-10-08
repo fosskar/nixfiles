@@ -26,6 +26,7 @@ _: {
           warnings.anthropicExtraUsage = false;
           packages = [
             { source = "git:github.com/rytswd/pi-agent-extensions"; }
+            { source = "git:github.com/championswimmer/pi-subagent-manager@v0.17.0"; }
           ];
         };
       };
