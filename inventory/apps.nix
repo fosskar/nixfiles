@@ -64,6 +64,7 @@ in
         mcp.allow = [
           "calendar.*"
           "grafana.*"
+          "laya.*"
         ];
 
         providers = {
@@ -110,7 +111,10 @@ in
       };
       roles.server.machines.nixbox.settings = {
         dashboard.enable = false;
-        mcp.allow = [ "calendar.*" ];
+        mcp.allow = [
+          "calendar.*"
+          "laya.*"
+        ];
         providers = {
           local.enable = true;
           opencode_go.enable = true;
