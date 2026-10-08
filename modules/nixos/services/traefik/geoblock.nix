@@ -17,7 +17,9 @@
         logAllowedRequests = false;
         logApiRequests = false;
         api = "https://get.geojs.io/v1/ip/country/{ip}";
+        ignoreApiTimeout = true;
         cacheSize = 1000;
+        ipDatabaseCachePath = "/var/lib/traefik/geoblock-ip-cache.db";
         forceMonthlyUpdate = true;
         allowUnknownCountries = false;
         blackListMode = false;
