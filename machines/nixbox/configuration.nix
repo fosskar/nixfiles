@@ -27,6 +27,7 @@
     self.modules.nixos.itTools
     self.modules.nixos.vaultwarden
     self.modules.nixos.bentopdf
+    self.modules.nixos.photocraft
     self.modules.nixos.protomaps
     self.modules.nixos.grub
     self.modules.nixos.nvidiaGpu
