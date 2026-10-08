@@ -227,6 +227,13 @@
               NB_PROXY_TRUSTED_PROXIES = "127.0.0.1/32";
               # capability flag: allows per-service NetBird-Only access mode
               NB_PROXY_PRIVATE = "true";
+              # the embedded client's rosenpass socket is a host-kernel socket, not
+              # on its netstack, so handshakes never reach the peers and the psk
+              # stays the public-key-derived seed. permissive peers fall back to
+              # plain wireguard for a peer without rosenpass. stopgap: re-enable once
+              # go-rosenpass accepts a caller-supplied net.PacketConn and netbird
+              # passes its netstack socket
+              NB_PROXY_ROSENPASS = "false";
             }
             // lib.optionalAttrs cfg.allowInsecure {
               NB_PROXY_ALLOW_INSECURE = "true";
