@@ -6,11 +6,11 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencloud-web-pastebin";
-  version = "2.1.0";
+  version = "2.2.0";
 
   src = fetchzip {
     url = "https://github.com/opencloud-eu/web-extensions/releases/download/pastebin-v${finalAttrs.version}/pastebin-${finalAttrs.version}.zip";
-    hash = "sha256-o1ErQWjqLlEpfO1BrfSCtUJxr8so1bHd4hgh2v/jyOo=";
+    hash = "sha256-V22wBogC+atJLweGc9tyxJGDENItf1L3adgQfde9CKU=";
   };
 
   dontConfigure = true;
