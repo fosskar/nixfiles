@@ -51,12 +51,8 @@
                     "search@kagi.com" = "kagi-search-for-firefox";
                   };
             };
-            # path must match the existing profile directory, or zen opens an
-            # empty profile
             profiles.default = {
               id = 0;
-              name = "Default Profile";
-              path = "9f4pb3uq.Default Profile";
               isDefault = true;
               presets.betterfox.enable = true;
               settings = {
