@@ -11,7 +11,7 @@ _: {
       programs.git.ignores = [ ".codex/" ];
 
       programs.codex = {
-        enable = lib.mkDefault false;
+        enable = true;
         package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
 
         settings = {
