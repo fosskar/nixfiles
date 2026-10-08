@@ -6,11 +6,11 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencloud-web-unzip";
-  version = "2.2.0";
+  version = "2.2.1";
 
   src = fetchzip {
     url = "https://github.com/opencloud-eu/web-extensions/releases/download/unzip-v${finalAttrs.version}/unzip-${finalAttrs.version}.zip";
-    hash = "sha256-xAUKQSSVN+LdO+QX/2mU8kmUn4fcjNQhB0HB9Gi0V3Q=";
+    hash = "sha256-fRmuIyP2HapfOdkU/90pCt78hmxe6DAB1E17qpGiwEE=";
   };
 
   dontConfigure = true;
