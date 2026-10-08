@@ -16,7 +16,7 @@
             {
               "PhotoCraft" = {
                 href = "https://${localHost}";
-                icon = "mdi-image-edit";
+                icon = "https://raw.githubusercontent.com/storytold/photocraft/${pkgs.local.photocraft-web.src.tag}/assets/app-icon/hicolor/128x128/apps/ai.storyteller.photocraft.png";
                 siteMonitor = "https://${localHost}";
               };
             }
