@@ -87,9 +87,11 @@ _: {
 
       omp = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.omp;
 
-      # omp loads pi extensions; rtk.nix generates the same file for pi
+      # omp loads pi extensions; rtk.nix generates the same file for pi.
+      # omp resolves the home-manager symlink and picks its parser by the
+      # store path's extension, so the name must end in .ts
       rtkExtension =
-        pkgs.runCommand "rtk-omp-extension"
+        pkgs.runCommand "rtk-omp-extension.ts"
           {
             nativeBuildInputs = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk ];
           }
