@@ -158,6 +158,11 @@
             ];
             DynamicUser = true;
             SupplementaryGroups = [ "media" ];
+            # DynamicUser implies ProtectSystem=strict
+            ReadWritePaths = [
+              settings.library_root.path
+              settings.sabnzbd.downloads_mount
+            ];
             StateDirectory = serviceName;
             WorkingDirectory = stateDir;
             UMask = "0002";
