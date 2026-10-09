@@ -192,12 +192,21 @@ in
               ];
 
             # clan machine-id is store-provided + kernel cmdline, no persistence needed
-            files = lib.optional (!(config.clan.core.settings.machine-id.enable or false)) {
-              file = "/etc/machine-id";
-              how = "symlink";
-              inInitrd = true;
-              createLinkTarget = true;
-            };
+            files =
+              lib.optional (!(config.clan.core.settings.machine-id.enable or false)) {
+                file = "/etc/machine-id";
+                how = "symlink";
+                inInitrd = true;
+                createLinkTarget = true;
+              }
+              # the nixos manual recommends persisting the zfs cachefile. zfs
+              # rewrites it in place (spa_config_write), so the symlink survives.
+              ++ lib.optional config.boot.zfs.enabled {
+                file = "/etc/zfs/zpool.cache";
+                how = "symlink";
+                inInitrd = true;
+                createLinkTarget = true;
+              };
           };
         };
       };
