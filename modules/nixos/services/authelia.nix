@@ -58,6 +58,14 @@
 
         services.authelia.instances.main = {
           enable = true;
+          # FIXME: remove once https://github.com/NixOS/nixpkgs/issues/571789 is fixed
+          package = pkgs.authelia.override {
+            authelia-web = pkgs.authelia.web.overrideAttrs (old: {
+              pnpmDeps = old.pnpmDeps.overrideAttrs {
+                outputHash = "sha256-zIaVEjbh/LIQMqnryrgVm+46GP+9gM91WCMyAqeDnaA=";
+              };
+            });
+          };
 
           secrets = {
             jwtSecretFile = config.clan.core.vars.generators.authelia.files."jwt-secret".path;
