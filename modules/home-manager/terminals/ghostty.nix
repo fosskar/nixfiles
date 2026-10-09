@@ -42,6 +42,7 @@ _: {
           font-size = lib.mkDefault 10;
           copy-on-select = false;
           background-opacity = lib.mkDefault 0.8;
+          background-opacity-cells = true;
           window-padding-x = lib.mkDefault 4;
           window-padding-y = lib.mkDefault 4;
           window-padding-balance = true;
