@@ -33,7 +33,7 @@ _: {
           { settings, ... }:
           {
             nixosModule =
-              { pkgs, ... }:
+              { config, pkgs, ... }:
               let
                 snapshotName = "borg-backup";
                 state =
@@ -51,7 +51,7 @@ _: {
                           # borg reads only the parent's .zfs/snapshot directory, where
                           # child dataset mountpoints appear empty; refuse to back up
                           # a dataset whose children would silently vanish.
-                          if [ "$(${pkgs.zfs}/bin/zfs list -H -o name -d 1 "$dataset" | wc -l)" -gt 1 ]; then
+                          if [ "$(${config.boot.zfs.package}/bin/zfs list -H -o name -d 1 "$dataset" | wc -l)" -gt 1 ]; then
                             echo "error: $dataset has child datasets; their data would be missing from $folder/.zfs/snapshot/${snapshotName}" >&2
                             fail=1
                           fi
@@ -59,13 +59,13 @@ _: {
                         [ "$fail" -eq 0 ] || exit 1
                         for folder in ${lib.escapeShellArgs settings.folders}; do
                           dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder")
-                          snapshots=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset")
+                          snapshots=$(${config.boot.zfs.package}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset")
                           if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
                             echo "deleting leftover zfs snapshot: $dataset@${snapshotName}"
-                            ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${snapshotName}"
+                            ${config.boot.zfs.package}/bin/zfs destroy -r "$dataset@${snapshotName}"
                           fi
                           echo "creating zfs snapshot: $dataset@${snapshotName}"
-                          ${pkgs.zfs}/bin/zfs snapshot -r "$dataset@${snapshotName}"
+                          ${config.boot.zfs.package}/bin/zfs snapshot -r "$dataset@${snapshotName}"
                           ls "$folder/.zfs/snapshot/${snapshotName}" >/dev/null
                         done
                       '';
@@ -77,13 +77,13 @@ _: {
                             fail=1
                             continue
                           fi
-                          if ! snapshots=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset"); then
+                          if ! snapshots=$(${config.boot.zfs.package}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset"); then
                             fail=1
                             continue
                           fi
                           if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
                             echo "destroying zfs snapshot: $dataset@${snapshotName}"
-                            if ! ${pkgs.zfs}/bin/zfs destroy -r "$dataset@${snapshotName}"; then
+                            if ! ${config.boot.zfs.package}/bin/zfs destroy -r "$dataset@${snapshotName}"; then
                               fail=1
                             fi
                           fi
