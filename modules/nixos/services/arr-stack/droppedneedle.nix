@@ -47,6 +47,9 @@
           enabled = true;
           url = "http://127.0.0.1:${toString config.services.prowlarr.settings.server.port}";
         };
+        lidarr_import = {
+          url = "http://127.0.0.1:${toString config.services.lidarr.settings.server.port}";
+        };
       };
 
       configureScript = pkgs.writeShellScript "droppedneedle-configure" ''
@@ -60,11 +63,13 @@
           --rawfile oidcSecret "$CREDENTIALS_DIRECTORY/oidc-client-secret" \
           --rawfile sabnzbdKey "$CREDENTIALS_DIRECTORY/sabnzbd-api-key" \
           --rawfile prowlarrKey "$CREDENTIALS_DIRECTORY/prowlarr-api-key" \
+          --rawfile lidarrKey "$CREDENTIALS_DIRECTORY/lidarr-api-key" \
           '
             .library_settings.library_roots = [ $settings.library_root ]
             | .oidc_settings = $settings.oidc_settings + { client_secret: ($oidcSecret | rtrimstr("\n")) }
             | .download_clients.sabnzbd = $settings.sabnzbd + { api_key: ($sabnzbdKey | rtrimstr("\n")) }
             | .prowlarr = $settings.prowlarr + { api_key: ($prowlarrKey | rtrimstr("\n")) }
+            | .lidarr_import = $settings.lidarr_import + { api_key: ($lidarrKey | rtrimstr("\n")) }
             | .usenet_search_backend = "prowlarr"
             | .source_priority = [ "usenet", "soulseek" ]
           ' "$config" > "$config.new"
@@ -127,11 +132,13 @@
             "network-online.target"
             "sabnzbd-api.service"
             "prowlarr.service"
+            "lidarr-api.service"
           ];
           wants = [
             "network-online.target"
             "sabnzbd-api.service"
             "prowlarr.service"
+            "lidarr-api.service"
           ];
           environment = {
             ROOT_APP_DIR = stateDir;
@@ -147,6 +154,7 @@
               }"
               "sabnzbd-api-key:/run/arr-api-keys/sabnzbd/api-key"
               "prowlarr-api-key:/run/arr-api-keys/prowlarr/api-key"
+              "lidarr-api-key:/run/arr-api-keys/lidarr/api-key"
             ];
             DynamicUser = true;
             SupplementaryGroups = [ "media" ];
