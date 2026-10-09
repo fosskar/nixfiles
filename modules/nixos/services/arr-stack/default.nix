@@ -39,6 +39,7 @@
               "jellyfin"
               "navidrome"
               "audiobookshelf"
+              "droppedneedle"
             ]
             (_: {
               unitConfig.RequiresMountsFor = [ mediaRoot ];
