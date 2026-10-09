@@ -28,8 +28,9 @@
     ];
     # disko manages only the root pool on flash1/flash2. tank (raidz2 on the
     # four hdds, log mirror on the optane slog partitions below) was created
-    # by hand; its datasets are legacy-mountpoint and declared in fileSystems,
-    # so nixos generates zfs-import-tank.service plus real .mount units;
+    # by hand; its datasets use native mountpoints matching their fileSystems
+    # paths (zfsutil), so the pool mounts itself on other systems while nixos
+    # still generates zfs-import-tank.service plus real .mount units;
     # services depend on them via RequiresMountsFor.
   };
 
@@ -37,27 +38,42 @@
     "/tank" = {
       device = "tank";
       fsType = "zfs";
-      options = [ "nofail" ];
+      options = [
+        "nofail"
+        "zfsutil"
+      ];
     };
     "/tank/apps" = {
       device = "tank/apps";
       fsType = "zfs";
-      options = [ "nofail" ];
+      options = [
+        "nofail"
+        "zfsutil"
+      ];
     };
     "/tank/media" = {
       device = "tank/media";
       fsType = "zfs";
-      options = [ "nofail" ];
+      options = [
+        "nofail"
+        "zfsutil"
+      ];
     };
     "/tank/shares" = {
       device = "tank/shares";
       fsType = "zfs";
-      options = [ "nofail" ];
+      options = [
+        "nofail"
+        "zfsutil"
+      ];
     };
     "/tank/backup" = {
       device = "tank/backup";
       fsType = "zfs";
-      options = [ "nofail" ];
+      options = [
+        "nofail"
+        "zfsutil"
+      ];
     };
   };
 
