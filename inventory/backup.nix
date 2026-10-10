@@ -18,6 +18,7 @@ _: {
           snapshotType = "zfs";
           folders = [
             "/tank/apps"
+            "/tank/apps/opencloud"
             "/tank/backup"
             "/tank/media/music"
           ];

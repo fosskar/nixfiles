@@ -354,6 +354,8 @@
           "/var/lib/opencloud"
         ];
 
+        nixfiles.zfs.datasets."tank/apps/opencloud" = { };
+
         systemd.services.opencloud = {
           after = [
             "tika.service"
