@@ -178,6 +178,12 @@
         };
       };
 
+      # the nixpkgs unit only requires /var/lib/immich; without this a failed
+      # media mount lets immich write into the empty mount point
+      systemd.services.immich-server.unitConfig.RequiresMountsFor = [
+        config.services.immich.mediaLocation
+      ];
+
       users.users.immich.extraGroups = [
         "render"
         "video"
