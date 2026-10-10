@@ -44,11 +44,12 @@
     "tank/apps".properties."com.sun:auto-snapshot" = "false";
     # garage blocks are at most 1MiB (block_size) and replicated to nixworker;
     # snapshots would only pin deleted blocks. capacity in the garage layout
-    # does not limit disk usage
+    # does not limit disk usage, so enforce it here. garage reads "1T" as
+    # 10^12 bytes and zfs as 2^40, which leaves ~10% headroom
     "tank/apps/garage".properties = {
       recordsize = "1M";
       "com.sun:auto-snapshot" = "false";
-      refquota = "1.2T";
+      refquota = (lib.head config.services.garage.settings.data_dir).capacity;
     };
     # replaceable media; music is its own dataset with snapshots. the quota
     # keeps a runaway download queue from filling the pool
