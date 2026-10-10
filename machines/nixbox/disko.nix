@@ -54,6 +54,11 @@
       fsType = "zfs";
       options = [ "nofail" ];
     };
+    "/tank/scratch" = {
+      device = "tank/scratch";
+      fsType = "zfs";
+      options = [ "nofail" ];
+    };
   };
 
   disko.devices = {
