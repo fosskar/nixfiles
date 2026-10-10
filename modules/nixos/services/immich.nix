@@ -98,6 +98,9 @@
         ];
       };
 
+      # photos and videos are large, written once and read sequentially
+      nixfiles.zfs.datasets."tank/apps/immich".properties.recordsize = "1M";
+
       services.immich = {
         enable = true;
         package = pkgs.immich.override {

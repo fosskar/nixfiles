@@ -18,6 +18,7 @@ _: {
           snapshotType = "zfs";
           folders = [
             "/tank/apps"
+            "/tank/apps/immich"
             "/tank/apps/opencloud"
             "/tank/backup"
             "/tank/media/music"
@@ -78,8 +79,8 @@ _: {
                 startAt = "*-*-* 03:00:00";
                 exclude = exclude ++ [
                   # regenerable media; originals remain backed up: https://docs.immich.app/administration/backup-and-restore/#filesystem
-                  "sh:**/immich/encoded-video"
-                  "sh:**/immich/thumbs"
+                  "sh:**/immich/.zfs/snapshot/*/encoded-video"
+                  "sh:**/immich/.zfs/snapshot/*/thumbs"
                   # blob store for all buckets; replicated to nixworker and the
                   # garage module backs up the metadata snapshot separately.
                   # single * pins it to the snapshot root; a bare sh:**/garage
