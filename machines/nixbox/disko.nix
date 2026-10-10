@@ -36,11 +36,6 @@
     # services depend on them via RequiresMountsFor.
   };
 
-  # the unit lists every tank mount in Before=, so each new dataset changes it.
-  # restarting it on switch stops all tank mounts and every service on them;
-  # the pool stays imported, so there is nothing to redo.
-  systemd.services.zfs-import-tank.restartIfChanged = false;
-
   nixfiles.zfs.datasets = {
     # default for everything below; datasets opt out explicitly
     "tank".properties."com.sun:auto-snapshot" = "true";
@@ -64,6 +59,15 @@
     };
     # own recordings and music that cannot be downloaded again
     "tank/media/music".properties."com.sun:auto-snapshot" = "true";
+    # never mounted; holds space back so a full pool can still be cleaned up
+    "tank/reserved" = {
+      mountPoint = null;
+      properties = {
+        canmount = "off";
+        refreservation = "500G";
+        "com.sun:auto-snapshot" = "false";
+      };
+    };
     # protomaps planet download (~140G), rebuildable
     "tank/scratch".properties = {
       "com.sun:auto-snapshot" = "false";
