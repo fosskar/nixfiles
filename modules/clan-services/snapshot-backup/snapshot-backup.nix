@@ -42,19 +42,29 @@ _: {
                       folders = map (folder: "${folder}/.zfs/snapshot/${snapshotName}") settings.folders;
                       preBackupScript = ''
                         fail=0
+                        datasets=""
                         for folder in ${lib.escapeShellArgs settings.folders}; do
                           if ! dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder"); then
                             echo "error: $folder is not a mounted zfs dataset" >&2
                             fail=1
                             continue
                           fi
-                          # borg reads only the parent's .zfs/snapshot directory, where
-                          # child dataset mountpoints appear empty; refuse to back up
-                          # a dataset whose children would silently vanish.
-                          if [ "$(${config.boot.zfs.package}/bin/zfs list -H -o name -d 1 "$dataset" | wc -l)" -gt 1 ]; then
-                            echo "error: $dataset has child datasets; their data would be missing from $folder/.zfs/snapshot/${snapshotName}" >&2
-                            fail=1
-                          fi
+                          datasets="$datasets $dataset"
+                        done
+                        [ "$fail" -eq 0 ] || exit 1
+                        # borg reads only each dataset's own .zfs/snapshot directory, where
+                        # child dataset mountpoints appear empty; refuse to back up a
+                        # dataset whose children are not listed as folders themselves.
+                        for dataset in $datasets; do
+                          for child in $(${config.boot.zfs.package}/bin/zfs list -H -o name -t filesystem -d 1 "$dataset" | tail -n +2); do
+                            case " $datasets " in
+                              *" $child "*) ;;
+                              *)
+                                echo "error: $dataset has child dataset $child, which is not a backup folder; its data would be missing" >&2
+                                fail=1
+                                ;;
+                            esac
+                          done
                         done
                         [ "$fail" -eq 0 ] || exit 1
                         for folder in ${lib.escapeShellArgs settings.folders}; do
@@ -62,10 +72,10 @@ _: {
                           snapshots=$(${config.boot.zfs.package}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset")
                           if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
                             echo "deleting leftover zfs snapshot: $dataset@${snapshotName}"
-                            ${config.boot.zfs.package}/bin/zfs destroy -r "$dataset@${snapshotName}"
+                            ${config.boot.zfs.package}/bin/zfs destroy "$dataset@${snapshotName}"
                           fi
                           echo "creating zfs snapshot: $dataset@${snapshotName}"
-                          ${config.boot.zfs.package}/bin/zfs snapshot -r "$dataset@${snapshotName}"
+                          ${config.boot.zfs.package}/bin/zfs snapshot "$dataset@${snapshotName}"
                           ls "$folder/.zfs/snapshot/${snapshotName}" >/dev/null
                         done
                       '';
@@ -83,7 +93,7 @@ _: {
                           fi
                           if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
                             echo "destroying zfs snapshot: $dataset@${snapshotName}"
-                            if ! ${config.boot.zfs.package}/bin/zfs destroy -r "$dataset@${snapshotName}"; then
+                            if ! ${config.boot.zfs.package}/bin/zfs destroy "$dataset@${snapshotName}"; then
                               fail=1
                             fi
                           fi
