@@ -354,7 +354,9 @@
           "/var/lib/opencloud"
         ];
 
-        nixfiles.zfs.datasets."tank/apps/opencloud" = { };
+        # posixfs keeps its metadata in xattrs; larger dnodes hold them without
+        # spill blocks
+        nixfiles.zfs.datasets."tank/apps/opencloud".properties.dnodesize = "auto";
 
         systemd.services.opencloud = {
           after = [
