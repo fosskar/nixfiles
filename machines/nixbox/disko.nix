@@ -49,11 +49,6 @@
       fsType = "zfs";
       options = [ "nofail" ];
     };
-    "/tank/shares" = {
-      device = "tank/shares";
-      fsType = "zfs";
-      options = [ "nofail" ];
-    };
     "/tank/backup" = {
       device = "tank/backup";
       fsType = "zfs";
