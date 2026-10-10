@@ -27,6 +27,8 @@
       module.name = "wireguard";
       module.input = "clan-core";
 
+      roles.controller.settings.domain = "w";
+      roles.peer.settings.domain = "w";
       roles.controller.machines."gateway".settings = {
         endpoint = config.flake.hosts.gateway.wan;
         port = 51820; # default
