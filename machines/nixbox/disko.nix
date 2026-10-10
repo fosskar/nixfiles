@@ -1,8 +1,5 @@
 {
-  config,
-  lib,
   self,
-  utils,
   preservationDiskoPostMountHook,
   ...
 }:
@@ -36,16 +33,6 @@
     # still generates zfs-import-tank.service plus real .mount units;
     # services depend on them via RequiresMountsFor.
   };
-
-  # zfs mount -a races the zfsutil mount units after the pool import and makes
-  # them fail with "dataset is busy" (nixpkgs#212762). upstream's
-  # zfs-mount-generator orders its mount units before zfs-mount.service the
-  # same way; zfs mount -a then skips the already mounted datasets.
-  systemd.services.zfs-mount.after = map (fs: "${utils.escapeSystemdPath fs.mountPoint}.mount") (
-    lib.filter (fs: fs.fsType == "zfs" && (fs.device == "tank" || lib.hasPrefix "tank/" fs.device)) (
-      lib.attrValues config.fileSystems
-    )
-  );
 
   fileSystems = {
     "/tank" = {
