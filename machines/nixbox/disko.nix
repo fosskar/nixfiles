@@ -30,8 +30,8 @@
     ];
     # disko manages only the root pool on flash1/flash2. tank (raidz2 on the
     # four hdds, log mirror on the optane slog partitions below) was created
-    # by hand; its datasets are legacy-mountpoint and declared in fileSystems
-    # or nixfiles.zfs.datasets, so nixos generates zfs-import-tank.service plus
+    # by hand; its datasets are legacy-mountpoint and declared in
+    # nixfiles.zfs.datasets, so nixos generates zfs-import-tank.service plus
     # real .mount units;
     # services depend on them via RequiresMountsFor.
   };
@@ -42,6 +42,9 @@
   systemd.services.zfs-import-tank.restartIfChanged = false;
 
   nixfiles.zfs.datasets = {
+    # default for everything below; datasets opt out explicitly
+    "tank".properties."com.sun:auto-snapshot" = "true";
+    "tank/backup" = { };
     # only holds the per-app datasets, which set their own snapshot policy
     "tank/apps".properties."com.sun:auto-snapshot" = "false";
     # garage blocks are at most 1MiB (block_size) and replicated to nixworker;
@@ -59,29 +62,13 @@
       "com.sun:auto-snapshot" = "false";
       refquota = "4T";
     };
+    # own recordings and music that cannot be downloaded again
+    "tank/media/music".properties."com.sun:auto-snapshot" = "true";
     # protomaps planet download (~140G), rebuildable
     "tank/scratch".properties = {
       "com.sun:auto-snapshot" = "false";
       recordsize = "1M";
-      refquota = "300G";
-    };
-  };
-
-  fileSystems = {
-    "/tank" = {
-      device = "tank";
-      fsType = "zfs";
-      options = [ "nofail" ];
-    };
-    "/tank/media/music" = {
-      device = "tank/media/music";
-      fsType = "zfs";
-      options = [ "nofail" ];
-    };
-    "/tank/backup" = {
-      device = "tank/backup";
-      fsType = "zfs";
-      options = [ "nofail" ];
+      refquota = "200G";
     };
   };
 
