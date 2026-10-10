@@ -17,7 +17,6 @@ _: {
         "nixbox".settings = {
           snapshotType = "zfs";
           folders = [
-            "/tank/apps"
             "/tank/apps/immich"
             "/tank/apps/opencloud"
             "/tank/backup"
@@ -81,11 +80,6 @@ _: {
                   # regenerable media; originals remain backed up: https://docs.immich.app/administration/backup-and-restore/#filesystem
                   "sh:**/immich/.zfs/snapshot/*/encoded-video"
                   "sh:**/immich/.zfs/snapshot/*/thumbs"
-                  # blob store for all buckets; replicated to nixworker and the
-                  # garage module backs up the metadata snapshot separately.
-                  # single * pins it to the snapshot root; a bare sh:**/garage
-                  # would also drop /var/backup/garage
-                  "sh:**/.zfs/snapshot/*/garage"
                 ];
                 destinations = {
                   "storagebox" = {

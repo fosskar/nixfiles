@@ -105,7 +105,7 @@ home server at `192.168.20.200` (ryzen 7 5700x, 64gb, nvidia rtx pro 4000, zfs)
 
 **storage:**
 
-- zfs pool `tank` with datasets: apps, media, media/music, backup, scratch (legacy mountpoints, mounted via `fileSystems`), plus `reserved` (500G `refreservation`, never mounted)
+- zfs pool `tank` with datasets: apps/{garage,immich,opencloud}, media, media/music, backup, scratch (legacy mountpoints, mounted via `fileSystems`), plus `reserved` (500G `refreservation`, never mounted)
 - `scratch` holds rebuildable working data (protomaps planet download) and has `com.sun:auto-snapshot=false`
 - media dirs: `/tank/media/{books,movies,music,podcasts,tv}`
 
@@ -176,7 +176,8 @@ all services run as `media` group with umask 0027
 borgbackup with zfs snapshots:
 
 - `/persist` - system state
-- `/tank/apps` - application data
+- `/tank/apps/immich` - photo library (without encoded-video and thumbs)
+- `/tank/apps/opencloud` - files
 - `/tank/backup` - service backups
 - `/tank/media/music` - music library, including own recordings
 

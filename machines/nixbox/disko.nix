@@ -38,6 +38,13 @@
   # the pool stays imported, so there is nothing to redo.
   systemd.services.zfs-import-tank.restartIfChanged = false;
 
+  # garage blocks are at most 1MiB (block_size) and replicated to nixworker;
+  # snapshots would only pin deleted blocks
+  nixfiles.zfs.datasets."tank/apps/garage".properties = {
+    recordsize = "1M";
+    "com.sun:auto-snapshot" = "false";
+  };
+
   fileSystems = {
     "/tank" = {
       device = "tank";
