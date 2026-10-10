@@ -33,6 +33,11 @@
     # services depend on them via RequiresMountsFor.
   };
 
+  # the unit lists every tank mount in Before=, so each new dataset changes it.
+  # restarting it on switch stops all tank mounts and every service on them;
+  # the pool stays imported, so there is nothing to redo.
+  systemd.services.zfs-import-tank.restartIfChanged = false;
+
   fileSystems = {
     "/tank" = {
       device = "tank";
