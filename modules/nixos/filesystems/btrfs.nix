@@ -6,7 +6,7 @@
     };
 
     # monthly scrub catches silent bitrot/checksum errors. mirrors the
-    # services.zfs.autoScrub default in modules/nixos/filesystems/zfs.nix.
+    # services.zfs.autoScrub default in modules/nixos/filesystems/zfs/zfs.nix.
     services.btrfs.autoScrub = {
       enable = true;
       interval = "monthly";
