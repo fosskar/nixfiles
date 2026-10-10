@@ -49,6 +49,11 @@
       fsType = "zfs";
       options = [ "nofail" ];
     };
+    "/tank/media/music" = {
+      device = "tank/media/music";
+      fsType = "zfs";
+      options = [ "nofail" ];
+    };
     "/tank/backup" = {
       device = "tank/backup";
       fsType = "zfs";
