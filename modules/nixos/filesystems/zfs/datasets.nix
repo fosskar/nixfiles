@@ -65,8 +65,12 @@
             description = "create zfs dataset ${name}";
             requires = [ importUnit ];
             after = [ importUnit ];
-            requiredBy = [ mountUnit ];
+            # wants, not requires: restarting this unit on a property change
+            # must not stop the mount and every service requiring it. a missing
+            # dataset still fails the mount.
+            wantedBy = [ mountUnit ];
             before = [ mountUnit ];
+            stopIfChanged = false;
             # mount units come before local-fs.target, which default service
             # dependencies would order after
             unitConfig = {
