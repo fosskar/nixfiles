@@ -19,6 +19,7 @@ _: {
           folders = [
             "/tank/apps"
             "/tank/backup"
+            "/tank/media/music"
           ];
         };
       };
