@@ -13,6 +13,13 @@
       listenAddress = "127.0.0.1";
       listenPort = 8096;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+      pluginsDir = "${config.services.jellyfin.dataDir}/plugins";
+      plugins = [
+        pkgs.local.jellyfin-plugin-intro-skipper
+        pkgs.local.jellyfin-plugin-ldapauth
+        pkgs.local.jellyfin-plugin-tvdb
+      ];
+      jq = lib.getExe pkgs.jq;
     in
     {
       config = {
@@ -132,17 +139,38 @@
         # intro skipper shells out to a bare `ffmpeg`
         systemd.services.jellyfin.path = [ pkgs.jellyfin-ffmpeg ];
 
-        # the bind address exists only in network.xml; jellyfin writes the file
-        # on first start
-        systemd.services.jellyfin.preStart = ''
-          network=${config.services.jellyfin.configDir}/network.xml
-          if [ -e "$network" ]; then
-            ${lib.getExe pkgs.xmlstarlet} ed -L \
-              -d '/NetworkConfiguration/LocalNetworkAddresses/*' \
-              -s '/NetworkConfiguration/LocalNetworkAddresses' -t elem -n string -v ${listenAddress} \
-              "$network"
-          fi
-        '';
+        # jellyfin rewrites meta.json at runtime, so it is a copy; other
+        # installs of the same plugin guid, manual or older, are removed.
+        # mkBefore: the nixos module's forceEncodingConfig script can `exit 0`
+        systemd.services.jellyfin.preStart = lib.mkBefore (
+          lib.concatMapStrings (plugin: ''
+            guid=$(${jq} -r .guid ${plugin}/meta.json)
+            dest=${pluginsDir}/${plugin.name}
+            for meta in ${pluginsDir}/*/meta.json; do
+              [ -e "$meta" ] || continue
+              dir=$(dirname "$meta")
+              if [ "$dir" != "$dest" ] && [ "$(${jq} -r .guid "$meta")" = "$guid" ]; then
+                rm -rf -- "$dir"
+              fi
+            done
+            mkdir -p "$dest"
+            for f in ${plugin}/*; do
+              [ "$(basename "$f")" = meta.json ] || ln -sfn "$f" "$dest/"
+            done
+            ${jq} '. + {status: "Active", autoUpdate: false}' ${plugin}/meta.json > "$dest/meta.json"
+          '') plugins
+          # the bind address exists only in network.xml; jellyfin writes the file
+          # on first start
+          + ''
+            network=${config.services.jellyfin.configDir}/network.xml
+            if [ -e "$network" ]; then
+              ${lib.getExe pkgs.xmlstarlet} ed -L \
+                -d '/NetworkConfiguration/LocalNetworkAddresses/*' \
+                -s '/NetworkConfiguration/LocalNetworkAddresses' -t elem -n string -v ${listenAddress} \
+                "$network"
+            fi
+          ''
+        );
       };
     };
 }
