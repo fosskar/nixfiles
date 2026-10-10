@@ -69,7 +69,13 @@
           lib.nameValuePair dataset.mountPoint {
             device = name;
             fsType = "zfs";
-            options = [ "nofail" ];
+            # nofail drops the ordering before local-fs.target; restore it so
+            # systemd-tmpfiles-setup and services apply their ownership rules
+            # to the mounted dataset, not to the empty mount point below it
+            options = [
+              "nofail"
+              "x-systemd.before=local-fs.target"
+            ];
           }
         ) mounted;
 
