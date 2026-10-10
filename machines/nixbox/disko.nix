@@ -28,8 +28,9 @@
     ];
     # disko manages only the root pool on flash1/flash2. tank (raidz2 on the
     # four hdds, log mirror on the optane slog partitions below) was created
-    # by hand; its datasets are legacy-mountpoint and declared in fileSystems,
-    # so nixos generates zfs-import-tank.service plus real .mount units;
+    # by hand; its datasets are legacy-mountpoint and declared in fileSystems
+    # or nixfiles.zfs.datasets, so nixos generates zfs-import-tank.service plus
+    # real .mount units;
     # services depend on them via RequiresMountsFor.
   };
 
@@ -38,26 +39,34 @@
   # the pool stays imported, so there is nothing to redo.
   systemd.services.zfs-import-tank.restartIfChanged = false;
 
-  # garage blocks are at most 1MiB (block_size) and replicated to nixworker;
-  # snapshots would only pin deleted blocks
-  nixfiles.zfs.datasets."tank/apps/garage".properties = {
-    recordsize = "1M";
-    "com.sun:auto-snapshot" = "false";
+  nixfiles.zfs.datasets = {
+    # only holds the per-app datasets, which set their own snapshot policy
+    "tank/apps".properties."com.sun:auto-snapshot" = "false";
+    # garage blocks are at most 1MiB (block_size) and replicated to nixworker;
+    # snapshots would only pin deleted blocks. capacity in the garage layout
+    # does not limit disk usage
+    "tank/apps/garage".properties = {
+      recordsize = "1M";
+      "com.sun:auto-snapshot" = "false";
+      refquota = "1.2T";
+    };
+    # replaceable media; music is its own dataset with snapshots. the quota
+    # keeps a runaway download queue from filling the pool
+    "tank/media".properties = {
+      "com.sun:auto-snapshot" = "false";
+      refquota = "4T";
+    };
+    # protomaps planet download (~140G), rebuildable
+    "tank/scratch".properties = {
+      "com.sun:auto-snapshot" = "false";
+      recordsize = "1M";
+      refquota = "300G";
+    };
   };
 
   fileSystems = {
     "/tank" = {
       device = "tank";
-      fsType = "zfs";
-      options = [ "nofail" ];
-    };
-    "/tank/apps" = {
-      device = "tank/apps";
-      fsType = "zfs";
-      options = [ "nofail" ];
-    };
-    "/tank/media" = {
-      device = "tank/media";
       fsType = "zfs";
       options = [ "nofail" ];
     };
@@ -68,11 +77,6 @@
     };
     "/tank/backup" = {
       device = "tank/backup";
-      fsType = "zfs";
-      options = [ "nofail" ];
-    };
-    "/tank/scratch" = {
-      device = "tank/scratch";
       fsType = "zfs";
       options = [ "nofail" ];
     };

@@ -99,7 +99,11 @@
       };
 
       # photos and videos are large, written once and read sequentially
-      nixfiles.zfs.datasets."tank/apps/immich".properties.recordsize = "1M";
+      nixfiles.zfs.datasets."tank/apps/immich".properties = {
+        recordsize = "1M";
+        # tank/apps itself is not snapshotted
+        "com.sun:auto-snapshot" = "true";
+      };
 
       services.immich = {
         enable = true;

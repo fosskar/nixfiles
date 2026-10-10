@@ -356,7 +356,11 @@
 
         # posixfs keeps its metadata in xattrs; larger dnodes hold them without
         # spill blocks
-        nixfiles.zfs.datasets."tank/apps/opencloud".properties.dnodesize = "auto";
+        nixfiles.zfs.datasets."tank/apps/opencloud".properties = {
+          dnodesize = "auto";
+          # tank/apps itself is not snapshotted
+          "com.sun:auto-snapshot" = "true";
+        };
 
         systemd.services.opencloud = {
           after = [
