@@ -68,7 +68,12 @@
             # wants, not requires: restarting this unit on a property change
             # must not stop the mount and every service requiring it. a missing
             # dataset still fails the mount.
-            wantedBy = [ mountUnit ];
+            # multi-user.target lets switch start new units and apply new
+            # properties while the mount is already active
+            wantedBy = [
+              mountUnit
+              "multi-user.target"
+            ];
             before = [ mountUnit ];
             stopIfChanged = false;
             # mount units come before local-fs.target, which default service
