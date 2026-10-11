@@ -79,12 +79,13 @@ A stale or redundant comment misleads the next reader, human or agent, more than
 
 ## commits
 
-- lowercase subject and body; preserve code, config values, quotes, proper nouns
+- lowercase subject and body; preserve code, config values, quotes, proper nouns, and trailer names
 - subject: optional `<area>: ` prefix with the exact service, module, or option name, then a summary in imperative mood that completes "if applied, this commit will ..."
 - subject: aim for 50 chars, hard cap 72, so it fits `git log --oneline` and forge titles; no trailing period
 - one blank line between subject and body
 - body: imperative mood, explains what and why, not how; wrapped at 72 cols; only when it adds context
-- no trailers (`Signed-off-by`, `Fixes:`, `Co-authored-by`, ...) unless I ask or the repo's contributing guide requires them
+- end every commit you write with the trailer `Assisted-by: LLM`, after one blank line: I disclose ai assistance in every commit, in the linux kernel's format, which credits the llm as a tool, not an author
+- no other trailers (`Signed-off-by`, `Fixes:`, `Co-authored-by`, ...) unless I ask or the repo's contributing guide requires them; a repo's own ai disclosure policy replaces `Assisted-by: LLM`
 - atomic commits
 
 <example>
@@ -92,6 +93,8 @@ treefmt: run prose-lint on markdown and comments
 
 templates/ is excluded because it seeds other projects, and the
 prose-lint fixtures because they violate the rules on purpose.
+
+Assisted-by: LLM
 </example>
 
 ## jj
