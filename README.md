@@ -8,7 +8,7 @@
 
 personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). modules are feature-oriented: feature modules export reusable features through `flake.modules.*`, while clan roles and machine imports compose them into concrete systems. the repo covers host configuration, user environments, secrets, storage, networking, and self-hosted services.
 
-## features
+## stack
 
 - [clan-core](https://docs.clan.lol/) - machine inventory, secrets (sops-nix/age), disk partitioning (disko), service roles and [clan-services](modules/clan-services/)
 - [flake-parts](https://flake.parts/) - modular flake framework
