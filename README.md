@@ -105,15 +105,6 @@ topology, networks, and per-machine details are in [machines/README.md](machines
 | nixworker | home server | ci, remote builder, cache  | minisforum ms-a2: ryzen 9 9955hx, intel arc pro b50, 96gb ddr5                                 |
 | gateway   | vps         | gw/reverse proxy (netbird) | hetzner cx23: 2vcpu, 4gb ram, 40gb ssd                                                         |
 
-## documentation
-
-- [repo docs](docs/)
-  - [decisions](docs/decisions/)
-- [machine docs](machines/README.md)
-- [nixos search](https://search.nixos.org/)
-- [clan-core docs](https://docs.clan.lol/)
-- [flake-parts docs](https://flake.parts/)
-
 ## credits
 
 - [badele nix-homelab](https://github.com/badele/nix-homelab)
