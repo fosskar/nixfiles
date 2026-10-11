@@ -16,11 +16,11 @@ find it in the table, pull that bay.
 | 2   | WD-WX52D25NJV0E  | WD60EFPX 6TB         | tank         | 2c ata-1        |
 | 3   | WD-WX92D15E7K76  | WD60EFPX 6TB         | tank         | 2c ata-2        |
 | 4   | WD-WX62D45R20TA  | WD60EFPX 6TB         | tank         | 2c ata-5        |
-| 5   | —                | empty                | —            | —               |
+| 5   | -                | empty                | -            | -               |
 | 6   | Z9CBK75S         | Seagate IronWolf 1TB | spare/backup | 2b ata-4        |
 | 7   | 50026B7687522C31 | Kingston DC600M 960G | znixos (OS)  | 2b ata-3        |
 | 8   | 50026B768755993B | Kingston DC600M 960G | znixos (OS)  | 2b ata-2        |
-| 9   | —                | empty                | —            | —               |
+| 9   | -                | empty                | -            | -               |
 
 - `tank`: 4x WD60EFPX raidz2 (data pool)
 - `znixos`: 2x Kingston DC600M mirror (OS/boot pool)

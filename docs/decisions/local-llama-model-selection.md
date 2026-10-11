@@ -43,11 +43,11 @@ all runs except the last row: `ctx-size = 163840`, `parallel = 2`, MTP n-max 2, 
 
 | config                                   | peak VRAM | decode t/s | prompt t/s | process RAM |
 | ---------------------------------------- | --------: | ---------: | ---------: | ----------: |
-| IQ4_XS, no MTP, no offload (old default) | 20518 MiB |       99.4 |       2154 |           — |
-| Q4_K_XL `n-cpu-moe 4`                    |       OOM |          — |          — |           — |
-| Q4_K_XL `n-cpu-moe 6`, ubatch 512        | 23462 MiB |       97.4 |       1290 |           — |
-| Q4_K_XL `n-cpu-moe 8`, ubatch 512        | 22536 MiB |       92.1 |       1147 |           — |
-| Q4_K_XL `n-cpu-moe 12`, ubatch 512       | 20680 MiB |       81.3 |        944 |           — |
+| IQ4_XS, no MTP, no offload (old default) | 20518 MiB |       99.4 |       2154 |           - |
+| Q4_K_XL `n-cpu-moe 4`                    |       OOM |          - |          - |           - |
+| Q4_K_XL `n-cpu-moe 6`, ubatch 512        | 23462 MiB |       97.4 |       1290 |           - |
+| Q4_K_XL `n-cpu-moe 8`, ubatch 512        | 22536 MiB |       92.1 |       1147 |           - |
+| Q4_K_XL `n-cpu-moe 12`, ubatch 512       | 20680 MiB |       81.3 |        944 |           - |
 | Q4_K_XL `n-cpu-moe 8`, ubatch 2048       | 23278 MiB |       87.1 |       2046 |     5.8 GiB |
 | Q4_K_XL fit (9 layers), ubatch 2048      | 23182 MiB |       86.2 |       1887 |     5.9 GiB |
 | Q6_K `n-cpu-moe 16`, ubatch 2048         | 23780 MiB |       61.8 |       1484 |    12.2 GiB |
