@@ -43,7 +43,7 @@ find it in the table, pull that bay.
   cosmetic, not a fault and not fixable in software/firmware. Do not tape pin
   11 to "fix" it (the pin-3 / 3.3V Power Disable taping trick is a different
   issue). Net: the activity LED cannot locate or fault-indicate the tank WD
-  drives — use this table for those.
+  drives. Use this table for those.
 - The LED is an activity indicator only, never a fault indicator: a dead drive
   just stops flashing (looks the same as idle). Trust `zpool status` for which
   drive faulted.

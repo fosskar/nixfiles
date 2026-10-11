@@ -1,4 +1,4 @@
-# lldap over file-based auth — user management via web UI,
+# lldap over file-based auth: user management via web UI,
 # keeps personal data (family names etc.) out of nix store and git
 {
   flake.modules.nixos.lldap =

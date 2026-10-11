@@ -24,11 +24,11 @@ Each instance is one deployment. A second instance with different settings
 
 ## Overview
 
-`hermes` runs the Hermes agent sealed on one server and connects Hermes Desktop on workstation clients to it. The service carries only mechanism; every deployment-specific fact — soul, model, channels, identity — is inventory settings. This homelab's agent policy (model, voice, search backend, plugins) is not a deployment fact and lives in `modules/nixos/services/hermes-agent/hermes-agent.nix`; `agentSettings` is merged over it.
+`hermes` runs the Hermes agent sealed on one server and connects Hermes Desktop on workstation clients to it. The service carries only mechanism; every deployment-specific fact (soul, model, channels, identity) is inventory settings. This homelab's agent policy (model, voice, search backend, plugins) is not a deployment fact and lives in `modules/nixos/services/hermes-agent/hermes-agent.nix`; `agentSettings` is merged over it.
 
 The server role:
 
-- builds the agent sandbox — `backend = "microvm"` (default, own kernel) or `"container"` (nspawn, same bridge posture) — with the engine and the channels enabled in settings (`matrix.nix`, `signal.nix`, `home-assistant.nix` under `modules/nixos/services/hermes-agent/`)
+- builds the agent sandbox, `backend = "microvm"` (default, own kernel) or `"container"` (nspawn, same bridge posture), with the engine and the channels enabled in settings (`matrix.nix`, `signal.nix`, `home-assistant.nix` under `modules/nixos/services/hermes-agent/`)
 - derives the vars generator from the instance name (`<instance>-agent`) and prompts only for enabled channels and key-bearing providers
 - stages the rendered `.env` into the sandbox
 - creates the dashboard session token with clan vars and shares it read-only

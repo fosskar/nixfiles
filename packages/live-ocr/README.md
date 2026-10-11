@@ -30,11 +30,11 @@ live-ocr -            # read image from stdin
 
 runtime (wrapped automatically via nix):
 
-- grim — screenshot
-- slurp — region selection
-- wl-clipboard — clipboard
-- libnotify — notifications
-- tesseract — OCR engine
+- grim: screenshot
+- slurp: region selection
+- wl-clipboard: clipboard
+- libnotify: notifications
+- tesseract: OCR engine
 
 ## update go dependencies
 

@@ -1,5 +1,5 @@
 # minimal samba share for HP printer "scan to network folder"
-# printer only supports SMB — this feeds scans into paperless consume dir
+# printer only supports SMB. this feeds scans into paperless consume dir
 {
   flake.modules.nixos.paperlessSamba =
     {

@@ -34,7 +34,7 @@
   '';
 
   # shared group must exist for directory ownership (sssd provides it at runtime,
-  # but tmpfiles/activation run before sssd — keep a static fallback)
+  # but tmpfiles/activation run before sssd, so keep a static fallback)
   users.groups.shared = {
     gid = 3030;
   };

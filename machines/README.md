@@ -9,7 +9,7 @@ machine configs are composition edges: feature modules are exposed through `flak
 ### bootstrap caveat
 
 first install of a new machine **must** be done with preservation **disabled** (do not import the module yet).
-rollback wipes root on every boot, but secrets (sops) are written to root during install — so they get wiped before any service runs.
+rollback wipes root on every boot, but secrets (sops) are written to root during install, so they get wiped before any service runs.
 
 two-step bootstrap:
 
@@ -64,7 +64,7 @@ all machines join netbird, yggdrasil, and wireguard (controller on gateway); nix
 
 ### static IPs
 
-source of truth: `flake.hosts` in `modules/flake-parts/hosts.nix` — machine
+source of truth: `flake.hosts` in `modules/flake-parts/hosts.nix`. machine
 `networking.nix`, the `internet`/`wireguard` inventory instances, and feature
 modules all read from it. this table is a derived copy; update `hosts.nix` first.
 

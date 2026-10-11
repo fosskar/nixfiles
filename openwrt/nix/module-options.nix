@@ -1,4 +1,4 @@
-# openwrt device module options — evaluated via lib.evalModules
+# openwrt device module options, evaluated via lib.evalModules
 { pkgs, lib, ... }:
 {
   options = {

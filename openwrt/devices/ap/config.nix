@@ -1,4 +1,4 @@
-# Zyxel NWA50AX Pro AP — dumb AP mode
+# Zyxel NWA50AX Pro AP, dumb AP mode
 # static ip: 192.168.10.2, gateway: 192.168.10.1 (main router)
 let
   roaming = import ../../profiles/roaming.nix;

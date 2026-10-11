@@ -1,4 +1,4 @@
-# deploy script — applies packages, UCI config, SSH keys, and files to a device
+# deploy script: applies packages, UCI config, SSH keys, and files to a device
 {
   pkgs,
   lib,

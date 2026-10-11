@@ -56,7 +56,7 @@ let
   serializeListSections =
     config: typeName: sections:
     let
-      # delete existing anonymous entries — always delete [0] since indices shift down
+      # delete existing anonymous entries, always delete [0] since indices shift down
       # 30 iterations handles any reasonable existing count
       deletes = lib.genList (_: "delete ${config}.@${typeName}[0]") 30;
       adds = lib.genList (_: "add ${config} ${typeName}") (length sections);

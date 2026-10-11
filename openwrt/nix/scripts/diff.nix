@@ -1,4 +1,4 @@
-# diff script — shows drift between nix-declared config and current router state
+# diff script: shows drift between nix-declared config and current router state
 {
   pkgs,
   lib,

@@ -447,7 +447,7 @@
           services.traefik.dynamicConfigOptions = {
             http = {
               routers = {
-                # gRPC — needs h2c backend (highest priority)
+                # gRPC: needs h2c backend (highest priority)
                 netbird-grpc = {
                   rule = "Host(`${serverCfg.domain}`) && (PathPrefix(`/signalexchange.SignalExchange/`) || PathPrefix(`/management.ManagementService/`) || PathPrefix(`/management.ProxyService/`))";
                   service = "netbird-server-h2c";
@@ -455,7 +455,7 @@
                   tls.certResolver = "letsencrypt";
                   priority = 100;
                 };
-                # HTTP/WS — API, oauth2, relay, websocket proxies
+                # HTTP/WS: API, oauth2, relay, websocket proxies
                 netbird-backend = {
                   rule = "Host(`${serverCfg.domain}`) && (PathPrefix(`/api`) || PathPrefix(`/oauth2`) || PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`))";
                   service = "netbird-server";

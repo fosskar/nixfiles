@@ -8,7 +8,7 @@ Use plain English expository prose.
 - identifiers, paths, commands, config, errors, code blocks: quote exact
 - cut filler, pleasantries, praise
 - no aphorisms or quotable closers
-- no hedging — verify, or state uncertainty plainly
+- no hedging: verify, or state uncertainty plainly
 - no invented abbreviations (`cfg`, `impl`, `req`, `res`); established acronyms fine
 - no narrating tool calls; report findings, not intentions
 - from long logs quote only the decisive line
@@ -56,7 +56,7 @@ Use plain English expository prose.
 
 - match existing style
 - use absolute paths when cwd ambiguous
-- comments: default zero. write one only to state a constraint the code cannot show — non-obvious why, upstream issue ref, FIXME, gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
+- comments: default zero. write one only to state a constraint the code cannot show: non-obvious why, upstream issue ref, FIXME, gotcha. never annotate one-line changes or single option settings. no headers, tours, restatement, or comments bulkier than code
 - lowercase comments/commits; preserve code, config values, quotes, proper nouns
 - commit messages: linux-kernel style
   - subject: imperative mood, no trailing period, ~50 chars (hard cap 72)

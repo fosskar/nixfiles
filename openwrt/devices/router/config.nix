@@ -1,4 +1,4 @@
-# GL.iNet GL-MT6000 (flint 2) — main router
+# GL.iNet GL-MT6000 (flint 2), main router
 let
   roaming = import ../../profiles/roaming.nix;
 in
@@ -175,9 +175,9 @@ in
           htmode = "HE20";
           country = "DE";
         };
-        # main wifi — 2.4GHz
+        # main wifi: 2.4GHz
         main_2g = roaming.wifiIface "radio0";
-        # IoT wifi — hidden, 2.4GHz only, separate network
+        # IoT wifi: hidden, 2.4GHz only, separate network
         iot = {
           _type = "wifi-iface";
           device = "radio0";
@@ -198,7 +198,7 @@ in
           htmode = "HE80";
           country = "DE";
         };
-        # main wifi — 5GHz
+        # main wifi: 5GHz
         main_5g = roaming.wifiIface "radio1";
       };
 

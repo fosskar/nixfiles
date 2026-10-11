@@ -102,7 +102,7 @@ decisions.
   └───────────────────┘   └─────────────────────────────┘
 ```
 
-**why two bouncers?** the firewall bouncer blocks at the kernel level — banned
+**why two bouncers?** the firewall bouncer blocks at the kernel level: banned
 IPs can't reach any service at all (SSH, traefik, wireguard, everything). the
 traefik bouncer adds a second check at the application layer, specifically for
 HTTP traffic. this catches bans that were just created (before the firewall
@@ -111,7 +111,7 @@ bouncer's next poll) and enables finer-grained HTTP-specific decisions.
 **CAPI (central API):** every crowdsec instance shares its local attack signals
 with the central API. in return, it receives a curated community blocklist of
 IPs that have been flagged by many participants. this is the "crowd" in
-crowdsec — attack intelligence is shared across all users.
+crowdsec: attack intelligence is shared across all users.
 
 **scenarios installed:**
 
@@ -131,7 +131,7 @@ resolves client IP to country code via [geojs.io](https://get.geojs.io) API.
 operates in whitelist mode: only DE (germany) passes. local/private IPs are
 always allowed. results are cached to reduce API calls.
 
-this is a separate layer from crowdsec — it doesn't care about behavior, just
+this is a separate layer from crowdsec: it doesn't care about behavior, just
 geography. most automated scanning comes from outside DE, so this eliminates a
 large volume of noise before crowdsec even sees it.
 
@@ -154,7 +154,7 @@ large volume of noise before crowdsec even sees it.
 ```
 
 all backend services bind to localhost. netbird-proxy listens on `0.0.0.0:8443`
-(upstream limitation) but port 8443 is not opened in any firewall — it's only
+(upstream limitation) but port 8443 is not opened in any firewall. it's only
 reachable via traefik's TCP passthrough on port 443.
 
 internal-only services never exposed:

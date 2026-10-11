@@ -1,8 +1,8 @@
 { inputs, ... }:
 {
   # background desktop control: cua-driver over MCP plus the headless X server
-  # it drives. hermes' own `computer-use install` cannot run here — it shells
-  # out to /bin/bash for the upstream installer — so the driver comes from nix
+  # it drives. hermes' own `computer-use install` cannot run here (it shells
+  # out to /bin/bash for the upstream installer), so the driver comes from nix
   # and HERMES_CUA_DRIVER_CMD points at it, which also stops hermes from
   # replacing it during its version repair
   flake.modules.nixos.hermesComputerUse =

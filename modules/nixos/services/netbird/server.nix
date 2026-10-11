@@ -12,7 +12,7 @@
       cfg = config.services.netbird.server;
       stateDir = "/var/lib/netbird-server";
       settingsFormat = pkgs.formats.yaml { };
-      # config without secrets — secrets injected at runtime
+      # config without secrets: secrets injected at runtime
       configFile = settingsFormat.generate "netbird-server.yaml" cfg.settings;
     in
     {
@@ -115,7 +115,7 @@
                 cliRedirectURIs = lib.mkDefault [
                   "http://localhost:53000/"
                 ];
-                # owner placeholder — replaced in preStart via envsubst
+                # owner placeholder, replaced in preStart via envsubst
                 owner = {
                   email = cfg.ownerEmail;
                   password = "$OWNER_HASH";
@@ -124,7 +124,7 @@
 
               store.engine = lib.mkDefault "sqlite";
 
-              # secrets are placeholders — replaced in preStart via envsubst
+              # secrets are placeholders, replaced in preStart via envsubst
               authSecret = "$AUTH_SECRET";
               store.encryptionKey = "$ENCRYPTION_KEY";
             };
@@ -136,7 +136,7 @@
           };
           users.groups.netbird = { };
 
-          # STUN — netbird clients connect directly, not through traefik
+          # STUN: netbird clients connect directly, not through traefik
           networking.firewall.allowedUDPPorts = [ 3478 ];
 
           # export netbird metrics via telegraf scrape endpoint

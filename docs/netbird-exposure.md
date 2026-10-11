@@ -11,7 +11,7 @@ is authoritative for what is exposed where.
 A netbird **service** (a public `domain`) maps to one or more **targets**. A
 target is `{ target_type, target_id, protocol, port }` where `target_type` is
 `peer` (an internal machine), `host`, or `domain`. Internal services map
-straight to the peer's app port — there is **no caddy hop** on internal peers
+straight to the peer's app port: there is **no caddy hop** on internal peers
 (radicle, nixbot, etc. all go domain -> peer:appPort directly).
 
 Two distinct exposure mechanisms exist; do not conflate them:

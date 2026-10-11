@@ -71,7 +71,7 @@
 
     # nixworker's headless dev user: username simon (ssync session identity
     # needs the same user/home path on every peer), but its own per-machine
-    # password — deliberately NOT share=true like simon-user above.
+    # password, deliberately NOT share=true like simon-user above.
     workspace-user = {
       module = {
         name = "users";

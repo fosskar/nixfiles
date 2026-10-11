@@ -1,4 +1,4 @@
-# fetch script — shows changes from factory defaults (/rom/etc/config/)
+# fetch script: shows changes from factory defaults (/rom/etc/config/)
 {
   pkgs,
   lib,

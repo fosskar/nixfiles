@@ -1,7 +1,7 @@
 # updater
 
 Updates third-party sources in this repository and opens one PR per unit,
-with automerge. The forge — GitHub, or Codeberg/Forgejo — is detected from
+with automerge. The forge (GitHub, or Codeberg/Forgejo) is detected from
 the origin remote. Two entrypoints share one pipeline
 (branch, push dedupe, PR create/refresh, automerge, green-race unstick):
 
@@ -22,7 +22,7 @@ nix shell .#updater -c updater-flake-inputs --dry-run -i nixpkgs
 Without `--dry-run` a forge token is required: `FORGE_TOKEN` (or
 `CODEBERG_TOKEN`); on a GitHub-hosted repo this is a GitHub token.
 `GITHUB_TOKEN` is optional but avoids GitHub API rate limits (nix-update
-version lookups, release-note enrichment) — in production both are set from
+version lookups, release-note enrichment). In production both are set from
 the same nixbot secret.
 
 Both tools refuse to run on a dirty working tree: they hard-reset and clean

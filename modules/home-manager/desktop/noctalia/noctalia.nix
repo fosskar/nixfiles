@@ -383,7 +383,7 @@
           };
         };
 
-        # fosskar/displays saves ad-hoc kanshi profiles into this mutable file —
+        # fosskar/displays saves ad-hoc kanshi profiles into this mutable file:
         # deliberate runtime state, not drift; declarative profiles stay in
         # services.kanshi.settings. mkBefore: kanshi applies the first matching
         # profile, so UI-saved layouts shadow declarative ones for the same

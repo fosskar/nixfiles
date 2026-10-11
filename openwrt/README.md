@@ -17,7 +17,7 @@ nix build .#openwrt-uci-<device>                # inspect generated batch file
 
 ## devices
 
-add a device by creating `devices/<name>/config.nix` — auto-discovered.
+add a device by creating `devices/<name>/config.nix` (auto-discovered).
 shared settings live in `profiles/` and are imported by device configs; `profiles/roaming.nix` holds the wifi roaming contract.
 
 | device   | model             | role    |
@@ -101,15 +101,15 @@ clients ──:53──▶ adguard home ──127.0.0.1:5335──▶ unbound �
                  blocklists                     local names ──▶ dnsmasq :54 (dhcp_link)
 ```
 
-- **adguard home** (`:53` on all vlans, web ui `:8080`): filtering via hagezi pro++, tif medium, doh bypass list. full tif (2.2M rules) needs >=2GB ram in agh — caused the 2026-07-18 oom wedge on the 1GB gl-mt6000; keep medium.
-- **unbound** (`127.0.0.1:5335`): full recursion, no third-party resolver ever sees queries. qname minimization (`query_minimize`), strict dnssec validation (`validator`, trust anchor `root.key`), and a full local root zone copy (`auth_icann` zone, refreshed ~daily) — root servers are never queried live. `serve-expired` + aggressive prefetch answer from cache during wan outages. binds loopback only (`unbound_srv.conf`) so lan clients cannot bypass agh filtering.
+- **adguard home** (`:53` on all vlans, web ui `:8080`): filtering via hagezi pro++, tif medium, doh bypass list. full tif (2.2M rules) needs >=2GB ram in agh (caused the 2026-07-18 oom wedge on the 1GB gl-mt6000); keep medium.
+- **unbound** (`127.0.0.1:5335`): full recursion, no third-party resolver ever sees queries. qname minimization (`query_minimize`), strict dnssec validation (`validator`, trust anchor `root.key`), and a full local root zone copy (`auth_icann` zone, refreshed ~daily). root servers are never queried live. `serve-expired` + aggressive prefetch answer from cache during wan outages. binds loopback only (`unbound_srv.conf`) so lan clients cannot bypass agh filtering.
 - **dnsmasq** (`:54`, lan-facing but not client-used): dhcp, tftp/pxe, and local hostname resolution; unbound forwards local names/ptr to it via `dhcp_link`.
-- **bypass prevention**: port 53 is dnat-redirected to agh on every vlan (`force dns interception` redirects), dot (853→wan) is REJECTed (`Block-DoT-Bypass`), doh resolver domains are blocked by the hagezi doh list. android "private dns" in strict hostname mode will fail — set it to automatic.
+- **bypass prevention**: port 53 is dnat-redirected to agh on every vlan (`force dns interception` redirects), dot (853→wan) is REJECTed (`Block-DoT-Bypass`), doh resolver domains are blocked by the hagezi doh list. android "private dns" in strict hostname mode will fail. set it to automatic.
 
 ## PXE / netboot
 
 the router runs a TFTP server (`/srv/tftp/`) and serves `netboot.xyz.efi` for PXE booting.
-boot any wired machine → network boot → netboot.xyz menu → **Custom** → **NixOS Installer** (live system in RAM: install, rescue, troubleshooting — no usb stick needed).
+boot any wired machine → network boot → netboot.xyz menu → **Custom** → **NixOS Installer** (live system in RAM: install, rescue, troubleshooting). no usb stick needed.
 
 ### files
 
@@ -124,7 +124,7 @@ boot any wired machine → network boot → netboot.xyz menu → **Custom** → 
 
 ### populating / updating
 
-everything is (re)built by the deployed script — it downloads the bootloader and the
+everything is (re)built by the deployed script: it downloads the bootloader and the
 current nixos stable images and regenerates `custom.ipxe` with the matching `init=`
 store path parsed from the upstream ipxe script:
 
@@ -132,7 +132,7 @@ store path parsed from the upstream ipxe script:
 ssh root@192.168.10.1 sh /usr/bin/netboot-update
 ```
 
-`/srv/tftp` survives reboots (overlay) but **not sysupgrades** — rerun after every
+`/srv/tftp` survives reboots (overlay) but **not sysupgrades**. rerun after every
 flash. bump the release by changing `REL` in `files/netboot-update`.
 
 ### UCI config
