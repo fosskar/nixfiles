@@ -40,6 +40,10 @@ _: {
                 # the borg job's own mount namespace cannot trigger them again
                 # (openzfs#3512), so snapshots are mounted here explicitly. see README
                 mountRoot = "/run/snapshot-backup";
+                # the hooks run in the backup unit's mount namespace, where a mount is
+                # not visible to the main process; mount in the host namespace, from
+                # which mounts propagate into the unit's namespace
+                inHostNs = "${pkgs.util-linux}/bin/nsenter --mount=/proc/1/ns/mnt --";
                 state =
                   if settings.snapshotType == "zfs" then
                     {
@@ -75,9 +79,9 @@ _: {
                         for folder in ${lib.escapeShellArgs settings.folders}; do
                           dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder")
                           target="${mountRoot}$folder"
-                          if ${pkgs.util-linux}/bin/mountpoint -q "$target"; then
+                          if ${inHostNs} ${pkgs.util-linux}/bin/mountpoint -q "$target"; then
                             echo "unmounting leftover snapshot mount: $target"
-                            ${pkgs.util-linux}/bin/umount "$target"
+                            ${inHostNs} ${pkgs.util-linux}/bin/umount "$target"
                           fi
                           snapshots=$(${config.boot.zfs.package}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset")
                           if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
@@ -86,8 +90,8 @@ _: {
                           fi
                           echo "creating zfs snapshot: $dataset@${snapshotName}"
                           ${config.boot.zfs.package}/bin/zfs snapshot "$dataset@${snapshotName}"
-                          mkdir -p "$target"
-                          ${pkgs.util-linux}/bin/mount -t zfs -o ro "$dataset@${snapshotName}" "$target"
+                          ${inHostNs} ${pkgs.coreutils}/bin/mkdir -p "$target"
+                          ${inHostNs} ${pkgs.util-linux}/bin/mount -t zfs -o ro "$dataset@${snapshotName}" "$target"
                         done
                       '';
                       postBackupScript = ''
@@ -99,9 +103,9 @@ _: {
                             continue
                           fi
                           target="${mountRoot}$folder"
-                          if ${pkgs.util-linux}/bin/mountpoint -q "$target"; then
+                          if ${inHostNs} ${pkgs.util-linux}/bin/mountpoint -q "$target"; then
                             echo "unmounting snapshot: $target"
-                            if ! ${pkgs.util-linux}/bin/umount "$target"; then
+                            if ! ${inHostNs} ${pkgs.util-linux}/bin/umount "$target"; then
                               fail=1
                               continue
                             fi

@@ -56,7 +56,11 @@ ZFS exposes snapshots under `<dataset>/.zfs/snapshot/<name>` and mounts them on 
 - ZFS unmounts an automounted snapshot again once it was not accessed for `zfs_expire_snapshot` seconds (default 300, [zfs(4)](https://openzfs.github.io/openzfs-docs/man/master/4/zfs.4.html)). the unmount propagates into the borg job's namespace
 - triggering the automount on the host before borg starts therefore only works while borg reaches the dataset before it expires. with several datasets, the ones borg reaches later stay idle while earlier paths are read, expire, and are archived as empty directories without any error. this happened on 2026-10-11 after `tank/apps` was split into per-service datasets
 
-An explicit `mount -t zfs -o ro <dataset>@<snapshot> <dir>` does not expire and is visible in the borg job's namespace, because it exists before the job starts. borgmatic's ZFS hook works the same way: it snapshots the dataset, temporarily mounts the snapshot in its runtime directory and stores the files at their original path ([borgmatic ZFS docs](https://torsion.org/borgmatic/reference/configuration/data-sources/zfs/)).
+An explicit `mount -t zfs -o ro <dataset>@<snapshot> <dir>` does not expire. borgmatic's ZFS hook works this way: it snapshots the dataset, temporarily mounts the snapshot in its runtime directory and stores the files at their original path ([borgmatic ZFS docs](https://torsion.org/borgmatic/reference/configuration/data-sources/zfs/)).
+
+#### Why the mount happens in the host namespace
+
+borgmatic mounts and runs borg in one process, so both share a mount namespace. Here the steps are split across systemd phases: the clan-core borg job runs `preBackupScript` as `ExecStartPre=+` and `borg create` as `ExecStart`. On this setup (systemd 261) a mount made by the `ExecStartPre=+` command is not visible to the main process, even though both report the same mount namespace. The scripts therefore run `mount`, `umount` and `mountpoint` through `nsenter --mount=/proc/1/ns/mnt`: the mount is created in the host namespace and propagates into the job's namespace, the same path the `.zfs/snapshot` automount takes, but without the expiry.
 
 #### Archive paths
 
