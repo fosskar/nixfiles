@@ -1,0 +1,259 @@
+[
+  {
+    "orgId": 1,
+    "name": "postgresql",
+    "folder": "Database",
+    "interval": "1m",
+    "rules": [
+      {
+        "uid": "ffg0ue81rwu80c",
+        "title": "Postgresql deadlocks",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(datname, host, db) (increase(postgresql_deadlocks{datname!~\"template0|template1\"}[5m]))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "deadlocks",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "dashboardUid": "postgresql",
+        "panelId": 3,
+        "noDataState": "NoData",
+        "execErrState": "Error",
+        "for": "1m",
+        "annotations": {
+          "__dashboardUid__": "postgresql",
+          "__panelId__": "3"
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "efg0uhohzskxsb",
+        "title": "Postgresql sessions fatals",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(datname, host, db) (increase(postgresql_sessions_fatal{datname!~\"template0|template1\"}[5m]))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "fatals",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "dashboardUid": "postgresql",
+        "panelId": 3,
+        "noDataState": "NoData",
+        "execErrState": "Error",
+        "for": "1m",
+        "annotations": {
+          "__dashboardUid__": "postgresql",
+          "__panelId__": "3"
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "f21818b9df28a4",
+        "title": "Postgresql connection saturation",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum by(host) (postgresql_numbackends{datname!~\"template0|template1\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{host}} backends",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      80
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "description": "PostgreSQL uses more than 80 of max_connections=100."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  }
+]

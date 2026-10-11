@@ -1,0 +1,256 @@
+[
+  {
+    "orgId": 1,
+    "name": "backups",
+    "folder": "Storage",
+    "interval": "1h",
+    "rules": [
+      {
+        "uid": "14e47c96113e97",
+        "title": "Nixbox backup stale or failed",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "queryType": "statsRange",
+            "relativeTimeRange": {
+              "from": 108000,
+              "to": 0
+            },
+            "datasourceUid": "PD775F2863313E6C7",
+            "model": {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "PD775F2863313E6C7"
+              },
+              "editorMode": "code",
+              "expr": "_HOSTNAME:nixbox UNIT:borgbackup-job-storagebox.service _msg:\"Deactivated successfully\" | stats count() as successes",
+              "intervalMs": 1000,
+              "legendFormat": "nixbox",
+              "maxDataPoints": 43200,
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "B",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "B"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "reducer": "last",
+              "refId": "B",
+              "settings": {
+                "mode": "dropNN"
+              },
+              "type": "reduce"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      1
+                    ],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "B",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "description": "No successful nixbox Borg post-backup command was logged during the last 30 hours."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "62c575801a57f8",
+        "title": "Gateway backup stale",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "queryType": "statsRange",
+            "relativeTimeRange": {
+              "from": 108000,
+              "to": 0
+            },
+            "datasourceUid": "PD775F2863313E6C7",
+            "model": {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "PD775F2863313E6C7"
+              },
+              "editorMode": "code",
+              "expr": "_HOSTNAME:gateway UNIT:borgbackup-job-storagebox.service _msg:\"Deactivated successfully\" | stats count() as successes",
+              "intervalMs": 1000,
+              "legendFormat": "gateway",
+              "maxDataPoints": 43200,
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "B",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "B"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "reducer": "last",
+              "refId": "B",
+              "settings": {
+                "mode": "dropNN"
+              },
+              "type": "reduce"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      1
+                    ],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "B",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "description": "No successful gateway Borg post-backup command was logged during the last 30 hours."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  }
+]

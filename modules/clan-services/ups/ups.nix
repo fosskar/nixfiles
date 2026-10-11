@@ -99,6 +99,17 @@ _: {
                 }
               ];
 
+              services.grafana.provision = {
+                dashboards.settings.providers = [
+                  {
+                    name = "ups";
+                    folder = "UPS";
+                    options.path = ./ups.dashboard.json;
+                  }
+                ];
+                alerting.rules.settings.groups = lib.importJSON ./ups.alerts.json;
+              };
+
               systemd.services = {
                 upsdrv = {
                   after = lib.mkForce [ ];

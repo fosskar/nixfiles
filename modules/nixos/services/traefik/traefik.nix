@@ -97,6 +97,14 @@
           }
         ];
 
+        services.grafana.provision.dashboards.settings.providers = [
+          {
+            name = "traefik";
+            folder = "Security";
+            options.path = ./traefik.dashboard.json;
+          }
+        ];
+
         systemd.services.traefik.serviceConfig.StateDirectory = "traefik";
 
         # traefik reopens access.log on USR1; crowdsec file acquisition follows rotation

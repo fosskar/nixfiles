@@ -1,0 +1,348 @@
+[
+  {
+    "orgId": 1,
+    "name": "storage-capacity",
+    "folder": "Storage",
+    "interval": "15m",
+    "rules": [
+      {
+        "uid": "bfg0relcok8hsf",
+        "title": "ZFS Pools usage",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 3600,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "expr": "100 * zfs_dataset_used_bytes{name!~\".*/.*\"} / (zfs_dataset_used_bytes{name!~\".*/.*\"} + zfs_dataset_available_bytes{name!~\".*/.*\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "alloc %",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      80
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "dashboardUid": "zfs",
+        "panelId": 105,
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "__dashboardUid__": "zfs",
+          "__panelId__": "105"
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "storage-health",
+    "folder": "Storage",
+    "interval": "1m",
+    "rules": [
+      {
+        "uid": "ffg0jlmt8yscgf",
+        "title": "ZFS Pool Health",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 3600,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "expr": "max by(pool, __name__) (zfs_pool_health{pool=~\"tank|znixos\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{pool}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "dashboardUid": "zfs",
+        "panelId": 100,
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "__dashboardUid__": "zfs",
+          "__panelId__": "100",
+          "description": "ZFS Pool {{ $labels.pool }} state code {{ $values.A.Value }}\n\n0=online, 1=degraded,\n 2=faulted, 3=offline, 4=unavail, 5=removed",
+          "summary": "ZFS Pool {{ $values.A.Value }}"
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "9c3b4b4e52b53e",
+        "title": "ZFS pool read-only",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, pool) (zfs_pool_readonly)",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{pool}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "for": "1m",
+        "annotations": {
+          "description": "A ZFS pool is unexpectedly read-only."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "35e9634f54890b",
+        "title": "ZFS exporter collector failure",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "min by(machine, collector) (zfs_scrape_collector_success)",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{collector}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      1
+                    ],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "2m",
+        "annotations": {
+          "description": "A ZFS exporter collector is failing."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  }
+]

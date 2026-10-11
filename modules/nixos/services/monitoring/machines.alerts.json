@@ -1,0 +1,1078 @@
+[
+  {
+    "orgId": 1,
+    "name": "machines-availability",
+    "folder": "Machines",
+    "interval": "1m",
+    "rules": [
+      {
+        "uid": "6170f7c7d23bc3",
+        "title": "Machines reboot detected",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 900,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum by(host) (resets(system_uptime[15m]))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{host}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "annotations": {
+          "description": "A host uptime counter reset during the last 15 minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "b5ea3b441772d5",
+        "title": "Machines scrape target down",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "min by(machine, job, instance) (up{machine!=\"openwrt\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}} {{job}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      1
+                    ],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "2m",
+        "annotations": {
+          "description": "A configured VictoriaMetrics scrape target is down."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "machines-capacity",
+    "folder": "Machines",
+    "interval": "5m",
+    "rules": [
+      {
+        "uid": "b843cbef5fa841",
+        "title": "Machines filesystem usage",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 600,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host, device) (disk_used_percent{mode=\"rw\",fstype!~\"tmpfs|ramfs|devtmpfs|overlay|squashfs|efivarfs\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}} {{device}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      85
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "10m",
+        "annotations": {
+          "description": "A writable filesystem exceeds 85 percent usage for ten minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "431ca41a56b755",
+        "title": "Machines inode usage",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 600,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host, device) (disk_inodes_used_percent{mode=\"rw\",fstype!~\"tmpfs|ramfs|devtmpfs|overlay|squashfs|efivarfs\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}} {{device}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      90
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "10m",
+        "annotations": {
+          "description": "A writable filesystem exceeds 90 percent inode usage for ten minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "machines-kernel",
+    "folder": "Machines",
+    "interval": "1m",
+    "rules": [
+      {
+        "uid": "e6f15592c58f2c",
+        "title": "Machines OOM kill",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 600,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host) (increase(kernel_vmstat_oom_kill[10m]))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "annotations": {
+          "description": "The kernel OOM killer terminated a process during the last ten minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "302505f858e41f",
+        "title": "Machines kernel hardware errors",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "queryType": "statsRange",
+            "relativeTimeRange": {
+              "from": 900,
+              "to": 0
+            },
+            "datasourceUid": "PD775F2863313E6C7",
+            "model": {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "PD775F2863313E6C7"
+              },
+              "editorMode": "code",
+              "expr": "(_TRANSPORT:kernel OR SYSLOG_IDENTIFIER:kernel) (_msg:~\"(?i)(machine check|hardware error|EDAC.*error|I/O error|watchdog.*expired|rcu.*stall|kernel panic)\") | stats by (_HOSTNAME) count() as errors",
+              "intervalMs": 1000,
+              "legendFormat": "{{_HOSTNAME}}",
+              "maxDataPoints": 43200,
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "B",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "B"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "reducer": "last",
+              "refId": "B",
+              "settings": {
+                "mode": "dropNN"
+              },
+              "type": "reduce"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "B",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "annotations": {
+          "description": "VictoriaLogs found a kernel panic, watchdog, RCU stall, MCE, EDAC, hardware, or I/O error."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "machines-network",
+    "folder": "Machines",
+    "interval": "5m",
+    "rules": [
+      {
+        "uid": "a512abdd0928b5",
+        "title": "Machines network errors or drops",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 600,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host, interface) ((increase(net_err_in{interface!~\"lo|veth.*|tap.*|vb-.*|br.*|brc.*|docker.*|wt0|wireguard|ygg|talos.*\"}[10m]) + increase(net_err_out{interface!~\"lo|veth.*|tap.*|vb-.*|br.*|brc.*|docker.*|wt0|wireguard|ygg|talos.*\"}[10m]) > bool 10) + (increase(net_drop_in{interface!~\"lo|veth.*|tap.*|vb-.*|br.*|brc.*|docker.*|wt0|wireguard|ygg|talos.*\"}[10m]) + increase(net_drop_out{interface!~\"lo|veth.*|tap.*|vb-.*|br.*|brc.*|docker.*|wt0|wireguard|ygg|talos.*\"}[10m]) > bool 100))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}} {{interface}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "description": "A physical interface has more than 10 errors or 100 drops in ten minutes for five minutes. Virtual tunnel interfaces are excluded."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "machines-resources",
+    "folder": "Machines",
+    "interval": "5m",
+    "rules": [
+      {
+        "uid": "afwbf6pb2w8aob",
+        "title": "Machines available memory low",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "min by(machine, host) (mem_available_percent)",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      10
+                    ],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "15m",
+        "annotations": {
+          "description": "Available memory remains below 10 percent for fifteen minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "cfwbf6pcbueiof",
+        "title": "Machines I/O wait high",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host) (cpu_usage_iowait{cpu=\"cpu-total\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      25
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "15m",
+        "annotations": {
+          "description": "CPU I/O wait remains above 25 percent for fifteen minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "machines-storage",
+    "folder": "Machines",
+    "interval": "5m",
+    "rules": [
+      {
+        "uid": "efwbf6pdfss1sa",
+        "title": "Machines disk latency high",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host, name) (diskio_io_await{name!~\"zram.*|dm-.*|md.*|loop.*|sd[a-z][0-9]+|vd[a-z][0-9]+|xvd[a-z][0-9]+|nvme[0-9]+n[0-9]+p[0-9]+\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}} {{name}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      100
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "15m",
+        "annotations": {
+          "description": "Physical disk I/O await remains above 100 ms for fifteen minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "machines-systemd",
+    "folder": "Machines",
+    "interval": "1m",
+    "rules": [
+      {
+        "uid": "66d45539e31de5",
+        "title": "Machines failed systemd units",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host, name) (systemd_units_active_code{active=\"failed\"})",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}} {{name}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "for": "1m",
+        "annotations": {
+          "description": "The unit is in the failed state. Inspect it with: systemctl status {{ $labels.name }} and journalctl -u {{ $labels.name }} -b",
+          "summary": "systemd unit {{ $labels.name }} failed on {{ $labels.machine }}"
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  },
+  {
+    "orgId": 1,
+    "name": "machines-time",
+    "folder": "Machines",
+    "interval": "5m",
+    "rules": [
+      {
+        "uid": "364956caeb553c",
+        "title": "Machines time synchronization",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host) ((min by(machine, host) (timex_synchronized) == bool 0) or (max by(machine, host) (abs(timex_offset_ns)) > bool 100000000))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "description": "A machine is unsynchronised or its clock offset exceeds 100 ms for five minutes."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  }
+]

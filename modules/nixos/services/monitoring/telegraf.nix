@@ -187,6 +187,28 @@
 
         systemd.services.telegraf.path = lib.optional (!isVM) pkgs.lm_sensors;
 
+        # --- grafana ---
+
+        services.grafana.provision = {
+          dashboards.settings.providers = [
+            {
+              name = "machines";
+              folder = "Machines";
+              options.path = ./machines.dashboard.json;
+            }
+          ]
+          ++ lib.optional postgresqlEnabled {
+            name = "postgresql";
+            folder = "Database";
+            options.path = ./postgresql.dashboard.json;
+          };
+          alerting.rules.settings.groups =
+            lib.importJSON ./machines.alerts.json
+            ++ lib.optionals (!isVM) (lib.importJSON ./smart.alerts.json)
+            ++ lib.optionals postgresqlEnabled (lib.importJSON ./postgresql.alerts.json)
+            ++ lib.optionals redisEnabled (lib.importJSON ./redis.alerts.json);
+        };
+
         services.postgresql.ensureUsers = lib.mkIf postgresqlEnabled [
           {
             name = "telegraf";

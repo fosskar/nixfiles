@@ -36,5 +36,13 @@
           if lib.elemAt match 1 != null then lib.elemAt match 1 else lib.elemAt match 3
         )
       ) config.security.audit.rules;
+
+      services.grafana.provision.dashboards.settings.providers = [
+        {
+          name = "audit";
+          folder = "Security";
+          options.path = ./audit.dashboard.json;
+        }
+      ];
     };
 }

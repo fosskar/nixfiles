@@ -75,6 +75,14 @@
           }
         ];
 
+        services.grafana.provision.dashboards.settings.providers = [
+          {
+            name = "crowdsec";
+            folder = "Security";
+            options.path = ./crowdsec.dashboard.json;
+          }
+        ];
+
         environment.etc."crowdsec/config.yaml".source = configFile;
 
         systemd.services = {

@@ -263,6 +263,14 @@ in
         }
       ];
 
+      services.grafana.provision.dashboards.settings.providers = [
+        {
+          name = "llama-cpp";
+          folder = "Machines";
+          options.path = ./llama-cpp.dashboard.json;
+        }
+      ];
+
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
         reverse_proxy ${listenUrl}
       '';

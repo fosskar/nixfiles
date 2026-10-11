@@ -148,6 +148,14 @@
                 ];
 
                 networking.firewall.allowedTCPPorts = [ niks3Port ];
+
+                services.grafana.provision.dashboards.settings.providers = [
+                  {
+                    name = "niks3";
+                    folder = "Nix";
+                    options.path = self.inputs.niks3.dashboards.niks3;
+                  }
+                ];
               };
           };
       };

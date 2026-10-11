@@ -29,6 +29,14 @@
         }
       ];
 
+      services.grafana.provision.dashboards.settings.providers = [
+        {
+          name = "fencr";
+          folder = "Machines";
+          options.path = ./fencr.dashboard.json;
+        }
+      ];
+
       # a fresh checkpoint of every vm's state disk for borg
       clan.core.state.agent-vms = {
         folders = [ "/var/backup/agent-vms" ];

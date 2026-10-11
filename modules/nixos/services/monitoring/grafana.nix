@@ -17,6 +17,25 @@
 
     in
     {
+      # dashboards and alert rules are declared by the module that owns the
+      # data, on every host that runs it; collector.nix adds the other hosts'.
+      # identical contributions from several hosts collapse here, at read time
+      options.services.grafana.provision = {
+        dashboards = lib.mkOption {
+          type = lib.types.submodule {
+            options.settings = lib.mkOption {
+              apply =
+                settings:
+                if settings == null then null else settings // { providers = lib.unique settings.providers; };
+            };
+          };
+        };
+        alerting.rules.settings = lib.mkOption {
+          apply =
+            settings: if settings == null then null else settings // { groups = lib.unique settings.groups; };
+        };
+      };
+
       config = lib.mkIf config.services.grafana.enable {
         # --- secrets ---
 
@@ -102,21 +121,6 @@
             pkgs.grafanaPlugins.prometheus
             pkgs.grafanaPlugins.victoriametrics-logs-datasource
           ];
-
-          provision.dashboards.settings = {
-            apiVersion = 1;
-            providers = [
-              {
-                name = "nixos";
-                orgId = 1;
-                type = "file";
-                disableDeletion = false;
-                editable = true;
-                options.path = "/etc/grafana-dashboards";
-                options.foldersFromFilesStructure = true;
-              }
-            ];
-          };
 
           settings = {
             server = {

@@ -44,6 +44,8 @@
         services.grafana.provision.datasources.settings.datasources = [
           {
             name = "VictoriaLogs";
+            # alert rules reference the datasource by uid
+            uid = "PD775F2863313E6C7";
             type = "victoriametrics-logs-datasource";
             access = "proxy";
             url = "http://127.0.0.1:${listenPort}";

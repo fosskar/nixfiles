@@ -67,10 +67,14 @@
           );
         };
 
+        services.grafana.provision.alerting.rules.settings.groups = lib.importJSON ./victoria.alerts.json;
+
         # grafana datasource
         services.grafana.provision.datasources.settings.datasources = [
           {
             name = "VictoriaMetrics";
+            # alert rules reference the datasource by uid
+            uid = "P4169E866C3094E38";
             type = "prometheus";
             access = "proxy";
             url = "http://${config.services.victoriametrics.listenAddress}";

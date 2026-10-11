@@ -29,7 +29,10 @@ Server role:
 
 - imports repo monitoring modules for exporters, Grafana, VictoriaLogs, and VictoriaMetrics
 - builds VictoriaMetrics scrape configs from client role assignments
-- provisions the Grafana dashboards in `dashboards/<folder>/` into Grafana folders of the same name, plus the niks3 dashboard from the `niks3` input
+- provisions the router dashboard and alert rules for `extraTelegrafTargets`
+
+Other dashboards and alert rules are declared by the module that owns their data, through `services.grafana.provision`, on whichever machine runs it. The Grafana host collects them from all machines (`modules/nixos/services/monitoring/collector.nix`).
+
 - opens the VictoriaLogs port on `ygg`
 - enables Grafana and ZFS exporter
 

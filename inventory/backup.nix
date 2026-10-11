@@ -58,6 +58,12 @@ _: {
               {
                 services.borgbackup.jobs.storagebox.environment.BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK = "no";
               }
+              (
+                { lib, ... }:
+                {
+                  services.grafana.provision.alerting.rules.settings.groups = lib.importJSON ./backup.alerts.json;
+                }
+              )
             ];
             machines = {
               "gateway".settings = {

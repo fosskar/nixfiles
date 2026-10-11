@@ -125,24 +125,6 @@
                   }) settings.extraTelegrafTargets;
                 };
 
-                # grafana turns each subdirectory into a folder; titles match the alert rule folders
-                dashboardEnabled = {
-                  "UPS/ups.json" = config.power.ups.enable && config.power.ups.upsd.enable;
-                };
-                dashboardFiles = lib.filter (file: dashboardEnabled.${file} or true) (
-                  lib.concatMap (
-                    folder:
-                    map (file: "${folder}/${file}") (builtins.attrNames (builtins.readDir ./dashboards/${folder}))
-                  ) (builtins.attrNames (builtins.readDir ./dashboards))
-                );
-                dashboardSources = {
-                  "Nix/niks3.json" = self.inputs.niks3.dashboards.niks3;
-                }
-                // lib.genAttrs dashboardFiles (file: "${./dashboards}/${file}");
-                mkDashboard = file: source: {
-                  name = "grafana-dashboards/${file}";
-                  value = { inherit source; };
-                };
               in
               {
                 # server-only modules; telegraf and journald upload come via the client role
@@ -171,9 +153,17 @@
 
                 networking.firewall.interfaces.ygg.allowedTCPPorts = [ logsPort ];
 
-                environment.etc = lib.mkIf config.services.grafana.enable (
-                  lib.mapAttrs' mkDashboard dashboardSources
-                );
+                # the router is not a nixos host; its telegraf target is declared here
+                services.grafana.provision = {
+                  dashboards.settings.providers = [
+                    {
+                      name = "router";
+                      folder = "Router";
+                      options.path = ./router.dashboard.json;
+                    }
+                  ];
+                  alerting.rules.settings.groups = lib.importJSON ./router.alerts.json;
+                };
 
                 services.prometheus.exporters.zfs.enable = lib.mkDefault (
                   settings.exporter.zfs.enable && (config.boot.supportedFilesystems.zfs or false)
