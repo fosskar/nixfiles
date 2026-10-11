@@ -2,7 +2,9 @@
   <img src="docs/logo/logo.svg" width="120px" alt="nixfiles logo"/>
 </p>
 
-[![nixbot](https://nixbot.fosskar.eu/badge/a90f69ca-78e7-4d60-b303-b411de630dcc.svg)](https://nixbot.fosskar.eu/repos/github/fosskar/nixfiles)
+<p align="center">
+  <a href="https://nixbot.fosskar.eu/repos/github/fosskar/nixfiles"><img src="https://nixbot.fosskar.eu/badge/a90f69ca-78e7-4d60-b303-b411de630dcc.svg" alt="nixbot"/></a>
+</p>
 
 personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). modules are aspect-oriented: feature modules export reusable aspects through `flake.modules.*`, while clan roles and machine imports compose them into concrete systems. the repo covers host configuration, user environments, secrets, storage, networking, and self-hosted services.
 
@@ -30,16 +32,6 @@ users/            per-user home-manager composition
 packages/         local packages, exposed as flake packages and pkgs.local.*
 openwrt/          router and access point config, rendered to uci
 templates/        flake templates for new projects, modules, and clan services
-```
-
-```mermaid
-flowchart LR
-  aspect["feature module<br/>flake.modules.&lt;class&gt;.&lt;name&gt;"]
-  role["clan inventory<br/>tags and service roles"]
-  host["machines/&lt;name&gt;<br/>imports"]
-  machine[nixos machine]
-  aspect --> role --> machine
-  aspect --> host --> machine
 ```
 
 imports are the enable mechanism. each service module also carries its own dashboard tile, health check, and reverse proxy route; homepage and gatus collect them across hosts, so there is no central service registry.
