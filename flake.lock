@@ -1098,11 +1098,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791657752,
-        "narHash": "sha256-mC6ju1LEXiRyP9H7yG4lJYaREdfqpgTicok1TM7QmNY=",
+        "lastModified": 1791709940,
+        "narHash": "sha256-MTdEvtv10r3Po/YTg72W2QlmKo2Aat2L2NJHSxxvmwc=",
         "owner": "fosskar",
         "repo": "nixlens",
-        "rev": "063e7bd72a31d74401b720aa8d77cc3a86213596",
+        "rev": "a88e652beed6166cb0a5462c0037074d9842f394",
         "type": "github"
       },
       "original": {
@@ -1787,11 +1787,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791666113,
-        "narHash": "sha256-EPEtPr6adRLzx9gS0RAvDeVBT2xhotB24T0dgzuJBrk=",
+        "lastModified": 1791710603,
+        "narHash": "sha256-OvcOPXlW5TIq16qWX8EHi/ltV8jBwxH1YhidpJM+sUU=",
         "owner": "fosskar",
         "repo": "wiki",
-        "rev": "7837650d0a0d01c0adf986d7763ac47b96cf6cb9",
+        "rev": "468af94d7cf6e30435d602c38adefc91c4e38efa",
         "type": "github"
       },
       "original": {
