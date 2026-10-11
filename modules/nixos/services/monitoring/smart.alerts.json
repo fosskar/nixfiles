@@ -46,9 +46,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      1
-                    ],
+                    "params": [1],
                     "type": "lt"
                   },
                   "operator": {
@@ -130,9 +128,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      9
-                    ],
+                    "params": [9],
                     "type": "lt"
                   },
                   "operator": {
@@ -211,9 +207,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {

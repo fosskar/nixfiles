@@ -45,9 +45,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {

@@ -45,9 +45,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {
@@ -125,9 +123,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      1
-                    ],
+                    "params": [1],
                     "type": "lt"
                   },
                   "operator": {
@@ -214,9 +210,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      85
-                    ],
+                    "params": [85],
                     "type": "gt"
                   },
                   "operator": {
@@ -295,9 +289,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      90
-                    ],
+                    "params": [90],
                     "type": "gt"
                   },
                   "operator": {
@@ -384,9 +376,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {
@@ -469,9 +459,7 @@
                     "type": "and"
                   },
                   "query": {
-                    "params": [
-                      "B"
-                    ]
+                    "params": ["B"]
                   },
                   "reducer": {
                     "params": [],
@@ -506,9 +494,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {
@@ -594,9 +580,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {
@@ -683,9 +667,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      10
-                    ],
+                    "params": [10],
                     "type": "lt"
                   },
                   "operator": {
@@ -764,9 +746,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      25
-                    ],
+                    "params": [25],
                     "type": "gt"
                   },
                   "operator": {
@@ -853,9 +833,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      100
-                    ],
+                    "params": [100],
                     "type": "gt"
                   },
                   "operator": {
@@ -942,9 +920,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {
@@ -1032,9 +1008,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {

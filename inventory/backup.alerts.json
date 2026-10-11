@@ -50,9 +50,7 @@
                     "type": "and"
                   },
                   "query": {
-                    "params": [
-                      "B"
-                    ]
+                    "params": ["B"]
                   },
                   "reducer": {
                     "params": [],
@@ -87,9 +85,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      1
-                    ],
+                    "params": [1],
                     "type": "lt"
                   },
                   "operator": {
@@ -173,9 +169,7 @@
                     "type": "and"
                   },
                   "query": {
-                    "params": [
-                      "B"
-                    ]
+                    "params": ["B"]
                   },
                   "reducer": {
                     "params": [],
@@ -210,9 +204,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      1
-                    ],
+                    "params": [1],
                     "type": "lt"
                   },
                   "operator": {

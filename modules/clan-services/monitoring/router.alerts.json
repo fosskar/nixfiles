@@ -45,9 +45,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      1
-                    ],
+                    "params": [1],
                     "type": "lt"
                   },
                   "operator": {
@@ -134,9 +132,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      10
-                    ],
+                    "params": [10],
                     "type": "gt"
                   },
                   "operator": {
@@ -215,9 +211,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0
-                    ],
+                    "params": [0],
                     "type": "gt"
                   },
                   "operator": {
@@ -296,9 +290,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0.5
-                    ],
+                    "params": [0.5],
                     "type": "gt"
                   },
                   "operator": {
@@ -377,9 +369,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [
-                      0.1
-                    ],
+                    "params": [0.1],
                     "type": "gt"
                   },
                   "operator": {
