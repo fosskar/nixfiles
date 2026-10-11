@@ -9,7 +9,7 @@ inventory.instances = {
     };
     roles.client.machines."machine".settings = {
       snapshotType = "zfs"; # or "btrfs"
-      folders = [ "/tank/apps" ];
+      folders = [ "/tank/apps/immich" ];
     };
   };
 };
@@ -33,7 +33,7 @@ This gives borg a stable point-in-time view while services keep writing to the l
 
 ### `zfs`
 
-For each configured folder, the service finds the mounted ZFS dataset, creates a snapshot named `snapshotName` and mounts it read-only below `/run/snapshot-backup`. A dataset with child datasets is refused unless every child is a configured folder too.
+For each configured folder, the service finds the mounted ZFS dataset, creates a snapshot named `snapshotName` and mounts it read-only below `/run/snapshot-backup`. `postBackupScript` unmounts it and destroys the snapshot. A dataset with child datasets is refused unless every child is a configured folder too, because the parent's snapshot shows child mount points as empty directories.
 
 Live folder:
 
@@ -41,13 +41,26 @@ Live folder:
 /tank/apps/immich
 ```
 
-Backup source:
+Backup source and archive path:
 
 ```text
-/run/snapshot-backup/tank/apps/immich
+/run/snapshot-backup/./tank/apps/immich   # passed to borg create
+tank/apps/immich                          # stored in the archive
 ```
 
-The snapshot is mounted explicitly instead of read through `.zfs/snapshot/borg-backup`: the borg job runs in its own mount namespace (`ProtectSystem=strict`), where `.zfs/snapshot` automounts do not work, and a host automount expires after `zfs_expire_snapshot` (300 s) while borg is still busy with earlier paths. borg then archives an empty directory without an error, as happened on 2026-10-11.
+#### Why the snapshot is mounted explicitly
+
+ZFS exposes snapshots under `<dataset>/.zfs/snapshot/<name>` and mounts them on first access. Reading that path directly from borg is unreliable:
+
+- the ZFS module performs the automount by running `mount` in the initial mount namespace, so a process in its own mount namespace cannot trigger it ([openzfs/zfs#3512](https://github.com/openzfs/zfs/issues/3512)). The clan-core borg job runs with `ProtectSystem=strict`, which gives it such a namespace
+- ZFS unmounts an automounted snapshot again once it was not accessed for `zfs_expire_snapshot` seconds (default 300, [zfs(4)](https://openzfs.github.io/openzfs-docs/man/master/4/zfs.4.html)). the unmount propagates into the borg job's namespace
+- triggering the automount on the host before borg starts therefore only works while borg reaches the dataset before it expires. with several datasets, the ones borg reaches later stay idle while earlier paths are read, expire, and are archived as empty directories without any error. this happened on 2026-10-11 after `tank/apps` was split into per-service datasets
+
+An explicit `mount -t zfs -o ro <dataset>@<snapshot> <dir>` does not expire and is visible in the borg job's namespace, because it exists before the job starts. borgmatic's ZFS hook works the same way: it snapshots the dataset, temporarily mounts the snapshot in its runtime directory and stores the files at their original path ([borgmatic ZFS docs](https://torsion.org/borgmatic/reference/configuration/data-sources/zfs/)).
+
+#### Archive paths
+
+The folder is passed to borg as `/run/snapshot-backup/./<folder>`. borg 1.4 strips everything left of `/./` from archived paths (the "slashdot hack", [borg create](https://borgbackup.readthedocs.io/en/1.4-maint/usage/create.html)), so the archive stores the live path and excludes match it, e.g. `sh:**/tank/apps/immich/encoded-video`. The mount point is the same on every run, which keeps borg's files cache valid; borgmatic recommends a fixed runtime directory for the same reason.
 
 ### `btrfs`
 

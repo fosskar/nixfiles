@@ -36,15 +36,15 @@ _: {
               { config, pkgs, ... }:
               let
                 snapshotName = "borg-backup";
-                # snapshots are mounted here explicitly: borg runs in its own mount
-                # namespace (ProtectSystem=strict), where .zfs/snapshot automounts do
-                # not work, and a host automount expires after zfs_expire_snapshot
-                # (300s) while borg is still busy with earlier paths
+                # zfs unmounts idle .zfs/snapshot automounts (zfs_expire_snapshot), and
+                # the borg job's own mount namespace cannot trigger them again
+                # (openzfs#3512), so snapshots are mounted here explicitly. see README
                 mountRoot = "/run/snapshot-backup";
                 state =
                   if settings.snapshotType == "zfs" then
                     {
-                      folders = map (folder: "${mountRoot}${folder}") settings.folders;
+                      # borg strips everything left of /./, so archives keep the live path
+                      folders = map (folder: "${mountRoot}/.${folder}") settings.folders;
                       preBackupScript = ''
                         fail=0
                         datasets=""
