@@ -79,6 +79,15 @@ imports are the enable mechanism. each feature owns its integrations: dashboard 
 - [local packages](packages/) - packages not in nixpkgs
 - [templates](templates/) - flake templates
 
+## ai
+
+i work heavily with coding agents on this repo, and say so openly. agent output still has to read like something i would write, so:
+
+- [one instruction file](modules/llm/AGENTS.md) for every agent, deployed by home-manager: plain prose, no filler or hedging, exact identifiers instead of paraphrase, no comments that restate code, kernel-style commit messages
+- [prose-lint](packages/prose-lint/) flags llm writing tells in markdown and in code comments; it runs as part of `nix fmt`
+- changes are verified with builds, evals, and checks
+- every change is reviewed before it lands
+
 ## decisions
 
 notable migrations and tradeoffs get a decision record in [docs/decisions](docs/decisions/):
