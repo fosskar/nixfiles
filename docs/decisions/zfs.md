@@ -2,7 +2,7 @@
 
 every zfs dataset this repo mounts uses `mountpoint=legacy` and is declared in `fileSystems`. systemd owns all zfs mounts; `zfs-mount.service` owns none.
 
-this covers the disko-managed root pool `znixos` and the hand-made data pool `tank` on `nixbox`.
+this covers the disko-managed root pool `znixos` and the hand-made data pool `tank` on `nixbox`. datasets on data pools such as `tank` are declared with `nixfiles.zfs.datasets` (`modules/nixos/filesystems/zfs/datasets.nix`), which generates the `fileSystems` entries.
 
 ## options considered
 
@@ -42,16 +42,53 @@ native-only via `extraPools` was rejected for this reason: `zfs mount -a` mounts
 
 2026-10-09: `tank` was switched from legacy to native mountpoints with `zfsutil` in `fileSystems`. on the next boot `zfs mount -a` won the race; `tank.mount` failed with `zfs_mount_at() failed: mountpoint or dataset is busy`, the child `.mount` units failed on dependency, and about 30 services with `RequiresMountsFor=/tank/...` (garage, opencloud, the arr stack, jellyfin, …) did not start. the change was reverted the same day with `zfs set -u mountpoint=legacy tank`.
 
-## adding a dataset
+2026-10-10: splitting `tank` into per-service datasets changed `zfs-import-tank.service` on every deploy. each switch stopped it, which unmounted all of `tank` and restarted every service on it for a few seconds; see [import unit restarts](#import-unit-restarts).
 
-1. `zfs create -o mountpoint=legacy tank/<name>`. children of a legacy dataset inherit `legacy`, so a plain `zfs create` works too.
-2. add the `fileSystems."/tank/<name>"` entry (`fsType = "zfs"`, `options = [ "nofail" ]`).
-3. services using it need `RequiresMountsFor=/tank/<name>`.
+## `nixfiles.zfs.datasets`
 
-gotcha: a legacy dataset without a `fileSystems` entry is never mounted. a service then writes into the plain directory on the parent dataset, and snapshots, quotas and properties of the new dataset do not apply. check with `findmnt /tank/<name>`.
+datasets on data pools are declared by name, next to the service that uses them or in the machine config:
+
+```nix
+nixfiles.zfs.datasets."tank/apps/immich".properties = {
+  recordsize = "1M";
+  "com.sun:auto-snapshot" = "true";
+};
+```
+
+for each dataset the module generates:
+
+- a `fileSystems` entry at `/<name>` (or `mountPoint`) with `nofail` and `x-systemd.before=local-fs.target`
+- a oneshot `zfs-dataset-<name>.service`, ordered after `zfs-import-<pool>` and before the mount, that creates the dataset with `mountpoint=legacy` and the properties if it is missing, and otherwise re-applies the properties with `zfs set`
+
+behaviour:
+
+- datasets are never destroyed. removing a property from nix does not reset it in the pool; set it to `none` or `zfs inherit` it by hand
+- the oneshot refuses to create a dataset over a non-empty directory, which would hide the data below the new mount. the mount then fails and its services do not start. existing directories are migrated by hand (copy into the new dataset, swap, then declare it)
+- `mountPoint = null` creates the dataset with `mountpoint=none` and no `fileSystems` entry, e.g. `tank/reserved`
+- datasets on pools imported in the initrd (root pools such as `znixos`) are rejected; disko manages those
+- the oneshot is only wanted by its mount, not required, and restarts without stopping first, so a property change on switch never unmounts anything
+
+### mount ordering
+
+`nofail` keeps a failed mount from failing the boot, but also drops the mount's ordering before `local-fs.target`. `x-systemd.before=local-fs.target` restores it, so `systemd-tmpfiles-setup` and services see the mounted dataset. owner and mode of a dataset's top directory then come from the services' own tmpfiles rules (e.g. the nixpkgs immich module's `e /tank/apps/immich 0700 immich immich`), not from this module.
+
+services still need `RequiresMountsFor=` on their data path; some nixpkgs modules only require their state directory (immich needed an explicit `RequiresMountsFor` on its media location).
+
+### import unit restarts
+
+nixos's `zfs-import-<pool>.service` lists every mount of the pool in `Before=`, so adding or removing a dataset, or a zfs package update, changes the unit. switch then stopped it, which stopped every mount of the pool and every service on them. the module sets `restartIfChanged = false` on the import unit of each pool with declared datasets; the pool stays imported, so there is nothing to redo.
+
+### adding a dataset for a new service
+
+1. declare `nixfiles.zfs.datasets."tank/<path>"` with its properties
+2. make sure the service has `RequiresMountsFor=/tank/<path>` and a tmpfiles rule or `StateDirectory` for ownership
+3. deploy; switch creates and mounts the dataset before the service writes to it
+
+gotcha: a dataset created by hand without a declaration is never mounted. a service then writes into the plain directory on the parent dataset, and snapshots, quotas and properties of the new dataset do not apply. check with `findmnt /tank/<path>`.
 
 ## related
 
+- backups: `snapshot-backup` snapshots each folder's dataset on its own and refuses datasets whose child datasets are not backup folders themselves, so a parent that only holds child datasets (`tank/apps`) is not a backup folder
 - `/etc/zfs/zpool.cache` is persisted via preservation (`modules/nixos/boot/preservation/default.nix`), as the nixos manual recommends
 - `zfs-mount.service` stays enabled; with only legacy datasets it mounts nothing, and the paperless/papra bindfs mounts declare `x-systemd.requires=zfs-mount.service`
 
