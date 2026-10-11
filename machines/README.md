@@ -18,6 +18,40 @@ two-step bootstrap:
 
 ---
 
+## topology
+
+```mermaid
+flowchart TB
+  internet((internet))
+  storagebox[(hetzner storage box)]
+
+  subgraph hetzner
+    gateway["gateway<br/>traefik, crowdsec<br/>netbird server + proxy"]
+  end
+
+  subgraph home["home (openwrt)"]
+    subgraph lan["lan 192.168.10.0/24"]
+      desktop
+      lpt-titan
+    end
+    subgraph srv["srv 192.168.20.0/24"]
+      nixbox["nixbox<br/>caddy, authelia + lldap<br/>self-hosted services<br/>monitoring, llama.cpp, hermes"]
+      nixworker["nixworker<br/>nixbot, remote builder<br/>harmonia, niks3"]
+    end
+  end
+
+  internet -->|"*.fosskar.eu"| gateway
+  gateway -->|netbird proxy| nixbox
+  gateway -->|netbird proxy| nixworker
+  desktop & lpt-titan & gateway -.->|builds| nixworker
+  nixbox <-->|garage, ggml rpc| nixworker
+  nixbox & gateway -->|borgbackup| storagebox
+```
+
+all machines join netbird, yggdrasil, and wireguard (controller on gateway); nixbox and nixworker route the home lan for netbird peers. local services are served by caddy on nixbox under `*.nx3.eu`; public exposure is configured in the netbird ui, see [netbird-exposure](../docs/netbird-exposure.md).
+
+---
+
 ## networking
 
 ### IP allocation scheme

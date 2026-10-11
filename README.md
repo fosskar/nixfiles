@@ -95,6 +95,8 @@ notable migrations and tradeoffs get a decision record in [docs/decisions](docs/
 
 ## machines
 
+topology, networks, and per-machine details are in [machines/README.md](machines/README.md).
+
 | machine   | type        | description                | specs                                                                                          |
 | --------- | ----------- | -------------------------- | ---------------------------------------------------------------------------------------------- |
 | desktop   | desktop     | daily driver workstation   | dyi: ryzen 7 7800x3d, rx 7800xt, 32gb ddr5                                                     |
