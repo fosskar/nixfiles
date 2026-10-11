@@ -15,25 +15,91 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 - [preservation](https://github.com/nix-community/preservation) - opt-in state persistence with ephemeral roots; see [why preservation over impermanence](docs/decisions/state-persistence.md)
 - openwrt home network declarative router/ap management
 
-## highlights
+## layout
 
-some pieces worth a closer look:
+```
+inventory/        clan inventory: machines, tags, service instances and role assignment
+machines/<name>/  host-local composition, hardware, disks
+modules/
+  nixos/          nixos aspects: common roles, services, hardware, filesystems, boot
+  home-manager/   home-manager aspects: shell, cli, editors, desktop
+  clan-services/  reusable clan services with roles and vars
+  llm/            coding agent configs, skills, souls
+  flake-parts/    flake-level wiring: hosts, domains, packages, ci effects, openwrt
+users/            per-user home-manager composition
+packages/         local packages, exposed as flake packages and pkgs.local.*
+openwrt/          router and access point config, rendered to uci
+templates/        flake templates for new projects, modules, and clan services
+```
 
-- [hermes-agent deployments](modules/clan-services/hermes/) - self-contained clan service instances with isolated secrets, state, and networking on either a [microvm](modules/nixos/virtualization/agent-vm.nix) or a [nixos container](modules/nixos/virtualization/agent-container.nix)
-- [noctalia v5 plugins](modules/home-manager/desktop/noctalia/plugins/) - luau plugins for [noctalia-shell](https://github.com/noctalia-dev/noctalia-shell), shipped straight from the repo as a local plugin source
-- [pi-pack](https://github.com/fosskar/pi-pack) - shared pi extensions, skills, themes, and prompts
-- [local agent skills](modules/llm/skills/) - private skills merged with pi-pack skills by home-manager
-- [clan-services](modules/clan-services/) - reusable clan service modules with roles and vars
-- update automation - [scheduled effects](modules/flake-parts/effects.nix) plus an [updater pipeline](packages/updater/) keep flake inputs and local packages fresh with changelog-enriched prs, built and gated by nixbot ci
+```mermaid
+flowchart LR
+  aspect["feature module<br/>flake.modules.&lt;class&gt;.&lt;name&gt;"]
+  role["clan inventory<br/>tags and service roles"]
+  host["machines/&lt;name&gt;<br/>imports"]
+  machine[nixos machine]
+  aspect --> role --> machine
+  aspect --> host --> machine
+```
+
+imports are the enable mechanism. each service module also carries its own dashboard tile, health check, and reverse proxy route; homepage and gatus collect them across hosts, so there is no central service registry.
+
+## notable work
+
+**system & state**
+
+- [zfs snapshot before every switch](modules/nixos/filesystems/zfs/preswitch-snapshot.nix) - a broken migration rolls back to the moment before the switch
+- [ephemeral root](modules/nixos/boot/preservation/) - root rolled back on boot, state persisted explicitly through preservation
+- [immutable /etc](modules/nixos/boot/immutable.nix) - `/etc` as an erofs overlay
+- [snapshot-backed backups](modules/clan-services/snapshot-backup/) - filesystem snapshots as the source for borgbackup
+
+**local llm & agents**
+
+- [llama.cpp](modules/nixos/services/llama-cpp.nix) - local model router with pinned models; [model selection](docs/decisions/local-llama-model-selection.md)
+- [hermes](modules/clan-services/hermes/) - hermes agents as clan service instances, each sealed in a [fencr](https://github.com/fosskar/fencr) microvm sandbox
+- [agent tooling](modules/llm/) - coding agents configured from one place, with [pi-pack](https://github.com/fosskar/pi-pack) and [local skills](modules/llm/skills/)
+- [remote workspace](modules/home-manager/workspace/) - a headless dev host that uses the workstation's agents and browser through forwarded sockets
+
+**build & ci**
+
+- [nixbot](modules/nixos/services/nixbot/) ci with [scheduled effects](modules/flake-parts/effects.nix) and an [updater pipeline](packages/updater/) that opens update prs
+- [remote builds](modules/clan-services/nix-grpc-store/) over nix-grpc-store and self-hosted [binary caches](modules/clan-services/niks3/)
+
+**network & security**
+
+- [netbird](modules/clan-services/netbird/) - self-hosted overlay network and public ingress; [why netbird](docs/decisions/overlay-network.md)
+- sso with authelia and lldap; [why](docs/decisions/sso-stack.md)
+- [openwrt](openwrt/) - router and access points managed declaratively from nix
+- yubikey as openpgp ssh key; [why](docs/decisions/yubikey-openpgp-ssh.md)
+
+**observability**
+
+- [monitoring](modules/clan-services/monitoring/) - metrics, logs, dashboards, and alerts as a clan service
+
+**desktop**
+
+- niri with [noctalia-shell](https://github.com/noctalia-dev/noctalia-shell)
+- [noctalia v5 plugins](modules/home-manager/desktop/noctalia/plugins/) - luau plugins shipped straight from the repo as a local plugin source
+
+**everything else**
+
+- [self-hosted services](modules/nixos/services/)
 - [local packages](packages/) - packages not in nixpkgs
+- [templates](templates/) - flake templates
 
 ## decisions
 
-notable migrations and tradeoffs get a decision record in [docs/decisions](docs/decisions/) — a taste:
+notable migrations and tradeoffs get a decision record in [docs/decisions](docs/decisions/):
 
-- [why preservation over impermanence?](docs/decisions/state-persistence.md)
-- [why an openpgp smartcard as ssh key, not fido2 or piv?](docs/decisions/yubikey-openpgp-ssh.md)
-- [why back to github after codeberg?](docs/decisions/code-forge.md)
+- [preservation over impermanence](docs/decisions/state-persistence.md)
+- [openpgp card ssh key over fido2 and piv](docs/decisions/yubikey-openpgp-ssh.md)
+- [github over codeberg](docs/decisions/code-forge.md)
+- [netbird over tailscale and pangolin](docs/decisions/overlay-network.md)
+- [authelia + lldap over pocket-id, kanidm, and the enterprise idps](docs/decisions/sso-stack.md)
+- [caddy over nginx](docs/decisions/reverse-proxy.md)
+- [opencloud over nextcloud + paperless](docs/decisions/personal-cloud.md)
+- [local llama.cpp model selection](docs/decisions/local-llama-model-selection.md)
+- [zfs: legacy mountpoints for every mounted dataset](docs/decisions/zfs.md)
 
 ## machines
 
@@ -63,7 +129,3 @@ notable migrations and tradeoffs get a decision record in [docs/decisions](docs/
 - [pinpox nixos-config](https://github.com/pinpox/nixos)
 - [ryan4yin nix-config](https://github.com/ryan4yin/nix-config)
 - [sini nix-config](https://github.com/sini/nix-config)
-
-## license
-
-[MIT](LICENSE)
