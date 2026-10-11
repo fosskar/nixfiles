@@ -1,6 +1,6 @@
 # machines
 
-all machines use [preservation](../docs/decisions/state-persistence.md) (ephemeral root, opt-in state persistence).
+all machines except nixworker use [preservation](../docs/decisions/state-persistence.md) (ephemeral root, opt-in state persistence).
 
 ## configuration model
 
@@ -85,22 +85,13 @@ the laptop keeps DHCP enabled so it works on other networks.
 
 daily driver workstation (ryzen 7 7800x3d, rx 7800xt, 32gb ddr5)
 
-**desktop:**
-
-- niri wayland compositor
-- low latency pipewire audio
-- yubikey u2f auth
-
-**dev/gaming:**
-
-- docker + podman
+- niri with noctalia-shell and the noctalia greeter
+- btrfs root, systemd-boot
+- amd gpu with lact, opencl; amd cpu with `amd_pstate`
 - steam, gamemode, gamescope
-
-**hardware:**
-
-- amd gpu (lact for fan control, opencl, vulkan)
-- amd cpu (zenpower, zenstates)
-- tailscale mesh vpn
+- docker and podman
+- yubikey as openpgp ssh key and u2f
+- hermes and buzz desktop clients
 
 ---
 
@@ -108,173 +99,59 @@ daily driver workstation (ryzen 7 7800x3d, rx 7800xt, 32gb ddr5)
 
 framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 
-**desktop:**
-
-- niri wayland compositor
-- low latency pipewire audio
-- fingerprint auth (fprintd)
-- yubikey u2f auth
-
-**hardware:**
-
-- nixos-hardware framework-amd-ai-300-series
-- bcachefs root filesystem
-- secure boot via lanzaboote
-- amd igpu (no lact/opencl needed)
-- tuned with power-profiles-daemon integration
-- tailscale mesh vpn
+- niri with noctalia-shell and the noctalia greeter
+- nixos-hardware `framework-amd-ai-300-series`, fw-fanctrl
+- encrypted bcachefs root, secure boot via lanzaboote
+- fingerprint auth, usbguard, yubikey u2f and lock on removal
+- ssync peer with nixworker
+- hermes and buzz desktop clients
 
 ---
 
 ## nixbox
 
-home server at `192.168.20.200` (ryzen 7 5700x, 64gb, nvidia rtx pro 4000, zfs)
+home server (ryzen 7 5700x, 64gb, nvidia rtx pro 4000 blackwell sff, zfs)
 
-### infrastructure
+**storage:** zfs root pool plus data pool `tank`. datasets are declared with `nixfiles.zfs.datasets` and use legacy mountpoints, see [zfs](../docs/decisions/zfs.md). `tank/scratch` holds rebuildable data and is excluded from auto snapshots; `tank/reserved` is a never-mounted reservation.
 
-| service    | port   | domain    | notes                     |
-| ---------- | ------ | --------- | ------------------------- |
-| caddy      | 80/443 | \*.nx3.eu | reverse proxy, acme certs |
-| postgresql | 5432   | -         | database backend          |
+**infrastructure:** caddy for `*.nx3.eu`, postgresql, garage node, ups primary (eaton ellipse pro via nut)
 
-**storage:**
+**auth:** authelia (sso, oidc provider) and lldap; [why](../docs/decisions/sso-stack.md)
 
-- zfs pool `tank` with datasets: apps/{garage,immich,opencloud}, media, media/music, backup, scratch (legacy mountpoints, mounted via `fileSystems`), plus `reserved` (500G `refreservation`, never mounted)
-- `scratch` holds rebuildable working data (protomaps planet download) and has `com.sun:auto-snapshot=false`
-- media dirs: `/tank/media/{books,movies,music,podcasts,tv}`
+**monitoring:** victoriametrics, victorialogs, grafana, telegraf, beszel hub, gatus, homepage, nixlens hub
 
-**ups:** eaton ellipse pro via nut (usbhid-ups)
+**llm & agents:** llama.cpp on the rtx pro 4000, offloading to nixworker over ggml rpc; hermes agents in fencr sandboxes; mcp servers
 
-### auth
+**media:** jellyfin, seerr, immich, navidrome, audiobookshelf, and the arr stack (prowlarr, sonarr, radarr, lidarr, chaptarr, bazarr, sabnzbd, recyclarr)
 
-| service  | port  | domain          | notes                  |
-| -------- | ----- | --------------- | ---------------------- |
-| lldap    | 17170 | ldap.nx3.eu     | ldap directory         |
-| authelia | 9091  | auth.fosskar.eu | sso/2fa, oidc provider |
+**apps:** opencloud with collabora and radicale, vaultwarden, matrix (continuwuity), buzz relay, miniflux, searxng, kiwix, dawarich, protomaps, and smaller tools
 
-### monitoring
+**other:** talos vm for kubernetes experiments
 
-| service         | port       | domain         | notes                             |
-| --------------- | ---------- | -------------- | --------------------------------- |
-| beszel          | 8090/18876 | beszel.nx3.eu  | lightweight monitoring            |
-| victoriametrics | -          | vm.nx3.eu      | tsdb, scrapes openwrt nodes       |
-| grafana         | -          | grafana.nx3.eu | dashboards                        |
-| telegraf        | -          | -              | system, zfs, upsd, sensors, smart |
-| victorialogs    | -          | -              | log database                      |
-
-### media
-
-| service   | port | domain           | notes              |
-| --------- | ---- | ---------------- | ------------------ |
-| jellyfin  | 8096 | jellyfin.nx3.eu  | media server       |
-| seerr     | 5055 | seerr.nx3.eu     | request management |
-| immich    | 2283 | immich.nx3.eu    | photo management   |
-| navidrome | 4533 | navidrome.nx3.eu | music streaming    |
-
-### arr stack
-
-| service   | port | domain          | notes                      |
-| --------- | ---- | --------------- | -------------------------- |
-| prowlarr  | 9696 | prowlarr.nx3.eu | indexer manager            |
-| sonarr    | 8989 | sonarr.nx3.eu   | tv shows                   |
-| radarr    | 7878 | radarr.nx3.eu   | movies                     |
-| lidarr    | 8686 | lidarr.nx3.eu   | music                      |
-| bazarr    | 6767 | -               | subtitles                  |
-| sabnzbd   | 8080 | sabnzbd.nx3.eu  | usenet client              |
-| recyclarr | -    | -               | trash guides sync (weekly) |
-
-all services run as `media` group with umask 0027
-
-### documents & security
-
-| service     | port | domain       | notes                         |
-| ----------- | ---- | ------------ | ----------------------------- |
-| vaultwarden | 8222 | vault.nx3.eu | password manager (postgresql) |
-
-### ai/llm
-
-| service   | port  | notes                       |
-| --------- | ----- | --------------------------- |
-| llama-cpp | 18080 | cuda on nvidia rtx pro 4000 |
-
-### networking
-
-| service  | port | domain          | notes                              |
-| -------- | ---- | --------------- | ---------------------------------- |
-| netbird  | -    | -               | mesh vpn client and routing server |
-| homepage | -    | home.nx3.eu     | dashboard                          |
-| opensoho | 8091 | opensoho.nx3.eu | openwrt device controller          |
-
-### backup
-
-borgbackup with zfs snapshots:
-
-- `/persist` - system state
-- `/tank/apps/immich` - photo library (without encoded-video and thumbs)
-- `/tank/apps/opencloud` - files
-- `/tank/backup` - service backups
-- `/tank/media/music` - music library, including own recordings
+**backup:** borgbackup to the hetzner storage box: service state and database dumps, plus zfs snapshots of selected `tank` datasets
 
 ---
 
 ## nixworker
 
-minisforum ms-a2 at `192.168.20.210` (ryzen 9 9955hx 16c/32t, 96gb ddr5)
+minisforum ms-a2 (ryzen 9 9955hx, intel arc pro b50, 96gb ddr5), btrfs root without preservation
 
-### ci/cd
-
-| service | port | domain            | notes                 |
-| ------- | ---- | ----------------- | --------------------- |
-| nixbot  | 8010 | nixbot.fosskar.eu | ci via nixbot, github |
-
-nixbot evaluates `.#checks` on push/PR: all nixos machines, packages, devshells.
-scheduled nixbot effects create per-input flake update PRs nightly.
-
-### nix infrastructure
-
-| service  | port | notes                                    |
-| -------- | ---- | ---------------------------------------- |
-| harmonia | 5000 | binary cache serving local nix store     |
-| ncps     | 8501 | proxy upstream caches (nixos, community) |
-
-other machines offload builds here via `nix.buildMachines` (remote builder).
-
-### dev
-
-- zed remote server via ssh (96gb ram for big evals, test vms)
-- `nix-ld` enabled for dynamic linker compat
+- nixbot ci; evaluates `.#checks` and runs scheduled effects for update prs
+- nix-grpc-store builder; other machines offload builds here
+- harmonia and niks3 binary caches, garage node
+- ggml rpc server on the arc for the llama.cpp router on nixbox
+- radicle mirror
+- headless dev host: workspace user, ssync peer, `nix-ld`
+- ups secondary
 
 ---
 
 ## gateway
 
-hetzner vps cx22 - reverse proxy and vpn edge
+hetzner vps cx23, public edge
 
-### services
-
-| service   | domain                     | notes                                      |
-| --------- | -------------------------- | ------------------------------------------ |
-| netbird   | nb.fosskar.eu              | management, signal, relay, dashboard       |
-| traefik   | fosskar.eu / \*.fosskar.eu | tls ingress and netbird proxy routing      |
-| crowdsec  | -                          | intrusion detection, nftables bouncer      |
-| wireguard | -                          | clan wireguard controller and peer gateway |
-
-**edge config:**
-
-- public service domain: nb.fosskar.eu
-- netbird proxy base domain: fosskar.eu
-- geoblock middleware on traefik
-- crowdsec integration with traefik and netbird-proxy bouncers
-
-**crowdsec collections:**
-
-- linux-lpe, traefik, iptables
-- sshd-impossible-travel
-- appsec-virtual-patching, appsec-generic-rules
-
-**traefik entrypoints:**
-
-- tcp-8428: victoriametrics remote write
-- tcp-9428: victorialogs
-
-**hardware:** srvos hetzner-cloud preset, tuned virtual-guest + network-latency
+- netbird server: management, signal, relay, dashboard, and the proxy for public `*.fosskar.eu` ingress
+- traefik with geoblock; crowdsec with traefik and firewall bouncers
+- wireguard controller
+- borgbackup of `/persist` to the hetzner storage box
+- srvos hetzner-cloud preset, sshd reachable only over the overlay networks
