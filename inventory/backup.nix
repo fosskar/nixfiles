@@ -78,8 +78,8 @@ _: {
                 startAt = "*-*-* 03:00:00";
                 exclude = exclude ++ [
                   # regenerable media; originals remain backed up: https://docs.immich.app/administration/backup-and-restore/#filesystem
-                  "sh:**/immich/.zfs/snapshot/*/encoded-video"
-                  "sh:**/immich/.zfs/snapshot/*/thumbs"
+                  "sh:**/snapshot-backup/tank/apps/immich/encoded-video"
+                  "sh:**/snapshot-backup/tank/apps/immich/thumbs"
                 ];
                 destinations = {
                   "storagebox" = {

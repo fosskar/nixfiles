@@ -33,19 +33,21 @@ This gives borg a stable point-in-time view while services keep writing to the l
 
 ### `zfs`
 
-For each configured folder, the service finds the mounted ZFS dataset and creates a recursive snapshot named `snapshotName`.
+For each configured folder, the service finds the mounted ZFS dataset, creates a snapshot named `snapshotName` and mounts it read-only below `/run/snapshot-backup`. A dataset with child datasets is refused unless every child is a configured folder too.
 
 Live folder:
 
 ```text
-/tank/apps
+/tank/apps/immich
 ```
 
 Backup source:
 
 ```text
-/tank/apps/.zfs/snapshot/borg-backup
+/run/snapshot-backup/tank/apps/immich
 ```
+
+The snapshot is mounted explicitly instead of read through `.zfs/snapshot/borg-backup`: the borg job runs in its own mount namespace (`ProtectSystem=strict`), where `.zfs/snapshot` automounts do not work, and a host automount expires after `zfs_expire_snapshot` (300 s) while borg is still busy with earlier paths. borg then archives an empty directory without an error, as happened on 2026-10-11.
 
 ### `btrfs`
 
@@ -67,7 +69,7 @@ Backup source:
 
 `clan backups restore` does not work for this state. The state `folders`
 point at snapshot paths, and those paths are not writable restore targets:
-`.zfs/snapshot` is a virtual read-only directory, and the btrfs staging
+the zfs snapshot mounts are read-only, and the btrfs staging
 path may be a leftover read-only snapshot. The module sets a
 `preRestoreScript` that fails with a pointer to this section. A direct
 `borgbackup-restore` invocation bypasses that guard and fails inside

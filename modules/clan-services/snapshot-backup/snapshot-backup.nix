@@ -36,10 +36,15 @@ _: {
               { config, pkgs, ... }:
               let
                 snapshotName = "borg-backup";
+                # snapshots are mounted here explicitly: borg runs in its own mount
+                # namespace (ProtectSystem=strict), where .zfs/snapshot automounts do
+                # not work, and a host automount expires after zfs_expire_snapshot
+                # (300s) while borg is still busy with earlier paths
+                mountRoot = "/run/snapshot-backup";
                 state =
                   if settings.snapshotType == "zfs" then
                     {
-                      folders = map (folder: "${folder}/.zfs/snapshot/${snapshotName}") settings.folders;
+                      folders = map (folder: "${mountRoot}${folder}") settings.folders;
                       preBackupScript = ''
                         fail=0
                         datasets=""
@@ -52,8 +57,8 @@ _: {
                           datasets="$datasets $dataset"
                         done
                         [ "$fail" -eq 0 ] || exit 1
-                        # borg reads only each dataset's own .zfs/snapshot directory, where
-                        # child dataset mountpoints appear empty; refuse to back up a
+                        # borg reads only each dataset's own snapshot, where child
+                        # dataset mountpoints appear empty; refuse to back up a
                         # dataset whose children are not listed as folders themselves.
                         for dataset in $datasets; do
                           for child in $(${config.boot.zfs.package}/bin/zfs list -H -o name -t filesystem -d 1 "$dataset" | tail -n +2); do
@@ -69,6 +74,11 @@ _: {
                         [ "$fail" -eq 0 ] || exit 1
                         for folder in ${lib.escapeShellArgs settings.folders}; do
                           dataset=$(${pkgs.util-linux}/bin/findmnt -n -t zfs -o SOURCE "$folder")
+                          target="${mountRoot}$folder"
+                          if ${pkgs.util-linux}/bin/mountpoint -q "$target"; then
+                            echo "unmounting leftover snapshot mount: $target"
+                            ${pkgs.util-linux}/bin/umount "$target"
+                          fi
                           snapshots=$(${config.boot.zfs.package}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset")
                           if printf '%s\n' "$snapshots" | grep -Fx -- "$dataset@${snapshotName}" >/dev/null; then
                             echo "deleting leftover zfs snapshot: $dataset@${snapshotName}"
@@ -76,7 +86,8 @@ _: {
                           fi
                           echo "creating zfs snapshot: $dataset@${snapshotName}"
                           ${config.boot.zfs.package}/bin/zfs snapshot "$dataset@${snapshotName}"
-                          ls "$folder/.zfs/snapshot/${snapshotName}" >/dev/null
+                          mkdir -p "$target"
+                          ${pkgs.util-linux}/bin/mount -t zfs -o ro "$dataset@${snapshotName}" "$target"
                         done
                       '';
                       postBackupScript = ''
@@ -86,6 +97,14 @@ _: {
                             echo "error: $folder is not a mounted zfs dataset" >&2
                             fail=1
                             continue
+                          fi
+                          target="${mountRoot}$folder"
+                          if ${pkgs.util-linux}/bin/mountpoint -q "$target"; then
+                            echo "unmounting snapshot: $target"
+                            if ! ${pkgs.util-linux}/bin/umount "$target"; then
+                              fail=1
+                              continue
+                            fi
                           fi
                           if ! snapshots=$(${config.boot.zfs.package}/bin/zfs list -H -t snapshot -o name -d 1 "$dataset"); then
                             fail=1
