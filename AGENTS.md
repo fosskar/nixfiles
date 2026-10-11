@@ -5,16 +5,16 @@
 - declarative first; no manual drift
 - no destructive remote actions unless explicit; do not run `clan machines update`, `reboot`, or `systemctl restart` by default
 - avoid Nix `with`; use explicit attrs
-- unused or unimported modules are ready-to-enable aspects, not dead code; never remove one only because nothing imports it
+- unused or unimported modules are ready-to-enable features, not dead code; never remove one only because nothing imports it
 
 ## architecture
 
-- feature modules export reusable aspects through `flake.modules.<class>.<name>`
+- feature modules export reusable features through `flake.modules.<class>.<name>`
 - imports are the primary enable mechanism; machine files and clan roles are composition edges
 - keep imports unconditional; guard conditional configuration instead
-- feature modules own related homepage, gatus, reverse proxy, desktop shortcut, and window-rule integration
+- feature modules own related homepage, gatus, reverse proxy, grafana dashboard and alert, desktop shortcut, and window-rule integration
 - collectors gather contributions; they are not broad roles or profiles
-- search all contributors before editing an exported collector; one aspect can have several contributors
+- search all contributors before editing an exported collector; one feature can have several contributors
 - `modules/` is auto-loaded by `import-tree`; an `_` prefix excludes a path
 - `nflib.scanPaths ./. { }` loads directories and `.nix` files except `default.nix`, `flake-module.nix`, `configuration.nix`, `disko.nix`, and `home.nix`; an `_` prefix has no special meaning
 
@@ -32,7 +32,7 @@ Non-obvious areas:
 
 - clan services export through `flake.modules."clan.service".<service>`; `modules/flake-parts/clan.nix` assigns that set to `clan.modules`
 - `modules/flake-parts/hosts.nix` is the single source of machine IPs
-- `modules/llm/` owns agent tooling, local-only skills, souls, and `pi-pack` wiring; pi installs applicable `pi-pack` extensions, and the `omp` aspect does the same for omp
+- `modules/llm/` owns agent tooling, local-only skills, souls, and `pi-pack` wiring; pi installs applicable `pi-pack` extensions, and the `omp` feature does the same for omp
 - `flake.llm.skills.<name>` exposes skills to NixOS consumers such as Hermes
 - OpenWrt configuration belongs in `openwrt/`, not on the device
 

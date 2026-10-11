@@ -4,7 +4,7 @@ all machines except nixworker use [preservation](../docs/decisions/state-persist
 
 ## configuration model
 
-machine configs are composition edges: feature/aspect modules are exposed through `flake.modules.*` and assembled per host through imports and clan inventory.
+machine configs are composition edges: feature modules are exposed through `flake.modules.*` and assembled per host through imports and clan inventory.
 
 ### bootstrap caveat
 

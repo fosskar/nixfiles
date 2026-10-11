@@ -24,7 +24,7 @@ machine config is code; human identity is state. that split is a design choice, 
 
 ## alternatives
 
-| aspect                | authelia + lldap                                    | pocket-id                                               | kanidm                            | authentik                          | keycloak             | zitadel              |
+| criterion             | authelia + lldap                                    | pocket-id                                               | kanidm                            | authentik                          | keycloak             | zitadel              |
 | --------------------- | --------------------------------------------------- | ------------------------------------------------------- | --------------------------------- | ---------------------------------- | -------------------- | -------------------- |
 | oidc provider         | yes                                                 | yes                                                     | yes                               | yes                                | yes                  | yes                  |
 | forward-auth built in | yes (caddy `forward_auth` endpoint)                 | no — docs point at tinyauth/oauth2-proxy/caddy-security | no                                | yes (embedded outpost)             | no                   | no                   |

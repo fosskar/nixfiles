@@ -6,13 +6,13 @@
   <a href="https://nixbot.fosskar.eu/repos/github/fosskar/nixfiles"><img src="https://nixbot.fosskar.eu/badge/a90f69ca-78e7-4d60-b303-b411de630dcc.svg" alt="nixbot"/></a>
 </p>
 
-personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). modules are aspect-oriented: feature modules export reusable aspects through `flake.modules.*`, while clan roles and machine imports compose them into concrete systems. the repo covers host configuration, user environments, secrets, storage, networking, and self-hosted services.
+personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). modules are feature-oriented: feature modules export reusable features through `flake.modules.*`, while clan roles and machine imports compose them into concrete systems. the repo covers host configuration, user environments, secrets, storage, networking, and self-hosted services.
 
 ## features
 
 - [clan-core](https://docs.clan.lol/) - machine inventory, secrets (sops-nix/age), disk partitioning (disko), service roles and [clan-services](modules/clan-services/)
 - [flake-parts](https://flake.parts/) - modular flake framework
-- aspect-oriented module structure - feature modules export aspects through `flake.modules.*`, composed through clan roles and machine imports
+- feature-oriented module structure - feature modules export features through `flake.modules.*`, composed through clan roles and machine imports
 - [home-manager](https://github.com/nix-community/home-manager) - user environments and desktop integration
 - [preservation](https://github.com/nix-community/preservation) - opt-in state persistence with ephemeral roots; see [why preservation over impermanence](docs/decisions/state-persistence.md)
 - openwrt home network declarative router/ap management
@@ -23,8 +23,8 @@ personal nixos infrastructure managed with [clan-core](https://docs.clan.lol/). 
 inventory/        clan inventory: machines, tags, service instances and role assignment
 machines/<name>/  host-local composition, hardware, disks
 modules/
-  nixos/          nixos aspects: common roles, services, hardware, filesystems, boot
-  home-manager/   home-manager aspects: shell, cli, editors, desktop
+  nixos/          nixos features: common roles, services, hardware, filesystems, boot
+  home-manager/   home-manager features: shell, cli, editors, desktop
   clan-services/  reusable clan services with roles and vars
   llm/            coding agent configs, skills, souls
   flake-parts/    flake-level wiring: hosts, domains, packages, ci effects, openwrt
@@ -34,7 +34,7 @@ openwrt/          router and access point config, rendered to uci
 templates/        flake templates for new projects, modules, and clan services
 ```
 
-imports are the enable mechanism. each service module also carries its own dashboard tile, health check, and reverse proxy route; homepage and gatus collect them across hosts, so there is no central service registry.
+imports are the enable mechanism. each feature owns its integrations: dashboard tile, health check, reverse proxy route, grafana dashboards, and alerts; homepage and gatus collect them across hosts, so there is no central service registry.
 
 ## notable work
 

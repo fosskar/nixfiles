@@ -1,5 +1,5 @@
 _: {
-  # yubikey card extras for gpg; import alongside `gpg` (the general aspect).
+  # yubikey card extras for gpg; import alongside `gpg` (the general feature).
   flake.modules.homeManager.yubikeyGpg =
     {
       lib,

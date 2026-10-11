@@ -2,7 +2,7 @@
 {
   # the engine plus this homelab's agent policy: model, voice, search backend,
   # plugins. identity, channels and skill selection come from the clan service
-  # composing this with its channel aspects
+  # composing this with its channel features
   flake.modules.nixos.hermesAgent =
     {
       config,

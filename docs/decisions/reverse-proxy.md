@@ -24,7 +24,7 @@ nginx could have been fixed instead - `security.acme` supports dns-01 wildcard, 
 
 these are properties of the software, not preferences:
 
-| aspect          | nginx                                                                                   | caddy                                                                                    |
+| criterion       | nginx                                                                                   | caddy                                                                                    |
 | --------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | tls by default  | opt-in; cipher suites, protocol versions, ocsp stapling, http→https redirect all manual | automatic https: modern tls defaults, ocsp stapling, redirect out of the box             |
 | acme            | external (`security.acme` / certbot / lego), cert paths wired into vhosts, reload hooks | built-in client: issuance, renewal, dns-01, in-process cert rotation without reload glue |

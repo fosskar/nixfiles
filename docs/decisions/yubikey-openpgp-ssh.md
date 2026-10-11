@@ -30,7 +30,7 @@ git signs with `gpg.format = ssh`, not OpenPGP signatures. this keeps the privat
 
 ## technical comparison
 
-| aspect                | openpgp auth key (chosen)                      | fido2 resident ssh key                       | piv ssh key                                       |
+| criterion             | openpgp auth key (chosen)                      | fido2 resident ssh key                       | piv ssh key                                       |
 | --------------------- | ---------------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
 | same key on many keys | yes - import one auth subkey onto each yubikey | no - each key is a distinct credential       | yes in theory - same key material importable      |
 | linux ssh agent path  | `gpg-agent` ssh support, first-class           | `ssh-agent`/`ssh-sk`, per-key identities     | needs opensc/pkcs#11; `yubikey-agent` doesn't fit |
@@ -63,6 +63,6 @@ accepted security tradeoff - touch off, long PIN cache: touch policy is off on a
 - `modules/nixos/hardware/yubikey/gpg-ssh.nix`: `gpg-agent` ssh support, disables the plain ssh agent, gpg smartcards, publishes `id_yubikey.pub` via clan vars.
 - `modules/home-manager/cli/git.nix`: `programs.git.signing.format = "ssh"`, sign by default.
 - `users/simon/signing.nix`: per-user `ssh-ed25519` signing key for git and jj.
-- `modules/home-manager/system/gpg.nix`: general `gpg`/`gpg-agent` aspect (hardened settings, pinentry, non-ssh cache ttls).
-- `modules/home-manager/system/yubikey-gpg.nix`: `yubikeyGpg` aspect with the card pubkey, `disable-ccid`, ssh support, and ssh cache ttls; imported alongside `gpg` by `users/simon`.
+- `modules/home-manager/system/gpg.nix`: general `gpg`/`gpg-agent` feature (hardened settings, pinentry, non-ssh cache ttls).
+- `modules/home-manager/system/yubikey-gpg.nix`: `yubikeyGpg` feature with the card pubkey, `disable-ccid`, ssh support, and ssh cache ttls; imported alongside `gpg` by `users/simon`.
 - `.envrc`: leaves `SOPS_AGE_KEY_CMD` unset so secret decryption uses the cached gpg path.

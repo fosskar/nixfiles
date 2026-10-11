@@ -1,6 +1,6 @@
 {
   # upstream publishes each vLLM release as a CUDA container before nixpkgs
-  # can package it (torch bump, nixpkgs #549327). This aspect runs that
+  # can package it (torch bump, nixpkgs #549327). This feature runs that
   # pinned image with Podman.
   flake.modules.nixos.vllm =
     {

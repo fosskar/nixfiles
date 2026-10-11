@@ -25,7 +25,7 @@ paperless-ngx is a full document-management system: ocr ingest pipelines, taggin
 
 ## technical comparison
 
-| aspect          | nextcloud                                                                         | opencloud                                                                           |
+| criterion       | nextcloud                                                                         | opencloud                                                                           |
 | --------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | runtime         | php-fpm + webserver + sql db + redis + cron jobs                                  | single go binary (embedded services)                                                |
 | metadata        | sql db (`oc_filecache`); files on disk invalid without db sync (`occ files:scan`) | posix storage driver: filesystem is the source of truth, external changes picked up |

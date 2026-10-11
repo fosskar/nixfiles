@@ -11,7 +11,7 @@ _: {
     in
     {
       # psd only reads browser definitions from its own share dir, so browser
-      # aspects add theirs here and get them copied into the package
+      # features add theirs here and get them copied into the package
       options.services.psd.extraBrowsers = lib.mkOption {
         type = lib.types.attrsOf lib.types.lines;
         default = { };

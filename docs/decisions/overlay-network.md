@@ -36,7 +36,7 @@ wireguard mesh with direct peer connections where possible, relay fallback other
 
 ## technical comparison
 
-| aspect             | tailscale                                   | pangolin                                            | netbird                                     |
+| criterion          | tailscale                                   | pangolin                                            | netbird                                     |
 | ------------------ | ------------------------------------------- | --------------------------------------------------- | ------------------------------------------- |
 | data plane         | wireguard (userspace wireguard-go only)     | wireguard tunnels to central node (newt)            | wireguard, kernel module when available     |
 | topology           | p2p mesh, derp relay fallback               | hub-and-spoke: all traffic hairpins through the vps | p2p mesh, turn relay fallback               |

@@ -1,5 +1,5 @@
 {
-  # base tuned aspect; profile selection lives in the tuned* variants
+  # base tuned feature; profile selection lives in the tuned* variants
   flake.modules.nixos.tuned =
     { lib, pkgs, ... }:
     {

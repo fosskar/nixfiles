@@ -192,7 +192,7 @@
                   lib.filterAttrs (name: provider: provider.enable && name != "local") settings.providers
                 );
 
-                # one entry per channel: the aspect modules it brings, the operator
+                # one entry per channel: the feature modules it brings, the operator
                 # prompts it needs, and the .env variables fed from those prompts.
                 # enabling a channel cannot leave one of them behind
                 channels = {

@@ -32,7 +32,7 @@ _: {
       self,
       ...
     }:
-    # hosts outside the clan (nixwork) import this aspect without the vars
+    # hosts outside the clan (nixwork) import this feature without the vars
     lib.optionalAttrs (osConfig ? clan) {
       programs.noctalia.settings = {
         storage = {

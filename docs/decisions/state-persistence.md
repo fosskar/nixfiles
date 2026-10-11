@@ -24,7 +24,7 @@ preservation generates pure systemd configuration - no interpreters needed at ru
 
 ### technical differences
 
-| aspect         | impermanence                    | preservation                          |
+| criterion      | impermanence                    | preservation                          |
 | -------------- | ------------------------------- | ------------------------------------- |
 | implementation | bash activation scripts         | static systemd mount units + tmpfiles |
 | initrd         | scripted or systemd             | systemd only                          |
