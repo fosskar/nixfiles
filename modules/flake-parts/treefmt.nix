@@ -56,6 +56,19 @@
           ];
           includes = [ "flake.nix" ];
         };
+        settings.formatter.prose-lint = {
+          command = self'.packages.prose-lint;
+          includes = [
+            "*.md"
+            "*.nix"
+            "*.sh"
+            "*.py"
+          ];
+          excludes = [
+            "templates/*"
+            "packages/prose-lint/fixtures/*"
+          ];
+        };
         programs = {
           nixfmt = {
             enable = true;
