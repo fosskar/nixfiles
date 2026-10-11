@@ -81,12 +81,7 @@ imports are the enable mechanism. each feature owns its integrations: dashboard 
 
 ## ai
 
-i work heavily with coding agents on this repo, and say so openly. people reading this repo should not have to wade through llm prose, so agent output has to read like something they want to read:
-
-- [one instruction file](modules/llm/AGENTS.md) for every agent, deployed by home-manager: plain prose, no filler or hedging, exact identifiers instead of paraphrase, no comments that restate code, kernel-style commit messages
-- [prose-lint](packages/prose-lint/) flags llm writing tells in markdown and in code comments; it runs as part of `nix fmt`
-- changes are verified with builds, evals, and checks
-- every change is reviewed before it lands
+i work heavily with ai coding agents, in this repo and elsewhere, and i am open about it. i also try not to annoy anyone with ai slop: my agents follow [shared writing instructions](modules/llm/AGENTS.md), [prose-lint](packages/prose-lint/) catches llm writing tells, and i review every change before it lands.
 
 ## decisions
 
