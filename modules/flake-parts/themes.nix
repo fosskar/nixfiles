@@ -3,7 +3,7 @@
   # home-manager modules via the self specialArg. palettes live under
   # self.themes.<name>; self.theme selects the active one, so consumers read
   # self.themes.${self.theme}.
-  flake.theme = "pi-jade";
+  flake.theme = "grey-teal";
 
   flake.themes.grey-teal = {
     fonts = {

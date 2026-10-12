@@ -18,7 +18,7 @@ _: {
           defaultModel = "claude-opus-5-5";
           hideThinkingBlock = true;
           followUpMode = "all";
-          theme = "pi-jade";
+          theme = "grey-teal";
           quietStartup = "header";
           collapseChangelog = true;
           enableInstallTelemetry = false;
