@@ -76,7 +76,7 @@
         // lib.optionalAttrs (bind.locked or false) { _props.allow-when-locked = true; }
       ) shellBinds;
 
-      mkPalette = mode: ansiNormalBlack: ansiNormalWhite: ansiBrightBlack: ansiBrightWhite: {
+      mkPalette = mode: ansi: {
         mPrimary = mode.accent.primary;
         mOnPrimary = mode.bg.base;
         mSecondary = mode.accent.secondary;
@@ -100,36 +100,13 @@
           cursorText = mode.bg.base;
           selectionBg = mode.fg.base;
           selectionFg = mode.bg.base;
-          normal = {
-            black = ansiNormalBlack;
-            red = theme.ansi.normal.red;
-            green = theme.ansi.normal.green;
-            yellow = theme.ansi.normal.yellow;
-            blue = theme.ansi.normal.blue;
-            magenta = theme.ansi.normal.magenta;
-            cyan = theme.ansi.normal.cyan;
-            white = ansiNormalWhite;
-          };
-          bright = {
-            black = ansiBrightBlack;
-            red = theme.ansi.bright.red;
-            green = theme.ansi.bright.green;
-            yellow = theme.ansi.bright.yellow;
-            blue = theme.ansi.bright.blue;
-            magenta = theme.ansi.bright.magenta;
-            cyan = theme.ansi.bright.cyan;
-            white = ansiBrightWhite;
-          };
+          inherit (ansi) normal bright;
         };
       };
 
       palette = {
-        dark =
-          mkPalette theme.dark theme.ansi.normal.black theme.ansi.normal.white theme.ansi.bright.black
-            theme.ansi.bright.white;
-        light =
-          mkPalette theme.light theme.light.bg.base theme.light.fg.base theme.light.bg.overlay
-            theme.dark.bg.elevated;
+        dark = mkPalette theme.dark theme.ansi;
+        light = mkPalette theme.light theme.light.ansi;
       };
     in
     {
