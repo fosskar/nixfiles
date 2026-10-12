@@ -3,7 +3,7 @@
   # home-manager modules via the self specialArg. palettes live under
   # self.themes.<name>; self.theme selects the active one, so consumers read
   # self.themes.${self.theme}.
-  flake.theme = "grey-teal";
+  flake.theme = "pi-jade";
 
   flake.themes.grey-teal = {
     fonts = {
@@ -110,4 +110,109 @@
     };
   };
 
+  # pi logo colours (pi.dev/press-kit) with a jade primary on pale pure greys
+  flake.themes.pi-jade = {
+    fonts = {
+      sans = "Inter";
+      mono = "CommitMono Nerd Font Propo";
+    };
+
+    dark = {
+      bg = {
+        base = "#262626";
+        surface = "#2D2D2D";
+        elevated = "#1F1F1F";
+        overlay = "#343434";
+      };
+      fg = {
+        base = "#C7C7C7";
+        muted = "#9B9B9B";
+        dim = "#6C6C6C";
+        inverse = "#FFFFFF";
+      };
+      accent = {
+        primary = "#6FC29B";
+        secondary = "#F1BE58";
+        tertiary = "#4D9ABF";
+      };
+      semantic = {
+        success = "#6FC29B";
+        error = "#F09082";
+        warning = "#F1BE58";
+        info = "#4D9ABF";
+      };
+    };
+
+    # dark hues darkened to 4.5:1 on bg.base
+    light = {
+      bg = {
+        base = "#EBEBEB";
+        surface = "#E4E4E4";
+        elevated = "#DCDCDC";
+        overlay = "#D4D4D4";
+      };
+      fg = {
+        base = "#222222";
+        muted = "#5B5B5B";
+        dim = "#8C8C8C";
+        inverse = "#FFFFFF";
+      };
+      accent = {
+        primary = "#1F7855";
+        secondary = "#8A6403";
+        tertiary = "#207296";
+      };
+      semantic = {
+        success = "#1F7855";
+        error = "#A85044";
+        warning = "#8A6403";
+        info = "#207296";
+      };
+      ansi = {
+        normal = {
+          black = "#EBEBEB";
+          red = "#A85044";
+          green = "#1F7855";
+          yellow = "#8A6403";
+          blue = "#207296";
+          magenta = "#945680";
+          cyan = "#017680";
+          white = "#222222";
+        };
+        bright = {
+          black = "#D4D4D4";
+          red = "#A85044";
+          green = "#1F7855";
+          yellow = "#8A6403";
+          blue = "#207296";
+          magenta = "#945680";
+          cyan = "#017680";
+          white = "#1F1F1F";
+        };
+      };
+    };
+
+    ansi = {
+      normal = {
+        black = "#1F1F1F";
+        red = "#F09082";
+        green = "#6FC29B";
+        yellow = "#F1BE58";
+        blue = "#4D9ABF";
+        magenta = "#D995C2";
+        cyan = "#61BFC9";
+        white = "#C7C7C7";
+      };
+      bright = {
+        black = "#6C6C6C";
+        red = "#F09082";
+        green = "#6FC29B";
+        yellow = "#F1BE58";
+        blue = "#4D9ABF";
+        magenta = "#D995C2";
+        cyan = "#61BFC9";
+        white = "#FFFFFF";
+      };
+    };
+  };
 }
