@@ -15,18 +15,21 @@
 - feature modules own related homepage, gatus, reverse proxy, grafana dashboard and alert, desktop shortcut, and window-rule integration
 - collectors gather contributions; they are not broad roles or profiles
 - search all contributors before editing an exported collector; one feature can have several contributors
-- `modules/` is auto-loaded by `import-tree`; an `_` prefix excludes a path
+- `modules/` and `inventory/` are auto-loaded by `import-tree`; an `_` prefix excludes a path
 - `nflib.scanPaths ./. { }` loads directories and `.nix` files except `default.nix`, `flake-module.nix`, `configuration.nix`, `disko.nix`, and `home.nix`; an `_` prefix has no special meaning
 
 Source routing:
 
 - global service behavior: `modules/nixos/services/`
+- home-manager features: `modules/home-manager/`
 - host-local composition and hardware: `machines/<machine>/`
 - common roles: `modules/nixos/common/`
 - clan inventory and role assignment: `inventory/`
 - reusable clan services: `modules/clan-services/<service>/<service>.nix`
 - flake-level data and wiring: `modules/flake-parts/`
 - local packages: `packages/<name>/package.nix`; exposed as flake package `<name>` and `pkgs.local.<name>`
+- new service scaffold: `templates/service/`
+- design decision records: `docs/decisions/`
 
 Non-obvious areas:
 
@@ -35,6 +38,7 @@ Non-obvious areas:
 - `modules/llm/` owns agent tooling, local-only skills, souls, and `pi-pack` wiring; pi installs applicable `pi-pack` extensions, and the `omp` feature does the same for omp
 - `flake.llm.skills.<name>` exposes skills to NixOS consumers such as Hermes
 - OpenWrt configuration belongs in `openwrt/`, not on the device
+- `modules/flakelet/` holds `flakeletNixbot`, a runtime-evaluated alternative to `flake.modules.nixos.nixbot`; import exactly one of the two
 
 ## clan
 
@@ -72,7 +76,7 @@ Services declare their own dashboard tile, health check, and reverse proxy defau
 - docs-only changes need no build
 - evaluate simple option changes with `nix eval .#nixosConfigurations.<machine>.config.<option> --json`
 - build structural module or import changes with `nix build .#nixosConfigurations.<machine>.config.system.build.toplevel`
-- for several targets, use `nix develop -c nix-fast-build --skip-cached --flake .#checks.x86_64-linux.<attr>`; check names include `nixos-<machine>`, `package-<name>`, and `devshell-<name>`
+- for several targets, use `nix develop -c nix-fast-build --skip-cached --flake .#checks.x86_64-linux.<attr>`; check names include `nixos-<machine>`, `package-<name>`, `devshell-<name>`, and `clan-service-manifests`
 
 ## sharp edges
 
