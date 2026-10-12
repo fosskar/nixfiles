@@ -33,14 +33,7 @@ _: {
 
       ownSkills = self.llm.skills;
       piSkills = removeAttrs ownSkills inputs.pi-pack.lib.skills;
-      # skills shipped by upstream flake inputs; skill name -> SKILL.md source
-      externalSkills = {
-        herdr = "${inputs.herdr}/skills/herdr/SKILL.md";
-        hunk-review = "${pkgs.hunk}/share/skills/hunk/hunk-review/SKILL.md";
-        nixbot-cli = "${
-          inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli
-        }/share/skills/nixbot-cli/SKILL.md";
-      };
+      externalSkills = config.llm.externalSkills;
       skillEntries = lib.listToAttrs (
         lib.concatMap (
           dir:
@@ -59,26 +52,39 @@ _: {
     {
       imports = [ inputs.mics-skills.homeModules.default ];
 
-      home.file = skillEntries;
-
-      xdg.configFile."kagi/config.json".text = builtins.toJSON {
-        password_command = "cat ${osConfig.clan.core.vars.generators.kagi.files."session-link".path}";
-        timeout = 30;
-        max_retries = 5;
+      options.llm.externalSkills = lib.mkOption {
+        type = lib.types.attrsOf lib.types.path;
+        default = { };
+        description = "skills shipped by upstream packages, contributed by the feature that installs the tool; skill name -> SKILL.md source";
       };
 
-      programs.mics-skills = {
-        enable = true;
-        package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
-        skillDirs = skillTargetDirs;
-        skills = [
-          "calendar-cli"
-          "context7-cli"
-          "db-cli"
-          "gmaps-cli"
-          "kagi-search"
-          "queue"
-        ];
+      config = {
+        # nixbot-cli lives in the devshell, so no home-manager feature owns its skill
+        llm.externalSkills.nixbot-cli = "${
+          inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli
+        }/share/skills/nixbot-cli/SKILL.md";
+
+        home.file = skillEntries;
+
+        xdg.configFile."kagi/config.json".text = builtins.toJSON {
+          password_command = "cat ${osConfig.clan.core.vars.generators.kagi.files."session-link".path}";
+          timeout = 30;
+          max_retries = 5;
+        };
+
+        programs.mics-skills = {
+          enable = true;
+          package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+          skillDirs = skillTargetDirs;
+          skills = [
+            "calendar-cli"
+            "context7-cli"
+            "db-cli"
+            "gmaps-cli"
+            "kagi-search"
+            "queue"
+          ];
+        };
       };
     };
 }

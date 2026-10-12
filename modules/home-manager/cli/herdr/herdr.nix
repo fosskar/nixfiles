@@ -86,6 +86,10 @@
           ];
         };
 
+        llm = lib.optionalAttrs (options.llm or { } ? externalSkills) {
+          externalSkills.herdr = "${inputs.herdr}/skills/herdr/SKILL.md";
+        };
+
         # users/workspace imports this module without niri
         wayland = lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
           windowManager.niri.settings.binds."Mod+E" = {
