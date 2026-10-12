@@ -1098,11 +1098,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791748912,
-        "narHash": "sha256-kiYZFdzRouGp5FUM7Qpg9lOyYk312TglFH9r56Jn01I=",
+        "lastModified": 1791835357,
+        "narHash": "sha256-97R0fIBhpA9BXjG6L3pJMoiVsA5RJArjPAfJb3dEx2A=",
         "owner": "fosskar",
         "repo": "nixlens",
-        "rev": "379dd6f2a50211d829b9c038f02e5b57d7815958",
+        "rev": "9641de9be98f2dcc3b4f78b21db136063ac5afbf",
         "type": "github"
       },
       "original": {
