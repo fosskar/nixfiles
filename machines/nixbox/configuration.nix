@@ -28,6 +28,8 @@
     self.modules.nixos.vaultwarden
     self.modules.nixos.bentopdf
     self.modules.nixos.photocraft
+    self.modules.nixos.vectorcraft
+    self.modules.nixos.pdfcraft
     self.modules.nixos.protomaps
     self.modules.nixos.grub
     self.modules.nixos.nvidiaGpu

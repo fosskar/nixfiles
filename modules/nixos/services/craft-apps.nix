@@ -1,22 +1,30 @@
-{
-  flake.modules.nixos.photocraft =
+let
+  # artcraft crafting apps share one static wasm site layout; the attr name is the repo and module name
+  apps = {
+    photocraft = "PhotoCraft";
+    vectorcraft = "VectorCraft";
+    pdfcraft = "PdfCraft";
+  };
+
+  mkCraftApp =
+    serviceName: displayName:
     {
       flake-self,
       pkgs,
       ...
     }:
     let
-      serviceName = "photocraft";
       localHost = "${serviceName}.${flake-self.domains.local}";
+      site = pkgs.local."${serviceName}-web";
     in
     {
       services.homepage-dashboard.services = [
         {
           "tools" = [
             {
-              "PhotoCraft" = {
+              ${displayName} = {
                 href = "https://${localHost}";
-                icon = "https://raw.githubusercontent.com/storytold/photocraft/${pkgs.local.photocraft-web.src.tag}/assets/app-icon/hicolor/128x128/apps/ai.storyteller.photocraft.png";
+                icon = "https://raw.githubusercontent.com/storytold/${serviceName}/${site.src.tag}/assets/app-icon/hicolor/128x128/apps/ai.storyteller.${serviceName}.png";
                 siteMonitor = "https://${localHost}";
               };
             }
@@ -26,7 +34,7 @@
 
       services.gatus.settings.endpoints = [
         {
-          name = "PhotoCraft";
+          name = displayName;
           url = "https://${localHost}";
           enabled = true;
           alerts = [ { type = "matrix"; } ];
@@ -36,7 +44,7 @@
       ];
 
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        root * ${pkgs.local.photocraft-web}
+        root * ${site}
         encode zstd gzip
         @hashed path *.wasm *.js
         header @hashed Cache-Control "public, max-age=31536000, immutable"
@@ -44,4 +52,7 @@
         file_server
       '';
     };
+in
+{
+  flake.modules.nixos = builtins.mapAttrs mkCraftApp apps;
 }
