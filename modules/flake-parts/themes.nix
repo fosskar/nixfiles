@@ -26,14 +26,14 @@
       };
       accent = {
         primary = "#16A085";
-        secondary = "#C79A3A";
-        tertiary = "#6796E6";
+        secondary = "#B68601";
+        tertiary = "#5A8EE5";
       };
       semantic = {
-        success = "#73C991";
-        error = "#F07167";
-        warning = "#C79A3A";
-        info = "#6796E6";
+        success = "#43A66A";
+        error = "#E65B53";
+        warning = "#B68601";
+        info = "#5A8EE5";
       };
     };
 
@@ -89,22 +89,22 @@
     ansi = {
       normal = {
         black = "#181818";
-        red = "#F07167";
-        green = "#73C991";
-        yellow = "#C79A3A";
-        blue = "#6796E6";
-        magenta = "#C586C0";
-        cyan = "#1ABC9C";
+        red = "#E65B53";
+        green = "#43A66A";
+        yellow = "#B68601";
+        blue = "#5A8EE5";
+        magenta = "#B773B2";
+        cyan = "#09A78A";
         white = "#CCCCCC";
       };
       bright = {
         black = "#616161";
-        red = "#F07167";
-        green = "#73C991";
-        yellow = "#C79A3A";
-        blue = "#6796E6";
-        magenta = "#C586C0";
-        cyan = "#1ABC9C";
+        red = "#E65B53";
+        green = "#43A66A";
+        yellow = "#B68601";
+        blue = "#5A8EE5";
+        magenta = "#B773B2";
+        cyan = "#09A78A";
         white = "#FFFFFF";
       };
     };
