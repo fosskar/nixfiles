@@ -9,14 +9,14 @@
 }:
 let
   pname = "druk";
-  version = "1.37.0";
+  version = "1.39.0";
 in
 stdenv.mkDerivation {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/letstri/druk/releases/download/v${version}/druk-linux-x64.tar.gz";
-    hash = "sha256-peAW/0k2tVkpNNwaBIN3j5RAfbBT5oFmVl80I1zXN0k=";
+    hash = "sha256-sjlLZ1DufOxFlRa9UBKV9Za0Ug3+noHJNp+drrucOtU=";
   };
 
   sourceRoot = ".";
