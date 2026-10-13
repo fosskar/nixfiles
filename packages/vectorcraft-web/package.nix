@@ -7,6 +7,7 @@
   trunk,
   binaryen,
   llvmPackages,
+  nix-update-script,
 }:
 let
   # trunk requires the wasm-bindgen version pinned in Cargo.lock; nixpkgs ships 0.2.127
@@ -49,6 +50,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
     (cd apps/vectorcraft-web && HOME=$TMPDIR trunk build --offline --frozen --release)
     runHook postBuild
   '';
+
+  passthru.updateScript = nix-update-script { };
 
   # the test suite targets the native workspace, not the wasm bundle
   doCheck = false;

@@ -11,6 +11,7 @@
   chromaprint,
   ffmpeg,
   loudgain,
+  nix-update-script,
 }:
 let
   pname = "droppedneedle";
@@ -112,6 +113,12 @@ stdenvNoCC.mkDerivation {
 
   passthru = {
     inherit frontend;
+    updateScript = nix-update-script {
+      extraArgs = [
+        "--subpackage"
+        "frontend"
+      ];
+    };
   };
 
   meta = {
