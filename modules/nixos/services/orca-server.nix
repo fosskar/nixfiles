@@ -13,7 +13,7 @@ _: {
       systemd.user.services.orca-server = {
         Unit.Description = "Orca headless runtime";
         Service = {
-          ExecStart = "${orca}/bin/orca serve --port 6768 --pairing-address 127.0.0.1";
+          ExecStart = "${orca}/bin/orca serve --port 6769 --pairing-address 127.0.0.1";
           WorkingDirectory = "%h";
           # home-manager user units get no PATH; agents (pi, omp, claude) and
           # their tools come from the user and system profiles
