@@ -30,6 +30,22 @@ _: {
         orca-cli = ./skills/orca-cli/SKILL.md;
       };
 
+      # orca serve starts a private Xvfb on :99 for its browser panes and leaks
+      # DISPLAY into terminals; with it set, pi copies to that invisible X
+      # clipboard instead of using OSC 52
+      programs.fish.interactiveShellInit = ''
+        if test "$TERM_PROGRAM" = Orca; and test "$DISPLAY" = :99
+          set -e DISPLAY
+        end
+      '';
+
+      # every orca worktree and jj workspace is a new path, which direnv would
+      # make me allow again; trusts any .envrc under these prefixes
+      programs.direnv.config.whitelist.prefix = [
+        "~/Projects"
+        "~/orca/workspaces"
+      ];
+
       systemd.user.services.orca-server = {
         Unit.Description = "Orca headless runtime";
         Service = {
@@ -40,6 +56,12 @@ _: {
           Environment = [
             "PATH=/run/wrappers/bin:/etc/profiles/per-user/%u/bin:/run/current-system/sw/bin"
             "ORCA_TELEMETRY_DISABLED=1"
+            # orca's terminal never answers fish's primary device attribute
+            # query, so every new shell would stall 10s and print a warning
+            "fish_features=no-query-term"
+            # orca skips its per-worktree fish history when fish_history is
+            # already set, so every terminal shares the normal history
+            "fish_history=default"
           ];
           Restart = "on-failure";
           RestartSec = 5;
