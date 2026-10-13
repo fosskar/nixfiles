@@ -29,6 +29,7 @@
         self.modules.homeManager.jujutsu
         self.modules.homeManager.k8s
         self.modules.homeManager.llm
+        self.modules.homeManager.orcaServer
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
