@@ -64,9 +64,6 @@ _: {
           ControlMaster = "no";
           ExitOnForwardFailure = "yes";
           SessionType = "none";
-          # orca-server (modules/nixos/services/orca-server.nix) listens on ipv4 only;
-          # 6768 is taken by the local orca desktop app
-          LocalForward = [ "6769 localhost:6769" ];
           ServerAliveInterval = 5;
           ServerAliveCountMax = 3;
           RemoteForward = [
