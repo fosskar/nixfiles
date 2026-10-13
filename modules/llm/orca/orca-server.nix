@@ -12,11 +12,23 @@ _: {
       ...
     }:
     let
-      orca = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.orca;
+      llmPackages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+      inherit (llmPackages) orca;
       pairingAddress = "${osConfig.networking.hostName}.nb.${self.domains.public}";
     in
     {
-      home.packages = [ orca ];
+      home.packages = [
+        orca
+        llmPackages.agent-browser
+      ];
+
+      # stubs from stablyai/orca v1.4.224 skills/; they load the version-matched
+      # guide from the orca binary. computer-use is left out: on a headless
+      # server it would drive nixworker, not the client's desktop
+      llm.externalSkills = {
+        orchestration = ./skills/orchestration/SKILL.md;
+        orca-cli = ./skills/orca-cli/SKILL.md;
+      };
 
       systemd.user.services.orca-server = {
         Unit.Description = "Orca headless runtime";

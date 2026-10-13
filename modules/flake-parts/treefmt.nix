@@ -67,6 +67,8 @@
           excludes = [
             "templates/*"
             "packages/prose-lint/fixtures/*"
+            # verbatim upstream skill stubs
+            "modules/llm/orca/skills/*"
           ];
         };
         programs = {
