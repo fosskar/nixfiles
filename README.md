@@ -81,7 +81,7 @@ imports are the enable mechanism. each feature owns its integrations: dashboard 
 
 ## ai
 
-i work heavily with ai coding agents, in this repo and elsewhere, and i am open about it. i also try not to annoy anyone with ai slop: my agents follow [shared writing instructions](modules/llm/AGENTS.md), [prose-lint](packages/prose-lint/) catches llm writing tells, and i review every change before it lands. commits written with an agent carry the linux kernel's `Assisted-by: LLM` trailer.
+i work heavily with ai coding agents, in this repo and elsewhere, and i am open about it. i also try not to annoy anyone with ai slop: my agents follow [shared writing instructions](modules/llm/AGENTS.md), [ai-tells-lint](https://github.com/fosskar/ai-tells-lint) catches llm writing tells, and i review every change before it lands. commits written with an agent carry the linux kernel's `Assisted-by: LLM` trailer.
 
 ## decisions
 

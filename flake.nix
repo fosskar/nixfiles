@@ -61,6 +61,13 @@
       inputs.nixbot.follows = "nixbot";
     };
 
+    ai-tells-lint = {
+      url = "github:fosskar/ai-tells-lint";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.nixbot.follows = "nixbot";
+    };
+
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";

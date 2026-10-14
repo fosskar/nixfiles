@@ -14,6 +14,7 @@
     }:
     {
       treefmt = {
+        imports = [ inputs.ai-tells-lint.treefmtModules.default ];
         # don't expose as flake check; nixbot would gate PR merge on it.
         # run via `nix fmt` instead.
         flakeCheck = false;
@@ -56,22 +57,15 @@
           ];
           includes = [ "flake.nix" ];
         };
-        settings.formatter.prose-lint = {
-          command = self'.packages.prose-lint;
-          includes = [
-            "*.md"
-            "*.nix"
-            "*.sh"
-            "*.py"
-          ];
-          excludes = [
-            "templates/*"
-            "packages/prose-lint/fixtures/*"
-            # verbatim upstream skill stubs
-            "modules/llm/orca/skills/*"
-          ];
-        };
         programs = {
+          ai-tells-lint = {
+            enable = true;
+            excludes = [
+              "templates/*"
+              # verbatim upstream skill stubs
+              "modules/llm/orca/skills/*"
+            ];
+          };
           nixfmt = {
             enable = true;
             package = pkgs.nixfmt-rs;

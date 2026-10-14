@@ -89,10 +89,10 @@ A stale or redundant comment misleads the next reader, human or agent, more than
 - atomic commits
 
 <example>
-treefmt: run prose-lint on markdown and comments
+treefmt: run ai-tells-lint on markdown and comments
 
 templates/ is excluded because it seeds other projects, and the
-prose-lint fixtures because they violate the rules on purpose.
+ai-tells-lint fixtures because they violate the rules on purpose.
 
 Assisted-by: LLM
 </example>
