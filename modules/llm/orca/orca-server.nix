@@ -32,10 +32,14 @@ _: {
 
       # orca serve starts a private Xvfb on :99 for its browser panes and leaks
       # DISPLAY into terminals; with it set, pi copies to that invisible X
-      # clipboard instead of using OSC 52
+      # clipboard instead of using OSC 52. orca also gives each worktree its
+      # own fish history (fish_history=orca_<id>); switch back to the shared one
       programs.fish.interactiveShellInit = ''
         if test "$TERM_PROGRAM" = Orca; and test "$DISPLAY" = :99
           set -e DISPLAY
+        end
+        if string match -q 'orca_*' -- "$fish_history"
+          set -gx fish_history default
         end
       '';
 
@@ -59,9 +63,6 @@ _: {
             # orca's terminal never answers fish's primary device attribute
             # query, so every new shell would stall 10s and print a warning
             "fish_features=no-query-term"
-            # orca skips its per-worktree fish history when fish_history is
-            # already set, so every terminal shares the normal history
-            "fish_history=default"
           ];
           Restart = "on-failure";
           RestartSec = 5;
