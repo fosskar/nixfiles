@@ -33,13 +33,14 @@ _: {
       # orca serve starts a private Xvfb on :99 for its browser panes and leaks
       # DISPLAY into terminals; with it set, pi copies to that invisible X
       # clipboard instead of using OSC 52. orca also gives each worktree its
-      # own fish history (fish_history=orca_<id>); switch back to the shared one
+      # own fish history (fish_history=orca_<id>); switch back to the shared
+      # one, session "fish" (file fish_history; "default" is a new empty session)
       programs.fish.interactiveShellInit = ''
         if test "$TERM_PROGRAM" = Orca; and test "$DISPLAY" = :99
           set -e DISPLAY
         end
         if string match -q 'orca_*' -- "$fish_history"
-          set -gx fish_history default
+          set -gx fish_history fish
         end
       '';
 
