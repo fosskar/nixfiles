@@ -309,30 +309,33 @@
                   fencr.sandboxes.${instanceName} = {
                     services = [
                       config.nixfiles.hermes.${instanceName}.module
-                      {
-                        services.hermes-agent.managed.settings.mcp_servers = lib.mkIf mcp {
-                          fencr-gateway.url = "https://mcp.fencr/mcp/";
-                        };
-                        services.hermes-agent.dashboardTokenFile = lib.mkIf settings.dashboard.enable "/run/agent-secrets/${instanceName}-dashboard-token";
-                        systemd.services = {
-                          hermes-agent.serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
-                          hermes-dashboard = lib.mkIf settings.dashboard.enable {
-                            serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
+                      (
+                        { agentSandbox, ... }:
+                        {
+                          services.hermes-agent.managed.settings.mcp_servers = lib.mkIf mcp {
+                            fencr-gateway.url = agentSandbox.mcp.url;
                           };
-                          hermes-dashboard-relay = lib.mkIf settings.dashboard.enable {
-                            description = "Hermes dashboard on the guest address";
-                            wantedBy = [ "multi-user.target" ];
-                            after = [ "network-online.target" ];
-                            wants = [ "network-online.target" ];
-                            serviceConfig = {
-                              DynamicUser = true;
-                              ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:${toString dashboardGuestPort},bind=${sandbox.ip},fork,reuseaddr TCP:127.0.0.1:${toString dashboardGuestPort}";
-                              Restart = "always";
-                              RestartSec = 5;
+                          services.hermes-agent.dashboardTokenFile = lib.mkIf settings.dashboard.enable "/run/agent-secrets/${instanceName}-dashboard-token";
+                          systemd.services = {
+                            hermes-agent.serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
+                            hermes-dashboard = lib.mkIf settings.dashboard.enable {
+                              serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
+                            };
+                            hermes-dashboard-relay = lib.mkIf settings.dashboard.enable {
+                              description = "Hermes dashboard on the guest address";
+                              wantedBy = [ "multi-user.target" ];
+                              after = [ "network-online.target" ];
+                              wants = [ "network-online.target" ];
+                              serviceConfig = {
+                                DynamicUser = true;
+                                ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:${toString dashboardGuestPort},bind=${sandbox.ip},fork,reuseaddr TCP:127.0.0.1:${toString dashboardGuestPort}";
+                                Restart = "always";
+                                RestartSec = 5;
+                              };
                             };
                           };
-                        };
-                      }
+                        }
+                      )
                     ];
                     specialArgs = {
                       inherit self;
