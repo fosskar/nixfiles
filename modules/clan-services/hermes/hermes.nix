@@ -345,8 +345,9 @@
                     inbound = lib.optional settings.dashboard.enable dashboardGuestPort;
                     outbound = [
                       "internet"
-                      # the host's own https: local search and llama-cpp
-                      "host:443"
+                      # *.nx3.eu (search, llama-cpp) is nixbox's caddy; fencr reaches
+                      # the host's own addresses only through host:<port>
+                      (if config.networking.hostName == "nixbox" then "host:443" else "${self.hosts.nixbox.lan}:443")
                     ]
                     ++ lib.optional settings.homeAssistant.enable "${settings.homeAssistant.address}:${toString settings.homeAssistant.port}";
                     mcp = {

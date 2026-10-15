@@ -14,6 +14,7 @@
     self.modules.nixos.radicleMirror
     self.modules.nixos.homeManager
     self.modules.nixos.nixAccessTokens
+    self.modules.nixos.mcp
   ]
   ++ (nflib.scanPaths ./. { });
 

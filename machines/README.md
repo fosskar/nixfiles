@@ -35,8 +35,8 @@ flowchart TB
       lpt-titan
     end
     subgraph srv["srv 192.168.20.0/24"]
-      nixbox["nixbox<br/>caddy, authelia + lldap<br/>self-hosted services<br/>monitoring, llama.cpp, hermes"]
-      nixworker["nixworker<br/>nixbot, remote builder<br/>harmonia, niks3"]
+      nixbox["nixbox<br/>caddy, authelia + lldap<br/>self-hosted services<br/>monitoring, llama.cpp"]
+      nixworker["nixworker<br/>nixbot, remote builder<br/>harmonia, niks3, hermes"]
     end
   end
 
@@ -45,7 +45,7 @@ flowchart TB
   gateway -->|netbird proxy| nixworker
   desktop & lpt-titan & gateway -.->|builds| nixworker
   nixbox <-->|garage, ggml rpc| nixworker
-  nixbox & gateway -->|borgbackup| storagebox
+  nixbox & nixworker & gateway -->|borgbackup| storagebox
 ```
 
 all machines join netbird, yggdrasil, and wireguard (controller on gateway); nixbox and nixworker route the home lan for netbird peers. local services are served by caddy on nixbox under `*.nx3.eu`; public exposure is configured in the netbird ui, see [netbird-exposure](../docs/netbird-exposure.md).
@@ -120,7 +120,7 @@ home server (ryzen 7 5700x, 64gb, nvidia rtx pro 4000 blackwell sff, zfs)
 
 **monitoring:** victoriametrics, victorialogs, grafana, telegraf, beszel hub, gatus, homepage, nixlens hub
 
-**llm & agents:** llama.cpp on the rtx pro 4000, offloading to nixworker over ggml rpc; hermes agents in fencr sandboxes; mcp servers
+**llm & agents:** llama.cpp on the rtx pro 4000, offloading to nixworker over ggml rpc
 
 **media:** jellyfin, seerr, immich, navidrome, audiobookshelf, and the arr stack (prowlarr, sonarr, radarr, lidarr, chaptarr, bazarr, sabnzbd, recyclarr)
 
@@ -141,6 +141,8 @@ minisforum ms-a2 (ryzen 9 9955hx, intel arc pro b50, 96gb ddr5), btrfs root with
 - harmonia and niks3 binary caches, garage node
 - ggml rpc server on the arc for the llama.cpp router on nixbox
 - radicle mirror
+- hermes agents in fencr sandboxes; mcp gateway with calendar, grafana and laya backends
+- borgbackup of service state and fencr sandbox checkpoints to the hetzner storage box
 - headless dev host: workspace user, ssync peer, `nix-ld`
 - ups secondary
 

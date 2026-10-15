@@ -58,7 +58,7 @@ in
         name = "hermes";
         input = "self";
       };
-      roles.server.machines.nixbox.settings = {
+      roles.server.machines.nixworker.settings = {
         soul = "tars";
         dashboard.enable = true;
         mcp.allow = [
@@ -109,7 +109,7 @@ in
         name = "hermes";
         input = "self";
       };
-      roles.server.machines.nixbox.settings = {
+      roles.server.machines.nixworker.settings = {
         dashboard.enable = false;
         mcp.allow = [
           "calendar.*"
