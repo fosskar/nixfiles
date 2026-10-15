@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   lib,
   pkgs,
@@ -6,6 +7,9 @@
   nflib,
   ...
 }:
+let
+  workspaceSshKey = config.clan.core.vars.generators.workspace-ssh.files."id_ed25519".path;
+in
 {
   imports = [
     self.modules.nixos.llm
@@ -68,12 +72,16 @@
         set -gx EDITOR ${lib.getExe pkgs.micro}
       '';
 
-      # sign with the yubikey via the forwarded agent socket (same key as
-      # users/simon/signing.nix); jj signs on push, which needs the attached
-      # client anyway
-      programs.git.signing.key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
-      programs.jujutsu.settings.signing.key =
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA";
+      # own key instead of the forwarded yubikey agent, so pushes and signing
+      # work without an attached client (orca mobile). a private key path
+      # makes git and jj sign from the file, not the agent
+      programs.git.signing.key = workspaceSshKey;
+      programs.jujutsu.settings.signing.key = workspaceSshKey;
+      # IdentitiesOnly: the forwarded agent keys would be offered first
+      programs.ssh.settings = lib.genAttrs [ "github.com" "codeberg.org" ] (_: {
+        IdentityFile = workspaceSshKey;
+        IdentitiesOnly = "yes";
+      });
 
       systemd.user.startServices = "sd-switch";
       nix.channels = { };
@@ -118,6 +126,21 @@
       test -n "$public"
       printf 'BUZZ_PRIVATE_KEY=%s\n' "$private" > "$out/agent.env"
       printf '%s\n' "$public" > "$out/pubkey"
+    '';
+  };
+
+  clan.core.vars.generators.workspace-ssh = {
+    files = {
+      "id_ed25519" = {
+        owner = "simon";
+        group = "users";
+        mode = "0400";
+      };
+      "id_ed25519.pub".secret = false;
+    };
+    runtimeInputs = [ pkgs.openssh ];
+    script = ''
+      ssh-keygen -t ed25519 -N "" -C "simon@nixworker" -f "$out/id_ed25519"
     '';
   };
 
