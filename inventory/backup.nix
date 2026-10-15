@@ -93,6 +93,15 @@ _: {
                   };
                 };
               };
+              "nixworker".settings = {
+                startAt = "*-*-* 05:00:00";
+                inherit exclude;
+                destinations = {
+                  "storagebox" = {
+                    repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./nixworker";
+                  };
+                };
+              };
             };
           };
           server.machines = { };
