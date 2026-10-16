@@ -210,6 +210,8 @@
 
         services.opencloud = {
           enable = true;
+          # rolling release; opencloud-production is older and downgrades are unsupported
+          package = pkgs.opencloud;
           url = "https://${localHost}";
           address = listenAddress;
           environmentFile = config.clan.core.vars.generators.opencloud.files."envfile".path;
