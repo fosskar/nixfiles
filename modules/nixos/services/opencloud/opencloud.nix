@@ -88,6 +88,7 @@
             "maps"
             "unzip"
             "pastebin"
+            "excalidraw"
           ]
       );
       mapsHost = "maps.${flake-self.domains.local}";
