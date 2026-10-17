@@ -1,6 +1,11 @@
 {
   flake.modules.nixos.buzzRelay =
-    { flake-self, ... }:
+    {
+      config,
+      flake-self,
+      lib,
+      ...
+    }:
     let
       publicHost = "buzz.${flake-self.domains.public}";
       # bindAddress port of the buzz instance (inventory/apps.nix); local
@@ -10,6 +15,17 @@
       healthUrl = "${listenUrl}/health";
     in
     {
+      # buzz-flake binds its redis to 127.0.0.1:6380, open to every local
+      # process; the 0660 unix socket limits it to the redis-buzz group
+      services.redis.servers.buzz = {
+        port = lib.mkForce 0;
+        bind = lib.mkForce null;
+      };
+      services.buzz-server.redisUrl = lib.mkForce "redis+unix://${config.services.redis.servers.buzz.unixSocket}";
+      users.users.${config.services.buzz-server.user}.extraGroups = [
+        config.services.redis.servers.buzz.group
+      ];
+
       # the buzz-flake service creates the database via ensureDatabases but
       # does not register it for clan dump/restore
       clan.core.postgresql.databases.buzz = {
