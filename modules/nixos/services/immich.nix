@@ -127,6 +127,7 @@
         machine-learning = {
           enable = true;
           environment = {
+            MACHINE_LEARNING_MODEL_REVISION = "v2";
             LD_LIBRARY_PATH = builtins.concatStringsSep ":" [
               "${python3Cuda.pkgs.onnxruntime}/lib"
               "${python3Cuda.pkgs.onnxruntime}/${python3Cuda.sitePackages}/onnxruntime/capi"
