@@ -212,9 +212,19 @@ _: {
 
                 beszelApi = "http://127.0.0.1:${toString beszelPort}/api";
 
+                # upsert takes the password only as an argument, which any local uid
+                # can read from /proc/<pid>/cmdline; run it only when the password
+                # changes, with the stamp next to the database it describes
                 beszelSuperuserUpsert = pkgs.writeShellScript "beszel-superuser-upsert" ''
-                  exec ${config.services.beszel.hub.package}/bin/beszel-hub superuser upsert \
+                  set -eu
+                  stamp=${config.services.beszel.hub.dataDir}/beszel_data/.superuser-password.sha256
+                  want=$(printf '%s' "$BESZEL_SUPERUSER_PASSWORD" | ${pkgs.coreutils}/bin/sha256sum)
+                  if [ -f "$stamp" ] && [ "$(${pkgs.coreutils}/bin/cat "$stamp")" = "$want" ]; then
+                    exit 0
+                  fi
+                  ${config.services.beszel.hub.package}/bin/beszel-hub superuser upsert \
                     ${beszelSuperuserEmail} "$BESZEL_SUPERUSER_PASSWORD"
+                  printf '%s\n' "$want" > "$stamp"
                 '';
 
                 beszelApiLogin = ''
@@ -234,18 +244,21 @@ _: {
                     sleep 1
                   done
 
-                  token=$(curl -sf -X POST ${beszelApi}/collections/_superusers/auth-with-password \
-                    -H 'content-type: application/json' \
-                    -d "$(jq -cn --arg i ${beszelSuperuserEmail} --arg p "$BESZEL_SUPERUSER_PASSWORD" \
-                      '{identity: $i, password: $p}')" | jq -r .token)
+                  # the password and token reach jq and curl through the environment
+                  # and the private /tmp: argv is world-readable in /proc/<pid>/cmdline
+                  umask 077
+                  jq -cn --arg i ${beszelSuperuserEmail} '{identity: $i, password: $ENV.BESZEL_SUPERUSER_PASSWORD}' \
+                    | curl -sf -X POST ${beszelApi}/collections/_superusers/auth-with-password \
+                        -H 'content-type: application/json' --data-binary @- \
+                    | jq -r '"Authorization: \(.token)"' > /tmp/auth.header
                 '';
 
                 beszelDefaultAlertsScript = pkgs.writeShellScript "beszel-default-alerts" ''
                   ${beszelApiLogin}
 
-                  systems=$(curl -sf -H "Authorization: $token" \
+                  systems=$(curl -sf -H @/tmp/auth.header \
                     '${beszelApi}/collections/systems/records?perPage=500&fields=id,users')
-                  alerts=$(curl -sf -H "Authorization: $token" \
+                  alerts=$(curl -sf -H @/tmp/auth.header \
                     '${beszelApi}/collections/alerts/records?perPage=500&fields=system,user,name')
 
                   jq -cn \
@@ -262,7 +275,7 @@ _: {
                       | .[]' \
                   | while read -r alert; do
                       curl -sf -o /dev/null -X POST ${beszelApi}/collections/alerts/records \
-                        -H "Authorization: $token" -H 'content-type: application/json' \
+                        -H @/tmp/auth.header -H 'content-type: application/json' \
                         -d "$alert"
                     done
                 '';
@@ -272,9 +285,9 @@ _: {
                 beszelNetworkMonitorsScript = pkgs.writeShellScript "beszel-network-monitors" ''
                   ${beszelApiLogin}
 
-                  systems=$(curl -sf -H "Authorization: $token" \
+                  systems=$(curl -sf -H @/tmp/auth.header \
                     '${beszelApi}/collections/systems/records?perPage=500&fields=id,name')
-                  monitors=$(curl -sf -H "Authorization: $token" \
+                  monitors=$(curl -sf -H @/tmp/auth.header \
                     '${beszelApi}/collections/network_monitors/records?perPage=500&fields=id,system,target,protocol,port,interval,enabled')
 
                   jq -cn \
@@ -297,7 +310,7 @@ _: {
                   | while read -r action; do
                       curl -sf -o /dev/null -X "$(jq -r .method <<<"$action")" \
                         "${beszelApi}/collections/network_monitors/records$(jq -r .path <<<"$action")" \
-                        -H "Authorization: $token" -H 'content-type: application/json' \
+                        -H @/tmp/auth.header -H 'content-type: application/json' \
                         -d "$(jq -c '.body // {}' <<<"$action")"
                     done
                 '';
