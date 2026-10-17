@@ -14,7 +14,16 @@
       mdraidEnabled = config.boot.swraid.enable or false;
       upsdEnabled = config.power.ups.enable && (config.power.ups.upsd.enable or false);
       postgresqlEnabled = config.services.postgresql.enable;
-      redisServers = lib.filterAttrs (_: server: server.enable) config.services.redis.servers;
+      # redis has no auth, so joining a socket group grants every command; never
+      # poll the authelia session store or the buzz event bus
+      redisServers = lib.filterAttrs (
+        name: server:
+        server.enable
+        && !(lib.elem name [
+          "authelia"
+          "buzz"
+        ])
+      ) config.services.redis.servers;
       redisEnabled = redisServers != { };
       redisSocketServers = lib.filterAttrs (_: server: server.port == 0) redisServers;
 
