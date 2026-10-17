@@ -325,11 +325,18 @@
                   preBackupScript = ''
                     export GARAGE_RPC_SECRET_FILE=${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}
                     ${pkgs.garage_2}/bin/garage meta snapshot
-                    newest=$(ls -dt ${metadataDir}/snapshots/*/ | head -1)
+                    # the garage uid can create entries here: take real directories
+                    # only, NUL-delimited, so no symlink or name steers root's cp and rm
+                    snapshots=${metadataDir}/snapshots
+                    mapfile -d "" -t entries < <(
+                      find "$snapshots" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %P\0' | sort -z -rn
+                    )
                     rm -rf /var/backup/garage
                     mkdir -p /var/backup/garage
-                    cp -a "$newest" /var/backup/garage/meta
-                    ls -dt ${metadataDir}/snapshots/*/ | tail -n +2 | xargs -r rm -rf
+                    cp -a -- "$snapshots/''${entries[0]#* }" /var/backup/garage/meta
+                    for entry in "''${entries[@]:1}"; do
+                      rm -rf -- "$snapshots/''${entry#* }"
+                    done
                   '';
                 };
 
