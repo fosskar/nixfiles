@@ -13,48 +13,148 @@
     let
       serviceName = "trmnl";
       localHost = "${serviceName}.${flake-self.domains.local}";
-      listenAddress = "127.0.0.1";
-      listenPort = 4567;
-      listenUrl = "http://${listenAddress}:${toString listenPort}";
+      user = "larapaper";
       dataDir = "/var/lib/larapaper";
+      package = pkgs.local.larapaper;
+      php = package.phpPackage;
+      artisan = "${php}/bin/php ${package}/artisan";
+      secretEnv = config.clan.core.vars.generators.larapaper.files."secret.env".path;
+      socket = config.services.phpfpm.pools.larapaper.socket;
+
+      environment = {
+        APP_ENV = "production";
+        APP_URL = "https://${localHost}";
+        DB_CONNECTION = "sqlite";
+        DB_DATABASE = "${dataDir}/database/database.sqlite";
+        LOG_CHANNEL = "stderr";
+        TRUSTED_PROXIES = "127.0.0.1";
+        HOME = dataDir;
+        PUPPETEER_EXECUTABLE_PATH = lib.getExe pkgs.chromium;
+        # passes --no-sandbox; the systemd units already confine chromium
+        PUPPETEER_DOCKER = "true";
+      };
+      # browsershot runs `node` from PATH
+      path = [ pkgs.nodejs ];
+      serviceDefaults = {
+        User = user;
+        Group = user;
+        EnvironmentFile = secretEnv;
+        WorkingDirectory = package;
+      };
     in
     {
-      imports = [ flake-self.modules.nixos.podman ];
-
       config = {
         clan.core.vars.generators.larapaper = {
-          files."secret.env" = { };
+          files."secret.env".owner = user;
           runtimeInputs = [ pkgs.openssl ];
           script = ''
             echo "APP_KEY=base64:$(openssl rand -base64 32)" > "$out/secret.env"
           '';
         };
 
-        systemd.tmpfiles.rules = [
-          "d ${dataDir}/database 0750 root root -"
-          "d ${dataDir}/images 0750 root root -"
-        ];
+        users.groups.${user} = { };
+        users.users.${user} = {
+          isSystemUser = true;
+          group = user;
+          home = dataDir;
+        };
 
-        virtualisation.oci-containers = {
-          backend = "podman";
-          containers.larapaper = {
-            image = "ghcr.io/usetrmnl/larapaper:0.44.0@sha256:d9d164ce98e48c71a7f62c05f5d288d7500720e485b69c2d16e368dc5292c406";
-            ports = [ "${listenAddress}:${toString listenPort}:8080" ];
-            environment = {
-              APP_URL = "https://${localHost}";
-              # only caddy on loopback reaches the published port
-              TRUSTED_PROXIES = "*";
-              DB_DATABASE = "database/storage/database.sqlite";
-              PHP_OPCACHE_ENABLE = "1";
-            };
-            environmentFiles = [ config.clan.core.vars.generators.larapaper.files."secret.env".path ];
-            # :U chowns the host dirs to the image's www-data (uid 82)
-            volumes = [
-              "${dataDir}/database:/var/www/html/database/storage:U"
-              "${dataDir}/images:/var/www/html/storage/app/public/images/generated:U"
-            ];
+        systemd.tmpfiles.settings.larapaper =
+          lib.genAttrs
+            [
+              dataDir
+              "${dataDir}/cache"
+              "${dataDir}/database"
+              "${dataDir}/storage"
+              "${dataDir}/storage/app"
+              "${dataDir}/storage/app/private"
+              "${dataDir}/storage/app/public"
+              "${dataDir}/storage/framework"
+              "${dataDir}/storage/framework/cache"
+              "${dataDir}/storage/framework/sessions"
+              "${dataDir}/storage/framework/views"
+              "${dataDir}/storage/logs"
+            ]
+            (_: {
+              d = {
+                inherit user;
+                group = user;
+                mode = "0750";
+              };
+            });
+
+        systemd.services.larapaper-setup = {
+          description = "LaraPaper database migrations";
+          wantedBy = [ "multi-user.target" ];
+          before = [
+            "phpfpm-larapaper.service"
+            "larapaper-queue.service"
+            "larapaper-scheduler.service"
+          ];
+          after = [ "systemd-tmpfiles-setup.service" ];
+          inherit environment;
+          script = ''
+            touch ${environment.DB_DATABASE}
+            ${artisan} migrate --force
+          '';
+          serviceConfig = serviceDefaults // {
+            Type = "oneshot";
+            RemainAfterExit = true;
           };
         };
+
+        services.phpfpm.pools.larapaper = {
+          inherit user;
+          group = user;
+          phpPackage = php;
+          settings = {
+            "listen.owner" = config.services.caddy.user;
+            "listen.group" = config.services.caddy.group;
+            "pm" = "dynamic";
+            "pm.max_children" = 8;
+            "pm.start_servers" = 2;
+            "pm.min_spare_servers" = 1;
+            "pm.max_spare_servers" = 4;
+            # keep the systemd environment, including APP_KEY
+            "clear_env" = "no";
+          };
+        };
+        systemd.services.phpfpm-larapaper = {
+          requires = [ "larapaper-setup.service" ];
+          after = [ "larapaper-setup.service" ];
+          inherit environment path;
+          serviceConfig.EnvironmentFile = secretEnv;
+        };
+
+        systemd.services.larapaper-queue = {
+          description = "LaraPaper queue worker";
+          wantedBy = [ "multi-user.target" ];
+          requires = [ "larapaper-setup.service" ];
+          after = [ "larapaper-setup.service" ];
+          inherit environment path;
+          serviceConfig = serviceDefaults // {
+            ExecStart = "${artisan} queue:work --sleep=3 --tries=3";
+            Restart = "always";
+          };
+        };
+
+        systemd.services.larapaper-scheduler = {
+          description = "LaraPaper scheduler";
+          wantedBy = [ "multi-user.target" ];
+          requires = [ "larapaper-setup.service" ];
+          after = [ "larapaper-setup.service" ];
+          inherit environment path;
+          serviceConfig = serviceDefaults // {
+            ExecStart = "${artisan} schedule:work";
+            Restart = "always";
+          };
+        };
+
+        services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          root * ${package}/public
+          php_fastcgi unix/${socket}
+          file_server
+        '';
 
         services.homepage-dashboard.services = [
           {
@@ -63,7 +163,7 @@
                 "TRMNL" = {
                   href = "https://${localHost}";
                   icon = "sh-trmnl";
-                  siteMonitor = "${listenUrl}/up";
+                  siteMonitor = "https://${localHost}/up";
                 };
               }
             ];
@@ -80,13 +180,15 @@
             conditions = [ "[STATUS] == 200" ];
           }
         ];
-
-        services.caddy.virtualHosts.${localHost}.extraConfig = ''
-          reverse_proxy ${listenUrl}
-        '';
       }
       // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [ dataDir ];
+        preservation.preserveAt."/persist".directories = [
+          {
+            directory = dataDir;
+            inherit user;
+            group = user;
+          }
+        ];
       };
     };
 }
