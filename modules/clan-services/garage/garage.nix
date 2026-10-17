@@ -175,6 +175,8 @@
                 services.garage = {
                   enable = true;
                   package = pkgs.garage_2;
+                  # info logs every s3 request, including presigned url signatures
+                  logLevel = "warn";
                   settings = {
                     metadata_dir = "/var/lib/garage/meta";
                     data_dir = lib.mkDefault [
