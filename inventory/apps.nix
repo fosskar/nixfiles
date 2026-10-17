@@ -160,6 +160,7 @@ in
           "arr-stack"
         ];
         adminGroups = [ "admin" ];
+        socketGroup = "caddy";
         categoryGroups = {
           admin = [ "admin" ];
           arr-stack = [ "admin" ];
@@ -181,7 +182,7 @@ in
             ) (lib.mergeAttrsList config.services.homepage-dashboard.services);
             services.caddy.virtualHosts."nixlens.${localDomain}".extraConfig = ''
               import authelia
-              reverse_proxy 127.0.0.1:${toString config.services.nixlens.port}
+              reverse_proxy unix/${config.services.nixlens.hub.socket}
             '';
           }
         )
