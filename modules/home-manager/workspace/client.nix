@@ -84,6 +84,10 @@ _: {
           ExecStart = "${pkgs.openssh}/bin/ssh -NT workspace-relay";
           Restart = "always";
           RestartSec = 10;
+          # back off to 5 min while nixworker is unreachable; the resume restart
+          # above resets the counter, so wake-up still reconnects at once
+          RestartSteps = 5;
+          RestartMaxDelaySec = 300;
         };
         Install.WantedBy = [ "default.target" ];
       };
