@@ -36,16 +36,7 @@ in
     "netjson-monitoring"
   ];
 
-  externalPackages = [
-    {
-      name = "beszel-agent";
-      checkCommand = ''
-        latest=$(wget -qO- https://api.github.com/repos/vernette/beszel-agent-openwrt/releases/latest | sed -n 's/.*"tag_name": *"v\{0,1\}\([^"]*\)".*/\1/p')
-        [ -n "$latest" ] && apk list -I beszel-agent | grep -q "^beszel-agent-$latest-"
-      '';
-      installCommand = "wget -qO- https://github.com/vernette/beszel-agent-openwrt/raw/master/install.sh | sh && /etc/init.d/beszel-agent restart";
-    }
-  ];
+  externalPackages = [ (import ../../profiles/beszel-agent.nix) ];
 
   files = {
     "/etc/unbound/unbound_srv.conf" = ./files/unbound_srv.conf;
