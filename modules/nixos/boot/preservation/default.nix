@@ -9,6 +9,7 @@ in
       lib,
       inputs,
       options,
+      utils,
       ...
     }:
     let
@@ -136,6 +137,31 @@ in
         users.mutableUsers = lib.mkIf config.services.userborn.enable (lib.mkForce true);
 
         fileSystems.${persistPath}.neededForBoot = true;
+
+        # mounts made in initrd carry x-initrd.mount, which tells systemd to
+        # leave them alone until final shutdown. the marker is lost after
+        # switch-root when libmount cannot match the /sysroot utab entry
+        # (zfs, bind mounts), so they get regular local-fs ordering. early
+        # units (userborn, sops-install-secrets-for-users) need them, which
+        # forms a stop ordering cycle at shutdown. restore the intent.
+        systemd.units = lib.listToAttrs (
+          map
+            (
+              path:
+              lib.nameValuePair "${utils.escapeSystemdPath path}.mount" {
+                overrideStrategy = "asDropin";
+                text = ''
+                  [Unit]
+                  DefaultDependencies=no
+                '';
+              }
+            )
+            (
+              [ persistPath ]
+              ++ map getDirPath (lib.filter (d: d.inInitrd && d.how == "bindmount") preserveCfg.directories)
+              ++ map getFilePath (lib.filter (f: f.inInitrd && f.how == "bindmount") preserveCfg.files)
+            )
+        );
 
         _module.args.preservationDiskoPostMountHook = lib.concatStringsSep "\n" (
           [ "# pre-create persistent directories for fresh install" ]
