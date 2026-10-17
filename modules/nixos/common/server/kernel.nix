@@ -8,6 +8,10 @@
         "panic=1"
         "boot.panic_on_fail"
 
+        # panic on kernel oops to stop exploits mid-flight; workstations keep
+        # the default (kill the faulting task) and oops_limit=10000
+        "oops=panic"
+
         # no slab merging: harder heap exploitation, costs some performance
         "slab_nomerge"
 
