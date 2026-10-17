@@ -34,6 +34,10 @@
           settings.keyfile.path = "/var/lib/NetworkManager/system-connections";
           # use systemd-resolved for DNS (enabled in base/network.nix)
           dns = lib.mkDefault "systemd-resolved";
+          # nm drives autoconnect: with iwd's own autoconnect nm ignores
+          # autoconnect-priority and attaches whatever profile it mirrored from
+          # iwd's known network first, which races nm-ensure-profiles at boot
+          settings.device."wifi.iwd.autoconnect" = false;
           # on workstations, let NM manage normal desktop interfaces incl ethernet
           # iwd backend with privacy defaults
           wifi = {
@@ -47,8 +51,6 @@
         # iwd settings
         wireless.iwd.settings = {
           Scan.DisablePeriodicScan = true;
-          # nm drives autoconnect; iwd autoconnect races nm-ensure-profiles
-          Settings.AutoConnect = false;
           General = {
             AddressRandomization = "network";
             AddressRandomizationRange = "full";
