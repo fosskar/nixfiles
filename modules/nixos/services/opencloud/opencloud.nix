@@ -208,6 +208,11 @@
           listenAddress = "127.0.0.1";
           port = 9998;
         };
+        # tika is Type=simple and the jvm binds seconds later; opencloud's search
+        # service fails 5 times and takes opencloud down if it starts first
+        systemd.services.tika.serviceConfig.ExecStartPost =
+          "${lib.getExe pkgs.curl} -sf -o /dev/null --retry 60 --retry-connrefused --retry-delay 1 "
+          + "http://127.0.0.1:${toString config.services.tika.port}/version";
 
         services.opencloud = {
           enable = true;
