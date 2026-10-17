@@ -74,6 +74,12 @@
         description = "UCI configuration as nix attrsets. named sections are attrsets with _type, anonymous sections are lists of attrsets with _type.";
       };
 
+      delete = lib.mkOption {
+        default = [ ];
+        type = lib.types.listOf lib.types.str;
+        description = "UCI sections or options to delete, e.g. \"firewall.old_rule\". replace semantics never remove undeclared sections, so list stale ones here. the config must also appear in uci.settings so deploy commits and reloads it.";
+      };
+
       secrets.sops.files = lib.mkOption {
         default = [ ];
         type = lib.types.listOf lib.types.path;
