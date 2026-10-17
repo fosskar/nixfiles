@@ -38,7 +38,7 @@
         services.lact.enable = true;
       }
       // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [
+        preservation.preserveAt."/persist".directories = lib.mkIf config.services.lact.enable [
           "/etc/lact"
         ];
       };
