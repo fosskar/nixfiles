@@ -24,6 +24,8 @@
       environment = {
         APP_ENV = "production";
         APP_URL = "https://${localHost}";
+        # recipes format dates in this zone; ical events arrive in mixed offsets
+        APP_TIMEZONE = "Europe/Berlin";
         DB_CONNECTION = "sqlite";
         DB_DATABASE = "${dataDir}/database/database.sqlite";
         LOG_CHANNEL = "stderr";
