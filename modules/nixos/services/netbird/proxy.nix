@@ -494,8 +494,10 @@
                 tls.passthrough = true;
                 priority = 1;
               };
+              # send PROXY protocol v2 so netbird-proxy sees the real client ip
+              serversTransports.proxy-protocol-v2.proxyProtocol.version = 2;
               services.proxy-tls.loadBalancer = {
-                proxyProtocol.version = 2;
+                serversTransport = "proxy-protocol-v2";
                 servers = [
                   { address = "127.0.0.1:${toString (lib.toInt (lib.removePrefix ":" cfg.addr))}"; }
                 ];
