@@ -8,6 +8,11 @@
     }:
     let
       keyFile = serviceName: "/run/arr-api-keys/${serviceName}/api-key";
+      # curl reads keys from the unit's private /tmp: argv is world-readable in
+      # /proc/<pid>/cmdline
+      keyHeader = serviceName: "/tmp/${serviceName}-api-key.header";
+      # sabnzbd takes its key only in the query string
+      sabnzbdVersionConfig = "/tmp/sabnzbd-version.curl";
       # prowlarr writes its own key from ExecStartPost (api-keys.nix)
       keyUnit =
         serviceName: if serviceName == "prowlarr" then "prowlarr.service" else "${serviceName}-api.service";
@@ -37,25 +42,27 @@
           topFiles = entry.topFiles or { };
         in
         ''
-          overrides=$(jq -n --argjson lit ${lib.escapeShellArg (builtins.toJSON entry.fields)}${
+          jq -n --argjson lit ${lib.escapeShellArg (builtins.toJSON entry.fields)}${
             lib.concatStrings (
               lib.mapAttrsToList (
-                fieldName: path: " --arg secret_${fieldName} \"$(cat ${path})\""
+                fieldName: path: " --rawfile secret_${fieldName} \"${path}\""
               ) entry.secretFields
             )
           } '$lit${
             lib.concatStrings (
-              lib.mapAttrsToList (fieldName: _: " + {\"${fieldName}\": $secret_${fieldName}}") entry.secretFields
+              lib.mapAttrsToList (
+                fieldName: _: " + {\"${fieldName}\": ($secret_${fieldName} | sub(\"\\n+$\"; \"\"))}"
+              ) entry.secretFields
             )
-          }')
+          }' > /tmp/overrides.json
 
-          existing=$(curl -sfS -H "X-Api-Key: $own" "$base/api/${apiVersion}/${resource}" \
+          existing=$(curl -sfS -H @"$own_header" "$base/api/${apiVersion}/${resource}" \
             | jq -c --arg name ${lib.escapeShellArg entry.name} 'map(select(.name == $name)) | first // empty')
 
           if [ -n "$existing" ]; then
             start=$existing
           else
-            start=$(curl -sfS -H "X-Api-Key: $own" "$base/api/${apiVersion}/${resource}/schema" \
+            start=$(curl -sfS -H @"$own_header" "$base/api/${apiVersion}/${resource}/schema" \
               | jq -ce --arg impl ${lib.escapeShellArg entry.implementation} \
                   'map(select(.implementation == $impl)) | first // error("no schema for \($impl)")')
           fi
@@ -65,8 +72,9 @@
             --argjson top ${lib.escapeShellArg (builtins.toJSON entry.top)}${
               lib.concatStrings (lib.mapAttrsToList (key: path: " --slurpfile topfile_${key} ${path}") topFiles)
             } \
-            --argjson ov "$overrides" '
-              . * $top${
+            --slurpfile ovfile /tmp/overrides.json '
+              $ovfile[0] as $ov
+              | . * $top${
                 lib.concatStrings (lib.mapAttrsToList (key: _: " | .${key} = $topfile_${key}[0]") topFiles)
               }
               | .name = $name
@@ -74,12 +82,12 @@
 
           if [ -n "$existing" ]; then
             id=$(printf '%s' "$existing" | jq -r .id)
-            curl -sfS -X PUT -H "X-Api-Key: $own" -H 'Content-Type: application/json' \
-              -d "$body" "$base/api/${apiVersion}/${resource}/$id" >/dev/null
+            curl -sfS -X PUT -H @"$own_header" -H 'Content-Type: application/json' \
+              --data-binary @- "$base/api/${apiVersion}/${resource}/$id" <<<"$body" >/dev/null
             echo "updated ${resource} ${entry.name} (id $id)"
           else
-            curl -sfS -X POST -H "X-Api-Key: $own" -H 'Content-Type: application/json' \
-              -d "$body" "$base/api/${apiVersion}/${resource}" >/dev/null
+            curl -sfS -X POST -H @"$own_header" -H 'Content-Type: application/json' \
+              --data-binary @- "$base/api/${apiVersion}/${resource}" <<<"$body" >/dev/null
             echo "created ${resource} ${entry.name}"
           fi
         '';
@@ -148,10 +156,19 @@
                 ]
               }
 
-              own=$(cat ${keyFile host})
+              umask 077
+              ${lib.concatMapStringsSep "\n" (
+                serviceName:
+                "printf 'X-Api-Key: %s\\n' \"$(cat ${keyFile serviceName})\" > ${keyHeader serviceName}"
+              ) needsKeys}
+              ${lib.optionalString (lib.elem "sabnzbd" needsKeys) ''
+                printf 'url = "%s/api?mode=version&apikey=%s"\n' ${baseUrl "sabnzbd"} "$(cat ${keyFile "sabnzbd"})" \
+                  > ${sabnzbdVersionConfig}
+              ''}
+              own_header=${keyHeader host}
               base=${baseUrl host}
 
-              ${waitFor ''curl -sfS -H "X-Api-Key: $own" "$base/api/${apiVersion}/system/status"''}
+              ${waitFor ''curl -sfS -H @"$own_header" "$base/api/${apiVersion}/system/status"''}
               ${lib.concatMapStringsSep "\n" waitFor readyChecks}
               ${prepare}
               ${lib.concatMapStringsSep "\n" (entry: mkEntry { inherit apiVersion resource entry; }) entries}
@@ -201,9 +218,10 @@
           extraUnits = [ "audiobookshelf.service" ];
           readyChecks = [ ''curl -sfS "${audiobookshelfUrl}/status"'' ];
           prepare = ''
-            abs_key=$(cat "$CREDENTIALS_DIRECTORY/audiobookshelf-api-key")
-            roots=$(curl -sfS -H "X-Api-Key: $own" "$base/api/v1/rootfolder")
-            libraries=$(curl -sfS -H "Authorization: Bearer $abs_key" "${audiobookshelfUrl}/api/libraries")
+            printf 'Authorization: Bearer %s\n' "$(cat "$CREDENTIALS_DIRECTORY/audiobookshelf-api-key")" \
+              > /tmp/audiobookshelf-api-key.header
+            roots=$(curl -sfS -H @"$own_header" "$base/api/v1/rootfolder")
+            libraries=$(curl -sfS -H @/tmp/audiobookshelf-api-key.header "${audiobookshelfUrl}/api/libraries")
             jq -nce --argjson roots "$roots" --argjson libraries "$libraries" '
               [ $roots[] as $root
                 | $libraries.libraries[] as $library
@@ -249,7 +267,7 @@
           needsKeys = [ "prowlarr" ] ++ lib.attrNames arrs;
           readyChecks = lib.mapAttrsToList (
             serviceName: arr:
-            ''curl -sfS -H "X-Api-Key: $(cat ${keyFile serviceName})" "${baseUrl serviceName}/api/${arr.apiVersion}/system/status"''
+            ''curl -sfS -H @${keyHeader serviceName} "${baseUrl serviceName}/api/${arr.apiVersion}/system/status"''
           ) arrs;
           entries = lib.mapAttrsToList (serviceName: arr: {
             name = lib.toSentenceCase serviceName;
@@ -273,9 +291,7 @@
             serviceName
             "sabnzbd"
           ];
-          readyChecks = [
-            ''curl -sfS "${baseUrl "sabnzbd"}/api?mode=version&apikey=$(cat ${keyFile "sabnzbd"})"''
-          ];
+          readyChecks = [ "curl -sfS -K ${sabnzbdVersionConfig}" ];
           entries = [
             {
               name = "SABnzbd";

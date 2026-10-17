@@ -124,7 +124,10 @@
                 ]
               }
 
-              key=$(cat "$CREDENTIALS_DIRECTORY/api-key")
+              # secrets reach curl and jq through files and the environment:
+              # argv is world-readable in /proc/<pid>/cmdline
+              umask 077
+              printf 'Authorization: Bearer %s\n' "$(cat "$CREDENTIALS_DIRECTORY/api-key")" > /tmp/api-key.header
               base=${listenUrl}/audiobookshelf
 
               for _ in $(seq 60); do
@@ -135,9 +138,9 @@
               # port 587 is starttls, so secure stays off
               jq -n \
                 --arg host "$SMTP_HOST" --argjson port "$SMTP_PORT" \
-                --arg user "$SMTP_USER" --arg pass "$SMTP_PASSWORD" --arg from "$SMTP_FROM" \
-                '{host: $host, port: $port, secure: false, rejectUnauthorized: true, user: $user, pass: $pass, fromAddress: $from}' \
-                | curl -sfS -X PATCH -H "Authorization: Bearer $key" -H 'Content-Type: application/json' \
+                --arg user "$SMTP_USER" --arg from "$SMTP_FROM" \
+                '{host: $host, port: $port, secure: false, rejectUnauthorized: true, user: $user, pass: $ENV.SMTP_PASSWORD, fromAddress: $from}' \
+                | curl -sfS -X PATCH -H @/tmp/api-key.header -H 'Content-Type: application/json' \
                     --data-binary @- "$base/api/emails/settings" >/dev/null
               echo "updated audiobookshelf email settings"
             '';
