@@ -560,17 +560,6 @@ in
           dest_port = "53";
           target = "ACCEPT";
         };
-        # trmnl displays on iot poll larapaper behind caddy on nixbox
-        iot_trmnl = {
-          _type = "rule";
-          name = "Allow-IoT-TRMNL";
-          src = "iot";
-          dest = "srv";
-          dest_ip = "192.168.20.200";
-          proto = "tcp";
-          dest_port = "443";
-          target = "ACCEPT";
-        };
         block_dot = {
           _type = "rule";
           name = "Block-DoT-Bypass";
