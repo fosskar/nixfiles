@@ -5,6 +5,7 @@
 - declarative first; no manual drift
 - no destructive remote actions unless explicit; do not run `clan machines update`, `reboot`, or `systemctl restart` by default
 - avoid Nix `with`; use explicit attrs
+- unless told otherwise, commit finished work and push it to `main`
 - unused or unimported modules are ready-to-enable features, not dead code; never remove one only because nothing imports it
 
 ## architecture
