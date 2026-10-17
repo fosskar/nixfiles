@@ -87,7 +87,10 @@
           };
           script = ''
             set -euo pipefail
-            password=$(cat "$CREDENTIALS_DIRECTORY/admin-password")
+            # the password and token reach curl through files: argv is
+            # world-readable in /proc/<pid>/cmdline
+            umask 077
+            password_file="$CREDENTIALS_DIRECTORY/admin-password"
 
             for _ in $(seq 1 60); do
               if curl -sf -o /dev/null "http://127.0.0.1:${toString webPort}/"; then
@@ -96,27 +99,28 @@
               sleep 1
             done
 
+            # $1 is a curl --data-urlencode argument: pass@<file> or the literal default
             login() {
-              curl -sf --data-urlencode user=admin --data-urlencode "pass=$1" "${api}/user/login" \
-                | jq -r 'select(.status == "ok") | .token'
+              curl -sf --data-urlencode user=admin --data-urlencode "$1" "${api}/user/login" \
+                | jq -r 'select(.status == "ok") | "Authorization: Bearer \(.token)"'
             }
 
-            token=$(login "$password")
-            if [ -z "$token" ]; then
-              token=$(login admin)
-              if [ -z "$token" ]; then
+            login "pass@$password_file" > /tmp/auth.header
+            if [ ! -s /tmp/auth.header ]; then
+              login pass=admin > /tmp/auth.header
+              if [ ! -s /tmp/auth.header ]; then
                 echo "cannot log in with the declared or the default admin password" >&2
                 exit 1
               fi
-              curl -sf -H "Authorization: Bearer $token" \
-                --data-urlencode pass=admin --data-urlencode "newPass=$password" \
+              curl -sf -H @/tmp/auth.header \
+                --data-urlencode pass=admin --data-urlencode "newPass@$password_file" \
                 "${api}/user/changePassword" | jq -e '.status == "ok"' >/dev/null
               echo "admin password set from clan vars"
             fi
 
-            curl -sf -H "Authorization: Bearer $token" ${settingsArgs} "${api}/settings/set" \
+            curl -sf -H @/tmp/auth.header ${settingsArgs} "${api}/settings/set" \
               | jq -e '.status == "ok"' >/dev/null
-            curl -sf -o /dev/null -H "Authorization: Bearer $token" "${api}/user/logout"
+            curl -sf -o /dev/null -H @/tmp/auth.header "${api}/user/logout"
           '';
         };
 
