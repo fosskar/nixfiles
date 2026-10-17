@@ -32,8 +32,9 @@ dns:
     # unbound
     - 127.0.0.1:5335
   local_ptr_upstreams:
-    # unbound
-    - 127.0.0.1:5335
+    # dnsmasq: answers lan ptr with RD=0 (home assistant's hourly sweep);
+    # unbound refuses those, it only forwards the zones to dnsmasq anyway
+    - 127.0.0.1:54
   use_private_ptr_resolvers: true
   enable_dnssec: true
   cache_enabled: false
