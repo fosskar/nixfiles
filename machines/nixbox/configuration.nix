@@ -63,6 +63,4 @@
     pkgs.ipmitool
   ];
 
-  boot.kernelModules = [ "nct6775" ];
-
 }
