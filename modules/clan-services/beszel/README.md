@@ -26,7 +26,7 @@ Server role:
 
 - enables the Beszel hub on `127.0.0.1:8090`
 - writes hub `config.yml` from client role assignments
-- generates icmp monitors from every client machine to every other client machine on each clan network that exports a plain host for it
+- generates icmp monitors from every client machine to every other client machine on each clan network that exports a plain host for it, except netbird (its dns is off on most machines) and private lan addresses from machines without one
 - reconciles network monitors with the generated list and `monitors` through the hub api on every hub start
 - exposes the hub through Caddy at `beszel.<local-domain>`
 - adds Authelia OIDC client config
