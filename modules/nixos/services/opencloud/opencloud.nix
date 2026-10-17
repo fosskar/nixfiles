@@ -380,7 +380,7 @@
         };
 
         security.audit.rules = [
-          "-a always,exit -F path=${dataDir} -F perm=wa -F uid!=opencloud -k opencloud_tamper"
+          "-a always,exit -F dir=${dataDir} -F perm=wa -F uid!=opencloud -k opencloud_tamper"
         ];
 
         # trash items expire after STORAGE_USERS_PURGE_TRASH_BIN_*_DELETE_BEFORE
