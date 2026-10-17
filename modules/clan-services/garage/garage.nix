@@ -141,11 +141,14 @@
 
                 # `garage status` lists previously-seen but unreachable peers under
                 # "FAILED NODES"; metadata writes need full RF quorum, so only the
-                # healthy section (everything before that header) counts.
+                # healthy section (everything before that header) counts. the
+                # output is captured first: the cli aborts with a core dump on
+                # EPIPE when sed or grep close the pipe early.
                 waitForHealthyPeers = lib.concatMapStringsSep "\n" (name: ''
                   healthy=""
                   for _ in $(seq 1 60); do
-                    if garage status 2>/dev/null | sed '/FAILED NODES/q' | grep -q ${nodeIdShort name}; then
+                    if status=$(garage status 2>/dev/null) \
+                      && printf '%s\n' "$status" | sed '/FAILED NODES/q' | grep -q ${nodeIdShort name}; then
                       healthy=1
                       break
                     fi
