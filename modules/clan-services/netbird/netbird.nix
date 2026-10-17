@@ -289,10 +289,10 @@
                           Scheme = "https";
                           Host = "${serverSettings.domain}:443";
                         };
-                        # permissive: rosenpass with capable peers, plain wireguard fallback
-                        # for peers without it (netbird-proxy runs without rosenpass)
-                        RosenpassEnabled = true;
-                        RosenpassPermissive = true;
+                        # go-rosenpass v0.5.42 never stops retrying a handshake that fails,
+                        # so peers that go offline leave loops logging ~1M errors/day;
+                        # re-enable when cunicu.li/go-rosenpass fixes the retransmit timer
+                        RosenpassEnabled = false;
                       };
                     };
                   };
