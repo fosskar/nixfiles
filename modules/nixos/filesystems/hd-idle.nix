@@ -10,7 +10,7 @@
 
         serviceConfig = {
           Type = "simple";
-          ExecStart = "${lib.getExe pkgs.hd-idle} -i 1800 -c ata"; # logs to journald
+          ExecStart = "${lib.getExe pkgs.hd-idle} -i 3600 -c ata"; # logs to journald
           Restart = "always";
 
           # sandboxing
