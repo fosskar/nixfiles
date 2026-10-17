@@ -68,6 +68,15 @@ _: {
                   StateDirectoryMode = "0700";
                 };
               }
+              # host key published at https://docs.hetzner.com/storage/storage-box/general/
+              # (SHA256:XqONwb1S0zuj5A1CDxpOSuD2hnAArV1A3wKY7Z3sdgM); without it the
+              # job's accept-new trusts whatever answers after /root is wiped
+              {
+                programs.ssh.knownHosts.storagebox = {
+                  hostNames = [ "[u499127.your-storagebox.de]:23" ];
+                  publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIICf9svRenC/PLKIL9nk6K/pxQgoiFC41wTNvoIncOxs";
+                };
+              }
               (
                 { lib, ... }:
                 {
