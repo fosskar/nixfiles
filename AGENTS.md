@@ -35,8 +35,9 @@ Non-obvious areas:
 
 - clan services export through `flake.modules."clan.service".<service>`; `modules/flake-parts/clan.nix` assigns that set to `clan.modules`
 - `modules/flake-parts/hosts.nix` is the single source of machine IPs
-- `modules/llm/` owns agent tooling, local-only skills, souls, and `pi-pack` wiring; pi installs applicable `pi-pack` extensions, and the `omp` feature does the same for omp
+- `modules/llm/` owns agent tooling, souls, and `pi-pack` wiring; pi installs applicable `pi-pack` extensions, and the `omp` feature does the same for omp
 - `flake.llm.skills.<name>` exposes skills to NixOS consumers such as Hermes
+- a tool feature contributes its agent skill through the home-manager option `llm.externalSkills` in the module that installs the tool; `modules/llm/skills/default.nix` keeps only `nixbot-cli`, which the devshell installs
 - OpenWrt configuration belongs in `openwrt/`, not on the device
 - `modules/flakelet/` holds `flakeletNixbot`, a runtime-evaluated alternative to `flake.modules.nixos.nixbot`; import exactly one of the two
 
