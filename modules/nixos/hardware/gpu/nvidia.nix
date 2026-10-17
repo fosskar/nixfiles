@@ -40,6 +40,11 @@
 
       hardware.nvidia-container-toolkit.enable = true;
 
+      # a live switch would pair new userspace libraries with the still loaded
+      # old kernel module ("Driver/library version mismatch"); clan then only
+      # registers the generation for the next boot
+      system.switch.inhibitors.nvidia-driver = config.hardware.nvidia.package.version;
+
       services.xserver.videoDrivers = [ "nvidia" ];
     };
 }
