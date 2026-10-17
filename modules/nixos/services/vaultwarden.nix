@@ -155,5 +155,8 @@
         create.enable = false;
         restore.stopOnRestore = [ "vaultwarden.service" ];
       };
+      # attachments, sends and rsa_key.pem live outside the database:
+      # https://github.com/dani-garcia/vaultwarden/wiki/Backing-up-your-vault
+      clan.core.state.vaultwarden.folders = [ "/var/lib/vaultwarden" ];
     };
 }
