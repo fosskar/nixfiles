@@ -21,6 +21,18 @@
       inherit (cfg.crowdsec) apiKeyFile;
       tcpPorts = lib.concatMapStringsSep ", " toString ([ 443 ] ++ cfg.publicTCPPorts);
       bouncerName = "netbird-proxy";
+      # upstream emits the access line only at debug, next to several other debug
+      # lines per request; raise just that line to info so crowdsec can parse it
+      proxyPackage =
+        if cfg.crowdsec.enable then
+          cfg.package.overrideAttrs (old: {
+            postPatch = (old.postPatch or "") + ''
+              substituteInPlace proxy/internal/accesslog/middleware.go \
+                --replace-fail 'l.logger.Debugf("response:' 'l.logger.Infof("response:'
+            '';
+          })
+        else
+          cfg.package;
     in
     {
       # --- options ---
@@ -127,8 +139,6 @@
 
       config = lib.mkIf cfg.enable (
         {
-
-          services.netbird.server.proxy.logLevel = lib.mkIf cfg.crowdsec.enable (lib.mkDefault "debug");
 
           networking.firewall.allowedTCPPorts = cfg.publicTCPPorts;
 
@@ -249,7 +259,7 @@
                 NB_PROXY_CROWDSEC_API_KEY=$(cat "$CREDENTIALS_DIRECTORY/crowdsec-api-key")
                 export NB_PROXY_CROWDSEC_API_KEY
               ''}
-              exec ${lib.getExe cfg.package}
+              exec ${lib.getExe proxyPackage}
             '';
 
             serviceConfig = {
@@ -351,17 +361,17 @@
             '';
           };
 
-          # parse debug-level `response:` journal lines into http_access-log shape for stock http-* scenarios
+          # parse info-level `response:` journal lines into http_access-log shape for stock http-* scenarios
           services.crowdsec.localConfig.parsers.s01Parse = lib.mkIf cfg.crowdsec.enable [
             {
               onsuccess = "next_stage";
               filter = "evt.Line.Labels.type == 'netbird-proxy'";
               name = "nixfiles/netbird-proxy-logs";
-              description = "parse netbird-proxy access log debug lines";
+              description = "parse netbird-proxy access log lines";
               nodes = [
                 {
                   grok = {
-                    pattern = "%{TIMESTAMP_ISO8601} DEBG %{DATA}middleware.go:%{NUMBER}: response: request_id=%{DATA:request_id} method=%{WORD:method} host=%{HOSTNAME:host} path=%{NOTSPACE:path} status=%{INT:status} duration=%{NOTSPACE:duration} source=%{IP:source_ip} origin=%{DATA:origin} service=%{DATA:service_id} account=%{NOTSPACE:account_id}$";
+                    pattern = "%{TIMESTAMP_ISO8601} INFO %{DATA}middleware.go:%{NUMBER}: response: request_id=%{DATA:request_id} method=%{WORD:method} host=%{HOSTNAME:host} path=%{NOTSPACE:path} status=%{INT:status} duration=%{NOTSPACE:duration} source=%{IP:source_ip} origin=%{DATA:origin} service=%{DATA:service_id} account=%{NOTSPACE:account_id}$";
                     apply_on = "Line.Raw";
                   };
                   statics = [
