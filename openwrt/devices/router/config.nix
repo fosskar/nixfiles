@@ -337,25 +337,30 @@ in
         };
       };
 
-      # sqm needs software offloading only (flow_offloading_hw incompatible)
-      sqm.eth1 = {
-        _type = "queue";
-        enabled = "1";
-        interface = "eth1";
-        download = "260000";
-        upload = "45000";
-        qdisc = "cake";
-        script = "piece_of_cake.qos";
-        linklayer = "ethernet";
-        overhead = "44";
-        linklayer_advanced = "1";
-        tcMPU = "84";
-        qdisc_advanced = "1";
-        squash_dscp = "0";
-        squash_ingress = "0";
-        iqdisc_opts = "nat dual-dsthost ingress";
-        eqdisc_opts = "nat dual-srchost ack-filter";
-      };
+      # sqm needs software offloading only (flow_offloading_hw incompatible).
+      # list form deletes every queue section first, including the package default sqm.eth1
+      sqm.queue = [
+        {
+          _type = "queue";
+          enabled = "1";
+          # on eth1 cake sees PPPoE frames, so nat, per-host fairness and ack-filter do nothing
+          interface = "pppoe-wan";
+          download = "260000";
+          upload = "45000";
+          qdisc = "cake";
+          script = "piece_of_cake.qos";
+          linklayer = "ethernet";
+          # pppoe-wan packets lack the 8-byte PPPoE+PPP header that eth1 counted; 44 + 8 keeps the same accounting
+          overhead = "52";
+          linklayer_advanced = "1";
+          tcMPU = "84";
+          qdisc_advanced = "1";
+          squash_dscp = "0";
+          squash_ingress = "0";
+          iqdisc_opts = "nat dual-dsthost ingress";
+          eqdisc_opts = "nat dual-srchost ack-filter";
+        }
+      ];
 
       firewall = {
         defaults = [
