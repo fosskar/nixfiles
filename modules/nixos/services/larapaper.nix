@@ -32,7 +32,7 @@
         TRUSTED_PROXIES = "127.0.0.1";
         HOME = dataDir;
         PUPPETEER_EXECUTABLE_PATH = lib.getExe pkgs.chromium;
-        # passes --no-sandbox; the systemd units already confine chromium
+        # passes --no-sandbox; serviceDefaults confines chromium instead
         PUPPETEER_DOCKER = "true";
       };
       # browsershot runs `node` from PATH
@@ -42,6 +42,45 @@
         Group = user;
         EnvironmentFile = secretEnv;
         WorkingDirectory = package;
+
+        CapabilityBoundingSet = "";
+        LockPersonality = true;
+        # v8 jit
+        MemoryDenyWriteExecute = false;
+        NoNewPrivileges = true;
+        PrivateDevices = true;
+        PrivateTmp = true;
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectProc = "invisible";
+        ProtectSystem = "strict";
+        ReadWritePaths = [ dataDir ];
+        RemoveIPC = true;
+        RestrictAddressFamilies = [
+          "AF_UNIX"
+          "AF_INET"
+          "AF_INET6"
+          # chromium's network change notifier
+          "AF_NETLINK"
+        ];
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        SystemCallArchitectures = "native";
+        # v8 uses memory protection keys; crashpad's ptrace gets EPERM instead of a kill
+        SystemCallFilter = [
+          "@system-service"
+          "pkey_alloc"
+          "pkey_free"
+          "pkey_mprotect"
+        ];
+        SystemCallErrorNumber = "EPERM";
+        UMask = "0027";
       };
     in
     {
