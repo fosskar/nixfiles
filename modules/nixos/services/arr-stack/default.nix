@@ -1,8 +1,23 @@
 {
   flake.modules.nixos.arrStack =
-    { config, lib, ... }:
+    {
+      flake-self,
+      config,
+      lib,
+      ...
+    }:
     let
       mediaRoot = "/tank/media";
+      # authelia matches a "*" only as the leftmost label, so "sonarr.*" never matched
+      arrHosts = map (app: "${app}.${flake-self.domains.local}") [
+        "sonarr"
+        "radarr"
+        "lidarr"
+        "chaptarr"
+        "prowlarr"
+        "bazarr"
+        "sabnzbd"
+      ];
       autheliaEnabled = config.services.authelia.instances.main.enable or false;
     in
     {
@@ -48,15 +63,7 @@
         services.authelia.instances.main.settings.access_control.rules = lib.mkIf autheliaEnabled (
           lib.mkBefore [
             {
-              domain = [
-                "sonarr.*"
-                "radarr.*"
-                "lidarr.*"
-                "chaptarr.*"
-                "prowlarr.*"
-                "bazarr.*"
-                "sabnzbd.*"
-              ];
+              domain = arrHosts;
               policy = "bypass";
               resources = [
                 "^/api.*"
@@ -64,28 +71,12 @@
               ];
             }
             {
-              domain = [
-                "sonarr.*"
-                "radarr.*"
-                "lidarr.*"
-                "chaptarr.*"
-                "prowlarr.*"
-                "bazarr.*"
-                "sabnzbd.*"
-              ];
+              domain = arrHosts;
               subject = [ "group:admin" ];
               policy = "one_factor";
             }
             {
-              domain = [
-                "sonarr.*"
-                "radarr.*"
-                "lidarr.*"
-                "chaptarr.*"
-                "prowlarr.*"
-                "bazarr.*"
-                "sabnzbd.*"
-              ];
+              domain = arrHosts;
               policy = "deny";
             }
           ]
