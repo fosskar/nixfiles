@@ -40,8 +40,15 @@ _: {
       systemd.services.matrix-alert-hook = {
         description = "Forward alert webhooks to Matrix";
         wantedBy = [ "multi-user.target" ];
-        after = [ "network-online.target" ];
-        wants = [ "network-online.target" ];
+        # the hook exits when the homeserver is unreachable at startup
+        after = [
+          "network-online.target"
+          "continuwuity.service"
+        ];
+        wants = [
+          "network-online.target"
+          "continuwuity.service"
+        ];
         environment = {
           HTTP_ADDRESS = listenAddress;
           HTTP_PORT = toString listenPort;
