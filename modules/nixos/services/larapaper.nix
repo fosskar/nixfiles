@@ -58,6 +58,8 @@
           group = user;
           home = dataDir;
         };
+        # caddy serves the generated device images from storage/app/public
+        users.users.${config.services.caddy.user}.extraGroups = [ user ];
 
         systemd.tmpfiles.settings.larapaper =
           lib.genAttrs
