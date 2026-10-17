@@ -531,6 +531,86 @@
         "notification_settings": {
           "receiver": "matrix-alert-hook"
         }
+      },
+      {
+        "uid": "b7c41e9a52d0f3",
+        "title": "Machines reboot required",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host, component) (reboot_required)",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}} {{component}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [0],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "for": "1h",
+        "annotations": {
+          "summary": "{{ $labels.machine }} needs a reboot",
+          "description": "The deployed {{ $labels.component }} differs from the one the machine booted with, so the running system still uses the old one. Compare with: readlink /run/booted-system/{{ $labels.component }} /run/current-system/{{ $labels.component }}"
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
       }
     ]
   },

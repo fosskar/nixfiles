@@ -11,8 +11,9 @@
           "-w /etc/sudoers -p wa -k privilege"
           "-w /etc/ssh -p wa -k sshd"
           "-a always,exit -F arch=b64 -S init_module,finit_module,delete_module -k modules"
-          # every command run from a login session (ssh, clan deploys); daemons excluded
-          "-a always,exit -F arch=b64 -S execve -F auid!=unset -k session_exec"
+          # commands that run as root from a login session (root ssh, clan deploys,
+          # sudo); unprivileged user commands and daemons are excluded
+          "-a always,exit -F arch=b64 -S execve -F auid!=unset -F euid=0 -k session_exec"
         ];
       };
       # auditd claims the kernel audit socket so events stop going to printk;

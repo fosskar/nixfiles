@@ -58,6 +58,16 @@ _: {
               {
                 services.borgbackup.jobs.storagebox.environment.BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK = "no";
               }
+              # /root is wiped on boot on preservation hosts; a lost cache makes the
+              # next run re-read every file. StateDirectory is writable under the
+              # job's ProtectSystem=strict
+              {
+                services.borgbackup.jobs.storagebox.environment.BORG_BASE_DIR = "/var/lib/borgbackup";
+                systemd.services.borgbackup-job-storagebox.serviceConfig = {
+                  StateDirectory = "borgbackup";
+                  StateDirectoryMode = "0700";
+                };
+              }
               (
                 { lib, ... }:
                 {

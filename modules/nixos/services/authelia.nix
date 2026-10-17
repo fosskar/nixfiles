@@ -76,6 +76,8 @@
           settings = {
             theme = "dark";
             default_2fa_method = "totp";
+            # the nixpkgs default is debug, which logs every forward-auth check
+            log.level = "info";
 
             webauthn = {
               disable = false;

@@ -26,6 +26,15 @@
           ${pkgs.jq}/bin/jq -r 'map(.addr_info) | flatten(1) | map(select(.dadfailed == true)) | map(.local) | @text "ipv6_dad_failures count=\(length)i"'
       '';
 
+      # a switch cannot replace the running kernel or its loaded modules (nvidia included)
+      rebootRequired = pkgs.writeShellScript "reboot-required" ''
+        for component in kernel kernel-modules; do
+          booted=$(${pkgs.coreutils}/bin/readlink /run/booted-system/$component)
+          current=$(${pkgs.coreutils}/bin/readlink /run/current-system/$component)
+          echo "reboot,component=$component required=$([ "$booted" = "$current" ] && echo 0 || echo 1)i"
+        done
+      '';
+
       zpoolHealth = pkgs.writeScript "zpool-health" ''
         #!${pkgs.gawk}/bin/awk -f
         BEGIN {
@@ -170,7 +179,13 @@
 
               exec = [
                 {
-                  commands = map lib.singleton ([ ipv6DadCheck ] ++ lib.optional zfsEnabled zpoolHealth);
+                  commands = map lib.singleton (
+                    [
+                      ipv6DadCheck
+                      rebootRequired
+                    ]
+                    ++ lib.optional zfsEnabled zpoolHealth
+                  );
                   data_format = "influx";
                 }
               ];

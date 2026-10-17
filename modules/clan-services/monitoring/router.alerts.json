@@ -190,7 +190,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "unbound_total_num_queries_timed_out{machine=\"openwrt\"}",
+              "expr": "increase(unbound_total_num_queries_discard_timeout{machine=\"openwrt\"}[10m])",
               "instant": true,
               "interval": "",
               "intervalMs": 15000,
@@ -211,7 +211,7 @@
               "conditions": [
                 {
                   "evaluator": {
-                    "params": [0],
+                    "params": [100],
                     "type": "gt"
                   },
                   "operator": {
@@ -241,9 +241,9 @@
         ],
         "noDataState": "Alerting",
         "execErrState": "Alerting",
-        "for": "2m",
+        "for": "5m",
         "annotations": {
-          "description": "Unbound reports timed-out DNS queries for two minutes."
+          "description": "Unbound dropped more than 100 queries in 10 minutes because recursion exceeded discard-timeout."
         },
         "isPaused": false,
         "notification_settings": {
@@ -269,7 +269,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "unbound_total_recursion_time_avg{machine=\"openwrt\"}",
+              "expr": "rate((unbound_total_recursion_time_avg{machine=\"openwrt\"} * unbound_total_num_recursivereplies{machine=\"openwrt\"})[10m:1m]) / clamp_min(rate(unbound_total_num_recursivereplies{machine=\"openwrt\"}[10m]), 1e-9)",
               "instant": true,
               "interval": "",
               "intervalMs": 15000,
@@ -320,9 +320,9 @@
         ],
         "noDataState": "Alerting",
         "execErrState": "Alerting",
-        "for": "5m",
+        "for": "10m",
         "annotations": {
-          "description": "Average Unbound recursion latency exceeds 500 ms for five minutes."
+          "description": "Average Unbound recursion latency over the last 10 minutes exceeds 500 ms for ten minutes."
         },
         "isPaused": false,
         "notification_settings": {
