@@ -6,6 +6,10 @@
 
       hardware.wirelessRegulatoryDatabase = true;
 
+      # nm manages every nic; facter's per-interface useDHCP would add scripted
+      # network-addresses-<if> units that fight it
+      hardware.facter.detected.dhcp.enable = false;
+
       networking = {
         useDHCP = lib.mkDefault false;
         useNetworkd = lib.mkForce false;
