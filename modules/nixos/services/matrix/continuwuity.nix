@@ -106,6 +106,11 @@
           # no global ipv6 on this host; skip useless AAAA lookups
           ip_lookup_strategy = 1;
 
+          # default 10 re-asks every SERVFAIL ten times; resolved forwards each
+          # retry, so the startup netburst to dead federation servers flooded
+          # the router with ~7k SERVFAIL in 3 minutes
+          dns_attempts = 1;
+
           # nixbox has ram to spare; larger caches speed up state
           # resolution and large room joins
           cache_capacity_modifier = 2.0;
