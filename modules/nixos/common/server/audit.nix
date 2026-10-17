@@ -4,6 +4,8 @@
     {
       security.audit = {
         enable = true;
+        # 1024 overflowed during boot on nixbox (371 events lost)
+        backlogLimit = 8192;
         rules = [
           "-w /etc/passwd -p wa -k identity"
           "-w /etc/group -p wa -k identity"
