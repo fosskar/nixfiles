@@ -412,6 +412,12 @@
                     };
                   };
 
+                  # the desktop tunnel is a -L forward; the key's permitopen limits the target
+                  services.openssh.extraConfig = lib.mkIf settings.dashboard.enable ''
+                    Match User ${sshUser}
+                      AllowTcpForwarding local
+                  '';
+
                   clan.core.vars.generators."${instanceName}-dashboard" = lib.mkIf settings.dashboard.enable {
                     files.token = {
                       owner = "root";

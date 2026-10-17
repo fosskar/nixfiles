@@ -16,6 +16,9 @@
           UseDns = false;
           # unbind gnupg sockets if they exist
           StreamLocalBindUnlink = true;
+          # opt in per user with a Match block (workspace host, hermes tunnel)
+          AllowAgentForwarding = lib.mkDefault false;
+          AllowTcpForwarding = lib.mkDefault false;
         };
       };
     };
