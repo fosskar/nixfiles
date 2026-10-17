@@ -69,6 +69,10 @@
         systemd.services.netbird.serviceConfig =
           lib.mkIf (!config.services.netbird.clients.default.hardened)
             {
+              # the daemon chmods its socket 0666 and serves rpcs such as `down` to
+              # any caller; the runtime dir limits it to root and the client group
+              RuntimeDirectoryMode = "0750";
+              Group = config.services.netbird.clients.default.user.group;
               PrivateTmp = true;
               ProtectSystem = "strict";
               ProtectHome = false;
