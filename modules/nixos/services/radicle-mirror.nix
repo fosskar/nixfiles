@@ -43,6 +43,13 @@
 
       services.radicle-mirror = {
         enable = true;
+        # rad init --existing keeps an existing identity public after the github
+        # repo turns private; reconcile visibility before pushing refs
+        package =
+          (pkgs.callPackage "${flake-self.inputs.radicle-mirror}/nix/package.nix" { }).overrideAttrs
+            (old: {
+              patches = (old.patches or [ ]) ++ [ ./radicle-mirror-visibility.patch ];
+            });
         addr = "127.0.0.1:${toString mirrorPort}";
         ghAppId = 4631493;
         ghAppKeyPath = "${credentialsDirectory}/gh-app-key";
