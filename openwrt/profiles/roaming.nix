@@ -10,8 +10,10 @@
 
     removePackages = [ "wpad-basic-wolfssl" ];
 
+    # /etc/init.d/usteer reads network from the last usteer section, which is this one
     uci.settings.usteer.usteer = {
       _type = "usteer";
+      network = "lan";
       roam_scan_snr = "-65";
       signal_diff_threshold = "8";
     };
