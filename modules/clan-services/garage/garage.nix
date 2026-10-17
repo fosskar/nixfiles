@@ -216,7 +216,34 @@
                   # don't start (and don't create data on the wrong fs) unless the
                   # dataPath's backing mount is up; no-op when dataPath sits on /.
                   unitConfig.RequiresMountsFor = [ settings.dataPath ];
+                  # s3 and web endpoints face the lan and public buckets; upstream
+                  # only sets DynamicUser, ProtectHome, NoNewPrivileges
                   serviceConfig = {
+                    CapabilityBoundingSet = "";
+                    LockPersonality = true;
+                    MemoryDenyWriteExecute = true;
+                    PrivateDevices = true;
+                    ProtectClock = true;
+                    ProtectControlGroups = true;
+                    ProtectHostname = true;
+                    ProtectKernelLogs = true;
+                    ProtectKernelModules = true;
+                    ProtectKernelTunables = true;
+                    ProtectProc = "invisible";
+                    RestrictAddressFamilies = [
+                      "AF_UNIX"
+                      "AF_INET"
+                      "AF_INET6"
+                    ];
+                    RestrictNamespaces = true;
+                    RestrictRealtime = true;
+                    RestrictSUIDSGID = true;
+                    SystemCallArchitectures = "native";
+                    SystemCallFilter = [
+                      "@system-service"
+                      "~@privileged"
+                    ];
+                    UMask = "0077";
                     ExecStartPre = [ "+${placeNodeKey}" ];
                     LoadCredential = [
                       "rpc_secret_path:${config.clan.core.vars.generators.garage-shared.files.rpc_secret.path}"
