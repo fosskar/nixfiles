@@ -18,6 +18,7 @@
         };
         inherit (pkgs) electron;
       };
+      clientMatch = ''meta skuid != "${cfg.clientUser}"'';
       portGuard = import ./_remote-port-guard.nix { inherit pkgs; };
       knownHosts = pkgs.writeText "hermes-remote-known-hosts" (
         lib.concatMapStrings (host: "${host} ${cfg.hostKey}\n") cfg.hosts
@@ -194,6 +195,10 @@
           default = "root";
           description = "SSH user that owns the Hermes dashboard token";
         };
+        clientUser = lib.mkOption {
+          type = lib.types.str;
+          description = "Only local user allowed to connect to the forwarded port";
+        };
         localPort = lib.mkOption {
           type = lib.types.port;
           default = 23100;
@@ -224,6 +229,23 @@
           launcher
           desktopItem
         ];
+
+        # loopback tcp has no per-uid access control, and the ungated dashboard
+        # serves its session token to any client of the forwarded port
+        networking.nftables.tables.hermes-remote-client = {
+          family = "inet";
+          content = ''
+            chain output {
+              type filter hook output priority filter; policy accept;
+              ip daddr 127.0.0.1 tcp dport ${toString cfg.localPort} ${clientMatch} counter reject with tcp reset
+            }
+          '';
+        };
+        # the build sandbox lacks the runtime account; only the check uses root
+        networking.nftables.preCheckRuleset = ''
+          substituteInPlace ruleset.conf \
+            --replace-fail '${clientMatch}' 'meta skuid != 0'
+        '';
 
         systemd.user.services.hermes-remote-tunnel = {
           description = "Hermes dashboard SSH tunnel";

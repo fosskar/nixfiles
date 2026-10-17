@@ -544,6 +544,7 @@
                 services.hermes-remote = lib.mkIf (server != null && clientUser != null) {
                   enable = true;
                   user = remoteUser instanceName;
+                  inherit clientUser;
                   hosts = tunnelHosts;
                   # the server resolves <instance>.fencr to the sandbox
                   remoteAddress = "${instanceName}.fencr:${toString dashboardGuestPort}";
