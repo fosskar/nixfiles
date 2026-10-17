@@ -248,12 +248,14 @@
           smartctl-telegraf = {
             owner = "telegraf";
             group = "telegraf";
+            permissions = "u+rx,g+x";
             capabilities = "cap_sys_admin,cap_dac_override,cap_sys_rawio+ep";
             source = "${pkgs.smartmontools}/bin/smartctl";
           };
           nvme-telegraf = {
             owner = "telegraf";
             group = "telegraf";
+            permissions = "u+rx,g+x";
             capabilities = "cap_sys_admin,cap_dac_override,cap_sys_rawio+ep";
             source = "${pkgs.nvme-cli}/bin/nvme";
           };
