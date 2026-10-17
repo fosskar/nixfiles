@@ -154,6 +154,7 @@
           {
             instanceName,
             settings,
+            roles,
             ...
           }:
           {
@@ -173,13 +174,20 @@
                 dashboardAddress = "${sandboxHost}:${toString dashboardGuestPort}";
                 credentialName = provider: "${instanceName}-${provider}";
                 mcp = settings.mcp.allow != [ ];
-                remotePublicKey = lib.trim (
-                  clanLib.getPublicValue {
-                    flake = config.clan.core.settings.directory;
-                    generator = remoteKeyGenerator instanceName;
-                    file = "id_ed25519.pub";
-                    default = "";
-                  }
+                # one key per client machine: leaving the client role revokes its key
+                remotePublicKeys = lib.filter (key: key != "") (
+                  map (
+                    machine:
+                    lib.trim (
+                      clanLib.getPublicValue {
+                        flake = config.clan.core.settings.directory;
+                        inherit machine;
+                        generator = remoteKeyGenerator instanceName;
+                        file = "id_ed25519.pub";
+                        default = "";
+                      }
+                    )
+                  ) (lib.attrNames (roles.client.machines or { }))
                 );
                 tokenCommand = pkgs.writeShellScript "${instanceName}-hermes-token" ''
                   if [ "''${SSH_ORIGINAL_COMMAND-}" != hermes-token ]; then
@@ -436,9 +444,9 @@
                     group = sshUser;
                     home = "/var/empty";
                     shell = pkgs.bashInteractive;
-                    openssh.authorizedKeys.keys =
-                      lib.optional (remotePublicKey != "")
-                        ''restrict,port-forwarding,permitopen="${dashboardAddress}",command="${tokenCommand}" ${remotePublicKey}'';
+                    openssh.authorizedKeys.keys = map (
+                      key: ''restrict,port-forwarding,permitopen="${dashboardAddress}",command="${tokenCommand}" ${key}''
+                    ) remotePublicKeys;
                   };
 
                   clan.core.vars.generators.${generator} = {
@@ -554,7 +562,6 @@
                 };
 
                 clan.core.vars.generators.${remoteKeyGenerator instanceName} = lib.mkIf (clientUser != null) {
-                  share = true;
                   files = {
                     "id_ed25519" = {
                       owner = clientUser;
