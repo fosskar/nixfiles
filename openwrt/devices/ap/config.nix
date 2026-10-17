@@ -47,6 +47,15 @@ in
         login_check_for_upgrades = "1";
       };
 
+      # key-only ssh; luci logs in with the root password separately
+      dropbear.main = {
+        _type = "dropbear";
+        enable = "1";
+        Port = "22";
+        PasswordAuth = "off";
+        RootPasswordAuth = "off";
+      };
+
       beszel-agent.agent = {
         _type = "agent";
         enabled = "1";
