@@ -44,13 +44,6 @@ _: {
         end
       '';
 
-      # every orca worktree and jj workspace is a new path, which direnv would
-      # make me allow again; trusts any .envrc under these prefixes
-      programs.direnv.config.whitelist.prefix = [
-        "~/Projects"
-        "~/orca/workspaces"
-      ];
-
       systemd.user.services.orca-server = {
         Unit.Description = "Orca headless runtime";
         Service = {
