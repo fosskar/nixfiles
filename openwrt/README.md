@@ -48,6 +48,7 @@ options not declared within a section fall back to openwrt built-in defaults.
 | `files`                  | attrsOf path   | `{}`     | files to push (key = remote path, val = local); `@placeholder@` secrets are substituted at deploy |
 | `reload`                 | list of string | `[]`     | services to restart when a pushed file changed; UCI config reloads are automatic                  |
 | `uci.settings`           | attrset        | `{}`     | UCI config (replace mode)                                                                         |
+| `uci.delete`             | list of string | `[]`     | UCI sections or options to delete (stale sections replace semantics leave behind)                 |
 | `uci.secrets.sops.files` | list of path   | `[]`     | sops files for `@placeholder@` substitution                                                       |
 
 ## UCI format

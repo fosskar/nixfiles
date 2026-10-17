@@ -66,6 +66,17 @@ in
   uci = {
     secrets.sops.files = [ ../secrets.yaml ];
 
+    # left behind by the servers -> srv rename and by dropped sections
+    delete = [
+      "firewall.servers_dhcp"
+      "firewall.servers_dns"
+      "firewall.servers_homeassistant"
+      "firewall.servers_telegraf"
+      "dhcp.servers"
+      "network.wan6"
+      "unbound.auth_icann"
+    ];
+
     settings = {
       attendedsysupgrade.client = {
         _type = "client";
@@ -141,13 +152,6 @@ in
           ipv6 = "auto";
           peerdns = "0";
           dns = "127.0.0.1";
-        };
-        wan6 = {
-          _type = "interface";
-          device = "eth1";
-          proto = "dhcpv6";
-          peerdns = "0";
-          dns = "::1";
         };
         iot = {
           _type = "interface";
@@ -306,6 +310,12 @@ in
           ip = "192.168.10.30";
           mac = "30:52:53:0A:4F:32";
         };
+        lgtv = {
+          _type = "host";
+          name = "lgtv";
+          ip = "192.168.10.201";
+          mac = "04:09:86:54:2C:B0";
+        };
         jetkvm_nixworker = {
           _type = "host";
           name = "jetkvm-nixworker";
@@ -322,7 +332,7 @@ in
           dhcp_link = "dnsmasq";
           extended_stats = "1";
           listen_port = "5335";
-          num_threads = "4";
+          num_threads = "2"; # /usr/lib/unbound/unbound.sh caps any value above 1 to 2
           recursion = "aggressive";
           resource = "large";
           ttl_min = "1200";
@@ -330,10 +340,6 @@ in
           validator = "1";
           query_minimize = "1";
           iface_trig = "wan";
-        };
-        auth_icann = {
-          _type = "zone";
-          enabled = "1";
         };
       };
 
@@ -368,10 +374,7 @@ in
           {
             _type = "zone";
             name = "wan";
-            network = [
-              "wan"
-              "wan6"
-            ];
+            network = [ "wan" ];
             input = "REJECT";
             output = "ACCEPT";
             forward = "DROP";
@@ -437,6 +440,7 @@ in
             _type = "redirect";
             target = "DNAT";
             name = "force dns interception";
+            dest = "lan";
             proto = [
               "tcp"
               "udp"
@@ -451,6 +455,7 @@ in
             _type = "redirect";
             target = "DNAT";
             name = "force dns interception - iot";
+            dest = "lan";
             proto = [
               "tcp"
               "udp"
@@ -465,6 +470,7 @@ in
             _type = "redirect";
             target = "DNAT";
             name = "force dns interception - srv";
+            dest = "srv";
             proto = [
               "tcp"
               "udp"
@@ -479,6 +485,7 @@ in
             _type = "redirect";
             target = "DNAT";
             name = "force dns interception v6";
+            dest = "lan";
             proto = [
               "tcp"
               "udp"
@@ -493,6 +500,7 @@ in
             _type = "redirect";
             target = "DNAT";
             name = "force dns interception - iot v6";
+            dest = "lan";
             proto = [
               "tcp"
               "udp"
@@ -507,6 +515,7 @@ in
             _type = "redirect";
             target = "DNAT";
             name = "force dns interception - srv v6";
+            dest = "srv";
             proto = [
               "tcp"
               "udp"

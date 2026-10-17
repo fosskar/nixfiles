@@ -6,7 +6,20 @@
 }:
 name: device:
 let
-  uciCommands = openwrtLib.serializeUci device.uci.settings;
+  managedCfgs = builtins.attrNames device.uci.settings;
+  deleteCommands = map (
+    path:
+    let
+      cfg = builtins.head (lib.splitString "." path);
+    in
+    if builtins.elem cfg managedCfgs then
+      "delete ${path}"
+    else
+      throw "uci.delete ${path}: config ${cfg} is not in uci.settings, so deploy would not commit it"
+  ) device.uci.delete;
+  uciCommands = lib.concatStringsSep "\n" (
+    [ (openwrtLib.serializeUci device.uci.settings) ] ++ deleteCommands
+  );
   uciBatch = pkgs.writeText "uci-${name}.batch" uciCommands;
   sopsFiles = device.uci.secrets.sops.files;
   hasSops = sopsFiles != [ ];
