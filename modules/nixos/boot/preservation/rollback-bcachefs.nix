@@ -80,10 +80,12 @@
             mv "${cfg.rollback.subvolume}" "old_roots/$timestamp"
           fi
 
+          # a failed prune must not block boot; <3> logs it at error priority
           if [[ -d old_roots ]]; then
             find old_roots -maxdepth 1 -mtime +${toString cfg.rollback.retentionDays} -type d | while read -r old; do
-              bcachefs subvolume delete "$old" || true
-            done || true
+              echo "deleting old root $old"
+              bcachefs subvolume delete "$old" || echo "<3>failed to delete old root $old" >&2
+            done || echo "<3>pruning old_roots failed" >&2
           fi
 
           bcachefs subvolume create "${cfg.rollback.subvolume}"
