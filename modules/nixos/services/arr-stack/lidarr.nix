@@ -38,6 +38,13 @@
         # services can write into per-album subdirs.
         systemd.services.lidarr.serviceConfig.UMask = lib.mkForce "0002";
 
+        # tmpfiles creates the implicit parent of dataDir as root, and a root dir
+        # inside the lidarr-owned state dir is an "unsafe path transition"
+        systemd.tmpfiles.settings."10-lidarr"."/var/lib/lidarr/.config".d = {
+          inherit (config.services.lidarr) user group;
+          mode = "0700";
+        };
+
         # --- homepage ---
 
         services.homepage-dashboard.services = [
