@@ -61,9 +61,14 @@
           wants = [ "crowdsec.service" ];
           script = ''
             cscli=${lib.getExe' config.services.crowdsec.package "cscli"}
+            handOver() {
+              chgrp traefik '${apiKeyFile}'
+              chmod 0640 '${apiKeyFile}'
+            }
             if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
               if [ -f ${apiKeyFile} ]; then
                 echo "bouncer already registered, key exists"
+                handOver
                 exit 0
               fi
               echo "bouncer registered but key missing, re-registering"
@@ -74,21 +79,17 @@
               rm -f '${apiKeyFile}'
               exit 1
             fi
+            handOver
           '';
           serviceConfig = {
             Type = "oneshot";
             User = config.services.crowdsec.user;
             Group = config.services.crowdsec.group;
             ReadWritePaths = [ "/var/lib/crowdsec" ];
-            ExecStartPost = "+${pkgs.writeShellScript "fix-traefik-bouncer-key" ''
-              if [ -L /var/lib/crowdsec/traefik-bouncer.key ]; then
-                echo "/var/lib/crowdsec/traefik-bouncer.key is a symlink, refusing" >&2
-                exit 1
-              fi
-              chgrp traefik /var/lib/crowdsec/traefik-bouncer.key
-              chmod 0640 /var/lib/crowdsec/traefik-bouncer.key
-              systemctl try-restart traefik.service
-            ''}";
+            # the key is handed to traefik as the crowdsec user: a root chgrp on a
+            # path in this crowdsec-writable dir could be raced onto a symlink
+            SupplementaryGroups = [ "traefik" ];
+            ExecStartPost = "+${lib.getExe' config.systemd.package "systemctl"} try-restart traefik.service";
             DynamicUser = true;
             LockPersonality = true;
             PrivateDevices = true;
@@ -110,6 +111,7 @@
               "@system-service"
               "~@privileged"
               "~@resources"
+              "@chown"
             ];
             UMask = "0077";
           };
