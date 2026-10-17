@@ -1,5 +1,8 @@
 { flake-self, ... }:
 {
+  # static lan nic below; facter would run dhcp on every other nic
+  hardware.facter.detected.dhcp.enable = false;
+
   networking = {
     useDHCP = false;
     nameservers = [ flake-self.router.srv ];

@@ -1,5 +1,8 @@
 { flake-self, ... }:
 {
+  # static lan nic below; facter would run dhcp on every other nic
+  hardware.facter.detected.dhcp.enable = false;
+
   networking = {
     hostId = "25e85037"; # zfs requires unique hostId
 
