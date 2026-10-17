@@ -59,6 +59,15 @@
       };
       # no lan peers on a hetzner vps; peering uses the static peers
       roles.default.machines."gateway".settings.multicastInterfaces = [ ];
+      # the default ".*" also beacons onto the fencr vm bridges, which fails with EPERM
+      roles.default.machines."nixworker".settings.multicastInterfaces = [
+        {
+          Regex = "enp5s0f0np0";
+          Beacon = true;
+          Listen = true;
+          Port = 5400;
+        }
+      ];
     };
 
     netbird = {
