@@ -121,22 +121,41 @@ _: {
                   systems = beszelSystems;
                 };
 
-                # every agent pings every other agent machine on each network that
-                # exports a plain host for it; var hosts such as tor onions are skipped
-                # yggdrasil exports raw addresses but writes <machine>.<clan domain>
-                # into /etc/hosts on every member, so probe that name instead
-                peerHosts =
+                # plain hosts a machine exports per clan network; var hosts such as
+                # tor onions are skipped. yggdrasil exports raw addresses but writes
+                # <machine>.<clan domain> into /etc/hosts on every member, so probe
+                # that name instead. netbird is skipped: its dns is off on most
+                # machines, so the .nb names do not resolve
+                exportedHosts =
                   machine:
                   lib.concatLists (
                     lib.mapAttrsToList (
                       key: export:
-                      if (clanLib.parseScope key).serviceName == "clan-core/yggdrasil" then
+                      let
+                        inherit (clanLib.parseScope key) serviceName;
+                      in
+                      if serviceName == "clan-core/yggdrasil" then
                         [ "${machine}.${config.clan.core.settings.domain}" ]
+                      else if serviceName == "netbird" then
+                        [ ]
                       else
                         map (host: host.plain) (lib.filter (host: host ? plain) (export.peer.hosts or [ ]))
                     ) (clanLib.selectExports (scope: scope.machineName == machine) exports)
                   );
 
+                isPrivateIPv4 = host: builtins.match "(10|192\\.168|172\\.(1[6-9]|2[0-9]|3[01]))\\..*" host != null;
+
+                # a private lan address is only reachable from a machine that is
+                # itself on a private lan; gateway has only a public address
+                reachableHosts =
+                  agent: machine:
+                  if lib.any isPrivateIPv4 (exportedHosts agent) then
+                    exportedHosts machine
+                  else
+                    lib.filter (host: !isPrivateIPv4 host) (exportedHosts machine);
+
+                # every agent pings every other agent machine on each network that
+                # should connect them
                 meshMonitors = lib.concatMap (
                   agent:
                   lib.concatMap (
@@ -147,7 +166,7 @@ _: {
                       protocol = "icmp";
                       port = null;
                       interval = 60;
-                    }) (peerHosts machine)
+                    }) (reachableHosts agent machine)
                   ) (lib.remove agent clientMachines)
                 ) clientMachines;
 
