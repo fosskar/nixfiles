@@ -80,7 +80,7 @@
         ];
         client.tags = [ "server" ];
         client.machines."nixbox".settings = {
-          sensors = "-nct6798_cputin,-nct6798_auxtin0,-nct6798_auxtin2,-nct6798_auxtin4,-bnxt_en";
+          sensors = "-bnxt_en";
           filesystem = "/persist";
           # zfs pools and datasets are reported automatically (beszel storage pools);
           # only the vfat esps need listing
