@@ -158,13 +158,21 @@
             before = [ "netbird-proxy.service" ];
             after = [ "crowdsec.service" ];
             wants = [ "crowdsec.service" ];
-            # the key comes from vars, so re-registering with it is idempotent
+            # the key comes from vars, so re-registering with it is idempotent.
+            # cscli takes the key only as an argument, which any local uid can read
+            # from /proc/<pid>/cmdline, so register only when the key changed
             script = ''
               cscli=${lib.getExe' config.services.crowdsec.package "cscli"}
+              stamp=/var/lib/crowdsec/${bouncerName}.key.sha256
+              want=$(sha256sum < "$CREDENTIALS_DIRECTORY/api-key")
               if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
+                if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$want" ]; then
+                  exit 0
+                fi
                 $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
               fi
               $cscli -c ${configFile} bouncers add --key "$(cat "$CREDENTIALS_DIRECTORY/api-key")" -- ${lib.escapeShellArg bouncerName} >/dev/null
+              printf '%s\n' "$want" > "$stamp"
             '';
             serviceConfig = {
               Type = "oneshot";
