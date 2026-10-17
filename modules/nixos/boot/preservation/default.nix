@@ -160,6 +160,7 @@ in
                   # blanket: all service state survives without per-module wiring.
                   # cost: state of since-removed services lingers in /persist.
                   "/var/cache"
+                  # service modules rely on this; don't add /var/lib/<name> entries there.
                   "/var/lib"
                   "/var/lib/nixos"
                   "/var/lib/systemd"

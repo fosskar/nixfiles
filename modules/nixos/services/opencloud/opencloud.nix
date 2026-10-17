@@ -465,13 +465,6 @@
             mode = "0600";
           }
         ];
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/opencloud";
-            user = "opencloud";
-            group = "opencloud";
-          }
-        ];
       };
     };
 }

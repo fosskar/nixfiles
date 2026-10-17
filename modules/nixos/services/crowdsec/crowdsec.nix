@@ -3,7 +3,6 @@
     {
       config,
       lib,
-      options,
       pkgs,
       ...
     }:
@@ -113,15 +112,6 @@
               profiles
               ;
           })
-        ];
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/crowdsec";
-            inherit (config.services.crowdsec) user;
-            inherit (config.services.crowdsec) group;
-          }
         ];
       };
     };

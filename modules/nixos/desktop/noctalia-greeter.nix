@@ -2,8 +2,6 @@
   flake.modules.nixos.noctalia-greeter =
     {
       inputs,
-      lib,
-      options,
       pkgs,
       ...
     }:
@@ -19,16 +17,6 @@
           # for org.noctalia.greeter.sync-appearance.
           passwordless-sync-users = [ "simon" ];
         };
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        # greeter state (synced appearance, remembered scheme) lives here.
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/noctalia-greeter";
-            user = "greeter";
-            group = "greeter";
-          }
-        ];
       };
     };
 }

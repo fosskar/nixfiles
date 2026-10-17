@@ -108,6 +108,7 @@
         };
       }
       // lib.optionalAttrs (options ? preservation) {
+        # state dirs under /var/lib are covered by the blanket /var/lib entry
         preservation.preserveAt."/persist".directories = lib.mapAttrsToList (
           _name: client:
           if client.hardened then
@@ -118,7 +119,7 @@
             }
           else
             client.dir.state
-        ) config.services.netbird.clients;
+        ) (lib.filterAttrs (_: c: !lib.hasPrefix "/var/lib/" c.dir.state) config.services.netbird.clients);
       };
     };
 }

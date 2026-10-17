@@ -3,7 +3,6 @@
     {
       config,
       lib,
-      options,
       pkgs,
       ...
     }:
@@ -225,17 +224,6 @@
             done
           '';
         };
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        # persist sync state so it doesn't re-upload everything after a rollback.
-        # not backed up: regenerable by re-syncing from the CalDAV/CardDAV servers.
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/vdirsyncer";
-            user = "radicale";
-            group = "radicale";
-          }
-        ];
       };
     };
 }

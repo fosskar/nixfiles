@@ -3,8 +3,6 @@
     {
       flake-self,
       config,
-      lib,
-      options,
       pkgs,
       ...
     }:
@@ -86,15 +84,6 @@
 
         systemd.services.caddy.serviceConfig.EnvironmentFile =
           config.clan.core.vars.generators.caddy.files."envfile".path;
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/caddy";
-            user = "caddy";
-            group = "caddy";
-          }
-        ];
       };
     };
 }

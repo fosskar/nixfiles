@@ -9,7 +9,6 @@
     {
       config,
       flake-self,
-      options,
       lib,
       pkgs,
       ...
@@ -231,11 +230,6 @@
         environment.variables.TALOSCONFIG = talosconfig;
 
         environment.etc."talos-vm/patch.yaml".source = configPatch;
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [
-          stateDir
-        ];
       };
     };
 }

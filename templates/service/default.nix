@@ -3,8 +3,6 @@
     {
       flake-self,
       config,
-      lib,
-      options,
       pkgs,
       ...
     }:
@@ -63,15 +61,6 @@
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
           reverse_proxy ${listenUrl}
         '';
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/myservice";
-            user = "myservice";
-            group = "myservice";
-          }
-        ];
       };
     };
 }

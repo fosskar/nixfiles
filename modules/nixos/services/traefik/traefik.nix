@@ -4,7 +4,6 @@
     {
       config,
       lib,
-      options,
       pkgs,
       ...
     }:
@@ -132,15 +131,6 @@
             443 # HTTP/3 (QUIC)
           ];
         };
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/traefik";
-            user = "traefik";
-            group = "traefik";
-          }
-        ];
       };
     };
 }

@@ -1,10 +1,6 @@
 {
   flake.modules.nixos.opencloud =
-    {
-      lib,
-      options,
-      ...
-    }:
+    _:
     let
       radicaleRoute = endpoint: scriptName: {
         inherit endpoint;
@@ -74,15 +70,6 @@
             enabled = true;
             alerts = [ { type = "matrix"; } ];
             interval = "5m";
-          }
-        ];
-      }
-      // lib.optionalAttrs (options ? preservation) {
-        preservation.preserveAt."/persist".directories = [
-          {
-            directory = "/var/lib/radicale";
-            user = "radicale";
-            group = "radicale";
           }
         ];
       };
