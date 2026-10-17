@@ -31,7 +31,10 @@
             hash = "sha256-CpfQSS+dWFNhnTfo9TEDyRnsMtZScvyL+5/4gd82pI0=";
           };
           email = "letsencrypt.unpleased904@passmail.net";
+          # the default tcp admin endpoint accepts /load from any local uid;
+          # ExecReload reads this address from the config
           globalConfig = ''
+            admin unix//run/caddy/admin.sock
             acme_dns desec {
               token {env.DESEC_TOKEN}
             }
@@ -42,6 +45,11 @@
             }
           '';
           extraConfig = ''
+            http://127.0.0.1:2019 {
+              bind 127.0.0.1
+              metrics /metrics
+            }
+
             (authelia) {
               forward_auth 127.0.0.1:9091 {
                 uri /api/authz/forward-auth
@@ -52,7 +60,7 @@
           virtualHosts."*.${flake-self.domains.local}".extraConfig = "";
         };
 
-        # per-host request and status metrics from the admin endpoint
+        # per-host request and status metrics from the loopback metrics site
         services.telegraf.extraConfig.inputs.prometheus = [
           {
             urls = [ "http://127.0.0.1:2019/metrics" ];
@@ -84,8 +92,11 @@
           }
         ];
 
-        systemd.services.caddy.serviceConfig.EnvironmentFile =
-          config.clan.core.vars.generators.caddy.files."envfile".path;
+        systemd.services.caddy.serviceConfig = {
+          EnvironmentFile = config.clan.core.vars.generators.caddy.files."envfile".path;
+          RuntimeDirectory = "caddy";
+          RuntimeDirectoryMode = "0700";
+        };
       }
       // lib.optionalAttrs (options ? preservation) {
         preservation.preserveAt."/persist".directories = [
