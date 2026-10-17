@@ -27,5 +27,11 @@
   # required for s0i3 entry on strix point -> suspend never reached hw sleep
   hardware.amdgpu.overdrive.enable = lib.mkForce false;
 
+  # the crucial p310 counts every board power cut in s2idle as an unsafe
+  # shutdown and as wear (~1 per minute asleep); d3cold off keeps it powered
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0xc0a9", ATTR{device}=="0x5426", ATTR{d3cold_allowed}="0"
+  '';
+
   clan.core.deployment.requireExplicitUpdate = true;
 }
