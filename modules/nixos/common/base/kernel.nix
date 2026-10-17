@@ -8,9 +8,6 @@
         # obsolete fixed-address syscalls, ROP target; breaks very old binaries
         "vsyscall=none"
 
-        # panic on kernel oops to stop exploits mid-flight
-        "oops=panic"
-
         # buddy allocator free poisoning
         "page_poison=on"
 
