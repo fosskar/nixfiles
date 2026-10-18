@@ -232,21 +232,9 @@
   margin-left: auto;
   text-align: right;
 }
-#machines-view .mv-pools {
-  display: grid;
-  grid-template-columns: 1.45fr 1fr;
-  gap: 14px;
-  align-items: start;
-}
-#machines-view .mv-pools.one {
-  grid-template-columns: minmax(0, 1fr);
-}
-@media (max-width: 1050px) {
-  #machines-view .mv-pools {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
 #machines-view .mv-pool {
+  flex: 1 1 520px;
+  align-content: start;
   display: grid;
   gap: 16px;
   min-width: 0;
@@ -314,43 +302,22 @@
   border-radius: 2px;
   background: var(--c);
 }
-#machines-view .mv-layout {
-  display: flex;
-  gap: 22px;
-  align-items: flex-end;
-  flex-wrap: wrap;
-}
-#machines-view .mv-vgroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-#machines-view .mv-vgroup small {
-  font-size: 10.5px;
-  color: var(--mv-dim);
-}
-#machines-view .mv-bays {
-  display: flex;
-  gap: 4px;
-  align-items: flex-end;
-}
 #machines-view .mv-bay {
   position: relative;
-  width: 30px;
-  height: 42px;
-  border-radius: 5px;
+  width: 14px;
+  height: 20px;
+  border-radius: 3px;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 #machines-view .mv-bay.nv {
-  width: 12px;
-  height: 30px;
+  height: 12px;
 }
 #machines-view .mv-bay::after {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 4px;
+  bottom: 3px;
   width: 4px;
   height: 4px;
   margin-left: -2px;
@@ -362,36 +329,22 @@
   background: var(--mv-nvme);
   box-shadow: 0 0 5px var(--mv-nvme);
 }
-#machines-view .mv-fss {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 14px;
-}
-#machines-view .mv-fs {
-  display: grid;
-  gap: 12px;
-  min-width: 0;
-  padding: 16px 20px;
-  border-radius: var(--glass-radius);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-}
-#machines-view .mv-fs .mv-big b {
-  font-size: 26px;
-}
 #machines-view .mv-sec {
   margin-top: 6px;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--mv-muted);
 }
-#machines-view .mv-panels {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+#machines-view .mv-panels,
+#machines-view .mv-storage {
+  display: flex;
+  flex-wrap: wrap;
   gap: 14px;
-  align-items: start;
+  align-items: stretch;
 }
 #machines-view .mv-panel {
+  flex: 1 1 260px;
+  align-content: start;
   display: grid;
   gap: 10px;
   min-width: 0;
@@ -430,41 +383,119 @@
   text-align: right;
   white-space: nowrap;
 }
-#machines-view .mv-cores {
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 36px;
-}
-#machines-view .mv-cores i {
-  flex: 1;
-  min-width: 2px;
-  border-radius: 2px 2px 0 0;
-  background: var(--mv-fill);
-  opacity: 0.85;
-}
-#machines-view .mv-cores i.warn {
-  background: var(--mv-warn);
-}
-#machines-view .mv-cores i.danger {
-  background: var(--mv-danger);
-}
-#machines-view .mv-split {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  font-size: 12px;
-  color: var(--mv-dim);
-}
-#machines-view .mv-net {
+#machines-view .mv-smalls {
+  flex: 1 1 260px;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 2px 14px;
+  gap: 14px;
+  align-content: start;
+}
+#machines-view .mv-pool.small .mv-big b {
+  font-size: 26px;
+}
+#machines-view .mv-bay.bad::after {
+  background: var(--mv-danger);
+  box-shadow: 0 0 5px var(--mv-danger);
+}
+/* pool members: one row per drive, grouped under its vdev */
+#machines-view .mv-members {
+  display: grid;
+  grid-template-columns: 14px auto minmax(0, 1fr) auto auto auto auto;
+  gap: 6px 14px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   font-size: 12.5px;
 }
-#machines-view .mv-net > .mv-meta {
-  grid-column: 2;
-  margin-bottom: 4px;
+/* narrow cards drop the hours column so the model stays readable */
+#machines-view .mv-pool.small .mv-members {
+  grid-template-columns: 14px auto minmax(3rem, 1fr) auto auto auto;
+}
+#machines-view .mv-pool.small .mv-members .hrs {
+  display: none;
+}
+#machines-view .mv-members .mv-vdev {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--mv-dim);
+}
+#machines-view .mv-members .mv-vdev:first-child {
+  margin-top: 0;
+}
+#machines-view .mv-members > span {
+  white-space: nowrap;
+}
+#machines-view .mv-members .mv-model {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mv-muted);
+}
+#machines-view .mv-members .ok {
+  color: var(--mv-ok);
+}
+#machines-view .mv-members .bad {
+  color: var(--mv-danger);
+}
+/* usage rings: conic fill with a punched-out centre */
+#machines-view .mv-panel.rings {
+  flex: 1.4 1 340px;
+}
+#machines-view .mv-rings {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+}
+#machines-view .mv-ring {
+  --c: var(--mv-fill);
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+#machines-view .mv-ring.warn {
+  --c: var(--mv-warn);
+}
+#machines-view .mv-ring.danger {
+  --c: var(--mv-danger);
+}
+#machines-view .mv-ring-in {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, rgba(11, 36, 40, 0.98) 79%, transparent 80%),
+    conic-gradient(var(--c) calc(var(--p) * 1%), var(--mv-track) 0);
+}
+#machines-view .mv-ring-in b {
+  font-size: 18px;
+  font-weight: 600;
+}
+#machines-view .mv-ring .k {
+  font-size: 12.5px;
+  color: var(--mv-muted);
+}
+#machines-view .mv-ifaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#machines-view .mv-iface {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 6px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+}
+#machines-view .mv-port {
+  width: 16px;
+  height: 16px;
+  color: var(--mv-fill);
 }
 #machines-view .mv-tree {
   display: grid;
@@ -482,27 +513,6 @@
 #machines-view .mv-tree .s {
   text-align: right;
   color: var(--mv-muted);
-}
-#machines-view .mv-drives {
-  display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr) auto auto auto auto;
-  gap: 4px 16px;
-  padding: 16px 22px;
-  border-radius: var(--glass-radius);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  font-size: 12px;
-  align-items: center;
-}
-#machines-view .mv-drives .h {
-  font-size: 11px;
-  color: var(--mv-dim);
-}
-#machines-view .mv-drives .ok {
-  color: var(--mv-ok);
-}
-#machines-view .mv-drives .bad {
-  color: var(--mv-danger);
 }
 @media (prefers-reduced-motion: reduce) {
   #machines-view .mv-card,

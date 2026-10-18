@@ -14,6 +14,13 @@
       hub = config.services.beszel.hub;
       api = "http://${hub.host}:${toString hub.port}/api";
 
+      # beszel collects no addresses; flake.hosts and flake.router hold the
+      # static ones, keyed by beszel system name
+      toAddresses = lib.mapAttrsToList (label: address: { inherit label address; });
+      addresses = lib.mapAttrs (_: toAddresses) flake-self.hosts // {
+        openwrt = toAddresses flake-self.router;
+      };
+
       exportScript = pkgs.writeShellScript "homepage-beszel-export" ''
         set -euo pipefail
         export PATH=${
@@ -37,7 +44,7 @@
         get systems id,name,status,info > /tmp/systems.json
         get system_details system,os_name,kernel,cpu,cores,memory > /tmp/details.json
         get zfs_pools system,name,display_name,health,size,alloc,scrub,vdevs,datasets > /tmp/pools.json
-        get smart_devices system,name,model,state,capacity,temp,hours > /tmp/smart.json
+        get smart_devices system,name,model,serial,state,capacity,temp,hours > /tmp/smart.json
         for id in $(jq -r '.items[].id' /tmp/systems.json); do
           curl -sf -H @/tmp/auth.header \
             "${api}/collections/system_stats/records?filter=(system%3D%27$id%27%26%26type%3D%271m%27)&sort=-created&perPage=1&fields=system,stats" \
@@ -59,7 +66,10 @@
     # the reader var and the machine tiles exist only next to the hub
     lib.mkIf hub.enable {
       services.homepage-dashboard.customCSS = builtins.readFile ./machines.css;
-      services.homepage-dashboard.customJS = builtins.readFile ./machines.js;
+      services.homepage-dashboard.customJS = ''
+        window.homepageMachineAddresses = ${builtins.toJSON addresses};
+        ${builtins.readFile ./machines.js}
+      '';
 
       services.caddy.virtualHosts."home.${flake-self.domains.local}".extraConfig = ''
         handle /machines.json {

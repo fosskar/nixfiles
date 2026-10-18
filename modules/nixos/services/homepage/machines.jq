@@ -55,6 +55,6 @@
     ],
     drives: [
       $smart[0].items[]
-      | { system: $names[.system], name, model, state, capacity, temp, hours }
+      | { system: $names[.system], name, model, serial, state, capacity, temp, hours }
     ]
   }
