@@ -64,7 +64,7 @@
       # lan only: the router does not let nixbox (srv) reach this port, so no siteMonitor
       services.homepage-dashboard.services = [
         {
-          "apps" = [
+          "admin" = [
             {
               "Zigbee2MQTT" = {
                 href = "http://${flake-self.hosts.${config.networking.hostName}.lan}:${toString frontendPort}";
