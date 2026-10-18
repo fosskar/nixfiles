@@ -1,5 +1,5 @@
-/* machines tab (homepage-machines.js); glass tokens come from the homepage
-   module's customCSS. the plain machine tiles are the fallback until the view
+/* machines tab (machines.js); glass tokens come from dashboard.nix
+   customCSS. the plain machine tiles are the fallback until the view
    mounts */
 /* the panel itself carries tailwind's layered block!, which outranks any
    unlayered !important, so hide the list inside it */

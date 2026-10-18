@@ -25,7 +25,7 @@
           { monitoring.tab = "Apps"; }
           { admin.tab = "Admin"; }
           { "arr-stack".tab = "Admin"; }
-          # the beszel module's machine tiles; its customJS renders the tab
+          # the beszel module's machine tiles; machines.nix renders the tab over them
           {
             machines = {
               tab = "Machines";

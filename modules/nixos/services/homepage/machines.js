@@ -1,4 +1,4 @@
-// machines tab: renders /machines.json (beszel-homepage-machines.service) as one
+// machines tab: renders /machines.json (homepage-beszel-export.service) as one
 // card per machine; a click opens that machine's storage below its row. it
 // mounts into the "machines" group, whose plain tiles stay as the fallback
 (() => {

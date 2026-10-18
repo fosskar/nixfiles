@@ -189,6 +189,10 @@ _: {
                 );
 
                 beszelSuperuserEmail = "hub@${beszelDomain}";
+                # readonly user for consumers of the api, such as the homepage machines
+                # tab; readonly blocks every write, and beszel-reader adds it to each
+                # system, which is what grants it read access
+                beszelReaderEmail = "reader@${beszelDomain}";
 
                 # alerts live only in the pocketbase db and are re-created here so
                 # every system has them without clicking through the ui
@@ -265,14 +269,21 @@ _: {
                     '${beszelApi}/collections/systems/records?perPage=500&fields=id,users')
                   alerts=$(curl -sf -H @/tmp/auth.header \
                     '${beszelApi}/collections/alerts/records?perPage=500&fields=system,user,name')
+                  # readonly users, such as the reader, get no alerts
+                  readonly=$(curl -sfG -H @/tmp/auth.header \
+                    --data-urlencode "filter=role='readonly'" \
+                    '${beszelApi}/collections/users/records?perPage=500&fields=id')
 
                   jq -cn \
                     --argjson systems "$systems" \
                     --argjson alerts "$alerts" \
+                    --argjson readonly "$readonly" \
                     --argjson defaults '${builtins.toJSON beszelDefaultAlerts}' '
                       ($alerts.items | map("\(.user)|\(.system)|\(.name)")) as $have
+                      | ($readonly.items | map(.id)) as $skip
                       | [ $systems.items[] as $s
                           | $s.users[]? as $u
+                          | select($skip | index($u) | not)
                           | $defaults[] as $d
                           | { user: $u, system: $s.id, name: $d.name, value: $d.value, min: $d.min }
                         ]
@@ -320,32 +331,40 @@ _: {
                     done
                 '';
 
-                beszelHomepageMachinesScript = pkgs.writeShellScript "beszel-homepage-machines" ''
+                # creates the readonly user, keeps its password in sync with the clan
+                # var, and adds it to every system, which is what grants it read access
+                beszelReaderScript = pkgs.writeShellScript "beszel-reader" ''
                   ${beszelApiLogin}
 
-                  get() {
-                    curl -sf -H @/tmp/auth.header "${beszelApi}/collections/$1/records?perPage=500&fields=$2"
+                  user=$(curl -sfG -H @/tmp/auth.header \
+                    --data-urlencode "filter=email='${beszelReaderEmail}'" \
+                    '${beszelApi}/collections/users/records?perPage=1&fields=id' \
+                    | jq -r '.items[0].id // empty')
+                  body() {
+                    jq -cn --arg e ${beszelReaderEmail} '{
+                      email: $e,
+                      password: $ENV.BESZEL_READER_PASSWORD,
+                      passwordConfirm: $ENV.BESZEL_READER_PASSWORD,
+                      role: "readonly",
+                      verified: true
+                    }'
                   }
-                  get systems id,name,status,info > /tmp/systems.json
-                  get system_details system,os_name,kernel,cpu,cores,memory > /tmp/details.json
-                  get zfs_pools system,name,display_name,health,size,alloc,scrub,vdevs,datasets > /tmp/pools.json
-                  get smart_devices system,name,model,state,capacity,temp,hours > /tmp/smart.json
-                  for id in $(jq -r '.items[].id' /tmp/systems.json); do
-                    curl -sf -H @/tmp/auth.header \
-                      "${beszelApi}/collections/system_stats/records?filter=(system%3D%27$id%27%26%26type%3D%271m%27)&sort=-created&perPage=1&fields=system,stats" \
-                      | jq -c '.items[0] // empty'
-                  done > /tmp/stats.jsonl
+                  if [ -z "$user" ]; then
+                    user=$(body | curl -sf -X POST ${beszelApi}/collections/users/records \
+                      -H @/tmp/auth.header -H 'content-type: application/json' --data-binary @- \
+                      | jq -r .id)
+                  else
+                    body | curl -sf -o /dev/null -X PATCH "${beszelApi}/collections/users/records/$user" \
+                      -H @/tmp/auth.header -H 'content-type: application/json' --data-binary @-
+                  fi
 
-                  out=$RUNTIME_DIRECTORY/machines.json
-                  jq -n \
-                    --slurpfile systems /tmp/systems.json \
-                    --slurpfile details /tmp/details.json \
-                    --slurpfile pools /tmp/pools.json \
-                    --slurpfile smart /tmp/smart.json \
-                    --slurpfile stats /tmp/stats.jsonl \
-                    -f ${./homepage-machines.jq} > "$out.tmp"
-                  chmod 0644 "$out.tmp"
-                  mv "$out.tmp" "$out"
+                  curl -sf -H @/tmp/auth.header '${beszelApi}/collections/systems/records?perPage=500&fields=id,users' \
+                    | jq -r --arg u "$user" '.items[] | select(.users | index($u) | not) | .id' \
+                    | while read -r system; do
+                        jq -cn --arg u "$user" '{"users+": $u}' \
+                          | curl -sf -o /dev/null -X PATCH "${beszelApi}/collections/systems/records/$system" \
+                              -H @/tmp/auth.header -H 'content-type: application/json' --data-binary @-
+                      done
                 '';
 
                 beszelApiJob = description: script: {
@@ -397,6 +416,17 @@ _: {
                   runtimeInputs = [ pkgs.pwgen ];
                   script = ''
                     printf 'BESZEL_SUPERUSER_PASSWORD=%s\n' "$(pwgen -s 64 1)" > "$out/env"
+                  '';
+                };
+
+                # consumers load the env file and log in through
+                # collections/users/auth-with-password
+                clan.core.vars.generators.beszel-reader = {
+                  files.env = { };
+                  runtimeInputs = [ pkgs.pwgen ];
+                  script = ''
+                    printf 'BESZEL_READER_EMAIL=%s\nBESZEL_READER_PASSWORD=%s\n' \
+                      ${beszelReaderEmail} "$(pwgen -s 64 1)" > "$out/env"
                   '';
                 };
 
@@ -464,6 +494,17 @@ _: {
 
                 systemd.services.beszel-network-monitors = beszelApiJob "Reconcile beszel network monitors with the declared list" beszelNetworkMonitorsScript;
 
+                # the setup job logs in as the superuser and sets the reader password
+                systemd.services.beszel-reader =
+                  lib.recursiveUpdate
+                    (beszelApiJob "Create the readonly beszel reader and grant it every system" beszelReaderScript)
+                    {
+                      serviceConfig.EnvironmentFile = [
+                        config.clan.core.vars.generators.beszel-hub-superuser.files.env.path
+                        config.clan.core.vars.generators.beszel-reader.files.env.path
+                      ];
+                    };
+
                 services.homepage-dashboard.services = [
                   {
                     "monitoring" = [
@@ -477,7 +518,7 @@ _: {
                     ];
                   }
                   {
-                    # plain tiles: homepage-machines.js mounts the machines tab over
+                    # plain tiles: the homepage module's machines.js mounts the tab over
                     # this group and reads each icon from them; the ui routes systems
                     # by record id, which the hub assigns, so they link to the hub root
                     "machines" = map (system: {
@@ -489,56 +530,6 @@ _: {
                     }) beszelSystems;
                   }
                 ];
-
-                services.homepage-dashboard.customCSS = builtins.readFile ./homepage-machines.css;
-                services.homepage-dashboard.customJS = builtins.readFile ./homepage-machines.js;
-
-                # homepage-machines.js fetches this same-origin; it assumes homepage
-                # runs on the hub machine, as the machine tiles do
-                services.caddy.virtualHosts."home.${flake-self.domains.local}".extraConfig = ''
-                  handle /machines.json {
-                    root * /run/beszel-machines
-                    file_server
-                  }
-                '';
-
-                systemd.services.beszel-homepage-machines = {
-                  description = "Export beszel machines, pools and drives for the homepage machines tab";
-                  after = [ "beszel-hub.service" ];
-                  wants = [ "beszel-hub.service" ];
-                  serviceConfig = {
-                    Type = "oneshot";
-                    # a static user: with DynamicUser a preserved RuntimeDirectory moves
-                    # under /run/private (0700), where caddy cannot reach it
-                    User = "beszel-homepage-machines";
-                    Group = "beszel-homepage-machines";
-                    EnvironmentFile = config.clan.core.vars.generators.beszel-hub-superuser.files.env.path;
-                    ExecStart = beszelHomepageMachinesScript;
-                    # caddy reads the export, so the directory and file are world-readable
-                    RuntimeDirectory = "beszel-machines";
-                    RuntimeDirectoryMode = "0755";
-                    RuntimeDirectoryPreserve = "yes";
-                    PrivateTmp = true;
-                    ProtectHome = true;
-                    ProtectSystem = "strict";
-                    NoNewPrivileges = true;
-                  };
-                };
-
-                users.users.beszel-homepage-machines = {
-                  isSystemUser = true;
-                  group = "beszel-homepage-machines";
-                };
-                users.groups.beszel-homepage-machines = { };
-
-                systemd.timers.beszel-homepage-machines = {
-                  wantedBy = [ "timers.target" ];
-                  timerConfig = {
-                    OnBootSec = "1min";
-                    OnUnitActiveSec = "30s";
-                    AccuracySec = "5s";
-                  };
-                };
 
                 services.gatus.settings.endpoints = [
                   {
