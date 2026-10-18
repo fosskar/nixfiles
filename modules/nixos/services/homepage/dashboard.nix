@@ -298,7 +298,8 @@
         # listed in settings.layout render under #layout-groups, the rest under
         # #services / #bookmarks
         # accent switcher: the nixlens accents (nixlens web/src/lib/prefs.ts),
-        # stored per browser and placed where homepage's color toggle sits
+        # stored per browser, behind homepage's palette icon (IoColorPalette)
+        # at the end of the tab row
         customJS = ''
           (() => {
             const ACCENTS = {
@@ -317,12 +318,29 @@
             };
             apply();
             const mount = () => {
-              const style = document.getElementById("style");
-              if (!style || style.querySelector(".accent-switch")) return;
+              const tabs = document.getElementById("tabs");
+              if (!tabs || tabs.querySelector(".accent-menu")) return;
+              const menu = document.createElement("div");
+              menu.className = "accent-menu";
+              const toggle = document.createElement("button");
+              toggle.type = "button";
+              toggle.className = "accent-toggle";
+              toggle.setAttribute("aria-label", "accent colour");
+              toggle.setAttribute("aria-expanded", "false");
+              toggle.innerHTML = '<svg viewBox="0 0 512 512" aria-hidden="true"><path fill="currentColor" d="m441 336.2-.06-.05c-9.93-9.18-22.78-11.34-32.16-12.92l-.69-.12c-9.05-1.49-10.48-2.5-14.58-6.17-2.44-2.17-5.35-5.65-5.35-9.94s2.91-7.77 5.34-9.94l30.28-26.87c25.92-22.91 40.2-53.66 40.2-86.59s-14.25-63.68-40.2-86.6c-35.89-31.59-85-49-138.37-49C223.72 48 162 71.37 116 112.11c-43.87 38.77-68 90.71-68 146.24s24.16 107.47 68 146.23c21.75 19.24 47.49 34.18 76.52 44.42a266.2 266.2 0 0 0 86.87 15h1.81c61 0 119.09-20.57 159.39-56.4 9.7-8.56 15.15-20.83 15.34-34.56.21-14.17-5.37-27.95-14.93-36.84M112 208a32 32 0 1 1 32 32 32 32 0 0 1-32-32m40 135a32 32 0 1 1 32-32 32 32 0 0 1-32 32m40-199a32 32 0 1 1 32 32 32 32 0 0 1-32-32m64 271a48 48 0 1 1 48-48 48 48 0 0 1-48 48m72-239a32 32 0 1 1 32-32 32 32 0 0 1-32 32"/></svg>';
               const box = document.createElement("div");
               box.className = "accent-switch";
               box.setAttribute("role", "radiogroup");
               box.setAttribute("aria-label", "accent colour");
+              const setOpen = (open) => toggle.setAttribute("aria-expanded", String(open));
+              toggle.addEventListener("click", () =>
+                setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+              document.addEventListener("click", (event) => {
+                if (!menu.contains(event.target)) setOpen(false);
+              });
+              document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") setOpen(false);
+              });
               for (const [name, [a, b]] of Object.entries(ACCENTS)) {
                 const button = document.createElement("button");
                 button.type = "button";
@@ -341,7 +359,8 @@
                 });
                 box.append(button);
               }
-              style.prepend(box);
+              menu.append(toggle, box);
+              tabs.append(menu);
             };
             new MutationObserver(mount).observe(document.body, { childList: true, subtree: true });
             mount();
@@ -823,24 +842,93 @@
             }
           }
 
-          /* footer: homepage's revalidate button rebuilds from the config files;
-             nix deploys restart homepage, so only the accent switcher stays */
-          #style > :not(.accent-switch) {
+          /* footer: homepage's revalidate button rebuilds from the config files,
+             which nix deploys restart homepage for; the accent switcher sits in
+             the tab row */
+          #style {
             display: none;
           }
-          #style .accent-switch {
-            display: inline-flex;
-            gap: 8px;
-            padding: 6px 8px;
+          #tabs {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+          }
+          #tabs .accent-menu {
+            position: relative;
+          }
+          #tabs .accent-toggle {
+            display: grid;
+            place-items: center;
+            width: 2.5rem;
+            height: 2.5rem;
             border-radius: 999px;
             border: 1px solid var(--glass-border);
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            color: rgba(226, 232, 240, 0.75);
+            cursor: pointer;
+            transition:
+              transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+              border-color 150ms ease,
+              color 150ms ease;
           }
-          #style .accent-switch button {
-            width: 16px;
-            height: 16px;
+          #tabs .accent-toggle svg {
+            width: 1.15rem;
+            height: 1.15rem;
+          }
+          @media (hover: hover) and (pointer: fine) {
+            #tabs .accent-toggle:hover {
+              border-color: var(--glass-border-hover);
+              color: #f1f5f9;
+            }
+          }
+          #tabs .accent-toggle[aria-expanded="true"] {
+            border-color: var(--glass-border-hover);
+            color: #f1f5f9;
+          }
+          #tabs .accent-toggle:active {
+            transform: scale(0.97);
+          }
+          #tabs .accent-toggle:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.6);
+            outline-offset: 3px;
+          }
+          #tabs .accent-switch {
+            position: absolute;
+            z-index: 30;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            display: flex;
+            gap: 10px;
+            padding: 9px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: color-mix(in srgb, var(--accent) 10%, rgba(6, 16, 18, 0.85));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+            transform-origin: top right;
+            opacity: 0;
+            transform: scale(0.96) translateY(-4px);
+            visibility: hidden;
+            transition:
+              opacity 150ms ease-out,
+              transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+              visibility 0s linear 180ms;
+          }
+          #tabs .accent-toggle[aria-expanded="true"] + .accent-switch {
+            opacity: 1;
+            transform: none;
+            visibility: visible;
+            transition:
+              opacity 150ms ease-out,
+              transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+          }
+          #tabs .accent-switch button {
+            width: 18px;
+            height: 18px;
             padding: 0;
             border: 0;
             border-radius: 50%;
@@ -848,17 +936,32 @@
             cursor: pointer;
             transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
           }
-          #style .accent-switch button[aria-checked="true"] {
+          #tabs .accent-switch button[aria-checked="true"] {
             box-shadow:
               0 0 0 2px rgba(6, 16, 18, 0.9),
               0 0 0 3.5px rgba(255, 255, 255, 0.75);
           }
-          #style .accent-switch button:active {
+          #tabs .accent-switch button:active {
             transform: scale(0.9);
           }
-          #style .accent-switch button:focus-visible {
+          #tabs .accent-switch button:focus-visible {
             outline: 2px solid rgba(255, 255, 255, 0.6);
             outline-offset: 3px;
+          }
+
+          /* desktop: more air between header, hairline, tabs and content;
+             phones stay dense */
+          @media (min-width: 1024px) {
+            #information-widgets {
+              margin-top: 4rem;
+            }
+            #page_wrapper div#tabs {
+              margin-top: 2.25rem;
+              padding-top: 2.25rem;
+            }
+            #layout-groups {
+              margin-top: 2.25rem;
+            }
           }
 
           /* phones: the absolutely placed clock would overlap the search bar,
@@ -870,6 +973,20 @@
             #page_wrapper .information-widget-search {
               flex-basis: 100%;
               max-width: 100%;
+            }
+            /* four tabs and the palette button share the search bar's width */
+            #page_wrapper div#tabs {
+              margin-left: 1.25rem;
+              margin-right: 1.25rem;
+              gap: 0.5rem;
+            }
+            #myTab button {
+              padding: 0.35rem 0.65rem;
+              font-size: 0.8rem;
+            }
+            #tabs .accent-toggle {
+              width: 2.25rem;
+              height: 2.25rem;
             }
           }
 
@@ -937,6 +1054,9 @@
             }
             :is(#layout-groups, #services) .service .service-card:hover .service-icon,
             :is(#layout-groups, #services) .service .service-card:active .service-icon {
+              transform: none;
+            }
+            #tabs .accent-switch {
               transform: none;
             }
           }
