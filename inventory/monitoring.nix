@@ -63,14 +63,17 @@
         server.machines."nixbox".settings.extraSystems = [
           {
             name = "home-assistant";
+            icon = "home-assistant.svg";
             host = "192.168.10.50";
           }
           {
             name = "openwrt";
+            icon = "openwrt.svg";
             host = config.flake.router.srv;
           }
           {
             name = "openwrt-ap";
+            icon = "openwrt.svg";
             host = "192.168.10.2";
           }
         ];

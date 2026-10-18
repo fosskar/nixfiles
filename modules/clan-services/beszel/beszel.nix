@@ -68,6 +68,11 @@ _: {
                       default = 45876;
                       description = "agent listen port";
                     };
+                    icon = lib.mkOption {
+                      type = lib.types.str;
+                      default = "mdi-server-network";
+                      description = "homepage icon for the machines tab";
+                    };
                   };
                 }
               );
@@ -118,7 +123,7 @@ _: {
                 beszelSystems = beszelClientSystems ++ settings.extraSystems;
 
                 beszelConfigYml = (pkgs.formats.yaml { }).generate "beszel-config.yml" {
-                  systems = beszelSystems;
+                  systems = map (system: removeAttrs system [ "icon" ]) beszelSystems;
                 };
 
                 # plain hosts a machine exports per clan network; var hosts such as
@@ -315,6 +320,34 @@ _: {
                     done
                 '';
 
+                beszelHomepageMachinesScript = pkgs.writeShellScript "beszel-homepage-machines" ''
+                  ${beszelApiLogin}
+
+                  get() {
+                    curl -sf -H @/tmp/auth.header "${beszelApi}/collections/$1/records?perPage=500&fields=$2"
+                  }
+                  get systems id,name,status,info > /tmp/systems.json
+                  get system_details system,os_name,kernel,cpu,cores,memory > /tmp/details.json
+                  get zfs_pools system,name,display_name,health,size,alloc,scrub,vdevs,datasets > /tmp/pools.json
+                  get smart_devices system,name,model,state,capacity,temp,hours > /tmp/smart.json
+                  for id in $(jq -r '.items[].id' /tmp/systems.json); do
+                    curl -sf -H @/tmp/auth.header \
+                      "${beszelApi}/collections/system_stats/records?filter=(system%3D%27$id%27%26%26type%3D%271m%27)&sort=-created&perPage=1&fields=system,stats" \
+                      | jq -c '.items[0] // empty'
+                  done > /tmp/stats.jsonl
+
+                  out=$RUNTIME_DIRECTORY/machines.json
+                  jq -n \
+                    --slurpfile systems /tmp/systems.json \
+                    --slurpfile details /tmp/details.json \
+                    --slurpfile pools /tmp/pools.json \
+                    --slurpfile smart /tmp/smart.json \
+                    --slurpfile stats /tmp/stats.jsonl \
+                    -f ${./homepage-machines.jq} > "$out.tmp"
+                  chmod 0644 "$out.tmp"
+                  mv "$out.tmp" "$out"
+                '';
+
                 beszelApiJob = description: script: {
                   inherit description;
                   # beszel-hub.service reruns it on every hub (re)start, which is when
@@ -364,17 +397,6 @@ _: {
                   runtimeInputs = [ pkgs.pwgen ];
                   script = ''
                     printf 'BESZEL_SUPERUSER_PASSWORD=%s\n' "$(pwgen -s 64 1)" > "$out/env"
-                  '';
-                };
-
-                # homepage's beszel widget logs in through _superusers only and reads
-                # secrets from HOMEPAGE_VAR_* variables
-                clan.core.vars.generators.beszel-homepage = {
-                  dependencies = [ "beszel-hub-superuser" ];
-                  files.env = { };
-                  script = ''
-                    . "$in/beszel-hub-superuser/env"
-                    printf 'HOMEPAGE_VAR_BESZEL_PASSWORD=%s\n' "$BESZEL_SUPERUSER_PASSWORD" > "$out/env"
                   '';
                 };
 
@@ -455,56 +477,59 @@ _: {
                     ];
                   }
                   {
-                    # the widget url is loopback, so these tiles only work while homepage
-                    # runs on the hub machine. the ui routes systems by record id, which
-                    # the hub assigns, so the tiles link to the hub root
+                    # plain tiles: homepage-machines.js mounts the machines tab over
+                    # this group and reads each icon from them; the ui routes systems
+                    # by record id, which the hub assigns, so they link to the hub root
                     "machines" = map (system: {
                       ${system.name} = {
                         id = "machine-${system.name}";
                         href = "https://${beszelDomain}";
-                        icon = if lib.elem system.name clientMachines then "nixos.svg" else "mdi-server-network";
-                        widget = {
-                          type = "beszel";
-                          url = "http://127.0.0.1:${toString beszelPort}";
-                          username = beszelSuperuserEmail;
-                          password = "{{HOMEPAGE_VAR_BESZEL_PASSWORD}}";
-                          systemId = system.name;
-                          version = 2;
-                          fields = [
-                            "memory"
-                            "cpu"
-                            "disk"
-                          ];
-                          highlight =
-                            lib.genAttrs
-                              [
-                                "memory"
-                                "disk"
-                              ]
-                              (_: {
-                                # first match wins, so danger goes first
-                                numeric = [
-                                  {
-                                    level = "danger";
-                                    when = "gte";
-                                    value = 90;
-                                  }
-                                  {
-                                    level = "warn";
-                                    when = "gte";
-                                    value = 80;
-                                  }
-                                ];
-                              });
-                        };
+                        icon = system.icon or "nixos.svg";
                       };
                     }) beszelSystems;
                   }
                 ];
 
-                services.homepage-dashboard.environmentFiles = [
-                  config.clan.core.vars.generators.beszel-homepage.files.env.path
-                ];
+                services.homepage-dashboard.customCSS = builtins.readFile ./homepage-machines.css;
+                services.homepage-dashboard.customJS = builtins.readFile ./homepage-machines.js;
+
+                # homepage-machines.js fetches this same-origin; it assumes homepage
+                # runs on the hub machine, as the machine tiles do
+                services.caddy.virtualHosts."home.${flake-self.domains.local}".extraConfig = ''
+                  handle /machines.json {
+                    root * /run/beszel-homepage-machines
+                    file_server
+                  }
+                '';
+
+                systemd.services.beszel-homepage-machines = {
+                  description = "Export beszel machines, pools and drives for the homepage machines tab";
+                  after = [ "beszel-hub.service" ];
+                  wants = [ "beszel-hub.service" ];
+                  serviceConfig = {
+                    Type = "oneshot";
+                    DynamicUser = true;
+                    EnvironmentFile = config.clan.core.vars.generators.beszel-hub-superuser.files.env.path;
+                    ExecStart = beszelHomepageMachinesScript;
+                    # caddy reads the export, so the directory and file are world-readable
+                    RuntimeDirectory = "beszel-homepage-machines";
+                    RuntimeDirectoryMode = "0755";
+                    RuntimeDirectoryPreserve = "yes";
+                    PrivateTmp = true;
+                    ProtectHome = true;
+                    ProtectSystem = "strict";
+                    NoNewPrivileges = true;
+                  };
+                };
+
+                systemd.timers.beszel-homepage-machines = {
+                  wantedBy = [ "timers.target" ];
+                  timerConfig = {
+                    OnBootSec = "1min";
+                    OnUnitActiveSec = "30s";
+                    AccuracySec = "5s";
+                  };
+                };
 
                 services.gatus.settings.endpoints = [
                   {

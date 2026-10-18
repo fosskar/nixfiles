@@ -1,0 +1,395 @@
+/* machines tab (homepage-machines.js); glass tokens come from the homepage
+   module's customCSS. the plain machine tiles are the fallback until the view
+   mounts */
+/* the panel itself carries tailwind's layered block!, which outranks any
+   unlayered !important, so hide the list inside it */
+:is(#layout-groups, #services)
+  .services-group:has(> #machines-view)
+  .services-list {
+  display: none;
+}
+#machines-view {
+  --mv-fill: #2dd4bf;
+  --mv-track: rgba(255, 255, 255, 0.08);
+  --mv-warn: #fbbf24;
+  --mv-danger: #fb7185;
+  --mv-ok: #34d399;
+  --mv-nvme: #5eead4;
+  --mv-dim: rgba(226, 232, 240, 0.45);
+  --mv-muted: rgba(226, 232, 240, 0.65);
+  --mv-line: rgba(45, 212, 191, 0.45);
+  --mv-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  padding: 0 0.25rem 1rem;
+  font-variant-numeric: tabular-nums;
+  color: #e2e8f0;
+}
+#machines-view .mv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 1050px) {
+  #machines-view .mv-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  #machines-view .mv-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+#machines-view .mv-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: var(--glass-radius);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    opacity 200ms ease,
+    transform 200ms var(--mv-ease),
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+#machines-view .mv-card:active {
+  transform: scale(0.98);
+}
+#machines-view .mv-card:focus-visible {
+  outline: 2px solid var(--mv-fill);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  #machines-view .mv-card:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+  }
+}
+/* focus: everything but the open card steps back */
+#machines-view .mv-grid.has-open .mv-card:not(.sel) {
+  opacity: 0.45;
+}
+@media (hover: hover) and (pointer: fine) {
+  #machines-view .mv-grid.has-open .mv-card:not(.sel):hover {
+    opacity: 0.85;
+  }
+}
+#machines-view .mv-card.sel {
+  transform: translateY(-3px);
+  border-color: var(--mv-line);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 18px 40px -20px rgba(0, 0, 0, 0.7);
+}
+#machines-view .mv-card.down {
+  border-style: dashed;
+}
+#machines-view .mv-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#machines-view .mv-top b {
+  font-size: 15px;
+  font-weight: 600;
+}
+#machines-view .mv-top .mv-chip {
+  margin-left: auto;
+}
+#machines-view .mv-ic {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: none;
+}
+#machines-view .mv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  color: var(--mv-muted);
+  background: rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+#machines-view .mv-chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mv-ok);
+}
+#machines-view .mv-chip.bad {
+  color: var(--mv-danger);
+}
+#machines-view .mv-chip.bad::before {
+  background: var(--mv-danger);
+}
+#machines-view .mv-meters,
+#machines-view .mv-plines {
+  display: grid;
+  gap: 7px;
+}
+#machines-view .mv-meter {
+  display: grid;
+  grid-template-columns: 3.4rem 1fr 3rem;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+#machines-view .mv-meter .k {
+  color: var(--mv-dim);
+}
+#machines-view .mv-meter .v {
+  text-align: right;
+}
+#machines-view .mv-bar {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--mv-track);
+  overflow: hidden;
+}
+#machines-view .mv-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--mv-fill);
+}
+#machines-view .mv-bar i.warn {
+  background: var(--mv-warn);
+}
+#machines-view .mv-bar i.danger {
+  background: var(--mv-danger);
+}
+#machines-view .v.warn {
+  color: var(--mv-warn);
+}
+#machines-view .v.danger {
+  color: var(--mv-danger);
+}
+#machines-view .mv-pline {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 12.5px;
+}
+#machines-view .mv-pline b {
+  font-weight: 500;
+}
+#machines-view .mv-pline span {
+  color: var(--mv-dim);
+}
+#machines-view .mv-meta {
+  font-size: 12px;
+  color: var(--mv-dim);
+}
+#machines-view .mv-more {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 4px;
+  font-size: 12px;
+  color: var(--mv-dim);
+}
+#machines-view .mv-more svg {
+  transition: transform 200ms var(--mv-ease);
+}
+#machines-view .mv-card.sel .mv-more {
+  color: var(--mv-fill);
+}
+#machines-view .mv-card.sel .mv-more svg {
+  transform: rotate(180deg);
+}
+
+#machines-view .mv-detail {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--glass-radius);
+  background: rgba(11, 36, 40, 0.92);
+  border: 1px solid var(--mv-line);
+}
+#machines-view .mv-dh {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#machines-view .mv-dh b {
+  font-size: 15px;
+  font-weight: 600;
+}
+#machines-view .mv-dh .mv-meta {
+  margin-left: auto;
+  text-align: right;
+}
+#machines-view .mv-pools {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+#machines-view .mv-pools.one {
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (max-width: 1050px) {
+  #machines-view .mv-pools {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+#machines-view .mv-pool {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px 22px;
+  border-radius: var(--glass-radius);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+#machines-view .mv-ph {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#machines-view .mv-ph h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--mv-muted);
+}
+#machines-view .mv-ph h3 span {
+  font-weight: 400;
+  color: var(--mv-dim);
+}
+#machines-view .mv-big {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#machines-view .mv-big b {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+#machines-view .mv-big span {
+  color: var(--mv-dim);
+}
+#machines-view .mv-seg {
+  display: flex;
+  gap: 2px;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--mv-track);
+}
+#machines-view .mv-seg i {
+  display: block;
+  height: 100%;
+}
+#machines-view .mv-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--mv-muted);
+}
+#machines-view .mv-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 2px;
+  background: var(--c);
+}
+#machines-view .mv-layout {
+  display: flex;
+  gap: 22px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+#machines-view .mv-vgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#machines-view .mv-vgroup small {
+  font-size: 10.5px;
+  color: var(--mv-dim);
+}
+#machines-view .mv-bays {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+}
+#machines-view .mv-bay {
+  position: relative;
+  width: 30px;
+  height: 42px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+#machines-view .mv-bay.nv {
+  width: 12px;
+  height: 30px;
+}
+#machines-view .mv-bay::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--mv-ok);
+  box-shadow: 0 0 5px var(--mv-ok);
+}
+#machines-view .mv-bay.nv::after {
+  background: var(--mv-nvme);
+  box-shadow: 0 0 5px var(--mv-nvme);
+}
+#machines-view .mv-drives {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto auto auto auto;
+  gap: 4px 16px;
+  padding: 16px 22px;
+  border-radius: var(--glass-radius);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  font-size: 12px;
+  align-items: center;
+}
+#machines-view .mv-drives .h {
+  font-size: 11px;
+  color: var(--mv-dim);
+}
+#machines-view .mv-drives .ok {
+  color: var(--mv-ok);
+}
+#machines-view .mv-drives .bad {
+  color: var(--mv-danger);
+}
+@media (prefers-reduced-motion: reduce) {
+  #machines-view .mv-card,
+  #machines-view .mv-more svg {
+    transition: none;
+  }
+  #machines-view .mv-card.sel,
+  #machines-view .mv-card:active {
+    transform: none;
+  }
+}
