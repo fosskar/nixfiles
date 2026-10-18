@@ -23,6 +23,13 @@
           { tools.tab = "Apps"; }
           { management.tab = "Apps"; }
           { monitoring.tab = "Apps"; }
+          # full width: a fifth group would otherwise sit alone, centred
+          {
+            machines = {
+              tab = "Apps";
+              style = "row";
+            };
+          }
           { admin.tab = "Admin"; }
           { "arr-stack".tab = "Admin"; }
         ];
@@ -490,6 +497,75 @@
           }
           :is(#layout-groups, #services) .service .service-block .font-bold {
             display: none;
+          }
+
+          /* machine tiles (beszel module, li ids machine-<name>): the plate shows
+             memory instead of six identical os icons, cpu and disk sit on two
+             lines under a single-line name. the widget renders its fields in
+             its own order: cpu, memory, disk */
+          :is(#layout-groups, #services) li[id^="machine-"] {
+            padding-bottom: 2rem;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-card {
+            width: 6.75rem;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-icon > * {
+            visibility: hidden;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-name {
+            height: calc(0.45rem + 1.15em);
+            -webkit-line-clamp: 1;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-block {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0.3rem;
+            left: 0;
+            width: 100%;
+            height: 1rem;
+            padding: 0;
+            border-radius: 0;
+            background: none;
+            box-shadow: none;
+            font-size: 0.68rem;
+            line-height: 1rem;
+            font-variant-numeric: tabular-nums;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-block .font-bold {
+            display: block;
+            font-weight: 400;
+            font-size: 0.62rem;
+            text-transform: lowercase;
+            color: rgba(226, 232, 240, 0.55);
+          }
+          /* plate: 4.5rem centred in the 6.75rem card, 0.25rem card top padding */
+          :is(#layout-groups, #services) li[id^="machine-"] .service-block:nth-child(2) {
+            top: 0.25rem;
+            left: 1.125rem;
+            width: 4.5rem;
+            height: 4.5rem;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.15rem;
+            font-size: 1.05rem;
+            line-height: 1;
+          }
+          /* below the plate (4.75rem) and the one-line name (0.45rem + 1.15em) */
+          :is(#layout-groups, #services) li[id^="machine-"] .service-block:nth-child(1) {
+            top: 6.35rem;
+            background: none;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-block:nth-child(3) {
+            top: 7.3rem;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-block[data-highlight-level="warn"] {
+            color: #fbbf24;
+          }
+          :is(#layout-groups, #services) li[id^="machine-"] .service-block[data-highlight-level="danger"] {
+            background: none;
+            color: #fb7185;
           }
 
           /* bookmarks sit at the page bottom when the tab leaves room. #footer

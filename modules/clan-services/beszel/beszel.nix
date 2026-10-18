@@ -367,6 +367,17 @@ _: {
                   '';
                 };
 
+                # homepage's beszel widget logs in through _superusers only and reads
+                # secrets from HOMEPAGE_VAR_* variables
+                clan.core.vars.generators.beszel-homepage = {
+                  dependencies = [ "beszel-hub-superuser" ];
+                  files.env = { };
+                  script = ''
+                    . "$in/beszel-hub-superuser/env"
+                    printf 'HOMEPAGE_VAR_BESZEL_PASSWORD=%s\n' "$BESZEL_SUPERUSER_PASSWORD" > "$out/env"
+                  '';
+                };
+
                 clan.core.state.beszel-hub = {
                   folders = [ "/var/backup/beszel-hub" ];
                   preBackupScript = ''
@@ -443,6 +454,56 @@ _: {
                       }
                     ];
                   }
+                  {
+                    # the widget url is loopback, so these tiles only work while homepage
+                    # runs on the hub machine. the ui routes systems by record id, which
+                    # the hub assigns, so the tiles link to the hub root
+                    "machines" = map (system: {
+                      ${system.name} = {
+                        id = "machine-${system.name}";
+                        href = "https://${beszelDomain}";
+                        icon = if lib.elem system.name clientMachines then "nixos.svg" else "mdi-server-network";
+                        widget = {
+                          type = "beszel";
+                          url = "http://127.0.0.1:${toString beszelPort}";
+                          username = beszelSuperuserEmail;
+                          password = "{{HOMEPAGE_VAR_BESZEL_PASSWORD}}";
+                          systemId = system.name;
+                          version = 2;
+                          fields = [
+                            "memory"
+                            "cpu"
+                            "disk"
+                          ];
+                          highlight =
+                            lib.genAttrs
+                              [
+                                "memory"
+                                "disk"
+                              ]
+                              (_: {
+                                # first match wins, so danger goes first
+                                numeric = [
+                                  {
+                                    level = "danger";
+                                    when = "gte";
+                                    value = 90;
+                                  }
+                                  {
+                                    level = "warn";
+                                    when = "gte";
+                                    value = 80;
+                                  }
+                                ];
+                              });
+                        };
+                      };
+                    }) beszelSystems;
+                  }
+                ];
+
+                services.homepage-dashboard.environmentFiles = [
+                  config.clan.core.vars.generators.beszel-homepage.files.env.path
                 ];
 
                 services.gatus.settings.endpoints = [
