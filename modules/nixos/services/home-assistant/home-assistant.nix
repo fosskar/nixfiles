@@ -3,38 +3,66 @@ let
 in
 {
   flake.modules.nixos.homeAssistant =
-    { flake-self, pkgs, ... }:
+    {
+      config,
+      flake-self,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       localHost = "ha.${flake-self.domains.local}";
+      configDir = config.services.home-assistant.configDir;
+      yaml = pkgs.formats.yaml { };
+      # url path -> dashboard; contents in ./_dashboards
+      dashboards = {
+        dashboard-home = {
+          title = "Home-Server";
+          icon = "mdi:server";
+          file = ./_dashboards/home-server.nix;
+        };
+        dashboard-roboclean = {
+          title = "RoboClean";
+          icon = "mdi:robot-mower";
+          file = ./_dashboards/roboclean.nix;
+        };
+        dashboard-weather = {
+          title = "Weather";
+          icon = "mdi:weather-cloudy";
+          file = ./_dashboards/weather.nix;
+        };
+        internet-security = {
+          title = "Internet Security";
+          icon = "mdi:shield-check";
+          require_admin = true;
+          file = ./_dashboards/internet-security.nix;
+        };
+      };
     in
     {
       services.home-assistant = {
         enable = true;
 
-        # integrations configured in the ui; each needs its python dependencies here
+        # integrations configured in the ui whose python dependencies default_config
+        # does not already pull in
         extraComponents = [
-          # onboarding defaults
           "default_config"
           "met"
-          "esphome"
-
           "adguard"
-          "analytics"
           "androidtv_remote"
           "apple_tv"
           "cast"
+          # default_config covers its python dependencies; listing it adds the go2rtc binary
           "go2rtc"
           "homeassistant_sky_connect"
-          # ignored printer discoveries still load its config flow
-          "ipp"
+          # conversation agent on the llama-cpp server (https://llama-cpp.<local domain>/v1)
+          "llama_cpp"
           # enabled in the ui (config entry only); serves /api/mcp
           "mcp_server"
-          "mobile_app"
           "mqtt"
           "nina"
           "openweathermap"
           "roborock"
-          "sun"
           "tasmota"
           "trmnl"
           "webdav"
@@ -52,29 +80,56 @@ in
 
         config = {
           default_config = { };
+          # the module copies time.timeZone (UTC on servers) here, which also locks the
+          # general settings in the ui; keep the time zone managed in the ui
+          homeassistant.time_zone = null;
           frontend.themes = "!include_dir_merge_named themes";
-          automation = "!include automations.yaml";
-          script = "!include scripts.yaml";
-          scene = "!include scenes.yaml";
-          http = {
-            use_x_forwarded_for = true;
-            # caddy on nixbox (${localHost}) and the netbird proxy (public domain)
-            trusted_proxies = [
-              "127.0.0.1"
-              flake-self.hosts.nixbox.lan
-              "100.64.0.0/10"
-            ];
-          };
-          homeassistant.allowlist_external_urls = [ "https://pangolin.simonoscar.me" ];
+          lovelace.dashboards = lib.mapAttrs (
+            name: dashboard:
+            removeAttrs dashboard [ "file" ]
+            // {
+              mode = "yaml";
+              filename = "dashboards/${name}.yaml";
+            }
+          ) dashboards;
+          automation = [
+            {
+              id = "hue_dimmer_hue_button_plug";
+              alias = "hue dimmer v2 - hue button toggles plug";
+              description = "bottom hue button toggles smart plug";
+              triggers =
+                map
+                  (subtype: {
+                    trigger = "device";
+                    domain = "mqtt";
+                    device_id = "84ea6631a07c5a8cbce000de01f25349";
+                    type = "action";
+                    inherit subtype;
+                  })
+                  [
+                    "recall_0"
+                    "recall_1"
+                  ];
+              actions = [
+                {
+                  action = "switch.toggle";
+                  target.entity_id = "switch.hue_smart_plug_philips";
+                }
+              ];
+            }
+          ];
+          # no http: home assistant migrates it to .storage/http once and ignores yaml
+          # afterwards; trusted proxies (caddy on nixbox, the netbird proxy) live there
         };
       };
 
-      # configuration.yaml includes these; ui edits write to them
       systemd.tmpfiles.rules = [
-        "f /var/lib/hass/automations.yaml 0644 hass hass"
-        "f /var/lib/hass/scripts.yaml 0644 hass hass"
-        "f /var/lib/hass/scenes.yaml 0644 hass hass"
-      ];
+        "d ${configDir}/dashboards 0750 hass hass"
+      ]
+      ++ lib.mapAttrsToList (
+        name: dashboard:
+        "L+ ${configDir}/dashboards/${name}.yaml - - - - ${yaml.generate "${name}.yaml" (import dashboard.file)}"
+      ) dashboards;
 
       # lan clients and the srv network (router rule srv_homeassistant) reach the frontend directly
       networking.firewall.allowedTCPPorts = [ port ];
