@@ -72,6 +72,7 @@ in
       "firewall.servers_homeassistant"
       "firewall.servers_telegraf"
       "dhcp.servers"
+      "dhcp.homeassistant"
       "network.wan6"
       "unbound.auth_icann"
     ];
@@ -328,12 +329,6 @@ in
           name = "openwrt-ap";
           ip = "192.168.10.2";
           mac = "64:DD:68:37:2A:32";
-        };
-        homeassistant = {
-          _type = "host";
-          name = "homeassistant";
-          ip = "192.168.10.50";
-          mac = "20:F8:3B:01:57:AB";
         };
         printer = {
           _type = "host";
