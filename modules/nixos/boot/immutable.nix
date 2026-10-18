@@ -16,5 +16,11 @@
         enable = true;
         mutable = true;
       };
+
+      # hide the etc-metadata erofs loop device from udisks, so udiskie stops
+      # trying to mount it and triggering a polkit prompt
+      services.udev.extraRules = ''
+        SUBSYSTEM=="block", KERNEL=="loop[0-9]*", ATTR{loop/backing_file}=="*-etc-metadata.erofs", ENV{UDISKS_IGNORE}="1"
+      '';
     };
 }
