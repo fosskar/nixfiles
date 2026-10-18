@@ -64,6 +64,9 @@ _: {
               {
                 services.borgbackup.jobs.storagebox.environment.BORG_BASE_DIR = "/var/lib/borgbackup";
                 systemd.services.borgbackup-job-storagebox.serviceConfig = {
+                  # the root pre-backup hooks write database dumps; "+" does not
+                  # exempt UMask, so new dumps and staging dirs are root-only
+                  UMask = "0077";
                   StateDirectory = "borgbackup";
                   StateDirectoryMode = "0700";
                 };
