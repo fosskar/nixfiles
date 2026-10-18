@@ -147,6 +147,13 @@
       <div class="mv-layout">${groups.map((g) => `<div class="mv-vgroup"><div class="mv-bays">${g.bays.map((b) => `<i class="mv-bay ${b}"></i>`).join("")}</div><small>${esc(g.name)}</small></div>`).join("")}</div></div>`;
   }
 
+  // filesystems beszel reports outside zfs_pools: the root filesystem of
+  // machines without pools (ext4, overlayfs) and every extra filesystem
+  function fs(name, f) {
+    const v = (f.used / f.size) * 100;
+    return `<div class="mv-fs"><div class="mv-ph"><h3>${esc(name)}</h3><span class="mv-meta">${bytes(f.used)} / ${bytes(f.size)}</span></div><div class="mv-big"><b>${pct(v)}</b><span>used</span></div><div class="mv-bar"><i class="${lvl(v)}" style="width:${v}%"></i></div></div>`;
+  }
+
   function detail(m) {
     const pools = poolsOf(m),
       drives = drivesOf(m);
@@ -156,9 +163,17 @@
           `${g.name} · ${(g.memUsed / 1024).toFixed(1)} of ${(g.memTotal / 1024).toFixed(1)} GB vram`,
       )
       .join(" · ");
-    const body = pools.length
-      ? `<div class="mv-pools ${pools.length === 1 ? "one" : ""}">${pools.map(pool).join("")}</div>`
-      : `<div class="mv-meta">no pools reported; root filesystem at ${pct(m.disk)}</div>`;
+    const filesystems = [
+      ...(!pools.length && m.rootFs ? [fs("root filesystem", m.rootFs)] : []),
+      ...(m.extraFs || []).map((e) => fs(e.name, e)),
+    ];
+    const body =
+      (pools.length
+        ? `<div class="mv-pools ${pools.length === 1 ? "one" : ""}">${pools.map(pool).join("")}</div>`
+        : "") +
+        (filesystems.length
+          ? `<div class="mv-fss">${filesystems.join("")}</div>`
+          : "") || `<div class="mv-meta">no filesystems reported</div>`;
     const table = drives.length
       ? `<div class="mv-drives"><span class="h">drive</span><span class="h">model</span><span class="h">size</span><span class="h">smart</span><span class="h">temp</span><span class="h">hours</span>${drives
           .map(

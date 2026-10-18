@@ -362,6 +362,23 @@
   background: var(--mv-nvme);
   box-shadow: 0 0 5px var(--mv-nvme);
 }
+#machines-view .mv-fss {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+#machines-view .mv-fs {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 20px;
+  border-radius: var(--glass-radius);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+#machines-view .mv-fs .mv-big b {
+  font-size: 26px;
+}
 #machines-view .mv-drives {
   display: grid;
   grid-template-columns: 4.5rem minmax(0, 1fr) auto auto auto auto;

@@ -22,6 +22,9 @@
           cpuModel: $d.cpu,
           cores: $d.cores,
           memTotal: $d.memory,
+          # system_stats sizes are GiB; convert to bytes like the pool sizes
+          rootFs: (if $x.d then { size: ($x.d * 1073741824), used: ($x.du * 1073741824) } else null end),
+          extraFs: [ ($x.efs // { }) | to_entries[] | { name: .key, size: (.value.d * 1073741824), used: (.value.du * 1073741824) } ],
           temps: ($x.t // { }),
           gpus: [ ($x.g // { })[] | { name: .n, memUsed: .mu, memTotal: .mt } ]
         }
