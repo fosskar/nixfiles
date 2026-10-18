@@ -114,7 +114,7 @@
               ]
             }
             mkdir -p /var/backup/jellyfin
-            sqlite3 /var/lib/jellyfin/data/jellyfin.db ".backup '/var/backup/jellyfin/jellyfin.db'"
+            sqlite3 -nofollow /var/lib/jellyfin/data/jellyfin.db ".backup '/var/backup/jellyfin/jellyfin.db'"
           '';
         };
 

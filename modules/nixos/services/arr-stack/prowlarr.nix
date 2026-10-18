@@ -82,7 +82,7 @@
               ]
             }
             mkdir -p /var/backup/prowlarr
-            sqlite3 /var/lib/private/prowlarr/prowlarr.db ".backup '/var/backup/prowlarr/prowlarr.db'"
+            sqlite3 -nofollow /var/lib/private/prowlarr/prowlarr.db ".backup '/var/backup/prowlarr/prowlarr.db'"
           '';
         };
       };

@@ -96,7 +96,7 @@
               ]
             }
             mkdir -p /var/backup/chaptarr
-            sqlite3 /var/lib/chaptarr/chaptarr.db ".backup '/var/backup/chaptarr/chaptarr.db'"
+            sqlite3 -nofollow /var/lib/chaptarr/chaptarr.db ".backup '/var/backup/chaptarr/chaptarr.db'"
           '';
         };
       };

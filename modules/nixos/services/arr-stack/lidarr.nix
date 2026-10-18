@@ -94,7 +94,7 @@
               ]
             }
             mkdir -p /var/backup/lidarr
-            sqlite3 /var/lib/lidarr/.config/Lidarr/lidarr.db ".backup '/var/backup/lidarr/lidarr.db'"
+            sqlite3 -nofollow /var/lib/lidarr/.config/Lidarr/lidarr.db ".backup '/var/backup/lidarr/lidarr.db'"
           '';
         };
       };

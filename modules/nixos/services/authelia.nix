@@ -259,7 +259,7 @@
               ]
             }
             mkdir -p /var/backup/authelia
-            sqlite3 /var/lib/authelia-main/db.sqlite3 ".backup '/var/backup/authelia/db.sqlite3'"
+            sqlite3 -nofollow /var/lib/authelia-main/db.sqlite3 ".backup '/var/backup/authelia/db.sqlite3'"
           '';
         };
       };

@@ -66,7 +66,7 @@
             ]
           }
           mkdir -p /var/backup/mautrix-signal
-          sqlite3 /var/lib/mautrix-signal/mautrix-signal.db ".timeout 120000" ".backup '/var/backup/mautrix-signal/mautrix-signal.db'"
+          sqlite3 -nofollow /var/lib/mautrix-signal/mautrix-signal.db ".timeout 120000" ".backup '/var/backup/mautrix-signal/mautrix-signal.db'"
           cp /var/lib/mautrix-signal/signal-registration.yaml /var/backup/mautrix-signal/
         '';
       };

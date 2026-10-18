@@ -195,7 +195,7 @@
               ]
             }
             mkdir -p /var/backup/audiobookshelf
-            sqlite3 /var/lib/audiobookshelf/config/absdatabase.sqlite ".backup '/var/backup/audiobookshelf/absdatabase.sqlite'"
+            sqlite3 -nofollow /var/lib/audiobookshelf/config/absdatabase.sqlite ".backup '/var/backup/audiobookshelf/absdatabase.sqlite'"
           '';
         };
       };

@@ -77,7 +77,7 @@
               ]
             }
             mkdir -p /var/backup/navidrome
-            sqlite3 /var/lib/navidrome/navidrome.db ".backup '/var/backup/navidrome/navidrome.db'"
+            sqlite3 -nofollow /var/lib/navidrome/navidrome.db ".backup '/var/backup/navidrome/navidrome.db'"
           '';
         };
       };

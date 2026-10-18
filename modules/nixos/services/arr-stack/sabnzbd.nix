@@ -305,7 +305,7 @@
               ]
             }
             mkdir -p /var/backup/sabnzbd
-            sqlite3 /var/lib/sabnzbd/admin/history1.db ".backup '/var/backup/sabnzbd/history1.db'"
+            sqlite3 -nofollow /var/lib/sabnzbd/admin/history1.db ".backup '/var/backup/sabnzbd/history1.db'"
           '';
         };
       };

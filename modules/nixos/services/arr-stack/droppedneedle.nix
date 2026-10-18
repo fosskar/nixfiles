@@ -218,7 +218,9 @@
               ]
             }
             mkdir -p /var/backup/droppedneedle
-            sqlite3 ${stateDir}/cache/library.db ".backup '/var/backup/droppedneedle/library.db'"
+            sqlite3 -nofollow ${stateDir}/cache/library.db ".backup '/var/backup/droppedneedle/library.db'"
+            # a leftover entry from the last run would fail the whole backup job
+            rm -rf /var/backup/droppedneedle/config
             cp -r ${stateDir}/config /var/backup/droppedneedle/
           '';
         };

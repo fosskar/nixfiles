@@ -87,7 +87,7 @@
               ]
             }
             mkdir -p /var/backup/sonarr
-            sqlite3 /var/lib/sonarr/.config/NzbDrone/sonarr.db ".backup '/var/backup/sonarr/sonarr.db'"
+            sqlite3 -nofollow /var/lib/sonarr/.config/NzbDrone/sonarr.db ".backup '/var/backup/sonarr/sonarr.db'"
           '';
         };
       };

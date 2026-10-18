@@ -87,7 +87,7 @@
               ]
             }
             mkdir -p /var/backup/radarr
-            sqlite3 /var/lib/radarr/.config/Radarr/radarr.db ".backup '/var/backup/radarr/radarr.db'"
+            sqlite3 -nofollow /var/lib/radarr/.config/Radarr/radarr.db ".backup '/var/backup/radarr/radarr.db'"
           '';
         };
       };

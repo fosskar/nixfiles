@@ -86,7 +86,7 @@
               ]
             }
             mkdir -p /var/backup/bazarr
-            sqlite3 /var/lib/bazarr/db/bazarr.db ".backup '/var/backup/bazarr/bazarr.db'"
+            sqlite3 -nofollow /var/lib/bazarr/db/bazarr.db ".backup '/var/backup/bazarr/bazarr.db'"
           '';
         };
       };
