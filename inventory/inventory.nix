@@ -60,6 +60,13 @@
           "home"
         ];
       };
+
+      "ha-green" = {
+        tags = [
+          "server"
+          "home"
+        ];
+      };
     };
   };
 }

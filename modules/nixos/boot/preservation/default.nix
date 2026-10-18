@@ -138,6 +138,11 @@ in
 
         fileSystems.${persistPath}.neededForBoot = true;
 
+        # clan uploads the age key and activation secrets here on install and
+        # update; on the live root they would sit in the subvolume the first
+        # boot's rollback moves away, so the first boot would have no secrets
+        clan.core.vars.sops.secretUploadDirectory = "${persistPath}/var/lib/sops-nix";
+
         # mounts made in initrd carry x-initrd.mount, which tells systemd to
         # leave them alone until final shutdown. the marker is lost after
         # switch-root when libmount cannot match the /sysroot utab entry
@@ -210,12 +215,13 @@ in
                   how = "bindmount";
                   inInitrd = true;
                 }
-                {
-                  directory = "/etc/secret-vars";
-                  how = "bindmount";
-                  inInitrd = true;
-                }
-              ];
+              ]
+              # clan's age secret store; with a read-only /etc the mount point would not exist
+              ++ lib.optional (config.clan.core.vars.settings.secretStore == "age") {
+                directory = "/etc/secret-vars";
+                how = "bindmount";
+                inInitrd = true;
+              };
 
             # clan machine-id is store-provided + kernel cmdline, no persistence needed
             files =

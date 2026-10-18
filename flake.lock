@@ -536,6 +536,23 @@
         "type": "github"
       }
     },
+    "haos": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792164638,
+        "narHash": "sha256-4ww31MrF1uy3L8NU7EqS18gKgpFC4AjneYg5agiClxE=",
+        "owner": "home-assistant",
+        "repo": "operating-system",
+        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "type": "github"
+      },
+      "original": {
+        "owner": "home-assistant",
+        "repo": "operating-system",
+        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "type": "github"
+      }
+    },
     "herdr": {
       "inputs": {
         "nixpkgs": [
@@ -1397,6 +1414,7 @@
         "fencr": "fencr",
         "flake-parts": "flake-parts",
         "flakelet": "flakelet",
+        "haos": "haos",
         "herdr": "herdr",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",

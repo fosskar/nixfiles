@@ -6,15 +6,9 @@ all machines except nixworker use [preservation](../docs/decisions/state-persist
 
 machine configs are composition edges: feature modules are exposed through `flake.modules.*` and assembled per host through imports and clan inventory.
 
-### bootstrap caveat
+### secrets and rollback
 
-first install of a new machine **must** be done with preservation **disabled** (do not import the module yet).
-rollback wipes root on every boot, but secrets (sops) are written to root during install, so they get wiped before any service runs.
-
-two-step bootstrap:
-
-1. install without preservation → machine boots, secrets land on root, services start
-2. import preservation + `clan machines update` → preservation activates, secrets copied to `/persist`, rollback works from boot 2+
+rollback wipes root on every boot, so the preservation module sets `clan.core.vars.sops.secretUploadDirectory` to `/persist/var/lib/sops-nix`. `clan machines install` and `clan machines update` upload the age key and activation secrets there, and sops reads the key from there, so a machine can be installed with preservation enabled from the start.
 
 ---
 
@@ -71,6 +65,7 @@ modules all read from it. this table is a derived copy; update `hosts.nix` first
 | machine   | IP               | method                               |
 | --------- | ---------------- | ------------------------------------ |
 | desktop   | `192.168.10.100` | NixOS static, no DHCP                |
+| ha-green  | `192.168.10.50`  | DHCP, static lease on the router     |
 | lpt-titan | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
 | nixbox    | `192.168.20.200` | NixOS static, no DHCP                |
 | nixworker | `192.168.20.210` | NixOS static, no DHCP                |

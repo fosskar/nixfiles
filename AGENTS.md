@@ -83,7 +83,7 @@ Services declare their own dashboard tile, health check, and reverse proxy defau
 ## sharp edges
 
 - preservation makes root ephemeral; persist state explicitly under `preservation.preserveAt."/persist"`
-- keep preservation disabled for first install; enable it after secrets land (`machines/README.md`)
+- preservation machines get clan secrets uploaded to `/persist/var/lib/sops-nix`, so first installs can run with preservation enabled (`machines/README.md`)
 - keep `networking.hostId` stable on ZFS machines
 - public NetBird mappings live in the UI; inspect them read-only in `/var/lib/netbird-server/store.db` on `gateway`
 - `netbird expose` can expose a loopback service through a peer-created tunnel; permanent peer targets cannot use loopback

@@ -78,6 +78,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # home assistant green board patches (dts, kernel, u-boot)
+    haos = {
+      url = "github:home-assistant/operating-system/95e65a34ccf72303c941ddab997e9f14696eb632";
+      flake = false;
+    };
+
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
 

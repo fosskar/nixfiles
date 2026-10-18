@@ -14,7 +14,7 @@
 
       system.etc.overlay = {
         enable = true;
-        mutable = true;
+        mutable = lib.mkDefault true;
       };
 
       # hide the etc-metadata erofs loop device from udisks, so udiskie stops

@@ -10,6 +10,8 @@
     nixworker.lan = "192.168.20.210";
     desktop.lan = "192.168.10.100";
     lpt-titan.lan = "192.168.10.150";
+    # dhcp lease on the router (openwrt/devices/router: homeassistant)
+    ha-green.lan = "192.168.10.50";
   };
 
   # the openwrt router's address on each network; gateway and dns (adguard)
