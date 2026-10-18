@@ -115,8 +115,17 @@
           evalMaxMemorySize = 4096;
           cacheFailedBuilds = true;
 
-          # hold pull requests from outside contributors until a repo writer approves ci
-          prApproval.enable = true;
+          # hold pull requests from outside contributors until a repo writer approves ci.
+          # CONTRIBUTOR is any account with one merged commit; own and bot prs stay
+          # ungated (OWNER, and branches pushed to this repo)
+          prApproval = {
+            enable = true;
+            trustedAssociations = [
+              "OWNER"
+              "MEMBER"
+              "COLLABORATOR"
+            ];
+          };
 
           github = {
             enable = true;
