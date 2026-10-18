@@ -138,7 +138,7 @@ in
           }
           {
             _type = "device";
-            name = "br-guest";
+            name = "br-gst";
             type = "bridge";
           }
         ];
@@ -166,6 +166,12 @@ in
           device = "br-iot";
           proto = "static";
           ipaddr = "192.168.50.1/24";
+        };
+        gst = {
+          _type = "interface";
+          device = "br-gst";
+          proto = "static";
+          ipaddr = "192.168.30.1/24";
         };
         srv = {
           _type = "interface";
@@ -199,6 +205,17 @@ in
           encryption = "psk2";
           key = "@wifi_password_iot@";
           hidden = "1";
+          isolate = "1";
+        };
+        gst_2g = {
+          _type = "wifi-iface";
+          device = "radio0";
+          network = "gst";
+          mode = "ap";
+          ssid = "@wifi_ssid_guest@";
+          encryption = "sae-mixed";
+          key = "@wifi_password_guest@";
+          isolate = "1";
         };
 
         radio1 = {
@@ -212,6 +229,16 @@ in
         };
         # main wifi: 5GHz
         main_5g = roaming.wifiIface "radio1";
+        gst_5g = {
+          _type = "wifi-iface";
+          device = "radio1";
+          network = "gst";
+          mode = "ap";
+          ssid = "@wifi_ssid_guest@";
+          encryption = "sae-mixed";
+          key = "@wifi_password_guest@";
+          isolate = "1";
+        };
       };
 
       dhcp = {
@@ -264,6 +291,14 @@ in
           limit = "150";
           leasetime = "12h";
           dhcp_option = [ "6,192.168.50.1" ];
+        };
+        gst = {
+          _type = "dhcp";
+          interface = "gst";
+          start = "100";
+          limit = "150";
+          leasetime = "2h";
+          dhcp_option = [ "6,192.168.30.1" ];
         };
         srv = {
           _type = "dhcp";
@@ -419,6 +454,14 @@ in
             forward = "REJECT";
             masq = "1";
           }
+          {
+            _type = "zone";
+            name = "gst";
+            network = [ "gst" ];
+            input = "REJECT";
+            output = "ACCEPT";
+            forward = "REJECT";
+          }
         ];
         forwarding = [
           {
@@ -445,6 +488,11 @@ in
             _type = "forwarding";
             src = "lan";
             dest = "srv";
+          }
+          {
+            _type = "forwarding";
+            src = "gst";
+            dest = "wan";
           }
         ];
         redirect = [
@@ -491,6 +539,21 @@ in
             src = "srv";
             src_dport = "53";
             dest_ip = "192.168.20.1";
+            dest_port = "53";
+            family = "ipv4";
+          }
+          {
+            _type = "redirect";
+            target = "DNAT";
+            name = "force dns interception - gst";
+            dest = "lan";
+            proto = [
+              "tcp"
+              "udp"
+            ];
+            src = "gst";
+            src_dport = "53";
+            dest_ip = "192.168.10.1";
             dest_port = "53";
             family = "ipv4";
           }
@@ -570,6 +633,25 @@ in
           ];
           dest_port = "853";
           target = "REJECT";
+        };
+        gst_dhcp = {
+          _type = "rule";
+          name = "Allow-Gst-DHCP";
+          src = "gst";
+          proto = "udp";
+          dest_port = "67-68";
+          target = "ACCEPT";
+        };
+        gst_dns = {
+          _type = "rule";
+          name = "Allow-Gst-DNS";
+          src = "gst";
+          proto = [
+            "udp"
+            "tcp"
+          ];
+          dest_port = "53";
+          target = "ACCEPT";
         };
         srv_dhcp = {
           _type = "rule";
