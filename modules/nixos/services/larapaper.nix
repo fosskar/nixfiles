@@ -30,6 +30,8 @@
         DB_DATABASE = "${dataDir}/database/database.sqlite";
         LOG_CHANNEL = "stderr";
         TRUSTED_PROXIES = "127.0.0.1";
+        # single user; an account can make the server fetch any url with any headers
+        REGISTRATION_ENABLED = "false";
         HOME = dataDir;
         PUPPETEER_EXECUTABLE_PATH = lib.getExe pkgs.chromium;
         # passes --no-sandbox; serviceDefaults confines chromium instead
