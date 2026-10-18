@@ -13,9 +13,7 @@
       keyHeader = serviceName: "/tmp/${serviceName}-api-key.header";
       # sabnzbd takes its key only in the query string
       sabnzbdVersionConfig = "/tmp/sabnzbd-version.curl";
-      # prowlarr writes its own key from ExecStartPost (api-keys.nix)
-      keyUnit =
-        serviceName: if serviceName == "prowlarr" then "prowlarr.service" else "${serviceName}-api.service";
+      keyUnit = serviceName: "${serviceName}-api.service";
 
       ports = {
         prowlarr = 9696;

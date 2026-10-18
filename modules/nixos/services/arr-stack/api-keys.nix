@@ -27,13 +27,14 @@
           configFile = "/var/lib/sabnzbd/sabnzbd.ini";
           pattern = "^api_key\\s*=\\s*\\K\\S+";
         };
-      };
-
-      # prowlarr runs under DynamicUser, so only its own unit can reach the
-      # state dir; the key is extracted from inside prowlarr.service instead
-      prowlarrConfig = {
-        configFile = "/var/lib/prowlarr/config.xml";
-        pattern = arrPattern;
+        # prowlarr is a DynamicUser; a unit with the same dynamic user name and
+        # StateDirectory shares its uid and reaches the private state dir
+        prowlarr = arrConfig "prowlarr" "/var/lib/prowlarr/config.xml" // {
+          serviceConfig = {
+            DynamicUser = true;
+            StateDirectory = "prowlarr";
+          };
+        };
       };
 
       extractScript =
@@ -73,6 +74,7 @@
           Type = "oneshot";
           RemainAfterExit = true;
           User = source.user;
+          SupplementaryGroups = [ "${serviceName}-api" ];
           CapabilityBoundingSet = "";
           NoNewPrivileges = true;
           ProtectSystem = "strict";
@@ -101,36 +103,29 @@
             "~@resources"
           ];
           ExecStart = extractScript serviceName source;
-        };
+        }
+        // source.serviceConfig or { };
       };
     in
     {
       config = {
-        users.groups = lib.genAttrs (map (serviceName: "${serviceName}-api") (
-          lib.attrNames sources ++ [ "prowlarr" ]
-        )) (_: { });
+        users.groups = lib.genAttrs (map (serviceName: "${serviceName}-api") (lib.attrNames sources)) (
+          _: { }
+        );
 
-        # one setgid dir per app: the app user writes, the <app>-api group
-        # reads, and a key is only reachable through the group named on its dir
+        # one setgid dir per app, writable only through the <app>-api group. the
+        # long-running app is not in that group: root reads these paths through
+        # LoadCredential, which follows a symlink the app could otherwise plant
         systemd.tmpfiles.rules = [
           "d ${keyDir} 0755 root root -"
-          "d ${keyDir}/prowlarr 2770 root prowlarr-api -"
         ]
-        ++ lib.mapAttrsToList (
-          serviceName: source: "d ${keyDir}/${serviceName} 2750 ${source.user} ${serviceName}-api -"
-        ) sources;
+        ++ map (serviceName: "d ${keyDir}/${serviceName} 2770 root ${serviceName}-api -") (
+          lib.attrNames sources
+        );
 
-        systemd.services =
-          lib.mapAttrs' (
-            serviceName: source: lib.nameValuePair "${serviceName}-api" (mkUnit serviceName source)
-          ) sources
-          // {
-            prowlarr.serviceConfig = {
-              SupplementaryGroups = [ "prowlarr-api" ];
-              ReadWritePaths = [ "${keyDir}/prowlarr" ];
-              ExecStartPost = extractScript "prowlarr" prowlarrConfig;
-            };
-          };
+        systemd.services = lib.mapAttrs' (
+          serviceName: source: lib.nameValuePair "${serviceName}-api" (mkUnit serviceName source)
+        ) sources;
       };
     };
 }

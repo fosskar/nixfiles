@@ -131,13 +131,13 @@
           after = [
             "network-online.target"
             "sabnzbd-api.service"
-            "prowlarr.service"
+            "prowlarr-api.service"
             "lidarr-api.service"
           ];
           wants = [
             "network-online.target"
             "sabnzbd-api.service"
-            "prowlarr.service"
+            "prowlarr-api.service"
             "lidarr-api.service"
           ];
           environment = {
