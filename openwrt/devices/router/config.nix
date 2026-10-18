@@ -3,7 +3,17 @@ let
   roaming = import ../../profiles/roaming.nix;
 in
 {
-  imports = [ roaming.module ];
+  imports = [
+    roaming.module
+    (
+      { pkgs, ... }:
+      {
+        externalPackages = [
+          (pkgs.callPackage ../../../packages/beszel-agent-openwrt/package.nix { }).openwrtExternalPackage
+        ];
+      }
+    )
+  ];
 
   host = "192.168.10.1";
 
@@ -35,8 +45,6 @@ in
     "openwisp-monitoring"
     "netjson-monitoring"
   ];
-
-  externalPackages = [ (import ../../profiles/beszel-agent.nix) ];
 
   files = {
     "/etc/unbound/unbound_srv.conf" = ./files/unbound_srv.conf;
