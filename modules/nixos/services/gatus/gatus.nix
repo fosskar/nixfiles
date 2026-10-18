@@ -43,14 +43,6 @@
           };
         };
 
-        # static account so nftables rules can match the gatus uid; DynamicUser
-        # reuses an existing account of the same name
-        users.users.gatus = {
-          isSystemUser = true;
-          group = "gatus";
-        };
-        users.groups.gatus = { };
-
         clan.core.state.gatus = {
           folders = [ "/var/backup/gatus" ];
           preBackupScript = ''

@@ -1,18 +1,14 @@
 {
   flake.modules.nixos.opencloud =
     {
-      config,
       lib,
       options,
       ...
     }:
     let
       # radicale trusts X-Remote-User from any client, so only the opencloud
-      # proxy (and the gatus tcp probe) may connect
-      radicaleClients = lib.concatMapStringsSep ", " (user: ''"${user}"'') (
-        [ "opencloud" ] ++ lib.optional config.services.gatus.enable "gatus"
-      );
-      radicaleClientMatch = "meta skuid != { ${radicaleClients} }";
+      # proxy may connect; a dead radicale shows up as a failed systemd unit
+      radicaleClientMatch = ''meta skuid != "opencloud"'';
       radicaleRoute = endpoint: scriptName: {
         inherit endpoint;
         backend = "http://127.0.0.1:5232";
@@ -81,23 +77,11 @@
             }
           '';
         };
-        # the build sandbox lacks these runtime accounts; only the check uses root
+        # the build sandbox lacks the runtime account; only the check uses root
         networking.nftables.preCheckRuleset = ''
           substituteInPlace ruleset.conf \
             --replace-fail '${radicaleClientMatch}' 'meta skuid != 0'
         '';
-
-        services.gatus.settings.endpoints = [
-          # tcp probe only: http check would create phantom X-Remote-User principal
-          {
-            name = "Radicale";
-            url = "tcp://127.0.0.1:5232";
-            conditions = [ "[CONNECTED] == true" ];
-            enabled = true;
-            alerts = [ { type = "matrix"; } ];
-            interval = "5m";
-          }
-        ];
       }
       // lib.optionalAttrs (options ? preservation) {
         preservation.preserveAt."/persist".directories = [
