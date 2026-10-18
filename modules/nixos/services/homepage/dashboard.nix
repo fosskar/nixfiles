@@ -14,8 +14,8 @@
           mobileButtonPosition = "bottom-right";
         };
 
-        # sections come from the apply in homepage.nix; bookmarks carry no tab
-        # and therefore show on both
+        # sections come from the apply in homepage.nix; bookmark groups take
+        # a tab the same way
         settings.layout = [
           # two groups per row: apps | tools, management | monitoring
           { apps.tab = "Apps"; }
@@ -32,6 +32,10 @@
               header = false;
             };
           }
+          { "NixOS".tab = "Bookmarks"; }
+          { "Home Manager".tab = "Bookmarks"; }
+          { "DNS Management".tab = "Bookmarks"; }
+          { "Clan".tab = "Bookmarks"; }
         ];
 
         # tiles the cross-host collector can't provide: external non-NixOS devices and local-only endpoints

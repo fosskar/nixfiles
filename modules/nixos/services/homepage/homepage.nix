@@ -182,6 +182,10 @@
                 name = "Machines";
                 url = "/#machines";
               }
+              {
+                name = "Bookmarks";
+                url = "/#bookmarks";
+              }
             ];
           };
           # customCSS (dashboard.nix) is dark-only glass; pin theme so the switcher can't break it
