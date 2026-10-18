@@ -522,9 +522,8 @@
             border-radius: 999px;
             margin: 0;
             padding: 0.35rem 1.1rem;
-            font-size: 0.8rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+            font-size: 0.85rem;
+            font-weight: 500;
           }
           #myTab button[aria-selected="true"] {
             background: rgba(255, 255, 255, 0.14);
@@ -533,12 +532,20 @@
           /* group headings */
           :is(#layout-groups, #services) .service-group-name,
           :is(#layout-groups, #bookmarks) .bookmark-group-name {
-            font-size: 0.78rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
             color: rgba(226, 232, 240, 0.65);
             margin-bottom: 0.35rem;
+          }
+          /* group keys are lowercase (apps, arr-stack); ::first-letter needs
+             a block box, the heading ships as flex */
+          :is(#layout-groups, #services) .service-group-name,
+          :is(#layout-groups, #bookmarks) .bookmark-group-name {
+            display: block;
+          }
+          :is(#layout-groups, #services) .service-group-name::first-letter,
+          :is(#layout-groups, #bookmarks) .bookmark-group-name::first-letter {
+            text-transform: uppercase;
           }
           /* the plate is 4.5rem centred in a 6rem card, so the first icon
              starts 0.75rem in; indent the header to that edge plus the 0.25rem
@@ -616,8 +623,12 @@
             justify-content: center;
           }
           #page_wrapper .information-widget-search {
-            flex: 0 1 50%;
-            max-width: 50%;
+            flex: 0 1 56%;
+            max-width: 56%;
+          }
+          /* the widget hardcodes h-8 on the box around the input */
+          #page_wrapper .information-widget-search .h-8 {
+            height: 2.75rem;
           }
 
           #page_wrapper .information-widget-form input {
@@ -626,7 +637,8 @@
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            padding-left: 1.1rem;
+            padding-left: 1.25rem;
+            font-size: 0.95rem;
           }
           #page_wrapper .information-widget-form input:focus {
             border-color: var(--glass-border-hover);
@@ -635,6 +647,10 @@
           #page_wrapper .information-widget-form button {
             border-radius: 999px;
             right: 4px;
+            bottom: 4px;
+            height: calc(2.75rem - 8px);
+            display: flex;
+            align-items: center;
             background: rgba(255, 255, 255, 0.10);
           }
           #page_wrapper .widget-container {
@@ -645,15 +661,15 @@
             -webkit-backdrop-filter: blur(10px);
             padding: 0.15rem 0.9rem;
           }
-          /* clock: match the 2rem search input instead of the widget's own
+          /* clock: match the 2.75rem search input instead of the widget's own
              text-lg line box plus padding */
           #page_wrapper .information-widget-datetime {
             position: absolute;
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-            height: 2.4rem;
-            padding: 0 0.9rem;
+            height: 2.75rem;
+            padding: 0 1rem;
             justify-content: center;
           }
           #page_wrapper .information-widget-datetime span {
