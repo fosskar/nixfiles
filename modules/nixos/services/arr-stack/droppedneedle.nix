@@ -201,8 +201,11 @@
 
         # --- caddy ---
 
-        # no proxy-auth - droppedneedle has built-in auth
+        # no proxy-auth - droppedneedle has built-in auth. plex is not configured,
+        # and in that state its plex login accepts any plex.tv account
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
+          @plexlogin path /api/v1/auth/plex /api/v1/auth/plex/*
+          respond @plexlogin 403
           reverse_proxy ${listenUrl}
         '';
 
