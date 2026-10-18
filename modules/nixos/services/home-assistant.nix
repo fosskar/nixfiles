@@ -27,6 +27,8 @@ in
           "homeassistant_sky_connect"
           # ignored printer discoveries still load its config flow
           "ipp"
+          # enabled in the ui (config entry only); serves /api/mcp
+          "mcp_server"
           "mobile_app"
           "mqtt"
           "nina"
