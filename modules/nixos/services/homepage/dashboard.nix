@@ -8,11 +8,10 @@
       services.homepage-dashboard = {
         settings.quicklaunch = {
           searchDescriptions = true;
-          hideInternetSearch = false;
-          showSearchSuggestions = true;
-          hideVisitURL = false;
           provider = "custom";
           url = "https://search.${flake-self.domains.local}/search?q=";
+          # phones have no keyboard to start quicklaunch by typing
+          mobileButtonPosition = "bottom-right";
         };
 
         # sections come from the apply in homepage.nix; bookmarks carry no tab
@@ -205,7 +204,6 @@
               provider = "custom";
               url = "https://search.${flake-self.domains.local}/search?q=";
               target = "_blank";
-              showSearchSuggestions = true;
             };
           }
           {
@@ -688,6 +686,18 @@
             padding: 0;
           }
 
+          /* phones: the absolutely placed clock would overlap the search bar,
+             and the phone shows the time itself */
+          @media (max-width: 640px) {
+            #page_wrapper .information-widget-datetime {
+              display: none;
+            }
+            #page_wrapper .information-widget-search {
+              flex-basis: 100%;
+              max-width: 100%;
+            }
+          }
+
           /* quicklaunch: the overlay homepage opens on typing. its markup has no
              ids, so it is matched by role and element; tailwind sits in a
              layer, so these plain rules win without !important */
@@ -725,6 +735,20 @@
           div[role="dialog"][aria-modal="true"] dialog li > button[class*="bg-theme-700"] {
             background: rgba(255, 255, 255, 0.08);
             box-shadow: inset 0 0 0 1px var(--glass-border);
+          }
+          /* descriptions are search keywords, matched but not shown */
+          div[role="dialog"][aria-modal="true"] dialog li > button span.text-xs {
+            display: none;
+          }
+          /* the mobile quicklaunch button (mobileButtonPosition) */
+          button.fixed.rounded-full.sm\:hidden {
+            padding: 0.85rem;
+            border: 1px solid var(--glass-border);
+            background: rgba(10, 32, 36, 0.78);
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+            color: #e2e8f0;
           }
           div[role="dialog"][aria-modal="true"] dialog li > button .font-bold {
             font-weight: 500;
