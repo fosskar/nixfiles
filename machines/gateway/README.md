@@ -189,7 +189,7 @@ internal-only services never exposed:
 | netbird-proxy    | 127.0.0.1:8444 | healthcheck                         |
 
 services bound to all interfaces but opened only on `ygg` (clan yggdrasil
-peers): beszel-agent `:18876`, telegraf `:9273`, nixlens `:7480`.
+peers): beszel-agent `:18876` and telegraf `:9273`.
 
 ## non-HTTP services
 

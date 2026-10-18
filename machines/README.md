@@ -118,7 +118,7 @@ home server (ryzen 7 5700x, 64gb, nvidia rtx pro 4000 blackwell sff, zfs)
 
 **auth:** authelia (sso, oidc provider) and lldap; [why](../docs/decisions/sso-stack.md)
 
-**monitoring:** victoriametrics, victorialogs, grafana, telegraf, beszel hub, gatus, homepage, nixlens hub
+**monitoring:** victoriametrics, victorialogs, grafana, telegraf, beszel hub, gatus, homepage
 
 **llm & agents:** llama.cpp on the rtx pro 4000, offloading to nixworker over ggml rpc
 

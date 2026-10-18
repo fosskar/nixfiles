@@ -222,13 +222,6 @@
       inputs.nixbot.follows = "nixbot";
     };
 
-    nixlens = {
-      url = "github:fosskar/nixlens";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-      inputs.nixbot.follows = "nixbot";
-    };
-
     wiki = {
       url = "github:fosskar/wiki";
       inputs.nixpkgs.follows = "nixpkgs";
