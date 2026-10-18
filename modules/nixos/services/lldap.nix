@@ -95,7 +95,8 @@
       services.gatus.settings.endpoints = [
         {
           name = "LLDAP";
-          url = "https://${localHost}";
+          # backend check on purpose: the edge is forward-auth, authelia answers 302 without reaching the service
+          url = listenUrl;
           enabled = true;
           alerts = [ { type = "matrix"; } ];
           interval = "5m";
@@ -103,7 +104,10 @@
         }
       ];
 
+      # lldap does not throttle failed logins and checks the same passwords
+      # authelia uses as first factor, so authelia regulation must sit in front
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        ${lib.optionalString (config.services.authelia.instances.main.enable or false) "import authelia"}
         header {
           X-Content-Type-Options "nosniff"
           X-Frame-Options "SAMEORIGIN"
