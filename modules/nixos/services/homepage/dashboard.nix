@@ -371,48 +371,43 @@
             align-items: center;
             width: 100%;
           }
+          /* plates: a darker solid tile under each logo. hovering tiles is a
+             tens-a-day interaction, so it stays small and fast (2px, 160ms,
+             strong ease-out) and only applies where a pointer can hover */
           :is(#layout-groups, #services) .service .service-icon {
             width: 4.5rem;
             height: 4.5rem;
             border-radius: 14px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
+            background: linear-gradient(180deg, rgba(16, 44, 48, 0.78), rgba(7, 24, 27, 0.78));
+            border: 1px solid rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(12px) saturate(150%);
             -webkit-backdrop-filter: blur(12px) saturate(150%);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-            transition:
-              transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 320ms ease,
-              background 320ms ease,
-              box-shadow 420ms ease;
-          }
-          :is(#layout-groups, #services) .service .service-card:hover .service-icon {
-            background: var(--glass-bg-hover);
-            border-color: var(--glass-border-hover);
-            transform: translateY(-4px) scale(1.06);
             box-shadow:
-              inset 0 1px 0 rgba(255, 255, 255, 0.14),
-              0 14px 28px -14px rgba(0, 0, 0, 0.55);
+              inset 0 1px 0 rgba(255, 255, 255, 0.08),
+              0 1px 2px rgba(0, 0, 0, 0.25);
+            transition:
+              transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+              border-color 150ms ease;
+          }
+          /* dark logos (vaultwarden, miniflux) keep an edge on the dark plate */
+          :is(#layout-groups, #services) .service .service-icon > * {
+            filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.28));
+          }
+          :is(#layout-groups, #services) .service .service-name {
+            transition: color 150ms ease;
+          }
+          @media (hover: hover) and (pointer: fine) {
+            :is(#layout-groups, #services) .service .service-card:hover .service-icon {
+              border-color: rgba(255, 255, 255, 0.2);
+              transform: translateY(-2px);
+            }
+            :is(#layout-groups, #services) .service .service-card:hover .service-name {
+              color: #f1f5f9;
+            }
           }
           :is(#layout-groups, #services) .service .service-card:active .service-icon {
-            transform: translateY(-1px) scale(0.97);
-            transition-duration: 90ms;
-          }
-          :is(#layout-groups, #services) .service .service-icon > * {
-            transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-          }
-          :is(#layout-groups, #services) .service .service-card:hover .service-icon > * {
-            transform: scale(1.06);
-          }
-          /* name follows the plate: lifts and brightens on the same curve */
-          :is(#layout-groups, #services) .service .service-name {
-            transition:
-              transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-              color 320ms ease;
-          }
-          :is(#layout-groups, #services) .service .service-card:hover .service-name {
-            transform: translateY(-3px);
-            color: #f1f5f9;
+            transform: scale(0.97);
+            transition-duration: 100ms;
           }
           /* the icon component sets width/height inline (32px), and mdi/si
              icons are a masked div rather than an img, hence child + !important */
@@ -593,12 +588,13 @@
             -webkit-backdrop-filter: blur(10px);
             overflow: hidden;
             margin-bottom: 0.35rem;
-            transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+            transition: border-color 150ms ease, background-color 150ms ease;
           }
-          :is(#layout-groups, #bookmarks) .bookmark:hover {
-            background: var(--glass-bg-hover);
-            border-color: var(--glass-border-hover);
-            transform: translateY(-1px);
+          @media (hover: hover) and (pointer: fine) {
+            :is(#layout-groups, #bookmarks) .bookmark:hover {
+              background: var(--glass-bg-hover);
+              border-color: var(--glass-border-hover);
+            }
           }
           :is(#layout-groups, #bookmarks) .bookmark > a {
             margin-bottom: 0;
@@ -690,6 +686,60 @@
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
             padding: 0;
+          }
+
+          /* quicklaunch: the overlay homepage opens on typing. its markup has no
+             ids, so it is matched by role and element; tailwind sits in a
+             layer, so these plain rules win without !important */
+          div[role="dialog"][aria-modal="true"] > .fixed.inset-0:first-child {
+            background: rgba(3, 12, 14, 0.55);
+            opacity: 1;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+          }
+          div[role="dialog"][aria-modal="true"] dialog {
+            overflow: hidden;
+            border-radius: var(--glass-radius);
+            border: 1px solid var(--glass-border);
+            background: rgba(10, 32, 36, 0.78);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            box-shadow:
+              inset 0 1px 0 rgba(255, 255, 255, 0.08),
+              0 24px 60px -20px rgba(0, 0, 0, 0.7);
+            color: #e2e8f0;
+          }
+          div[role="dialog"][aria-modal="true"] dialog input {
+            background: transparent;
+            border-color: var(--glass-border);
+            color: #f1f5f9;
+          }
+          div[role="dialog"][aria-modal="true"] dialog input::placeholder {
+            color: rgba(226, 232, 240, 0.45);
+          }
+          div[role="dialog"][aria-modal="true"] dialog li > button {
+            border-radius: var(--glass-radius-sm);
+            color: #e2e8f0;
+          }
+          /* the highlighted result: keyboard selection and pointer hover share it */
+          div[role="dialog"][aria-modal="true"] dialog li > button[class*="bg-theme-700"] {
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 0 1px var(--glass-border);
+          }
+          div[role="dialog"][aria-modal="true"] dialog li > button .font-bold {
+            font-weight: 500;
+            color: rgba(226, 232, 240, 0.45);
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            #page_wrapper::before,
+            #page_wrapper::after {
+              animation: none;
+            }
+            :is(#layout-groups, #services) .service .service-card:hover .service-icon,
+            :is(#layout-groups, #services) .service .service-card:active .service-icon {
+              transform: none;
+            }
           }
         '';
       };
