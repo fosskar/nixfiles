@@ -6,9 +6,6 @@
       ...
     }:
     let
-      # radicale trusts X-Remote-User from any client, so only the opencloud
-      # proxy may connect; a dead radicale shows up as a failed systemd unit
-      radicaleClientMatch = ''meta skuid != "opencloud"'';
       radicaleRoute = endpoint: scriptName: {
         inherit endpoint;
         backend = "http://127.0.0.1:5232";
@@ -68,20 +65,17 @@
         };
         clan.core.state.radicale.folders = [ "/var/lib/radicale" ];
 
-        networking.nftables.tables.radicale-clients = {
-          family = "inet";
-          content = ''
-            chain output {
-              type filter hook output priority filter; policy accept;
-              ip daddr 127.0.0.1 tcp dport 5232 ${radicaleClientMatch} counter reject with tcp reset
-            }
-          '';
-        };
-        # the build sandbox lacks the runtime account; only the check uses root
-        networking.nftables.preCheckRuleset = ''
-          substituteInPlace ruleset.conf \
-            --replace-fail '${radicaleClientMatch}' 'meta skuid != 0'
-        '';
+        services.gatus.settings.endpoints = [
+          # tcp probe only: http check would create phantom X-Remote-User principal
+          {
+            name = "Radicale";
+            url = "tcp://127.0.0.1:5232";
+            conditions = [ "[CONNECTED] == true" ];
+            enabled = true;
+            alerts = [ { type = "matrix"; } ];
+            interval = "5m";
+          }
+        ];
       }
       // lib.optionalAttrs (options ? preservation) {
         preservation.preserveAt."/persist".directories = [
