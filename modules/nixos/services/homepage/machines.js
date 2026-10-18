@@ -383,7 +383,17 @@
       ?.focus({ preventScroll: true });
   }
 
+  // fetch only while someone looks: the machines tab is mounted (homepage
+  // drops inactive tabs from the dom) and the browser tab is visible
+  let loadedAt = 0;
+  const watched = () =>
+    !document.hidden && document.getElementById(ROOT_ID)?.offsetParent != null;
+  const loadIfStale = () => {
+    if (watched() && Date.now() - loadedAt >= REFRESH_MS) load();
+  };
+
   async function load() {
+    loadedAt = Date.now();
     try {
       const res = await fetch("/machines.json", { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -418,6 +428,7 @@
     });
     group.appendChild(root);
     render();
+    loadIfStale();
   }
 
   let queued = false;
@@ -436,9 +447,7 @@
       render();
     }
   });
-  load();
-  setInterval(() => {
-    if (!document.hidden) load();
-  }, REFRESH_MS);
+  document.addEventListener("visibilitychange", loadIfStale);
+  setInterval(loadIfStale, 1000);
   mount();
 })();
