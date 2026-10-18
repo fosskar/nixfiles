@@ -144,6 +144,8 @@
           '';
           serviceConfig = {
             StateDirectory = "talos-vm";
+            # talosconfig, controlplane.yaml and the vm disk hold cluster secrets
+            StateDirectoryMode = "0700";
             ExecStart = lib.concatStringsSep " " [
               (lib.getExe' pkgs.qemu_kvm "qemu-system-x86_64")
               "-machine q35,accel=kvm"
@@ -243,7 +245,10 @@
       }
       // lib.optionalAttrs (options ? preservation) {
         preservation.preserveAt."/persist".directories = [
-          stateDir
+          {
+            directory = stateDir;
+            mode = "0700";
+          }
         ];
       };
     };
