@@ -3,6 +3,7 @@
     {
       flake-self,
       lib,
+      pkgs,
       ...
     }:
     let
@@ -11,6 +12,13 @@
       listenAddress = "127.0.0.1";
       listenPort = 8082;
       listenUrl = "http://${listenAddress}:${toString listenPort}";
+      # the repo logo, served next to homepage; a path literal copies only this file
+      favicon = pkgs.linkFarm "homepage-favicon" [
+        {
+          name = "favicon.svg";
+          path = ../../../../docs/logo/logo.svg;
+        }
+      ];
     in
     {
       # upstream services is a list of groups; list-merge concatenates, so two
@@ -77,6 +85,7 @@
 
         settings = {
           title = "home-lab dashboard";
+          favicon = "/favicon.svg";
           baseUrl = "https://${localHost}";
           startUrl = "https://${localHost}";
           # customCSS (dashboard.nix) is dark-only glass; pin theme so the switcher can't break it
@@ -99,6 +108,10 @@
       config.systemd.services.homepage-dashboard.environment.HOSTNAME = listenAddress;
 
       config.services.caddy.virtualHosts.${localHost}.extraConfig = ''
+        handle /favicon.svg {
+          root * ${favicon}
+          file_server
+        }
         reverse_proxy ${listenUrl}
       '';
     };
