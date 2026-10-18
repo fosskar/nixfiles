@@ -6,11 +6,13 @@ _: {
     # let a reconnecting client's RemoteForward replace its own stale per-client
     # socket under %t/fwd (client.nix)
     services.openssh.settings.StreamLocalBindUnlink = true;
-    # the client sends ForwardAgent and LocalForward 54545 (client.nix)
+    # the client sends ForwardAgent, LocalForward 54545 and the workspace-relay
+    # RemoteForward sockets (client.nix); sshd gates unix socket remote
+    # forwards on AllowTcpForwarding too, so "local" would deny them
     services.openssh.extraConfig = ''
       Match User simon
         AllowAgentForwarding yes
-        AllowTcpForwarding local
+        AllowTcpForwarding yes
     '';
 
     # simon's yubikey pubkeys (same shared generator as modules/nixos/hardware/yubikey/gpg-ssh.nix)
