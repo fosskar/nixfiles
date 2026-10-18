@@ -35,6 +35,8 @@
 
   programs.nix-ld.enable = true;
 
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   # ssh sessions (sshd-session lands in user.slice too) win against nixbot
   # and remote builds under contention; idle sessions cost builds nothing
   systemd.slices.user.sliceConfig = {
