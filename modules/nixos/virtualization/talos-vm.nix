@@ -110,16 +110,25 @@
 
         networking.firewall.interfaces.${bridge}.allowedUDPPorts = [ 67 ];
 
-        # private ranges dropped so playground workloads cannot walk the lan
-        networking.firewall.extraForwardRules = ''
-          iifname "${bridge}" meta nfproto ipv6 drop
-          oifname "${bridge}" tcp dport { 6443, 50000 } accept
-          iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} udp dport 53 accept
-          iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} tcp dport 53 accept
-          iifname "${bridge}" ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10 } drop
-          iifname "${bridge}" accept
-          oifname "${bridge}" ct state established,related accept
-        '';
+        # private ranges dropped so playground workloads cannot walk the lan.
+        # own table: extraForwardRules is only rendered with filterForward,
+        # which would also start filtering podman and netbird forwarding
+        networking.nftables.tables.talos-vm-forward = {
+          family = "inet";
+          content = ''
+            chain forward {
+              type filter hook forward priority filter; policy accept;
+              iifname "${bridge}" meta nfproto ipv6 drop
+              oifname "${bridge}" tcp dport { 6443, 50000 } accept
+              iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} udp dport 53 accept
+              iifname "${bridge}" ip daddr ${builtins.head config.networking.nameservers} tcp dport 53 accept
+              iifname "${bridge}" ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10 } drop
+              iifname "${bridge}" accept
+              oifname "${bridge}" ct state established,related accept
+              oifname "${bridge}" drop
+            }
+          '';
+        };
 
         systemd.services.talos-vm = {
           description = "talos kubernetes playground vm";
