@@ -6,7 +6,8 @@ _: {
       settings."*" = {
         AddKeysToAgent = "no";
         ControlMaster = "auto";
-        ControlPath = "/tmp/ssh-%u-%r@%h:%p";
+        # not /tmp: another uid could pre-create the socket and act as the master
+        ControlPath = "~/.ssh/cm-%C";
         ControlPersist = "10m";
         ServerAliveInterval = 60;
         ServerAliveCountMax = 3;
