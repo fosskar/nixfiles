@@ -178,9 +178,12 @@
 
         # --- caddy ---
 
-        # no proxy-auth - audiobookshelf has built-in auth
+        # no proxy-auth - audiobookshelf has built-in auth. its login rate limit
+        # keys on X-Client-IP before X-Forwarded-For, so caddy must set it
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
-          reverse_proxy ${listenUrl}
+          reverse_proxy ${listenUrl} {
+            header_up X-Client-IP {remote_host}
+          }
         '';
 
         # --- backup ---
