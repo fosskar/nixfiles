@@ -96,7 +96,7 @@
               {
                 "HP Printer" = {
                   href = "http://192.168.10.153";
-                  icon = "mdi-printer";
+                  icon = "hp.svg";
                 };
               }
             ];

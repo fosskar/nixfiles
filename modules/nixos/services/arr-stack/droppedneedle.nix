@@ -178,7 +178,7 @@
               {
                 "DroppedNeedle" = {
                   href = "https://${localHost}";
-                  icon = "mdi-record-player";
+                  icon = "https://${localHost}/logo_icon.png";
                   siteMonitor = listenUrl;
                 };
               }
