@@ -13,6 +13,8 @@ _: {
       Match User simon
         AllowAgentForwarding yes
         AllowTcpForwarding yes
+        # remote tcp listens stay off; PermitListen does not apply to socket paths
+        PermitListen none
     '';
 
     # simon's yubikey pubkeys (same shared generator as modules/nixos/hardware/yubikey/gpg-ssh.nix)
