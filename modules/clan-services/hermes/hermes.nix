@@ -420,10 +420,13 @@
                     };
                   };
 
-                  # the desktop tunnel is a -L forward; the key's permitopen limits the target
+                  # the desktop tunnel is a -L forward; the key's permitopen limits the
+                  # tcp target only, so unix-socket forwards are switched off here
                   services.openssh.extraConfig = lib.mkIf settings.dashboard.enable ''
                     Match User ${sshUser}
                       AllowTcpForwarding local
+                      AllowStreamLocalForwarding no
+                      PermitListen none
                   '';
 
                   clan.core.vars.generators."${instanceName}-dashboard" = lib.mkIf settings.dashboard.enable {
