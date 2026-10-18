@@ -497,7 +497,7 @@ _: {
                 # runs on the hub machine, as the machine tiles do
                 services.caddy.virtualHosts."home.${flake-self.domains.local}".extraConfig = ''
                   handle /machines.json {
-                    root * /run/beszel-homepage-machines
+                    root * /run/beszel-machines
                     file_server
                   }
                 '';
@@ -508,11 +508,14 @@ _: {
                   wants = [ "beszel-hub.service" ];
                   serviceConfig = {
                     Type = "oneshot";
-                    DynamicUser = true;
+                    # a static user: with DynamicUser a preserved RuntimeDirectory moves
+                    # under /run/private (0700), where caddy cannot reach it
+                    User = "beszel-homepage-machines";
+                    Group = "beszel-homepage-machines";
                     EnvironmentFile = config.clan.core.vars.generators.beszel-hub-superuser.files.env.path;
                     ExecStart = beszelHomepageMachinesScript;
                     # caddy reads the export, so the directory and file are world-readable
-                    RuntimeDirectory = "beszel-homepage-machines";
+                    RuntimeDirectory = "beszel-machines";
                     RuntimeDirectoryMode = "0755";
                     RuntimeDirectoryPreserve = "yes";
                     PrivateTmp = true;
@@ -521,6 +524,12 @@ _: {
                     NoNewPrivileges = true;
                   };
                 };
+
+                users.users.beszel-homepage-machines = {
+                  isSystemUser = true;
+                  group = "beszel-homepage-machines";
+                };
+                users.groups.beszel-homepage-machines = { };
 
                 systemd.timers.beszel-homepage-machines = {
                   wantedBy = [ "timers.target" ];
