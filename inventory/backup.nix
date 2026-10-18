@@ -14,6 +14,10 @@ _: {
           snapshotType = "btrfs";
           folders = [ "/persist" ];
         };
+        "ha-green".settings = {
+          snapshotType = "btrfs";
+          folders = [ "/persist" ];
+        };
         "nixbox".settings = {
           snapshotType = "zfs";
           folders = [
@@ -112,6 +116,15 @@ _: {
                 destinations = {
                   "storagebox" = {
                     repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./nixbox";
+                  };
+                };
+              };
+              "ha-green".settings = {
+                startAt = "*-*-* 06:00:00";
+                inherit exclude;
+                destinations = {
+                  "storagebox" = {
+                    repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./ha-green";
                   };
                 };
               };
