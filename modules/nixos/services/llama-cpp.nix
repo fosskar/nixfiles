@@ -4,6 +4,7 @@ in
 {
   flake.modules.nixos.llamaCpp =
     {
+      config,
       flake-self,
       lib,
       pkgs,
@@ -271,8 +272,18 @@ in
         }
       ];
 
+      # the openai api stays open to lan clients (hermes calls /v1 from its vm);
+      # the web ui and the model management routes (/models downloads, load,
+      # unload) need an authelia login
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        reverse_proxy ${listenUrl}
+        @api path /v1/* /health
+        handle @api {
+          reverse_proxy ${listenUrl}
+        }
+        handle {
+          ${lib.optionalString (config.services.authelia.instances.main.enable or false) "import authelia"}
+          reverse_proxy ${listenUrl}
+        }
       '';
     };
 
