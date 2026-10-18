@@ -34,8 +34,11 @@
           }
           { "NixOS".tab = "Bookmarks"; }
           { "Home Manager".tab = "Bookmarks"; }
-          { "DNS Management".tab = "Bookmarks"; }
           { "Clan".tab = "Bookmarks"; }
+          { "Code".tab = "Bookmarks"; }
+          { "Community".tab = "Bookmarks"; }
+          { "DNS Management".tab = "Bookmarks"; }
+          { "Hosting".tab = "Bookmarks"; }
         ];
 
         # tiles the cross-host collector can't provide: external non-NixOS devices and local-only endpoints
@@ -198,6 +201,74 @@
                   }
                 ];
               }
+              {
+                "Clan Forge" = [
+                  {
+                    icon = "gitea.svg";
+                    href = "https://git.clan.lol";
+                  }
+                ];
+              }
+            ];
+          }
+          {
+            "Code" = [
+              {
+                "GitHub" = [
+                  {
+                    icon = "github.svg";
+                    href = "https://github.com";
+                  }
+                ];
+              }
+              {
+                "Tangled" = [
+                  {
+                    icon = "mdi-source-branch";
+                    href = "https://tangled.org";
+                  }
+                ];
+              }
+              {
+                "geninf" = [
+                  {
+                    icon = "gitea.svg";
+                    href = "https://git.geninf.io";
+                  }
+                ];
+              }
+            ];
+          }
+          {
+            "Community" = [
+              {
+                "personal.computer" = [
+                  {
+                    icon = "discourse.svg";
+                    href = "https://personal.computer/";
+                  }
+                ];
+              }
+              {
+                "Radicle Zulip" = [
+                  {
+                    icon = "zulip.svg";
+                    href = "https://radicle.zulipchat.com/";
+                  }
+                ];
+              }
+            ];
+          }
+          {
+            "Hosting" = [
+              {
+                "Hetzner" = [
+                  {
+                    icon = "hetzner.svg";
+                    href = "https://accounts.hetzner.com";
+                  }
+                ];
+              }
             ];
           }
         ];
@@ -226,6 +297,57 @@
         # every override is anchored on an id to win without !important. groups
         # listed in settings.layout render under #layout-groups, the rest under
         # #services / #bookmarks
+        # accent switcher: the nixlens accents (nixlens web/src/lib/prefs.ts),
+        # stored per browser and placed where homepage's color toggle sits
+        customJS = ''
+          (() => {
+            const ACCENTS = {
+              teal: ["#16a085", "#1abc9c"],
+              blue: ["#3b6fd4", "#6796e6"],
+              amber: ["#b7862a", "#c79a3a"],
+              violet: ["#8e5bb5", "#c586c0"],
+            };
+            const KEY = "homepage.accent";
+            let current = localStorage.getItem(KEY);
+            if (!(current in ACCENTS)) current = "teal";
+            const apply = () => {
+              const [a, b] = ACCENTS[current];
+              document.documentElement.style.setProperty("--accent", a);
+              document.documentElement.style.setProperty("--accent-2", b);
+            };
+            apply();
+            const mount = () => {
+              const style = document.getElementById("style");
+              if (!style || style.querySelector(".accent-switch")) return;
+              const box = document.createElement("div");
+              box.className = "accent-switch";
+              box.setAttribute("role", "radiogroup");
+              box.setAttribute("aria-label", "accent colour");
+              for (const [name, [a, b]] of Object.entries(ACCENTS)) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.title = name;
+                button.setAttribute("role", "radio");
+                button.setAttribute("aria-label", name);
+                button.setAttribute("aria-checked", String(name === current));
+                button.style.setProperty("--a", a);
+                button.style.setProperty("--b", b);
+                button.addEventListener("click", () => {
+                  current = name;
+                  localStorage.setItem(KEY, name);
+                  apply();
+                  for (const other of box.children)
+                    other.setAttribute("aria-checked", String(other.title === name));
+                });
+                box.append(button);
+              }
+              style.prepend(box);
+            };
+            new MutationObserver(mount).observe(document.body, { childList: true, subtree: true });
+            mount();
+          })();
+        '';
+
         customCSS = ''
           :root {
             --glass-bg: rgba(255, 255, 255, 0.055);
@@ -234,6 +356,9 @@
             --glass-border-hover: rgba(255, 255, 255, 0.24);
             --glass-radius: 18px;
             --glass-radius-sm: 12px;
+            /* the accent switcher (customJS below) overrides these per browser */
+            --accent: #16a085;
+            --accent-2: #1abc9c;
           }
 
           /* the theme's sans on machines that have it; phones fall back to
@@ -245,10 +370,10 @@
 
           #page_wrapper {
             background:
-              radial-gradient(1200px 600px at 8% -10%, rgba(20, 184, 166, 0.30), transparent 60%),
-              radial-gradient(900px 500px at 100% 10%, rgba(6, 182, 212, 0.22), transparent 60%),
-              radial-gradient(800px 500px at 50% 110%, rgba(16, 185, 129, 0.20), transparent 60%),
-              linear-gradient(180deg, #06171a 0%, #0b1f24 100%);
+              radial-gradient(1200px 600px at 8% -10%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 60%),
+              radial-gradient(900px 500px at 100% 10%, color-mix(in srgb, var(--accent-2) 22%, transparent), transparent 60%),
+              radial-gradient(800px 500px at 50% 110%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 60%),
+              linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, #04090b) 0%, color-mix(in srgb, var(--accent) 8%, #081013) 100%);
           }
 
           /* drifting blobs behind the cards so backdrop-blur has something to blur */
@@ -268,12 +393,12 @@
           #page_wrapper::before {
             top: -20vw;
             left: -15vw;
-            background: #14b8a6;
+            background: var(--accent);
           }
           #page_wrapper::after {
             right: -20vw;
             bottom: -25vw;
-            background: #10b981;
+            background: var(--accent-2);
             animation-delay: -14s;
           }
           @keyframes glass-drift {
@@ -380,7 +505,7 @@
             width: 4.5rem;
             height: 4.5rem;
             border-radius: 14px;
-            background: linear-gradient(180deg, rgba(16, 44, 48, 0.78), rgba(7, 24, 27, 0.78));
+            background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, rgba(10, 26, 29, 0.8)), color-mix(in srgb, var(--accent) 6%, rgba(5, 14, 16, 0.8)));
             border: 1px solid rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(12px) saturate(150%);
             -webkit-backdrop-filter: blur(12px) saturate(150%);
@@ -648,7 +773,7 @@
           }
           #page_wrapper .information-widget-form input:focus {
             border-color: var(--glass-border-hover);
-            box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.28);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 28%, transparent);
           }
           #page_wrapper .information-widget-form button {
             border-radius: 999px;
@@ -690,6 +815,52 @@
             padding: 0;
           }
 
+          /* bookmark groups: homepage gives them a sixth of the row from xl, so
+             a seventh group wrapped alone; a quarter that grows fills the rows */
+          @media (min-width: 768px) {
+            #layout-groups > .bookmark-group {
+              flex: 1 1 25%;
+            }
+          }
+
+          /* footer: homepage's revalidate button rebuilds from the config files;
+             nix deploys restart homepage, so only the accent switcher stays */
+          #style > :not(.accent-switch) {
+            display: none;
+          }
+          #style .accent-switch {
+            display: inline-flex;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+          }
+          #style .accent-switch button {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--a), var(--b));
+            cursor: pointer;
+            transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+          }
+          #style .accent-switch button[aria-checked="true"] {
+            box-shadow:
+              0 0 0 2px rgba(6, 16, 18, 0.9),
+              0 0 0 3.5px rgba(255, 255, 255, 0.75);
+          }
+          #style .accent-switch button:active {
+            transform: scale(0.9);
+          }
+          #style .accent-switch button:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.6);
+            outline-offset: 3px;
+          }
+
           /* phones: the absolutely placed clock would overlap the search bar,
              and the phone shows the time itself */
           @media (max-width: 640px) {
@@ -715,7 +886,7 @@
             overflow: hidden;
             border-radius: var(--glass-radius);
             border: 1px solid var(--glass-border);
-            background: rgba(10, 32, 36, 0.78);
+            background: color-mix(in srgb, var(--accent) 10%, rgba(6, 16, 18, 0.8));
             backdrop-filter: blur(20px) saturate(150%);
             -webkit-backdrop-filter: blur(20px) saturate(150%);
             box-shadow:
@@ -748,7 +919,7 @@
           button.fixed.rounded-full.sm\:hidden {
             padding: 0.85rem;
             border: 1px solid var(--glass-border);
-            background: rgba(10, 32, 36, 0.78);
+            background: color-mix(in srgb, var(--accent) 10%, rgba(6, 16, 18, 0.8));
             backdrop-filter: blur(16px) saturate(150%);
             -webkit-backdrop-filter: blur(16px) saturate(150%);
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);

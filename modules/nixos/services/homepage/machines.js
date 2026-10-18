@@ -6,7 +6,13 @@
 (() => {
   const ROOT_ID = "machines-view";
   const REFRESH_MS = 30000;
-  const PALETTE = ["#2dd4bf", "#38bdf8", "#a78bfa", "#f472b6", "#94a3b8"];
+  const PALETTE = [
+    "var(--accent-2)",
+    "#38bdf8",
+    "#a78bfa",
+    "#f472b6",
+    "#94a3b8",
+  ];
   const ADDRESSES = window.homepageMachineAddresses || {};
   let data = null;
   let error = null;
