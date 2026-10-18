@@ -53,7 +53,11 @@
         input = "self";
       };
       roles = {
-        builder.machines."nixworker" = { };
+        # aarch64 through binfmt emulation (boot.binfmt.emulatedSystems on nixworker)
+        builder.machines."nixworker".settings.systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
         # service no-ops client config on builder machines
         client.tags = [ "all" ];
       };
