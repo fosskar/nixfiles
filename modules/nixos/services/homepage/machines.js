@@ -1,5 +1,5 @@
 // machines tab: renders /machines.json (homepage-beszel-export.service) as one
-// card per machine; a click opens that machine's storage below its row. it
+// card per machine; a click opens that machine's details below its row. it
 // mounts into the "machines" group, whose plain tiles stay as the fallback
 (() => {
   const ROOT_ID = "machines-view";
@@ -65,7 +65,12 @@
   const meter = (k, v) =>
     `<div class="mv-meter"><span class="k">${k}</span><div class="mv-bar"><i class="${lvl(v)}" style="width:${Math.min(v ?? 0, 100)}%"></i></div><span class="v ${lvl(v)}">${pct(v)}</span></div>`;
   const poolsOf = (m) => data.pools.filter((p) => p.system === m.name);
-  const drivesOf = (m) => data.drives.filter((d) => d.system === m.name);
+  const natural = (a, b) =>
+    a.localeCompare(b, "en", { numeric: true, sensitivity: "base" });
+  const drivesOf = (m) =>
+    data.drives
+      .filter((d) => d.system === m.name)
+      .sort((a, b) => natural(a.name, b.name));
 
   function card(m, sel) {
     const down = m.status !== "up";
@@ -144,7 +149,21 @@
       <div class="mv-big"><b>${bytes(used)}</b><span>of ${bytes(total)}${p.kind === "zfs" ? " usable" : ""} · ${Math.round((used / total) * 100)}% used${p.kind === "zfs" ? ` · ${bytes(p.alloc)} of ${bytes(p.size)} raw` : ""}</span></div>
       <div class="mv-seg">${segs.map(([, v, c]) => `<i style="width:${(v / total) * 100}%;background:${c}"></i>`).join("")}</div>
       ${p.kind === "zfs" ? `<div class="mv-legend">${segs.map(([n, v, c]) => `<span style="--c:${c}">${esc(n)} ${bytes(v)}</span>`).join("")}<span style="--c:rgba(255,255,255,.12)">free ${bytes(total - used)}</span></div>` : ""}
-      <div class="mv-layout">${groups.map((g) => `<div class="mv-vgroup"><div class="mv-bays">${g.bays.map((b) => `<i class="mv-bay ${b}"></i>`).join("")}</div><small>${esc(g.name)}</small></div>`).join("")}</div></div>`;
+      <div class="mv-layout">${groups.map((g) => `<div class="mv-vgroup"><div class="mv-bays">${g.bays.map((b) => `<i class="mv-bay ${b}"></i>`).join("")}</div><small>${esc(g.name)}</small></div>`).join("")}</div>
+      ${datasets(p, total)}</div>`;
+  }
+
+  // every dataset below the pool root, indented by depth; used includes children
+  function datasets(p, total) {
+    if (p.kind !== "zfs") return "";
+    const rows = p.datasets
+      .filter((d) => d.name !== p.name)
+      .sort((a, b) => natural(a.name, b.name))
+      .map((d) => {
+        const depth = d.name.split("/").length - 2;
+        return `<span class="n" style="--d:${depth}">${esc(d.name.split("/").pop())}</span><div class="mv-bar"><i style="width:${Math.max((d.used / total) * 100, 0.5)}%"></i></div><span class="s">${bytes(d.used)}</span>`;
+      });
+    return rows.length ? `<div class="mv-tree">${rows.join("")}</div>` : "";
   }
 
   // filesystems beszel reports outside zfs_pools: the root filesystem of
@@ -154,26 +173,122 @@
     return `<div class="mv-fs"><div class="mv-ph"><h3>${esc(name)}</h3><span class="mv-meta">${bytes(f.used)} / ${bytes(f.size)}</span></div><div class="mv-big"><b>${pct(v)}</b><span>used</span></div><div class="mv-bar"><i class="${lvl(v)}" style="width:${v}%"></i></div></div>`;
   }
 
+  const panel = (title, body, wide) =>
+    `<div class="mv-panel ${wide ? "wide" : ""}"><h3>${esc(title)}</h3>${body}</div>`;
+  const kv = (rows) =>
+    `<div class="mv-kv">${rows
+      .filter(([, v]) => v)
+      .map(([k, v]) => `<span>${esc(k)}</span><span>${esc(v)}</span>`)
+      .join("")}</div>`;
+  const rate = (b) => `${bytes(b)}/s`;
+
+  function systemPanel(m) {
+    const mem = m.memTotal
+      ? `${bytes(m.memUsed)} of ${bytes(m.memTotal)}${m.memZfsArc ? ` · zfs arc ${bytes(m.memZfsArc)}` : ""}${m.memBuffCache ? ` · cache ${bytes(m.memBuffCache)}` : ""}`
+      : "";
+    return panel(
+      "System",
+      kv([
+        ["os", short(m.os)],
+        ["kernel", m.kernel],
+        [
+          "cpu",
+          [short(m.cpuModel), m.cores && `${m.cores} cores`]
+            .filter(Boolean)
+            .join(" · "),
+        ],
+        ["uptime", uptime(m.uptime)],
+        ["load", (m.load || []).join(" · ")],
+        ["memory", mem],
+        ["swap", m.swap ? `${bytes(m.swapUsed)} of ${bytes(m.swap)}` : ""],
+      ]),
+    );
+  }
+
+  function cpuPanel(m) {
+    const cores = (m.cpuCores || [])
+      .map(
+        (v) =>
+          `<i class="${lvl(v)}" style="height:${Math.max(v, 2)}%" title="${v}%"></i>`,
+      )
+      .join("");
+    const [user, system, iowait, steal] = m.cpuBreakdown || [];
+    const split = [
+      ["user", user],
+      ["system", system],
+      ["iowait", iowait],
+      ["steal", steal],
+    ]
+      .filter(([, v]) => v != null)
+      .map(([k, v]) => `<span>${k} ${v.toFixed(1)}%</span>`)
+      .join("");
+    return panel(
+      "CPU",
+      `${meter("total", m.cpu)}${cores ? `<div class="mv-cores">${cores}</div>` : ""}${split ? `<div class="mv-split">${split}</div>` : ""}`,
+    );
+  }
+
+  function gpuPanel(m, g) {
+    const t = (m.temps || {})[g.name];
+    // amd adds gtt (system memory the gpu may map) to its vram; intel xe
+    // exposes no memory to beszel
+    const mem = g.memTotal
+      ? `${meter("memory", (g.memUsed / g.memTotal) * 100)}<div class="mv-meta">${bytes(g.memUsed * 1048576)} of ${bytes(g.memTotal * 1048576)}${/amd/i.test(g.name) ? " · includes shared system memory (gtt)" : ""}</div>`
+      : `<div class="mv-meta">memory not reported</div>`;
+    return panel(
+      g.name,
+      `${meter("usage", g.usage)}${mem}${kv([
+        ["power", g.power ? `${g.power.toFixed(1)} W` : ""],
+        ["temp", t != null ? `${Math.round(t)} °C` : ""],
+      ])}`,
+    );
+  }
+
+  function tempsPanel(m) {
+    const rows = Object.entries(m.temps || {})
+      .sort((a, b) => b[1] - a[1])
+      .map(
+        ([k, v]) =>
+          `<span title="${esc(k)}">${esc(k.replace(/_/g, " "))}</span><span class="v ${lvl(v)}">${Math.round(v)} °C</span>`,
+      );
+    return rows.length
+      ? panel("Temperatures", `<div class="mv-kv temps">${rows.join("")}</div>`)
+      : "";
+  }
+
+  function netPanel(m) {
+    const rows = (m.net || [])
+      .sort((a, b) => natural(a.name, b.name))
+      .map(
+        (n) =>
+          `<span>${esc(n.name)}</span><span>↑ ${rate(n.up)} · ↓ ${rate(n.down)}</span><span class="mv-meta">${bytes(n.totalUp)} / ${bytes(n.totalDown)}</span>`,
+      );
+    return rows.length
+      ? panel("Network", `<div class="mv-net">${rows.join("")}</div>`)
+      : "";
+  }
+
   function detail(m) {
     const pools = poolsOf(m),
       drives = drivesOf(m);
-    const gpu = (m.gpus || [])
-      .map(
-        (g) =>
-          `${g.name} · ${(g.memUsed / 1024).toFixed(1)} of ${(g.memTotal / 1024).toFixed(1)} GB vram`,
-      )
-      .join(" · ");
     const filesystems = [
       ...(!pools.length && m.rootFs ? [fs("root filesystem", m.rootFs)] : []),
       ...(m.extraFs || []).map((e) => fs(e.name, e)),
     ];
-    const body =
+    const panels = [
+      systemPanel(m),
+      cpuPanel(m),
+      ...(m.gpus || []).map((g) => gpuPanel(m, g)),
+      tempsPanel(m),
+      netPanel(m),
+    ].join("");
+    const storage =
       (pools.length
         ? `<div class="mv-pools ${pools.length === 1 ? "one" : ""}">${pools.map(pool).join("")}</div>`
         : "") +
-        (filesystems.length
-          ? `<div class="mv-fss">${filesystems.join("")}</div>`
-          : "") || `<div class="mv-meta">no filesystems reported</div>`;
+      (filesystems.length
+        ? `<div class="mv-fss">${filesystems.join("")}</div>`
+        : "");
     const table = drives.length
       ? `<div class="mv-drives"><span class="h">drive</span><span class="h">model</span><span class="h">size</span><span class="h">smart</span><span class="h">temp</span><span class="h">hours</span>${drives
           .map(
@@ -182,7 +297,10 @@
           )
           .join("")}</div>`
       : "";
-    return `<div class="mv-detail"><div class="mv-dh">${icon(m.name)}<b>${esc(m.name)} storage</b><span class="mv-meta">load ${(m.load || []).join(" ")}${gpu ? ` · ${esc(gpu)}` : ""}</span></div>${body}${table}</div>`;
+    return `<div class="mv-detail"><div class="mv-dh">${icon(m.name)}<b>${esc(m.name)}</b><span class="mv-chip ok">up ${uptime(m.uptime)}</span></div>
+      <div class="mv-panels">${panels}</div>
+      ${storage ? `<h3 class="mv-sec">Storage</h3>${storage}` : ""}
+      ${table ? `<h3 class="mv-sec">Drives</h3>${table}` : ""}</div>`;
   }
 
   function render() {

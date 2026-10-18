@@ -379,6 +379,110 @@
 #machines-view .mv-fs .mv-big b {
   font-size: 26px;
 }
+#machines-view .mv-sec {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--mv-muted);
+}
+#machines-view .mv-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+#machines-view .mv-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: var(--glass-radius);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+#machines-view .mv-panel h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--mv-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#machines-view .mv-kv {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 14px;
+  font-size: 12.5px;
+}
+#machines-view .mv-kv > span:nth-child(odd) {
+  color: var(--mv-dim);
+}
+/* long sensor names (gpu models) truncate instead of squeezing the values */
+#machines-view .mv-kv.temps {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+#machines-view .mv-kv.temps > span:nth-child(odd) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#machines-view .mv-kv.temps > span:nth-child(even) {
+  text-align: right;
+  white-space: nowrap;
+}
+#machines-view .mv-cores {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 36px;
+}
+#machines-view .mv-cores i {
+  flex: 1;
+  min-width: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--mv-fill);
+  opacity: 0.85;
+}
+#machines-view .mv-cores i.warn {
+  background: var(--mv-warn);
+}
+#machines-view .mv-cores i.danger {
+  background: var(--mv-danger);
+}
+#machines-view .mv-split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 12px;
+  color: var(--mv-dim);
+}
+#machines-view .mv-net {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 14px;
+  font-size: 12.5px;
+}
+#machines-view .mv-net > .mv-meta {
+  grid-column: 2;
+  margin-bottom: 4px;
+}
+#machines-view .mv-tree {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(60px, 1.4fr) auto;
+  gap: 5px 14px;
+  align-items: center;
+  font-size: 12.5px;
+}
+#machines-view .mv-tree .n {
+  padding-left: calc(var(--d) * 14px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#machines-view .mv-tree .s {
+  text-align: right;
+  color: var(--mv-muted);
+}
 #machines-view .mv-drives {
   display: grid;
   grid-template-columns: 4.5rem minmax(0, 1fr) auto auto auto auto;

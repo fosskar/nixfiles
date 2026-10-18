@@ -25,8 +25,17 @@
           # system_stats sizes are GiB; convert to bytes like the pool sizes
           rootFs: (if $x.d then { size: ($x.d * 1073741824), used: ($x.du * 1073741824) } else null end),
           extraFs: [ ($x.efs // { }) | to_entries[] | { name: .key, size: (.value.d * 1073741824), used: (.value.du * 1073741824) } ],
+          # memory sizes are GiB, gpu memory MiB, network bytes and bytes/s
+          memUsed: (($x.mu // 0) * 1073741824),
+          memBuffCache: (($x.mb // 0) * 1073741824),
+          memZfsArc: (($x.mz // 0) * 1073741824),
+          swap: (($x.s // 0) * 1073741824),
+          swapUsed: (($x.su // 0) * 1073741824),
+          cpuBreakdown: ($x.cpub // [ ]),
+          cpuCores: ($x.cpus // [ ]),
+          net: [ ($x.ni // { }) | to_entries[] | { name: .key, up: .value[0], down: .value[1], totalUp: .value[2], totalDown: .value[3] } ],
           temps: ($x.t // { }),
-          gpus: [ ($x.g // { })[] | { name: .n, memUsed: .mu, memTotal: .mt } ]
+          gpus: [ ($x.g // { })[] | { name: .n, memUsed: (.mu // 0), memTotal: (.mt // 0), usage: (.u // 0), power: (.p // 0) } ]
         }
     ],
     pools: [
