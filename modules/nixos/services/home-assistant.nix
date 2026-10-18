@@ -1,6 +1,12 @@
+let
+  port = 8123;
+in
 {
   flake.modules.nixos.homeAssistant =
-    { pkgs, ... }:
+    { flake-self, pkgs, ... }:
+    let
+      localHost = "ha.${flake-self.domains.local}";
+    in
     {
       services.home-assistant = {
         enable = true;
@@ -50,7 +56,12 @@
           scene = "!include scenes.yaml";
           http = {
             use_x_forwarded_for = true;
-            trusted_proxies = [ "127.0.0.1" ];
+            # caddy on nixbox (${localHost}) and the netbird proxy (public domain)
+            trusted_proxies = [
+              "127.0.0.1"
+              flake-self.hosts.nixbox.lan
+              "100.64.0.0/10"
+            ];
           };
           homeassistant.allowlist_external_urls = [ "https://pangolin.simonoscar.me" ];
         };
@@ -64,6 +75,40 @@
       ];
 
       # lan clients and the srv network (router rule srv_homeassistant) reach the frontend directly
-      networking.firewall.allowedTCPPorts = [ 8123 ];
+      networking.firewall.allowedTCPPorts = [ port ];
+
+      services.homepage-dashboard.services = [
+        {
+          "apps" = [
+            {
+              "Home Assistant" = {
+                href = "https://${localHost}";
+                icon = "home-assistant.svg";
+                siteMonitor = "https://${localHost}";
+              };
+            }
+          ];
+        }
+      ];
+
+      services.gatus.settings.endpoints = [
+        {
+          name = "home assistant";
+          url = "https://${localHost}/";
+          enabled = true;
+          alerts = [ { type = "matrix"; } ];
+          interval = "5m";
+          conditions = [ "[STATUS] == 200" ];
+        }
+      ];
+    };
+
+  # caddy runs on nixbox; the router lets the srv network reach home assistant (srv_homeassistant)
+  flake.modules.nixos.homeAssistantProxy =
+    { flake-self, ... }:
+    {
+      services.caddy.virtualHosts."ha.${flake-self.domains.local}".extraConfig = ''
+        reverse_proxy http://${flake-self.hosts.ha-green.lan}:${toString port}
+      '';
     };
 }

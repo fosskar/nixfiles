@@ -101,17 +101,6 @@
               }
             ];
           }
-          {
-            "apps" = [
-              {
-                "Home Assistant" = {
-                  href = "http://homeassistant.lan:8123";
-                  icon = "home-assistant.svg";
-                  siteMonitor = "http://homeassistant.lan:8123";
-                };
-              }
-            ];
-          }
         ];
 
         bookmarks = [

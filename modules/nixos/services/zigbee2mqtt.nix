@@ -1,6 +1,11 @@
 {
   flake.modules.nixos.zigbee2mqtt =
-    { config, pkgs, ... }:
+    {
+      config,
+      flake-self,
+      pkgs,
+      ...
+    }:
     let
       cfg = config.services.zigbee2mqtt;
       frontendPort = 8099;
@@ -62,5 +67,19 @@
       ];
 
       networking.firewall.allowedTCPPorts = [ frontendPort ];
+
+      # lan only: the router does not let nixbox (srv) reach this port, so no siteMonitor
+      services.homepage-dashboard.services = [
+        {
+          "apps" = [
+            {
+              "Zigbee2MQTT" = {
+                href = "http://${flake-self.hosts.${config.networking.hostName}.lan}:${toString frontendPort}";
+                icon = "zigbee2mqtt.svg";
+              };
+            }
+          ];
+        }
+      ];
     };
 }
