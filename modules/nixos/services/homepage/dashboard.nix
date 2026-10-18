@@ -318,6 +318,12 @@
             };
             apply();
             const mount = () => {
+              // the search widget has no placeholder option; homepage's i18n says "Search…"
+              const search = document.querySelector(".information-widget-search input");
+              if (search && search.placeholder !== "Web search…") {
+                search.placeholder = "Web search…";
+                search.setAttribute("aria-label", "Web search");
+              }
               const tabs = document.getElementById("tabs");
               if (!tabs || tabs.querySelector(".accent-menu")) return;
               const menu = document.createElement("div");
