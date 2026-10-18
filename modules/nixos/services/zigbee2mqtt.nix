@@ -37,21 +37,14 @@
       services.zigbee2mqtt = {
         enable = true;
         settings = {
+          # without it zigbee2mqtt migrates the regenerated file on every start
           version = 5;
           mqtt = {
-            server = "mqtt://localhost:1883";
             user = "addons";
             password = "!secret password";
           };
-          serial = {
-            adapter = "ember";
-            baudrate = 115200;
-            rtscts = false;
-          };
-          advanced = {
-            log_level = "info";
-            network_key = "!secret network_key";
-          };
+          serial.adapter = "ember";
+          advanced.network_key = "!secret network_key";
           frontend = {
             enabled = true;
             port = frontendPort;

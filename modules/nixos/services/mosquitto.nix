@@ -45,7 +45,6 @@
         enable = true;
         listeners = [
           {
-            port = 1883;
             users = {
               homeassistant = user "homeassistant";
               addons = user "addons";
