@@ -65,7 +65,7 @@ modules all read from it. this table is a derived copy; update `hosts.nix` first
 | machine   | IP               | method                               |
 | --------- | ---------------- | ------------------------------------ |
 | desktop   | `192.168.10.100` | NixOS static, no DHCP                |
-| ha-green  | `192.168.10.50`  | DHCP, static lease on the router     |
+| ha-green  | `192.168.10.50`  | NixOS static, no DHCP                |
 | lpt-titan | `192.168.10.150` | NixOS static + DHCP (roaming laptop) |
 | nixbox    | `192.168.20.200` | NixOS static, no DHCP                |
 | nixworker | `192.168.20.210` | NixOS static, no DHCP                |

@@ -1,11 +1,12 @@
-{ self, ... }:
+{ self, nflib, ... }:
 {
   imports = [
     self.modules.nixos.haGreen
     self.modules.nixos.homeAssistant
     self.modules.nixos.mosquitto
     self.modules.nixos.zigbee2mqtt
-  ];
+  ]
+  ++ (nflib.scanPaths ./. { });
 
   system.etc.overlay.mutable = false;
 
