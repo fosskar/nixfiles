@@ -333,8 +333,8 @@ in
                     (action: {
                       inherit action;
                       data = {
-                        title = "Open the windows";
-                        message = "{{ (${rooms}) | join(', ') }}: the outdoor air is drier than the room.";
+                        title = "Time to air out";
+                        message = "Humid air in {{ (${rooms}) | join(', ') }}";
                       };
                     })
                     [
