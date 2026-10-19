@@ -166,11 +166,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792279268,
-        "narHash": "sha256-Iy2d/EJi5c5BuRknJYRh+qBGvQuOwTIvevfu/kFijwY=",
-        "rev": "0c299b8fb20b777c5bb15ca8ee22773fcb7bd0c5",
+        "lastModified": 1792440388,
+        "narHash": "sha256-mQhIpAHZl2wrkr6uZoniBXVAtGz9WRdYrHcJq8yuGw4=",
+        "rev": "84e9447064526349479592cc5a6bb067e3388485",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-community/archive/0c299b8fb20b777c5bb15ca8ee22773fcb7bd0c5.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-community/archive/84e9447064526349479592cc5a6bb067e3388485.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792164638,
-        "narHash": "sha256-4ww31MrF1uy3L8NU7EqS18gKgpFC4AjneYg5agiClxE=",
+        "lastModified": 1792417923,
+        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       }
     },
