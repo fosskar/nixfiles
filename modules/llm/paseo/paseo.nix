@@ -33,11 +33,35 @@ in
       ];
     };
 
-  # listens on 127.0.0.1:6767 (upstream default); the desktop app reaches it
-  # through its remote ssh transport as "ssh://workspace". relay stays
+  flake.modules.nixos.paseoServer = {
+    clan.core.vars.generators.paseo-server = {
+      files."paseo.env" = {
+        owner = "simon";
+        group = "users";
+      };
+      prompts.password = {
+        type = "hidden";
+        persist = true;
+        description = "password for direct connections to the paseo daemon";
+      };
+      script = ''
+        printf 'PASEO_PASSWORD=%s\n' "$(cat "$prompts/password")" > "$out/paseo.env"
+      '';
+    };
+  };
+
+  # binds 0.0.0.0:6767 for direct clients over the netbird mesh; the port
+  # stays out of the nixos firewall, which never sees netbird traffic. the
+  # password from nixos.paseoServer gates every non-local client. relay stays
   # switchable in the app because no PASEO_RELAY_ENABLED override is set
   flake.modules.homeManager.paseoServer =
-    { inputs, pkgs, ... }:
+    {
+      inputs,
+      osConfig,
+      pkgs,
+      self,
+      ...
+    }:
     let
       paseo = paseoFor { inherit inputs pkgs; };
     in
@@ -54,7 +78,11 @@ in
           Environment = [
             "PATH=/run/wrappers/bin:/etc/profiles/per-user/%u/bin:/run/current-system/sw/bin"
             "PASEO_NODE_ENV=production"
+            "PASEO_LISTEN=0.0.0.0:6767"
+            # literal ips pass the host check by default; names must be listed
+            "PASEO_HOSTNAMES=${osConfig.networking.hostName}.nb.${self.domains.public}"
           ];
+          EnvironmentFile = osConfig.clan.core.vars.generators.paseo-server.files."paseo.env".path;
           Restart = "on-failure";
           RestartSec = 5;
           # the daemon finishes its own shutdown within 10s of SIGTERM

@@ -13,6 +13,7 @@ in
 {
   imports = [
     self.modules.nixos.llm
+    self.modules.nixos.paseoServer
     self.modules.nixos.workspaceHost
   ];
 
