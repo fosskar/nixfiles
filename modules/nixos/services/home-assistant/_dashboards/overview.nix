@@ -171,10 +171,10 @@ let
       builtins.concatStringsSep ", " (
         map (room: "('${room.name}', 'binary_sensor.${room.id}_ventilate')") rooms
       )
-    }] %}{% if is_state(entity, 'on') %}{% set ns.vent = ns.vent + [name | lower] %}{% endif %}{% endfor %}
+    }] %}{% if is_state(entity, 'on') %}{% set ns.vent = ns.vent + [name] %}{% endif %}{% endfor %}
     {{ 'All lights are off' if lit == 0 else lit ~ (' light is' if lit == 1 else ' lights are') ~ ' on' }}.
     It is {{ (temps | sum / temps | count) | round(1) if temps else '?' }} °C inside and {{ states('sensor.openweathermap_temperature') }} °C outside, {{ states('weather.forecast_home') | replace('partlycloudy', 'partly cloudy') | replace('-', ' ') }}.
-    {% if ns.vent %}**Open the window in the {{ ns.vent | join(' and ') }}**: the outside air is drier.{% endif %}
+    {% if ns.vent %}**Time to air out:** {{ ns.vent | join(', ') }}{% endif %}
     {% if is_state('${vacuum}', 'cleaning') %}The Roborock is cleaning.{% endif %}
   '';
 

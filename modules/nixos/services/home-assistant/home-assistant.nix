@@ -296,7 +296,7 @@ in
               in
               {
                 id = "ventilation_notify";
-                alias = "ventilation - notify when airing dries a room";
+                alias = "ventilation - time to air out";
                 description = "push to all phones when a room's ventilate sensor turns on; quiet 22:00-08:00";
                 # the 08:00 trigger reports rooms that turned on during the quiet hours
                 triggers =

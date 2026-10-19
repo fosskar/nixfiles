@@ -148,7 +148,7 @@ in
                     "{% if is_state('binary_sensor.${room.id}_ventilate', 'on') %}<ha-icon icon=\"mdi:window-open-variant\"></ha-icon> **${room.name}**: open windows{% else %}<ha-icon icon=\"mdi:window-closed-variant\"></ha-icon> **${room.name}**: keep closed{% endif %} ({{ states('sensor.${room.id}_absolute_humidity') }} g/m³)\n"
                   ) rooms
                 )}
-                Outside: {{ states('sensor.outdoor_absolute_humidity') }} g/m³. Airing dries a room when the outdoor air holds at least 1 g/m³ less water.
+                Outside: {{ states('sensor.outdoor_absolute_humidity') }} g/m³
               '';
             }
           ];
