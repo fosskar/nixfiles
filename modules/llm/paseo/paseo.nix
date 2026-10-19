@@ -81,6 +81,9 @@ in
             "PASEO_LISTEN=0.0.0.0:6767"
             # literal ips pass the host check by default; names must be listed
             "PASEO_HOSTNAMES=${osConfig.networking.hostName}.nb.${self.domains.public}"
+            # agents run without a shell, so the fish shellInit of workspaceHost never sets these
+            "SSH_AUTH_SOCK=%t/ssh-agent.sock"
+            "BROWSER=remote-open"
           ];
           EnvironmentFile = osConfig.clan.core.vars.generators.paseo-server.files."paseo.env".path;
           Restart = "on-failure";
