@@ -92,8 +92,6 @@ in
             client_id = "home-assistant";
             discovery_url = "https://auth.${flake-self.domains.public}/.well-known/openid-configuration";
             display_name = "Authelia";
-            # FIXME: one-time migration of existing users to oidc; remove after first login
-            features.automatic_user_linking = true;
             # the component defaults to the authentik group "admins"
             roles = {
               admin = "admin";
