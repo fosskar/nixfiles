@@ -38,6 +38,9 @@
           "**/sops/secrets/*"
           "vars/*"
           "**/vars/*"
+          # sops-encrypted; let sops own the layout
+          "secrets.yaml"
+          "**/secrets.yaml"
         ];
         settings.formatter.nixf-diagnose = {
           command = pkgs.nixf-diagnose;
