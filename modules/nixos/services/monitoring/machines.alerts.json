@@ -551,7 +551,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "max by(machine, host, component) (reboot_required)",
+              "expr": "max by(machine, host, component, booted, current) (reboot_required)",
               "instant": true,
               "interval": "",
               "intervalMs": 15000,
@@ -605,7 +605,7 @@
         "for": "1h",
         "annotations": {
           "summary": "{{ $labels.machine }} needs a reboot",
-          "description": "The deployed {{ $labels.component }} differs from the one the machine booted with, so the running system still uses the old one. Compare with: readlink /run/booted-system/{{ $labels.component }} /run/current-system/{{ $labels.component }}"
+          "description": "The deployed {{ $labels.component }} differs from the one the machine booted with, so the running system still uses the old one. Booted: {{ $labels.booted }}. Deployed: {{ $labels.current }}."
         },
         "isPaused": false,
         "notification_settings": {

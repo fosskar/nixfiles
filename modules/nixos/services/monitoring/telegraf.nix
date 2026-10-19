@@ -37,10 +37,30 @@
 
       # a switch cannot replace the running kernel or its loaded modules (nvidia included)
       rebootRequired = pkgs.writeShellScript "reboot-required" ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.coreutils
+            pkgs.findutils
+            pkgs.gnused
+          ]
+        }
+        # store package names of a component; an aggregated module tree links to nvidia, zfs, ...
+        packages() {
+          { readlink "$1"; find -H "$1" -type l -printf '%l\n'; } |
+            sed -E 's|^/nix/store/[a-z0-9]{32}-([^/]+).*|\1|' | sort -u
+        }
+        # influx tag value: space separated and escaped, never empty
+        tag() { paste -sd' ' | sed -e 's/^$/none/' -e 's/ /\\ /g'; }
         for component in kernel kernel-modules; do
-          booted=$(${pkgs.coreutils}/bin/readlink /run/booted-system/$component)
-          current=$(${pkgs.coreutils}/bin/readlink /run/current-system/$component)
-          echo "reboot,component=$component required=$([ "$booted" = "$current" ] && echo 0 || echo 1)i"
+          booted=/run/booted-system/$component
+          current=/run/current-system/$component
+          if [ "$(readlink "$booted")" = "$(readlink "$current")" ]; then
+            echo "reboot,component=$component required=0i"
+          else
+            b=$(comm -23 <(packages "$booted") <(packages "$current") | tag)
+            c=$(comm -13 <(packages "$booted") <(packages "$current") | tag)
+            echo "reboot,component=$component,booted=$b,current=$c required=1i"
+          fi
         done
       '';
 
