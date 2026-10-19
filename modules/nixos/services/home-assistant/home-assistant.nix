@@ -89,7 +89,6 @@ in
 
         customLovelaceModules = [
           pkgs.home-assistant-custom-lovelace-modules.bubble-card
-          pkgs.home-assistant-custom-lovelace-modules.clock-weather-card
           pkgs.home-assistant-custom-lovelace-modules.mini-graph-card
           pkgs.home-assistant-custom-lovelace-modules.xiaomi-vacuum-map-card
         ];

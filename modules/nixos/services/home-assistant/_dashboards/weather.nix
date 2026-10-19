@@ -71,11 +71,7 @@ in
             ]
             ++ [
               {
-                type = "custom:clock-weather-card";
-                entity = "weather.forecast_home";
-              }
-              {
-                show_current = false;
+                show_current = true;
                 show_forecast = true;
                 type = "weather-forecast";
                 entity = "weather.forecast_home";
@@ -83,14 +79,6 @@ in
                 secondary_info_attribute = "humidity";
                 forecast_slots = 12;
                 name = "Hamburg";
-              }
-              {
-                show_current = false;
-                show_forecast = true;
-                type = "weather-forecast";
-                entity = "weather.forecast_home";
-                forecast_type = "daily";
-                forecast_slots = 7;
               }
               {
                 type = "horizontal-stack";
@@ -112,15 +100,6 @@ in
                   (tile "sensor.openweathermap_uv_index" "UV Index" "mdi:sun-wireless" "purple")
                   (tile "sensor.openweathermap_dew_point" "Dew Point" "mdi:water-thermometer" "teal")
                   (tile "sensor.openweathermap_visibility" "Visibility" "mdi:eye" "grey")
-                ];
-              }
-              {
-                type = "horizontal-stack";
-                cards = [
-                  (tile "sensor.sun_next_dawn" "Dawn" "mdi:weather-sunset-up" "amber")
-                  (tile "sensor.sun_next_rising" "Sunrise" "mdi:weather-sunny" "yellow")
-                  (tile "sensor.sun_next_setting" "Sunset" "mdi:weather-sunset-down" "deep-orange")
-                  (tile "sensor.sun_next_dusk" "Dusk" "mdi:weather-night" "indigo")
                 ];
               }
               {
@@ -146,6 +125,29 @@ in
                 show = graphShow // {
                   graph = "bar";
                 };
+              }
+              {
+                # dwd sends x-frame-options sameorigin; rainviewer allows embedding
+                type = "iframe";
+                url = "https://www.rainviewer.com/map.html?loc=53.55,9.99,8&oAP=1&oC=1&oCS=1&oFa=0&oU=0&oF=0&sm=1&sn=1&c=3&o=83";
+                aspect_ratio = "45%";
+              }
+              {
+                show_current = false;
+                show_forecast = true;
+                type = "weather-forecast";
+                entity = "weather.forecast_home";
+                forecast_type = "daily";
+                forecast_slots = 7;
+              }
+              {
+                type = "horizontal-stack";
+                cards = [
+                  (tile "sensor.sun_next_dawn" "Dawn" "mdi:weather-sunset-up" "amber")
+                  (tile "sensor.sun_next_rising" "Sunrise" "mdi:weather-sunny" "yellow")
+                  (tile "sensor.sun_next_setting" "Sunset" "mdi:weather-sunset-down" "deep-orange")
+                  (tile "sensor.sun_next_dusk" "Dusk" "mdi:weather-night" "indigo")
+                ];
               }
               {
                 type = "horizontal-stack";
