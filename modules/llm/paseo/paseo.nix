@@ -24,11 +24,32 @@ let
         "paseo-help"
         "paseo-plugin"
       ] (name: "${root}/skills/${name}/SKILL.md");
+      # the daemon copies its skills into ~/.agents, ~/.claude and ~/.codex at
+      # every start and fails on the symlinks above; an empty custom selection
+      # turns that off. config.json stays daemon-writable, so merge the key in
+      disableSkillSync = ''
+        if [[ ! -v DRY_RUN ]]; then
+          paseoConfig="$HOME/.paseo/config.json"
+          (
+            umask 077
+            mkdir -p "$HOME/.paseo"
+            [ -e "$paseoConfig" ] || echo '{"version":1}' > "$paseoConfig"
+            ${lib.getExe pkgs.jq} '.agents.skills.selection = {mode: "custom", skills: []}' \
+              "$paseoConfig" > "$paseoConfig.tmp"
+            mv "$paseoConfig.tmp" "$paseoConfig"
+          )
+        fi
+      '';
     };
 in
 {
   flake.modules.homeManager.paseoDesktop =
-    { inputs, pkgs, ... }:
+    {
+      inputs,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       paseo = paseoFor { inherit inputs pkgs; };
     in
@@ -39,13 +60,21 @@ in
       ];
 
       llm.externalSkills = paseo.skills;
+      home.activation.paseoSkillSelection = lib.hm.dag.entryAfter [
+        "writeBoundary"
+      ] paseo.disableSkillSync;
     };
 
   # listens on 127.0.0.1:6767 (upstream default); the desktop app reaches it
   # through its ssh transport, e.g. host "workspace-t3". relay stays
   # switchable in the app because no PASEO_RELAY_ENABLED override is set
   flake.modules.homeManager.paseoServer =
-    { inputs, pkgs, ... }:
+    {
+      inputs,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       paseo = paseoFor { inherit inputs pkgs; };
     in
@@ -53,6 +82,9 @@ in
       home.packages = [ paseo.cli ];
 
       llm.externalSkills = paseo.skills;
+      home.activation.paseoSkillSelection = lib.hm.dag.entryAfter [
+        "writeBoundary"
+      ] paseo.disableSkillSync;
 
       systemd.user.services.paseo-server = {
         Unit.Description = "Paseo daemon";
