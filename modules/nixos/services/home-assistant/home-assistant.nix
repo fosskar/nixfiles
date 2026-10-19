@@ -14,6 +14,14 @@ in
       localHost = "ha.${flake-self.domains.local}";
       configDir = config.services.home-assistant.configDir;
       yaml = pkgs.formats.yaml { };
+      # id -> temperature and humidity sensor prefix; feeds the ventilation hint on the climate dashboard
+      humidityPlaces = {
+        outdoor = "sensor.openweathermap";
+        living_room = "sensor.temperature_and_humidity_sensor_aqara_living_room";
+        bedroom = "sensor.temperature_and_humidity_sensor_aqara_bed_room";
+        office = "sensor.temperature_and_humidity_sensor_aqara_office";
+      };
+      title = id: lib.concatMapStringsSep " " lib.toSentenceCase (lib.splitString "_" id);
       # url path -> dashboard; contents in ./_dashboards
       dashboards = {
         dashboard-home = {
@@ -25,6 +33,11 @@ in
           title = "RoboClean";
           icon = "mdi:robot-mower";
           file = ./_dashboards/roboclean.nix;
+        };
+        dashboard-climate = {
+          title = "Climate";
+          icon = "mdi:home-thermometer";
+          file = ./_dashboards/climate.nix;
         };
         dashboard-weather = {
           title = "Weather";
@@ -106,6 +119,34 @@ in
               filename = "dashboards/${name}.yaml";
             }
           ) dashboards;
+          template = [
+            {
+              # magnus formula: water vapour in g/m³ from temperature and relative humidity
+              sensor = lib.mapAttrsToList (id: prefix: {
+                name = "${title id} Absolute Humidity";
+                unique_id = "${id}_absolute_humidity";
+                default_entity_id = "sensor.${id}_absolute_humidity";
+                device_class = "absolute_humidity";
+                state_class = "measurement";
+                unit_of_measurement = "g/m³";
+                availability = "{{ has_value('${prefix}_temperature') and has_value('${prefix}_humidity') }}";
+                state = ''
+                  {% set t = states('${prefix}_temperature') | float %}
+                  {% set rh = states('${prefix}_humidity') | float %}
+                  {{ (6.112 * e ** (17.67 * t / (t + 243.5)) * rh * 2.1674 / (273.15 + t)) | round(1) }}
+                '';
+              }) humidityPlaces;
+              # opening the windows dries a room when the outdoor air holds at least 1 g/m³ less water
+              binary_sensor = lib.mapAttrsToList (id: _: {
+                name = "${title id} Ventilate";
+                unique_id = "${id}_ventilate";
+                default_entity_id = "binary_sensor.${id}_ventilate";
+                icon = "mdi:window-open-variant";
+                availability = "{{ has_value('sensor.outdoor_absolute_humidity') and has_value('sensor.${id}_absolute_humidity') }}";
+                state = "{{ states('sensor.outdoor_absolute_humidity') | float < states('sensor.${id}_absolute_humidity') | float - 1 }}";
+              }) (removeAttrs humidityPlaces [ "outdoor" ]);
+            }
+          ];
           automation = [
             {
               id = "hue_dimmer_hue_button_plug";
