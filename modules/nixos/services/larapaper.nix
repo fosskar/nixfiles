@@ -162,6 +162,9 @@
             "pm.max_spare_servers" = 4;
             # keep the systemd environment, including APP_KEY
             "clear_env" = "no";
+            # LOG_CHANNEL=stderr; without this php-fpm drops render errors
+            "catch_workers_output" = "yes";
+            "decorate_workers_output" = "no";
           };
         };
         systemd.services.phpfpm-larapaper = {
