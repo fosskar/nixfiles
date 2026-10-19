@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792164638,
-        "narHash": "sha256-4ww31MrF1uy3L8NU7EqS18gKgpFC4AjneYg5agiClxE=",
+        "lastModified": 1792417923,
+        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       }
     },
@@ -1234,11 +1234,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792347896,
-        "narHash": "sha256-Ty1wTxDluBqvNUyogrgKz+Bq0ur8RQl1FQ1ZEo3QyCs=",
+        "lastModified": 1792436598,
+        "narHash": "sha256-UbkKiq/ifhvJfdzXWwZpH8FthECKFMebZFrhup7ptus=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "aa0aa81ad2432ca63634d49bb5380f5db2114888",
+        "rev": "d9bcdc437c4a65686da8f5647f3dca9d963ece9d",
         "type": "github"
       },
       "original": {
