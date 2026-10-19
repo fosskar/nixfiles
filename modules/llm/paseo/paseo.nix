@@ -15,41 +15,14 @@ let
         export NODE_PATH=${root}/node_modules
         exec ${node} ${root}/packages/cli/dist/index.js "$@"
       '';
-      # skills/ of getpaseo/paseo at the packaged tag; they drive the paseo cli
-      skills = lib.genAttrs [
-        "paseo"
-        "paseo-advisor"
-        "paseo-committee"
-        "paseo-handoff"
-        "paseo-help"
-        "paseo-plugin"
-      ] (name: "${root}/skills/${name}/SKILL.md");
-      # the daemon copies its skills into ~/.agents, ~/.claude and ~/.codex at
-      # every start and fails on the symlinks above; an empty custom selection
-      # turns that off. config.json stays daemon-writable, so merge the key in
-      disableSkillSync = ''
-        if [[ ! -v DRY_RUN ]]; then
-          paseoConfig="$HOME/.paseo/config.json"
-          (
-            umask 077
-            mkdir -p "$HOME/.paseo"
-            [ -e "$paseoConfig" ] || echo '{"version":1}' > "$paseoConfig"
-            ${lib.getExe pkgs.jq} '.agents.skills.selection = {mode: "custom", skills: []}' \
-              "$paseoConfig" > "$paseoConfig.tmp"
-            mv "$paseoConfig.tmp" "$paseoConfig"
-          )
-        fi
-      '';
     };
 in
 {
+  # no llm.externalSkills: each daemon (the desktop app's and paseo-server)
+  # copies its bundled skills into ~/.agents, ~/.claude and ~/.codex at
+  # start, selectable in the app, and refuses to write through symlinks
   flake.modules.homeManager.paseoDesktop =
-    {
-      inputs,
-      lib,
-      pkgs,
-      ...
-    }:
+    { inputs, pkgs, ... }:
     let
       paseo = paseoFor { inherit inputs pkgs; };
     in
@@ -58,33 +31,18 @@ in
         paseo.desktop
         paseo.cli
       ];
-
-      llm.externalSkills = paseo.skills;
-      home.activation.paseoSkillSelection = lib.hm.dag.entryAfter [
-        "writeBoundary"
-      ] paseo.disableSkillSync;
     };
 
   # listens on 127.0.0.1:6767 (upstream default); the desktop app reaches it
-  # through its ssh transport, e.g. host "workspace-t3". relay stays
+  # through its remote ssh transport as "ssh://workspace". relay stays
   # switchable in the app because no PASEO_RELAY_ENABLED override is set
   flake.modules.homeManager.paseoServer =
-    {
-      inputs,
-      lib,
-      pkgs,
-      ...
-    }:
+    { inputs, pkgs, ... }:
     let
       paseo = paseoFor { inherit inputs pkgs; };
     in
     {
       home.packages = [ paseo.cli ];
-
-      llm.externalSkills = paseo.skills;
-      home.activation.paseoSkillSelection = lib.hm.dag.entryAfter [
-        "writeBoundary"
-      ] paseo.disableSkillSync;
 
       systemd.user.services.paseo-server = {
         Unit.Description = "Paseo daemon";
