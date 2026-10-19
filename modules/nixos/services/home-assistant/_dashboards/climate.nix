@@ -96,7 +96,7 @@ let
       (
         graph
         // {
-          name = "Temperature";
+          name = "${room.name} temperature";
           decimals = 1;
           entities = [ "${room.sensor}_temperature" ];
           color_thresholds = temperatureThresholds;
@@ -105,7 +105,7 @@ let
       (
         graph
         // {
-          name = "Humidity";
+          name = "${room.name} humidity";
           decimals = 0;
           entities = [ "${room.sensor}_humidity" ];
           color_thresholds = humidityThresholds;
@@ -113,8 +113,9 @@ let
       )
       {
         type = "statistics-graph";
-        title = "Daily temperature";
+        title = "${room.name}, daily min / mean / max";
         entities = [ "${room.sensor}_temperature" ];
+        hide_legend = true;
         stat_types = [
           "min"
           "mean"
@@ -147,19 +148,24 @@ in
             }
             {
               type = "markdown";
+              # binary_sensor.<room>_ventilate turns on at a gap of 1 g/m³ (template in home-assistant.nix)
               content = ''
-                Outdoor air: **{{ states('sensor.outdoor_absolute_humidity') }} g/m³**
+                Airing a room dries it only when the outdoor air carries less water than the indoor air. Relative humidity (%) cannot tell you that, because warm air holds more water than cold air. The numbers below are grams of water per m³ of air.
 
+                | | Water in air | Advice |
+                |---|---|---|
+                | Outdoor | {{ states('sensor.outdoor_absolute_humidity') }} g/m³ | |
                 ${builtins.concatStringsSep "\n" (
-                  map (room: ''
-                    {% if is_state('binary_sensor.${room.id}_ventilate', 'on') %}<ha-icon icon="mdi:window-open-variant"></ha-icon> **${room.name}**: open the windows{% else %}**${room.name}**: keep closed{% endif %} ({{ states('sensor.${room.id}_absolute_humidity') }} g/m³)
-                  '') rooms
+                  map (
+                    room:
+                    "| ${room.name} | {{ states('sensor.${room.id}_absolute_humidity') }} g/m³ | {% set gap = (states('sensor.${room.id}_absolute_humidity') | float(0) - states('sensor.outdoor_absolute_humidity') | float(0)) | round(1) %}{% if is_state('binary_sensor.${room.id}_ventilate', 'on') %}**open the windows**: outdoor air is {{ gap }} g/m³ drier{% else %}keep closed: outdoor air is not at least 1 g/m³ drier{% endif %} |"
+                  ) rooms
                 )}
               '';
             }
             {
               type = "custom:mini-graph-card";
-              name = "Absolute humidity";
+              name = "Water in the air (g/m³), 24 h";
               hours_to_show = 24;
               points_per_hour = 2;
               line_width = 2;
@@ -169,19 +175,23 @@ in
                 map (room: {
                   entity = "sensor.${room.id}_absolute_humidity";
                   inherit (room) name color;
+                  show_legend_state = true;
                 }) rooms
                 ++ [
                   {
                     entity = "sensor.outdoor_absolute_humidity";
                     name = "Outdoor";
                     color = "#bdbdbd";
+                    show_legend_state = true;
                   }
                 ];
               show = {
                 icon = false;
+                state = false;
                 fill = false;
                 legend = true;
                 labels = true;
+                labels_secondary = true;
               };
             }
           ];
@@ -197,7 +207,9 @@ in
             }
             {
               type = "custom:mini-graph-card";
-              name = "Temperature, 48 h";
+              name = "Temperature, 48 h (outdoor on the right axis)";
+              # mini-graph-card sets no grid size and defaults to half of the two-column section
+              grid_options.columns = "full";
               hours_to_show = 48;
               points_per_hour = 2;
               line_width = 2;
@@ -207,19 +219,25 @@ in
                 map (room: {
                   entity = "${room.sensor}_temperature";
                   inherit (room) name color;
+                  show_legend_state = true;
                 }) rooms
                 ++ [
                   {
                     entity = "sensor.openweathermap_temperature";
                     name = "Outdoor";
                     color = "#bdbdbd";
+                    show_legend_state = true;
+                    # own scale, so the 15 °C gap does not flatten the indoor lines
+                    y_axis = "secondary";
                   }
                 ];
               show = {
                 icon = false;
+                state = false;
                 fill = false;
                 legend = true;
                 labels = true;
+                labels_secondary = true;
               };
             }
           ];
