@@ -24,6 +24,11 @@ in
       title = id: lib.concatMapStringsSep " " lib.toSentenceCase (lib.splitString "_" id);
       # url path -> dashboard; contents in ./_dashboards
       dashboards = {
+        dashboard-overview = {
+          title = "Overview";
+          icon = "mdi:home";
+          file = ./_dashboards/overview.nix;
+        };
         dashboard-home = {
           title = "Home-Server";
           icon = "mdi:server";
@@ -146,6 +151,40 @@ in
               }) (removeAttrs humidityPlaces [ "outdoor" ]);
             }
           ];
+          # quick actions on the overview dashboard
+          script = {
+            leaving = {
+              alias = "Leaving";
+              icon = "mdi:door-open";
+              sequence = [
+                {
+                  action = "light.turn_off";
+                  target.entity_id = "all";
+                }
+                {
+                  action = "vacuum.start";
+                  target.entity_id = "vacuum.roborock_qv_35a";
+                }
+              ];
+            };
+            pause_adguard = {
+              alias = "Pause AdGuard for 10 minutes";
+              icon = "mdi:timer-pause-outline";
+              # a second tap restarts the 10 minutes
+              mode = "restart";
+              sequence = [
+                {
+                  action = "switch.turn_off";
+                  target.entity_id = "switch.adguard_home_protection";
+                }
+                { delay.minutes = 10; }
+                {
+                  action = "switch.turn_on";
+                  target.entity_id = "switch.adguard_home_protection";
+                }
+              ];
+            };
+          };
           automation = [
             {
               id = "hue_dimmer_hue_button_plug";
