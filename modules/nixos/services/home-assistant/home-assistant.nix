@@ -95,6 +95,7 @@ in
         customLovelaceModules = [
           pkgs.home-assistant-custom-lovelace-modules.bubble-card
           pkgs.home-assistant-custom-lovelace-modules.mini-graph-card
+          pkgs.home-assistant-custom-lovelace-modules.weather-radar-card
           pkgs.home-assistant-custom-lovelace-modules.xiaomi-vacuum-map-card
         ];
 
@@ -213,17 +214,6 @@ in
                     high = "{{ daily['weather.forecast_home'].forecast[0].temperature }}";
                     low = "{{ daily['weather.forecast_home'].forecast[0].templow }}";
                   };
-                }
-              ];
-            }
-            {
-              # the query string changes every 5 minutes so the image entity fetches the new animation
-              image = [
-                {
-                  name = "DWD Radar";
-                  unique_id = "dwd_radar";
-                  default_entity_id = "image.dwd_radar";
-                  url = "https://www.dwd.de/DWD/wetter/radar/radfilm_shh_akt.gif?t={{ (now().timestamp() // 300) | int }}";
                 }
               ];
             }

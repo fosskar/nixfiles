@@ -109,46 +109,35 @@ in
                 ];
               }
               {
-                # the radar gif is square; at full panel width it fills the whole screen
+                type = "custom:weather-radar-card";
+                data_source = "DWD";
+                past_minutes = 60;
+                # dwd nowcast; refetch it so forecast frames do not go stale
+                forecast_minutes = 120;
+                forecast_refresh_minutes = 15;
+                zoom_level = 8;
+                height = "450px";
+                # the mouse wheel scrolls the dashboard; zoom with the buttons
+                disable_wheel_zoom = true;
+                show_zoom = true;
+                show_playback = true;
+                smooth_animation = true;
+              }
+              {
+                show_current = false;
+                show_forecast = true;
+                type = "weather-forecast";
+                entity = "weather.forecast_home";
+                forecast_type = "daily";
+                forecast_slots = 7;
+              }
+              {
                 type = "horizontal-stack";
                 cards = [
-                  {
-                    type = "vertical-stack";
-                    cards = [
-                      {
-                        show_current = false;
-                        show_forecast = true;
-                        type = "weather-forecast";
-                        entity = "weather.forecast_home";
-                        forecast_type = "daily";
-                        forecast_slots = 7;
-                      }
-                      {
-                        type = "horizontal-stack";
-                        cards = [
-                          (tile "sensor.sun_next_dawn" "Dawn" "mdi:weather-sunset-up" "amber")
-                          (tile "sensor.sun_next_rising" "Sunrise" "mdi:weather-sunny" "yellow")
-                        ];
-                      }
-                      {
-                        type = "horizontal-stack";
-                        cards = [
-                          (tile "sensor.sun_next_setting" "Sunset" "mdi:weather-sunset-down" "deep-orange")
-                          (tile "sensor.sun_next_dusk" "Dusk" "mdi:weather-night" "indigo")
-                        ];
-                      }
-                    ];
-                  }
-                  {
-                    # an image, not an iframe: the mouse wheel scrolls the page instead of zooming a map
-                    type = "picture-entity";
-                    entity = "image.dwd_radar";
-                    show_name = false;
-                    show_state = false;
-                    tap_action = {
-                      action = "none";
-                    };
-                  }
+                  (tile "sensor.sun_next_dawn" "Dawn" "mdi:weather-sunset-up" "amber")
+                  (tile "sensor.sun_next_rising" "Sunrise" "mdi:weather-sunny" "yellow")
+                  (tile "sensor.sun_next_setting" "Sunset" "mdi:weather-sunset-down" "deep-orange")
+                  (tile "sensor.sun_next_dusk" "Dusk" "mdi:weather-night" "indigo")
                 ];
               }
               {
