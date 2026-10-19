@@ -78,48 +78,56 @@
               };
             }
             {
-              type = "custom:entity-progress-card";
+              type = "tile";
               entity = "sensor.roborock_qv_35a_main_brush_time_left";
               name = "Main Brush";
-              bar_size = "small";
-              layout = "horizontal";
-              theme = "optimal_when_high";
+              icon = "mdi:brush";
+              color = "teal";
+              tap_action = {
+                action = "more-info";
+              };
               grid_options = {
                 columns = 3;
                 rows = 1;
               };
             }
             {
-              type = "custom:entity-progress-card";
+              type = "tile";
               entity = "sensor.roborock_qv_35a_side_brush_time_left";
               name = "Side Brush";
-              bar_size = "small";
-              layout = "horizontal";
-              theme = "optimal_when_high";
+              icon = "mdi:brush";
+              color = "teal";
+              tap_action = {
+                action = "more-info";
+              };
               grid_options = {
                 columns = 3;
                 rows = 1;
               };
             }
             {
-              type = "custom:entity-progress-card";
+              type = "tile";
               entity = "sensor.roborock_qv_35a_filter_time_left";
               name = "Filter";
-              bar_size = "small";
-              layout = "horizontal";
-              theme = "optimal_when_high";
+              icon = "mdi:air-filter";
+              color = "teal";
+              tap_action = {
+                action = "more-info";
+              };
               grid_options = {
                 columns = 3;
                 rows = 1;
               };
             }
             {
-              type = "custom:entity-progress-card";
+              type = "tile";
               entity = "sensor.roborock_qv_35a_sensor_time_left";
               name = "Sensors";
-              bar_size = "small";
-              layout = "horizontal";
-              theme = "optimal_when_high";
+              icon = "mdi:eye-outline";
+              color = "teal";
+              tap_action = {
+                action = "more-info";
+              };
               grid_options = {
                 columns = 3;
                 rows = 1;
