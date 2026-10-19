@@ -174,7 +174,7 @@ let
     }] %}{% if is_state(entity, 'on') %}{% set ns.vent = ns.vent + [name] %}{% endif %}{% endfor %}
     {{ 'All lights are off' if lit == 0 else lit ~ (' light is' if lit == 1 else ' lights are') ~ ' on' }}.
     It is {{ (temps | sum / temps | count) | round(1) if temps else '?' }} °C inside and {{ states('sensor.openweathermap_temperature') }} °C outside, {{ states('weather.forecast_home') | replace('partlycloudy', 'partly cloudy') | replace('-', ' ') }}.
-    {% if ns.vent %}**Time to air out:** {{ ns.vent | join(', ') }}{% endif %}
+    {% if ns.vent %}**Let some fresh air in:** {{ ns.vent | join(', ') }}{% endif %}
     {% if is_state('${vacuum}', 'cleaning') %}The Roborock is cleaning.{% endif %}
   '';
 

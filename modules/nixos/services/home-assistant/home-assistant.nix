@@ -296,7 +296,7 @@ in
               in
               {
                 id = "ventilation_notify";
-                alias = "ventilation - time to air out";
+                alias = "ventilation - let some fresh air in";
                 description = "push to all phones when a room's ventilate sensor turns on; quiet 22:00-08:00";
                 # the 08:00 trigger reports rooms that turned on during the quiet hours
                 triggers =
@@ -333,7 +333,7 @@ in
                     (action: {
                       inherit action;
                       data = {
-                        title = "Time to air out";
+                        title = "Let some fresh air in";
                         message = "Humid air in {{ (${rooms}) | join(', ') }}";
                       };
                     })
