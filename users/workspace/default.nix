@@ -33,7 +33,6 @@ in
         self.modules.homeManager.jujutsu
         self.modules.homeManager.k8s
         self.modules.homeManager.llm
-        self.modules.homeManager.orcaServer
         self.modules.homeManager.paseoServer
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
@@ -74,7 +73,7 @@ in
       '';
 
       # own key instead of the forwarded yubikey agent, so pushes and signing
-      # work without an attached client (orca mobile). a private key path
+      # work without an attached client (e.g. mobile). a private key path
       # makes git and jj sign from the file, not the agent
       programs.git.signing.key = workspaceSshKey;
       programs.jujutsu.settings.signing.key = workspaceSshKey;
