@@ -71,66 +71,52 @@ in
             ]
             ++ [
               {
-                show_current = true;
+                # the markdown sanitizer keeps <font size>, the only way to get a large number in a core card
+                type = "markdown";
+                content = ''
+                  <font size="7">{{ state_attr('weather.forecast_home', 'temperature') }} °C</font>
+
+                  ## {{ state_translated('weather.forecast_home') }}
+                  Feels like {{ states('sensor.openweathermap_feels_like_temperature') | round(1) }} °C · High {{ state_attr('sensor.rain_outlook', 'high') }} °C · Low {{ state_attr('sensor.rain_outlook', 'low') }} °C
+
+                  <ha-alert alert-type="{{ 'success' if is_state('sensor.rain_outlook', 'No rain in the next 12 hours') else 'info' }}">{{ states('sensor.rain_outlook') }}</ha-alert>
+                '';
+              }
+              {
+                show_current = false;
                 show_forecast = true;
                 type = "weather-forecast";
                 entity = "weather.forecast_home";
                 forecast_type = "hourly";
-                secondary_info_attribute = "humidity";
                 forecast_slots = 12;
-                name = "Hamburg";
               }
               {
                 type = "horizontal-stack";
                 cards = [
-                  (tile "sensor.openweathermap_temperature" "Temperature" "mdi:thermometer" "red")
-                  (tile "sensor.openweathermap_feels_like_temperature" "Feels Like" "mdi:thermometer-lines" "orange")
                   (tile "sensor.openweathermap_humidity" "Humidity" "mdi:water-percent" "blue")
                   (tile "sensor.openweathermap_wind_speed" "Wind" "mdi:weather-windy" "cyan")
-                  (tile "sensor.openweathermap_pressure" "Pressure" "mdi:gauge" "grey")
-                  (tile "sensor.openweathermap_cloud_coverage" "Clouds" "mdi:cloud" "grey")
+                  (tile "sensor.openweathermap_wind_gust" "Gusts" "mdi:weather-windy-variant" "cyan")
+                  (tile "sensor.openweathermap_wind_bearing" "Wind Direction" "mdi:compass-outline" "cyan")
                 ];
               }
               {
                 type = "horizontal-stack";
                 cards = [
-                  (tile "sensor.openweathermap_wind_gust" "Gusts" "mdi:weather-windy-variant" "cyan")
-                  (tile "sensor.openweathermap_wind_bearing" "Wind Direction" "mdi:compass-outline" "cyan")
+                  (tile "sensor.openweathermap_pressure" "Pressure" "mdi:gauge" "grey")
+                  (tile "sensor.openweathermap_cloud_coverage" "Clouds" "mdi:cloud" "grey")
                   (tile "sensor.openweathermap_precipitation_kind" "Precipitation" "mdi:weather-pouring" "blue")
-                  (tile "sensor.openweathermap_uv_index" "UV Index" "mdi:sun-wireless" "purple")
-                  (tile "sensor.openweathermap_dew_point" "Dew Point" "mdi:water-thermometer" "teal")
                   (tile "sensor.openweathermap_visibility" "Visibility" "mdi:eye" "grey")
                 ];
               }
               {
-                type = "custom:mini-graph-card";
-                name = "Precipitation";
-                entities = [
-                  {
-                    entity = "sensor.openweathermap_rain";
-                    name = "Rain";
-                    color = "#42a5f5";
-                  }
-                  {
-                    entity = "sensor.openweathermap_snow";
-                    name = "Snow";
-                    color = "#e0e0e0";
-                  }
-                ];
-                hours_to_show = 24;
-                group_by = "hour";
-                aggregate_func = "max";
-                lower_bound = 0;
-                font_size = 75;
-                show = graphShow // {
-                  graph = "bar";
+                # an image, not an iframe: the mouse wheel scrolls the page instead of zooming a map
+                type = "picture-entity";
+                entity = "image.dwd_radar";
+                show_name = false;
+                show_state = false;
+                tap_action = {
+                  action = "none";
                 };
-              }
-              {
-                # dwd sends x-frame-options sameorigin; rainviewer allows embedding
-                type = "iframe";
-                url = "https://www.rainviewer.com/map.html?loc=53.55,9.99,8&oAP=1&oC=1&oCS=1&oFa=0&oU=0&oF=0&sm=1&sn=1&c=3&o=83";
-                aspect_ratio = "45%";
               }
               {
                 show_current = false;
@@ -162,9 +148,9 @@ in
                         color = "#ef5350";
                       }
                       {
-                        entity = "sensor.openweathermap_dew_point";
-                        name = "Dew Point";
-                        color = "#26a69a";
+                        entity = "sensor.openweathermap_feels_like_temperature";
+                        name = "Feels Like";
+                        color = "#ffa726";
                       }
                     ];
                     hours_to_show = 48;

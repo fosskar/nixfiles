@@ -150,6 +150,83 @@ in
                 state = "{{ states('sensor.outdoor_absolute_humidity') | float < states('sensor.${id}_absolute_humidity') | float - 1 }}";
               }) (removeAttrs humidityPlaces [ "outdoor" ]);
             }
+            {
+              # forecasts are no longer state attributes; fetch them for the weather dashboard
+              triggers = [
+                {
+                  trigger = "time_pattern";
+                  minutes = "/15";
+                }
+                {
+                  trigger = "homeassistant";
+                  event = "start";
+                }
+              ];
+              actions = [
+                {
+                  action = "weather.get_forecasts";
+                  target.entity_id = "weather.forecast_home";
+                  data.type = "hourly";
+                  response_variable = "hourly";
+                }
+                {
+                  action = "weather.get_forecasts";
+                  target.entity_id = "weather.forecast_home";
+                  data.type = "daily";
+                  response_variable = "daily";
+                }
+              ];
+              sensor = [
+                {
+                  name = "Rain Outlook";
+                  unique_id = "rain_outlook";
+                  default_entity_id = "sensor.rain_outlook";
+                  icon = "mdi:weather-rainy";
+                  state = ''
+                    {% set ns = namespace(start=none, stop=none, total=0, kind='Rain') %}
+                    {% for f in hourly['weather.forecast_home'].forecast[:12] %}
+                      {% set mm = f.precipitation | float(0) %}
+                      {% if mm >= 0.1 %}
+                        {% if ns.start is none %}
+                          {% set ns.start = f.datetime %}
+                          {% set ns.kind = 'Snow' if f.condition in ['snowy', 'snowy-rainy'] else 'Rain' %}
+                        {% endif %}
+                        {% if ns.stop is none %}{% set ns.total = ns.total + mm %}{% endif %}
+                      {% elif ns.start is not none and ns.stop is none %}
+                        {% set ns.stop = f.datetime %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if ns.start is none %}
+                      No rain in the next 12 hours
+                    {% else %}
+                      {% set start = as_datetime(ns.start) %}
+                      {% set amount = ns.total | round(1) ~ ' mm' %}
+                      {% if start <= now() %}
+                        {{ ns.kind }} {{ 'until ' ~ as_local(as_datetime(ns.stop)).strftime('%H:%M') if ns.stop else 'for the next 12 hours' }}, {{ amount }}
+                      {% else %}
+                        {% set hours = ((start - now()).total_seconds() / 3600) | round(0) | int %}
+                        {{ ns.kind }} from {{ as_local(start).strftime('%H:%M') }}, {{ 'in ' ~ hours ~ ' h' if hours >= 1 else 'within the hour' }}, {{ amount }}
+                      {% endif %}
+                    {% endif %}
+                  '';
+                  attributes = {
+                    high = "{{ daily['weather.forecast_home'].forecast[0].temperature }}";
+                    low = "{{ daily['weather.forecast_home'].forecast[0].templow }}";
+                  };
+                }
+              ];
+            }
+            {
+              # the query string changes every 5 minutes so the image entity fetches the new animation
+              image = [
+                {
+                  name = "DWD Radar";
+                  unique_id = "dwd_radar";
+                  default_entity_id = "image.dwd_radar";
+                  url = "https://www.dwd.de/DWD/wetter/radar/radfilm_shh_akt.gif?t={{ (now().timestamp() // 300) | int }}";
+                }
+              ];
+            }
           ];
           # quick actions on the overview dashboard
           script = {
