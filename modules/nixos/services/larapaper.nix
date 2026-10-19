@@ -206,7 +206,7 @@
 
         services.homepage-dashboard.services = [
           {
-            "tools" = [
+            "admin" = [
               {
                 "TRMNL" = {
                   href = "https://${localHost}";
