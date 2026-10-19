@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792164638,
-        "narHash": "sha256-4ww31MrF1uy3L8NU7EqS18gKgpFC4AjneYg5agiClxE=",
+        "lastModified": 1792417923,
+        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       }
     },
@@ -632,11 +632,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1792358298,
-        "narHash": "sha256-r3dG/0s+WKIBgH+NCdU1VPGNS1ELNp2XATLQal9eBB8=",
+        "lastModified": 1792443883,
+        "narHash": "sha256-M84koG8SXA+sv7lGsmhGhdZV88DqB0XSdxpaVvYIPVc=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "3752497cc4d214023f4736559a5f0e58621af9ff",
+        "rev": "cc6b1f299bd3a7c0309f003d97dc32014e71fa80",
         "type": "github"
       },
       "original": {
