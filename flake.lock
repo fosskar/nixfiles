@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792164638,
-        "narHash": "sha256-4ww31MrF1uy3L8NU7EqS18gKgpFC4AjneYg5agiClxE=",
+        "lastModified": 1792417923,
+        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       }
     },
@@ -1632,11 +1632,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792031322,
-        "narHash": "sha256-xgJCTlLNN+OOw3qP0SpsXvSAxLkLYYCW907Qdbpy6qE=",
+        "lastModified": 1792376985,
+        "narHash": "sha256-vztPjFw/YFlhKEOnCoMVbbN+XlmSdbTe4oXVvNxxClI=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "62d6e2b25c94a26f5fd7ef5a632e6a92d4b632cb",
+        "rev": "727975f5960b827f54065ec416fbf6d69bd283ab",
         "type": "github"
       },
       "original": {
