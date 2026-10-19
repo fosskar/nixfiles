@@ -55,6 +55,22 @@ let
     };
   };
 
+  # daily min, mean and max from long-term statistics
+  daily = title: entity: color: {
+    type = "statistics-graph";
+    inherit title;
+    entities = [ { inherit entity color; } ];
+    hide_legend = true;
+    stat_types = [
+      "min"
+      "mean"
+      "max"
+    ];
+    period = "day";
+    days_to_show = 14;
+    chart_type = "line";
+  };
+
   roomSection = room: {
     type = "grid";
     cards = [
@@ -87,20 +103,8 @@ let
           color_thresholds = humidityThresholds;
         }
       )
-      {
-        type = "statistics-graph";
-        title = "Temperature, 14 days";
-        entities = [ "${room.sensor}_temperature" ];
-        hide_legend = true;
-        stat_types = [
-          "min"
-          "mean"
-          "max"
-        ];
-        period = "day";
-        days_to_show = 14;
-        chart_type = "line";
-      }
+      (daily "Temperature, 14 days" "${room.sensor}_temperature" "#42a5f5")
+      (daily "Humidity, 14 days" "${room.sensor}_humidity" "#26a69a")
     ];
   };
 
