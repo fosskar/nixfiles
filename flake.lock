@@ -45,11 +45,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791988968,
-        "narHash": "sha256-zjp+URLqxGhHPSSj4vA+dzZBGNMbdK6AAXmI9buE6f4=",
+        "lastModified": 1791993346,
+        "narHash": "sha256-BtOKS6OTaI8gkyOhZp+68CTCXVnMhPjw5BlBNUHWmTU=",
         "owner": "fosskar",
         "repo": "ai-tells-lint",
-        "rev": "2d9d6e864cc7434f7a5101c3f41bb43b3ed0880f",
+        "rev": "b90552dfa91cf471b8e6b73f71e304003ad5dead",
         "type": "github"
       },
       "original": {
@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792164638,
-        "narHash": "sha256-4ww31MrF1uy3L8NU7EqS18gKgpFC4AjneYg5agiClxE=",
+        "lastModified": 1792417923,
+        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       }
     },
