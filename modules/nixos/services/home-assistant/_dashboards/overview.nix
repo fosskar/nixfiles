@@ -23,13 +23,22 @@ let
     }
   ];
 
-  # entity -> badge name
+  outside = {
+    id = "outside";
+    name = "Outside";
+    icon = "mdi:tree-outline";
+    sensor = "sensor.openweathermap";
+  };
+
+  # entity -> chip name
   batteries = {
     "sensor.temperature_and_humidity_sensor_aqara_living_room_battery" = "Living Room sensor";
     "sensor.temperature_and_humidity_sensor_aqara_bed_room_battery" = "Bedroom sensor";
     "sensor.temperature_and_humidity_sensor_aqara_office_battery" = "Office sensor";
     "sensor.hue_dimmer_switch_philips_battery" = "Hue dimmer";
   };
+
+  ninaSlots = builtins.genList (n: toString (n + 1)) 5;
 
   vacuum = "vacuum.roborock_qv_35a";
 
@@ -46,6 +55,13 @@ let
     "sensor.tasmota_tv_energy"
   ];
 
+  amber = "#ffb547";
+
+  concat = builtins.concatStringsSep;
+  jsList = xs: "[" + concat ", " (map (x: "'${x}'") xs) + "]";
+  # button-card styles take a list of single-property maps
+  css = attrs: map (name: { ${name} = attrs.${name}; }) (builtins.attrNames attrs);
+
   navigate = path: {
     action = "navigate";
     navigation_path = path;
@@ -57,93 +73,413 @@ let
     inherit target data;
   };
 
-  # bubble-card name button, coloured icon, one action on the whole card
-  quickAction =
+  # nested home assistant cards drop their own frame inside a button-card
+  frameless = ''
+    --ha-card-background: transparent;
+    --card-background-color: transparent;
+    --ha-card-box-shadow: none;
+    --ha-card-border-width: 0px;
+    --ha-card-border-color: transparent;
+  '';
+
+  # custom fields default to one ellipsised line and a named grid area
+  fieldReset = ''
+    #container > div { white-space: normal; overflow: visible; text-overflow: clip; }
+  '';
+
+  # a button-card that only lays out nested cards, without a frame of its own
+  container = layout: cards: {
+    type = "custom:button-card";
+    show_icon = false;
+    show_name = false;
+    tap_action.action = "none";
+    hold_action.action = "none";
+    show_ripple = false;
+    grid_options.columns = "full";
+    styles.card = css {
+      background = "none";
+      border = "none";
+      box-shadow = "none";
+      padding = "0";
+      overflow = "visible";
+      cursor = "default";
+    };
+    extra_styles = ''
+      #container { ${layout} }
+      #container > div { grid-area: auto !important; min-width: 0; }
+      /* button-card only sets the hidden attribute, which its own display: block overrides */
+      #container > div:has(> button-card[hidden]) { display: none !important; }
+    '';
+    # numbered keys keep the cards in list order
+    custom_fields = builtins.listToAttrs (
+      builtins.genList (i: {
+        name = "c${toString (10 + i)}";
+        value.card = builtins.elemAt cards i;
+      }) (builtins.length cards)
+    );
+  };
+
+  # icon tile, name and a second line; used by the quick actions and the chips
+  pill =
     {
       name,
       icon,
       color,
+      label ? null,
       action,
-      columns ? 6,
+      height ? "64px",
+      extra ? { },
     }:
     {
-      type = "custom:bubble-card";
-      card_type = "button";
-      button_type = "name";
+      type = "custom:button-card";
       inherit name icon;
-      card_layout = "large";
-      button_action.tap_action = action;
+      show_label = label != null;
       tap_action = action;
-      styles = ".bubble-icon { color: ${color} !important; }";
-      grid_options = {
-        inherit columns;
-        rows = 1;
+      hold_action.action = "none";
+      styles = {
+        card = css {
+          padding = "0 14px";
+          inherit height;
+        };
+        grid = css (
+          {
+            grid-template-columns = "40px 1fr";
+            column-gap = "12px";
+            text-align = "left";
+          }
+          // (
+            if label != null then
+              {
+                grid-template-areas = ''"i n" "i l"'';
+                grid-template-rows = "auto auto";
+              }
+            else
+              {
+                grid-template-areas = ''"i n"'';
+                grid-template-rows = "auto";
+              }
+          )
+        );
+        img_cell = css {
+          width = "40px";
+          height = "40px";
+          border-radius = "12px";
+          background = "rgba(255, 255, 255, 0.07)";
+        };
+        icon = css {
+          width = "22px";
+          inherit color;
+        };
+        name = css {
+          justify-self = "start";
+          align-self = if label != null then "end" else "center";
+          font-size = "15px";
+          font-weight = "500";
+        };
+        label = css {
+          justify-self = "start";
+          align-self = "start";
+          font-size = "12px";
+          color = "var(--secondary-text-color)";
+        };
+      };
+    }
+    // (if label != null then { inherit label; } else { })
+    // extra;
+
+  heroText = ''
+    [[[
+      const st = (e) => states[e] ? states[e].state : undefined;
+      const h = new Date().getHours();
+      const greet = h < 11 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+      // light.living_room_bulbs groups the living room bulbs, which are counted on their own
+      const lit = Object.keys(states).filter((e) => e.startsWith('light.') && e !== 'light.living_room_bulbs' && st(e) === 'on').length;
+      const temps = ${
+        jsList (map (room: "${room.sensor}_temperature") rooms)
+      }.map((e) => parseFloat(st(e))).filter((x) => !isNaN(x));
+      const inside = temps.length ? (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(1) : '?';
+      const out = parseFloat(st('sensor.openweathermap_temperature'));
+      const cond = helpers.localize(states['weather.forecast_home']).toLowerCase();
+      let s = greet + ', ' + user.name + '. ';
+      s += lit ? '<b>' + lit + (lit === 1 ? ' light' : ' lights') + '</b> on, ' : 'All lights off, ';
+      s += '<b>' + inside + '°</b> inside, ' + (isNaN(out) ? '?' : out.toFixed(1)) + '° and ' + cond + ' outside.';
+      if (st('${vacuum}') === 'cleaning') s += ' The Roborock is cleaning.';
+      return s;
+    ]]]
+  '';
+
+  hero = {
+    type = "custom:button-card";
+    show_icon = false;
+    show_name = false;
+    tap_action.action = "none";
+    hold_action.action = "none";
+    show_ripple = false;
+    # the clock has no entity to follow, so the card redraws on a timer
+    update_timer = 10000;
+    grid_options.columns = "full";
+    custom_fields = {
+      clock = ''
+        [[[
+          const d = new Date();
+          return '<div class="t">' + helpers.formatTime24h(d) + '</div><div class="d">' + helpers.formatDateWeekdayDay(d) + '</div>';
+        ]]]
+      '';
+      text = heroText;
+      wx.card = {
+        type = "weather-forecast";
+        entity = "weather.forecast_home";
+        show_current = false;
+        show_forecast = true;
+        forecast_type = "daily";
+        forecast_slots = 5;
       };
     };
+    styles.card = css {
+      padding = "26px 30px";
+      cursor = "default";
+      background = "linear-gradient(120deg, rgba(122, 162, 190, 0.22), rgba(122, 162, 190, 0.03) 65%)";
+    };
+    extra_styles = fieldReset + ''
+      #container {
+        grid-template-areas: "clock text wx" !important;
+        grid-template-columns: auto minmax(0, 1fr) minmax(0, 360px) !important;
+        grid-template-rows: auto !important;
+        column-gap: 36px;
+        row-gap: 18px;
+        text-align: left !important;
+      }
+      #clock .t { font-size: 64px; font-weight: 300; letter-spacing: -2px; line-height: 1; }
+      #clock .d { color: var(--secondary-text-color); margin-top: 8px; font-size: 15px; }
+      #text { font-size: 19px; font-weight: 300; line-height: 1.5; }
+      #text b { font-weight: 500; }
+      #wx { ${frameless} }
+      @media (max-width: 1000px) {
+        #container {
+          grid-template-areas: "clock" "text" "wx" !important;
+          grid-template-columns: minmax(0, 1fr) !important;
+        }
+      }
+    '';
+  };
+
+  # one chip per kind of problem, hidden while there is nothing to say
+  chip =
+    {
+      name,
+      icon,
+      color,
+      hidden,
+      action,
+    }:
+    {
+      type = "custom:button-card";
+      inherit
+        name
+        icon
+        hidden
+        ;
+      tap_action = action;
+      hold_action.action = "none";
+      styles = {
+        card = css {
+          padding = "8px 16px 8px 10px";
+          border-radius = "999px";
+          background = "color-mix(in srgb, ${color} 12%, transparent)";
+          border = "1px solid color-mix(in srgb, ${color} 45%, transparent)";
+          box-shadow = "none";
+          width = "auto";
+        };
+        grid = css {
+          grid-template-areas = ''"i n"'';
+          grid-template-columns = "22px auto";
+          column-gap = "8px";
+        };
+        icon = css {
+          width = "20px";
+          inherit color;
+        };
+        name = css {
+          font-size = "14px";
+          color = "color-mix(in srgb, ${color} 55%, white)";
+        };
+      };
+    };
+
+  ventilateEntities = map (room: "binary_sensor.${room.id}_ventilate") rooms;
+  ninaEntities = map (
+    slot: "binary_sensor.nina_warning_hamburg_freie_und_hansestadt_${slot}"
+  ) ninaSlots;
+  roomNames = "{${
+    concat ", " (map (room: "'binary_sensor.${room.id}_ventilate': '${room.name}'") rooms)
+  }}";
+  batteryNames = "{${
+    concat ", " (builtins.attrValues (builtins.mapAttrs (e: n: "'${e}': '${n}'") batteries))
+  }}";
+  lowBatteries = "Object.entries(${batteryNames}).filter(([e]) => states[e] && parseFloat(states[e].state) < 20)";
+  ventilating = "${jsList ventilateEntities}.filter((e) => states[e] && states[e].state === 'on')";
+  warnings = "${jsList ninaEntities}.filter((e) => states[e] && states[e].state === 'on')";
+  litLights = "Object.keys(states).filter((e) => e.startsWith('light.') && e !== 'light.living_room_bulbs' && states[e].state === 'on')";
+
+  chips =
+    container "display: flex !important; flex-wrap: wrap; gap: 10px;" [
+      (chip {
+        name = "[[[ return 'Let some fresh air in: ' + ${ventilating}.map((e) => (${roomNames})[e]).join(', '); ]]]";
+        icon = "mdi:window-open-variant";
+        color = "#4fc3f7";
+        hidden = "[[[ return ${ventilating}.length === 0; ]]]";
+        action = navigate "/dashboard-climate";
+      })
+      (chip {
+        name = "[[[ const l = ${lowBatteries}; return (l.length === 1 ? 'Low battery: ' : l.length + ' low batteries: ') + l.map(([, n]) => n).join(', '); ]]]";
+        icon = "mdi:battery-alert-variant-outline";
+        color = amber;
+        hidden = "[[[ return ${lowBatteries}.length === 0; ]]]";
+        action = navigate "/config/devices/dashboard";
+      })
+      (chip {
+        name = "[[[ const n = ${litLights}.length; return n + (n === 1 ? ' light' : ' lights') + ' on · tap to turn off'; ]]]";
+        icon = "mdi:lightbulb-group-outline";
+        color = amber;
+        hidden = "[[[ return ${litLights}.length === 0; ]]]";
+        action = perform "light.turn_off" { entity_id = "all"; } { };
+      })
+      (chip {
+        name = "[[[ return ${warnings}.map((e) => states[e.replace('binary_sensor.nina_warning_', 'sensor.').replace(/_(\\d)$/, '_headline_$1')].state).join(' · '); ]]]";
+        icon = "mdi:alert-outline";
+        color = "#ef5350";
+        hidden = "[[[ return ${warnings}.length === 0; ]]]";
+        action = navigate "/dashboard-weather";
+      })
+    ]
+    # the chips read entities the card cannot track, so it redraws on a timer
+    // {
+      update_timer = 5000;
+    };
+
+  # chips only show for problems, so the row disappears when nothing is wrong
+  chipsVisibility = [
+    {
+      condition = "or";
+      conditions =
+        map (entity: {
+          condition = "state";
+          inherit entity;
+          state = "on";
+        }) (ventilateEntities ++ ninaEntities)
+        ++ map (entity: {
+          condition = "numeric_state";
+          inherit entity;
+          below = 20;
+        }) (builtins.attrNames batteries)
+        ++ [
+          {
+            condition = "state";
+            entity = "light.living_room_bulbs";
+            state = "on";
+          }
+        ];
+    }
+  ];
+
+  quick =
+    container
+      "display: grid !important; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important; grid-template-areas: none !important; grid-template-rows: auto !important; gap: 12px;"
+      [
+        (pill {
+          name = "Evening";
+          label = "warm light, 40 %";
+          icon = "mdi:weather-sunset";
+          color = amber;
+          action = perform "light.turn_on" { area_id = "living_room"; } {
+            brightness_pct = 40;
+            color_temp_kelvin = 2700;
+          };
+        })
+        (pill {
+          name = "Movie";
+          label = "dim, 10 %";
+          icon = "mdi:movie-open-outline";
+          color = "#b39ddb";
+          action = perform "light.turn_on" { area_id = "living_room"; } {
+            brightness_pct = 10;
+            color_temp_kelvin = 2200;
+          };
+        })
+        (pill {
+          name = "All off";
+          label = "every light";
+          icon = "mdi:power";
+          color = "#90a4ae";
+          action = perform "light.turn_off" { entity_id = "all"; } { };
+        })
+        (pill {
+          name = "Leaving";
+          label = "all off + vacuum";
+          icon = "mdi:door-open";
+          color = "#4fc3f7";
+          action = perform "script.turn_on" { entity_id = "script.leaving"; } { } // {
+            confirmation.text = "Turn off all lights and start the Roborock?";
+          };
+        })
+        (pill {
+          name = "Ask Assist";
+          label = "llama_cpp";
+          icon = "mdi:microphone-outline";
+          color = "#3ddc97";
+          action.action = "assist";
+        })
+      ];
 
   roomCard =
     room:
     let
-      climate = "{{ states('${room.sensor}_temperature') }} °C · {{ states('${room.sensor}_humidity') }} %";
+      lit = room ? light;
+      temperature = "${room.sensor}_temperature";
+      humidity = "${room.sensor}_humidity";
+      isOn = "states['${room.light}'] && states['${room.light}'].state === 'on'";
     in
     {
-      type = "vertical-stack";
+      type = "custom:button-card";
+      entity = if lit then room.light else temperature;
+      inherit (room) name icon;
+      tap_action = if lit then { action = "toggle"; } else navigate "/dashboard-climate";
+      hold_action = {
+        action = "more-info";
+        entity = temperature;
+      };
       grid_options.columns = 12;
-      cards = [
-        (
-          {
-            type = "custom:bubble-card";
-            card_type = "button";
-            inherit (room) name icon;
-            state_content = climate;
-            sub_button =
-              if room.ventilate or true then
-                [
-                  {
-                    entity = "binary_sensor.${room.id}_ventilate";
-                    name = "Open window";
-                    icon = "mdi:window-open-variant";
-                    show_name = true;
-                    tap_action = navigate "/dashboard-climate";
-                    visibility = [
-                      {
-                        condition = "state";
-                        entity = "binary_sensor.${room.id}_ventilate";
-                        state = "on";
-                      }
-                    ];
-                  }
-                ]
-              else
-                [ ];
-          }
-          # the switch button fills with the light colour while the room is lit
-          // (
-            if room ? light then
-              {
-                entity = room.light;
-                button_type = "switch";
-                button_action.tap_action.action = "toggle";
-              }
-            else
-              {
-                entity = "${room.sensor}_temperature";
-                button_type = "state";
-                button_action.tap_action = navigate "/dashboard-climate";
-              }
-          )
-        )
-        {
+      custom_fields = {
+        tag =
+          if room ? sensor && room.id != "outside" then
+            "[[[ return states['binary_sensor.${room.id}_ventilate'] && states['binary_sensor.${room.id}_ventilate'].state === 'on' ? '<span>air out</span>' : ''; ]]]"
+          else
+            "";
+        temp = ''
+          [[[
+            const t = parseFloat(states['${temperature}'] && states['${temperature}'].state);
+            const h = parseFloat(states['${humidity}'] && states['${humidity}'].state);
+            return '<span class="v">' + (isNaN(t) ? '—' : t.toFixed(1) + '°') + '</span><span class="h">' + (isNaN(h) ? "" : Math.round(h) + ' %') + '</span>';
+          ]]]
+        '';
+        sub =
+          if lit then
+            "[[[ return ${isOn} ? 'lights on' : 'lights off'; ]]]"
+          else if room.id == "outside" then
+            "[[[ return helpers.localize(states['weather.forecast_home']); ]]]"
+          else
+            "no lights";
+        graph.card = {
           type = "custom:mini-graph-card";
-          entities = [ "${room.sensor}_temperature" ];
+          entities = [ temperature ];
           hours_to_show = 24;
           points_per_hour = 2;
-          height = 60;
+          height = 70;
           line_width = 3;
           animate = true;
           color_thresholds = temperatureThresholds;
           color_thresholds_transition = "hard";
-          tap_action = navigate "/dashboard-climate";
+          tap_action.action = "none";
           show = {
             name = false;
             icon = false;
@@ -153,39 +489,206 @@ let
             extrema = false;
             fill = "fade";
           };
-        }
-      ];
+        };
+      };
+      styles = {
+        card = css (
+          {
+            padding = "18px 18px 0";
+            height = "100%";
+          }
+          // (
+            if lit then
+              {
+                background = "[[[ return ${isOn} ? 'radial-gradient(280px 170px at 85% 0%, rgba(255, 181, 71, 0.28), transparent 70%)' : 'none'; ]]]";
+                border-color = "[[[ return ${isOn} ? 'rgba(255, 181, 71, 0.5)' : ''; ]]]";
+              }
+            else
+              { }
+          )
+        );
+        grid = css {
+          grid-template-areas = ''"i n tag" "temp temp temp" "sub sub sub" "graph graph graph"'';
+          grid-template-columns = "40px 1fr auto";
+          grid-template-rows = "40px auto auto auto";
+          column-gap = "12px";
+          text-align = "left";
+        };
+        img_cell = css (
+          {
+            width = "40px";
+            height = "40px";
+            border-radius = "50%";
+            background = "rgba(255, 255, 255, 0.08)";
+            transition = "all 0.3s";
+          }
+          // (
+            if lit then
+              {
+                background = "[[[ return ${isOn} ? '${amber}' : 'rgba(255, 255, 255, 0.08)'; ]]]";
+                box-shadow = "[[[ return ${isOn} ? '0 0 22px rgba(255, 181, 71, 0.55)' : 'none'; ]]]";
+              }
+            else
+              { }
+          )
+        );
+        icon = css {
+          width = "22px";
+          color =
+            if lit then
+              "[[[ return ${isOn} ? '#2a1a00' : 'var(--primary-text-color)'; ]]]"
+            else
+              "var(--primary-text-color)";
+        };
+        name = css {
+          justify-self = "start";
+          font-size = "16px";
+          font-weight = "500";
+        };
+      };
+      extra_styles = fieldReset + ''
+        #tag span { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(79, 195, 247, 0.16); color: #9fdcf7; }
+        #temp { margin-top: 14px; }
+        #temp .v { font-size: 30px; font-weight: 300; }
+        #temp .h { font-size: 14px; color: var(--secondary-text-color); margin-left: 8px; }
+        #sub { color: var(--secondary-text-color); font-size: 13px; margin-top: 2px; }
+        #graph { margin: 4px -18px 0; ${frameless} }
+      '';
     };
 
-  # one sentence on the state of the flat, rendered by home assistant
-  greeting = ''
-    {% set h = now().hour %}
-    # {{ 'Good morning' if h < 11 else 'Good afternoon' if h < 18 else 'Good evening' }}, {{ user }}
-    {# light.living_room_bulbs groups the living room bulbs, which are counted on their own #}
-    {% set lit = states.light | selectattr('state', 'eq', 'on') | rejectattr('entity_id', 'eq', 'light.living_room_bulbs') | list | count %}
-    {% set temps = [${
-      builtins.concatStringsSep ", " (map (room: "'${room.sensor}_temperature'") rooms)
-    }] | map('states') | select('is_number') | map('float') | list %}
-    {% set ns = namespace(vent=[]) %}
-    {% for name, entity in [${
-      builtins.concatStringsSep ", " (
-        map (room: "('${room.name}', 'binary_sensor.${room.id}_ventilate')") rooms
-      )
-    }] %}{% if is_state(entity, 'on') %}{% set ns.vent = ns.vent + [name] %}{% endif %}{% endfor %}
-    {{ 'All lights are off' if lit == 0 else lit ~ (' light is' if lit == 1 else ' lights are') ~ ' on' }}.
-    It is {{ (temps | sum / temps | count) | round(1) if temps else '?' }} °C inside and {{ states('sensor.openweathermap_temperature') }} °C outside, {{ states('weather.forecast_home') | replace('partlycloudy', 'partly cloudy') | replace('-', ' ') }}.
-    {% if ns.vent %}**Let some fresh air in:** {{ ns.vent | join(', ') }}{% endif %}
-    {% if is_state('${vacuum}', 'cleaning') %}The Roborock is cleaning.{% endif %}
+  # header line of the side cards: icon, title, right-aligned status
+  sideHead = icon: title: status: ''
+    [[[ return '<div class="head"><ha-icon icon="${icon}"></ha-icon><span>${title}</span><span class="r">' + (${status}) + '</span></div>'; ]]]
   '';
 
-  badge =
+  sideStyles = ''
+    #container { grid-template-areas: "head" "body" "foot" !important; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: auto !important; text-align: left !important; justify-items: stretch; row-gap: 8px; }
+    .head { display: flex; align-items: center; gap: 8px; color: var(--secondary-text-color); font-size: 13px; }
+    .head ha-icon { margin: 0; width: 18px; height: 18px; }
+    .head .r { margin-left: auto; font-size: 12px; }
+    .big { font-size: 28px; font-weight: 300; }
+    .big small { font-size: 14px; color: var(--secondary-text-color); margin-left: 4px; }
+    #body { font-size: 14px; }
+    #foot { display: flex; gap: 8px; }
+  '';
+
+  sideCard =
     attrs:
     {
-      type = "entity";
+      type = "custom:button-card";
+      show_icon = false;
       show_name = false;
-      show_state = true;
+      hold_action.action = "none";
+      grid_options.columns = "full";
+      styles.card = css { padding = "16px 18px"; };
+      extra_styles = fieldReset + sideStyles + (attrs.extraStyles or "");
     }
-    // attrs;
+    // removeAttrs attrs [ "extraStyles" ];
+
+  smallButton = name: icon: action: {
+    type = "custom:button-card";
+    inherit name icon;
+    tap_action = action;
+    hold_action.action = "none";
+    styles = {
+      card = css {
+        padding = "6px 14px 6px 10px";
+        border-radius = "999px";
+        width = "auto";
+      };
+      grid = css {
+        grid-template-areas = ''"i n"'';
+        grid-template-columns = "20px auto";
+        column-gap = "6px";
+      };
+      icon = css { width = "18px"; };
+      name = css { font-size = "13px"; };
+    };
+  };
+
+  sum =
+    sensors:
+    "${jsList sensors}.map((e) => parseFloat(states[e] && states[e].state)).filter((x) => !isNaN(x)).reduce((a, b) => a + b, 0)";
+
+  energy = sideCard {
+    # redraw on a timer: the hourly statistics arrive after the first draw
+    update_timer = 15000;
+    tap_action = navigate "/energy";
+    custom_fields = {
+      head =
+        sideHead "mdi:flash" "Energy today"
+          "'yesterday ' + ${sum (map (s: "${s}_yesterday") energySensors)}.toFixed(1) + ' kWh'";
+      body = "[[[ return '<div class=\"big\">' + ${
+        sum (map (s: "${s}_today") energySensors)
+      }.toFixed(2) + '<small>kWh</small></div>'; ]]]";
+      foot = ''
+        [[[
+          const ids = ${jsList (map (s: "${s}_total") energySensors)};
+          // hourly statistics are cached for 5 minutes; the next redraw shows them
+          const c = window.overviewEnergy || (window.overviewEnergy = { t: 0, data: null });
+          if (Date.now() - c.t > 300000) {
+            c.t = Date.now();
+            const start = new Date();
+            start.setHours(0, 0, 0, 0);
+            hass.callWS({ type: 'recorder/statistics_during_period', start_time: start.toISOString(), statistic_ids: ids, period: 'hour', types: ['change'] }).then((r) => { c.data = r; });
+          }
+          const hours = new Array(24).fill(0);
+          if (c.data) for (const id of ids) for (const p of (c.data[id] || [])) hours[new Date(p.start).getHours()] += p.change || 0;
+          const max = Math.max(...hours, 0.01);
+          const now = new Date().getHours();
+          let bars = "";
+          hours.forEach((v, i) => {
+            const height = Math.max(2, v / max * 50);
+            bars += '<rect x="' + (i * 10 + 1) + '" y="' + (54 - height) + '" width="8" height="' + height + '" rx="2" fill="' + (i <= now ? '${amber}' : 'rgba(255, 255, 255, 0.1)') + '"/>';
+          });
+          return '<svg viewBox="0 0 240 54" preserveAspectRatio="none" style="width: 100%; height: 54px; display: block">' + bars + '</svg>';
+        ]]]
+      '';
+    };
+    extraStyles = ''
+      .head ha-icon { color: ${amber}; }
+      #foot { display: block; }
+    '';
+  };
+
+  roborock = sideCard {
+    entity = vacuum;
+    tap_action = navigate "/dashboard-roboclean";
+    custom_fields = {
+      head =
+        sideHead "mdi:robot-vacuum" "Roborock"
+          "helpers.localize(entity) + ' · ' + Math.round(parseFloat(states['sensor.roborock_qv_35a_battery'].state)) + ' %'";
+      body = ''
+        [[[
+          const area = parseFloat(states['sensor.roborock_qv_35a_cleaning_area'].state);
+          const secs = parseFloat(states['sensor.roborock_qv_35a_cleaning_time'].state);
+          if (isNaN(area) || isNaN(secs)) return 'No run yet';
+          return 'Last run: ' + area.toFixed(1) + ' m² in ' + Math.round(secs / 60) + ' min';
+        ]]]
+      '';
+      foot.card = container "display: flex !important; gap: 8px;" [
+        (smallButton "Clean" "mdi:play" (perform "vacuum.start" { entity_id = vacuum; } { }))
+        (smallButton "Dock" "mdi:home-import-outline" (
+          perform "vacuum.return_to_base" { entity_id = vacuum; } { }
+        ))
+      ];
+    };
+  };
+
+  adguard = sideCard {
+    entity = "switch.adguard_home_protection";
+    tap_action = navigate "/internet-security";
+    custom_fields = {
+      head =
+        sideHead "mdi:shield-check-outline" "AdGuard"
+          "entity.state === 'on' ? Math.round(parseFloat(states['sensor.adguard_home_dns_queries_blocked_ratio'].state) * 10) / 10 + ' % blocked' : 'paused'";
+      foot.card = container "display: flex !important; gap: 8px;" [
+        (smallButton "Pause 10 min" "mdi:timer-pause-outline" (
+          perform "script.turn_on" { entity_id = "script.pause_adguard"; } { }
+        ))
+      ];
+    };
+  };
 in
 {
   views = [
@@ -196,309 +699,51 @@ in
       icon = "mdi:home";
       theme = "Frosted Glass Dark Lite";
       max_columns = 3;
-      header = {
-        layout = "responsive";
-        badges_position = "bottom";
-        card = {
-          type = "markdown";
-          text_only = true;
-          content = greeting;
-        };
-      };
-      # shown only while something needs attention
-      badges =
-        map (
-          room:
-          badge {
-            entity = "binary_sensor.${room.id}_ventilate";
-            name = "Ventilate ${room.name}";
-            icon = "mdi:window-open-variant";
-            color = "light-blue";
-            show_name = true;
-            show_state = false;
-            tap_action = navigate "/dashboard-climate";
-            visibility = [
-              {
-                condition = "state";
-                entity = "binary_sensor.${room.id}_ventilate";
-                state = "on";
-              }
-            ];
-          }
-        ) rooms
-        ++ builtins.attrValues (
-          builtins.mapAttrs (
-            entity: name:
-            badge {
-              inherit entity name;
-              icon = "mdi:battery-alert";
-              color = "orange";
-              show_name = true;
-              visibility = [
-                {
-                  condition = "numeric_state";
-                  inherit entity;
-                  below = 20;
-                }
-              ];
-            }
-          ) batteries
-        )
-        ++ map (
-          slot:
-          badge {
-            entity = "sensor.hamburg_freie_und_hansestadt_headline_${toString slot}";
-            icon = "mdi:alert";
-            color = "red";
-            tap_action = navigate "/dashboard-weather";
-            visibility = [
-              {
-                condition = "state";
-                entity = "binary_sensor.nina_warning_hamburg_freie_und_hansestadt_${toString slot}";
-                state = "on";
-              }
-            ];
-          }
-        ) (builtins.genList (n: n + 1) 5);
       sections = [
         {
           type = "grid";
-          cards = [
-            {
-              type = "custom:clock-weather-card";
-              entity = "weather.forecast_home";
-              temperature_sensor = "sensor.openweathermap_temperature";
-              humidity_sensor = "sensor.openweathermap_humidity";
-              apparent_sensor = "sensor.openweathermap_feels_like_temperature";
-              show_humidity = true;
-              forecast_rows = 5;
-              time_format = 24;
-              date_pattern = "cccc, d LLLL";
-              grid_options.columns = "full";
-            }
-          ]
-          ++ map (entity: {
-            type = "media-control";
-            inherit entity;
-            grid_options.columns = "full";
-            visibility = [
-              {
-                condition = "state";
-                inherit entity;
-                state = [
-                  "playing"
-                  "paused"
-                ];
-              }
-            ];
-          }) mediaPlayers
-          ++ [
-            (quickAction {
-              name = "Ask Assist";
-              icon = "mdi:microphone";
-              color = "#3ddc97";
-              action.action = "assist";
-              columns = "full";
-            })
-          ];
+          column_span = 3;
+          cards = [ hero ];
+        }
+        {
+          type = "grid";
+          column_span = 3;
+          visibility = chipsVisibility;
+          cards = [ chips ];
+        }
+        {
+          type = "grid";
+          column_span = 3;
+          cards = [ quick ];
         }
         {
           type = "grid";
           column_span = 2;
-          cards = [
-            {
-              type = "heading";
-              heading = "Quick";
-              icon = "mdi:lightning-bolt-outline";
-            }
-            (quickAction {
-              name = "Evening";
-              icon = "mdi:weather-sunset";
-              color = "#ffb547";
-              action = perform "light.turn_on" { area_id = "living_room"; } {
-                brightness_pct = 40;
-                color_temp_kelvin = 2700;
-              };
-            })
-            (quickAction {
-              name = "Movie";
-              icon = "mdi:movie-open-outline";
-              color = "#a78bfa";
-              action = perform "light.turn_on" { area_id = "living_room"; } {
-                brightness_pct = 10;
-                color_temp_kelvin = 2200;
-              };
-            })
-            (quickAction {
-              name = "All off";
-              icon = "mdi:power";
-              color = "#90a4ae";
-              action = perform "light.turn_off" { entity_id = "all"; } { };
-            })
-            (quickAction {
-              name = "Leaving";
-              icon = "mdi:door-open";
-              color = "#4fc3f7";
-              action = perform "script.turn_on" { entity_id = "script.leaving"; } { } // {
-                confirmation.text = "Turn off all lights and start the Roborock?";
-              };
-            })
-            {
-              type = "heading";
-              heading = "Rooms";
-              icon = "mdi:floor-plan";
-              tap_action = navigate "/dashboard-climate";
-            }
-          ]
-          ++ map roomCard rooms
-          ++ [
-            (roomCard {
-              id = "outdoor";
-              name = "Outside";
-              icon = "mdi:tree-outline";
-              sensor = "sensor.openweathermap";
-              ventilate = false;
-            })
-          ];
+          cards = map roomCard (rooms ++ [ outside ]);
         }
         {
           type = "grid";
-          cards = [
-            {
-              type = "heading";
-              heading = "Energy";
-              icon = "mdi:flash";
-              tap_action = navigate "/energy";
-            }
-            {
-              type = "custom:bubble-card";
-              card_type = "button";
-              button_type = "state";
-              entity = "sensor.tasmota_server_energy_today";
-              name = "Today";
-              icon = "mdi:flash";
-              state_content = "{{ ([${
-                builtins.concatStringsSep ", " (map (s: "'${s}_today'") energySensors)
-              }] | map('states') | map('float', 0) | sum) | round(2) }} kWh · yesterday {{ ([${
-                builtins.concatStringsSep ", " (map (s: "'${s}_yesterday'") energySensors)
-              }] | map('states') | map('float', 0) | sum) | round(2) }} kWh";
-              button_action.tap_action = navigate "/energy";
-              styles = ".bubble-icon { color: #ffb547 !important; }";
-            }
-            {
-              type = "statistics-graph";
-              entities = map (s: "${s}_total") energySensors;
-              stat_types = [ "change" ];
-              period = "hour";
-              days_to_show = 1;
-              chart_type = "bar";
-              hide_legend = true;
-            }
-          ];
-        }
-        {
-          type = "grid";
-          cards = [
-            {
-              type = "heading";
-              heading = "Roborock";
-              icon = "mdi:robot-vacuum";
-              tap_action = navigate "/dashboard-roboclean";
-            }
-            {
-              type = "custom:bubble-card";
-              card_type = "button";
-              button_type = "state";
-              entity = vacuum;
-              name = "Roborock";
-              icon = "mdi:robot-vacuum";
-              state_content = [
-                "state"
-                "{{ states('sensor.roborock_qv_35a_battery') }} %"
-              ];
-              button_action.tap_action = navigate "/dashboard-roboclean";
-              sub_button = [
+          cards =
+            map (entity: {
+              type = "media-control";
+              inherit entity;
+              grid_options.columns = "full";
+              visibility = [
                 {
-                  name = "Clean";
-                  icon = "mdi:play";
-                  tap_action = perform "vacuum.start" { entity_id = vacuum; } { };
-                }
-                {
-                  name = "Dock";
-                  icon = "mdi:home-import-outline";
-                  tap_action = perform "vacuum.return_to_base" { entity_id = vacuum; } { };
-                }
-              ];
-            }
-            {
-              type = "custom:bubble-card";
-              card_type = "button";
-              button_type = "state";
-              entity = "sensor.roborock_qv_35a_cleaning_area";
-              name = "Last run";
-              icon = "mdi:map-check-outline";
-              state_content = "{{ states('sensor.roborock_qv_35a_cleaning_area', with_unit=True) }} in {{ states('sensor.roborock_qv_35a_cleaning_time', with_unit=True) }}";
-              button_action.tap_action = navigate "/dashboard-roboclean";
-            }
-          ];
-        }
-        {
-          type = "grid";
-          cards = [
-            {
-              type = "heading";
-              heading = "Network";
-              icon = "mdi:shield-check-outline";
-              tap_action = navigate "/internet-security";
-            }
-            {
-              type = "custom:bubble-card";
-              card_type = "button";
-              button_type = "switch";
-              entity = "switch.adguard_home_protection";
-              name = "AdGuard";
-              icon = "mdi:shield-check";
-              state_content = "{{ states('sensor.adguard_home_dns_queries_blocked_ratio', with_unit=True) }} blocked";
-              button_action.tap_action = navigate "/internet-security";
-              styles = "ha-card { --bubble-accent-color: #4caf50; }";
-              sub_button = [
-                {
-                  name = "Pause 10 min";
-                  icon = "mdi:timer-pause-outline";
-                  show_name = true;
-                  tap_action = perform "script.turn_on" { entity_id = "script.pause_adguard"; } { };
-                  visibility = [
-                    {
-                      condition = "state";
-                      entity = "switch.adguard_home_protection";
-                      state = "on";
-                    }
+                  condition = "state";
+                  inherit entity;
+                  state = [
+                    "playing"
+                    "paused"
                   ];
                 }
               ];
-            }
-            # bubble-card requires the stack to be the last card of the view
-            {
-              type = "custom:bubble-card";
-              card_type = "horizontal-buttons-stack";
-              auto_order = false;
-              "1_name" = "Climate";
-              "1_icon" = "mdi:home-thermometer";
-              "1_link" = "/dashboard-climate";
-              "2_name" = "Weather";
-              "2_icon" = "mdi:weather-cloudy";
-              "2_link" = "/dashboard-weather";
-              "3_name" = "RoboClean";
-              "3_icon" = "mdi:robot-vacuum";
-              "3_link" = "/dashboard-roboclean";
-              "4_name" = "Home-Server";
-              "4_icon" = "mdi:server";
-              "4_link" = "/dashboard-home";
-              "5_name" = "Internet Security";
-              "5_icon" = "mdi:shield-check";
-              "5_link" = "/internet-security";
-            }
-          ];
+            }) mediaPlayers
+            ++ [
+              energy
+              roborock
+              adguard
+            ];
         }
       ];
     }
