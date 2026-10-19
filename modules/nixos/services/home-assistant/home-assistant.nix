@@ -55,8 +55,6 @@ in
           # default_config covers its python dependencies; listing it adds the go2rtc binary
           "go2rtc"
           "homeassistant_sky_connect"
-          # the printer's ignored discovery still loads the ipp config flow, which needs pyipp
-          "ipp"
           # conversation agent on the llama-cpp server (https://llama-cpp.<local domain>/v1)
           "llama_cpp"
           # enabled in the ui (config entry only); serves /api/mcp
