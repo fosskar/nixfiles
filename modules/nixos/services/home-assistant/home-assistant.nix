@@ -210,6 +210,62 @@ in
                 }
               ];
             }
+            (
+              let
+                sensors = map (id: "binary_sensor.${id}_ventilate") (
+                  lib.attrNames (removeAttrs humidityPlaces [ "outdoor" ])
+                );
+                rooms = "${builtins.toJSON sensors} | select('is_state', 'on') | map('state_attr', 'friendly_name') | map('replace', ' Ventilate', '') | list";
+              in
+              {
+                id = "ventilation_notify";
+                alias = "ventilation - notify when airing dries a room";
+                description = "push to all phones when a room's ventilate sensor turns on; quiet 22:00-08:00";
+                # the 08:00 trigger reports rooms that turned on during the quiet hours
+                triggers =
+                  map (entity_id: {
+                    trigger = "state";
+                    inherit entity_id;
+                    to = "on";
+                    for.minutes = 15;
+                  }) sensors
+                  ++ [
+                    {
+                      trigger = "time";
+                      at = "08:00:00";
+                    }
+                  ];
+                conditions = [
+                  {
+                    condition = "time";
+                    after = "08:00:00";
+                    before = "22:00:00";
+                  }
+                  {
+                    condition = "template";
+                    value_template = "{{ (${rooms}) | count > 0 }}";
+                  }
+                  # at most one push per 3 hours when a sensor flaps around the 1 g/m³ threshold
+                  {
+                    condition = "template";
+                    value_template = "{{ this.attributes.last_triggered is none or now() - this.attributes.last_triggered > timedelta(hours=3) }}";
+                  }
+                ];
+                actions =
+                  map
+                    (action: {
+                      inherit action;
+                      data = {
+                        title = "Open the windows";
+                        message = "{{ (${rooms}) | join(', ') }}: the outdoor air is drier than the room.";
+                      };
+                    })
+                    [
+                      "notify.mobile_app_pixel_9"
+                      "notify.mobile_app_ipad_von_anna"
+                    ];
+              }
+            )
           ];
           # no http: home assistant migrates it to .storage/http once and ignores yaml
           # afterwards; trusted proxies (caddy on nixbox, the netbird proxy) live there
