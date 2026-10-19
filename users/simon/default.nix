@@ -31,6 +31,7 @@
       self.modules.homeManager.jujutsu
       self.modules.homeManager.llm
       self.modules.homeManager.orcaDesktop
+      self.modules.homeManager.paseoDesktop
       self.modules.homeManager.k8s
       #self.modules.homeManager.ladybird
       self.modules.homeManager.mpris-proxy
