@@ -87,7 +87,7 @@
 
     # home assistant green board patches (dts, kernel, u-boot)
     haos = {
-      url = "github:home-assistant/operating-system/95e65a34ccf72303c941ddab997e9f14696eb632";
+      url = "github:home-assistant/operating-system/d210538b587a13c10972b422ef3199fb9386e07c";
       flake = false;
     };
 
