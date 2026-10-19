@@ -7,13 +7,13 @@
 # plugin source for traefik's experimental.localPlugins; traefik interprets it
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "traefik-plugin-crowdsec-bouncer";
-  version = "1.7.1";
+  version = "1.8.1";
 
   src = fetchFromGitHub {
     owner = "maxlerebourg";
     repo = "crowdsec-bouncer-traefik-plugin";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-hefOKDVsBxn+rCAylPHqbCNfPMbU/vtO4QpiftIPcUU=";
+    hash = "sha256-cQNbrEiePPsip6acQwayQGISee2LqLbHVHzXfTfdAA4=";
   };
 
   dontConfigure = true;
