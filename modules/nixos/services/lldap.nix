@@ -128,7 +128,7 @@
             ]
           }
           mkdir -p /var/backup/lldap
-          sqlite3 -nofollow /var/lib/lldap/users.db ".backup '/var/backup/lldap/users.db'"
+          sqlite3 -nofollow /var/lib/private/lldap/users.db ".backup '/var/backup/lldap/users.db'"
         '';
       };
     };

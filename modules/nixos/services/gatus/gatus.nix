@@ -53,7 +53,7 @@
               ]
             }
             mkdir -p /var/backup/gatus
-            sqlite3 -nofollow /var/lib/gatus/gatus.db ".backup '/var/backup/gatus/gatus.db'"
+            sqlite3 -nofollow /var/lib/private/gatus/gatus.db ".backup '/var/backup/gatus/gatus.db'"
           '';
         };
 

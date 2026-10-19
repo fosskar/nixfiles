@@ -76,7 +76,7 @@
               ]
             }
             mkdir -p /var/backup/seerr
-            sqlite3 -nofollow /var/lib/seerr/db/db.sqlite3 ".backup '/var/backup/seerr/db.sqlite3'"
+            sqlite3 -nofollow /var/lib/private/seerr/db/db.sqlite3 ".backup '/var/backup/seerr/db.sqlite3'"
           '';
         };
       };

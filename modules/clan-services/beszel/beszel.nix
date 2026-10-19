@@ -440,8 +440,8 @@ _: {
                       ]
                     }
                     mkdir -p /var/backup/beszel-hub
-                    sqlite3 -nofollow /var/lib/beszel-hub/beszel_data/data.db ".backup '/var/backup/beszel-hub/data.db'"
-                    sqlite3 -nofollow /var/lib/beszel-hub/beszel_data/auxiliary.db ".backup '/var/backup/beszel-hub/auxiliary.db'"
+                    sqlite3 -nofollow /var/lib/private/beszel-hub/beszel_data/data.db ".backup '/var/backup/beszel-hub/data.db'"
+                    sqlite3 -nofollow /var/lib/private/beszel-hub/beszel_data/auxiliary.db ".backup '/var/backup/beszel-hub/auxiliary.db'"
                   '';
                 };
 
