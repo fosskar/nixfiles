@@ -5,21 +5,18 @@ let
       name = "Living Room";
       icon = "mdi:sofa";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_living_room";
-      color = "#ef5350";
     }
     {
       id = "bedroom";
       name = "Bedroom";
       icon = "mdi:bed";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_bed_room";
-      color = "#42a5f5";
     }
     {
       id = "office";
       name = "Office";
       icon = "mdi:desk";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_office";
-      color = "#66bb6a";
     }
   ];
 
@@ -96,7 +93,7 @@ let
       (
         graph
         // {
-          name = "${room.name} temperature";
+          name = "Temperature";
           decimals = 1;
           entities = [ "${room.sensor}_temperature" ];
           color_thresholds = temperatureThresholds;
@@ -105,7 +102,7 @@ let
       (
         graph
         // {
-          name = "${room.name} humidity";
+          name = "Humidity";
           decimals = 0;
           entities = [ "${room.sensor}_humidity" ];
           color_thresholds = humidityThresholds;
@@ -113,7 +110,7 @@ let
       )
       {
         type = "statistics-graph";
-        title = "${room.name}, daily min / mean / max";
+        title = "Temperature, 14 days";
         entities = [ "${room.sensor}_temperature" ];
         hide_legend = true;
         stat_types = [
@@ -125,6 +122,22 @@ let
         days_to_show = 14;
         chart_type = "line";
       }
+    ];
+  };
+
+  history = heading: icon: card: {
+    type = "grid";
+    cards = [
+      {
+        type = "heading";
+        inherit heading icon;
+      }
+      (
+        {
+          type = "history-graph";
+        }
+        // card
+      )
     ];
   };
 in
@@ -148,100 +161,49 @@ in
             }
             {
               type = "markdown";
-              # binary_sensor.<room>_ventilate turns on at a gap of 1 g/m³ (template in home-assistant.nix)
+              # binary_sensor.<room>_ventilate is on at a gap of at least 1 g/m³ (template in home-assistant.nix)
               content = ''
-                Airing a room dries it only when the outdoor air carries less water than the indoor air. Relative humidity (%) cannot tell you that, because warm air holds more water than cold air. The numbers below are grams of water per m³ of air.
-
-                | | Water in air | Advice |
-                |---|---|---|
-                | Outdoor | {{ states('sensor.outdoor_absolute_humidity') }} g/m³ | |
                 ${builtins.concatStringsSep "\n" (
                   map (
                     room:
-                    "| ${room.name} | {{ states('sensor.${room.id}_absolute_humidity') }} g/m³ | {% set gap = (states('sensor.${room.id}_absolute_humidity') | float(0) - states('sensor.outdoor_absolute_humidity') | float(0)) | round(1) %}{% if is_state('binary_sensor.${room.id}_ventilate', 'on') %}**open the windows**: outdoor air is {{ gap }} g/m³ drier{% else %}keep closed: outdoor air is not at least 1 g/m³ drier{% endif %} |"
+                    "{% if is_state('binary_sensor.${room.id}_ventilate', 'on') %}<ha-icon icon=\"mdi:window-open-variant\"></ha-icon> **${room.name}**: open windows{% else %}<ha-icon icon=\"mdi:window-closed-variant\"></ha-icon> **${room.name}**: keep closed{% endif %} ({{ states('sensor.${room.id}_absolute_humidity') }} g/m³)\n"
                   ) rooms
                 )}
+                Outside: {{ states('sensor.outdoor_absolute_humidity') }} g/m³. Airing dries a room when the outdoor air holds at least 1 g/m³ less water.
               '';
             }
-            {
-              type = "custom:mini-graph-card";
-              name = "Water in the air (g/m³), 24 h";
-              hours_to_show = 24;
-              points_per_hour = 2;
-              line_width = 2;
-              font_size = 75;
-              decimals = 1;
-              entities =
-                map (room: {
-                  entity = "sensor.${room.id}_absolute_humidity";
-                  inherit (room) name color;
-                  show_legend_state = true;
-                }) rooms
-                ++ [
-                  {
-                    entity = "sensor.outdoor_absolute_humidity";
-                    name = "Outdoor";
-                    color = "#bdbdbd";
-                    show_legend_state = true;
-                  }
-                ];
-              show = {
-                icon = false;
-                state = false;
-                fill = false;
-                legend = true;
-                labels = true;
-                labels_secondary = true;
-              };
-            }
           ];
         }
-        {
-          type = "grid";
-          column_span = 2;
-          cards = [
-            {
-              type = "heading";
-              heading = "Indoor vs outdoor";
-              icon = "mdi:chart-line";
-            }
-            {
-              type = "custom:mini-graph-card";
-              name = "Temperature, 48 h (outdoor on the right axis)";
-              # mini-graph-card sets no grid size and defaults to half of the two-column section
-              grid_options.columns = "full";
-              hours_to_show = 48;
-              points_per_hour = 2;
-              line_width = 2;
-              font_size = 75;
-              decimals = 1;
-              entities =
-                map (room: {
-                  entity = "${room.sensor}_temperature";
-                  inherit (room) name color;
-                  show_legend_state = true;
-                }) rooms
-                ++ [
-                  {
-                    entity = "sensor.openweathermap_temperature";
-                    name = "Outdoor";
-                    color = "#bdbdbd";
-                    show_legend_state = true;
-                    # own scale, so the 15 °C gap does not flatten the indoor lines
-                    y_axis = "secondary";
-                  }
-                ];
-              show = {
-                icon = false;
-                state = false;
-                fill = false;
-                legend = true;
-                labels = true;
-                labels_secondary = true;
-              };
-            }
-          ];
-        }
+        (history "Water in the air" "mdi:water" {
+          title = "g/m³, 24 h";
+          hours_to_show = 24;
+          entities =
+            map (room: {
+              entity = "sensor.${room.id}_absolute_humidity";
+              inherit (room) name;
+            }) rooms
+            ++ [
+              {
+                entity = "sensor.outdoor_absolute_humidity";
+                name = "Outdoor";
+              }
+            ];
+        })
+        (history "Indoor vs outdoor" "mdi:chart-line" {
+          title = "°C, 48 h";
+          hours_to_show = 48;
+          entities =
+            map (room: {
+              entity = "${room.sensor}_temperature";
+              inherit (room) name;
+            }) rooms
+            ++ [
+              {
+                entity = "sensor.openweathermap_temperature";
+                name = "Outdoor";
+              }
+            ];
+        })
       ];
     }
   ];
