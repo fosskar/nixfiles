@@ -25,6 +25,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     hash = "sha256-JNn9UV4y84DeUp747OEKLCLlaGy9epSjm5vrf4AxzkY=";
   };
 
+  # a failing plugin in a mashup gets an error tile instead of blanking the screen; not upstream
+  patches = [ ./mashup-plugin-errors.patch ];
+
   buildInputs = [ php ];
 
   nativeBuildInputs = [

@@ -1,0 +1,81 @@
+diff --git c/app/Models/PlaylistItem.php i/app/Models/PlaylistItem.php
+index 5be4e5a..bd8e091 100644
+--- c/app/Models/PlaylistItem.php
++++ i/app/Models/PlaylistItem.php
+@@ -6,6 +6,7 @@
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Database\Eloquent\Model;
+ use Illuminate\Database\Eloquent\Relations\BelongsTo;
++use Illuminate\Support\Facades\Log;
+ 
+ class PlaylistItem extends Model
+ {
+@@ -185,7 +186,16 @@ public function render(?Device $device = null): string
+ 
+         foreach ($plugins as $index => $plugin) {
+             $size = $this->getLayoutSize($index);
+-            $pluginMarkups[] = $plugin->render($size, false, $device);
++            // one failing plugin must not blank the whole mashup
++            try {
++                $pluginMarkups[] = $plugin->render($size, false, $device);
++            } catch (Exception $e) {
++                Log::error("Failed to render plugin {$plugin->id} ({$plugin->name}) in mashup playlist item {$this->id}: ".$e->getMessage());
++                $pluginMarkups[] = view('default-screens.plugin-error', [
++                    'size' => $size,
++                    'pluginName' => $plugin->name,
++                ])->render();
++            }
+         }
+ 
+         // Framework CSS/JS loads once per screen; first plugin in mashup order sets the version.
+diff --git c/resources/views/default-screens/plugin-error.blade.php i/resources/views/default-screens/plugin-error.blade.php
+new file mode 100644
+index 0000000..1cdf474
+--- /dev/null
++++ i/resources/views/default-screens/plugin-error.blade.php
+@@ -0,0 +1,10 @@
++@props(['size' => 'full', 'pluginName' => 'Recipe'])
++<x-trmnl::view size="{{ $size }}">
++    <x-trmnl::layout>
++        <x-trmnl::richtext gapSize="large" align="center">
++            <x-trmnl::title>Error on {{ $pluginName }}</x-trmnl::title>
++            <x-trmnl::content>Unable to render content. Please check server logs.</x-trmnl::content>
++        </x-trmnl::richtext>
++    </x-trmnl::layout>
++    <x-trmnl::title-bar />
++</x-trmnl::view>
+diff --git c/tests/Unit/Models/PlaylistItemTest.php i/tests/Unit/Models/PlaylistItemTest.php
+index 0625cc7..1ed7357 100644
+--- c/tests/Unit/Models/PlaylistItemTest.php
++++ i/tests/Unit/Models/PlaylistItemTest.php
+@@ -261,3 +261,30 @@
+         ->toContain('my-kitchen-display')
+         ->toContain('slot2:my-kitchen-display');
+ });
++
++test('playlist item mashup render replaces a failing plugin with an error tile', function (): void {
++    $user = User::factory()->create();
++    $device = Device::factory()->create(['user_id' => $user->id]);
++    $playlist = Playlist::factory()->create(['device_id' => $device->id]);
++
++    $working = Plugin::factory()->create([
++        'user_id' => $user->id,
++        'plugin_type' => 'recipe',
++        'markup_language' => 'liquid',
++        'render_markup' => 'working-plugin-content',
++    ]);
++    $broken = Plugin::factory()->create([
++        'user_id' => $user->id,
++        'name' => 'Broken Plugin',
++        'plugin_type' => 'recipe',
++        'markup_language' => 'blade',
++        'render_markup' => '<div>{{ $data[0]["invalid"] }}</div>',
++        'data_payload' => [],
++    ]);
++
++    $item = PlaylistItem::createMashup($playlist, '1Lx1R', [$working->id, $broken->id], 'Test Mashup', 1);
++
++    expect($item->render($device))
++        ->toContain('working-plugin-content')
++        ->toContain('Error on Broken Plugin');
++});
