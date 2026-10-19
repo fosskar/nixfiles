@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792164638,
-        "narHash": "sha256-4ww31MrF1uy3L8NU7EqS18gKgpFC4AjneYg5agiClxE=",
+        "lastModified": 1792417923,
+        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "95e65a34ccf72303c941ddab997e9f14696eb632",
+        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
         "type": "github"
       }
     },
@@ -1307,11 +1307,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792287208,
-        "narHash": "sha256-EelufPXwG8A1N05ItKsOXpHXVrqHwxrvuW6pbTZl67A=",
+        "lastModified": 1792379817,
+        "narHash": "sha256-XWsCn83P+XjsoFgDcWlaUUavIacUo063eaqKaLortJA=",
         "owner": "fosskar",
         "repo": "pi-pack",
-        "rev": "33930916fa6e04546279e428bfed7a83c8e9764b",
+        "rev": "ffd2f6787d33813059aaf80c6228a224cb8b8857",
         "type": "github"
       },
       "original": {
