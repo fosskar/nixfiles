@@ -180,26 +180,11 @@ in
 
       systemd.tmpfiles.rules = [
         "d ${configDir}/dashboards 0750 hass hass"
-      ];
-
-      # copies, not symlinks: home assistant reloads a yaml dashboard only when its mtime is
-      # newer than the cached load, and store paths have mtime 1, so edits needed a restart
-      systemd.services.home-assistant-dashboards = {
-        description = "Install Home Assistant yaml dashboards";
-        wantedBy = [ "home-assistant.service" ];
-        before = [ "home-assistant.service" ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-        };
-        script = lib.concatStrings (
-          lib.mapAttrsToList (name: dashboard: ''
-            ${lib.getExe' pkgs.coreutils "install"} -o hass -g hass -m 0640 \
-              ${yaml.generate "${name}.yaml" (import dashboard.file)} \
-              ${configDir}/dashboards/${name}.yaml
-          '') dashboards
-        );
-      };
+      ]
+      ++ lib.mapAttrsToList (
+        name: dashboard:
+        "L+ ${configDir}/dashboards/${name}.yaml - - - - ${yaml.generate "${name}.yaml" (import dashboard.file)}"
+      ) dashboards;
 
       # lan clients and the srv network (router rule srv_homeassistant) reach the frontend directly
       networking.firewall.allowedTCPPorts = [ port ];
