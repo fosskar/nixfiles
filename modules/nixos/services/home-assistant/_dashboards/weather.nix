@@ -90,19 +90,6 @@
               ];
             }
             {
-              type = "custom:meteoalarm-card";
-              entities = [
-                { entity = "sensor.hamburg_nord_current_warning_level"; }
-                { entity = "sensor.hamburg_nord_advance_warning_level"; }
-              ];
-              integration = "dwd";
-              disable_swiper = false;
-              hide_caption = false;
-              override_headline = false;
-              hide_when_no_warning = true;
-              scaling_mode = "headline_and_scale";
-            }
-            {
               type = "horizontal-stack";
               cards = [
                 {
