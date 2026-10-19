@@ -69,7 +69,10 @@ in
           "wyoming"
         ];
 
-        customComponents = [ pkgs.home-assistant-custom-components.roborock_custom_map ];
+        customComponents = [
+          pkgs.home-assistant-custom-components.roborock_custom_map
+          pkgs.home-assistant-custom-components.auth_oidc
+        ];
 
         customLovelaceModules = [
           pkgs.home-assistant-custom-lovelace-modules.bubble-card
@@ -84,6 +87,17 @@ in
           # general settings in the ui; keep the time zone managed in the ui
           homeassistant.time_zone = null;
           frontend.themes = "!include_dir_merge_named themes";
+          # client registered with authelia in homeAssistantProxy
+          auth_oidc = {
+            client_id = "home-assistant";
+            discovery_url = "https://auth.${flake-self.domains.public}/.well-known/openid-configuration";
+            display_name = "Authelia";
+            # the component defaults to the authentik group "admins"
+            roles = {
+              admin = "admin";
+              user = "user";
+            };
+          };
           lovelace.dashboards = lib.mapAttrs (
             name: dashboard:
             removeAttrs dashboard [ "file" ]
@@ -160,12 +174,44 @@ in
       ];
     };
 
-  # caddy runs on nixbox; the router lets the srv network reach home assistant (srv_homeassistant)
+  # caddy and authelia run on nixbox; the router lets the srv network reach home assistant (srv_homeassistant)
   flake.modules.nixos.homeAssistantProxy =
     { flake-self, ... }:
+    let
+      localHost = "ha.${flake-self.domains.local}";
+    in
     {
-      services.caddy.virtualHosts."ha.${flake-self.domains.local}".extraConfig = ''
+      services.caddy.virtualHosts.${localHost}.extraConfig = ''
         reverse_proxy http://${flake-self.hosts.ha-green.lan}:${toString port}
       '';
+
+      services.authelia.instances.main.settings.identity_providers.oidc = {
+        claims_policies.home_assistant.id_token = [
+          "groups"
+          "preferred_username"
+          "name"
+        ];
+        clients = [
+          {
+            client_id = "home-assistant";
+            client_name = "Home Assistant";
+            public = true;
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            token_endpoint_auth_method = "none";
+            consent_mode = "implicit";
+            authorization_policy = "users";
+            claims_policy = "home_assistant";
+            redirect_uris = [ "https://${localHost}/auth/oidc/callback" ];
+            scopes = [
+              "openid"
+              "profile"
+              "groups"
+            ];
+            response_types = [ "code" ];
+            grant_types = [ "authorization_code" ];
+          }
+        ];
+      };
     };
 }
