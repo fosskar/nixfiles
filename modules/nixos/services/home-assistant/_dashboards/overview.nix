@@ -57,11 +57,8 @@ let
 
   amber = "#ffb547";
 
-  # radicale calendars through the caldav integration -> dot color
+  # radicale calendars through the caldav integration -> dot color; every home assistant user sees these
   calendars = {
-    "calendar.personal" = "#4fc3f7";
-    "calendar.work" = amber;
-    "calendar.hobby" = "#3ddc97";
     "calendar.family" = "#b39ddb";
   };
 
