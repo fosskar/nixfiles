@@ -251,11 +251,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792446367,
-        "narHash": "sha256-UcqbVuRSkJ/dnxINK3/SAs0FBdALWFC554WCujctI5g=",
+        "lastModified": 1792475110,
+        "narHash": "sha256-O+bE0zgVqHnLxrdl8qRWg9BzKE035wBrSWefyg2Wgj4=",
         "owner": "trycua",
         "repo": "cua",
-        "rev": "d52ec6ebea78a8b7fcbb1d56ef8cf72f9eedea22",
+        "rev": "44f47953a422d87593a7ba9a48020799f22e2548",
         "type": "github"
       },
       "original": {
