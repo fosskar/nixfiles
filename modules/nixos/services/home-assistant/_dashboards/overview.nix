@@ -57,6 +57,14 @@ let
 
   amber = "#ffb547";
 
+  # radicale calendars through the caldav integration -> dot color
+  calendars = {
+    "calendar.personal" = "#4fc3f7";
+    "calendar.work" = amber;
+    "calendar.hobby" = "#3ddc97";
+    "calendar.family" = "#b39ddb";
+  };
+
   concat = builtins.concatStringsSep;
   jsList = xs: "[" + concat ", " (map (x: "'${x}'") xs) + "]";
   # button-card styles take a list of single-property maps
@@ -651,6 +659,58 @@ let
     '';
   };
 
+  agendaCache = "(window.overviewAgenda || (window.overviewAgenda = { t: 0, day: '', events: null, error: null }))";
+
+  agenda = sideCard {
+    # redraw on a timer: the events arrive after the first draw
+    update_timer = 15000;
+    tap_action = navigate "/calendar";
+    custom_fields = {
+      head =
+        sideHead "mdi:calendar-today" "Today"
+          "${agendaCache}.events ? ${agendaCache}.events.length + (${agendaCache}.events.length === 1 ? ' event' : ' events') : ''";
+      body = ''
+        [[[
+          const colors = ${builtins.toJSON calendars};
+          const c = ${agendaCache};
+          const start = new Date();
+          start.setHours(0, 0, 0, 0);
+          const end = new Date(start);
+          end.setDate(end.getDate() + 1);
+          // events are cached for 5 minutes and refetched when the day changes
+          if (Date.now() - c.t > 300000 || c.day !== start.toDateString()) {
+            c.t = Date.now();
+            c.day = start.toDateString();
+            const q = '?start=' + encodeURIComponent(start.toISOString()) + '&end=' + encodeURIComponent(end.toISOString());
+            Promise.all(Object.keys(colors).filter((e) => states[e]).map((e) => hass.callApi('GET', 'calendars/' + e + q).then((r) => r.map((ev) => Object.assign(ev, { cal: e })))))
+              .then((l) => { c.events = l.flat().sort((a, b) => (a.start.date ? 0 : 1) - (b.start.date ? 0 : 1) || new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date)); c.error = null; })
+              .catch((err) => { c.error = (err.body && err.body.message) || err.error || err.message || String(err); });
+          }
+          if (c.error) return '<div class="none">' + c.error + '</div>';
+          if (!c.events) return '<div class="none">Loading…</div>';
+          if (!c.events.length) return '<div class="none">Nothing today</div>';
+          const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+          const now = new Date();
+          return c.events.map((ev) => {
+            const allDay = !!ev.start.date;
+            const past = !allDay && new Date(ev.end.dateTime) < now;
+            const time = allDay ? 'all day' : helpers.formatTime24h(new Date(ev.start.dateTime));
+            return '<div class="ev' + (past ? ' past' : "") + '"><i style="background: ' + colors[ev.cal] + '"></i><span class="tm">' + time + '</span><span class="sm">' + esc(ev.summary) + '</span></div>';
+          }).join("");
+        ]]]
+      '';
+    };
+    extraStyles = ''
+      .head ha-icon { color: #4fc3f7; }
+      .ev { display: flex; align-items: center; gap: 10px; padding: 3px 0; }
+      .ev i { flex: none; width: 8px; height: 8px; border-radius: 50%; }
+      .ev .tm { flex: none; width: 52px; color: var(--secondary-text-color); font-size: 13px; }
+      .ev .sm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .ev.past { opacity: 0.45; }
+      .none { color: var(--secondary-text-color); }
+    '';
+  };
+
   roborock = sideCard {
     entity = vacuum;
     tap_action = navigate "/dashboard-roboclean";
@@ -740,6 +800,7 @@ in
               ];
             }) mediaPlayers
             ++ [
+              agenda
               energy
               roborock
               adguard
