@@ -1,64 +1,51 @@
 {
+  # text-to-speech and speech-to-text for the home assistant assist pipeline
   flake.modules.nixos.wyomingPiper =
-    {
-      flake-self,
-      lib,
-      pkgs,
-      ...
-    }:
+    { config, flake-self, ... }:
     let
-      wyomingAddress = "0.0.0.0";
-      httpAddress = "127.0.0.1";
-      listenPort = 10200;
-      httpPort = 18082;
-      localHost = "piper.${flake-self.domains.local}";
-      python = pkgs.python313.withPackages (ps: [
-        ps.asgiref
-        ps.flask
-        ps.swagger-ui-py
-        ps.wyoming
-      ]);
+      piperPort = 10200;
+      whisperPort = 10300;
+      host = flake-self.hosts.${config.networking.hostName}.lan;
     in
     {
       services.wyoming.piper.servers.default = {
         enable = true;
         voice = "en_US-ryan-high";
-        uri = "tcp://${wyomingAddress}:${toString listenPort}";
-        useCUDA = true;
+        uri = "tcp://0.0.0.0:${toString piperPort}";
+        useCUDA = false;
         zeroconf.enable = false;
       };
 
-      systemd.services.wyoming-piper-http = {
-        description = "HTTP wrapper for Wyoming Piper";
-        after = [ "wyoming-piper-default.service" ];
-        requires = [ "wyoming-piper-default.service" ];
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          ExecStart = "${python}/bin/python -m wyoming.http.tts_server --host ${httpAddress} --port ${toString httpPort} --uri tcp://127.0.0.1:${toString listenPort}";
-          Restart = "always";
-          RestartSec = 5;
-        };
+      # language "en" with the auto stt library and model picks a sherpa parakeet model
+      services.wyoming.faster-whisper.servers.default = {
+        enable = true;
+        language = "en";
+        uri = "tcp://0.0.0.0:${toString whisperPort}";
+        zeroconf.enable = false;
       };
 
-      networking.firewall.allowedTCPPorts = [ listenPort ];
-
-      systemd.services.wyoming-piper-default.serviceConfig = {
-        DevicePolicy = lib.mkForce "auto";
-        PrivateDevices = lib.mkForce false;
-      };
-
-      services.caddy.virtualHosts.${localHost}.extraConfig = ''
-        reverse_proxy http://${httpAddress}:${toString httpPort}
-      '';
+      # home assistant on ha-green connects from the lan network
+      networking.firewall.allowedTCPPorts = [
+        piperPort
+        whisperPort
+      ];
 
       services.gatus.settings.endpoints = [
         {
           name = "Wyoming Piper";
-          url = "https://${localHost}/api/info";
+          url = "tcp://${host}:${toString piperPort}";
+          conditions = [ "[CONNECTED] == true" ];
           enabled = true;
           alerts = [ { type = "matrix"; } ];
           interval = "5m";
-          conditions = [ "[STATUS] == 200" ];
+        }
+        {
+          name = "Wyoming Whisper";
+          url = "tcp://${host}:${toString whisperPort}";
+          conditions = [ "[CONNECTED] == true" ];
+          enabled = true;
+          alerts = [ { type = "matrix"; } ];
+          interval = "5m";
         }
       ];
     };
