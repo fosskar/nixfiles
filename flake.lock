@@ -1821,11 +1821,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792357385,
-        "narHash": "sha256-kNmAgIIjwHo9J1myOfxGRPYIH372md273ewbYOICT8k=",
+        "lastModified": 1792475274,
+        "narHash": "sha256-cKKMq6YaRIz5T6gxTHzQvZUbYxjTUP9qoU/steBafSk=",
         "owner": "fosskar",
         "repo": "wiki",
-        "rev": "a1ad68250557f7a68fa02acbf531ff5e8007820e",
+        "rev": "c32faa1606490509dad4e0afcf8e8a1eaf64a7cf",
         "type": "github"
       },
       "original": {
