@@ -13,15 +13,6 @@
           # enable tray UI only on graphical clients (niri workstations);
           # headless servers don't need it
           ui.enable = lib.mkDefault (lib.attrByPath [ "programs" "niri" "enable" ] false config);
-          # nixpkgs patches the daemon and ui socket path but not the ssh client
-          package = lib.mkDefault (
-            pkgs.netbird.overrideAttrs (prev: {
-              postPatch = prev.postPatch + ''
-                substituteInPlace client/ssh/client/client.go \
-                  --replace-fail 'unix:///var/run/netbird.sock' 'unix:///var/run/netbird/sock'
-              '';
-            })
-          );
           clients.default = {
             name = lib.mkDefault "netbird";
             interface = lib.mkDefault "wt0";
