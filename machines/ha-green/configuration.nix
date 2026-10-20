@@ -13,6 +13,9 @@
   # the haGreen module sets the board's consoles; srvos would append ttyS0/ttyAMA0 last
   srvos.boot.consoles = [ ];
 
+  # fwupd hangs probing the jetkvm's virtual cd-rom (sr0); nothing on this board is updatable via lvfs
+  services.fwupd.enable = false;
+
   # zigbee network of the former haos install; changing these means re-pairing every device
   services.zigbee2mqtt.settings = {
     serial.port = "/dev/serial/by-id/usb-Nabu_Casa_Home_Assistant_Connect_ZBT-1_34e9ba5d4deced11b4f8071d62c613ac-if00-port0";
