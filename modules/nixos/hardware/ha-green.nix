@@ -82,6 +82,8 @@
       boot.kernelParams = [
         "console=ttyS2,1500000n8"
         "console=tty0"
+        # the jetkvm's virtual cd-rom never answers; polling it hangs usb-storage and resets the usb device every ~33 s
+        "usb-storage.quirks=1d6b:0104:i"
       ];
     };
 }
