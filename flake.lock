@@ -915,38 +915,20 @@
     },
     "niri-nix": {
       "inputs": {
-        "niri-unstable": "niri-unstable",
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "xwayland-satellite-unstable": "xwayland-satellite-unstable"
+        ]
       },
       "locked": {
-        "lastModified": 1792329424,
-        "narHash": "sha256-cZf9K9vcq6D6tdObtBZHQyOpKHr4zmAs31u0cMohhh0=",
-        "rev": "ccd09f30f5230f95d88efe2dda58580037a09983",
+        "lastModified": 1792455079,
+        "narHash": "sha256-AKeJkyP0EMT4ML5ElJt2iodqEwGO4VJzVLuTHxhdQEs=",
+        "rev": "a3cb7ffe78691c7666ce09de024235064e0ecdbb",
         "type": "tarball",
-        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/ccd09f30f5230f95d88efe2dda58580037a09983.tar.gz"
+        "url": "https://codeberg.org/api/v1/repos/bananad3v/niri-nix/archive/a3cb7ffe78691c7666ce09de024235064e0ecdbb.tar.gz"
       },
       "original": {
         "type": "tarball",
         "url": "https://codeberg.org/BANanaD3V/niri-nix/archive/main.tar.gz"
-      }
-    },
-    "niri-unstable": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792041402,
-        "narHash": "sha256-1hapcTetO24oDgicjSNATQDHm7l5odiXk0XuaFosNJk=",
-        "owner": "YaLTeR",
-        "repo": "niri",
-        "rev": "45739bc072f9875a674d335ae724f10d3b35c665",
-        "type": "github"
-      },
-      "original": {
-        "owner": "YaLTeR",
-        "repo": "niri",
-        "type": "github"
       }
     },
     "nix-darwin": {
@@ -1831,22 +1813,6 @@
       "original": {
         "owner": "fosskar",
         "repo": "wiki",
-        "type": "github"
-      }
-    },
-    "xwayland-satellite-unstable": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792070459,
-        "narHash": "sha256-qGSyMXPHiXWp9/nE5Zs1DJN5NmZFvoxaBS5Y9i7p0Pc=",
-        "owner": "Supreeeme",
-        "repo": "xwayland-satellite",
-        "rev": "97a89cec53eb4f8788386a574450dd94c0538754",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Supreeeme",
-        "repo": "xwayland-satellite",
         "type": "github"
       }
     },
