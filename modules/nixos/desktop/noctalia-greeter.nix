@@ -1,23 +1,26 @@
 {
   flake.modules.nixos.noctalia-greeter =
     {
-      inputs,
+      config,
       lib,
       options,
       pkgs,
       ...
     }:
     {
-      imports = [ inputs.noctalia-greeter.nixosModules.default ];
-
       config = {
+        # the nixpkgs module leaves XDG_DATA_DIRS unset, so the greeter finds no sessions
+        services.greetd.settings.default_session.command = lib.concatStringsSep " " [
+          (lib.getExe' pkgs.coreutils "env")
+          "XDG_DATA_DIRS=${config.services.displayManager.sessionData.desktops}/share"
+          (lib.getExe' config.services.displayManager.noctalia-greeter.package "noctalia-greeter-session")
+        ];
         services.displayManager.noctalia-greeter = {
           enable = true;
-          package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
           settings.appearance.hide_logo = true;
           # shell.greeter_sync.auto_sync syncs unattended only with a polkit rule
           # for org.noctalia.greeter.sync-appearance.
-          passwordless-sync-users = [ "simon" ];
+          passwordlessSyncUsers = [ "simon" ];
         };
       }
       // lib.optionalAttrs (options ? preservation) {

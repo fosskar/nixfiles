@@ -202,16 +202,6 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    # wm
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    noctalia-greeter = {
-      url = "github:noctalia-dev/noctalia-greeter";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     tangled.url = "git+https://tangled.org/@tangled.org/core?shallow=1";
     tangled.inputs.nixpkgs.follows = "nixpkgs";
     tangled.inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";

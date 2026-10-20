@@ -1,4 +1,3 @@
-{ inputs, ... }:
 {
   flake.modules.homeManager.noctalia =
     {
@@ -141,7 +140,7 @@
 
         programs.noctalia = {
           enable = lib.mkDefault true;
-          package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          package = pkgs.noctalia;
           systemd.enable = lib.mkDefault true;
           customPalettes.grey-teal = palette;
 
