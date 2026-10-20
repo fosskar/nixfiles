@@ -69,6 +69,8 @@ in
           "adguard"
           "androidtv_remote"
           "apple_tv"
+          # radicale through the opencloud proxy; log in with an opencloud app token
+          "caldav"
           "cast"
           # default_config covers its python dependencies; listing it adds the go2rtc binary
           "go2rtc"
