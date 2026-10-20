@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792417923,
-        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
+        "lastModified": 1792495103,
+        "narHash": "sha256-HdNZFQDmqFPzNqUpwiIY9w9UfCJI7Kfpr9VbvwsE/ps=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
+        "rev": "90fa213c3441e585d5a60387e9244d0ed38efaf8",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
+        "rev": "90fa213c3441e585d5a60387e9244d0ed38efaf8",
         "type": "github"
       }
     },
@@ -1012,11 +1012,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792278270,
-        "narHash": "sha256-O1CJPGbzWt3hyYKf/QJLy5Lo97JI3G23Ux/VSOT/MiM=",
+        "lastModified": 1792491537,
+        "narHash": "sha256-NrPxQCeyDzeNyRzYjNPFiNzQkNGLxtI6CG6Sg1iHZ/8=",
         "owner": "Mic92",
         "repo": "nix-grpc-store",
-        "rev": "199d78a4a8d45b480acde25f4a191e6034f94c5d",
+        "rev": "17f4ff97a6fdac3c68458a0f15210762eba261ea",
         "type": "github"
       },
       "original": {
