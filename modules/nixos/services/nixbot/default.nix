@@ -109,7 +109,8 @@
           buildSystems = lib.mkDefault (
             [ pkgs.stdenv.hostPlatform.system ] ++ config.boot.binfmt.emulatedSystems
           );
-          evalSystems = [ pkgs.stdenv.hostPlatform.system ] ++ config.boot.binfmt.emulatedSystems;
+          # instance-wide: emulated systems here build every repo's aarch64 checks under qemu
+          evalSystems = [ pkgs.stdenv.hostPlatform.system ];
           buildConcurrency = 4;
           # buildGoModule buffers verbose output until Go finishes; large builds can be silent for over 20 minutes
           buildMaxSilentTime = 3600;

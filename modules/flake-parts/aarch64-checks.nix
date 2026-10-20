@@ -3,9 +3,9 @@ let
   inherit (inputs.nixpkgs) lib;
 in
 {
-  # the flake only has x86_64-linux systems; add the aarch64 machines' toplevels
-  # as checks so nixbot builds them, without building every package for aarch64
-  flake.checks.aarch64-linux =
+  # nixbot only evaluates x86_64-linux, so the aarch64 machines' toplevels sit
+  # under x86_64-linux checks; the derivations still build for aarch64 via binfmt
+  flake.checks.x86_64-linux =
     lib.mapAttrs' (name: cfg: lib.nameValuePair "nixos-${name}" cfg.config.system.build.toplevel)
       (
         lib.filterAttrs (
