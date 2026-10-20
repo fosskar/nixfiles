@@ -203,10 +203,6 @@
     };
 
     # wm
-    niri-nix = {
-      url = "https://codeberg.org/BANanaD3V/niri-nix/archive/main.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";

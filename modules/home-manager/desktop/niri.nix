@@ -1,4 +1,3 @@
-{ inputs, ... }:
 {
   flake.modules.homeManager.niri =
     {
@@ -17,12 +16,11 @@
       });
     in
     {
-      # home-manager's own wayland.windowManager.niri module; niri-nix supplies
-      # only the package. portals and xwayland-satellite stay with the nixos
-      # module, which already configures both for the whole session.
+      # portals and xwayland-satellite stay with the nixos module, which
+      # already configures both for the whole session
       wayland.windowManager.niri = {
         enable = true;
-        package = inputs.niri-nix.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
+        package = pkgs.niri;
         portalPackage = null;
         xwaylandSatellitePackage = null;
       };
