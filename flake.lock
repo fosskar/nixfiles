@@ -251,11 +251,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792475110,
-        "narHash": "sha256-O+bE0zgVqHnLxrdl8qRWg9BzKE035wBrSWefyg2Wgj4=",
+        "lastModified": 1792530495,
+        "narHash": "sha256-Hvtr65Flu31W7bJY2u9tkKNViFZsAWrMk7SZNMMBdnY=",
         "owner": "trycua",
         "repo": "cua",
-        "rev": "44f47953a422d87593a7ba9a48020799f22e2548",
+        "rev": "db87d6676d820da152291072df3715c05a0d7e62",
         "type": "github"
       },
       "original": {
@@ -580,17 +580,17 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1792417923,
-        "narHash": "sha256-3OQFJV6fxVI+Mr/AsmxT9RShpJAjMl6Qy5m+x9Sncw4=",
+        "lastModified": 1792495103,
+        "narHash": "sha256-HdNZFQDmqFPzNqUpwiIY9w9UfCJI7Kfpr9VbvwsE/ps=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
+        "rev": "90fa213c3441e585d5a60387e9244d0ed38efaf8",
         "type": "github"
       },
       "original": {
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "d210538b587a13c10972b422ef3199fb9386e07c",
+        "rev": "90fa213c3441e585d5a60387e9244d0ed38efaf8",
         "type": "github"
       }
     },
