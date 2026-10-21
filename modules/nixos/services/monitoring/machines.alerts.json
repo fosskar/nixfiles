@@ -979,7 +979,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "max by(machine, host, name) (systemd_units_active_code{active=\"failed\"})",
+              "expr": "max by(machine, host, name) (systemd_units_active_code{active=\"failed\",name!=\"fwupd-refresh.service\"})",
               "instant": true,
               "interval": "",
               "intervalMs": 15000,
