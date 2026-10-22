@@ -7,7 +7,6 @@
       ...
     }:
     let
-      configFile = config.environment.etc."crowdsec/config.yaml".source;
       apiKeyFile = "/var/lib/crowdsec/traefik-bouncer.key";
       pluginModule = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
       pluginSrc = pkgs.local.traefik-plugin-crowdsec-bouncer.src;
@@ -17,7 +16,7 @@
       config = lib.mkIf config.services.crowdsec.enable {
         services.crowdsec = {
           hub.collections = [ "crowdsecurity/traefik" ];
-          localConfig.acquisitions = [
+          settings.acquisitions = [
             {
               source = "file";
               filenames = [ "/var/log/traefik/access.log" ];
@@ -41,7 +40,7 @@
           dynamicConfigOptions.http.middlewares.crowdsec.plugin.crowdsec-bouncer = {
             enabled = true;
             crowdsecLapiKeyFile = apiKeyFile;
-            crowdsecLapiHost = config.services.crowdsec.settings.general.api.server.listen_uri;
+            crowdsecLapiHost = config.services.crowdsec.settings.config.api.server.listen_uri;
             crowdsecMode = "live";
             crowdsecAppsecEnabled = true;
             crowdsecAppsecHost = "127.0.0.1:7422";
@@ -65,17 +64,17 @@
               chgrp traefik '${apiKeyFile}'
               chmod 0640 '${apiKeyFile}'
             }
-            if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
+            if $cscli bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
               if [ -f ${apiKeyFile} ]; then
                 echo "bouncer already registered, key exists"
                 handOver
                 exit 0
               fi
               echo "bouncer registered but key missing, re-registering"
-              $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
+              $cscli bouncers delete ${lib.escapeShellArg bouncerName}
             fi
             rm -f '${apiKeyFile}'
-            if ! $cscli -c ${configFile} bouncers add --output raw -- ${lib.escapeShellArg bouncerName} >${apiKeyFile}; then
+            if ! $cscli bouncers add --output raw -- ${lib.escapeShellArg bouncerName} >${apiKeyFile}; then
               rm -f '${apiKeyFile}'
               exit 1
             fi
