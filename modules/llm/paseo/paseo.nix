@@ -19,8 +19,8 @@ let
 in
 {
   # no llm.externalSkills: each daemon (the desktop app's and paseo-server)
-  # copies its bundled skills into ~/.agents, ~/.claude and ~/.codex at
-  # start, selectable in the app, and refuses to write through symlinks
+  # installs its bundled skills into ~/.agents and ~/.claude when selected in
+  # the app, refreshes them at start, and refuses to write through symlinks
   flake.modules.homeManager.paseoDesktop =
     { inputs, pkgs, ... }:
     let
@@ -52,8 +52,10 @@ in
 
   # binds 0.0.0.0:6767 for direct clients over the netbird mesh; the port
   # stays out of the nixos firewall, which never sees netbird traffic. the
-  # password from nixos.paseoServer gates every non-local client. relay stays
-  # switchable in the app because no PASEO_RELAY_ENABLED override is set
+  # password from nixos.paseoServer gates every direct client, loopback and
+  # ssh tunnels included; relay clients are admitted on the pairing key
+  # alone. relay stays switchable in the app because no PASEO_RELAY_ENABLED
+  # override is set
   flake.modules.homeManager.paseoServer =
     {
       inputs,
