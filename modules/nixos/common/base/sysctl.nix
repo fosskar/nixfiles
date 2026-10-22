@@ -94,18 +94,16 @@
 
         # Bufferbloat mitigations + slight improvement in throughput & latency
         "net.ipv4.tcp_congestion_control" = lib.mkDefault "bbr";
-        "net.core.default_qdisc" = lib.mkDefault "cake";
-        # increase netdev receive queue higher backlog allows the kernel to handle bursts of incoming packets reducing the chance of packet loss
-        "net.core.netdev_max_backlog" = lib.mkDefault 16384;
+        # fq paces bbr per flow (tcp_bbr.c); unshaped cake only splits gso
+        # in software. the openwrt router shapes the wan with cake
+        "net.core.default_qdisc" = lib.mkDefault "fq";
         "net.core.netdev_budget" = lib.mkDefault 600;
         "net.ipv4.tcp_max_syn_backlog" = lib.mkDefault 8192;
         # defines the maximum ancillary buffer size allowed per socket
         "net.core.optmem_max" = lib.mkDefault 65536;
-        # increase the default and maximum buffer sizes which can enhance performance for high-throughput connections
-        "net.core.rmem_default" = lib.mkDefault 1048576;
+        # caps for explicit SO_RCVBUF/SO_SNDBUF (udp, quic); tcp autotuning
+        # follows tcp_rmem/tcp_wmem; the kernel sizes the tcp_rmem max up to 32 MiB
         "net.core.rmem_max" = lib.mkDefault 16777216;
-        "net.ipv4.tcp_rmem" = lib.mkDefault "4096 1048576 2097152";
-        "net.core.wmem_default" = lib.mkDefault 1048576;
         "net.core.wmem_max" = lib.mkDefault 16777216;
         "net.ipv4.tcp_wmem" = lib.mkDefault "4096 65536 16777216";
         "net.ipv4.udp_rmem_min" = lib.mkDefault 8192;
