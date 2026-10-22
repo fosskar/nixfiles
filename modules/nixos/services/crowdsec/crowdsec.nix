@@ -52,7 +52,12 @@
           localConfig.acquisitions = [
             {
               source = "journalctl";
-              journalctl_filter = [ "_TRANSPORT=syslog" ];
+              # dev-log is world-writable and SYSLOG_IDENTIFIER is sender-chosen; only root
+              # (sshd) entries may feed the ban scenarios
+              journalctl_filter = [
+                "_TRANSPORT=syslog"
+                "_UID=0"
+              ];
               labels.type = "syslog";
             }
             {
