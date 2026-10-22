@@ -31,6 +31,16 @@ in
         paseo.desktop
         paseo.cli
       ];
+
+      # main.js sets the wayland app_id to "Paseo"; the package only ships
+      # paseo-desktop.desktop, so docks and notifications find no icon
+      xdg.desktopEntries.Paseo = {
+        name = "Paseo";
+        exec = "paseo-desktop";
+        icon = "paseo-desktop";
+        noDisplay = true;
+        settings.StartupWMClass = "Paseo";
+      };
     };
 
   flake.modules.nixos.paseoServer = {
