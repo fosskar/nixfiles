@@ -126,9 +126,12 @@ in
             "BROWSER=remote-open"
           ];
           EnvironmentFile = osConfig.clan.core.vars.generators.paseo-server.files."paseo.env".path;
-          Restart = "on-failure";
+          # "shutdown" from the app or `paseo daemon stop` exits 0
+          Restart = "always";
           RestartSec = 5;
-          # the daemon finishes its own shutdown within 10s of SIGTERM
+          # the supervisor stops its agents itself and finishes within 10s of
+          # SIGTERM; the rest of the cgroup is killed only after that
+          KillMode = "mixed";
           TimeoutStopSec = 15;
         };
         Install.WantedBy = [ "default.target" ];
