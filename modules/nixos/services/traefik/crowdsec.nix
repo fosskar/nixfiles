@@ -42,8 +42,7 @@
             enabled = true;
             crowdsecLapiKeyFile = apiKeyFile;
             crowdsecLapiHost = config.services.crowdsec.settings.general.api.server.listen_uri;
-            # ip bans are dropped by crowdsec-firewall-bouncer; the plugin only runs the waf
-            crowdsecMode = "appsec";
+            crowdsecMode = "live";
             crowdsecAppsecEnabled = true;
             crowdsecAppsecHost = "127.0.0.1:7422";
             # since v1.7 the default rejects requests whose body appsec cannot
