@@ -360,6 +360,30 @@ in
           ip = "192.168.20.211";
           mac = "30:52:53:02:BF:49";
         };
+
+        # a records for the statically addressed machines (flake.hosts in
+        # modules/flake-parts/hosts.nix). they take no dhcpv4 lease, so
+        # <name>.lan otherwise only resolves to odhcpd's dhcpv6 aaaa records
+        nixbox = {
+          _type = "domain";
+          name = "nixbox";
+          ip = "192.168.20.200";
+        };
+        nixworker = {
+          _type = "domain";
+          name = "nixworker";
+          ip = "192.168.20.210";
+        };
+        desktop = {
+          _type = "domain";
+          name = "desktop";
+          ip = "192.168.10.100";
+        };
+        ha_green = {
+          _type = "domain";
+          name = "ha-green";
+          ip = "192.168.10.50";
+        };
       };
 
       # clients → AdGuard (port 53, filtering) → unbound (port 5335, recursive resolution) → root DNS servers (-> dnsmaq (port 54, caching, DHCP integration, local DNS))
