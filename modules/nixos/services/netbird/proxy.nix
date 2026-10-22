@@ -15,9 +15,6 @@
       stateDir = "/var/lib/netbird-proxy";
       # root-only, so no service uid can swap a credential source for a symlink
       credentialsDir = "/var/lib/netbird-proxy-credentials";
-      configFile =
-        (pkgs.formats.yaml { }).generate "crowdsec.yaml"
-          config.services.crowdsec.settings.general;
       inherit (cfg.crowdsec) apiKeyFile;
       tcpPorts = lib.concatMapStringsSep ", " toString ([ 443 ] ++ cfg.publicTCPPorts);
       bouncerName = "netbird-proxy";
@@ -142,7 +139,7 @@
 
           networking.firewall.allowedTCPPorts = cfg.publicTCPPorts;
 
-          services.crowdsec.localConfig.acquisitions = lib.mkIf cfg.crowdsec.enable [
+          services.crowdsec.settings.acquisitions = lib.mkIf cfg.crowdsec.enable [
             {
               source = "journalctl";
               journalctl_filter = [ "_SYSTEMD_UNIT=netbird-proxy.service" ];
@@ -165,13 +162,13 @@
               cscli=${lib.getExe' config.services.crowdsec.package "cscli"}
               stamp=/var/lib/crowdsec/${bouncerName}.key.sha256
               want=$(sha256sum < "$CREDENTIALS_DIRECTORY/api-key")
-              if $cscli -c ${configFile} bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
+              if $cscli bouncers list --output json | ${lib.getExe pkgs.jq} -e -- ${lib.escapeShellArg "any(.[]; .name == \"${bouncerName}\")"} >/dev/null; then
                 if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$want" ]; then
                   exit 0
                 fi
-                $cscli -c ${configFile} bouncers delete ${lib.escapeShellArg bouncerName}
+                $cscli bouncers delete ${lib.escapeShellArg bouncerName}
               fi
-              $cscli -c ${configFile} bouncers add --key "$(cat "$CREDENTIALS_DIRECTORY/api-key")" -- ${lib.escapeShellArg bouncerName} >/dev/null
+              $cscli bouncers add --key "$(cat "$CREDENTIALS_DIRECTORY/api-key")" -- ${lib.escapeShellArg bouncerName} >/dev/null
               printf '%s\n' "$want" > "$stamp"
             '';
             serviceConfig = {
@@ -370,7 +367,7 @@
           };
 
           # parse info-level `response:` journal lines into http_access-log shape for stock http-* scenarios
-          services.crowdsec.localConfig.parsers.s01Parse = lib.mkIf cfg.crowdsec.enable [
+          services.crowdsec.settings.parsers.s01Parse = lib.mkIf cfg.crowdsec.enable [
             {
               onsuccess = "next_stage";
               filter = "evt.Line.Labels.type == 'netbird-proxy'";
