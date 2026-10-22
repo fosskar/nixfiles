@@ -26,18 +26,30 @@
       };
 
       # one cert per machine, CN = machine name (the daemon's access rules
-      # match on it) and SAN = the name clients dial. serverAuth and
-      # clientAuth, so the same cert works in either role
+      # match on it) and SAN = the names clients dial, plus extraSans such as
+      # the builder's lan ip. serverAuth and clientAuth, so the same cert
+      # works in either role
       certVars =
         {
+          lib,
           pkgs,
           machineName,
           domain,
           keyOwner,
+          extraSans ? [ ],
         }:
+        let
+          sans = [
+            "DNS:${machineName}.${domain}"
+            "DNS:${machineName}"
+          ]
+          ++ extraSans;
+        in
         {
           clan.core.vars.generators.${certGenerator} = {
             dependencies = [ caGenerator ];
+            # a changed san list regenerates the cert; unset keeps existing certs
+            validation = lib.mkIf (extraSans != [ ]) { sans = lib.concatStringsSep "," sans; };
             files."cert.pem".secret = false;
             files."key.pem" = {
               secret = true;
@@ -48,8 +60,8 @@
             script = ''
               openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes \
                 -subj "/CN=${machineName}" -keyout "$out/key.pem" -out csr.pem
-              printf 'subjectAltName=DNS:%s,DNS:%s\nextendedKeyUsage=serverAuth,clientAuth\n' \
-                "${machineName}.${domain}" "${machineName}" > ext.cnf
+              printf 'subjectAltName=%s\nextendedKeyUsage=serverAuth,clientAuth\n' \
+                "${lib.concatStringsSep "," sans}" > ext.cnf
               openssl x509 -req -in csr.pem -days 3650 \
                 -CA "$in/${caGenerator}/ca.crt" -CAkey "$in/${caGenerator}/ca.key" \
                 -set_serial "0x$(openssl rand -hex 16)" -extfile ext.cnf \
@@ -115,6 +127,9 @@
                 clientMachines = lib.filter (m: !(builderMachines ? ${m})) (
                   lib.attrNames (roles.client.machines or { })
                 );
+                machineName = config.clan.core.settings.machine.name;
+                # clients on the home lan dial this builder's lan ip
+                lanClients = lib.filter (m: self.lanAddress m machineName != null) clientMachines;
                 vars = config.clan.core.vars.generators;
               in
               {
@@ -122,16 +137,16 @@
                   self.inputs.nix-grpc-store.nixosModules.server
                   (caVars pkgs)
                   (certVars {
-                    inherit pkgs;
-                    machineName = config.clan.core.settings.machine.name;
+                    inherit lib pkgs machineName;
                     domain = config.clan.core.settings.domain;
                     keyOwner = "nix-grpc-daemon";
+                    extraSans = lib.optional (lanClients != [ ]) "IP:${self.hosts.${machineName}.lan}";
                   })
                 ];
 
                 services.nix-grpc-daemon = {
                   enable = true;
-                  # clients dial <builder>.<domain>, which resolves to the yggdrasil v6 address
+                  # lan clients dial the lan ip, the rest <builder>.<domain> (yggdrasil)
                   listen = "[::]:${toString port}";
                   tls = {
                     certFile = vars.${certGenerator}.files."cert.pem".path;
@@ -148,10 +163,14 @@
                   }) clientMachines;
                 };
 
-                # clients dial the yggdrasil address, so that is the only
-                # interface that needs the port; ygg traffic is already limited
-                # to clan peers by the yggdrasil service
+                # ygg traffic is already limited to clan peers by the yggdrasil
+                # service; on the lan only the lan clients get the port
                 networking.firewall.interfaces.ygg.allowedTCPPorts = [ port ];
+                networking.firewall.extraInputRules = lib.mkIf (lanClients != [ ]) ''
+                  ip saddr { ${
+                    lib.concatMapStringsSep ", " (m: self.hosts.${m}.lan) lanClients
+                  } } tcp dport ${toString port} accept
+                '';
 
                 nix.settings = {
                   max-jobs = lib.mkDefault settings.maxJobs;
@@ -204,7 +223,7 @@
                 ++ lib.optionals (!isBuilder) [
                   (caVars pkgs)
                   (certVars {
-                    inherit pkgs;
+                    inherit lib pkgs;
                     machineName = machine.name;
                     domain = config.clan.core.settings.domain;
                     keyOwner = "root";
@@ -225,11 +244,12 @@
                     builderName: builder:
                     let
                       inherit (builder) settings;
+                      host = lib.defaultTo "${builderName}.${config.clan.core.settings.domain}" (
+                        self.lanAddress machine.name builderName
+                      );
                     in
                     {
-                      hostName = "grpc://${builderName}.${config.clan.core.settings.domain}:${toString port}?ca-cert=${
-                        vars.${caGenerator}.files."ca.crt".path
-                      }";
+                      hostName = "grpc://${host}:${toString port}?ca-cert=${vars.${caGenerator}.files."ca.crt".path}";
                       protocol = null;
                       inherit (settings)
                         systems

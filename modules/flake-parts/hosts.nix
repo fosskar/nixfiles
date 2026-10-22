@@ -1,3 +1,15 @@
+{ config, lib, ... }:
+let
+  inherit (config.flake) hosts router;
+  subnet = ip: lib.concatStringsSep "." (lib.init (lib.splitString "." ip));
+  # machines that never leave the home lan; lpt-titan roams
+  stationary = [
+    "nixbox"
+    "nixworker"
+    "desktop"
+    "ha-green"
+  ];
+in
 {
   # machine ip facts, single source of truth. pure metadata; reachable
   # everywhere via self/flake-self (modules) and config.flake.hosts
@@ -20,4 +32,16 @@
     lan = "192.168.10.1";
     srv = "192.168.20.1";
   };
+
+  # lan ip that `from` dials to reach `to` without an overlay, or null when
+  # `from` must use the clan name <to>.s. both must be stationary and `to`
+  # must sit in srv: the router forwards lan -> srv but rejects srv -> lan
+  flake.lanAddress =
+    from: to:
+    if
+      lib.elem from stationary && lib.elem to stationary && subnet hosts.${to}.lan == subnet router.srv
+    then
+      hosts.${to}.lan
+    else
+      null;
 }
