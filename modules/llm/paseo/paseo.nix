@@ -68,7 +68,9 @@ in
   # override is set
   flake.modules.homeManager.paseoServer =
     {
+      config,
       inputs,
+      lib,
       osConfig,
       pkgs,
       self,
@@ -79,6 +81,32 @@ in
     in
     {
       home.packages = [ paseo.cli ];
+
+      # daemon.enableTerminalAgentHooks cannot write the home-manager
+      # settings.json (EROFS); declare the hooks it would install
+      programs.claude-code = lib.mkIf config.programs.claude-code.enable {
+        settings.hooks =
+          lib.genAttrs
+            [
+              "UserPromptSubmit"
+              "Stop"
+              "StopFailure"
+              "SessionEnd"
+              "Notification"
+            ]
+            (event: [
+              {
+                matcher = "";
+                hooks = [
+                  {
+                    type = "command";
+                    command = ''if [ -n "$PASEO_TERMINAL_ID" ]; then "''${PASEO_HOOK_CLI:-paseo}" hooks claude ${event}; fi'';
+                    timeout = 10;
+                  }
+                ];
+              }
+            ]);
+      };
 
       systemd.user.services.paseo-server = {
         Unit.Description = "Paseo daemon";
