@@ -1,4 +1,5 @@
-_: {
+{ self, ... }:
+{
   flake.modules."clan.service".harmonia =
     { lib, ... }:
     let
@@ -97,7 +98,7 @@ _: {
                     in
                     flip map (attrNames roles.server.machines) (
                       machineName:
-                      "http://${machineName}${dotDomain}:${
+                      "http://${lib.defaultTo "${machineName}${dotDomain}" (self.lanAddress config.networking.hostName machineName)}:${
                         toString roles.server.machines.${machineName}.settings.port
                       }?priority=3"
                     );

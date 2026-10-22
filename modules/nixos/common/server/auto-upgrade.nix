@@ -24,8 +24,13 @@
       # deployed, by this timer or by clan. clan evaluates from a path: store
       # copy, so flake-self carries no lastModified to stamp the commit with
       currentGeneration = "/nix/var/nix/profiles/$(readlink /nix/var/nix/profiles/system)";
-      cache = "http://nixworker.${config.clan.core.settings.domain}:3902";
       machine = config.clan.core.settings.machine.name;
+      # the niks3 cache; lan machines dial the bucket's <machine>.lan alias
+      cache =
+        if flake-self.lanAddress machine "nixworker" != null then
+          "http://nixworker.lan:3902"
+        else
+          "http://nixworker.${config.clan.core.settings.domain}:3902";
       vars = config.clan.core.vars.generators.radicle-node;
 
       # ExecCondition: exit 1 skips the run quietly, 255 fails the unit so the

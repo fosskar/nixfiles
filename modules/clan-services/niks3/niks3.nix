@@ -186,8 +186,14 @@
                       inherit (config.clan.core.settings) domain;
                       dotDomain = if domain != null then ".${domain}" else "";
                     in
+                    # the s3 web endpoint picks the bucket by Host, so lan clients
+                    # dial the <machine>.lan alias; garage rejects ip aliases
                     flip map (attrNames roles.server.machines) (
-                      machineName: "http://${machineName}${dotDomain}:3902?priority=1"
+                      machineName:
+                      if self.lanAddress config.networking.hostName machineName != null then
+                        "http://${machineName}.lan:3902?priority=1"
+                      else
+                        "http://${machineName}${dotDomain}:3902?priority=1"
                     );
 
                   trusted-public-keys = [
