@@ -22,13 +22,15 @@
       tcpPorts = lib.concatMapStringsSep ", " toString ([ 443 ] ++ cfg.publicTCPPorts);
       bouncerName = "netbird-proxy";
       # upstream emits the access line only at debug, next to several other debug
-      # lines per request; raise just that line to info so crowdsec can parse it
+      # lines per request; raise just that line to info so crowdsec can parse it.
+      # the decoded path can hold a newline or fake fields, so quote host and path
       proxyPackage =
         if cfg.crowdsec.enable then
           cfg.package.overrideAttrs (old: {
             postPatch = (old.postPatch or "") + ''
               substituteInPlace proxy/internal/accesslog/middleware.go \
-                --replace-fail 'l.logger.Debugf("response:' 'l.logger.Infof("response:'
+                --replace-fail 'l.logger.Debugf("response:' 'l.logger.Infof("response:' \
+                --replace-fail 'host=%s path=%s status=' 'host=%q path=%q status='
             '';
           })
         else
@@ -376,10 +378,13 @@
               filter = "evt.Line.Labels.type == 'netbird-proxy'";
               name = "nixfiles/netbird-proxy-logs";
               description = "parse netbird-proxy access log lines";
+              # go %q escapes quotes and control bytes, so NBQUOTED cannot run past the field
+              pattern_syntax.NBQUOTED = ''(?:[^"\\]|\\.)*'';
               nodes = [
                 {
                   grok = {
-                    pattern = "%{TIMESTAMP_ISO8601} INFO %{DATA}middleware.go:%{NUMBER}: response: request_id=%{DATA:request_id} method=%{WORD:method} host=%{HOSTNAME:host} path=%{NOTSPACE:path} status=%{INT:status} duration=%{NOTSPACE:duration} source=%{IP:source_ip} origin=%{DATA:origin} service=%{DATA:service_id} account=%{NOTSPACE:account_id}$";
+                    # verb and request are the names crowdsecurity/http-logs reads
+                    pattern = "\\]: %{TIMESTAMP_ISO8601} INFO proxy/internal/accesslog/middleware.go:%{NUMBER}: response: request_id=%{NOTSPACE:request_id} method=%{WORD:verb} host=\"%{NBQUOTED:host}\" path=\"%{NBQUOTED:request}\" status=%{INT:status} duration=%{NOTSPACE:duration} source=%{IP:source_ip} origin=%{DATA:origin} service=%{DATA:service_id} account=%{NOTSPACE:account_id}$";
                     apply_on = "Line.Raw";
                   };
                   statics = [
@@ -397,11 +402,11 @@
                     }
                     {
                       meta = "http_path";
-                      expression = "evt.Parsed.path";
+                      expression = "evt.Parsed.request";
                     }
                     {
                       meta = "http_verb";
-                      expression = "evt.Parsed.method";
+                      expression = "evt.Parsed.verb";
                     }
                     {
                       meta = "http_hostname";
