@@ -37,13 +37,18 @@
           ];
         };
       };
+      # rpc over the lan: yggdrasil caps the 10g link between the two nodes
       roles.node.machines = {
         "nixbox".settings = {
           capacity = "1T";
           dataPath = "/tank/apps/garage";
           ui.enable = true;
+          rpcAddr = config.flake.hosts.nixbox.lan;
         };
-        "nixworker".settings.capacity = "1T";
+        "nixworker".settings = {
+          capacity = "1T";
+          rpcAddr = config.flake.hosts.nixworker.lan;
+        };
       };
     };
 
