@@ -293,6 +293,8 @@
                         # so peers that go offline leave loops logging ~1M errors/day;
                         # re-enable when cunicu.li/go-rosenpass fixes the retransmit timer
                         RosenpassEnabled = false;
+                        # the daemon defaults an absent key to true; pin it to the sshServer role
+                        ServerSSHAllowed = sshSettings != null;
                       };
                     };
                   };
