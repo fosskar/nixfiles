@@ -12,7 +12,6 @@
     self.modules.nixos.amdGpu
     self.modules.nixos.amdCpu
     self.modules.nixos.lanzaboote
-    self.modules.nixos.t3code
     self.modules.nixos.usbguard
     self.modules.nixos.yubikeyGpgSsh
     self.modules.nixos.yubikeyU2f

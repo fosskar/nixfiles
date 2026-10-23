@@ -41,7 +41,6 @@ in
         self.modules.homeManager.sofka
         self.modules.homeManager.ssh
         self.modules.homeManager.starship
-        self.modules.homeManager.t3codeServer
         self.modules.homeManager.workspaceHost
         self.modules.homeManager.yazi
         self.modules.homeManager.zellij
