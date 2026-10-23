@@ -46,6 +46,7 @@
       self.modules.homeManager.ssh
       self.modules.homeManager.starship
       self.modules.homeManager.tmux
+      self.modules.homeManager.tuios
       self.modules.homeManager.voxtype
       self.modules.homeManager.workspaceClient
       self.modules.homeManager.udiskie
