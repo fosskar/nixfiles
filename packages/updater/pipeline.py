@@ -155,6 +155,17 @@ def publish(
         # branch was pushed but PR creation failed (e.g. rate limited);
         # fall through to create it now.
     else:
+        # a tip someone else committed on an open PR is a fix for this
+        # update; recreating the branch from main would drop it.
+        if remote.returncode == 0 and _find_pr(prs, branch) is not None:
+            tip_committer = capture(
+                repo=repo,
+                cmd=["git", "log", "-1", "--format=%ce", f"origin/{branch}"],
+            ).stdout.strip()
+            own = capture(repo=repo, cmd=["git", "config", "user.email"]).stdout
+            if tip_committer != own.strip():
+                print(f":: {branch} - tip committed by {tip_committer}, keeping it")
+                return None
         # Explicit lease value: the effect clone is single-branch, so git has
         # no fetch refspec for this branch and a bare --force-with-lease
         # assumes "must not exist on the remote" - rejecting the push with
