@@ -42,6 +42,8 @@
       # enable runtime power management for intel gpu
       services.udev.extraRules = ''
         ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{class}=="0x030000", ATTR{power/control}="auto"
+        # the arc b50's hda function has no driver on headless hosts; left at "on" it pins the card's pcie switch in d0
+        ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0xe2f7", ATTR{power/control}="auto"
       '';
     };
 }
