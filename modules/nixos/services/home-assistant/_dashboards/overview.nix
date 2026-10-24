@@ -774,8 +774,8 @@ let
   agendaCache = "(window.overviewAgenda || (window.overviewAgenda = { t: 0, day: '', events: null, error: null }))";
 
   agenda = sideCard {
-    # redraw on a timer: the events arrive after the first draw
-    update_timer = 15000;
+    # redraw on a timer: the events arrive after the first draw, so poll fast until they are cached
+    update_timer = "[[[ const c = ${agendaCache}; return c.events || c.error ? 15000 : 500; ]]]";
     tap_action = navigate "/calendar";
     custom_fields = {
       head =
