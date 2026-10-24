@@ -8,6 +8,7 @@ let
       icon = "mdi:sofa";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_living_room";
       light = "light.living_room_bulbs";
+      thermostat = "thermostat_living_room_sonoff";
     }
     {
       id = "bedroom";
@@ -436,6 +437,104 @@ let
         })
       ];
 
+  # rooms with a light or thermostat get inline buttons and a bubble-card pop-up at #<id>
+  hasControls = room: room ? light || room ? thermostat;
+
+  roomButtons =
+    room:
+    container "display: flex !important; flex-wrap: wrap; gap: 8px;" (
+      (
+        if room ? light then
+          [
+            (smallButton
+              "[[[ return states['${room.light}'] && states['${room.light}'].state === 'on' ? 'Lights on' : 'Lights off'; ]]]"
+              "mdi:lightbulb-outline"
+              (perform "light.toggle" { entity_id = room.light; } { })
+            )
+          ]
+        else
+          [ ]
+      )
+      ++ (
+        if room ? thermostat then
+          [
+            # the more-info dialog has the setpoint dial
+            (smallButton
+              "[[[ const c = states['climate.${room.thermostat}']; if (!c) return 'Heating'; return c.state === 'off' ? 'Heating off' : (c.attributes.hvac_action === 'heating' ? 'Heating to ' : 'Target ') + c.attributes.temperature + '°'; ]]]"
+              "mdi:radiator"
+              {
+                action = "more-info";
+                entity = "climate.${room.thermostat}";
+              }
+            )
+          ]
+        else
+          [ ]
+      )
+    );
+
+  roomPopup = room: {
+    type = "custom:bubble-card";
+    card_type = "pop-up";
+    hash = "#${room.id}";
+    inherit (room) name icon;
+    cards =
+      (
+        if room ? light then
+          [
+            {
+              type = "tile";
+              entity = room.light;
+              name = "Lights";
+              features_position = "bottom";
+              features = [
+                { type = "light-brightness"; }
+                { type = "light-color-temp"; }
+              ];
+            }
+          ]
+        else
+          [ ]
+      )
+      ++ (
+        if room ? thermostat then
+          [
+            {
+              type = "thermostat";
+              entity = "climate.${room.thermostat}";
+              name = "Heating";
+              features = [
+                {
+                  type = "climate-hvac-modes";
+                  hvac_modes = [
+                    "heat"
+                    "auto"
+                    "off"
+                  ];
+                }
+              ];
+            }
+            {
+              type = "tile";
+              entity = "script.pause_heating";
+              name = "Pause heating 5 min";
+            }
+            {
+              type = "tile";
+              entity = "switch.${room.thermostat}_open_window";
+              name = "Open window detection";
+            }
+            {
+              type = "tile";
+              entity = "switch.${room.thermostat}_smart_temperature_control";
+              name = "Smart temperature control";
+            }
+          ]
+        else
+          [ ]
+      );
+  };
+
   roomCard =
     room:
     let
@@ -448,7 +547,7 @@ let
       type = "custom:button-card";
       entity = if lit then room.light else temperature;
       inherit (room) name icon;
-      tap_action = if lit then { action = "toggle"; } else navigate "/dashboard-climate";
+      tap_action = if hasControls room then navigate "#${room.id}" else navigate "/dashboard-climate";
       hold_action = {
         action = "more-info";
         entity = temperature;
@@ -468,8 +567,8 @@ let
           ]]]
         '';
         sub =
-          if lit then
-            "[[[ return ${isOn} ? 'lights on' : 'lights off'; ]]]"
+          if hasControls room then
+            { card = roomButtons room; }
           else if room.id == "outside" then
             "[[[ return helpers.localize(states['weather.forecast_home']); ]]]"
           else
@@ -732,27 +831,6 @@ let
     };
   };
 
-  heating = sideCard {
-    entity = "climate.thermostat_living_room_sonoff";
-    # the more-info dialog has the setpoint dial
-    tap_action.action = "more-info";
-    custom_fields = {
-      head =
-        sideHead "mdi:radiator" "Heating"
-          "helpers.localize(entity) + (entity.attributes.hvac_action ? ' · ' + entity.attributes.hvac_action : '')";
-      body = "[[[ return '<div class=\"big\">' + entity.attributes.current_temperature + '°<small>' + (entity.state === 'off' ? 'off' : 'target ' + entity.attributes.temperature + '°') + '</small></div>'; ]]]";
-      foot.card = container "display: flex !important; gap: 8px;" [
-        (smallButton "Pause 5 min" "mdi:window-open-variant" (
-          perform "script.turn_on" { entity_id = "script.pause_heating"; } { }
-        ))
-        # turning on from off sets heat, not auto
-        (smallButton "On / off" "mdi:power" (
-          perform "climate.toggle" { entity_id = "climate.thermostat_living_room_sonoff"; } { }
-        ))
-      ];
-    };
-  };
-
   adguard = sideCard {
     entity = "switch.adguard_home_protection";
     tap_action = navigate "/internet-security";
@@ -818,12 +896,17 @@ in
               ];
             }) mediaPlayers
             ++ [
-              heating
               agenda
               energy
               roborock
               adguard
             ];
+        }
+        # bubble-card pop-ups stay hidden until their hash is opened
+        {
+          type = "grid";
+          column_span = 3;
+          cards = map roomPopup (builtins.filter hasControls rooms);
         }
       ];
     }
