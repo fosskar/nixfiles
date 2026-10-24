@@ -1,68 +1,73 @@
 {
-  flake.modules.nixos.server = _: {
-    boot = {
-      kernelModules = [ "nf_conntrack" ];
+  flake.modules.nixos.server =
+    { lib, pkgs, ... }:
+    {
+      boot = {
+        # the zfs module overrides this with the newest zfs-compatible kernel
+        kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
 
-      kernelParams = [
-        # auto-reboot on kernel panic (headless servers)
-        "panic=1"
-        "boot.panic_on_fail"
+        kernelModules = [ "nf_conntrack" ];
 
-        # panic on kernel oops to stop exploits mid-flight; workstations keep
-        # the default (kill the faulting task) and oops_limit=10000
-        "oops=panic"
+        kernelParams = [
+          # auto-reboot on kernel panic (headless servers)
+          "panic=1"
+          "boot.panic_on_fail"
 
-        # no slab merging: harder heap exploitation, costs some performance
-        "slab_nomerge"
+          # panic on kernel oops to stop exploits mid-flight; workstations keep
+          # the default (kill the faulting task) and oops_limit=10000
+          "oops=panic"
 
-        # Disable debugfs which exposes sensitive information about the kernel
-        "debugfs=off"
+          # no slab merging: harder heap exploitation, costs some performance
+          "slab_nomerge"
 
-        # additional integrity auditing messages
-        "integrity_audit=1"
-      ];
+          # Disable debugfs which exposes sensitive information about the kernel
+          "debugfs=off"
 
-      blacklistedKernelModules = [
-        # audio (not needed on servers)
-        "snd_hda_intel"
-        "snd_hda_codec"
-        "snd_hwdep"
-        "snd_pcm"
-        "snd_timer"
-        "snd"
-        "soundcore"
+          # additional integrity auditing messages
+          "integrity_audit=1"
+        ];
 
-        # bluetooth (not needed on servers)
-        "ath3k"
-        "bluetooth"
-        "btusb"
+        blacklistedKernelModules = [
+          # audio (not needed on servers)
+          "snd_hda_intel"
+          "snd_hda_codec"
+          "snd_hwdep"
+          "snd_pcm"
+          "snd_timer"
+          "snd"
+          "soundcore"
 
-        # wifi (not needed on servers)
-        "cfg80211"
-        "rfkill"
+          # bluetooth (not needed on servers)
+          "ath3k"
+          "bluetooth"
+          "btusb"
 
-        # rare filesystems
-        "adfs"
-        "affs"
-        "bfs"
-        "befs"
-        "cramfs"
-        "efs"
-        "exofs"
-        "freevxfs"
-        "f2fs"
-        "hfs"
-        "hpfs"
-        "jfs"
-        "minix"
-        "nilfs2"
-        "ntfs"
-        "omfs"
-        "qnx4"
-        "qnx6"
-        "sysv"
-        "ufs"
-      ];
+          # wifi (not needed on servers)
+          "cfg80211"
+          "rfkill"
+
+          # rare filesystems
+          "adfs"
+          "affs"
+          "bfs"
+          "befs"
+          "cramfs"
+          "efs"
+          "exofs"
+          "freevxfs"
+          "f2fs"
+          "hfs"
+          "hpfs"
+          "jfs"
+          "minix"
+          "nilfs2"
+          "ntfs"
+          "omfs"
+          "qnx4"
+          "qnx6"
+          "sysv"
+          "ufs"
+        ];
+      };
     };
-  };
 }

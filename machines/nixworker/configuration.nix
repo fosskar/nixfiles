@@ -1,7 +1,6 @@
 {
   self,
   nflib,
-  pkgs,
   ...
 }:
 {
@@ -38,9 +37,6 @@
   programs.nix-ld.enable = true;
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-
-  # 7.x lets xe use d3cold on battlemage; 6.18 disables it for every bmg card
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # ssh sessions (sshd-session lands in user.slice too) win against nixbot
   # and remote builds under contention; idle sessions cost builds nothing
