@@ -282,6 +282,40 @@ in
             }
             (
               let
+                sensor = "sensor.temperature_and_humidity_sensor_aqara_living_room_temperature";
+              in
+              {
+                id = "trv_living_room_external_temperature";
+                alias = "trv living room - feed aqara temperature";
+                description = "sonoff trvzb regulates on the aqara room sensor instead of its radiator-side sensor";
+                triggers = [
+                  {
+                    trigger = "state";
+                    entity_id = sensor;
+                  }
+                  # the aqara only reports on change; resend so the valve does not fall back to remote_source_offline
+                  {
+                    trigger = "time_pattern";
+                    minutes = "/30";
+                  }
+                ];
+                conditions = [
+                  {
+                    condition = "template";
+                    value_template = "{{ states('${sensor}') | is_number }}";
+                  }
+                ];
+                actions = [
+                  {
+                    action = "number.set_value";
+                    target.entity_id = "number.thermostat_living_room_sonoff_external_temperature_input";
+                    data.value = "{{ states('${sensor}') | float }}";
+                  }
+                ];
+              }
+            )
+            (
+              let
                 sensors = map (id: "binary_sensor.${id}_ventilate") (
                   lib.attrNames (removeAttrs humidityPlaces [ "outdoor" ])
                 );
