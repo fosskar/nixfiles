@@ -437,7 +437,7 @@ let
         })
       ];
 
-  # rooms with a light or thermostat get inline buttons; every card opens a bubble-card pop-up at #<id>
+  # rooms with a light or thermostat get inline buttons and a bubble-card pop-up at #<id>
   hasControls = room: room ? light || room ? thermostat;
 
   roomButtons =
@@ -478,6 +478,11 @@ let
     card_type = "pop-up";
     hash = "#${room.id}";
     inherit (room) name icon;
+    width_desktop = "760px";
+    bg_opacity = "55";
+    bg_blur = "24";
+    backdrop_blur = "6";
+    # shortcuts only; settings and history live on the climate dashboard
     cards =
       (
         if room ? light then
@@ -486,11 +491,9 @@ let
               type = "tile";
               entity = room.light;
               name = "Lights";
-              features_position = "bottom";
-              features = [
-                { type = "light-brightness"; }
-                { type = "light-color-temp"; }
-              ];
+              grid_options.columns = "full";
+              features_position = "inline";
+              features = [ { type = "light-brightness"; } ];
             }
           ]
         else
@@ -500,10 +503,13 @@ let
         if room ? thermostat then
           [
             {
-              type = "thermostat";
+              type = "tile";
               entity = "climate.${room.thermostat}";
               name = "Heating";
+              grid_options.columns = "full";
+              features_position = "bottom";
               features = [
+                { type = "target-temperature"; }
                 {
                   type = "climate-hvac-modes";
                   hvac_modes = [
@@ -524,61 +530,23 @@ let
                 type = "tile";
                 entity = "script.pause_heating";
                 name = "Pause heating 5 min";
+                hide_state = true;
                 tap_action = pause;
                 icon_tap_action = pause;
               }
             )
-            {
-              type = "tile";
-              entity = "switch.${room.thermostat}_open_window";
-              name = "Open window detection";
-            }
-            {
-              type = "tile";
-              entity = "switch.${room.thermostat}_smart_temperature_control";
-              name = "Smart temperature control";
-            }
           ]
         else
           [ ]
       )
-      ++ (
-        if room.id == "outside" then
-          [
-            {
-              type = "weather-forecast";
-              entity = "weather.forecast_home";
-              forecast_type = "hourly";
-            }
-          ]
-        else
-          [
-            {
-              type = "tile";
-              entity = "binary_sensor.${room.id}_ventilate";
-              name = "Ventilate";
-            }
-          ]
-      )
       ++ [
         {
-          type = "custom:mini-graph-card";
-          name = "Temperature and humidity, 24 h";
-          entities = [
-            {
-              entity = "${room.sensor}_temperature";
-              name = "Temperature";
-            }
-            {
-              entity = "${room.sensor}_humidity";
-              name = "Humidity";
-              y_axis = "secondary";
-            }
-          ];
-          hours_to_show = 24;
-          points_per_hour = 2;
-          line_width = 3;
-          show.fill = "fade";
+          type = "custom:bubble-card";
+          card_type = "button";
+          button_type = "name";
+          name = "Climate dashboard";
+          icon = "mdi:home-thermometer";
+          tap_action = navigate "/dashboard-climate";
         }
       ];
   };
@@ -595,7 +563,7 @@ let
       type = "custom:button-card";
       entity = if lit then room.light else temperature;
       inherit (room) name icon;
-      tap_action = navigate "#${room.id}";
+      tap_action = if hasControls room then navigate "#${room.id}" else navigate "/dashboard-climate";
       hold_action = {
         action = "more-info";
         entity = temperature;
@@ -954,7 +922,7 @@ in
         {
           type = "grid";
           column_span = 3;
-          cards = map roomPopup (rooms ++ [ outside ]);
+          cards = map roomPopup (builtins.filter hasControls rooms);
         }
       ];
     }

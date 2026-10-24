@@ -5,7 +5,7 @@ let
       name = "Living Room";
       icon = "mdi:sofa";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_living_room";
-      climate = "climate.thermostat_living_room_sonoff";
+      thermostat = "thermostat_living_room_sonoff";
     }
     {
       id = "bedroom";
@@ -88,11 +88,11 @@ let
       }
     ]
     ++ (
-      if room ? climate then
+      if room ? thermostat then
         [
           {
             type = "thermostat";
-            entity = room.climate;
+            entity = "climate.${room.thermostat}";
             name = "Thermostat";
             features = [
               {
@@ -104,6 +104,16 @@ let
                 ];
               }
             ];
+          }
+          {
+            type = "tile";
+            entity = "switch.${room.thermostat}_open_window";
+            name = "Open window detection";
+          }
+          {
+            type = "tile";
+            entity = "switch.${room.thermostat}_smart_temperature_control";
+            name = "Smart temperature control";
           }
         ]
       else
