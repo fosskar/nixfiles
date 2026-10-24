@@ -452,63 +452,6 @@ class TestPublishSkipPush(unittest.TestCase):
         self.assertFalse(any("push" in cmd for cmd in self.run_cmds))
 
 
-class TestPublishForeignTip(unittest.TestCase):
-    """Remote branch differs: keep it if someone else committed its tip."""
-
-    BRANCH = "update-flake-input-nixpkgs"
-    MESSAGE = "flake: update nixpkgs"
-    BOT = "bot@example.com"
-
-    def _publish(self, tip_committer: str, prs: list[dict]) -> mock.Mock:
-        self.run_cmds: list[list[str]] = []
-        forge_mock = mock.Mock()
-        forge_mock.create_pull.return_value = {"number": 12}
-
-        def fake_run(*, repo, cmd, check=True):
-            self.run_cmds.append(cmd)
-            # diff --quiet: remote branch differs from the fresh update
-            return SimpleNamespace(returncode=1 if "diff" in cmd else 0)
-
-        def fake_capture(*, repo, cmd, check=True):
-            if "rev-parse" in cmd:
-                return SimpleNamespace(returncode=0, stdout="deadbeef\n")
-            if "--format=%ce" in cmd:
-                return SimpleNamespace(returncode=0, stdout=tip_committer + "\n")
-            if "user.email" in cmd:
-                return SimpleNamespace(returncode=0, stdout=self.BOT + "\n")
-            raise AssertionError(f"unexpected capture: {cmd}")
-
-        with (
-            mock.patch("pipeline.run", side_effect=fake_run),
-            mock.patch("pipeline.capture", side_effect=fake_capture),
-            mock.patch("pipeline.changelog.enrich", side_effect=lambda b: b),
-            mock.patch("pipeline.BASE", "main"),
-            contextlib.redirect_stdout(io.StringIO()),
-        ):
-            pipeline.publish(Path("/repo"), self.BRANCH, self.MESSAGE, forge_mock, prs)
-        return forge_mock
-
-    def _pushed(self) -> bool:
-        return any("push" in cmd for cmd in self.run_cmds)
-
-    def test_foreign_tip_with_open_pr_left_alone(self):
-        prs = [{"head": {"ref": self.BRANCH}, "base": {"ref": "main"}, "number": 7}]
-        forge_mock = self._publish("human@example.com", prs)
-        self.assertFalse(self._pushed())
-        forge_mock.update_pull.assert_not_called()
-        forge_mock.merge_if_green.assert_not_called()
-
-    def test_own_tip_recreated(self):
-        prs = [{"head": {"ref": self.BRANCH}, "base": {"ref": "main"}, "number": 7}]
-        forge_mock = self._publish(self.BOT, prs)
-        self.assertTrue(self._pushed())
-        forge_mock.update_pull.assert_called_once()
-
-    def test_foreign_tip_without_open_pr_recreated(self):
-        self._publish("human@example.com", [])
-        self.assertTrue(self._pushed())
-
-
 class TestRateLimitDeferral(unittest.TestCase):
     """A 429 from the forge defers the input; anything else is a failure."""
 

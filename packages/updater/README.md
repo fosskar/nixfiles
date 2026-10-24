@@ -78,9 +78,6 @@ package updates whose `Diff:` URL names a tag.
 - branch is recreated from `origin/main` each run; tree + commit-message
   comparison against the remote branch skips no-op force-pushes (and CI
   reruns)
-- a branch with an open PR whose tip was committed by someone other than
-  the updater is left alone: fix commits pushed onto an update PR survive
-  until it merges; the next run after the merge opens a fresh update
 - existing PR gets title/body refreshed instead of a duplicate
 - automerge (squash) is scheduled via API: Forgejo
   `merge_when_checks_succeed` (deletes the branch on merge), GitHub GraphQL
