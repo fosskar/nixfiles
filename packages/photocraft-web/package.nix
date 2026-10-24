@@ -27,16 +27,16 @@ let
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "photocraft-web";
-  version = "0.14.0";
+  version = "0.15.1";
 
   src = fetchFromGitHub {
     owner = "storytold";
     repo = "photocraft";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-dkaJAJAcB433EDRiteDoxfvK17st37YP/tmlzQhi0UE=";
+    hash = "sha256-VEUY4Woazx5WZgCODYMWI+8CyF4w1rHp1vI9CY+bgdw=";
   };
 
-  cargoHash = "sha256-I0b+ZDqsi2fucOlIbu3UpVAFV4hvIJyUoWFx28SYiC8=";
+  cargoHash = "sha256-KXur3Ki4LGCmxXgHmUy7uLKT2X7LiMFdRnVJTolBAPk=";
 
   nativeBuildInputs = [
     trunk
