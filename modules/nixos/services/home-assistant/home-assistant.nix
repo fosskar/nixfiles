@@ -257,10 +257,14 @@ in
             pause_heating = {
               alias = "Pause heating for 5 minutes";
               icon = "mdi:window-open-variant";
-              # restart would read the paused "off" as the mode to restore, so further taps are ignored
-              mode = "single";
-              max_exceeded = "silent";
-              variables.previous = "{{ states('climate.thermostat_living_room_sonoff') }}";
+              # one run per thermostat; a second tap reads the paused "off" and stops at the condition
+              mode = "parallel";
+              fields.thermostat = {
+                description = "climate entity to pause";
+                required = true;
+                selector.entity.domain = "climate";
+              };
+              variables.previous = "{{ states(thermostat) }}";
               sequence = [
                 {
                   condition = "template";
@@ -268,13 +272,13 @@ in
                 }
                 {
                   action = "climate.set_hvac_mode";
-                  target.entity_id = "climate.thermostat_living_room_sonoff";
+                  target.entity_id = "{{ thermostat }}";
                   data.hvac_mode = "off";
                 }
                 { delay.minutes = 5; }
                 {
                   action = "climate.set_hvac_mode";
-                  target.entity_id = "climate.thermostat_living_room_sonoff";
+                  target.entity_id = "{{ thermostat }}";
                   data.hvac_mode = "{{ previous }}";
                 }
               ];
