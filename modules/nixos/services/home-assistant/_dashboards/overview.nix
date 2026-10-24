@@ -732,6 +732,27 @@ let
     };
   };
 
+  heating = sideCard {
+    entity = "climate.thermostat_living_room_sonoff";
+    # the more-info dialog has the setpoint dial
+    tap_action.action = "more-info";
+    custom_fields = {
+      head =
+        sideHead "mdi:radiator" "Heating"
+          "helpers.localize(entity) + (entity.attributes.hvac_action ? ' · ' + entity.attributes.hvac_action : '')";
+      body = "[[[ return '<div class=\"big\">' + entity.attributes.current_temperature + '°<small>' + (entity.state === 'off' ? 'off' : 'target ' + entity.attributes.temperature + '°') + '</small></div>'; ]]]";
+      foot.card = container "display: flex !important; gap: 8px;" [
+        (smallButton "Pause 5 min" "mdi:window-open-variant" (
+          perform "script.turn_on" { entity_id = "script.pause_heating"; } { }
+        ))
+        # turning on from off sets heat, not auto
+        (smallButton "On / off" "mdi:power" (
+          perform "climate.toggle" { entity_id = "climate.thermostat_living_room_sonoff"; } { }
+        ))
+      ];
+    };
+  };
+
   adguard = sideCard {
     entity = "switch.adguard_home_protection";
     tap_action = navigate "/internet-security";
@@ -797,6 +818,7 @@ in
               ];
             }) mediaPlayers
             ++ [
+              heating
               agenda
               energy
               roborock

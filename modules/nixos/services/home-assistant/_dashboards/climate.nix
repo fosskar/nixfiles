@@ -5,6 +5,7 @@ let
       name = "Living Room";
       icon = "mdi:sofa";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_living_room";
+      climate = "climate.thermostat_living_room_sonoff";
     }
     {
       id = "bedroom";
@@ -85,6 +86,30 @@ let
           }
         ];
       }
+    ]
+    ++ (
+      if room ? climate then
+        [
+          {
+            type = "thermostat";
+            entity = room.climate;
+            name = "Thermostat";
+            features = [
+              {
+                type = "climate-hvac-modes";
+                hvac_modes = [
+                  "heat"
+                  "auto"
+                  "off"
+                ];
+              }
+            ];
+          }
+        ]
+      else
+        [ ]
+    )
+    ++ [
       (
         graph
         // {

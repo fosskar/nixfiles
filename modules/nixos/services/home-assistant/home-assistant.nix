@@ -254,6 +254,31 @@ in
                 }
               ];
             };
+            pause_heating = {
+              alias = "Pause heating for 5 minutes";
+              icon = "mdi:window-open-variant";
+              # restart would read the paused "off" as the mode to restore, so further taps are ignored
+              mode = "single";
+              max_exceeded = "silent";
+              variables.previous = "{{ states('climate.thermostat_living_room_sonoff') }}";
+              sequence = [
+                {
+                  condition = "template";
+                  value_template = "{{ previous in ['heat', 'auto'] }}";
+                }
+                {
+                  action = "climate.set_hvac_mode";
+                  target.entity_id = "climate.thermostat_living_room_sonoff";
+                  data.hvac_mode = "off";
+                }
+                { delay.minutes = 5; }
+                {
+                  action = "climate.set_hvac_mode";
+                  target.entity_id = "climate.thermostat_living_room_sonoff";
+                  data.hvac_mode = "{{ previous }}";
+                }
+              ];
+            };
           };
           automation = [
             {
