@@ -36,6 +36,9 @@ rustPlatform.buildRustPackage (finalAttrs: {
     hash = "sha256-DS2jfwzH3LtvEhlxcoSywyDDenvH2N9DkdDVzEP6QdQ=";
   };
 
+  # drop the discord button, home-screen community card and about-dialog promo links
+  patches = [ ./remove-community-promo.patch ];
+
   cargoHash = "sha256-w56jGzgk82D67vH3z0aUL49iGMtl9oYQVmgwVZ4EkLc=";
 
   nativeBuildInputs = [
