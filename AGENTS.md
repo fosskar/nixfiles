@@ -7,6 +7,7 @@
 - avoid Nix `with`; use explicit attrs
 - unless told otherwise, commit finished work and push it to `main`
 - unused or unimported modules are ready-to-enable features, not dead code; never remove one only because nothing imports it
+- in commit messages, PR and issue bodies, and comments, link GitHub issues and PRs as `https://redirect.github.com/<owner>/<repo>/(pull|issues)/<n>`; `github.com` URLs, `owner/repo#n`, and `#n` add a "mentioned this" event to the target
 
 ## architecture
 
