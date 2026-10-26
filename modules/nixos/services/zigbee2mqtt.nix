@@ -53,6 +53,9 @@
         };
       };
 
+      # the trvs get local time over genTime from the zigbee2mqtt process timezone; servers run on UTC
+      systemd.services.zigbee2mqtt.environment.TZ = "Europe/Berlin";
+
       systemd.tmpfiles.rules = [
         "L+ ${cfg.dataDir}/secret.yaml - - - - ${
           config.clan.core.vars.generators.zigbee2mqtt.files."secret.yaml".path
