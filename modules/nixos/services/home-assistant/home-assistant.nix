@@ -433,7 +433,55 @@ in
               [
                 "living_room"
                 "office"
-              ];
+              ]
+          # the valves run these in system_mode auto; strings match the z2m readback format so the resync cannot loop
+          ++
+            lib.mapAttrsToList
+              (
+                room: schedule:
+                let
+                  days = [
+                    "monday"
+                    "tuesday"
+                    "wednesday"
+                    "thursday"
+                    "friday"
+                    "saturday"
+                    "sunday"
+                  ];
+                  entities = map (day: "text.thermostat_${room}_sonoff_weekly_schedule_${day}") days;
+                in
+                {
+                  id = "trv_${room}_weekly_schedule";
+                  alias = "trv ${lib.replaceStrings [ "_" ] [ " " ] room} - weekly schedule";
+                  description = "writes the declared weekly schedule to the sonoff trvzb";
+                  triggers = [
+                    {
+                      trigger = "homeassistant";
+                      event = "start";
+                    }
+                    {
+                      trigger = "state";
+                      entity_id = entities;
+                      not_to = [
+                        schedule
+                        "unavailable"
+                      ];
+                    }
+                  ];
+                  actions = [
+                    {
+                      action = "text.set_value";
+                      target.entity_id = entities;
+                      data.value = schedule;
+                    }
+                  ];
+                }
+              )
+              {
+                living_room = "00:00/18 06:00/20 20:00/18";
+                office = "00:00/16 08:00/20 21:00/16";
+              };
           # no http: home assistant migrates it to .storage/http once and ignores yaml
           # afterwards; trusted proxies (caddy on nixbox, the netbird proxy) live there
         };
