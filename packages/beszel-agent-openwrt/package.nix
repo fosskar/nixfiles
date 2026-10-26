@@ -11,11 +11,11 @@ let
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "beszel-agent-openwrt";
-  version = "0.21.0";
+  version = "0.21.1";
 
   src = fetchurl {
     url = "https://github.com/vernette/beszel-agent-openwrt/releases/download/v${finalAttrs.version}/beszel-agent-${finalAttrs.version}-r1_${arch}.apk";
-    hash = "sha256-1rUVgzYLwZpi1mEy+1EMc74jd0a8dCzbR5rbPELRXyk=";
+    hash = "sha256-KZpgYyMjeRTl5moZMjI1oa4JO/qKlGP/VGHcmSN8x/M=";
   };
 
   dontUnpack = true;
