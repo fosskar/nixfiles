@@ -311,66 +311,6 @@ in
             }
             (
               let
-                sensor = "sensor.temperature_and_humidity_sensor_aqara_living_room_temperature";
-                source = "select.thermostat_living_room_sonoff_temperature_sensor_select";
-              in
-              {
-                id = "trv_living_room_external_temperature";
-                alias = "trv living room - feed aqara temperature";
-                description = "sonoff trvzb regulates on the aqara room sensor instead of its radiator-side sensor; forces remote_temperature";
-                triggers = [
-                  {
-                    trigger = "state";
-                    entity_id = sensor;
-                  }
-                  # the aqara only reports on change; resend so the valve does not fall back to remote_source_offline
-                  {
-                    trigger = "time_pattern";
-                    minutes = "/30";
-                  }
-                  # the valve resets to local_temperature after an ota update
-                  {
-                    trigger = "state";
-                    entity_id = source;
-                    not_to = [
-                      "remote_temperature"
-                      "unavailable"
-                      "unknown"
-                    ];
-                  }
-                ];
-                conditions = [
-                  {
-                    condition = "template";
-                    value_template = "{{ states('${sensor}') | is_number }}";
-                  }
-                ];
-                actions = [
-                  {
-                    action = "number.set_value";
-                    target.entity_id = "number.thermostat_living_room_sonoff_external_temperature_input";
-                    data.value = "{{ states('${sensor}') | float }}";
-                  }
-                  {
-                    "if" = [
-                      {
-                        condition = "template";
-                        value_template = "{{ states('${source}') not in ['remote_temperature', 'unavailable', 'unknown'] }}";
-                      }
-                    ];
-                    "then" = [
-                      {
-                        action = "select.select_option";
-                        target.entity_id = source;
-                        data.option = "remote_temperature";
-                      }
-                    ];
-                  }
-                ];
-              }
-            )
-            (
-              let
                 sensors = map (id: "binary_sensor.${id}_ventilate") (
                   lib.attrNames (removeAttrs humidityPlaces [ "outdoor" ])
                 );
@@ -425,7 +365,75 @@ in
                     ];
               }
             )
-          ];
+          ]
+          ++
+            map
+              (
+                room:
+                let
+                  sensor = "sensor.temperature_and_humidity_sensor_aqara_${room}_temperature";
+                  trv = "thermostat_${room}_sonoff";
+                  source = "select.${trv}_temperature_sensor_select";
+                in
+                {
+                  id = "trv_${room}_external_temperature";
+                  alias = "trv ${lib.replaceStrings [ "_" ] [ " " ] room} - feed aqara temperature";
+                  description = "sonoff trvzb regulates on the aqara room sensor instead of its radiator-side sensor; forces remote_temperature";
+                  triggers = [
+                    {
+                      trigger = "state";
+                      entity_id = sensor;
+                    }
+                    # the aqara only reports on change; resend so the valve does not fall back to remote_source_offline
+                    {
+                      trigger = "time_pattern";
+                      minutes = "/30";
+                    }
+                    # the valve resets to local_temperature after an ota update
+                    {
+                      trigger = "state";
+                      entity_id = source;
+                      not_to = [
+                        "remote_temperature"
+                        "unavailable"
+                        "unknown"
+                      ];
+                    }
+                  ];
+                  conditions = [
+                    {
+                      condition = "template";
+                      value_template = "{{ states('${sensor}') | is_number }}";
+                    }
+                  ];
+                  actions = [
+                    {
+                      action = "number.set_value";
+                      target.entity_id = "number.${trv}_external_temperature_input";
+                      data.value = "{{ states('${sensor}') | float }}";
+                    }
+                    {
+                      "if" = [
+                        {
+                          condition = "template";
+                          value_template = "{{ states('${source}') not in ['remote_temperature', 'unavailable', 'unknown'] }}";
+                        }
+                      ];
+                      "then" = [
+                        {
+                          action = "select.select_option";
+                          target.entity_id = source;
+                          data.option = "remote_temperature";
+                        }
+                      ];
+                    }
+                  ];
+                }
+              )
+              [
+                "living_room"
+                "office"
+              ];
           # no http: home assistant migrates it to .storage/http once and ignores yaml
           # afterwards; trusted proxies (caddy on nixbox, the netbird proxy) live there
         };

@@ -21,6 +21,7 @@ let
       name = "Office";
       icon = "mdi:desk";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_office";
+      thermostat = "thermostat_office_sonoff";
     }
   ];
 
