@@ -434,7 +434,7 @@ in
                 "living_room"
                 "office"
               ]
-          # the valves run these in system_mode auto; strings match the z2m readback format so the resync cannot loop
+          # no resync on state change: the valve pads its readback to 6 transitions, which never matches and loops
           ++
             lib.mapAttrsToList
               (
@@ -459,14 +459,6 @@ in
                     {
                       trigger = "homeassistant";
                       event = "start";
-                    }
-                    {
-                      trigger = "state";
-                      entity_id = entities;
-                      not_to = [
-                        schedule
-                        "unavailable"
-                      ];
                     }
                   ];
                   actions = [
