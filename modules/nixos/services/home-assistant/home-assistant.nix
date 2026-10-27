@@ -21,21 +21,11 @@ in
         bedroom = "sensor.temperature_and_humidity_sensor_aqara_bed_room";
         office = "sensor.temperature_and_humidity_sensor_aqara_office";
       };
-      # room -> values the schedule helpers start with; afterwards the helpers on the climate dashboard own them
-      heatingSchedules = {
-        living_room = {
-          dayStart = "06:00";
-          dayEnd = "20:00";
-          dayTemperature = 20;
-          nightTemperature = 18;
-        };
-        office = {
-          dayStart = "08:00";
-          dayEnd = "21:00";
-          dayTemperature = 20;
-          nightTemperature = 16;
-        };
-      };
+      # rooms whose trv schedule is edited through helpers on the climate dashboard
+      heatingRooms = [
+        "living_room"
+        "office"
+      ];
       title = id: lib.concatMapStringsSep " " lib.toSentenceCase (lib.splitString "_" id);
       # url path -> dashboard; contents in ./_dashboards
       dashboards = {
@@ -237,32 +227,36 @@ in
             }
           ];
           # no initial: an initial value would reset the dashboard edits on every restart
-          input_datetime = lib.concatMapAttrs (room: _: {
-            "heating_${room}_day_start" = {
-              name = "${title room} day from";
-              has_date = false;
-              has_time = true;
-            };
-            "heating_${room}_day_end" = {
-              name = "${title room} day until";
-              has_date = false;
-              has_time = true;
-            };
-          }) heatingSchedules;
-          input_number = lib.concatMapAttrs (
-            room: _:
-            lib.genAttrs' [ "day" "night" ] (period: {
-              name = "heating_${room}_${period}_temperature";
-              value = {
-                name = "${title room} ${period} temperature";
-                min = 4;
-                max = 35;
-                step = 0.5;
-                unit_of_measurement = "°C";
-                mode = "box";
+          input_datetime = lib.mergeAttrsList (
+            map (room: {
+              "heating_${room}_day_start" = {
+                name = "${title room} day from";
+                has_date = false;
+                has_time = true;
               };
-            })
-          ) heatingSchedules;
+              "heating_${room}_day_end" = {
+                name = "${title room} day until";
+                has_date = false;
+                has_time = true;
+              };
+            }) heatingRooms
+          );
+          input_number = lib.mergeAttrsList (
+            map (
+              room:
+              lib.genAttrs' [ "day" "night" ] (period: {
+                name = "heating_${room}_${period}_temperature";
+                value = {
+                  name = "${title room} ${period} temperature";
+                  min = 4;
+                  max = 35;
+                  step = 0.5;
+                  unit_of_measurement = "°C";
+                  mode = "box";
+                };
+              })
+            ) heatingRooms
+          );
           # quick actions on the overview dashboard
           script = {
             leaving = {
@@ -477,8 +471,8 @@ in
                 "office"
               ]
           ++ lib.concatLists (
-            lib.mapAttrsToList (
-              room: seed:
+            map (
+              room:
               let
                 name = lib.replaceStrings [ "_" ] [ " " ] room;
                 climate = "climate.thermostat_${room}_sonoff";
@@ -503,45 +497,6 @@ in
                 ];
               in
               [
-                {
-                  id = "trv_${room}_seed_schedule";
-                  alias = "trv ${name} - seed schedule helpers";
-                  description = "fills the schedule helpers once; helpers without initial start at 00:00 and keep later edits across restarts";
-                  triggers = [
-                    {
-                      trigger = "homeassistant";
-                      event = "start";
-                    }
-                  ];
-                  conditions = [
-                    {
-                      condition = "template";
-                      value_template = "{{ states('${dayStart}') == '00:00:00' and states('${dayEnd}') == '00:00:00' }}";
-                    }
-                  ];
-                  actions = [
-                    {
-                      action = "input_datetime.set_datetime";
-                      target.entity_id = dayStart;
-                      data.time = "${seed.dayStart}:00";
-                    }
-                    {
-                      action = "input_datetime.set_datetime";
-                      target.entity_id = dayEnd;
-                      data.time = "${seed.dayEnd}:00";
-                    }
-                    {
-                      action = "input_number.set_value";
-                      target.entity_id = dayTemperature;
-                      data.value = seed.dayTemperature;
-                    }
-                    {
-                      action = "input_number.set_value";
-                      target.entity_id = nightTemperature;
-                      data.value = seed.nightTemperature;
-                    }
-                  ];
-                }
                 {
                   id = "trv_${room}_weekly_schedule";
                   alias = "trv ${name} - weekly schedule";
@@ -628,7 +583,7 @@ in
                   ];
                 }
               ]
-            ) heatingSchedules
+            ) heatingRooms
           );
           # no http: home assistant migrates it to .storage/http once and ignores yaml
           # afterwards; trusted proxies (caddy on nixbox, the netbird proxy) live there
