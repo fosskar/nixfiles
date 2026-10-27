@@ -87,6 +87,24 @@ let
           }
         ];
       }
+      (
+        graph
+        // {
+          name = "Temperature";
+          decimals = 1;
+          entities = [ "${room.sensor}_temperature" ];
+          color_thresholds = temperatureThresholds;
+        }
+      )
+      (
+        graph
+        // {
+          name = "Humidity";
+          decimals = 0;
+          entities = [ "${room.sensor}_humidity" ];
+          color_thresholds = humidityThresholds;
+        }
+      )
     ]
     ++ (
       if room ? thermostat then
@@ -144,24 +162,6 @@ let
         [ ]
     )
     ++ [
-      (
-        graph
-        // {
-          name = "Temperature";
-          decimals = 1;
-          entities = [ "${room.sensor}_temperature" ];
-          color_thresholds = temperatureThresholds;
-        }
-      )
-      (
-        graph
-        // {
-          name = "Humidity";
-          decimals = 0;
-          entities = [ "${room.sensor}_humidity" ];
-          color_thresholds = humidityThresholds;
-        }
-      )
       (daily "Temperature, 14 days" "${room.sensor}_temperature" "#42a5f5")
       (daily "Humidity, 14 days" "${room.sensor}_humidity" "#26a69a")
     ];
