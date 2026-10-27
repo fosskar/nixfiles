@@ -75,8 +75,11 @@ package updates whose `Diff:` URL names a tag.
 
 ## PR lifecycle
 
-- branch is recreated from `origin/main` each run; tree + commit-message
-  comparison against the remote branch skips no-op force-pushes (and CI
+- with an open PR the branch is rebased onto `origin/main` each run, so
+  commits pushed to the PR survive; a rebase conflict fails the run and
+  leaves the PR untouched. without an open PR the branch is recreated from
+  `origin/main`
+- tree + commit-message comparison against the remote branch skips no-op force-pushes (and CI
   reruns)
 - existing PR gets title/body refreshed instead of a duplicate
 - automerge (squash) is scheduled via API: Forgejo

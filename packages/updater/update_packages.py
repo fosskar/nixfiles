@@ -44,7 +44,7 @@ def process_group(
     prs: list[dict],
 ) -> int | None:
     branch = f"update-package-{group}"
-    pipeline.checkout(repo, branch)
+    pipeline.checkout(repo, branch, prs)
 
     updated: list[tuple[str, UpdateResult]] = []
     for pkg in pkgs:

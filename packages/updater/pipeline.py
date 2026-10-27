@@ -80,11 +80,36 @@ def connect(repo: Path, *, dry_run: bool) -> tuple[Forge | None, list[dict]]:
     return forge, forge.open_pulls()
 
 
-def checkout(repo: Path, branch: str) -> None:
-    """Recreate `branch` from the base branch on a clean tree."""
+def checkout(repo: Path, branch: str, prs: list[dict]) -> None:
+    """Check out `branch` on a clean tree: an open PR's branch rebased onto
+    the base branch, so commits pushed to the PR survive; else fresh from base."""
     run(repo=repo, cmd=["git", "reset", "--hard"])
     run(repo=repo, cmd=["git", "clean", "-fd"])
-    run(repo=repo, cmd=["git", "switch", "-C", branch, f"origin/{BASE}"])
+    if _find_pr(prs, branch) is None:
+        run(repo=repo, cmd=["git", "switch", "-C", branch, f"origin/{BASE}"])
+        return
+    # the effect clone is --depth 1; rebase needs base history for the merge-base
+    if (
+        capture(
+            repo=repo, cmd=["git", "rev-parse", "--is-shallow-repository"]
+        ).stdout.strip()
+        == "true"
+    ):
+        run(repo=repo, cmd=["git", "fetch", "--unshallow", "origin", BASE])
+    run(
+        repo=repo,
+        cmd=[
+            "git",
+            "fetch",
+            "origin",
+            f"+refs/heads/{branch}:refs/remotes/origin/{branch}",
+        ],
+    )
+    run(repo=repo, cmd=["git", "switch", "-C", branch, f"origin/{branch}"])
+    if run(repo=repo, cmd=["git", "rebase", f"origin/{BASE}"], check=False).returncode:
+        run(repo=repo, cmd=["git", "rebase", "--abort"])
+        msg = f"{branch}: rebase onto {BASE} conflicts; resolve it on the PR by hand"
+        raise RuntimeError(msg)
 
 
 def _find_pr(prs: list[dict], branch: str) -> dict | None:
@@ -122,7 +147,7 @@ def publish(
         check=False,
     )
 
-    # The branch is recreated each run, so the commit hash always differs;
+    # The branch is recreated or rebased each run, so the commit hash differs;
     # compare tree + commit message against the remote branch to avoid a
     # nightly force-push (and CI rerun) when nothing changed. Message is
     # part of the identity so convention changes still refresh the PR;

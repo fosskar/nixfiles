@@ -452,6 +452,97 @@ class TestPublishSkipPush(unittest.TestCase):
         self.assertFalse(any("push" in cmd for cmd in self.run_cmds))
 
 
+class TestCheckout(unittest.TestCase):
+    """An open PR's branch is rebased onto main; without a PR it starts from main."""
+
+    BRANCH = "update-flake-input-nixpkgs"
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        env = {
+            "GIT_AUTHOR_NAME": "t",
+            "GIT_AUTHOR_EMAIL": "t@t",
+            "GIT_COMMITTER_NAME": "t",
+            "GIT_COMMITTER_EMAIL": "t@t",
+            "GIT_CONFIG_GLOBAL": "/dev/null",
+        }
+        patcher = mock.patch.dict("os.environ", env)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.origin = Path(tmp.name) / "origin"
+        self.work = Path(tmp.name) / "work"
+        self.origin.mkdir()
+        self.git(self.origin, "init", "-q", "-b", "main")
+        self.commit("flake.lock", "lock-0\n", "init")
+        self.git(self.origin, "switch", "-qc", self.BRANCH)
+        self.commit("flake.lock", "lock-1\n", "flake: update nixpkgs")
+        self.commit("crowdsec.nix", "fixed\n", "crowdsec: migrate")
+        self.git(self.origin, "switch", "-q", "main")
+        self.commit("other.nix", "new\n", "other: change")
+
+    def git(self, repo: Path, *args: str) -> str:
+        return subprocess.run(
+            ["git", *args], cwd=repo, capture_output=True, text=True, check=True
+        ).stdout
+
+    def commit(self, path: str, content: str, message: str) -> None:
+        (self.origin / path).write_text(content)
+        self.git(self.origin, "add", path)
+        self.git(self.origin, "commit", "-qm", message)
+
+    def checkout(self, prs: list[dict]) -> None:
+        # the effect clone is shallow and single-branch
+        subprocess.run(
+            [
+                "git",
+                "clone",
+                "-q",
+                "--depth",
+                "1",
+                "--single-branch",
+                "-b",
+                "main",
+                f"file://{self.origin}",
+                str(self.work),
+            ],
+            check=True,
+        )
+        with (
+            mock.patch("pipeline.BASE", "main"),
+            contextlib.redirect_stdout(io.StringIO()),
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            pipeline.checkout(self.work, self.BRANCH, prs)
+
+    def subjects(self) -> list[str]:
+        return self.git(self.work, "log", "--format=%s").split("\n")[:-1]
+
+    def test_open_pr_rebased_onto_main(self):
+        self.checkout([{"head": {"ref": self.BRANCH}, "base": {"ref": "main"}}])
+        self.assertEqual(
+            self.subjects(),
+            ["crowdsec: migrate", "flake: update nixpkgs", "other: change", "init"],
+        )
+        self.assertEqual(
+            self.git(self.work, "branch", "--show-current"), f"{self.BRANCH}\n"
+        )
+
+    def test_no_pr_starts_from_main(self):
+        self.checkout([])
+        self.assertEqual(
+            self.git(self.work, "rev-parse", "HEAD"),
+            self.git(self.origin, "rev-parse", "main"),
+        )
+
+    def test_conflict_raises_and_leaves_clean_tree(self):
+        self.commit("crowdsec.nix", "conflicting\n", "crowdsec: conflicting change")
+        with self.assertRaisesRegex(RuntimeError, "conflicts"):
+            self.checkout([{"head": {"ref": self.BRANCH}, "base": {"ref": "main"}}])
+        self.assertEqual(self.git(self.work, "status", "--porcelain"), "")
+        self.assertFalse((self.work / ".git" / "rebase-merge").exists())
+
+
 class TestRateLimitDeferral(unittest.TestCase):
     """A 429 from the forge defers the input; anything else is a failure."""
 

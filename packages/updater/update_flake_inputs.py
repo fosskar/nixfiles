@@ -91,7 +91,7 @@ def commit_message(inp: FlakeInput, old: dict | None, new: dict | None) -> str:
 def process_input(
     repo: Path, inp: FlakeInput, forge: pipeline.Forge | None, prs: list[dict]
 ) -> int | None:
-    pipeline.checkout(repo, inp.branch)
+    pipeline.checkout(repo, inp.branch, prs)
 
     lock_rel = f"{inp.flake_dir}/flake.lock" if inp.flake_dir != "." else "flake.lock"
     old = _locked_rev(repo, inp)
