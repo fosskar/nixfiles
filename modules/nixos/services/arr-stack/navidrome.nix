@@ -27,6 +27,8 @@
             Address = listenAddress;
             Port = listenPort;
             MusicFolder = "/tank/media/music";
+            # the nixpkgs wrapper lacks share/plugins without plugins, so navidrome fails to mkdir it in the store
+            Plugins.Enabled = false;
           };
         };
 
