@@ -258,6 +258,11 @@ in
               })
             ) heatingRooms
           );
+          # room switcher of the climate dashboard on narrow screens; every climate room has a trv
+          input_select.climate_room = {
+            name = "Climate room";
+            options = heatingRooms ++ [ "house" ];
+          };
           # quick actions on the overview dashboard
           script = {
             leaving = {
