@@ -12,9 +12,6 @@
         # also prevents printing kernel pointers
         "kernel.kptr_restrict" = 2;
 
-        # Disable ftrace debugging
-        "kernel.ftrace_enabled" = 0;
-
         # Avoid kernel memory address exposures via dmesg
         # (this value can also be set by CONFIG_SECURITY_DMESG_RESTRICT)
         "kernel.dmesg_restrict" = 1;
