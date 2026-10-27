@@ -435,7 +435,7 @@ in
                 "office"
               ]
           # no resync on state change: the valve pads its readback to 6 transitions, which never matches and loops
-          ++
+          ++ lib.concatLists (
             lib.mapAttrsToList
               (
                 room: schedule:
@@ -450,30 +450,61 @@ in
                     "sunday"
                   ];
                   entities = map (day: "text.thermostat_${room}_sonoff_weekly_schedule_${day}") days;
+                  name = lib.replaceStrings [ "_" ] [ " " ] room;
+                  climate = "climate.thermostat_${room}_sonoff";
+                  transitions = lib.remove "00:00" (
+                    map (transition: lib.head (lib.splitString "/" transition)) (lib.splitString " " schedule)
+                  );
                 in
-                {
-                  id = "trv_${room}_weekly_schedule";
-                  alias = "trv ${lib.replaceStrings [ "_" ] [ " " ] room} - weekly schedule";
-                  description = "writes the declared weekly schedule to the sonoff trvzb";
-                  triggers = [
-                    {
-                      trigger = "homeassistant";
-                      event = "start";
-                    }
-                  ];
-                  actions = [
-                    {
-                      action = "text.set_value";
-                      target.entity_id = entities;
-                      data.value = schedule;
-                    }
-                  ];
-                }
+                [
+                  {
+                    id = "trv_${room}_weekly_schedule";
+                    alias = "trv ${name} - weekly schedule";
+                    description = "writes the declared weekly schedule to the sonoff trvzb";
+                    triggers = [
+                      {
+                        trigger = "homeassistant";
+                        event = "start";
+                      }
+                    ];
+                    actions = [
+                      {
+                        action = "text.set_value";
+                        target.entity_id = entities;
+                        data.value = schedule;
+                      }
+                    ];
+                  }
+                  {
+                    id = "trv_${room}_resume_schedule";
+                    alias = "trv ${name} - resume schedule";
+                    description = "a manual change can leave the valve in heat; return it to auto at the next schedule transition";
+                    triggers = map (time: {
+                      trigger = "time";
+                      at = "${time}:00";
+                    }) transitions;
+                    conditions = [
+                      {
+                        condition = "state";
+                        entity_id = climate;
+                        state = "heat";
+                      }
+                    ];
+                    actions = [
+                      {
+                        action = "climate.set_hvac_mode";
+                        target.entity_id = climate;
+                        data.hvac_mode = "auto";
+                      }
+                    ];
+                  }
+                ]
               )
               {
                 living_room = "00:00/18 06:00/20 20:00/18";
                 office = "00:00/16 08:00/20 21:00/16";
-              };
+              }
+          );
           # no http: home assistant migrates it to .storage/http once and ignores yaml
           # afterwards; trusted proxies (caddy on nixbox, the netbird proxy) live there
         };
