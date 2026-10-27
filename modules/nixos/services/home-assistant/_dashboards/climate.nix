@@ -106,6 +106,29 @@ let
               }
             ];
           }
+          # same schedule every day; the trv_<room>_weekly_schedule automation writes it to the valve
+          {
+            type = "entities";
+            title = "Schedule";
+            entities = [
+              {
+                entity = "input_datetime.heating_${room.id}_day_start";
+                name = "Day from";
+              }
+              {
+                entity = "input_datetime.heating_${room.id}_day_end";
+                name = "Day until";
+              }
+              {
+                entity = "input_number.heating_${room.id}_day_temperature";
+                name = "Day temperature";
+              }
+              {
+                entity = "input_number.heating_${room.id}_night_temperature";
+                name = "Night temperature";
+              }
+            ];
+          }
           {
             type = "tile";
             entity = "switch.${room.thermostat}_open_window";

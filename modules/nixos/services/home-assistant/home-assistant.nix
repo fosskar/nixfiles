@@ -21,6 +21,21 @@ in
         bedroom = "sensor.temperature_and_humidity_sensor_aqara_bed_room";
         office = "sensor.temperature_and_humidity_sensor_aqara_office";
       };
+      # room -> values the schedule helpers start with; afterwards the helpers on the climate dashboard own them
+      heatingSchedules = {
+        living_room = {
+          dayStart = "06:00";
+          dayEnd = "20:00";
+          dayTemperature = 20;
+          nightTemperature = 18;
+        };
+        office = {
+          dayStart = "08:00";
+          dayEnd = "21:00";
+          dayTemperature = 20;
+          nightTemperature = 16;
+        };
+      };
       title = id: lib.concatMapStringsSep " " lib.toSentenceCase (lib.splitString "_" id);
       # url path -> dashboard; contents in ./_dashboards
       dashboards = {
@@ -221,6 +236,33 @@ in
               ];
             }
           ];
+          # no initial: an initial value would reset the dashboard edits on every restart
+          input_datetime = lib.concatMapAttrs (room: _: {
+            "heating_${room}_day_start" = {
+              name = "${title room} day from";
+              has_date = false;
+              has_time = true;
+            };
+            "heating_${room}_day_end" = {
+              name = "${title room} day until";
+              has_date = false;
+              has_time = true;
+            };
+          }) heatingSchedules;
+          input_number = lib.concatMapAttrs (
+            room: _:
+            lib.genAttrs' [ "day" "night" ] (period: {
+              name = "heating_${room}_${period}_temperature";
+              value = {
+                name = "${title room} ${period} temperature";
+                min = 4;
+                max = 35;
+                step = 0.5;
+                unit_of_measurement = "°C";
+                mode = "box";
+              };
+            })
+          ) heatingSchedules;
           # quick actions on the overview dashboard
           script = {
             leaving = {
@@ -434,76 +476,159 @@ in
                 "living_room"
                 "office"
               ]
-          # no resync on state change: the valve pads its readback to 6 transitions, which never matches and loops
           ++ lib.concatLists (
-            lib.mapAttrsToList
-              (
-                room: schedule:
-                let
-                  days = [
-                    "monday"
-                    "tuesday"
-                    "wednesday"
-                    "thursday"
-                    "friday"
-                    "saturday"
-                    "sunday"
+            lib.mapAttrsToList (
+              room: seed:
+              let
+                name = lib.replaceStrings [ "_" ] [ " " ] room;
+                climate = "climate.thermostat_${room}_sonoff";
+                dayStart = "input_datetime.heating_${room}_day_start";
+                dayEnd = "input_datetime.heating_${room}_day_end";
+                dayTemperature = "input_number.heating_${room}_day_temperature";
+                nightTemperature = "input_number.heating_${room}_night_temperature";
+                days = [
+                  "monday"
+                  "tuesday"
+                  "wednesday"
+                  "thursday"
+                  "friday"
+                  "saturday"
+                  "sunday"
+                ];
+                # %g drops the trailing .0 that input_number states carry
+                schedule = lib.concatStrings [
+                  "{% set night = '%g' | format(states('${nightTemperature}') | float) %}"
+                  "{% set day = '%g' | format(states('${dayTemperature}') | float) %}"
+                  "00:00/{{ night }} {{ states('${dayStart}')[:5] }}/{{ day }} {{ states('${dayEnd}')[:5] }}/{{ night }}"
+                ];
+              in
+              [
+                {
+                  id = "trv_${room}_seed_schedule";
+                  alias = "trv ${name} - seed schedule helpers";
+                  description = "fills the schedule helpers once; helpers without initial start at 00:00 and keep later edits across restarts";
+                  triggers = [
+                    {
+                      trigger = "homeassistant";
+                      event = "start";
+                    }
                   ];
-                  entities = map (day: "text.thermostat_${room}_sonoff_weekly_schedule_${day}") days;
-                  name = lib.replaceStrings [ "_" ] [ " " ] room;
-                  climate = "climate.thermostat_${room}_sonoff";
-                  transitions = lib.remove "00:00" (
-                    map (transition: lib.head (lib.splitString "/" transition)) (lib.splitString " " schedule)
-                  );
-                in
-                [
-                  {
-                    id = "trv_${room}_weekly_schedule";
-                    alias = "trv ${name} - weekly schedule";
-                    description = "writes the declared weekly schedule to the sonoff trvzb";
-                    triggers = [
-                      {
-                        trigger = "homeassistant";
-                        event = "start";
-                      }
-                    ];
-                    actions = [
-                      {
-                        action = "text.set_value";
-                        target.entity_id = entities;
-                        data.value = schedule;
-                      }
-                    ];
-                  }
-                  {
-                    id = "trv_${room}_resume_schedule";
-                    alias = "trv ${name} - resume schedule";
-                    description = "a manual change can leave the valve in heat; return it to auto at the next schedule transition";
-                    triggers = map (time: {
+                  conditions = [
+                    {
+                      condition = "template";
+                      value_template = "{{ states('${dayStart}') == '00:00:00' and states('${dayEnd}') == '00:00:00' }}";
+                    }
+                  ];
+                  actions = [
+                    {
+                      action = "input_datetime.set_datetime";
+                      target.entity_id = dayStart;
+                      data.time = "${seed.dayStart}:00";
+                    }
+                    {
+                      action = "input_datetime.set_datetime";
+                      target.entity_id = dayEnd;
+                      data.time = "${seed.dayEnd}:00";
+                    }
+                    {
+                      action = "input_number.set_value";
+                      target.entity_id = dayTemperature;
+                      data.value = seed.dayTemperature;
+                    }
+                    {
+                      action = "input_number.set_value";
+                      target.entity_id = nightTemperature;
+                      data.value = seed.nightTemperature;
+                    }
+                  ];
+                }
+                {
+                  id = "trv_${room}_weekly_schedule";
+                  alias = "trv ${name} - weekly schedule";
+                  description = "writes the schedule helpers to every day of the sonoff trvzb weekly schedule";
+                  mode = "restart";
+                  triggers = [
+                    {
+                      trigger = "homeassistant";
+                      event = "start";
+                    }
+                    {
+                      trigger = "state";
+                      entity_id = [
+                        dayStart
+                        dayEnd
+                        dayTemperature
+                        nightTemperature
+                      ];
+                    }
+                  ];
+                  conditions = [
+                    {
+                      condition = "template";
+                      value_template = "{{ states('${dayStart}') < states('${dayEnd}') }}";
+                    }
+                  ];
+                  actions = [
+                    {
+                      action = "text.set_value";
+                      target.entity_id = map (day: "text.thermostat_${room}_sonoff_weekly_schedule_${day}") days;
+                      data.value = schedule;
+                    }
+                    # the valve applies a changed schedule only at its next transition or when it enters auto
+                    {
+                      "if" = [
+                        {
+                          condition = "state";
+                          entity_id = climate;
+                          state = "auto";
+                        }
+                      ];
+                      "then" = [
+                        {
+                          action = "climate.set_hvac_mode";
+                          target.entity_id = climate;
+                          data.hvac_mode = "heat";
+                        }
+                        { delay.seconds = 5; }
+                        {
+                          action = "climate.set_hvac_mode";
+                          target.entity_id = climate;
+                          data.hvac_mode = "auto";
+                        }
+                      ];
+                    }
+                  ];
+                }
+                {
+                  id = "trv_${room}_resume_schedule";
+                  alias = "trv ${name} - resume schedule";
+                  description = "a manual change switches the valve to heat; return it to auto at the next schedule transition";
+                  triggers = [
+                    {
                       trigger = "time";
-                      at = "${time}:00";
-                    }) transitions;
-                    conditions = [
-                      {
-                        condition = "state";
-                        entity_id = climate;
-                        state = "heat";
-                      }
-                    ];
-                    actions = [
-                      {
-                        action = "climate.set_hvac_mode";
-                        target.entity_id = climate;
-                        data.hvac_mode = "auto";
-                      }
-                    ];
-                  }
-                ]
-              )
-              {
-                living_room = "00:00/18 06:00/20 20:00/18";
-                office = "00:00/16 08:00/20 21:00/16";
-              }
+                      at = [
+                        dayStart
+                        dayEnd
+                      ];
+                    }
+                  ];
+                  conditions = [
+                    {
+                      condition = "state";
+                      entity_id = climate;
+                      state = "heat";
+                    }
+                  ];
+                  actions = [
+                    {
+                      action = "climate.set_hvac_mode";
+                      target.entity_id = climate;
+                      data.hvac_mode = "auto";
+                    }
+                  ];
+                }
+              ]
+            ) heatingSchedules
           );
           # no http: home assistant migrates it to .storage/http once and ignores yaml
           # afterwards; trusted proxies (caddy on nixbox, the netbird proxy) live there
