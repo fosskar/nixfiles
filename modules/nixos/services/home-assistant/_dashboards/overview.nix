@@ -484,7 +484,7 @@ let
     bg_opacity = "55";
     bg_blur = "24";
     backdrop_blur = "6";
-    # shortcuts, the heating schedule and the trv switches; history lives on the climate dashboard
+    # shortcuts only; settings and history live on the climate dashboard
     cards =
       (
         if room ? light then
@@ -537,39 +537,6 @@ let
                 icon_tap_action = pause;
               }
             )
-            {
-              type = "entities";
-              title = "Schedule";
-              grid_options.columns = "full";
-              entities = [
-                {
-                  entity = "input_datetime.heating_${room.id}_day_start";
-                  name = "Day from";
-                }
-                {
-                  entity = "input_datetime.heating_${room.id}_day_end";
-                  name = "Day until";
-                }
-                {
-                  entity = "input_number.heating_${room.id}_day_temperature";
-                  name = "Day temperature";
-                }
-                {
-                  entity = "input_number.heating_${room.id}_night_temperature";
-                  name = "Night temperature";
-                }
-              ];
-            }
-            {
-              type = "tile";
-              entity = "switch.${room.thermostat}_open_window";
-              name = "Open window detection";
-            }
-            {
-              type = "tile";
-              entity = "switch.${room.thermostat}_smart_temperature_control";
-              name = "Smart temperature control";
-            }
           ]
         else
           [ ]
