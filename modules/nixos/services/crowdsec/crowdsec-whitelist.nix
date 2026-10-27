@@ -23,7 +23,7 @@
       ];
     in
     {
-      services.crowdsec.localConfig = {
+      services.crowdsec.settings = {
         parsers.s02Enrich = lib.mkIf (trustedIPs != [ ]) [
           {
             name = "nixfiles/clan-whitelist";

@@ -39,7 +39,7 @@ os.environ["LAYA_URL"] = f"http://127.0.0.1:{server.server_port}"
 
 
 def call(tool, **arguments):
-    return asyncio.run(laya_mcp.mcp.call_tool(tool, arguments))[1]
+    return asyncio.run(laya_mcp.mcp.call_tool(tool, arguments)).structured_content
 
 
 def call_error(tool, **arguments):

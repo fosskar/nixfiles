@@ -7,8 +7,8 @@ import urllib.request
 from typing import Any
 
 import anyio
-from mcp.server.fastmcp import FastMCP
-from mcp.server.fastmcp.exceptions import ToolError
+from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 
 
 def _decide(question: dict[str, Any], text: str) -> dict[str, Any]:
@@ -42,7 +42,7 @@ async def _run(question: dict[str, Any], text: str) -> dict[str, Any]:
     return await anyio.to_thread.run_sync(_decide, question, text)
 
 
-mcp = FastMCP(
+mcp = MCPServer(
     "laya",
     instructions="Answer typed questions about a text with the laya decision model.",
 )

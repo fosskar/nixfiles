@@ -28,7 +28,7 @@
           enable = true;
           package = pkgs.caddy.withPlugins {
             plugins = [ "github.com/caddy-dns/desec@v1.1.0" ];
-            hash = "sha256-CpfQSS+dWFNhnTfo9TEDyRnsMtZScvyL+5/4gd82pI0=";
+            hash = "sha256-HrLRezw+q5+dRdJS662686n7xsImSxNb3UqlSo61R8E=";
           };
           email = "letsencrypt.unpleased904@passmail.net";
           # the default tcp admin endpoint accepts /load from any local uid;
