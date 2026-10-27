@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 
 import anyio
 from caldav import DAVClient
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 
 def _secret(name: str) -> str:
@@ -127,7 +127,7 @@ async def _run(function: Any, *args: Any) -> Any:
     return await anyio.to_thread.run_sync(function, *args)
 
 
-mcp = FastMCP(
+mcp = MCPServer(
     "calendar",
     instructions="Read and manage the user's CalDAV calendars.",
 )
