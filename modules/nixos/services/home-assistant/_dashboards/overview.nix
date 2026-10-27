@@ -15,6 +15,7 @@ let
       name = "Bedroom";
       icon = "mdi:bed";
       sensor = "sensor.temperature_and_humidity_sensor_aqara_bed_room";
+      thermostat = "thermostat_bedroom_sonoff";
     }
     {
       id = "office";

@@ -25,6 +25,7 @@ in
       heatingRooms = [
         "living_room"
         "office"
+        "bedroom"
       ];
       title = id: lib.concatMapStringsSep " " lib.toSentenceCase (lib.splitString "_" id);
       # url path -> dashboard; contents in ./_dashboards
@@ -403,11 +404,11 @@ in
             )
           ]
           ++
-            map
+            lib.mapAttrsToList
               (
-                room:
+                room: aqara:
                 let
-                  sensor = "sensor.temperature_and_humidity_sensor_aqara_${room}_temperature";
+                  sensor = "sensor.temperature_and_humidity_sensor_aqara_${aqara}_temperature";
                   trv = "thermostat_${room}_sonoff";
                   source = "select.${trv}_temperature_sensor_select";
                 in
@@ -466,10 +467,12 @@ in
                   ];
                 }
               )
-              [
-                "living_room"
-                "office"
-              ]
+              # trv room -> aqara sensor name
+              {
+                living_room = "living_room";
+                office = "office";
+                bedroom = "bed_room";
+              }
           ++ lib.concatLists (
             map (
               room:
