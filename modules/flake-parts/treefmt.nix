@@ -101,9 +101,11 @@
                 ) inputs.self.nixosConfigurations
               );
 
-          availablePackages = lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform) (
-            self'.packages or { }
-          );
+          # hydraPlatforms = [ ] opts a package out, e.g. when its source is not downloadable
+          availablePackages = lib.filterAttrs (
+            _: pkg:
+            lib.meta.availableOn pkgs.stdenv.hostPlatform pkg && (pkg.meta.hydraPlatforms or null) != [ ]
+          ) (self'.packages or { });
 
           packages = lib.mapAttrs' (name: pkg: lib.nameValuePair "package-${name}" pkg) availablePackages;
 

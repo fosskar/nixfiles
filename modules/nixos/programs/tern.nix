@@ -1,9 +1,10 @@
 {
-  # tern (stencil.so) ships a self-updating binary; unpack it to ~/.local/opt and run tern/tern
   flake.modules.nixos.tern =
     { pkgs, ... }:
     {
-      environment.sessionVariables.PATH = [ "$HOME/.local/opt/tern" ];
+      environment.systemPackages = [ pkgs.local.tern ];
+
+      # tern updates its copy in ~/.local/opt/tern, so the unpatched binary runs through nix-ld
       programs.nix-ld.enable = true;
       # libraries the binary dlopens at runtime
       programs.nix-ld.libraries = [
@@ -13,6 +14,8 @@
         pkgs.libxkbcommon
         pkgs.libxcb
         pkgs.libpulseaudio
+        pkgs.pipewire
+        pkgs.webkitgtk_4_1
         pkgs.linux-pam
       ];
     };
