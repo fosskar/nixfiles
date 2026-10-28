@@ -98,7 +98,6 @@ framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 - nixos-hardware `framework-amd-ai-300-series`, fw-fanctrl
 - encrypted bcachefs root, secure boot via lanzaboote
 - fingerprint auth, usbguard, yubikey u2f and lock on removal
-- ssync peer with nixworker
 - hermes and buzz desktop clients
 
 ---
@@ -138,7 +137,7 @@ minisforum ms-a2 (ryzen 9 9955hx, intel arc pro b50, 96gb ddr5), btrfs root with
 - radicle mirror
 - hermes agents in fencr sandboxes; mcp gateway with calendar, grafana and laya backends
 - borgbackup of service state and fencr sandbox checkpoints to the hetzner storage box
-- headless dev host: workspace user, ssync peer, `nix-ld`
+- headless dev host: workspace user, `nix-ld`
 - ups secondary
 
 ---

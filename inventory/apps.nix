@@ -120,21 +120,5 @@
         homeAssistant.enable = true;
       };
     };
-
-    # p2p sync of pi agent sessions between the workstations and the
-    # nixworker dev host. leaderless: all machines are equal peers. shared
-    # age key handled by the service's own clan.vars generator.
-    ssync = {
-      module = {
-        name = "ssync";
-        input = "ssync";
-      };
-      roles.peer.machines = {
-        # no desktop: age decrypt retry loop forks ~2000 procs/sec and
-        # stalls the scx_lavd watchdog. see fosskar/ssync#109
-        "lpt-titan".settings.user = "simon";
-        "nixworker".settings.user = "simon";
-      };
-    };
   };
 }

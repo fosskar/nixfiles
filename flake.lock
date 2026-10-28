@@ -1404,7 +1404,6 @@
         "sofka": "sofka",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
-        "ssync": "ssync",
         "systems": "systems",
         "tangled": "tangled",
         "treefmt-nix": "treefmt-nix",
@@ -1562,32 +1561,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "srvos",
-        "type": "github"
-      }
-    },
-    "ssync": {
-      "inputs": {
-        "nixbot": [
-          "nixbot"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1793063103,
-        "narHash": "sha256-4aMoDHxmjvoeAjl7vJ0dHSMHwgXgYqQIWH+AuffLoAA=",
-        "owner": "fosskar",
-        "repo": "ssync",
-        "rev": "b258100fa46f51fd41c8d759f64becb0c17fd1ba",
-        "type": "github"
-      },
-      "original": {
-        "owner": "fosskar",
-        "repo": "ssync",
         "type": "github"
       }
     },

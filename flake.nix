@@ -207,13 +207,6 @@
     tangled.inputs.gomod2nix.inputs.flake-utils.inputs.systems.follows = "systems";
     tangled.inputs.microvm.follows = "microvm";
 
-    ssync = {
-      url = "github:fosskar/ssync";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-      inputs.nixbot.follows = "nixbot";
-    };
-
     buzz-flake = {
       url = "github:fosskar/buzz-flake";
       inputs.nixpkgs.follows = "nixpkgs";
