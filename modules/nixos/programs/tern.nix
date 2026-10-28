@@ -20,9 +20,13 @@
       ];
     };
 
+  # clients reach homeManager.ternServer on the lan; tern 0.9.7 rejects the ipv6 clan address ("invalid remote address")
+  flake.modules.nixos.ternServer = {
+    networking.firewall.allowedUDPPorts = [ 8376 ];
+  };
+
   # serves this user's sessions to tern windows on other machines over UDP 8376
-  # ([::]), or by endpoint id over the iroh.stencil.so relay. the port stays out
-  # of the nixos firewall, which never sees netbird traffic.
+  # ([::]), or by endpoint id over the iroh.stencil.so relay.
   # host key and endpoint id: tern remote host-key --user
   flake.modules.homeManager.ternServer =
     { pkgs, ... }:

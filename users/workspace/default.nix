@@ -15,6 +15,7 @@ in
     self.modules.nixos.llm
     self.modules.nixos.paseoServer
     self.modules.nixos.tern
+    self.modules.nixos.ternServer
     self.modules.nixos.workspaceHost
   ];
 
