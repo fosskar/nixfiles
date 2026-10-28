@@ -3,6 +3,7 @@
   flake.modules.nixos.tern =
     { pkgs, ... }:
     {
+      environment.sessionVariables.PATH = [ "$HOME/.local/opt/tern" ];
       programs.nix-ld.enable = true;
       # libraries the binary dlopens at runtime
       programs.nix-ld.libraries = [
