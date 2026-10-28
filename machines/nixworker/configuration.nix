@@ -16,7 +16,6 @@
     self.modules.nixos.nixAccessTokens
     self.modules.nixos.mcp
     self.modules.nixos.wyomingPiper
-    self.modules.nixos.tern
   ]
   ++ (nflib.scanPaths ./. { });
 

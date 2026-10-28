@@ -14,6 +14,7 @@ in
   imports = [
     self.modules.nixos.llm
     self.modules.nixos.paseoServer
+    self.modules.nixos.tern
     self.modules.nixos.workspaceHost
   ];
 
@@ -39,6 +40,7 @@ in
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
         self.modules.homeManager.sofka
+        self.modules.homeManager.ternServer
         self.modules.homeManager.ssh
         self.modules.homeManager.starship
         self.modules.homeManager.workspaceHost
