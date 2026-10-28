@@ -12,7 +12,7 @@
 2. import lanzaboote module in machine config:
 
    ```nix
-   imports = [ ../../modules/lanzaboote ];
+   imports = [ self.modules.nixos.lanzaboote ];
    ```
 
 3. deploy:
