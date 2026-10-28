@@ -20,7 +20,7 @@
       ];
     };
 
-  # clients reach homeManager.ternServer on the lan; tern 0.9.7 rejects the ipv6 clan address ("invalid remote address")
+  # clients reach homeManager.ternServer on the lan; tern 0.9.7 rejects ipv6 addresses ("invalid remote address"), so they dial 192.168.20.210
   flake.modules.nixos.ternServer = {
     networking.firewall.allowedUDPPorts = [ 8376 ];
   };
