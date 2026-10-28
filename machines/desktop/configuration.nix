@@ -18,6 +18,7 @@
     self.modules.nixos.podman
     self.modules.nixos.yubikeyGpgSsh
     self.modules.nixos.yubikeyU2f
+    self.modules.nixos.tern
   ]
   ++ nflib.scanPaths ./. { };
 }
