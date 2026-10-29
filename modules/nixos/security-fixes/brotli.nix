@@ -1,10 +1,18 @@
 # CVE-2026-111497: out-of-bounds write in the brotli 1.0.3 to 1.2.0 decoder.
 # the fix (brotli 1.2.1) sits in staging, see
-# https://redirect.github.com/NixOS/nixpkgs/pull/577208; patching pkgs.brotli
-# would rebuild nearly everything, so the patched lib is grafted into the closure
+# https://redirect.github.com/NixOS/nixpkgs/pull/577208. patching pkgs.brotli
+# or grafting it changes systemd (via curl) and restarts every unit, so only
+# the publicly exposed brotli decoders get the patched lib: immich-server
+# (nodejs, request bodies) and home-assistant (python brotli). LD_LIBRARY_PATH
+# overrides their RUNPATH.
 {
   flake.modules.nixos.securityFixes =
-    { lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       fixCommit = "0ed4268a4401abcb4472096340477cf4af7d1a2b";
       fixed =
@@ -18,13 +26,14 @@
           })
         ];
       });
+      environment.LD_LIBRARY_PATH = "${lib.getLib patched}/lib";
     in
     {
       warnings = lib.optional fixed "brotli ${pkgs.brotli.version} includes the CVE-2026-111497 fix, modules/nixos/security-fixes/brotli.nix can be removed";
 
-      system.replaceDependencies.replacements = lib.optional (!fixed) {
-        oldDependency = pkgs.brotli.lib;
-        newDependency = patched.lib;
+      systemd.services = lib.mkIf (!fixed) {
+        immich-server = lib.mkIf config.services.immich.enable { inherit environment; };
+        home-assistant = lib.mkIf config.services.home-assistant.enable { inherit environment; };
       };
     };
 }
