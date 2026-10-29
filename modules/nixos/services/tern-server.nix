@@ -42,8 +42,6 @@ _: {
           # the fish shellInit of workspaceHost sets these too; non-shell panes need them here
           SSH_AUTH_SOCK = "${runtimeDir}/ssh-agent.sock";
           BROWSER = "remote-open";
-          # tern runs its self-updated copy in ~/.local/opt/tern through nix-ld
-          NIX_LD_LIBRARY_PATH = "${lib.makeLibraryPath pkgs.local.tern.runtimeLibs}:/run/current-system/sw/share/nix-ld/lib";
         };
         serviceConfig = {
           Type = "exec";

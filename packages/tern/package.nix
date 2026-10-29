@@ -5,31 +5,10 @@
   writeShellScript,
   makeDesktopItem,
   copyDesktopItems,
-  libglvnd,
-  vulkan-loader,
-  wayland,
-  libxkbcommon,
-  libxcb,
-  libpulseaudio,
-  pipewire,
-  webkitgtk_4_1,
-  linux-pam,
 }:
 let
   pname = "tern";
   version = "0.9.7";
-  # libraries the binary dlopens at runtime, for NIX_LD_LIBRARY_PATH
-  runtimeLibs = [
-    libglvnd
-    vulkan-loader
-    wayland
-    libxkbcommon
-    libxcb
-    libpulseaudio
-    pipewire
-    webkitgtk_4_1
-    linux-pam
-  ];
   # the launcher seeds a writable copy in $HOME, which tern then updates in place; runtime libraries come from nix-ld
   launcher = writeShellScript "tern" ''
     bin="$HOME/.local/opt/tern/tern"
@@ -76,8 +55,6 @@ stdenvNoCC.mkDerivation {
 
     runHook postInstall
   '';
-
-  passthru = { inherit runtimeLibs; };
 
   meta = {
     description = "multiplexing terminal by Stencil";

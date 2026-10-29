@@ -13,6 +13,7 @@ in
 {
   imports = [
     self.modules.nixos.llm
+    self.modules.nixos.tern
     self.modules.nixos.ternServer
     self.modules.nixos.workspaceHost
   ];
