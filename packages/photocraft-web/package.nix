@@ -27,16 +27,16 @@ let
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "photocraft-web";
-  version = "0.16.0";
+  version = "0.17.0";
 
   src = fetchFromGitHub {
     owner = "storytold";
     repo = "photocraft";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-uaZmzQb4B1zZ2XrZHjHzI/uEVGdoYRFeh10GHIxzjDA=";
+    hash = "sha256-oN6ML1ua31tUzvhB6pfoTrs1VePkH9lM1AXUwLbH97s=";
   };
 
-  cargoHash = "sha256-O1tUKAWSvLmOEUbpVub8bczHpoXH6XxXKSPGRVkjsHs=";
+  cargoHash = "sha256-vHvLLkzPIcUetxDbDSbTkTYYuAByGxKb7uWAhkoivXE=";
 
   nativeBuildInputs = [
     trunk
@@ -46,6 +46,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
   ];
 
   env.PHOTOCRAFT_BUILD_SHA = finalAttrs.src.tag;
+
+  # fetchCargoVendor skips [[patch.unused]] crates, so offline cargo cannot resolve those patches
+  preBuild = ''
+    for crate in $(sed -n '/^\[\[patch.unused\]\]/{n;s/^name = "\(.*\)"$/\1/p}' Cargo.lock); do
+      sed -i "/^\[patch.crates-io\]/,/^\[/{/^$crate = /d}" Cargo.toml
+    done
+    sed -i '/^\[\[patch.unused\]\]/,$d' Cargo.lock
+  '';
 
   buildPhase = ''
     runHook preBuild
