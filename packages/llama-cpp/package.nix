@@ -10,16 +10,16 @@
 # ggml rpc protocol is versioned
 (pkgs.llama-cpp.override { inherit cudaSupport vulkanSupport rpcSupport; }).overrideAttrs (
   finalAttrs: old: {
-    version = "0.6.0";
+    version = "0.7.0";
 
     src = fetchFromGitHub {
       owner = "ggml-org";
       repo = "llama.cpp";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-l6l6JIlIVTaVC6xh5M4fRHFtXsweQuugtkNTWHcZZF4=";
+      hash = "sha256-pEDYgI3AMTU+cekvRX7NNt5wddznydQSNuerswvEpsA=";
     };
 
-    npmDepsHash = "sha256-a17M+L3nLdRnN6WMB6imPFmwqG2g8uv+gwN0XTAUrf8=";
+    npmDepsHash = "sha256-hqYzdp1FwPhYkBP278fQXgY9NCKB6Q3P6Gko7BfP0m0=";
 
     # semver releases only; upstream also tags every nightly build as
     # b<number>, which pushes semver releases out of the atom feed
