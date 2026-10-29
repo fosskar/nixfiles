@@ -44,6 +44,7 @@
       self.modules.homeManager.shellAliases
       self.modules.homeManager.ssh
       self.modules.homeManager.starship
+      self.modules.homeManager.tern
       self.modules.homeManager.tmux
       self.modules.homeManager.tuios
       self.modules.homeManager.voxtype

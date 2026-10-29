@@ -5,12 +5,36 @@
   writeShellScript,
   makeDesktopItem,
   copyDesktopItems,
+  libglvnd,
+  vulkan-loader,
+  wayland,
+  libxkbcommon,
+  libxcb,
+  libpulseaudio,
+  pipewire,
+  webkitgtk_4_1,
+  linux-pam,
 }:
 let
   pname = "tern";
   version = "0.9.7";
-  # the launcher seeds a writable copy in $HOME, which tern then updates in place; runtime libraries come from nix-ld
+  # libraries the binary dlopens at runtime
+  runtimeLibs = [
+    libglvnd
+    vulkan-loader
+    wayland
+    libxkbcommon
+    libxcb
+    libpulseaudio
+    pipewire
+    webkitgtk_4_1
+    linux-pam
+  ];
+  # the launcher seeds a writable copy in $HOME, which tern then updates in place, so the
+  # unpatched binary runs through nix-ld (programs.nix-ld.enable) with runtimeLibs prepended
   launcher = writeShellScript "tern" ''
+    # nix-ld reads its default libraries (libstdc++ and others) from the system path only while the variable is unset
+    export NIX_LD_LIBRARY_PATH="${lib.makeLibraryPath runtimeLibs}:''${NIX_LD_LIBRARY_PATH:-/run/current-system/sw/share/nix-ld/lib}"
     bin="$HOME/.local/opt/tern/tern"
     if [ ! -x "$bin" ]; then
       install -Dm755 @out@/libexec/tern/tern "$bin"

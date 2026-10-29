@@ -48,7 +48,6 @@ in
           config.flake.modules.nixos.nixAccessTokens
           config.flake.modules.nixos.yubikey
           config.flake.modules.nixos.niri
-          config.flake.modules.nixos.tern
         ];
       };
     };
