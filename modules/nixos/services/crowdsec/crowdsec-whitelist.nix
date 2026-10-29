@@ -37,11 +37,11 @@
         postOverflows.s01Whitelist = [
           {
             name = "nixfiles/probing-whitelist";
-            description = "nix cache and matrix clients burst 404s (narinfo/nar cache misses, dead remote media thumbnails, optional endpoints) that http-probing misreads as scanning";
+            description = "nix cache and matrix clients burst 404s (narinfo/nar cache misses, dead remote media thumbnails, optional endpoints) and 200s (cache hits) that http-probing and http-crawl-non_statics misread as scanning";
             whitelist = {
-              reason = "404 bursts are normal binary cache and matrix client behavior";
+              reason = "request bursts are normal binary cache and matrix client behavior";
               expression = [
-                "evt.Overflow.Alert.Scenario == 'crowdsecurity/http-probing' && all(evt.Overflow.Alert.Events, {${
+                "evt.Overflow.Alert.Scenario in ['crowdsecurity/http-probing', 'crowdsecurity/http-crawl-non_statics'] && all(evt.Overflow.Alert.Events, {${
                   lib.concatMapStringsSep " || " (cond: "(${cond})") benignProbing
                 }})"
               ];
