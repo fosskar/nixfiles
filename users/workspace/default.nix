@@ -13,7 +13,6 @@ in
 {
   imports = [
     self.modules.nixos.llm
-    self.modules.nixos.paseoServer
     self.modules.nixos.tern
     self.modules.nixos.ternServer
     self.modules.nixos.workspaceHost
@@ -36,7 +35,6 @@ in
         self.modules.homeManager.jujutsu
         self.modules.homeManager.k8s
         self.modules.homeManager.llm
-        self.modules.homeManager.paseoServer
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.shellAliases
