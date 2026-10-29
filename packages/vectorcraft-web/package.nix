@@ -27,16 +27,16 @@ let
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "vectorcraft-web";
-  version = "0.17.0";
+  version = "0.18.0";
 
   src = fetchFromGitHub {
     owner = "storytold";
     repo = "vectorcraft";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-5kfG3C6aKii2ov0j9N8K44LFiEY261saNSmJzvbyLhU=";
+    hash = "sha256-vohd9enSBgOwXtOMVOAE3SJ/GRrRsp52l1X7O0n7bd0=";
   };
 
-  cargoHash = "sha256-WtoC67BVtmNh0YFsDXVVrXV9qcdFYkSC2VBJ/zZlACo=";
+  cargoHash = "sha256-cfABh/4Wx8pA2nMJZ9/BvbQvYADmnb+B1Ws82EP3HKY=";
 
   nativeBuildInputs = [
     trunk
@@ -44,6 +44,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
     binaryen
     llvmPackages.bintools-unwrapped
   ];
+
+  # fetchCargoVendor skips [[patch.unused]] crates, so offline cargo cannot resolve those patches
+  preBuild = ''
+    for crate in $(sed -n '/^\[\[patch.unused\]\]/{n;s/^name = "\(.*\)"$/\1/p}' Cargo.lock); do
+      sed -i "/^\[patch.crates-io\]/,/^\[/{/^$crate = /d}" Cargo.toml
+    done
+    sed -i '/^\[\[patch.unused\]\]/,$d' Cargo.lock
+  '';
 
   buildPhase = ''
     runHook preBuild
