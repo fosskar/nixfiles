@@ -30,7 +30,7 @@ in
         self.modules.homeManager.fish
         self.modules.homeManager.fzf
         self.modules.homeManager.git
-        self.modules.homeManager.herdr
+        self.modules.homeManager.herdrCore
         self.modules.homeManager.hunk
         self.modules.homeManager.jujutsu
         self.modules.homeManager.k8s

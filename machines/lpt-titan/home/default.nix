@@ -6,10 +6,10 @@
 {
   home-manager.users.simon = {
     imports = [
-      self.modules.homeManager.herdr
+      self.modules.homeManager.herdrApp
+      self.modules.homeManager.herdrCore
       self.modules.homeManager.noctalia
     ]
     ++ nflib.scanPaths ./. { };
-    programs.herdr.machines = [ "workspace" ];
   };
 }
