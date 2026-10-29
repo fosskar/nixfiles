@@ -45,6 +45,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
     llvmPackages.bintools-unwrapped
   ];
 
+  # fetchCargoVendor skips [[patch.unused]] crates, so offline cargo cannot resolve those patches
+  preBuild = ''
+    for crate in $(sed -n '/^\[\[patch.unused\]\]/{n;s/^name = "\(.*\)"$/\1/p}' Cargo.lock); do
+      sed -i "/^\[patch.crates-io\]/,/^\[/{/^$crate = /d}" Cargo.toml
+    done
+    sed -i '/^\[\[patch.unused\]\]/,$d' Cargo.lock
+  '';
+
   buildPhase = ''
     runHook preBuild
     (cd apps/vectorcraft-web && HOME=$TMPDIR trunk build --offline --frozen --release)
