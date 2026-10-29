@@ -12,6 +12,7 @@
       self.modules.homeManager.noctalia
     ]
     ++ nflib.scanPaths ./. { };
+    programs.herdr-core.machines = [ "workspace" ];
     programs.noctalia.settings.lockscreen_widgets.widget = {
       clock_main = {
         type = "clock";

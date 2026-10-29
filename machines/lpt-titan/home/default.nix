@@ -11,5 +11,6 @@
       self.modules.homeManager.noctalia
     ]
     ++ nflib.scanPaths ./. { };
+    programs.herdr-core.machines = [ "workspace" ];
   };
 }
