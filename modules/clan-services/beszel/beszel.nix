@@ -217,6 +217,11 @@ _: {
                     value = 90;
                     min = 10;
                   }
+                  {
+                    name = "SystemdFailed";
+                    value = 0;
+                    min = 0;
+                  }
                 ];
 
                 beszelApi = "http://127.0.0.1:${toString beszelPort}/api";
