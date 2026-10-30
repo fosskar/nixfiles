@@ -638,11 +638,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793340151,
-        "narHash": "sha256-RrGUgInADxIqFGw+DkTUCeSn6tMyU2X0Zq7F0xJ/iQA=",
+        "lastModified": 1793397086,
+        "narHash": "sha256-t5BZQ/u9ECgRQat47/dbTU1dSN7ikBKK2z7yT9UZ3jw=",
         "owner": "anomalyco",
         "repo": "hex",
-        "rev": "905c1467df4cebc192e7cfa2e9f187d9c8ed0324",
+        "rev": "a9401e8827155d3b3a6af9d0f7d66eb76444f489",
         "type": "github"
       },
       "original": {
