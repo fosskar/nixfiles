@@ -90,7 +90,6 @@
               "JetKVM nixworker" = "kvm, remote console";
               "Kanidm" = "identity, accounts";
               "Kiwix" = "offline wikipedia";
-              "Laya" = "llm";
               "Lidarr" = "music downloads";
               "llama.cpp" = "llm, ai chat";
               "LLDAP" = "ldap, users";

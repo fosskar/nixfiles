@@ -61,7 +61,6 @@
         mcp.allow = [
           "calendar.*"
           "grafana.*"
-          "laya.*"
         ];
 
         providers = {
@@ -110,7 +109,6 @@
         dashboard.enable = false;
         mcp.allow = [
           "calendar.*"
-          "laya.*"
         ];
         providers = {
           local.enable = true;

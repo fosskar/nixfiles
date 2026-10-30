@@ -40,10 +40,10 @@ in
             "mmproj-F16.gguf" = "71f3cbc1f7cc0f30d09d41cfa924c0060827ebc33bf15ace7e86661e856f0160";
           };
         };
-        "ggml-org/Laya-GGUF" = {
-          rev = "da4b4753d62197659d8c90103cd4c43bef9afea6";
+        "LiquidAI/d1-2B-GGUF" = {
+          rev = "e968f6575f0d4fad928312d7af15cad90fd365c0";
           files = {
-            "Laya-Q8_0.gguf" = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
+            "d1-2B-Q8_0.gguf" = "073313d92b53b0ac8193db6e906cb3c78a98183d244b15b7b8f5426115c6738c";
           };
         };
       };
@@ -150,16 +150,15 @@ in
               spec-type = "draft-mtp";
               spec-draft-n-max = 2;
             };
-            "ggml-org/Laya-GGUF:Q8_0" = {
-              model = modelPath "ggml-org/Laya-GGUF" "Laya-Q8_0.gguf";
-              alias = "laya";
-              # runs on the arc b50 in nixworker (llamaCppRpcServer); the child
-              # still opens a cuda context of ~220 MiB here
+            "LiquidAI/d1-2B-GGUF:Q8_0" = {
+              model = modelPath "LiquidAI/d1-2B-GGUF" "d1-2B-Q8_0.gguf";
+              alias = "d1";
+              # decision model for /v1/systemone; runs on the arc b50 in nixworker
+              # (llamaCppRpcServer), the child still opens a ~220 MiB cuda context here
               rpc = "${flake-self.hosts.nixworker.lan}:${toString rpcPort}";
               device = "RPC0";
               n-gpu-layers = 999;
-              # laya evaluates a whole prompt in one ubatch, so ubatch caps the
-              # state; 8192 is the model's context length
+              # d1 reads a question in one batch, so ubatch caps state plus media
               ctx-size = 8192;
               batch-size = 8192;
               ubatch-size = 8192;

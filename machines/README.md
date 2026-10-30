@@ -135,7 +135,7 @@ minisforum ms-a2 (ryzen 9 9955hx, intel arc pro b50, 96gb ddr5), btrfs root with
 - harmonia and niks3 binary caches, garage node
 - ggml rpc server on the arc for the llama.cpp router on nixbox
 - radicle mirror
-- hermes agents in fencr sandboxes; mcp gateway with calendar, grafana and laya backends
+- hermes agents in fencr sandboxes; mcp gateway with calendar and grafana backends
 - borgbackup of service state and fencr sandbox checkpoints to the hetzner storage box
 - headless dev host: workspace user, `nix-ld`
 - ups secondary
