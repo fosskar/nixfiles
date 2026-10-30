@@ -29,7 +29,6 @@
           [
             "branch"
             "git_status"
-            { token = "$jj_bookmark"; }
           ]
         ];
       };
@@ -120,14 +119,6 @@
               "''${XDG_STATE_HOME:-$HOME/.local/state}/herdr/client/endpoints.json"
           ''
         );
-
-        # the socket override avoids a protocol mismatch with a server that is
-        # still running the previous Nix generation during activation.
-        home.activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          offlineSocket="''${XDG_RUNTIME_DIR:-/tmp}/herdr-plugin-activation-$$.sock"
-          run env HERDR_SOCKET_PATH="$offlineSocket" \
-            ${herdrBin} plugin link ${pkgs.local.herdr-jj}/share/herdr-jj
-        '';
       };
     };
 }
