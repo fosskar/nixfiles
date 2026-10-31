@@ -147,6 +147,12 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # desktop
+    umbriel = {
+      url = "github:noctalia-dev/umbriel";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # gaming
     nix-gaming = {
       url = "github:fufexan/nix-gaming";

@@ -70,6 +70,7 @@
       programs.seahorse.enable = true;
 
       xdg.portal.config.niri."org.freedesktop.impl.portal.Secret" = lib.mkForce "gnome-keyring";
+      xdg.portal.config.umbriel."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
 
       environment.systemPackages = [
         keyring-tpm-unlock

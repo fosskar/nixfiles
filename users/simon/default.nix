@@ -47,6 +47,7 @@
       self.modules.homeManager.tern
       self.modules.homeManager.tmux
       self.modules.homeManager.tuios
+      self.modules.homeManager.umbriel
       self.modules.homeManager.voxtype
       self.modules.homeManager.workspaceClient
       self.modules.homeManager.udiskie

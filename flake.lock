@@ -1377,6 +1377,7 @@
         "systems": "systems",
         "tangled": "tangled",
         "treefmt-nix": "treefmt-nix",
+        "umbriel": "umbriel",
         "voxtype": "voxtype",
         "wiki": "wiki",
         "zen-browser": "zen-browser"
@@ -1617,6 +1618,27 @@
         "type": "github"
       }
     },
+    "umbriel": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "xdg-desktop-portal-umbriel": "xdg-desktop-portal-umbriel"
+      },
+      "locked": {
+        "lastModified": 1793419709,
+        "narHash": "sha256-16BeMBjCuMxFjeWO2e97DDej6hOiFtDVW1gKRIH6+eo=",
+        "owner": "noctalia-dev",
+        "repo": "umbriel",
+        "rev": "2952bbcbbb4669953abc67dd74f4cd9711dbce6b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "umbriel",
+        "type": "github"
+      }
+    },
     "uv2nix": {
       "inputs": {
         "nixpkgs": [
@@ -1689,6 +1711,27 @@
       "original": {
         "owner": "fosskar",
         "repo": "wiki",
+        "type": "github"
+      }
+    },
+    "xdg-desktop-portal-umbriel": {
+      "inputs": {
+        "nixpkgs": [
+          "umbriel",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793360888,
+        "narHash": "sha256-9slx9KEkSo013x0RtdLkdwMrAOiyn4rWd9Ys2YVUv3A=",
+        "owner": "noctalia-dev",
+        "repo": "xdg-desktop-portal-umbriel",
+        "rev": "17739df892537e4c9a89eb60dd8a1f1eadf750e5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "xdg-desktop-portal-umbriel",
         "type": "github"
       }
     },
