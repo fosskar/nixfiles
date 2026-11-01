@@ -5,6 +5,8 @@
     programs.hex = {
       enable = true;
       autostart = true;
+      # terminals such as herdr paste on ctrl+shift+v only
+      settings.paste_with_shift = true;
     };
     # niri 26.04 has no org.gnome.Shell GrabAccelerators, so the
     # GlobalShortcuts portal cannot bind; hold mode needs release binds
