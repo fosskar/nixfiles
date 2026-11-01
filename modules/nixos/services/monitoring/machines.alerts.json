@@ -609,7 +609,8 @@
         },
         "isPaused": false,
         "notification_settings": {
-          "receiver": "matrix-alert-hook"
+          "receiver": "matrix-alert-hook",
+          "repeat_interval": "8760h"
         }
       }
     ]
