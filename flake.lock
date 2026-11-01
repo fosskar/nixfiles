@@ -1571,10 +1571,10 @@
         "timeless-fonts-src": "timeless-fonts-src"
       },
       "locked": {
-        "lastModified": 1793481571,
-        "narHash": "sha256-wc+PMVifqVsAECGoxCH/fyCPE58zuTPs3GnrouDiMjQ=",
+        "lastModified": 1793564507,
+        "narHash": "sha256-y7TRxEMB5Cu89JUEmVi/9A571Xz/YbL0bgjnUaWyPZU=",
         "ref": "refs/heads/master",
-        "rev": "ad0747f0671cec049796982c119617115c4e06b1",
+        "rev": "6223b9c192616fc79b964c26aa2bc382a5c90adc",
         "shallow": true,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
