@@ -16,7 +16,7 @@
             "zen-beta"
           ];
           programs.umbriel.settings.keybinds."Mod+W" = {
-            action = "spawn zen-beta";
+            action = "spawn focus-or-spawn zen-beta zen-beta";
             repeat = false;
           };
 

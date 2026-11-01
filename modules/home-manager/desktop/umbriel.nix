@@ -27,6 +27,8 @@
     {
       imports = [ inputs.umbriel.homeModules.default ];
 
+      home.packages = [ pkgs.local.focus-or-spawn ];
+
       programs.umbriel = {
         enable = true;
 
@@ -150,10 +152,10 @@
             "Mod+Shift+Slash" = "cheatsheet-toggle";
 
             # program launches
-            "Mod+A" = noRepeat "spawn hermes-desktop-remote";
+            "Mod+A" = noRepeat "spawn focus-or-spawn Hermes hermes-desktop-remote";
             "Mod+T" = noRepeat "spawn ghostty";
-            "Mod+D" = noRepeat "spawn webcord";
-            "Mod+Y" = noRepeat "spawn element-desktop";
+            "Mod+D" = noRepeat "spawn focus-or-spawn WebCord webcord";
+            "Mod+Y" = noRepeat "spawn focus-or-spawn Element element-desktop";
 
             # noctalia shell, same binds as on niri
             "Mod+Space" = noRepeat "spawn noctalia msg panel-toggle launcher";

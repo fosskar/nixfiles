@@ -29,7 +29,7 @@
         ];
       };
       programs.umbriel.settings.keybinds."Mod+E" = {
-        action = "spawn herdr-app";
+        action = "spawn focus-or-spawn herdr-app herdr-app";
         repeat = false;
       };
     };

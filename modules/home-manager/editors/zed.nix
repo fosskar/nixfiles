@@ -35,7 +35,7 @@
         "zeditor"
       ];
       programs.umbriel.settings.keybinds."Mod+Z" = {
-        action = "spawn zeditor";
+        action = "spawn focus-or-spawn dev.zed.Zed zeditor";
         repeat = false;
       };
     };
