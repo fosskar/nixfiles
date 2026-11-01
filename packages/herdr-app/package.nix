@@ -19,17 +19,17 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "herdr-app";
-  version = "0.1.10";
+  version = "0.1.11";
 
   src = fetchFromGitHub {
     owner = "herdrdev";
     repo = "herdr-app";
     tag = "v${finalAttrs.version}";
     fetchSubmodules = true;
-    hash = "sha256-ElraUWks2i8aJJhkbwpz43k6ttOV55NMPek344wgyZs=";
+    hash = "sha256-vuY2a3iGVJ8+oOXnQbWY5/hYNUdCov5yDuttCq9swr4=";
   };
 
-  cargoHash = "sha256-euxSTVGKqaFfJh9umqPeaDYej5ytFXgLECeL62V1SrY=";
+  cargoHash = "sha256-DX4+ELg1vtprKv8N6R8rW42wty+hKMo96/MxiiUmqu8=";
 
   # crates/ghostty-sys/build.rs runs `zig build` offline against this cache
   zigDeps = zig_0_16.fetchDeps {
