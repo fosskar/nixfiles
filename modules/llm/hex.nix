@@ -17,5 +17,9 @@
       ];
       _props.hotkey-overlay-title = "Toggle Hex dictation";
     };
+    programs.umbriel.settings.keybinds."Alt+Space" = {
+      action = "spawn hex dictation toggle";
+      repeat = false;
+    };
   };
 }

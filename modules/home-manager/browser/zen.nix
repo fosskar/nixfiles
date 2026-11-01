@@ -15,6 +15,10 @@
             "zen-beta"
             "zen-beta"
           ];
+          programs.umbriel.settings.keybinds."Mod+W" = {
+            action = "spawn zen-beta";
+            repeat = false;
+          };
 
           programs.zen-browser = {
             enable = true;
