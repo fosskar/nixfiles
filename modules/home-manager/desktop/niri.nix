@@ -28,7 +28,7 @@
       home.packages = [
         pkgs.wl-clipboard
         pkgs.local.live-ocr
-        pkgs.local.niri-focus-or-spawn
+        pkgs.local.focus-or-spawn
       ];
 
       wayland.windowManager.niri.settings = {
