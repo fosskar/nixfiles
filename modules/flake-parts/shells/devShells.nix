@@ -7,10 +7,13 @@
       ...
     }:
     let
-      # patch clan-cli to support SOPS_AGE_KEY_CMD
-      # https://git.clan.lol/clan/clan-core/issues/6799
+      # sops-age-key-cmd: support SOPS_AGE_KEY_CMD, https://git.clan.lol/clan/clan-core/issues/6799
+      # select-cache-lock: fix racy select cache in parallel `clan machines update`, https://git.clan.lol/clan/clan-core/pulls/8103
       clan-cli-patched = inputs'.clan-core.packages.clan-cli.overrideAttrs (old: {
-        patches = (old.patches or [ ]) ++ [ ./_clan-cli-sops-age-key-cmd.patch ];
+        patches = (old.patches or [ ]) ++ [
+          ./_clan-cli-sops-age-key-cmd.patch
+          ./_clan-cli-select-cache-lock.patch
+        ];
       });
 
       # until it not only a cli flag https://git.clan.lol/clan/clan-core/issues/4624

@@ -1,0 +1,197 @@
+diff --git a/clan_lib/flake/flake.py b/clan_lib/flake/flake.py
+index 31e44953e..6832ea52d 100644
+--- a/clan_lib/flake/flake.py
++++ b/clan_lib/flake/flake.py
+@@ -4,6 +4,7 @@ import logging
+ import os
+ import re
+ import shlex
++import threading
+ import traceback
+ from dataclasses import asdict, dataclass, field
+ from enum import StrEnum
+@@ -11,7 +12,7 @@ from functools import cache, cached_property
+ from hashlib import sha1
+ from pathlib import Path
+ from tempfile import NamedTemporaryFile
+-from typing import TYPE_CHECKING, Any
++from typing import TYPE_CHECKING, Any, ClassVar
+ 
+ from clan_lib.cmd import Log, RunOpts, run
+ from clan_lib.dirs import clan_tmp_dir, select_source
+@@ -802,6 +803,15 @@ class Flake:
+     store_path: str | None = None
+     nix_options: list[str] | None = None
+ 
++    # Guards every read and mutation of `_cache` and of the on-disk cache
++    # file. `clan machines update <a> <b>` selects from one Flake in a thread
++    # per machine, and `get_from_nix` reloads the whole tree from disk before
++    # inserting, so without this a peer's uninserted subtree is dropped and
++    # the next select raises KeyError on an attribute the flake does have.
++    # ClassVar, not a field: the cache file is shared by every instance, and a
++    # field would land in __eq__ and in clan_lib.api.serde's dataclass walk.
++    _cache_lock: ClassVar[threading.RLock] = threading.RLock()
++
+     _flake_cache_path: Path | None = field(init=False, default=None)
+     _cache: FlakeCache | None = field(init=False, default=None)
+     _path: Path | None = field(init=False, default=None)
+@@ -886,13 +896,14 @@ class Flake:
+         if os.environ.get("CLAN_NO_SELECT_DISK_CACHE") == "1":
+             log.debug("Skipping select cache load (CLAN_NO_SELECT_DISK_CACHE=1)")
+             return
+-        path = self.flake_cache_path
+-        if path is None or self._cache is None or not path.exists():
+-            return
+-        try:
+-            self._cache.load_from_file(path)
+-        except (OSError, json.JSONDecodeError, KeyError, ValueError) as e:
+-            log.warning(f"Failed load eval cache: {e}. Continue without cache")
++        with self._cache_lock:
++            path = self.flake_cache_path
++            if path is None or self._cache is None or not path.exists():
++                return
++            try:
++                self._cache.load_from_file(path)
++            except (OSError, json.JSONDecodeError, KeyError, ValueError) as e:
++                log.warning(f"Failed load eval cache: {e}. Continue without cache")
+ 
+     @cached_property
+     def public_vars_store(self) -> "StoreBase":
+@@ -960,16 +971,17 @@ class Flake:
+         """
+         self.prefetch()
+ 
+-        self._cache = FlakeCache()
+-        if reset_tracking:
+-            self._cache_miss_stack_traces.clear()
+-        if self.hash is None:
+-            msg = "Hash cannot be None"
+-            raise ClanError(msg)
+-        hashed_hash = sha1(self.hash.encode()).hexdigest()  # noqa: S324 - SHA1 used only for cache directory naming, not security
+-        cache_root = os.environ.get("CLAN_TEST_FLAKE_CACHE") or clan_tmp_dir()
+-        self.flake_cache_path = Path(cache_root) / "flakes-v2" / hashed_hash
+-        self.load_cache()
++        with self._cache_lock:
++            self._cache = FlakeCache()
++            if reset_tracking:
++                self._cache_miss_stack_traces.clear()
++            if self.hash is None:
++                msg = "Hash cannot be None"
++                raise ClanError(msg)
++            hashed_hash = sha1(self.hash.encode()).hexdigest()  # noqa: S324 - SHA1 used only for cache directory naming, not security
++            cache_root = os.environ.get("CLAN_TEST_FLAKE_CACHE") or clan_tmp_dir()
++            self.flake_cache_path = Path(cache_root) / "flakes-v2" / hashed_hash
++            self.load_cache()
+ 
+         if "original" not in self.flake_metadata:
+             self.flake_metadata = nix_metadata(self.identifier)
+@@ -1105,11 +1117,18 @@ class Flake:
+         if len(outputs) != len(selectors):
+             msg = f"flake_prepare_cache: Expected {len(outputs)} outputs, got {len(selectors)}"
+             raise ClanError(msg)
+-        self.load_cache()
+-        for i, selector in enumerate(selectors):
+-            self._cache.insert(outputs[i], selector)
+-        if self.flake_cache_path and os.environ.get("CLAN_NO_SELECT_DISK_CACHE") != "1":
+-            self._cache.save_to_file(self.flake_cache_path)
++        # Reload, insert and save as one step. A peer thread reloading here
++        # then sees a file that already holds this call's outputs, so the
++        # reload can no longer drop a selector that was just fetched.
++        with self._cache_lock:
++            self.load_cache()
++            for i, selector in enumerate(selectors):
++                self._cache.insert(outputs[i], selector)
++            if (
++                self.flake_cache_path
++                and os.environ.get("CLAN_NO_SELECT_DISK_CACHE") != "1"
++            ):
++                self._cache.save_to_file(self.flake_cache_path)
+ 
+     def precache(self, selectors: list[str]) -> None:
+         """Ensures that the specified selectors are cached locally.
+@@ -1122,26 +1141,29 @@ class Flake:
+             selectors (list[str]): A list of attribute selectors to check and cache.
+ 
+         """
+-        if self._cache is None:
+-            self.invalidate_cache()
+-        if self._cache is None:
+-            msg = "Cache cannot be None after invalidation"
+-            raise ClanError(msg)
+-        if self.flake_cache_path is None:
+-            msg = "Flake cache path cannot be None"
+-            raise ClanError(msg)
+-        not_fetched_selectors = [
+-            selector for selector in selectors if not self._cache.is_cached(selector)
+-        ]
++        with self._cache_lock:
++            if self._cache is None:
++                self.invalidate_cache()
++            if self._cache is None:
++                msg = "Cache cannot be None after invalidation"
++                raise ClanError(msg)
++            if self.flake_cache_path is None:
++                msg = "Flake cache path cannot be None"
++                raise ClanError(msg)
++            not_fetched_selectors = [
++                selector
++                for selector in selectors
++                if not self._cache.is_cached(selector)
++            ]
+ 
+-        def selector_str(selector: str) -> str:
+-            return (
+-                f"\n  - (cached) {selector}"
+-                if self._cache and self._cache.is_cached(selector)
+-                else f"\n  - (not cached) {selector}"
+-            )
++            def selector_str(selector: str) -> str:
++                return (
++                    f"\n  - (cached) {selector}"
++                    if self._cache and self._cache.is_cached(selector)
++                    else f"\n  - (not cached) {selector}"
++                )
+ 
+-        log.debug(f"Precaching selectors:{''.join(map(selector_str, selectors))}")
++            log.debug(f"Precaching selectors:{''.join(map(selector_str, selectors))}")
+ 
+         if not_fetched_selectors:
+             # Record cache miss with stack trace
+@@ -1161,16 +1183,18 @@ class Flake:
+             selector (str): The attribute selector string to fetch the value for.
+ 
+         """
+-        if self._cache is None:
+-            self.invalidate_cache()
+-        if self._cache is None:
+-            msg = "Cache cannot be None after invalidation"
+-            raise ClanError(msg)
+-        if self.flake_cache_path is None:
+-            msg = "Flake cache path cannot be None"
+-            raise ClanError(msg)
++        with self._cache_lock:
++            if self._cache is None:
++                self.invalidate_cache()
++            if self._cache is None:
++                msg = "Cache cannot be None after invalidation"
++                raise ClanError(msg)
++            if self.flake_cache_path is None:
++                msg = "Flake cache path cannot be None"
++                raise ClanError(msg)
++            cached = self._cache.is_cached(selector)
+ 
+-        if not self._cache.is_cached(selector):
++        if not cached:
+             log.debug(f"Cache miss for {selector}")
+             # Record cache miss with stack trace
+             self._record_cache_miss(f"Cache miss for selector: {selector}")
+@@ -1179,7 +1203,8 @@ class Flake:
+             log.debug(f"(cached) $ clan select {shlex.quote(selector)}")
+ 
+         try:
+-            return self._cache.select(selector)
++            with self._cache_lock:
++                return self._cache.select(selector)
+         except KeyError as e:
+             # Convert KeyError to ClanSelectError for consistency
+             raise ClanSelectError(
