@@ -15,10 +15,6 @@
             "zen-beta"
             "zen-beta"
           ];
-          programs.umbriel.settings.keybinds."Mod+W" = {
-            action = "spawn focus-or-spawn zen-beta zen-beta";
-            repeat = false;
-          };
 
           programs.zen-browser = {
             enable = true;
@@ -75,6 +71,12 @@
             };
           };
         }
+        (lib.optionalAttrs (options.programs ? umbriel) {
+          programs.umbriel.settings.keybinds."Mod+W" = {
+            action = "spawn focus-or-spawn zen-beta zen-beta";
+            repeat = false;
+          };
+        })
         (lib.optionalAttrs (options.services.psd ? extraBrowsers) {
           services.psd.extraBrowsers.zen = ''
             DIRArr[0]="$XDG_CONFIG_HOME/zen"
