@@ -564,11 +564,11 @@
     "haos": {
       "flake": false,
       "locked": {
-        "lastModified": 1793357776,
-        "narHash": "sha256-D1XoTrfjG6ktSliVCQUnXBijW/sxjlul3PWT8BW0Qlo=",
+        "lastModified": 1793650844,
+        "narHash": "sha256-3XZ0myeiKQZ2XnK3UvZjP9+DMqhuv03e9kG67Zky5ZE=",
         "owner": "home-assistant",
         "repo": "operating-system",
-        "rev": "7093f8afc25d5d110729c8e297c357087c063fb3",
+        "rev": "00465b73d29b5806439cee55c7aaee169499d510",
         "type": "github"
       },
       "original": {
