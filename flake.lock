@@ -964,11 +964,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793557981,
-        "narHash": "sha256-QK1ljIvgFEGUerS7MnZ//eD+CLHYmbm4mYOuxaQC248=",
+        "lastModified": 1793614262,
+        "narHash": "sha256-aiKJcfU/WKSEWeCuOF8k2SNlXvqztxGCnFs//cyZixw=",
         "owner": "Mic92",
         "repo": "nix-grpc-store",
-        "rev": "0d2618a4f7475e77406408a29de97da69f6ad119",
+        "rev": "7261985d5295ae18f9db3057b65edf9361fea4c3",
         "type": "github"
       },
       "original": {
