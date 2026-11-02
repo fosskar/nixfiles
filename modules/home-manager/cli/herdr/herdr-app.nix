@@ -1,6 +1,11 @@
 {
   flake.modules.homeManager.herdrApp =
-    { lib, pkgs, ... }:
+    {
+      lib,
+      options,
+      pkgs,
+      ...
+    }:
     let
       disableTelemetry = pkgs.writeShellScript "herdr-app-disable-telemetry" ''
         set -eu
@@ -12,25 +17,31 @@
       '';
     in
     {
-      home.packages = [ pkgs.local.herdr-app ];
+      config = lib.mkMerge [
+        {
+          home.packages = [ pkgs.local.herdr-app ];
 
-      # the app writes settings.json itself (zoom, theme picker), so nix only
-      # forces the telemetry key instead of owning the file
-      home.activation.herdrAppTelemetry = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        run ${disableTelemetry}
-      '';
+          # the app writes settings.json itself (zoom, theme picker), so nix only
+          # forces the telemetry key instead of owning the file
+          home.activation.herdrAppTelemetry = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            run ${disableTelemetry}
+          '';
 
-      wayland.windowManager.niri.settings.binds."Mod+E" = {
-        _props.hotkey-overlay-title = "Open herdr";
-        spawn = [
-          "focus-or-spawn"
-          "herdr-app"
-          "herdr-app"
-        ];
-      };
-      programs.umbriel.settings.keybinds."Mod+E" = {
-        action = "spawn focus-or-spawn herdr-app herdr-app";
-        repeat = false;
-      };
+          wayland.windowManager.niri.settings.binds."Mod+E" = {
+            _props.hotkey-overlay-title = "Open herdr";
+            spawn = [
+              "focus-or-spawn"
+              "herdr-app"
+              "herdr-app"
+            ];
+          };
+        }
+        (lib.optionalAttrs (options.programs ? umbriel) {
+          programs.umbriel.settings.keybinds."Mod+E" = {
+            action = "spawn focus-or-spawn herdr-app herdr-app";
+            repeat = false;
+          };
+        })
+      ];
     };
 }
