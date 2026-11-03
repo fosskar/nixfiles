@@ -311,11 +311,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793412421,
-        "narHash": "sha256-rvhzsy3qTxXt457w4qa6n65a2ZmaalrOIUKfoA0DTak=",
+        "lastModified": 1793672082,
+        "narHash": "sha256-yNAiXeTVgQv2Ev0XWIrMBFyjOLDEnuM5fAPn9Gihfjo=",
         "owner": "fosskar",
         "repo": "fencr",
-        "rev": "6df162dc074f1a4e2c379def11eb85e1a02cee3d",
+        "rev": "290dc83423c7b87e6e56e89dfe5c9f9e95f253bc",
         "type": "github"
       },
       "original": {
