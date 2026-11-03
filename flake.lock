@@ -199,6 +199,21 @@
     },
     "crane": {
       "locked": {
+        "lastModified": 1793669695,
+        "narHash": "sha256-9EtV4I6Ohw0tjidL31TMOKHhW/QGVG8NuGiemzIaNCs=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "788369ed71ed9d84ef72cb056e4d920050d5b32c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
+    "crane_2": {
+      "locked": {
         "lastModified": 1790899423,
         "narHash": "sha256-THGtz65UGJU+sonZidRboyCMk+9DclpMF7pwL4uDV4M=",
         "owner": "ipetkov",
@@ -212,7 +227,7 @@
         "type": "github"
       }
     },
-    "crane_2": {
+    "crane_3": {
       "locked": {
         "lastModified": 1792350552,
         "narHash": "sha256-292lvpvxTGKryKxh3/3tcIVi85CwYGdl4oOi113Sob8=",
@@ -229,17 +244,18 @@
     },
     "cua": {
       "inputs": {
+        "crane": "crane",
         "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1793650310,
-        "narHash": "sha256-FYbcqSnz5jdf7is6IZ2+nCO/zzxLfQZfIDPsTwgYmrs=",
+        "lastModified": 1793743084,
+        "narHash": "sha256-HboJ2kJ/GdJOLDT9gk940o2688yiNY3NU2iF0dJoqck=",
         "owner": "trycua",
         "repo": "cua",
-        "rev": "b72833f107064b9aa2f0c4f6c05622e2b2d1af35",
+        "rev": "1220e12f894d926282bddb542ae2a1d07e3a14e8",
         "type": "github"
       },
       "original": {
@@ -749,7 +765,7 @@
     },
     "lanzaboote": {
       "inputs": {
-        "crane": "crane",
+        "crane": "crane_2",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -1444,7 +1460,7 @@
     },
     "sofka": {
       "inputs": {
-        "crane": "crane_2",
+        "crane": "crane_3",
         "home-manager": [
           "home-manager"
         ],
