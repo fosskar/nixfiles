@@ -1,6 +1,7 @@
 {
   flake.modules.homeManager.herdrApp =
     {
+      inputs,
       lib,
       options,
       pkgs,
@@ -19,7 +20,7 @@
     {
       config = lib.mkMerge [
         {
-          home.packages = [ pkgs.local.herdr-app ];
+          home.packages = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr-app ];
 
           # the app writes settings.json itself (zoom, theme picker), so nix only
           # forces the telemetry key instead of owning the file

@@ -2,13 +2,15 @@
   flake.modules.homeManager.herdrCore =
     {
       config,
+      inputs,
       options,
       pkgs,
       lib,
       ...
     }:
     let
-      hc = lib.getExe pkgs.local.herdr-core;
+      herdr-core = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr-core;
+      hc = lib.getExe herdr-core;
       jq = lib.getExe pkgs.jq;
       machines = config.programs.herdr-core.machines;
     in
@@ -21,10 +23,10 @@
       };
 
       config = {
-        home.packages = [ pkgs.local.herdr-core ];
+        home.packages = [ herdr-core ];
 
         llm = lib.optionalAttrs (options.llm or { } ? externalSkills) {
-          externalSkills.herdr-core = "${pkgs.local.herdr-core.src}/skills/herdr-core/SKILL.md";
+          externalSkills.herdr-core = "${herdr-core}/share/skills/herdr-core/herdr-core/SKILL.md";
         };
 
         # the core keeps machines in its state with the remote core's id, so
