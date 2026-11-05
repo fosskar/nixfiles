@@ -10,13 +10,13 @@
 # ggml rpc protocol is versioned
 (pkgs.llama-cpp.override { inherit cudaSupport vulkanSupport rpcSupport; }).overrideAttrs (
   finalAttrs: old: {
-    version = "0.8.0";
+    version = "0.9.0";
 
     src = fetchFromGitHub {
       owner = "ggml-org";
       repo = "llama.cpp";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-WQAtD8Hos6fEtgPQId7nZiLGyP4asAMKJYEXZid1nqc=";
+      hash = "sha256-6LqtpfqTAbYUr/wPPBAM/dXHv3LDTg+1A81k/cFcAjY=";
     };
 
     npmDepsHash = "sha256-XLtEZsSFdk+2SyfXzBp8HQ2e27PQPpDCn1YjePU1/9w=";
