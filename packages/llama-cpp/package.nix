@@ -21,6 +21,9 @@
 
     npmDepsHash = "sha256-XLtEZsSFdk+2SyfXzBp8HQ2e27PQPpDCn1YjePU1/9w=";
 
+    # needs numpy, torch and safetensors; covers the python gguf converter only
+    disabledTests = old.disabledTests ++ [ "test-conversion-fp8" ];
+
     # semver releases only; upstream also tags every nightly build as
     # b<number>, which pushes semver releases out of the atom feed
     passthru = old.passthru // {
