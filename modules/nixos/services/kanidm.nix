@@ -51,7 +51,7 @@
 
       services.kanidm = {
         server.enable = true;
-        package = pkgs.kanidmWithSecretProvisioning_1_11;
+        package = pkgs.kanidmWithSecretProvisioning_1_12;
 
         server.settings = {
           # the passkey rp id; renaming it later invalidates every enrolled passkey
