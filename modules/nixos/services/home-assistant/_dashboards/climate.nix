@@ -297,6 +297,14 @@ let
               entity = "switch.${room.thermostat}_smart_temperature_control";
               name = "Smart temperature control";
             }
+            # only applies with smart temperature control off; the valve opens at target + accuracy
+            {
+              type = "tile";
+              entity = "number.${room.thermostat}_temperature_accuracy";
+              name = "Temperature accuracy";
+              features_position = "inline";
+              features = [ { type = "numeric-input"; } ];
+            }
           ])
         ]
       else
