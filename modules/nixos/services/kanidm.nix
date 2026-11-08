@@ -104,7 +104,10 @@
       services.gatus.settings.endpoints = [
         {
           name = "Kanidm";
-          url = "https://${publicHost}/status";
+          # the public host is netbird-private and gatus runs on this host;
+          # insecure because the cert is self-signed
+          url = "https://127.0.0.1:${toString listenPort}/status";
+          client.insecure = true;
           enabled = true;
           alerts = [ { type = "matrix"; } ];
           interval = "5m";
