@@ -32,6 +32,8 @@ in
     "radius"
   ];
 
+  rootPasswordSecret = "root_password";
+
   authorizedKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE"
   ];

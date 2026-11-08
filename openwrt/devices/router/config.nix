@@ -71,6 +71,8 @@ in
     "/etc/sysupgrade.conf" = ./files/sysupgrade.conf;
   };
 
+  rootPasswordSecret = "root_password";
+
   uci = {
     secrets.sops.files = [ ../secrets.yaml ];
 
