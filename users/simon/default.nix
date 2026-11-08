@@ -16,7 +16,8 @@
     imports = [
       self.modules.homeManager.bash
       self.modules.homeManager.bat
-      self.modules.homeManager.brave
+      # brave and brave-origin were removed from nixpkgs
+      #self.modules.homeManager.brave
       self.modules.homeManager.btop
       self.modules.homeManager.cursor
       self.modules.homeManager.dircolors
