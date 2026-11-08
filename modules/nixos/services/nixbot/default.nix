@@ -140,14 +140,6 @@
             oauthSecretFile = config.clan.core.vars.generators.nixbot-github-app.files."oauth-secret".path;
           };
 
-          gitea = {
-            enable = false;
-            instanceUrl = "https://codeberg.org";
-            tokenFile = config.clan.core.vars.generators.nixbot-codeberg.files."token".path;
-            oauthSecretFile = config.clan.core.vars.generators.nixbot-codeberg.files."oauth-secret".path;
-            oauthId = "a7b24f2c-1291-4566-970c-d39b869f0a35";
-          };
-
           oidc = {
             enable = true;
             name = "Authelia";
