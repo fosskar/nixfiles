@@ -76,19 +76,12 @@ in
   uci = {
     secrets.sops.files = [ ../secrets.yaml ];
 
-    # left behind by the servers -> srv rename and by dropped sections
-    delete = [
-      "firewall.servers_dhcp"
-      "firewall.servers_dns"
-      "firewall.servers_homeassistant"
-      "firewall.servers_telegraf"
-      "dhcp.servers"
-      "dhcp.homeassistant"
-      "network.wan6"
-      "unbound.auth_icann"
+    exclusive = [
+      "beszel-agent"
+      "dropbear"
+      "sqm"
+      "wireless"
     ];
-
-    exclusive = [ "sqm" ];
 
     settings = {
       attendedsysupgrade.client = {

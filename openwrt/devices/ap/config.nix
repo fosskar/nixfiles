@@ -41,6 +41,12 @@ in
   uci = {
     secrets.sops.files = [ ../secrets.yaml ];
 
+    exclusive = [
+      "beszel-agent"
+      "dropbear"
+      "wireless"
+    ];
+
     settings = {
       attendedsysupgrade.client = {
         _type = "client";
