@@ -54,10 +54,13 @@
           "did:key:z6Mkqumzp6etEF91c57YnvHkrwq4DkUqVusTSTdychiEDLLJ"
           "did:key:z6MkjNSSqPTQm5AnKdmgVom22nr4ZK57bj7dSm1gZeFX4MxN"
         ];
-        p2pListen = [ "0.0.0.0:${toString nodePort}" ];
-        p2pExternalAddresses = [ "seed.${flake-self.domains.public}:${toString nodePort}" ];
+        # seed for our own nodes over yggdrasil (nixworker.s); [::] because
+        # radicle dials only the first resolved address, the ygg ipv6 one
+        p2pListen = [ "[::]:${toString nodePort}" ];
         explorerUrl = "https://${publicHost}/nodes/${publicHost}/{rid}/commits/{sha}";
       };
+
+      networking.firewall.interfaces.ygg.allowedTCPPorts = [ nodePort ];
 
       systemd.services.radicle-mirror = {
         conflicts = [ "radicle-node.service" ];

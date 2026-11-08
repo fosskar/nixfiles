@@ -10,7 +10,7 @@ _: {
             fetch.signedReferences.featureLevel.minimum = "parent";
           };
           preferredSeeds = [
-            "z6Mkfs9BG9u9P6mzwH1ioSQiS6TbpXGUHiAWrmVjYtLnzP9G@seed.fosskar.eu:8776"
+            "z6Mkfs9BG9u9P6mzwH1ioSQiS6TbpXGUHiAWrmVjYtLnzP9G@nixworker.s:8776"
           ];
           web.pinned.repositories = [
             "rad:z4X1gDvBMpZLyzkQEj7dCMpurwqkV" # nixfiles

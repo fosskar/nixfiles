@@ -16,7 +16,7 @@ three defense layers protect inbound traffic before requests reach services.
   │  stateless packet filter at the hypervisor level,   │
   │  before the VM even sees the packet.                │
   │                                                     │
-  │  allow: TCP 22, 80, 443, 6443, 6445-6446, 8776      │
+  │  allow: TCP 22, 80, 443, 6443, 6445-6446            │
   │         UDP 3478, 51820-51821                       │
   │  (set in the hetzner console, not in this repo)     │
   │  drop:  everything else                             │
@@ -36,7 +36,7 @@ three defense layers protect inbound traffic before requests reach services.
   │                                                     │
   │  nixos firewall                                     │
   │  ├ default policy: drop                             │
-  │  ├ open: TCP 80, 443, 6443, 6446, 8776              │
+  │  ├ open: TCP 80, 443, 6443, 6446                    │
   │  │       UDP 443, 3478, 51820, 51821                │
   │  ├ ygg only: TCP 22, 7480, 9273, 18876              │
   │  ├ wireguard only: TCP 22                           │
@@ -155,9 +155,6 @@ large volume of noise before crowdsec even sees it.
      │
      └─ HostSNI(*) TCP passthrough
         └→ 127.0.0.1:8443 (netbird-proxy, tunnel endpoints)
-
-  netbird-proxy (:8776, direct, no traefik)
-     └─ TCP passthrough for seed.fosskar.eu (radicle seed node)
 ```
 
 most backend services bind to localhost. these bind all interfaces (upstream
@@ -171,10 +168,6 @@ locally or over `wt0` (subject to netbird ACLs):
 | netbird-server | `*:9090`  | prometheus metrics                        |
 | netbird-server | `*:33073` | legacy management gRPC port (old clients) |
 | netbird-proxy  | `*:8443`  | tunnel endpoints, via traefik passthrough |
-
-netbird-proxy also listens on `*:8776` (`proxyTCPPorts` in
-`inventory/network.nix`); this port is open to the internet and forwards
-`seed.fosskar.eu` over netbird to the radicle seed node on nixworker (`:8776`).
 
 internal-only services never exposed:
 
@@ -193,11 +186,9 @@ peers): beszel-agent `:18876` and telegraf `:9273`.
 
 ## non-HTTP services
 
-yggdrasil (TCP 6443, TLS 6446), wireguard (51820-51821), STUN (3478) and the
-radicle seed passthrough (8776, netbird-proxy) don't go through traefik. they
-pass through hetzner firewall → crowdsec nftables blacklist → nixos firewall →
-directly to the service. 8776 also has the same per-IP connection limit as 443
-(nftables `conn4`/`conn6` sets in `modules/nixos/services/netbird/proxy.nix`).
+yggdrasil (TCP 6443, TLS 6446), wireguard (51820-51821) and STUN (3478) don't
+go through traefik. they pass through hetzner firewall → crowdsec nftables
+blacklist → nixos firewall → directly to the service.
 
 SSH (22) is not opened in the nixos firewall (`services.openssh.openFirewall =
 false`); sshd is reachable only over wireguard, yggdrasil, netbird (`wt0`) and
