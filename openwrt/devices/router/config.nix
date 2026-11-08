@@ -47,20 +47,29 @@ in
   ];
 
   files = {
-    "/etc/unbound/unbound_srv.conf" = ./files/unbound_srv.conf;
-    "/etc/unbound/unbound_ext.conf" = ./files/unbound_ext.conf;
+    # 0600 matches the unbound package's own copies
+    "/etc/unbound/unbound_srv.conf" = {
+      source = ./files/unbound_srv.conf;
+      mode = "0600";
+      restart = [ "unbound" ];
+    };
+    "/etc/unbound/unbound_ext.conf" = {
+      source = ./files/unbound_ext.conf;
+      mode = "0600";
+      restart = [ "unbound" ];
+    };
     "/etc/crontabs/root" = ./files/crontabs-root;
-    "/etc/telegraf.conf" = ./files/telegraf.conf;
-    "/etc/sysctl.d/99-hardening.conf" = ./files/sysctl-hardening.conf;
+    "/etc/telegraf.conf" = {
+      source = ./files/telegraf.conf;
+      restart = [ "telegraf" ];
+    };
+    "/etc/sysctl.d/99-hardening.conf" = {
+      source = ./files/sysctl-hardening.conf;
+      restart = [ "sysctl" ];
+    };
     "/usr/bin/netboot-update" = ./files/netboot-update;
     "/etc/sysupgrade.conf" = ./files/sysupgrade.conf;
   };
-
-  reload = [
-    "telegraf"
-    "sysctl"
-    "unbound"
-  ];
 
   uci = {
     secrets.sops.files = [ ../secrets.yaml ];
@@ -76,6 +85,8 @@ in
       "network.wan6"
       "unbound.auth_icann"
     ];
+
+    exclusive = [ "sqm" ];
 
     settings = {
       attendedsysupgrade.client = {
@@ -406,7 +417,7 @@ in
       };
 
       # sqm needs software offloading only (flow_offloading_hw incompatible).
-      # list form deletes every queue section first, including the package default sqm.eth1
+      # exclusive, so the package default sqm.eth1 is deleted too
       sqm.queue = [
         {
           _type = "queue";

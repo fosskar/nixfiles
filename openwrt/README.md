@@ -1,18 +1,19 @@
 # openwrt
 
-declarative openwrt config management via nix → UCI → SSH.
-this sits outside the nixos machine graph: nix evaluates typed device modules, renders UCI batch commands, then deploys them over SSH.
+declarative openwrt config management via nix → ucode → SSH.
+this sits outside the nixos machine graph: nix evaluates typed device modules into json, the deploy adds secrets and pipes a ucode program (`nix/apply.uc`) to `ucode -` on the device.
 
 inspired by [Mic92/dotfiles/openwrt](https://github.com/Mic92/dotfiles/tree/main/openwrt).
 
 ## commands
 
 ```bash
-nix run .#openwrt-deploy -- <device>            # apply config
-nix run .#openwrt-deploy -- <device> --dry-run  # preview only
-nix run .#openwrt-fetch -- <device>             # dump current UCI config
-nix run .#openwrt-diff -- <device>              # diff against factory defaults
-nix build .#openwrt-uci-<device>                # inspect generated batch file
+nix run .#openwrt-deploy -- <device>            # apply config, confirm or roll back
+nix run .#openwrt-deploy -- <device> --dry-run  # plan only, computed on the device
+nix run .#openwrt-diff -- <device>              # same as --dry-run
+nix run .#openwrt-fetch -- <device> [config...] # changes from factory defaults, as nix
+nix build .#openwrt-config-<device>             # inspect generated json (no secrets)
+nix build .#checks.x86_64-linux.openwrt-apply-<device>  # apply twice to an empty root
 ```
 
 ## devices
@@ -28,28 +29,37 @@ shared settings live in `profiles/` and are imported by device configs; `profile
 ## how it works
 
 1. `devices/<name>/config.nix` defines UCI settings as nix attrsets
-2. `lib.evalModules` validates config (typed options)
-3. pure nix serializer converts attrsets → UCI batch commands
-4. deploy: `uci batch` (stage) → `uci commit` (persist) → service reload
-5. only changed configs are committed and reloaded (idempotent)
+2. `lib.evalModules` validates config (typed options), `nix/render.nix` turns it into json
+3. deploy decrypts sops, `nix/render.jq` substitutes `@placeholders@` as data, and the result is prepended to `nix/apply.uc`
+4. on the device `apply.uc` removes and installs packages, then stages UCI changes in a copy of `/etc/config` (pending luci changes in `/tmp/.uci` stay out)
+5. changed configs, managed files and `/etc/shadow` are snapshotted, then written atomically
+6. changed configs reload (`/etc/init.d/<config> reload`, else a `config.change` event), services listed in a changed file's `restart` restart
+7. deploy reconnects over a fresh SSH connection and confirms; without a confirm the device restores the snapshot 120s after the apply
 
-**replace semantics**: declared sections are fully replaced. undeclared sections stay untouched.
-options not declared within a section fall back to openwrt built-in defaults.
+**replace semantics**: options of declared sections are synced in place; options not declared are deleted, unchanged ones are not touched, so a rerun plans `no changes`.
+anonymous sections (lists) replace all anonymous sections of that type; named sections of the same type stay unless the config is in `uci.exclusive`.
+undeclared sections stay untouched unless the config is in `uci.exclusive`.
+
+**rollback** covers UCI configs, files and the root password, not packages. state lives in `/tmp/nix-uci/<uuid>/` on the device (`watchdog.sh`, `apply.log`, `snapshot/`). a deploy refuses to run while an earlier one is unconfirmed.
 
 ## device options
 
-| option                   | type           | default  | description                                                                                       |
-| ------------------------ | -------------- | -------- | ------------------------------------------------------------------------------------------------- |
-| `host`                   | string         | required | device IP (SSH target)                                                                            |
-| `packages`               | list of string | `[]`     | packages to install via apk                                                                       |
-| `externalPackages`       | list           | `[]`     | packages to install outside official feeds                                                        |
-| `removePackages`         | list of string | `[]`     | packages to remove (runs before install)                                                          |
-| `authorizedKeys`         | list of string | `[]`     | SSH public keys for /etc/dropbear                                                                 |
-| `files`                  | attrsOf path   | `{}`     | files to push (key = remote path, val = local); `@placeholder@` secrets are substituted at deploy |
-| `reload`                 | list of string | `[]`     | services to restart when a pushed file changed; UCI config reloads are automatic                  |
-| `uci.settings`           | attrset        | `{}`     | UCI config (replace mode)                                                                         |
-| `uci.delete`             | list of string | `[]`     | UCI sections or options to delete (stale sections replace semantics leave behind)                 |
-| `uci.secrets.sops.files` | list of path   | `[]`     | sops files for `@placeholder@` substitution                                                       |
+| option                   | type           | default  | description                                                                                        |
+| ------------------------ | -------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `host`                   | string         | required | device IP (SSH target)                                                                             |
+| `packages`               | list of string | `[]`     | packages to install via apk                                                                        |
+| `externalPackages`       | list           | `[]`     | packages to install outside official feeds                                                         |
+| `removePackages`         | list of string | `[]`     | packages to remove (runs before install)                                                           |
+| `disableServices`        | list of string | `[]`     | init scripts to disable and stop                                                                   |
+| `authorizedKeys`         | list of string | `[]`     | SSH public keys for /etc/dropbear/authorized_keys                                                  |
+| `files.<path>`           | path or attrs  | `{}`     | file to push: one of `source`, `text`, `secret` (sops key = whole content), plus `mode`, `restart` |
+| `rootPasswordSecret`     | string or null | `null`   | sops key with the root password; reuses the current salt, so an unchanged password plans no change |
+| `uci.settings`           | attrset        | `{}`     | UCI config (replace mode)                                                                          |
+| `uci.delete`             | list of string | `[]`     | UCI sections or options to delete (stale sections replace semantics leave behind)                  |
+| `uci.exclusive`          | list of string | `[]`     | configs fully owned by `uci.settings`: undeclared sections are deleted                             |
+| `uci.secrets.sops.files` | list of path   | `[]`     | sops files for `@placeholder@` substitution                                                        |
+
+`files.<path>.mode` defaults to `0600` when the content has `@placeholders@` or comes from `secret`, else `0644`.
 
 ## UCI format
 
@@ -91,8 +101,8 @@ uci.secrets.sops.files = [ ../secrets.yaml ];
 key = "@wifi_password@";
 ```
 
-deploy decrypts via sops, substitutes `@placeholders@` (in UCI values and pushed files), pipes to device via SSH.
-fails if unsubstituted placeholders remain.
+deploy decrypts via sops and substitutes `@placeholders@` in UCI values and pushed files before connecting, so a sops failure leaves the device untouched. an unknown placeholder fails the render.
+plan output redacts secret values; `openwrt-fetch` prints live values unredacted.
 
 ## dns (router)
 
@@ -148,16 +158,18 @@ dhcp.@dnsmasq[0].tftp_root='/srv/tftp'
 
 ```
 openwrt/
-  flake-module.nix              # flake-parts entry point
   README.md
   nix/
-    lib.nix                     # UCI serializer
     module-options.nix          # typed device options
-    uci.nix                     # UCI batch + sops handling
+    render.nix                  # device config -> json, openwrt-render
+    render.jq                   # secret substitution into the json
+    apply.uc                    # on-device program: plan / apply with rollback
+    fetch.uc                    # on-device program for openwrt-fetch
+    ucode.nix                   # ucode with the uci module, for the flake check
     scripts/
       deploy.nix                # deploy script
       fetch.nix                 # fetch script
-      diff.nix                  # diff script
+      diff.nix                  # diff script (deploy --dry-run)
   devices/
     secrets.yaml                # shared sops secrets (age/yubikey)
     router/
@@ -166,3 +178,5 @@ openwrt/
     ap/
       config.nix
 ```
+
+`modules/flake-parts/openwrt.nix` wires devices, apps, packages and checks.

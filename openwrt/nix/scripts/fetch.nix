@@ -1,56 +1,43 @@
-# fetch script: shows changes from factory defaults (/rom/etc/config/)
+# fetch script: prints the device's changes from factory defaults as nix for uci.settings
 {
   pkgs,
   lib,
   devices,
   deviceNames,
 }:
-pkgs.writeShellScriptBin "openwrt-fetch" ''
-  set -euo pipefail
+pkgs.writeShellApplication {
+  name = "openwrt-fetch";
+  runtimeInputs = [
+    pkgs.nix
+    pkgs.nixfmt
+    pkgs.openssh
+  ];
+  text = ''
+    usage() {
+      echo "usage: openwrt-fetch <device> [config...]"
+      echo ""
+      echo "prints sections that differ from factory defaults as { settings; delete; }"
+      echo "devices: ${deviceNames}"
+      exit 1
+    }
 
-  usage() {
-    echo "usage: openwrt-fetch <device>"
-    echo ""
-    echo "shows changes from factory defaults"
-    echo "devices: ${deviceNames}"
-    exit 1
-  }
+    [ $# -lt 1 ] && usage
 
-  [ $# -lt 1 ] && usage
+    DEVICE="$1"; shift
 
-  DEVICE="$1"; shift
+    case "$DEVICE" in
+      ${lib.concatStringsSep "\n" (
+        lib.mapAttrsToList (name: device: ''
+          ${name}) HOST=${lib.escapeShellArg "root@${device.host}"} ;;
+        '') devices
+      )}
+      *) echo "unknown device: $DEVICE"; echo "available: ${deviceNames}"; exit 1 ;;
+    esac
 
-  case "$DEVICE" in
-    ${lib.concatStringsSep "\n" (
-      lib.mapAttrsToList (name: device: ''
-            ${name})
-              HOST="root@${device.host}"
-              echo "# config diff from factory defaults on ${name} ($HOST)"
-              echo ""
-              ssh -o ConnectTimeout=5 "$HOST" '
-                for f in /etc/config/*; do
-                  cfg=$(basename "$f")
-                  current=$(uci show "$cfg" 2>/dev/null)
-                  default=$(uci -c /rom/etc/config show "$cfg" 2>/dev/null)
-                  if [ "$current" != "$default" ]; then
-                    changed=""
-                    while IFS= read -r line; do
-                      echo "$default" | grep -qxF "$line" || changed="$changed
-        $line"
-                    done <<EOF
-        $current
-        EOF
-                    if [ -n "$changed" ]; then
-                      echo "--- $cfg ---"
-                      echo "$changed" | tail -n +2
-                      echo ""
-                    fi
-                  fi
-                done
-              '
-              ;;
-      '') devices
-    )}
-    *) echo "unknown device: $DEVICE"; echo "available: ${deviceNames}"; exit 1 ;;
-  esac
-''
+    json=$(mktemp)
+    trap 'rm -f "$json"' EXIT
+    # shellcheck disable=SC2029 # config names expand locally on purpose
+    ssh -o ConnectTimeout=5 "$HOST" ucode - "$@" < ${../fetch.uc} > "$json"
+    nix-instantiate --eval --strict --expr "builtins.fromJSON (builtins.readFile $json)" | nixfmt
+  '';
+}

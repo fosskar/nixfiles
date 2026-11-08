@@ -1,16 +1,76 @@
 # openwrt device module options, evaluated via lib.evalModules
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+let
+  fileType = lib.types.submodule (
+    { config, ... }:
+    {
+      options = {
+        source = lib.mkOption {
+          type = lib.types.nullOr lib.types.path;
+          default = null;
+          description = "local file whose content is pushed. @placeholder@ secrets are substituted at deploy.";
+        };
+        text = lib.mkOption {
+          type = lib.types.nullOr lib.types.lines;
+          default = null;
+          description = "file content. @placeholder@ secrets are substituted at deploy.";
+        };
+        secret = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "sops key whose value becomes the whole file content";
+        };
+        mode = lib.mkOption {
+          type = lib.types.strMatching "[0-7]{3,4}";
+          default =
+            if
+              config.secret != null || builtins.length (builtins.split "@[A-Za-z0-9_]+@" config.content) > 1
+            then
+              "0600"
+            else
+              "0644";
+          defaultText = lib.literalMD "`0600` if the file contains secrets, else `0644`";
+        };
+        restart = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = "init scripts to restart when this file changed";
+        };
+        content = lib.mkOption {
+          type = lib.types.str;
+          internal = true;
+          readOnly = true;
+        };
+      };
+      config.content =
+        let
+          set = builtins.filter (x: x != null) [
+            config.source
+            config.text
+            config.secret
+          ];
+        in
+        if builtins.length set != 1 then
+          throw "openwrt file: set exactly one of source, text, secret"
+        else if config.secret != null then
+          "@${config.secret}@"
+        else if config.text != null then
+          config.text
+        else
+          builtins.readFile config.source;
+    }
+  );
+in
 {
   options = {
     host = lib.mkOption {
       type = lib.types.str;
       description = "IP or hostname of the device (SSH target)";
-    };
-
-    reload = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "extra services to reload after applying. top-level UCI config names (network, wireless, etc.) are reloaded automatically.";
     };
 
     packages = lib.mkOption {
@@ -56,9 +116,11 @@
     };
 
     files = lib.mkOption {
-      type = lib.types.attrsOf lib.types.path;
+      type = lib.types.attrsOf (
+        lib.types.coercedTo lib.types.path (source: { inherit source; }) fileType
+      );
       default = { };
-      description = "files to push to the device. keys are remote paths, values are local file paths.";
+      description = "files to push to the device, keyed by remote path. a plain path is short for { source = path; }.";
     };
 
     authorizedKeys = lib.mkOption {
@@ -67,17 +129,29 @@
       description = "SSH public keys to install in /etc/dropbear/authorized_keys";
     };
 
+    rootPasswordSecret = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "sops key holding the plaintext root password, written to /etc/shadow as a sha-crypt hash";
+    };
+
     uci = {
       settings = lib.mkOption {
         default = { };
         inherit (pkgs.formats.json { }) type;
-        description = "UCI configuration as nix attrsets. named sections are attrsets with _type, anonymous sections are lists of attrsets with _type.";
+        description = "UCI configuration as nix attrsets. named sections are attrsets with _type, anonymous sections are lists of attrsets whose _type equals the list name.";
       };
 
       delete = lib.mkOption {
         default = [ ];
         type = lib.types.listOf lib.types.str;
-        description = "UCI sections or options to delete, e.g. \"firewall.old_rule\". replace semantics never remove undeclared sections, so list stale ones here. the config must also appear in uci.settings so deploy commits and reloads it.";
+        description = "UCI sections or options to delete, e.g. \"firewall.old_rule\". replace semantics never remove undeclared sections, so list stale ones here.";
+      };
+
+      exclusive = lib.mkOption {
+        default = [ ];
+        type = lib.types.listOf lib.types.str;
+        description = "configs fully owned by uci.settings: sections not declared there are deleted";
       };
 
       secrets.sops.files = lib.mkOption {
@@ -85,6 +159,13 @@
         type = lib.types.listOf lib.types.path;
         description = "sops-encrypted files to decrypt and use for @placeholder@ substitution. all keys across files are merged.";
       };
+    };
+  };
+
+  config.files = lib.mkIf (config.authorizedKeys != [ ]) {
+    "/etc/dropbear/authorized_keys" = {
+      text = lib.concatStringsSep "\n" config.authorizedKeys + "\n";
+      mode = "0600";
     };
   };
 }
