@@ -30,7 +30,7 @@ flowchart TB
     end
     subgraph srv["srv 192.168.20.0/24"]
       nixbox["nixbox<br/>caddy, authelia + lldap<br/>self-hosted services<br/>monitoring, llama.cpp"]
-      nixworker["nixworker<br/>nixbot, remote builder<br/>harmonia, niks3, hermes"]
+      nixworker["nixworker<br/>nixbot, remote builder<br/>harmonia, niks3"]
     end
   end
 
@@ -86,7 +86,7 @@ daily driver workstation (ryzen 7 7800x3d, rx 7800xt, 32gb ddr5)
 - steam, gamemode, gamescope
 - docker and podman
 - yubikey as openpgp ssh key and u2f
-- hermes and buzz desktop clients
+- buzz desktop client
 
 ---
 
@@ -98,7 +98,7 @@ framework 13 laptop (ryzen ai 5 340, radeon 840m, 32gb ddr5)
 - nixos-hardware `framework-amd-ai-300-series`, fw-fanctrl
 - encrypted bcachefs root, secure boot via lanzaboote
 - fingerprint auth, usbguard, yubikey u2f and lock on removal
-- hermes and buzz desktop clients
+- buzz desktop client
 
 ---
 
@@ -135,8 +135,7 @@ minisforum ms-a2 (ryzen 9 9955hx, intel arc pro b50, 96gb ddr5), btrfs root with
 - harmonia and niks3 binary caches, garage node
 - ggml rpc server on the arc for the llama.cpp router on nixbox
 - radicle mirror
-- hermes agents in fencr sandboxes; mcp gateway with calendar and grafana backends
-- borgbackup of service state and fencr sandbox checkpoints to the hetzner storage box
+- borgbackup of service state to the hetzner storage box
 - headless dev host: workspace user, `nix-ld`
 - ups secondary
 
