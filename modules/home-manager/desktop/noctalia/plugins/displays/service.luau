@@ -7,6 +7,7 @@
 --   revert  = { pending, secondsLeft }
 --   kanshi  = { enabled, available, active, profiles = { { name, managed } } }
 --   mirror  = { available, active, source, destination, error }
+--   gamemode = { available, active, output, mode, umbriel }
 --   hotplug = number (nonce, bumped when output/enabled count changes)
 -- state channel (ui -> service):
 --   command = { action, ..., nonce }
@@ -16,6 +17,9 @@ local REVERT_SECONDS = 12
 local pollMs = 30000
 local kanshiEnabled = true
 local kanshiDirOverride = ""
+local gamemodeOutput = ""
+local gamemodeMode = ""
+local gamemodeUmbrielFile = ""
 
 local function loadConfig()
   local secs = tonumber(noctalia.getConfig("poll_interval")) or 30
@@ -23,6 +27,12 @@ local function loadConfig()
   kanshiEnabled = noctalia.getConfig("kanshi_enabled") ~= false
   local dir = noctalia.getConfig("kanshi_config_dir")
   kanshiDirOverride = type(dir) == "string" and dir or ""
+  local output = noctalia.getConfig("gamemode_output")
+  gamemodeOutput = type(output) == "string" and noctalia.string.trim(output) or ""
+  local mode = noctalia.getConfig("gamemode_mode")
+  gamemodeMode = type(mode) == "string" and noctalia.string.trim(mode) or ""
+  local file = noctalia.getConfig("gamemode_umbriel_file")
+  gamemodeUmbrielFile = type(file) == "string" and file or ""
 end
 
 local outputs = {}
@@ -47,6 +57,8 @@ local mirror = {
   error = "",
   stopping = false,
 }
+
+local gamemode = { active = false }
 
 local fetchOutputs -- forward: pump() refetches after a drained queue
 
@@ -85,6 +97,30 @@ local function publishMirror()
     destination = mirror.destination,
     error = mirror.error,
   })
+end
+
+local function underUmbriel()
+  local socket = noctalia.getenv("UMBRIEL_SOCKET")
+  return socket ~= nil and socket ~= "" and gamemodeUmbrielFile ~= ""
+end
+
+local function publishGamemode()
+  noctalia.state.set("gamemode", {
+    available = gamemodeOutput ~= "" and gamemodeMode ~= "",
+    active = gamemode.active,
+    output = gamemodeOutput,
+    mode = gamemodeMode,
+    umbriel = underUmbriel(),
+  })
+end
+
+-- under umbriel a non-empty include file means game mode survived a service restart
+local function syncGamemode()
+  if underUmbriel() then
+    local text = noctalia.readFile(noctalia.expandPath(gamemodeUmbrielFile))
+    gamemode.active = type(text) == "string" and noctalia.string.trim(text) ~= ""
+  end
+  publishGamemode()
 end
 
 -- wlr-randr calls must run sequentially; re-query once the queue drains.
@@ -665,6 +701,46 @@ local function mirrorCheck()
   end, 5000)
 end
 
+local function setGamemode(on)
+  if gamemodeOutput == "" or gamemodeMode == "" then
+    noctalia.notifyError("Displays", "Game mode needs gamemode_output and gamemode_mode")
+    return
+  end
+  if on == gamemode.active then
+    return
+  end
+  local umbriel = underUmbriel()
+  local path = noctalia.expandPath(gamemodeUmbrielFile)
+  if on then
+    local cmd = "wlr-randr --output " .. shellQuote(gamemodeOutput) .. " --custom-mode " .. shellQuote(gamemodeMode)
+    if umbriel then
+      local ok, err = noctalia.writeFile(path, '[output."' .. gamemodeOutput .. '"]\nhdr = "off"\n')
+      if not ok then
+        noctalia.notifyError("Displays", "Failed to write " .. path .. ": " .. tostring(err))
+        return
+      end
+      -- the include reload resets the output to its configured mode, so the
+      -- custom mode has to land after umbriel reports HDR off
+      local ready = shellQuote("^output " .. gamemodeOutput .. ": HDR mode off,")
+      cmd = "for i in $(seq 50); do umbriel color | grep -q " .. ready .. " && break; sleep 0.1; done; " .. cmd
+    end
+    enqueue({ cmd })
+  elseif umbriel then
+    -- the reload reapplies the configured mode and HDR
+    local ok, err = noctalia.writeFile(path, "")
+    if not ok then
+      noctalia.notifyError("Displays", "Failed to write " .. path .. ": " .. tostring(err))
+      return
+    end
+  elseif kanshi.available then
+    kanshiReload()
+  else
+    noctalia.notifyError("Displays", "No kanshi to restore " .. gamemodeOutput .. "; set its mode manually")
+  end
+  gamemode.active = on
+  publishGamemode()
+end
+
 local function launchWdisplays()
   if not noctalia.commandExists("wdisplays") then
     noctalia.notifyError("Displays", "wdisplays is not installed")
@@ -703,6 +779,8 @@ local function dispatch(cmd)
     stopMirror()
   elseif action == "wdisplays" then
     launchWdisplays()
+  elseif action == "gamemode" then
+    setGamemode(cmd.on == true)
   else
     noctalia.log("displays: unknown command: " .. tostring(action))
   end
@@ -733,6 +811,7 @@ end
 
 function onConfigChanged()
   loadConfig()
+  syncGamemode()
   if not revert.pending then
     noctalia.setUpdateInterval(pollMs)
   end
@@ -762,6 +841,14 @@ function onIpc(event, payload)
     startMirror(source, destination)
   elseif event == "mirrorStop" then
     stopMirror()
+  elseif event == "gamemode" then
+    if payload == "on" then
+      setGamemode(true)
+    elseif payload == "off" then
+      setGamemode(false)
+    else
+      setGamemode(not gamemode.active)
+    end
   else
     noctalia.log("displays: unknown ipc event: " .. tostring(event))
   end
@@ -778,6 +865,7 @@ publishOutputs()
 publishRevert()
 publishKanshi()
 publishMirror()
+syncGamemode()
 if fetchState ~= "error" then
   fetchOutputs()
 end

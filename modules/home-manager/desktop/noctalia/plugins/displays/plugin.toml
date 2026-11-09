@@ -4,6 +4,13 @@
 # screen mirroring. Outputs go through wlr-randr, so any compositor with
 # wlr-output-management works.
 #
+# Game mode switches one output to a custom mode (wlr-randr --custom-mode).
+# Under umbriel it also writes the optional include gamemode_umbriel_file with
+# hdr = "off" for that output; the umbriel config must include that file
+# after its output sections. Leaving game mode empties the file, which makes
+# umbriel reapply its configured mode and HDR; elsewhere kanshictl reload
+# restores the layout.
+#
 # Saved profiles live in ~/.config/kanshi/noctalia.conf (mutable runtime
 # state by design); the noctalia HM module prepends the include to
 # services.kanshi.settings and seeds the file on activation.
@@ -13,6 +20,7 @@
 #   arrange <extend-right|extend-left|stack-above|stack-below|external-only|internal-only>
 #   kanshiSwitch <name> | kanshiSave <name>
 #   mirrorStart <source> <destination> | mirrorStop
+#   gamemode [on|off]  (no payload toggles)
 
 id = "fosskar/displays"
 name = "Displays"
@@ -45,6 +53,25 @@ key = "kanshi_config_dir"
 type = "string"
 label_key = "settings.kanshi_config_dir.label"
 default = ""
+
+[[setting]]
+key = "gamemode_output"
+type = "string"
+label_key = "settings.gamemode_output.label"
+default = ""
+
+[[setting]]
+key = "gamemode_mode"
+type = "string"
+label_key = "settings.gamemode_mode.label"
+description_key = "settings.gamemode_mode.description"
+default = ""
+
+[[setting]]
+key = "gamemode_umbriel_file"
+type = "string"
+label_key = "settings.gamemode_umbriel_file.label"
+default = "~/.config/umbriel/gamemode.toml"
 
 [[service]]
 id = "service"

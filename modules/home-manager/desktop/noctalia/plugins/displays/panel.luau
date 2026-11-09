@@ -9,6 +9,7 @@ local outputsState = { list = {}, count = 0, enabled = 0, state = "loading", err
 local revertState = { pending = false, secondsLeft = 0 }
 local kanshiState = { enabled = false, available = false, active = "", profiles = {} }
 local mirrorState = { available = false, active = false, source = "", destination = "", error = "" }
+local gamemodeState = { available = false, active = false, output = "", mode = "", umbriel = false }
 
 local selectedProfile = "" -- follows kanshi.active until the user picks one
 local userPickedProfile = false
@@ -187,6 +188,24 @@ local function outputCard(o, slot)
   end
 
   return ui.column({ gap = 8, padding = 12, fill = "surface_variant", radius = 12, key = o.name }, children)
+end
+
+local function gamemodeSection()
+  local detail = gamemodeState.output .. " → " .. gamemodeState.mode
+  if gamemodeState.umbriel then
+    detail ..= ", HDR off"
+  end
+  return ui.column({ gap = 6 }, {
+    ui.separator({}),
+    ui.row({ align = "center", gap = 8 }, {
+      ui.glyph({ name = "device-gamepad-2", size = 18, color = gamemodeState.active and "primary" or "on_surface_variant" }),
+      ui.column({ gap = 0, flexGrow = 1 }, {
+        ui.label({ text = "Game mode", fontWeight = "bold" }),
+        ui.label({ text = detail, fontSize = 11, color = "on_surface_variant" }),
+      }),
+      ui.toggle({ checked = gamemodeState.active, onChange = "onGamemode" }),
+    }),
+  })
 end
 
 local function arrangeSection()
@@ -406,6 +425,10 @@ render = function()
     table.insert(body, outputCard(o, i - 1))
   end
 
+  if gamemodeState.available then
+    table.insert(body, gamemodeSection())
+  end
+
   if outputsState.count == 2 then
     table.insert(body, arrangeSection())
   elseif outputsState.count > 2 then
@@ -464,6 +487,7 @@ function onOpen(_context)
   revertState = noctalia.state.get("revert") or revertState
   kanshiState = noctalia.state.get("kanshi") or kanshiState
   mirrorState = noctalia.state.get("mirror") or mirrorState
+  gamemodeState = noctalia.state.get("gamemode") or gamemodeState
   if not userPickedProfile then
     selectedProfile = kanshiState.active or ""
   end
@@ -568,6 +592,10 @@ function onMirrorStop()
   sendCommand({ action = "mirrorStop" })
 end
 
+function onGamemode(value)
+  sendCommand({ action = "gamemode", on = value == "true" })
+end
+
 function onArrangeExtendRight()
   sendCommand({ action = "arrange", kind = "extend-right" })
 end
@@ -669,6 +697,13 @@ noctalia.state.watch("kanshi", function(value)
     if not userPickedProfile then
       selectedProfile = kanshiState.active or ""
     end
+    render()
+  end
+end)
+
+noctalia.state.watch("gamemode", function(value)
+  if type(value) == "table" then
+    gamemodeState = value
     render()
   end
 end)

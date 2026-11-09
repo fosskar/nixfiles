@@ -9,6 +9,16 @@
     },
     "kanshi_config_dir": {
       "label": "Kanshi config directory (empty = auto)"
+    },
+    "gamemode_output": {
+      "label": "Game mode output (empty = off)"
+    },
+    "gamemode_mode": {
+      "label": "Game mode custom mode",
+      "description": "wlr-randr --custom-mode value, such as 2560x1440@164.900Hz."
+    },
+    "gamemode_umbriel_file": {
+      "label": "Umbriel game mode include file"
     }
   }
 }

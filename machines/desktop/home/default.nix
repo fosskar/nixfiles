@@ -14,6 +14,11 @@
     ]
     ++ nflib.scanPaths ./. { };
     programs.herdr-core.machines = [ "workspace" ];
+    # 16:9 on the ultrawide; the monitor's aspect ratio setting "auto" adds the black bars
+    programs.noctalia.settings.plugin_settings."fosskar/displays" = {
+      gamemode_output = "DP-1";
+      gamemode_mode = "2560x1440@164.900Hz";
+    };
     programs.noctalia.settings.lockscreen_widgets.widget = {
       clock_main = {
         type = "clock";
