@@ -37,6 +37,7 @@ in
         self.modules.homeManager.llm
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
+        self.modules.homeManager.sediment
         self.modules.homeManager.shellAliases
         self.modules.homeManager.sofka
         self.modules.homeManager.tern
