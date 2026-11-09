@@ -18,6 +18,11 @@ _: {
         description = "psd browser definitions by name; each is also added to services.psd.browsers.";
       };
 
+      # psd mounts fuse-overlayfs during the first sync; home-manager runs it in
+      # the oneshot psd-resync.service, whose cgroup kill unmounts the overlay
+      config.systemd.user.services.psd.Service.ExecStartPost =
+        "${lib.getExe' cfg.package "profile-sync-daemon"} resync";
+
       config.services.psd = {
         enable = true;
         package = pkgs.profile-sync-daemon.overrideAttrs (old: {
