@@ -87,7 +87,7 @@ local function publishMirror()
   })
 end
 
--- niri msg calls must run sequentially; re-query once the queue drains.
+-- wlr-randr calls must run sequentially; re-query once the queue drains.
 local queue = {}
 local applying = false
 
@@ -118,29 +118,27 @@ local function enqueue(cmds)
 end
 
 -- opts: { enabled, mode, scale, x, y, transform }
-local function niriOutputCmds(name, opts)
-  local q = shellQuote(name)
-  local cmds = {}
+local function wlrOutputArgs(name, opts)
+  local args = " --output " .. shellQuote(name)
   if opts.enabled == false then
-    table.insert(cmds, "niri msg output " .. q .. " off")
-    return cmds
+    return args .. " --off"
   end
   if opts.enabled == true then
-    table.insert(cmds, "niri msg output " .. q .. " on")
+    args ..= " --on"
   end
   if opts.mode then
-    table.insert(cmds, "niri msg output " .. q .. " mode " .. shellQuote(opts.mode))
+    args ..= " --mode " .. shellQuote(opts.mode)
   end
   if opts.scale then
-    table.insert(cmds, "niri msg output " .. q .. " scale " .. tostring(opts.scale))
+    args ..= " --scale " .. tostring(opts.scale)
   end
   if opts.x ~= nil and opts.y ~= nil then
-    table.insert(cmds, "niri msg output " .. q .. " position set " .. tostring(opts.x) .. " " .. tostring(opts.y))
+    args ..= " --pos " .. tostring(opts.x) .. "," .. tostring(opts.y)
   end
   if opts.transform then
-    table.insert(cmds, "niri msg output " .. q .. " transform " .. shellQuote(opts.transform))
+    args ..= " --transform " .. shellQuote(opts.transform)
   end
-  return cmds
+  return args
 end
 
 local function takeSnapshot()
@@ -187,8 +185,9 @@ local function confirmRevert()
   clearRevert()
 end
 
+-- one wlr-randr call applies all outputs as a single configuration
 local function applySnapshot(snap)
-  local cmds = {}
+  local cmd = "wlr-randr"
   for _, o in ipairs(snap) do
     local opts
     if o.enabled == false then
@@ -196,11 +195,9 @@ local function applySnapshot(snap)
     else
       opts = { enabled = true, mode = o.mode, scale = o.scale, x = o.x, y = o.y, transform = o.transform }
     end
-    for _, c in ipairs(niriOutputCmds(o.name, opts)) do
-      table.insert(cmds, c)
-    end
+    cmd ..= wlrOutputArgs(o.name, opts)
   end
-  enqueue(cmds)
+  enqueue({ cmd })
 end
 
 local function doRevert()
@@ -212,12 +209,12 @@ local function doRevert()
   end
 end
 
--- opts as niriOutputCmds; withRevert arms the countdown first
+-- opts as wlrOutputArgs; withRevert arms the countdown first
 local function applyOutput(name, opts, withRevert)
   if withRevert then
     armRevert()
   end
-  enqueue(niriOutputCmds(name, opts))
+  enqueue({ "wlr-randr" .. wlrOutputArgs(name, opts) })
 end
 
 local function currentModeOf(o)
@@ -270,7 +267,7 @@ local function splitLaptopExternal()
   return laptop, external
 end
 
--- niri "position set" takes logical px, hence logicalSize.
+-- wlr-output-management positions are logical px, hence logicalSize.
 local function applyArrangement(kind)
   if #outputs ~= 2 then
     noctalia.notifyError("Displays", "Arrangements need exactly 2 outputs (have " .. #outputs .. ")")
@@ -278,15 +275,15 @@ local function applyArrangement(kind)
   end
   local laptop, external = splitLaptopExternal()
   local laptopSize, externalSize = logicalSize(laptop), logicalSize(external)
-  local cmds = {}
+  local cmd = "wlr-randr"
   local function on(name)
-    table.insert(cmds, "niri msg output " .. shellQuote(name) .. " on")
+    cmd ..= wlrOutputArgs(name, { enabled = true })
   end
   local function off(name)
-    table.insert(cmds, "niri msg output " .. shellQuote(name) .. " off")
+    cmd ..= wlrOutputArgs(name, { enabled = false })
   end
   local function pos(name, x, y)
-    table.insert(cmds, "niri msg output " .. shellQuote(name) .. " position set " .. x .. " " .. y)
+    cmd ..= wlrOutputArgs(name, { x = x, y = y })
   end
 
   if kind == "extend-right" then
@@ -323,48 +320,35 @@ local function applyArrangement(kind)
   end
 
   armRevert()
-  enqueue(cmds)
+  enqueue({ cmd })
 end
 
-local TRANSFORM_MAP = {
-  Normal = "normal",
-  ["90"] = "90",
-  ["180"] = "180",
-  ["270"] = "270",
-  Flipped = "flipped",
-  Flipped90 = "flipped-90",
-  Flipped180 = "flipped-180",
-  Flipped270 = "flipped-270",
-}
-
-local function formatHz(refreshRateMillihz)
-  local hz = string.format("%.3f", refreshRateMillihz / 1000)
+-- formats like wlr-randr --mode expects; it matches refresh at mHz precision
+local function formatHz(refreshHz)
+  local hz = string.format("%.3f", refreshHz)
   hz = hz:gsub("0+$", ""):gsub("%.$", "")
   return hz
 end
 
-local function normalizeNiri(json)
+-- wlr-randr --json omits position, scale and transform for disabled heads
+local function normalizeWlr(json)
   local list = {}
-  for name, o in pairs(json) do
+  for _, o in ipairs(json) do
     local modes = {}
+    local currentMode = nil
     if type(o.modes) == "table" then
       for _, m in ipairs(o.modes) do
+        local key = m.width .. "x" .. m.height .. "@" .. formatHz(m.refresh)
         table.insert(modes, {
-          key = m.width .. "x" .. m.height .. "@" .. formatHz(m.refresh_rate),
+          key = key,
           width = m.width,
           height = m.height,
-          refresh = m.refresh_rate / 1000,
-          preferred = m.is_preferred == true,
+          refresh = m.refresh,
+          preferred = m.preferred == true,
         })
-      end
-    end
-
-    -- current_mode indexes the unsorted modes array (0-based)
-    local currentMode = nil
-    if o.current_mode ~= nil and type(o.modes) == "table" then
-      local cm = o.modes[o.current_mode + 1]
-      if cm ~= nil then
-        currentMode = cm.width .. "x" .. cm.height .. "@" .. formatHz(cm.refresh_rate)
+        if o.enabled and m.current then
+          currentMode = key
+        end
       end
     end
 
@@ -376,25 +360,18 @@ local function normalizeNiri(json)
       return x.refresh > y.refresh
     end)
 
-    -- niri JSON uses serde variant names; the CLI wants lowercase kebab-case
-    local transform = "normal"
-    if o.logical ~= nil and o.logical.transform ~= nil then
-      local t = tostring(o.logical.transform)
-      transform = TRANSFORM_MAP[t] or t:lower()
-    end
-
     table.insert(list, {
-      name = name,
+      name = o.name,
       make = o.make or "",
       model = o.model or "",
       serial = o.serial or "",
-      enabled = currentMode ~= nil,
+      enabled = o.enabled == true,
       currentMode = currentMode,
       modes = modes,
-      scale = o.logical ~= nil and o.logical.scale or 1.0,
-      x = o.logical ~= nil and o.logical.x or 0,
-      y = o.logical ~= nil and o.logical.y or 0,
-      transform = transform,
+      scale = o.scale or 1.0,
+      x = o.position ~= nil and o.position.x or 0,
+      y = o.position ~= nil and o.position.y or 0,
+      transform = o.transform or "normal",
     })
   end
   table.sort(list, function(x, y)
@@ -408,11 +385,11 @@ fetchOutputs = function()
     return
   end
   fetching = true
-  noctalia.runAsync("niri msg -j outputs", function(res)
+  noctalia.runAsync("wlr-randr --json", function(res)
     fetching = false
     if res.exitCode ~= 0 then
       fetchState = "error"
-      fetchError = noctalia.string.trim(res.stderr ~= "" and res.stderr or ("niri msg exited " .. res.exitCode))
+      fetchError = noctalia.string.trim(res.stderr ~= "" and res.stderr or ("wlr-randr exited " .. res.exitCode))
       publishOutputs()
       return
     end
@@ -424,7 +401,7 @@ fetchOutputs = function()
       return
     end
 
-    outputs = normalizeNiri(json)
+    outputs = normalizeWlr(json)
     outputCount = #outputs
     enabledCount = 0
     for _, o in ipairs(outputs) do
@@ -790,9 +767,9 @@ function onIpc(event, payload)
   end
 end
 
-if not noctalia.commandExists("niri") then
+if not noctalia.commandExists("wlr-randr") then
   fetchState = "error"
-  fetchError = "niri not found on PATH"
+  fetchError = "wlr-randr not found on PATH"
 end
 
 loadConfig()

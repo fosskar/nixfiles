@@ -114,7 +114,8 @@
         home.packages = [
           pkgs.ddcutil
           pkgs.python3
-          # fosskar/displays plugin: mirroring + drag-arrange fallback
+          # fosskar/displays plugin: output control, mirroring, drag-arrange fallback
+          pkgs.wlr-randr
           pkgs.wl-mirror
           pkgs.wdisplays
         ];

@@ -1,7 +1,8 @@
 # Merged v5 port of Mic92/noctalia-plugins display-config (kanshi/niri display
 # control) and legacy-v4 mirror-mirror (wl-mirror). One panel: per-output
 # power/mode/scale, two-output arrangements, kanshi profile save/switch, and
-# screen mirroring. niri only.
+# screen mirroring. Outputs go through wlr-randr, so any compositor with
+# wlr-output-management works.
 #
 # Saved profiles live in ~/.config/kanshi/noctalia.conf (mutable runtime
 # state by design); the noctalia HM module prepends the include to
@@ -22,7 +23,7 @@ license = "MIT"
 tags = ["display", "monitor", "kanshi", "mirror"]
 icon = "device-desktop"
 description = "Monitor power, mode, scale, layout, kanshi profiles, and screen mirroring."
-dependencies = ["niri", "kanshi", "wl-mirror", "wdisplays"]
+dependencies = ["wlr-randr", "kanshi", "wl-mirror", "wdisplays"]
 
 [[setting]]
 key = "poll_interval"
