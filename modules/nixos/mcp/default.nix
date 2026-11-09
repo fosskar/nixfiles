@@ -4,7 +4,6 @@ _: {
     {
       imports = [
         self.modules.nixos.fencr
-        self.modules.nixos.mcpCalendar
         self.modules.nixos.mcpGrafana
       ];
       fencr.mcpGateway.enable = true;
