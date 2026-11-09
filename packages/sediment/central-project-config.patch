@@ -1,0 +1,90 @@
+diff --git a/src/lib.rs b/src/lib.rs
+index 0f4f2bf..99ef7ef 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -11,6 +11,7 @@
+ //! - **Auto-chunking** - Long content is automatically chunked for better search
+ 
+ use serde::{Deserialize, Serialize};
++use sha2::{Digest, Sha256};
+ use std::path::{Path, PathBuf};
+ use std::process::Command;
+ use uuid::Uuid;
+@@ -194,14 +195,41 @@ pub fn derive_git_root_commit(project_root: &Path) -> std::io::Result<Option<Str
+     }
+ }
+ 
++/// Return the config location for a project.
++///
++/// Git repositories keep their generated identity in central Sediment state.
++/// Non-Git projects retain the repository-local marker used for root discovery.
++fn project_config_paths(project_root: &Path) -> std::io::Result<(PathBuf, PathBuf)> {
++    if project_root.join(".git").exists() {
++        let canonical = std::fs::canonicalize(project_root)?;
++        let key = format!("{:x}", Sha256::digest(canonical.as_os_str().as_encoded_bytes()));
++        let db_path = central_db_path();
++        let state_dir = db_path.parent().unwrap_or(&db_path);
++        let sediment_dir = state_dir.join("projects").join(key).join(".sediment");
++        let config_path = sediment_dir.join("config");
++        Ok((sediment_dir, config_path))
++    } else {
++        let sediment_dir = project_root.join(".sediment");
++        let config_path = sediment_dir.join("config");
++        Ok((sediment_dir, config_path))
++    }
++}
++
+ /// Get or create the project ID for a given project root.
+ ///
+-/// The project ID is stored in `<project_root>/.sediment/config`.
+-/// If the project is inside a git repo, the ID is derived from the root commit hash
+-/// for stability across clones. Falls back to a random UUID for non-git directories.
++/// Git project configs are cached in central Sediment state. Existing repository-local
++/// configs are imported on first use. Non-Git projects retain a local UUID config.
+ pub fn get_or_create_project_id(project_root: &Path) -> std::io::Result<String> {
+-    let sediment_dir = project_root.join(".sediment");
+-    let config_path = sediment_dir.join("config");
++    let (sediment_dir, config_path) = project_config_paths(project_root)?;
++    let local_config_path = project_root.join(".sediment").join("config");
++
++    if !config_path.exists() && config_path != local_config_path && local_config_path.exists() {
++        let content = std::fs::read_to_string(&local_config_path)?;
++        if let Ok(config) = serde_json::from_str::<ProjectConfig>(&content) {
++            std::fs::create_dir_all(&sediment_dir)?;
++            write_config_atomic(&sediment_dir, &config_path, &config)?;
++        }
++    }
+ 
+     // Try to read existing config
+     if config_path.exists() {
+@@ -279,7 +307,7 @@ fn write_config_atomic(
+ /// Returns the old project ID if a migration was started but LanceDB items
+ /// have not yet been updated.
+ pub fn pending_migration(project_root: &Path) -> Option<String> {
+-    let config_path = project_root.join(".sediment").join("config");
++    let (_, config_path) = project_config_paths(project_root).ok()?;
+     let content = std::fs::read_to_string(&config_path).ok()?;
+     let config: ProjectConfig = serde_json::from_str(&content).ok()?;
+     config.migrated_from
+@@ -287,8 +315,7 @@ pub fn pending_migration(project_root: &Path) -> Option<String> {
+ 
+ /// Clear the migration marker after LanceDB items have been updated.
+ pub fn clear_migration_marker(project_root: &Path) -> std::io::Result<()> {
+-    let sediment_dir = project_root.join(".sediment");
+-    let config_path = sediment_dir.join("config");
++    let (sediment_dir, config_path) = project_config_paths(project_root)?;
+ 
+     let content = std::fs::read_to_string(&config_path)?;
+     if let Ok(mut config) = serde_json::from_str::<ProjectConfig>(&content)
+@@ -357,9 +384,9 @@ pub fn find_project_root(start: &Path) -> Option<PathBuf> {
+ 
+ /// Initialize a project directory for Sediment.
+ ///
+-/// Creates the `.sediment/` directory in the specified path and generates a project ID.
++/// Creates the project config in central state for Git repositories and locally otherwise.
+ pub fn init_project(project_root: &Path) -> std::io::Result<PathBuf> {
+-    let sediment_dir = project_root.join(".sediment");
++    let (sediment_dir, _) = project_config_paths(project_root)?;
+     std::fs::create_dir_all(&sediment_dir)?;
+ 
+     // Generate project ID
