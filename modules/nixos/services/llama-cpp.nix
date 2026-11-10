@@ -44,6 +44,7 @@ in
           rev = "e968f6575f0d4fad928312d7af15cad90fd365c0";
           files = {
             "d1-2B-Q8_0.gguf" = "073313d92b53b0ac8193db6e906cb3c78a98183d244b15b7b8f5426115c6738c";
+            "mmproj-d1-2B-F16.gguf" = "c54d0c0cc66c7e5b6b516204cab556e41d1da9e9cd970245a57d7b509af68ab3";
           };
         };
       };
@@ -152,6 +153,7 @@ in
             };
             "LiquidAI/d1-2B-GGUF:Q8_0" = {
               model = modelPath "LiquidAI/d1-2B-GGUF" "d1-2B-Q8_0.gguf";
+              mmproj = modelPath "LiquidAI/d1-2B-GGUF" "mmproj-d1-2B-F16.gguf";
               alias = "d1";
               # decision model for /v1/systemone; runs on the arc b50 in nixworker
               # (llamaCppRpcServer), the child still opens a ~220 MiB cuda context here
