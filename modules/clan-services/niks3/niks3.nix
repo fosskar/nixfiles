@@ -111,6 +111,9 @@
 
                   readProxy.enable = true;
 
+                  # niks3 uploads a generated index.html landing page to the bucket
+                  cacheUrl = "https://niks3.${self.domains.public}";
+
                   gc.enable = true;
                   gc.olderThan = "720h";
                 };
