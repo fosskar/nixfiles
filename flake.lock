@@ -1447,11 +1447,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793804816,
-        "narHash": "sha256-SE+Q3o3MB6go2k6ONrOC3eMeYAOCKpmURzmGoyQBZkc=",
+        "lastModified": 1794340833,
+        "narHash": "sha256-o9F54joKQ3ypZDs1Lw/AgGN42+fFJOJ+BE4Pou3KkXY=",
         "owner": "nklmilojevic",
         "repo": "sofka",
-        "rev": "781585b37936fd86185b70bf7ce9b3b3fd46d26d",
+        "rev": "08aca9de0cf0e491f5b6b863a5a6cb9f6f22d8f5",
         "type": "github"
       },
       "original": {
