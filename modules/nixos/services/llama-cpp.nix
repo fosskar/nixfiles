@@ -170,6 +170,9 @@ in
         };
       };
 
+      # d1 decodes video for /v1/systemone through ffprobe and ffmpeg
+      systemd.services.llama-cpp.path = [ pkgs.ffmpeg-headless ];
+
       users.users.llama-cpp-models = {
         isSystemUser = true;
         group = "llama-cpp-models";
