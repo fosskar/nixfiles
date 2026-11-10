@@ -6,14 +6,14 @@
       inherit (lib) attrNames flip;
 
       # shared sign-key generator (server signs, clients trust pubkey).
-      varsForInstance = instanceName: pkgs: {
+      niks3Vars = pkgs: {
         clan.core.vars.generators."niks3" = {
           share = true;
           files.sign-key.secret = true;
           files.sign-key.deploy = false;
           files.pub-key.secret = false;
           script = ''
-            ${pkgs.nix}/bin/nix-store --generate-binary-cache-key ${instanceName}-1 \
+            ${pkgs.nix}/bin/nix-store --generate-binary-cache-key niks3.${self.domains.public}-1 \
               $out/sign-key \
               $out/pub-key
           '';
@@ -30,7 +30,7 @@
         description = "niks3 server with bundled garage s3 backend";
 
         perInstance =
-          { instanceName, ... }:
+          { ... }:
           {
             nixosModule =
               {
@@ -51,7 +51,7 @@
               in
               {
                 imports = [
-                  (varsForInstance instanceName pkgs)
+                  (niks3Vars pkgs)
                   self.inputs.niks3.nixosModules.niks3
                   self.inputs.niks3.nixosModules.niks3-auto-upload
                 ];
@@ -168,7 +168,6 @@
 
         perInstance =
           {
-            instanceName,
             roles,
             ...
           }:
@@ -181,7 +180,7 @@
                 ...
               }:
               {
-                imports = [ (varsForInstance instanceName pkgs) ];
+                imports = [ (niks3Vars pkgs) ];
 
                 nix.settings = lib.mkIf (!(builtins.hasAttr config.networking.hostName roles.server.machines)) {
                   substituters =
@@ -201,6 +200,8 @@
 
                   trusted-public-keys = [
                     config.clan.core.vars.generators."niks3".files.pub-key.value
+                    # pre-rotation key; narinfos already in the bucket are still signed with it
+                    "niks3-1:d6Qcrq5PlBta7X/blWvZp2mh5SKgGFbQftZudUknfUE="
                   ];
                 };
               };
