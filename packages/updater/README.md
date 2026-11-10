@@ -79,6 +79,8 @@ package updates whose `Diff:` URL names a tag.
   commits pushed to the PR survive; a rebase conflict fails the run and
   leaves the PR untouched. without an open PR the branch is recreated from
   `origin/main`
+- with an open PR and no new update, the rebased branch is still pushed when
+  it was behind `origin/main`, so fixes landed on main reach the PR's CI
 - tree + commit-message comparison against the remote branch skips no-op force-pushes (and CI
   reruns)
 - existing PR gets title/body refreshed instead of a duplicate

@@ -141,6 +141,32 @@ class TestProcessGroupFailure(unittest.TestCase):
             self.assertEqual(nix_calls, [["nix", "fmt", "--", "packages/a-one"]])
 
 
+class TestProcessGroupNoUpdate(unittest.TestCase):
+    def test_no_update_pushes_rebase(self):
+        forge_mock = mock.Mock()
+        prs = [{"head": {"ref": "update-package-a"}, "base": {"ref": "main"}}]
+        pkgs = [Package("a", "nix-update", Path("/repo/packages/a"))]
+        with (
+            mock.patch("update_packages.pipeline.checkout"),
+            mock.patch("update_packages.update", return_value=UpdateResult("a", False)),
+            mock.patch(
+                "update_packages.pipeline.push_rebase", return_value=4
+            ) as push_rebase,
+            mock.patch("update_packages.pipeline.publish") as publish,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            self.assertEqual(
+                update_packages.process_group(
+                    Path("/repo"), "a", pkgs, forge_mock, prs
+                ),
+                4,
+            )
+        push_rebase.assert_called_once_with(
+            Path("/repo"), "update-package-a", forge_mock, prs
+        )
+        publish.assert_not_called()
+
+
 class TestChangelog(unittest.TestCase):
     COMPARE = "Diff: https://github.com/o/r/compare/v1.0.0...v1.1.0"
 
@@ -302,6 +328,27 @@ class TestFlakeInputs(unittest.TestCase):
             update_flake_inputs._locked_rev(self.repo, inp),
             {"type": "github", "owner": "NixOS", "repo": "nixpkgs", "rev": "aaa111"},
         )
+
+    def test_no_update_pushes_rebase(self):
+        inp = update_flake_inputs.FlakeInput(".", "nixpkgs")
+        forge_mock = mock.Mock()
+        prs = [{"head": {"ref": inp.branch}, "base": {"ref": "main"}, "number": 5}]
+        with (
+            mock.patch("update_flake_inputs.pipeline.checkout"),
+            mock.patch(
+                "update_flake_inputs.run", return_value=SimpleNamespace(returncode=0)
+            ),
+            mock.patch(
+                "update_flake_inputs.pipeline.push_rebase", return_value=5
+            ) as push_rebase,
+            mock.patch("update_flake_inputs.pipeline.publish") as publish,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            self.assertEqual(
+                update_flake_inputs.process_input(self.repo, inp, forge_mock, prs), 5
+            )
+        push_rebase.assert_called_once_with(self.repo, inp.branch, forge_mock, prs)
+        publish.assert_not_called()
 
     def test_commit_message_github_diff_url(self):
         old = {"type": "github", "owner": "NixOS", "repo": "nixpkgs", "rev": "aaa111"}
@@ -533,6 +580,41 @@ class TestCheckout(unittest.TestCase):
         self.assertEqual(
             self.git(self.work, "rev-parse", "HEAD"),
             self.git(self.origin, "rev-parse", "main"),
+        )
+
+    def push_rebase(self, prs: list[dict]) -> int | None:
+        with (
+            mock.patch("pipeline.BASE", "main"),
+            contextlib.redirect_stdout(io.StringIO()),
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            return pipeline.push_rebase(self.work, self.BRANCH, mock.Mock(), prs)
+
+    def test_push_rebase_pushes_branch_behind_main(self):
+        prs = [{"head": {"ref": self.BRANCH}, "base": {"ref": "main"}, "number": 3}]
+        self.checkout(prs)
+        self.assertEqual(self.push_rebase(prs), 3)
+        self.assertEqual(
+            self.git(self.origin, "log", "--format=%s", self.BRANCH).split("\n")[:-1],
+            ["crowdsec: migrate", "flake: update nixpkgs", "other: change", "init"],
+        )
+
+    def test_push_rebase_skips_branch_on_main(self):
+        self.git(self.origin, "switch", "-q", self.BRANCH)
+        self.git(self.origin, "rebase", "-q", "main")
+        self.git(self.origin, "switch", "-q", "main")
+        before = self.git(self.origin, "rev-parse", self.BRANCH)
+        prs = [{"head": {"ref": self.BRANCH}, "base": {"ref": "main"}, "number": 3}]
+        self.checkout(prs)
+        self.assertIsNone(self.push_rebase(prs))
+        self.assertEqual(self.git(self.origin, "rev-parse", self.BRANCH), before)
+
+    def test_push_rebase_without_pr_is_noop(self):
+        self.checkout([])
+        self.assertIsNone(self.push_rebase([]))
+        self.assertEqual(
+            self.git(self.origin, "log", "-1", "--format=%s", self.BRANCH),
+            "crowdsec: migrate\n",
         )
 
     def test_conflict_raises_and_leaves_clean_tree(self):

@@ -112,6 +112,44 @@ def checkout(repo: Path, branch: str, prs: list[dict]) -> None:
         raise RuntimeError(msg)
 
 
+def push_rebase(
+    repo: Path, branch: str, forge: Forge | None, prs: list[dict]
+) -> int | None:
+    """Push an open PR's branch after `checkout` rebased it onto a newer base,
+    so fixes on the base reach the PR without a new update; the PR number."""
+    pr = _find_pr(prs, branch)
+    if forge is None or pr is None:
+        return None
+    if (
+        run(
+            repo=repo,
+            cmd=[
+                "git",
+                "merge-base",
+                "--is-ancestor",
+                f"origin/{BASE}",
+                f"origin/{branch}",
+            ],
+            check=False,
+        ).returncode
+        == 0
+    ):
+        return None
+    lease = capture(repo=repo, cmd=["git", "rev-parse", f"origin/{branch}"]).stdout
+    run(
+        repo=repo,
+        cmd=[
+            "git",
+            "push",
+            f"--force-with-lease=refs/heads/{branch}:{lease.strip()}",
+            "origin",
+            branch,
+        ],
+    )
+    print(f":: {branch} - rebased onto {BASE}, pushed")
+    return pr["number"]
+
+
 def _find_pr(prs: list[dict], branch: str) -> dict | None:
     return next(
         (p for p in prs if p["head"]["ref"] == branch and p["base"]["ref"] == BASE),

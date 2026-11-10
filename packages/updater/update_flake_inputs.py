@@ -103,7 +103,7 @@ def process_input(
         == 0
     ):
         print(f":: {inp.unit} - no update")
-        return None
+        return pipeline.push_rebase(repo, inp.branch, forge, prs)
     new = _locked_rev(repo, inp)
 
     message = commit_message(inp, old, new)

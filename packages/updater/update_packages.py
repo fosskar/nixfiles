@@ -63,7 +63,7 @@ def process_group(
         updated.append((rel, result))
 
     if not updated:
-        return None
+        return pipeline.push_rebase(repo, branch, forge, prs)
 
     rels = [rel for rel, _ in updated]
     run(repo=repo, cmd=["nix", "fmt", "--", *rels])
@@ -87,7 +87,7 @@ def process_group(
         )
 
     if not messages:
-        return None
+        return pipeline.push_rebase(repo, branch, forge, prs)
 
     message = commit_message(group, messages)
     run(repo=repo, cmd=["git", "commit", "-m", message])
