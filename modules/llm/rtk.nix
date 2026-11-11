@@ -15,12 +15,13 @@ _: {
           ''
             export HOME="$PWD"
             rtk init -g --agent pi
-            cp "$HOME/.pi/agent/extensions/rtk.ts" "$out"
+            install -Dm644 "$HOME/.pi/agent/extensions/rtk.ts" "$out/rtk.ts"
           '';
     in
     {
       home.packages = [ rtk ];
 
-      home.file.".pi/agent/extensions/rtk.ts".source = rtkExtension;
+      # pi picks the parser from the resolved store path, so it must end in .ts
+      home.file.".pi/agent/extensions/rtk.ts".source = "${rtkExtension}/rtk.ts";
     };
 }
