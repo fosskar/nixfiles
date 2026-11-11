@@ -327,11 +327,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794190489,
-        "narHash": "sha256-kM2iVXVq7ykAmLYs3nmdCKYVTJ+C4c2TMrEFoTktguA=",
+        "lastModified": 1794362447,
+        "narHash": "sha256-qyY8wOFhuqEiPTQQzYNZaa86pfQ4nIr35hdLmYHQsig=",
         "owner": "fosskar",
         "repo": "fencr",
-        "rev": "ed4a3e70f08b126cbe8375f97c9c53fdcf811739",
+        "rev": "0a520a33a2bdd00894f908eee5ccba67cce51d10",
         "type": "github"
       },
       "original": {
