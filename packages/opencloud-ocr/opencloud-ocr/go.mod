@@ -3,7 +3,7 @@ module opencloud-ocr
 go 1.26.7
 
 require (
-	github.com/cs3org/go-cs3apis v0.0.0-20260915133204-93f9871a72ef
+	github.com/cs3org/go-cs3apis v0.0.0-20261111120608-8780d2de79cc
 	github.com/nats-io/nats.go v1.55.0
 	google.golang.org/grpc v1.85.0
 )
