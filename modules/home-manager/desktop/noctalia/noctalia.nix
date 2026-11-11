@@ -220,7 +220,6 @@
                 end = [
                   "tray"
                   "tray-volume-spacer"
-                  "voxtype"
                   "input-volume"
                   "output-volume"
                   "displays"
@@ -241,7 +240,6 @@
 
             plugins = {
               enabled = [
-                "fosskar/voxtype"
                 "fosskar/displays"
               ];
               source = [
@@ -254,9 +252,6 @@
             };
 
             widget = {
-              voxtype = {
-                type = "fosskar/voxtype:status";
-              };
               displays = {
                 type = "fosskar/displays:indicator";
               };
