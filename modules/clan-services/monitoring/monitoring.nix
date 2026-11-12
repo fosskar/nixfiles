@@ -162,7 +162,15 @@
                       options.path = ./router.dashboard.json;
                     }
                   ];
-                  alerting.rules.settings.groups = lib.importJSON ./router.alerts.json;
+                  alerting.rules.settings = {
+                    groups = lib.importJSON ./router.alerts.json;
+                    # provisioning keeps rules dropped from the file; these are the
+                    # dns servfail and timeout rules removed in d94c153e1
+                    deleteRules = [
+                      { uid = "4a7f28e1465c96"; }
+                      { uid = "2d1f3b95a523aa"; }
+                    ];
+                  };
                 };
 
                 services.prometheus.exporters.zfs.enable = lib.mkDefault (
