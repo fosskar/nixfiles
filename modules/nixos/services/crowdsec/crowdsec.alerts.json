@@ -1,0 +1,330 @@
+[
+  {
+    "orgId": 1,
+    "name": "crowdsec",
+    "folder": "Security",
+    "interval": "1m",
+    "rules": [
+      {
+        "uid": "80e6959fa61a9c",
+        "title": "CrowdSec heartbeat stale",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 900,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "max by(machine, host) (time() - cs_machines_last_heartbeat_timestamp_gauge)",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [600],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "Alerting",
+        "execErrState": "Alerting",
+        "for": "5m",
+        "annotations": {
+          "summary": "crowdsec on {{ $labels.machine }} is down",
+          "description": "The CrowdSec agent has not sent a heartbeat to the local API for more than ten minutes, or its metrics are gone. Without a running crowdsec, the traefik bouncer returns 403 for all ingress."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "e8eaaab230e826",
+        "title": "CrowdSec log ingestion stalled",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 1800,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum by(machine, host) (rate(cs_journalctlsource_hits_total_counter[30m]))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [0.01],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "for": "15m",
+        "annotations": {
+          "summary": "crowdsec on {{ $labels.machine }} reads no logs",
+          "description": "CrowdSec read no journal lines in the last 30 minutes, so its scenarios see no traffic and ban nothing."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "483b6b24e23d95",
+        "title": "CrowdSec bouncer not polling",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 900,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum by(machine, host, bouncer) (rate(cs_lapi_bouncer_requests_total_counter[15m]))",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [0.001],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "for": "15m",
+        "annotations": {
+          "summary": "bouncer {{ $labels.bouncer }} on {{ $labels.machine }} stopped polling",
+          "description": "The bouncer made no request to the CrowdSec local API in the last 15 minutes, so it no longer receives new decisions."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      },
+      {
+        "uid": "255fded73637eb",
+        "title": "CrowdSec community blocklist empty",
+        "condition": "C",
+        "data": [
+          {
+            "refId": "A",
+            "relativeTimeRange": {
+              "from": 300,
+              "to": 0
+            },
+            "datasourceUid": "P4169E866C3094E38",
+            "model": {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "P4169E866C3094E38"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum by(machine, host) (cs_active_decisions_gauge{origin=\"CAPI\"}) or 0 * sum by(machine, host) (cs_active_decisions_gauge)",
+              "instant": true,
+              "interval": "",
+              "intervalMs": 15000,
+              "legendFormat": "{{machine}}",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "A"
+            }
+          },
+          {
+            "refId": "C",
+            "relativeTimeRange": {
+              "from": 0,
+              "to": 0
+            },
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [1],
+                    "type": "lt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "A",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "C",
+              "type": "threshold"
+            }
+          }
+        ],
+        "noDataState": "OK",
+        "execErrState": "Alerting",
+        "for": "6h",
+        "annotations": {
+          "summary": "crowdsec on {{ $labels.machine }} has no community blocklist",
+          "description": "CrowdSec holds no community blocklist decisions, so pulls from the central API have failed for longer than the decisions last."
+        },
+        "isPaused": false,
+        "notification_settings": {
+          "receiver": "matrix-alert-hook"
+        }
+      }
+    ]
+  }
+]

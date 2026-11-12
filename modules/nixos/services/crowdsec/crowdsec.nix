@@ -83,6 +83,7 @@
             options.path = ./crowdsec.dashboard.json;
           }
         ];
+        services.grafana.provision.alerting.rules.settings.groups = lib.importJSON ./crowdsec.alerts.json;
 
         systemd.services = {
           crowdsec-update-hub.serviceConfig.ExecStartPost = lib.mkForce "+systemctl restart crowdsec.service";
