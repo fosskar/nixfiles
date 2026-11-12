@@ -39,7 +39,7 @@
                   type = lib.types.attrsOf lib.types.str;
                   default = { };
                   example = {
-                    "com.sun:auto-snapshot" = "false";
+                    compression = "zstd";
                     recordsize = "1M";
                   };
                   description = "zfs properties set on creation and re-applied on every boot.";
