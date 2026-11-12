@@ -27,16 +27,16 @@ let
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "vectorcraft-web";
-  version = "0.23.0";
+  version = "0.24.0";
 
   src = fetchFromGitHub {
     owner = "storytold";
     repo = "vectorcraft";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-JDUneS7md/q2ZLKqSuKILuIHGUOXyDuuWoGgDQyW510=";
+    hash = "sha256-FRby9AAQyG3N6irSeGaASE/2Yz6t3umA+Pjy+p2d0sc=";
   };
 
-  cargoHash = "sha256-tDdES5pjOLASkVDeIxcM4voURybuDpFfwTvBPmrhCCo=";
+  cargoHash = "sha256-4FBO4PrCChpdG/HuVaJmRV532cossFzfa3dWMFhmQqk=";
 
   nativeBuildInputs = [
     trunk
