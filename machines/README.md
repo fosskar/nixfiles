@@ -42,7 +42,7 @@ flowchart TB
   nixbox & nixworker & gateway -->|borgbackup| storagebox
 ```
 
-all machines join netbird, yggdrasil, and wireguard (controller on gateway); nixbox and nixworker route the home lan for netbird peers. local services are served by caddy on nixbox under `*.nx3.eu`; public exposure is configured in the netbird ui, see [netbird-exposure](../docs/netbird-exposure.md).
+all machines join netbird and yggdrasil; nixbox and nixworker route the home lan for netbird peers. local services are served by caddy on nixbox under `*.nx3.eu`; public exposure is configured in the netbird ui, see [netbird-exposure](../docs/netbird-exposure.md).
 
 ---
 
@@ -59,7 +59,7 @@ all machines join netbird, yggdrasil, and wireguard (controller on gateway); nix
 ### static IPs
 
 source of truth: `flake.hosts` in `modules/flake-parts/hosts.nix`. machine
-`networking.nix`, the `internet`/`wireguard` inventory instances, and feature
+`networking.nix`, the `internet` inventory instance, and feature
 modules all read from it. this table is a derived copy; update `hosts.nix` first.
 
 | machine   | IP               | method                               |
@@ -147,6 +147,5 @@ hetzner vps cx23, public edge
 
 - netbird server: management, signal, relay, dashboard, and the proxy for public `*.fosskar.eu` ingress
 - traefik with geoblock; crowdsec with traefik and firewall bouncers
-- wireguard controller
 - borgbackup of `/persist` to the hetzner storage box
 - srvos hetzner-cloud preset, sshd reachable only over the overlay networks

@@ -13,7 +13,7 @@ in
 {
   # machine ip facts, single source of truth. pure metadata; reachable
   # everywhere via self/flake-self (modules) and config.flake.hosts
-  # (flake-parts/clan). consumers: clan inventory (internet, wireguard),
+  # (flake-parts/clan). consumers: clan inventory (internet),
   # machines/*/networking.nix, feature-module trusted proxies.
   flake.hosts = {
     gateway.wan = "138.201.155.21";

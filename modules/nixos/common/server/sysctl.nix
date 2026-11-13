@@ -11,8 +11,7 @@
         "fs.inotify.max_user_instances" = lib.mkForce 1024;
         "fs.inotify.max_queued_events" = lib.mkForce 32768;
 
-        # no blanket forwarding: netbird routingFeatures=server (nixbox) and
-        # clan-core wireguard controller (gateway) enable it where needed
+        # no blanket forwarding: netbird routingFeatures=server enables it where needed
 
         # additional TCP hardening for servers
         "net.ipv4.tcp_rfc1337" = 1;

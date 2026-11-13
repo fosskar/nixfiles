@@ -1,6 +1,6 @@
 # gateway security architecture
 
-hetzner cloud VPS and public edge for `fosskar.eu`. runs traefik ingress, netbird control plane/proxy, crowdsec remediation, and wireguard/netbird endpoints. backend services either bind locally or arrive over netbird tunnels from internal machines.
+hetzner cloud VPS and public edge for `fosskar.eu`. runs traefik ingress, netbird control plane/proxy, crowdsec remediation, and netbird endpoints. backend services either bind locally or arrive over netbird tunnels from internal machines.
 
 three defense layers protect inbound traffic before requests reach services.
 
@@ -37,9 +37,8 @@ three defense layers protect inbound traffic before requests reach services.
   │  nixos firewall                                     │
   │  ├ default policy: drop                             │
   │  ├ open: TCP 80, 443, 6443, 6446                    │
-  │  │       UDP 443, 3478, 51820, 51821                │
+  │  │       UDP 443, 3478, 51821                       │
   │  ├ ygg only: TCP 22, 7480, 9273, 18876              │
-  │  ├ wireguard only: TCP 22                           │
   │  └ wt0 (netbird tunnel): bypassed, netbird ACL only │
   └──────────────────────┬──────────────────────────────┘
                          │ TCP 80 redirects to 443
@@ -186,12 +185,12 @@ peers): beszel-agent `:18876` and telegraf `:9273`.
 
 ## non-HTTP services
 
-yggdrasil (TCP 6443, TLS 6446), wireguard (51820-51821) and STUN (3478) don't
+yggdrasil (TCP 6443, TLS 6446), netbird's wireguard (51821) and STUN (3478) don't
 go through traefik. they pass through hetzner firewall → crowdsec nftables
 blacklist → nixos firewall → directly to the service.
 
 SSH (22) is not opened in the nixos firewall (`services.openssh.openFirewall =
-false`); sshd is reachable only over wireguard, yggdrasil, netbird (`wt0`) and
+false`); sshd is reachable only over yggdrasil, netbird (`wt0`) and
 p2p-ssh-iroh. the hetzner firewall entries for TCP 22 and 6445 are therefore
 unused (nothing listens on 6445).
 

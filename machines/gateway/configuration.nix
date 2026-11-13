@@ -17,12 +17,9 @@
   # srvos.server sets: emergency mode suppression
 
   # sshd is not reachable from the internet; reach it via netbird (wt0
-  # bypasses this firewall), wireguard, yggdrasil, or p2p-ssh-iroh (loopback)
+  # bypasses this firewall), yggdrasil, or p2p-ssh-iroh (loopback)
   services.openssh.openFirewall = false;
-  networking.firewall.interfaces = {
-    wireguard.allowedTCPPorts = [ 22 ];
-    ygg.allowedTCPPorts = [ 22 ];
-  };
+  networking.firewall.interfaces.ygg.allowedTCPPorts = [ 22 ];
 
   # netbird exit clients get the internet, not gateway's overlays or the
   # hetzner metadata service. mdns and yggdrasil multicast serve lan peers,
@@ -36,7 +33,7 @@
       }
       chain forward {
         type filter hook forward priority filter - 1; policy accept;
-        iifname "wt0" oifname { "ygg", "wireguard" } drop
+        iifname "wt0" oifname "ygg" drop
         iifname "wt0" ip daddr 169.254.0.0/16 drop
       }
     '';

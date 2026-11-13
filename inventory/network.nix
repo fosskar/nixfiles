@@ -23,24 +23,6 @@
       }) config.flake.hosts;
     };
 
-    wireguard = {
-      module.name = "wireguard";
-      module.input = "clan-core";
-
-      roles.controller.settings.domain = "w";
-      roles.peer.settings.domain = "w";
-      roles.controller.machines."gateway".settings = {
-        endpoint = config.flake.hosts.gateway.wan;
-        port = 51820; # default
-      };
-      roles.peer.machines = {
-        "nixbox".settings = { };
-        "desktop".settings = { };
-        "lpt-titan".settings = { };
-        "nixworker".settings = { };
-      };
-    };
-
     yggdrasil = {
       roles.default = {
         tags = [ "all" ];
