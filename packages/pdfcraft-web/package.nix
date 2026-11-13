@@ -27,16 +27,16 @@ let
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "pdfcraft-web";
-  version = "0.21.0";
+  version = "0.21.1";
 
   src = fetchFromGitHub {
     owner = "storytold";
     repo = "pdfcraft";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-8bePrYeFL3J1JEp5Mpbe88l6K5W8AHdB8tb6F+u3h3I=";
+    hash = "sha256-2X2ixtr7mxHRpfhcGghKUO7ib0SFBruBmQPIlTFZ8Ds=";
   };
 
-  cargoHash = "sha256-2gfnel9CQJ7a9OV7XTC/AJ0yJtOPv4g+P7UEbKcU02Q=";
+  cargoHash = "sha256-sjnRF9WVDRPrgEgwZEyVIEk3qq3Erkv9cBtlkgb52lc=";
 
   nativeBuildInputs = [
     trunk
