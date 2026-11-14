@@ -41,7 +41,8 @@
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
         root * ${pkgs.it-tools}/lib
         file_server
-        try_files {path} {path}.html {path}/ =404
+        # spa: client-side routing needs fallback to index.html
+        try_files {path} /index.html
       '';
     };
 }
