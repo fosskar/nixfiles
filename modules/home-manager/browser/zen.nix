@@ -78,9 +78,10 @@
           };
         })
         (lib.optionalAttrs (options.services.psd ? extraBrowsers) {
+          # psd runs `pgrep -x` on PSNAME; the wrapped process is `.zen-beta-wrapp`
           services.psd.extraBrowsers.zen = ''
             DIRArr[0]="$XDG_CONFIG_HOME/zen"
-            PSNAME="zen"
+            PSNAME='\.?zen(-.*)?'
             check_suffix=1
           '';
         })
