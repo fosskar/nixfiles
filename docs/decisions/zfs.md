@@ -49,10 +49,9 @@ native-only via `extraPools` was rejected for this reason: `zfs mount -a` mounts
 datasets on data pools are declared by name, next to the service that uses them or in the machine config:
 
 ```nix
-nixfiles.zfs.datasets."tank/apps/immich".properties = {
-  recordsize = "1M";
-  "com.sun:auto-snapshot" = "true";
-};
+nixfiles.zfs.datasets."tank/apps/immich".properties.recordsize = "1M";
+# snapshots are opt-in per dataset
+services.sanoid.datasets."tank/apps/immich".useTemplate = [ "standard" ];
 ```
 
 for each dataset the module generates:

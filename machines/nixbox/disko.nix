@@ -36,41 +36,52 @@
     # services depend on them via RequiresMountsFor.
   };
 
+  services.sanoid.datasets = {
+    "tank/backup".useTemplate = [ "standard" ];
+    # rarely changes and cannot be downloaded again; a year of monthlies costs almost nothing
+    "tank/media/music" = {
+      useTemplate = [ "standard" ];
+      monthly = 12;
+    };
+    # victoriametrics and victorialogs rewrite ~6G a day here, which every
+    # snapshot pins; keep the history short
+    "znixos/persist" = {
+      useTemplate = [ "standard" ];
+      hourly = 24;
+      daily = 7;
+      weekly = 2;
+      monthly = 0;
+    };
+  };
+
   nixfiles.zfs.datasets = {
-    # default for everything below; datasets opt out explicitly
-    "tank".properties."com.sun:auto-snapshot" = "true";
+    "tank" = { };
     "tank/backup" = { };
     # only holds the per-app datasets, which set their own snapshot policy
-    "tank/apps".properties."com.sun:auto-snapshot" = "false";
+    "tank/apps" = { };
     # garage blocks are at most 1MiB (block_size) and replicated to nixworker;
     # snapshots would only pin deleted blocks. capacity in the garage layout
     # does not limit disk usage, so enforce it here. garage reads "1T" as
     # 10^12 bytes and zfs as 2^40, which leaves ~10% headroom
     "tank/apps/garage".properties = {
       recordsize = "1M";
-      "com.sun:auto-snapshot" = "false";
       refquota = (lib.head config.services.garage.settings.data_dir).capacity;
     };
     # replaceable media; music is its own dataset with snapshots. the quota
     # keeps a runaway download queue from filling the pool
-    "tank/media".properties = {
-      "com.sun:auto-snapshot" = "false";
-      refquota = "4T";
-    };
+    "tank/media".properties.refquota = "4T";
     # own recordings and music that cannot be downloaded again
-    "tank/media/music".properties."com.sun:auto-snapshot" = "true";
+    "tank/media/music" = { };
     # never mounted; holds space back so a full pool can still be cleaned up
     "tank/reserved" = {
       mountPoint = null;
       properties = {
         canmount = "off";
         refreservation = "500G";
-        "com.sun:auto-snapshot" = "false";
       };
     };
     # protomaps planet download (~140G), rebuildable
     "tank/scratch".properties = {
-      "com.sun:auto-snapshot" = "false";
       recordsize = "1M";
       refquota = "200G";
     };
@@ -188,20 +199,17 @@
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/";
-            options."com.sun:auto-snapshot" = "false";
             postCreateHook = "zfs snapshot znixos/root@blank";
           };
           "nix" = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/nix";
-            options."com.sun:auto-snapshot" = "false";
           };
           "persist" = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/persist";
-            options."com.sun:auto-snapshot" = "true";
             postMountHook = preservationDiskoPostMountHook;
           };
           "reserved" = {
