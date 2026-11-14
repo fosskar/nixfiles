@@ -66,11 +66,7 @@ in
     {
       services.llama-cpp = {
         enable = true;
-        package = pkgs.local.llama-cpp.override {
-          inherit pkgs;
-          cudaSupport = true;
-          rpcSupport = true;
-        };
+        package = pkgs.local.llama-cpp;
         openFirewall = false;
         settings = {
           host = listenAddress;
@@ -300,11 +296,7 @@ in
       ...
     }:
     let
-      package = pkgs.local.llama-cpp.override {
-        inherit pkgs;
-        vulkanSupport = true;
-        rpcSupport = true;
-      };
+      package = pkgs.local.llama-cpp;
       listenAddress = flake-self.hosts.${config.networking.hostName}.lan;
     in
     {
