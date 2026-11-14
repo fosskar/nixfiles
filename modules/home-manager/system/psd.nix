@@ -23,6 +23,14 @@ _: {
       config.systemd.user.services.psd.Service.ExecStartPost =
         "${lib.getExe' cfg.package "profile-sync-daemon"} resync";
 
+      # sd-switch starts psd-resync.service in its own job, ahead of psd.service;
+      # the pid file exists only after psd.service has done the first sync
+      config.systemd.user.services.psd-resync.Unit.ConditionPathExists = "%t/psd.pid";
+
+      # a stop/start on switch unsyncs under a running browser, which then
+      # finds an empty config dir and creates a new profile
+      config.systemd.user.services.psd.Unit.X-SwitchMethod = "keep-old";
+
       config.services.psd = {
         enable = true;
         package = pkgs.profile-sync-daemon.overrideAttrs (old: {
