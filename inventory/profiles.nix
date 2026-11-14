@@ -19,7 +19,6 @@ in
           config.flake.modules.nixos.base
           config.flake.modules.nixos.clanMachineId
           config.flake.modules.nixos.immutable
-          config.flake.modules.nixos.securityFixes
         ];
       };
     };
