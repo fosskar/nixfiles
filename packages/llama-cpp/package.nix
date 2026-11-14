@@ -24,6 +24,12 @@
     # needs numpy, torch and safetensors; covers the python gguf converter only
     disabledTests = old.disabledTests ++ [ "test-conversion-fp8" ];
 
+    # skip the package-llama-cpp check: hosts ship only the cuda and vulkan
+    # variants, which nixos-nixbox and nixos-nixworker already build and test
+    meta = old.meta // {
+      hydraPlatforms = [ ];
+    };
+
     # semver releases only; upstream also tags every nightly build as
     # b<number>, which pushes semver releases out of the atom feed
     passthru = old.passthru // {
