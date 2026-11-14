@@ -16,9 +16,7 @@ _: {
             };
 
             ui.editor = "micro";
-            git = {
-              sign-on-push = true;
-            };
+            revsets.git-sign-on-push = "~signed() & mine()";
             remotes = {
               origin = {
                 auto-track-bookmarks = "glob:*";
@@ -26,7 +24,7 @@ _: {
             };
             # signing.key is set per-user; backend/behavior are common
             # "keep" so local rewrites (fetch, snapshot, rebase) never reach for
-            # the yubikey through the agent relay; sign-on-push still signs.
+            # the yubikey through the agent relay; git-sign-on-push still signs.
             signing = {
               backend = "ssh";
               behavior = "keep";
