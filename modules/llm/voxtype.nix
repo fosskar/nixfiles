@@ -69,7 +69,19 @@
 
       services.voxtype = {
         enable = true;
-        package = inputs.voxtype.packages.${pkgs.stdenv.hostPlatform.system}.parakeet-migraphx;
+        # nixpkgs' cargoUseSystemLibs hook forbids the vendored oniguruma and
+        # sqlite that the voxtype flake builds against
+        package =
+          let
+            voxtypePackages = inputs.voxtype.packages.${pkgs.stdenv.hostPlatform.system};
+          in
+          voxtypePackages.parakeet-migraphx.overrideAttrs {
+            paths = [
+              (voxtypePackages.voxtype-parakeet-migraphx-unwrapped.overrideAttrs {
+                dontCargoUseSystemLibs = true;
+              })
+            ];
+          };
         settings = {
           engine = "parakeet";
 
