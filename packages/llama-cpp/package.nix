@@ -21,8 +21,11 @@
 
     npmDepsHash = "sha256-0OJIueUN5oD/V2NtVcXTiRW59u2tJIG3OxW8aJ8JDBY=";
 
-    # needs numpy, torch and safetensors; covers the python gguf converter only
-    disabledTests = old.disabledTests ++ [ "test-conversion-fp8" ];
+    # need torch and transformers; cover the python gguf converter, which is not installed
+    disabledTests = old.disabledTests ++ [
+      "test-conversion-fp8"
+      "test-kv-cache-scales"
+    ];
 
     # semver releases only; upstream also tags every nightly build as
     # b<number>, which pushes semver releases out of the atom feed
