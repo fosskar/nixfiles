@@ -107,7 +107,7 @@
 
         clan.core.vars.generators.silo-api = {
           prompts.api-key = {
-            description = "silo admin api key (profile menu > api keys)";
+            description = "silo admin api key (https://silo.nx3.eu/admin/api-keys, full access)";
             type = "hidden";
             persist = true;
           };
