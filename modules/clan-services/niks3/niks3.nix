@@ -139,6 +139,8 @@
                 serverUrl = "http://127.0.0.1:${toString niks3Port}";
                 authTokenFile = varsGarage.files.api-token.path;
               };
+              # the hook daemon registers gc roots through nix-daemon as its DynamicUser
+              nix.settings.extra-allowed-users = [ "niks3-auto-upload" ];
 
               services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
                 {
