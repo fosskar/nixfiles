@@ -74,7 +74,7 @@
           }
         ],
         "noDataState": "Alerting",
-        "execErrState": "Alerting",
+        "execErrState": "KeepLast",
         "annotations": {
           "description": "A host uptime counter reset during the last 15 minutes."
         },
@@ -393,7 +393,7 @@
           }
         ],
         "noDataState": "OK",
-        "execErrState": "Alerting",
+        "execErrState": "KeepLast",
         "annotations": {
           "description": "The kernel OOM killer terminated a process during the last ten minutes."
         },
@@ -508,7 +508,7 @@
           }
         ],
         "noDataState": "OK",
-        "execErrState": "Alerting",
+        "execErrState": "KeepLast",
         "annotations": {
           "description": "VictoriaLogs found a kernel panic, watchdog, RCU stall, MCE, EDAC, hardware, or I/O error."
         },

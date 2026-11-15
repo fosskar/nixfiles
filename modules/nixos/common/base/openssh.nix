@@ -108,7 +108,7 @@
             }
           ];
           noDataState = "OK";
-          execErrState = "Alerting";
+          execErrState = "KeepLast";
           annotations = { inherit summary description; };
           isPaused = false;
         };
