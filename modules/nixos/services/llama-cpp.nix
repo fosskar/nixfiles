@@ -47,6 +47,13 @@ in
             "mmproj-d1-2B-F16.gguf" = "c54d0c0cc66c7e5b6b516204cab556e41d1da9e9cd970245a57d7b509af68ab3";
           };
         };
+        "Qwen/Qwen3-Embedding-0.6B-GGUF" = {
+          rev = "370f27d7550e0def9b39c1f16d3fbaa13aa67728";
+          files = {
+            "Qwen3-Embedding-0.6B-Q8_0.gguf" =
+              "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439";
+          };
+        };
       };
       modelPath = repo: file: "${modelsDir}/${repo}/${file}";
       manifest = pkgs.writeText "llama-cpp-models.manifest" (
@@ -157,6 +164,22 @@ in
               device = "RPC0";
               n-gpu-layers = 999;
               # d1 reads a question in one batch, so ubatch caps state plus media
+              ctx-size = 8192;
+              batch-size = 8192;
+              ubatch-size = 8192;
+              parallel = 1;
+            };
+            "Qwen/Qwen3-Embedding-0.6B-GGUF:Q8_0" = {
+              model = modelPath "Qwen/Qwen3-Embedding-0.6B-GGUF" "Qwen3-Embedding-0.6B-Q8_0.gguf";
+              alias = "qwen3-embedding-0.6b";
+              # silo embeds library items with it for recommendations; runs on
+              # the arc b50 like d1
+              embeddings = true;
+              pooling = "last";
+              rpc = "${flake-self.hosts.nixworker.lan}:${toString rpcPort}";
+              device = "RPC0";
+              n-gpu-layers = 999;
+              # a pooled embedding needs its whole input in one ubatch
               ctx-size = 8192;
               batch-size = 8192;
               ubatch-size = 8192;
