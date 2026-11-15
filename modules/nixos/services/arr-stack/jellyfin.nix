@@ -15,6 +15,7 @@
       listenUrl = "http://${listenAddress}:${toString listenPort}";
       pluginsDir = "${config.services.jellyfin.dataDir}/plugins";
       plugins = [
+        pkgs.local.jellyfin-plugin-enhanced
         pkgs.local.jellyfin-plugin-intro-skipper
         pkgs.local.jellyfin-plugin-ldapauth
         pkgs.local.jellyfin-plugin-tvdb
