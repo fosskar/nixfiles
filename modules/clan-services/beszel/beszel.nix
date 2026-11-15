@@ -258,11 +258,12 @@ _: {
                     sleep 1
                   done
 
+                  # the api jobs start together and the hub allows 2 logins per 3s (429)
                   # the password and token reach jq and curl through the environment
                   # and the private /tmp: argv is world-readable in /proc/<pid>/cmdline
                   umask 077
                   jq -cn --arg i ${beszelSuperuserEmail} '{identity: $i, password: $ENV.BESZEL_SUPERUSER_PASSWORD}' \
-                    | curl -sf -X POST ${beszelApi}/collections/_superusers/auth-with-password \
+                    | curl -sf --retry 5 --retry-delay 3 -X POST ${beszelApi}/collections/_superusers/auth-with-password \
                         -H 'content-type: application/json' --data-binary @- \
                     | jq -r '"Authorization: \(.token)"' > /tmp/auth.header
                 '';
