@@ -29,138 +29,136 @@
       roles.server = {
         description = "niks3 server with bundled garage s3 backend";
 
-        perInstance =
-          { ... }:
-          {
-            nixosModule =
-              {
-                config,
-                pkgs,
-                lib,
-                ...
-              }:
-              let
-                niks3Pkgs = self.inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system};
-                # cache bucket owned by the garage clan-service: declared in the
-                # garage instance's `buckets`, key pre-generated in `garage-buckets`.
-                bucketName = "niks3-cache";
-                niks3Port = 5751;
-                garageS3Port = 3900;
-                varsGarage = config.clan.core.vars.generators."niks3-garage";
-                varsKeys = config.clan.core.vars.generators."niks3-private";
-              in
-              {
-                imports = [
-                  (niks3Vars pkgs)
-                  self.inputs.niks3.nixosModules.niks3
-                  self.inputs.niks3.nixosModules.niks3-auto-upload
-                ];
+        perInstance = _: {
+          nixosModule =
+            {
+              config,
+              pkgs,
+              lib,
+              ...
+            }:
+            let
+              niks3Pkgs = self.inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system};
+              # cache bucket owned by the garage clan-service: declared in the
+              # garage instance's `buckets`, key pre-generated in `garage-buckets`.
+              bucketName = "niks3-cache";
+              niks3Port = 5751;
+              garageS3Port = 3900;
+              varsGarage = config.clan.core.vars.generators."niks3-garage";
+              varsKeys = config.clan.core.vars.generators."niks3-private";
+            in
+            {
+              imports = [
+                (niks3Vars pkgs)
+                self.inputs.niks3.nixosModules.niks3
+                self.inputs.niks3.nixosModules.niks3-auto-upload
+              ];
 
-                # private copy of sign-key (deployed to host, used by niks3 server).
-                clan.core.vars.generators."niks3-private" = {
-                  dependencies = [ "niks3" ];
-                  files.sign-key.secret = true;
-                  files.sign-key.owner = "niks3";
-                  files.sign-key.group = "niks3";
-                  script = "cp $in/niks3/sign-key $out/sign-key";
-                };
-
-                clan.core.vars.generators."niks3-garage" = {
-                  files.api-token.secret = true;
-                  files.api-token.owner = "niks3";
-                  files.api-token.group = "niks3";
-                  runtimeInputs = [ pkgs.openssl ];
-                  script = ''
-                    openssl rand -hex 32 > "$out/api-token"
-                  '';
-                };
-
-                # private copy of the cache bucket key, owned by niks3 (the shared
-                # garage-buckets originals are root-owned).
-                clan.core.vars.generators."niks3-s3" = {
-                  dependencies = [ "garage-buckets" ];
-                  files.access-key.owner = "niks3";
-                  files.access-key.group = "niks3";
-                  files.secret-key.owner = "niks3";
-                  files.secret-key.group = "niks3";
-                  script = ''
-                    cp $in/garage-buckets/niks3-cache_access_key_id $out/access-key
-                    cp $in/garage-buckets/niks3-cache_secret_access_key $out/secret-key
-                  '';
-                };
-
-                # ----- niks3 server -----
-                services.niks3 = {
-                  enable = true;
-                  httpAddr = "0.0.0.0:${toString niks3Port}";
-
-                  database.createLocally = false;
-                  database.connectionString = "postgres:///niks3?host=/run/postgresql";
-
-                  s3 = {
-                    endpoint = "127.0.0.1:${toString garageS3Port}";
-                    bucket = bucketName;
-                    region = config.networking.hostName;
-                    useSSL = false;
-                    accessKeyFile = config.clan.core.vars.generators."niks3-s3".files.access-key.path;
-                    secretKeyFile = config.clan.core.vars.generators."niks3-s3".files.secret-key.path;
-                  };
-
-                  apiTokenFile = varsGarage.files.api-token.path;
-                  signKeyFiles = [ varsKeys.files.sign-key.path ];
-
-                  readProxy.enable = true;
-
-                  # niks3 uploads a generated index.html landing page to the bucket
-                  cacheUrl = "https://niks3.${self.domains.public}";
-
-                  gc.enable = true;
-                  gc.olderThan = "720h";
-                };
-
-                # bucket + key are provisioned by garage-buckets-init on the garage
-                # bootstrap node; locally only the daemon order matters.
-                systemd.services.niks3.after = [
-                  "garage.service"
-                  "postgresql.service"
-                ];
-
-                # postgres via clan-core wrapper (consistent with paperless/immich/etc).
-                clan.core.postgresql.enable = true;
-                clan.core.postgresql.databases.niks3 = {
-                  create.enable = true;
-                  create.options.OWNER = "niks3";
-                  restore.stopOnRestore = [ "niks3.service" ];
-                };
-                clan.core.postgresql.users.niks3 = { };
-
-                # ----- system-wide post-build-hook upload -----
-                services.niks3-auto-upload = {
-                  enable = true;
-                  package = niks3Pkgs.niks3-hook;
-                  serverUrl = "http://127.0.0.1:${toString niks3Port}";
-                  authTokenFile = varsGarage.files.api-token.path;
-                };
-
-                services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
-                  {
-                    urls = [ "http://127.0.0.1:${toString niks3Port}/metrics" ];
-                    metric_version = 2;
-                    fieldinclude = [ "niks3_*" ];
-                  }
-                ];
-
-                networking.firewall.allowedTCPPorts = [ niks3Port ];
-
-                services.grafana.provision.dashboards.settings.providers = [
-                  {
-                    name = "niks3";
-                    folder = "Nix";
-                    options.path = self.inputs.niks3.dashboards.niks3;
-                  }
-                ];
+              # private copy of sign-key (deployed to host, used by niks3 server).
+              clan.core.vars.generators."niks3-private" = {
+                dependencies = [ "niks3" ];
+                files.sign-key.secret = true;
+                files.sign-key.owner = "niks3";
+                files.sign-key.group = "niks3";
+                script = "cp $in/niks3/sign-key $out/sign-key";
               };
-          };
+
+              clan.core.vars.generators."niks3-garage" = {
+                files.api-token.secret = true;
+                files.api-token.owner = "niks3";
+                files.api-token.group = "niks3";
+                runtimeInputs = [ pkgs.openssl ];
+                script = ''
+                  openssl rand -hex 32 > "$out/api-token"
+                '';
+              };
+
+              # private copy of the cache bucket key, owned by niks3 (the shared
+              # garage-buckets originals are root-owned).
+              clan.core.vars.generators."niks3-s3" = {
+                dependencies = [ "garage-buckets" ];
+                files.access-key.owner = "niks3";
+                files.access-key.group = "niks3";
+                files.secret-key.owner = "niks3";
+                files.secret-key.group = "niks3";
+                script = ''
+                  cp $in/garage-buckets/niks3-cache_access_key_id $out/access-key
+                  cp $in/garage-buckets/niks3-cache_secret_access_key $out/secret-key
+                '';
+              };
+
+              # ----- niks3 server -----
+              services.niks3 = {
+                enable = true;
+                httpAddr = "0.0.0.0:${toString niks3Port}";
+
+                database.createLocally = false;
+                database.connectionString = "postgres:///niks3?host=/run/postgresql";
+
+                s3 = {
+                  endpoint = "127.0.0.1:${toString garageS3Port}";
+                  bucket = bucketName;
+                  region = config.networking.hostName;
+                  useSSL = false;
+                  accessKeyFile = config.clan.core.vars.generators."niks3-s3".files.access-key.path;
+                  secretKeyFile = config.clan.core.vars.generators."niks3-s3".files.secret-key.path;
+                };
+
+                apiTokenFile = varsGarage.files.api-token.path;
+                signKeyFiles = [ varsKeys.files.sign-key.path ];
+
+                readProxy.enable = true;
+
+                # niks3 uploads a generated index.html landing page to the bucket
+                cacheUrl = "https://niks3.${self.domains.public}";
+
+                gc.enable = true;
+                gc.olderThan = "720h";
+              };
+
+              # bucket + key are provisioned by garage-buckets-init on the garage
+              # bootstrap node; locally only the daemon order matters.
+              systemd.services.niks3.after = [
+                "garage.service"
+                "postgresql.service"
+              ];
+
+              # postgres via clan-core wrapper (consistent with paperless/immich/etc).
+              clan.core.postgresql.enable = true;
+              clan.core.postgresql.databases.niks3 = {
+                create.enable = true;
+                create.options.OWNER = "niks3";
+                restore.stopOnRestore = [ "niks3.service" ];
+              };
+              clan.core.postgresql.users.niks3 = { };
+
+              # ----- system-wide post-build-hook upload -----
+              services.niks3-auto-upload = {
+                enable = true;
+                package = niks3Pkgs.niks3-hook;
+                serverUrl = "http://127.0.0.1:${toString niks3Port}";
+                authTokenFile = varsGarage.files.api-token.path;
+              };
+
+              services.telegraf.extraConfig.inputs.prometheus = lib.mkIf config.services.telegraf.enable [
+                {
+                  urls = [ "http://127.0.0.1:${toString niks3Port}/metrics" ];
+                  metric_version = 2;
+                  fieldinclude = [ "niks3_*" ];
+                }
+              ];
+
+              networking.firewall.allowedTCPPorts = [ niks3Port ];
+
+              services.grafana.provision.dashboards.settings.providers = [
+                {
+                  name = "niks3";
+                  folder = "Nix";
+                  options.path = self.inputs.niks3.dashboards.niks3;
+                }
+              ];
+            };
+        };
       };
 
       roles.client = {
