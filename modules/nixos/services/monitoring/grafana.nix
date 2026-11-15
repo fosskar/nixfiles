@@ -224,6 +224,32 @@
                   }
                 ];
               }
+              {
+                orgId = 1;
+                name = "matrix-alert-hook-reboot-required";
+                receivers = [
+                  {
+                    uid = "matrix-alert-hook-reboot-required";
+                    type = "webhook";
+                    # a machine that rebooted needs no message
+                    disableResolveMessage = true;
+                    settings = {
+                      url = "http://127.0.0.1:9088/alert";
+                      httpMethod = "POST";
+                      # matrix-hook posts one message per alert, so send the group as one alert
+                      payload.template = builtins.toJSON {
+                        alerts = [
+                          {
+                            status = "{{ .Status }}";
+                            labels.alertname = "{{ .CommonLabels.alertname }}";
+                            annotations.summary = "{{ range .Alerts.Firing }}{{ .Labels.machine }} {{ end }}";
+                          }
+                        ];
+                      };
+                    };
+                  }
+                ];
+              }
             ];
           };
           policies.settings = {

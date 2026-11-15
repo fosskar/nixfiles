@@ -516,7 +516,7 @@
       },
       {
         "uid": "b7c41e9a52d0f3",
-        "title": "Machines reboot required",
+        "title": "Machines reboot required after update",
         "condition": "C",
         "data": [
           {
@@ -591,8 +591,9 @@
         },
         "isPaused": false,
         "notification_settings": {
-          "receiver": "matrix-alert-hook",
-          "group_by": ["machine"],
+          "receiver": "matrix-alert-hook-reboot-required",
+          "group_wait": "30m",
+          "group_interval": "30m",
           "repeat_interval": "8760h"
         }
       }
