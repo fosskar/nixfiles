@@ -1620,11 +1620,11 @@
         "xdg-desktop-portal-umbriel": "xdg-desktop-portal-umbriel"
       },
       "locked": {
-        "lastModified": 1794693686,
-        "narHash": "sha256-yrpWfUrdkSa0qQ+53LFtdnoO+8TDohtChX9Odweis9c=",
+        "lastModified": 1794752968,
+        "narHash": "sha256-ATgywA0yC7Eq/gzlD8/kGyqLC27om957sbLuNXdk9Ow=",
         "owner": "noctalia-dev",
         "repo": "umbriel",
-        "rev": "07181d995ee235784f352e068dd08930dcaf2d78",
+        "rev": "70b3724f3a192b3f05562f3c28df84564df5fa06",
         "type": "github"
       },
       "original": {
