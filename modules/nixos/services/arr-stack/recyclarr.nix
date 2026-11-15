@@ -15,6 +15,8 @@
             api_key._secret = "/run/arr-api-keys/sonarr/api-key";
             delete_old_custom_formats = true;
             quality_definition.type = "series";
+            # silo and jellyfin match a series by the id in its folder name
+            media_naming.series = "jellyfin-tvdb";
             quality_profiles = [
               {
                 trash_id = "72dae194fc92bf828f32cde7744e51a1"; # WEB-1080p
