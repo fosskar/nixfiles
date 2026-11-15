@@ -64,6 +64,23 @@
         done
       '';
 
+      # logind logs the shutdown line only when a reboot or poweroff is requested through systemd
+      previousShutdown = pkgs.writeShellScript "previous-shutdown" ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.coreutils
+            config.systemd.package
+          ]
+        }
+        # no previous boot in the journal: nothing to judge
+        [ "$(journalctl --list-boots -q | wc -l)" -ge 2 ] || exit 0
+        if journalctl -b -1 -t systemd-logind -g '^System is (rebooting|powering down|halting)' -n 1 -q >/dev/null; then
+          echo "previous_shutdown unclean=0i"
+        else
+          echo "previous_shutdown unclean=1i"
+        fi
+      '';
+
       zpoolHealth = pkgs.writeScript "zpool-health" ''
         #!${pkgs.gawk}/bin/awk -f
         BEGIN {
@@ -212,6 +229,7 @@
                     [
                       ipv6DadCheck
                       rebootRequired
+                      previousShutdown
                     ]
                     ++ lib.optional zfsEnabled zpoolHealth
                   );
@@ -260,9 +278,11 @@
           }
         ];
 
-        users.users.telegraf.extraGroups = lib.mkIf (redisSocketServers != { }) (
-          lib.unique (map (server: server.group) (lib.attrValues redisSocketServers))
-        );
+        # systemd-journal lets the previous-shutdown check read the journal
+        users.users.telegraf.extraGroups = [
+          "systemd-journal"
+        ]
+        ++ lib.unique (map (server: server.group) (lib.attrValues redisSocketServers));
 
         security.wrappers = lib.mkIf (!isVM) {
           smartctl-telegraf = {

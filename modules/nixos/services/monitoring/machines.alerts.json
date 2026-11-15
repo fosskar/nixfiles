@@ -7,7 +7,7 @@
     "rules": [
       {
         "uid": "6170f7c7d23bc3",
-        "title": "Machines reboot detected",
+        "title": "Machines unexpected reboot",
         "condition": "C",
         "data": [
           {
@@ -24,7 +24,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum by(host) (resets(system_uptime[15m]))",
+              "expr": "max by(machine, host) (previous_shutdown_unclean > 0 and on(host) system_uptime < 3600)",
               "instant": true,
               "interval": "",
               "intervalMs": 15000,
@@ -73,10 +73,11 @@
             }
           }
         ],
-        "noDataState": "Alerting",
+        "noDataState": "OK",
         "execErrState": "KeepLast",
         "annotations": {
-          "description": "A host uptime counter reset during the last 15 minutes."
+          "summary": "{{ $labels.host }} rebooted without a clean shutdown",
+          "description": "The previous boot's journal has no reboot or poweroff request from systemd-logind, so the machine crashed, lost power or was reset. The alert clears after one hour of uptime."
         },
         "isPaused": false
       },
