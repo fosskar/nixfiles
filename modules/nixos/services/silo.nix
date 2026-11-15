@@ -25,6 +25,38 @@
       llamaCpp = config.services.llama-cpp.settings;
       embeddingModel = "qwen3-embedding-0.6b";
       oidcPlugin = "silo.auth.oidc";
+      requestsPlugin = "silo.requests.arr";
+      # requests go to the sonarr and radarr of the arr-stack feature, with
+      # the profiles and folders seerr used
+      requestIntegrations = {
+        sonarr = {
+          port = 8989;
+          mediaType = "series";
+          qualityProfile = "WEB-1080p";
+          config = {
+            service_kind = "sonarr";
+            root_folder = "${mediaRoot}/tv";
+            is_default = true;
+            search_on_add = true;
+            monitor = "all";
+            series_type = "standard";
+            season_folder = false;
+          };
+        };
+        radarr = {
+          port = 7878;
+          mediaType = "movie";
+          qualityProfile = "Remux + WEB 1080p";
+          config = {
+            service_kind = "radarr";
+            root_folder = "${mediaRoot}/movies";
+            is_default = true;
+            search_on_add = true;
+            minimum_availability = "inCinemas";
+          };
+        };
+      };
+      arrKeyUnits = map (name: "${name}-api.service") (lib.attrNames requestIntegrations);
       # the callback path carries the plugin's installation id, a database
       # serial that only exists after the install, so every id it can
       # plausibly get is registered
@@ -162,10 +194,11 @@
         # are forced, anything else set in the admin ui survives
         systemd.services.silo-sync = {
           description = "sync settings into silo";
-          after = [ "silo.service" ];
-          requires = [ "silo.service" ];
+          after = [ "silo.service" ] ++ arrKeyUnits;
+          requires = [ "silo.service" ] ++ arrKeyUnits;
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
+            SupplementaryGroups = map (name: "${name}-api") (lib.attrNames requestIntegrations);
             Type = "oneshot";
             RemainAfterExit = true;
             DynamicUser = true;
@@ -241,15 +274,25 @@
               fi
               echo "ai provider llama-cpp is $provider"
 
+              # prints the installation id of a plugin, installing it when missing
+              plugin() {
+                id=$(api GET /admin/plugins/installations \
+                  | jq -r --arg plugin "$1" '.items[] | select(.plugin_id == $plugin) | .id')
+                if [ -z "$id" ]; then
+                  id=$(api GET /admin/plugins/catalog \
+                    | jq -ce --arg plugin "$1" '.items[] | select(.plugin_id == $plugin) | {plugin_id, repository_id, version}' \
+                    | api POST /admin/plugins/installations --data-binary @- | jq -re .id)
+                  echo "installed $1 as installation $id" >&2
+                fi
+                if [ -z "$id" ]; then
+                  echo "plugin $1 is not in the catalog" >&2
+                  return 1
+                fi
+                printf '%s' "$id"
+              }
+
               # oidc plugin
-              installation=$(api GET /admin/plugins/installations \
-                | jq -r '.items[] | select(.plugin_id == "${oidcPlugin}") | .id')
-              if [ -z "$installation" ]; then
-                installation=$(api GET /admin/plugins/catalog \
-                  | jq -ce '.items[] | select(.plugin_id == "${oidcPlugin}") | {plugin_id, repository_id, version}' \
-                  | api POST /admin/plugins/installations --data-binary @- | jq -re .id)
-                echo "installed ${oidcPlugin} as installation $installation"
-              fi
+              installation=$(plugin ${oidcPlugin})
               jq -n --rawfile secret "$CREDENTIALS_DIRECTORY/oidc-client-secret" '{
                 key: "connection",
                 value: {
@@ -266,6 +309,52 @@
               api PUT "/admin/plugins/installations/$installation/auth-binding" \
                 --data-binary '{"capability_id": "oidc", "enabled": true, "display_order": 0, "default_login": false, "auto_provision": true}'
               echo "configured ${oidcPlugin} installation $installation"
+
+              # requests: the router plugin is in the approved community catalog
+              api PUT /admin/plugins/catalog-settings -H 'If-Match: *' \
+                --data-binary '{"include_approved_community_plugins": true}' >/dev/null
+              router=$(plugin ${requestsPlugin})
+
+              # upserts one request integration by name. the quality profile id
+              # is looked up by name, because the id differs per install
+              integration() {
+                name=$1
+                jq -n --arg installation "$router" --arg name "$name" --arg url "$2" \
+                  --rawfile key "/run/arr-api-keys/$name/api-key" '{
+                    installation_id: $installation,
+                    capability_id: "arr",
+                    name: $name,
+                    base_url: $url,
+                    api_key_ref: $key,
+                    plugin_config: {}
+                  }' > /tmp/integration.json
+                profile=$(api POST /admin/request-integrations/new/options --data-binary @/tmp/integration.json \
+                  | jq -re --arg profile "$4" '.options.quality_profile_id[] | select(.label == $profile) | .value | tonumber')
+                jq --arg media "$3" --argjson profile "$profile" --argjson config "$5" '. + {
+                  supported_media_types: [$media],
+                  enabled: true,
+                  plugin_config: ($config + {quality_profile_id: $profile})
+                }' /tmp/integration.json > /tmp/integration-body.json
+                id=$(api GET /admin/request-integrations \
+                  | jq -r --arg name "$name" '.items[] | select(.name == $name) | .id')
+                if [ -n "$id" ]; then
+                  api PUT "/admin/request-integrations/$id" -H 'If-Match: *' --data-binary @/tmp/integration-body.json >/dev/null
+                else
+                  api POST /admin/request-integrations --data-binary @/tmp/integration-body.json >/dev/null
+                fi
+                echo "synced request integration $name"
+              }
+              ${lib.concatStringsSep "\n" (
+                lib.mapAttrsToList (
+                  name: integration:
+                  "integration ${name} http://127.0.0.1:${toString integration.port} ${integration.mediaType} ${lib.escapeShellArg integration.qualityProfile} ${lib.escapeShellArg (builtins.toJSON integration.config)}"
+                ) requestIntegrations
+              )}
+
+              api GET /admin/request-settings \
+                | jq -c '. + {requests_enabled: true, global_auto_approval_enabled: true}' \
+                | api PUT /admin/request-settings -H 'If-Match: *' --data-binary @- >/dev/null
+              echo "enabled requests"
 
               # port 587 is starttls
               result=$(jq -n --arg provider "$provider" '{
