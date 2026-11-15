@@ -79,10 +79,7 @@
         "annotations": {
           "description": "VictoriaMetrics cannot scrape the OpenWrt Telegraf endpoint."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -166,10 +163,7 @@
         "annotations": {
           "description": "Average Unbound recursion latency over the last 10 minutes exceeds 500 ms for ten minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "244e16be16f870",
@@ -245,10 +239,7 @@
         "annotations": {
           "description": "Average AdGuard processing latency exceeds 100 ms for five minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

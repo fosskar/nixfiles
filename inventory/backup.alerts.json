@@ -119,10 +119,7 @@
         "annotations": {
           "description": "No successful nixbox Borg post-backup command was logged during the last 30 hours."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "62c575801a57f8",
@@ -238,10 +235,7 @@
         "annotations": {
           "description": "No successful gateway Borg post-backup command was logged during the last 30 hours."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

@@ -82,10 +82,7 @@
           "__dashboardUid__": "postgresql",
           "__panelId__": "3"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "efg0uhohzskxsb",
@@ -164,10 +161,7 @@
           "__dashboardUid__": "postgresql",
           "__panelId__": "3"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "f21818b9df28a4",
@@ -243,10 +237,7 @@
         "annotations": {
           "description": "PostgreSQL uses more than 80 of max_connections=100."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

@@ -80,10 +80,7 @@
           "summary": "crowdsec on {{ $labels.machine }} is down",
           "description": "The CrowdSec agent has not sent a heartbeat to the local API for more than ten minutes, or its metrics are gone. Without a running crowdsec, the traefik bouncer returns 403 for all ingress."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "e8eaaab230e826",
@@ -160,10 +157,7 @@
           "summary": "crowdsec on {{ $labels.machine }} reads no logs",
           "description": "CrowdSec read no journal lines in the last 30 minutes, so its scenarios see no traffic and ban nothing."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "483b6b24e23d95",
@@ -240,10 +234,7 @@
           "summary": "bouncer {{ $labels.bouncer }} on {{ $labels.machine }} stopped polling",
           "description": "The bouncer made no request to the CrowdSec local API in the last 15 minutes, so it no longer receives new decisions."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "255fded73637eb",
@@ -320,10 +311,7 @@
           "summary": "crowdsec on {{ $labels.machine }} has no community blocklist",
           "description": "CrowdSec holds no community blocklist decisions, so pulls from the central API have failed for longer than the decisions last."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

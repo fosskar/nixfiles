@@ -235,7 +235,12 @@
                 group_by = [
                   "grafana_folder"
                   "alertname"
+                  "machine"
+                  "host"
+                  "_HOSTNAME"
                 ];
+                # alertmanager default is 4h
+                repeat_interval = "24h";
               }
             ];
           };

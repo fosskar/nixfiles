@@ -111,7 +111,6 @@
           execErrState = "Alerting";
           annotations = { inherit summary description; };
           isPaused = false;
-          notification_settings.receiver = "matrix-alert-hook";
         };
     in
     {

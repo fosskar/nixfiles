@@ -78,10 +78,7 @@
         "annotations": {
           "description": "Redis rejected a connection, evicted a key, or failed an RDB save during the last ten minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

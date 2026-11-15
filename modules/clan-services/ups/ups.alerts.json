@@ -81,10 +81,7 @@
           "__dashboardUid__": "eaton-ups",
           "__panelId__": "2"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "efg0tj2omw6psa",
@@ -162,10 +159,7 @@
           "__dashboardUid__": "eaton-ups",
           "__panelId__": "3"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "ffg0tp79941z4f",
@@ -243,10 +237,7 @@
           "__dashboardUid__": "eaton-ups",
           "__panelId__": "13"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

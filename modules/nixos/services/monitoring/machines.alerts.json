@@ -78,10 +78,7 @@
         "annotations": {
           "description": "A host uptime counter reset during the last 15 minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "b5ea3b441772d5",
@@ -157,10 +154,7 @@
         "annotations": {
           "description": "A configured VictoriaMetrics scrape target is down."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -244,10 +238,7 @@
         "annotations": {
           "description": "A writable filesystem exceeds 85 percent usage for ten minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "431ca41a56b755",
@@ -323,10 +314,7 @@
         "annotations": {
           "description": "A writable filesystem exceeds 90 percent inode usage for ten minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -409,10 +397,7 @@
         "annotations": {
           "description": "The kernel OOM killer terminated a process during the last ten minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "302505f858e41f",
@@ -527,10 +512,7 @@
         "annotations": {
           "description": "VictoriaLogs found a kernel panic, watchdog, RCU stall, MCE, EDAC, hardware, or I/O error."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "b7c41e9a52d0f3",
@@ -696,10 +678,7 @@
         "annotations": {
           "description": "A physical interface has more than 10 errors or 100 drops in ten minutes for five minutes. Virtual tunnel interfaces are excluded."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -783,10 +762,7 @@
         "annotations": {
           "description": "Available memory remains below 10 percent for fifteen minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "cfwbf6pcbueiof",
@@ -862,10 +838,7 @@
         "annotations": {
           "description": "CPU I/O wait remains above 25 percent for fifteen minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -949,10 +922,7 @@
         "annotations": {
           "description": "Physical disk I/O await remains above 100 ms for fifteen minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -1037,10 +1007,7 @@
           "description": "The unit is in the failed state. Inspect it with: systemctl status {{ $labels.name }} and journalctl -u {{ $labels.name }} -b",
           "summary": "systemd unit {{ $labels.name }} failed on {{ $labels.machine }}"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -1124,10 +1091,7 @@
         "annotations": {
           "description": "A machine is unsynchronised or its clock offset exceeds 100 ms for five minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

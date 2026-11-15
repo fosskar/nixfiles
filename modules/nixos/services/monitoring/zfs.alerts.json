@@ -81,10 +81,7 @@
           "__dashboardUid__": "zfs",
           "__panelId__": "105"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -172,10 +169,7 @@
           "description": "ZFS Pool {{ $labels.pool }} state code {{ $values.A.Value }}\n\n0=online, 1=degraded,\n 2=faulted, 3=offline, 4=unavail, 5=removed",
           "summary": "ZFS Pool {{ $values.A.Value }}"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "9c3b4b4e52b53e",
@@ -251,10 +245,7 @@
         "annotations": {
           "description": "A ZFS pool is unexpectedly read-only."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "35e9634f54890b",
@@ -330,10 +321,7 @@
         "annotations": {
           "description": "A ZFS exporter collector is failing."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

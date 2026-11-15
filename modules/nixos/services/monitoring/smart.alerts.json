@@ -83,10 +83,7 @@
           "__dashboardUid__": "zfs",
           "__panelId__": "203"
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "ac9ecace6690ce",
@@ -162,10 +159,7 @@
         "annotations": {
           "description": "Fewer than nine nixbox SMART devices have reported during the previous 15 minutes for one hour. Sleeping disks still report smart_device_exit_status with power=\"STANDBY\", so they are not treated as missing."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       },
       {
         "uid": "2aa1d3c0e0d3d7",
@@ -241,10 +235,7 @@
         "annotations": {
           "description": "A disk reports pending, uncorrectable, media, or critical SMART errors."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }

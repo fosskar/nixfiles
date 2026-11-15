@@ -79,10 +79,7 @@
         "annotations": {
           "description": "VictoriaMetrics or VictoriaLogs reports less than 20 GiB of free storage for fifteen minutes."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   },
@@ -166,10 +163,7 @@
         "annotations": {
           "description": "VictoriaMetrics or VictoriaLogs has switched its storage to read-only mode."
         },
-        "isPaused": false,
-        "notification_settings": {
-          "receiver": "matrix-alert-hook"
-        }
+        "isPaused": false
       }
     ]
   }
