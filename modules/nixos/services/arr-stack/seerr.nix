@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.arrStack =
     {
+      config,
       flake-self,
       lib,
       pkgs,
@@ -25,7 +26,25 @@
 
         systemd.services.seerr = {
           environment.HOST = listenAddress;
-          serviceConfig.UMask = "0027";
+          serviceConfig = {
+            UMask = "0027";
+            EnvironmentFile = config.clan.core.vars.generators.seerr-api.files.env.path;
+          };
+        };
+
+        # seerr takes API_KEY over its stored key, so other services can be
+        # given the key without reading it back out of seerr
+        clan.core.vars.generators.seerr-api = {
+          files = {
+            api-key.restartUnits = [ "jellyfin.service" ];
+            env.restartUnits = [ "seerr.service" ];
+          };
+          runtimeInputs = [ pkgs.pwgen ];
+          script = ''
+            key=$(pwgen -s 64 1)
+            printf '%s' "$key" > "$out/api-key"
+            printf 'API_KEY=%s\n' "$key" > "$out/env"
+          '';
         };
 
         # --- homepage ---

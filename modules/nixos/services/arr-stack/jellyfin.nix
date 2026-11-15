@@ -21,6 +21,24 @@
         pkgs.local.jellyfin-plugin-tvdb
       ];
       jq = lib.getExe pkgs.jq;
+      xmlstarlet = lib.getExe pkgs.xmlstarlet;
+      enhancedConfig = "${pluginsDir}/configurations/Jellyfin.Plugin.JellyfinEnhanced.xml";
+      # only these fields are forced; anything else set in the plugin ui survives
+      enhancedSettings = {
+        JellyseerrEnabled = "true";
+        JellyseerrUrls = "http://127.0.0.1:${toString config.services.seerr.port}";
+        JellyseerrApiKey = "@SEERR_API_KEY@";
+        JellyseerrAutoImportUsers = "true";
+        SyncJellyseerrWatchlist = "true";
+        SyncJellyfinWatchlistToSeerr = "true";
+        RecommendationsPageEnabled = "true";
+        RecommendationsUseNativeTab = "true";
+        DownloadsPageEnabled = "true";
+        DownloadsUseNativeTab = "true";
+        ActivityFeedEnabled = "true";
+        ActivityFeedUseNativeTab = "true";
+        StatusTagsEnabled = "true";
+      };
     in
     {
       config = {
@@ -140,6 +158,10 @@
         # intro skipper shells out to a bare `ffmpeg`
         systemd.services.jellyfin.path = [ pkgs.jellyfin-ffmpeg ];
 
+        systemd.services.jellyfin.serviceConfig.LoadCredential = [
+          "seerr-api-key:${config.clan.core.vars.generators.seerr-api.files.api-key.path}"
+        ];
+
         # jellyfin rewrites meta.json at runtime, so it is a copy; other
         # installs of the same plugin guid, manual or older, are removed.
         # mkBefore: the nixos module's forceEncodingConfig script can `exit 0`
@@ -165,11 +187,35 @@
           + ''
             network=${config.services.jellyfin.configDir}/network.xml
             if [ -e "$network" ]; then
-              ${lib.getExe pkgs.xmlstarlet} ed -L \
+              ${xmlstarlet} ed -L \
                 -d '/NetworkConfiguration/LocalNetworkAddresses/*' \
                 -s '/NetworkConfiguration/LocalNetworkAddresses' -t elem -n string -v ${listenAddress} \
                 "$network"
             fi
+          ''
+          # jellyfin loads a partial file and keeps its defaults for the rest.
+          # the key is substituted with shell builtins: argv is world-readable
+          # in /proc/<pid>/cmdline
+          + ''
+            (
+              enhanced=${enhancedConfig}
+              umask 077
+              mkdir -p "$(dirname "$enhanced")"
+              [ -e "$enhanced" ] || echo '<PluginConfiguration/>' > "$enhanced"
+              ${xmlstarlet} ed -L \
+                ${
+                  lib.concatStringsSep " \\\n  " (
+                    lib.mapAttrsToList (
+                      name: value:
+                      "-d /PluginConfiguration/${name} -s /PluginConfiguration -t elem -n ${name} -v ${lib.escapeShellArg value}"
+                    ) enhancedSettings
+                  )
+                } \
+                "$enhanced"
+              key=$(<"$CREDENTIALS_DIRECTORY/seerr-api-key")
+              content=$(<"$enhanced")
+              printf '%s\n' "''${content//@SEERR_API_KEY@/$key}" > "$enhanced"
+            )
           ''
         );
       };
