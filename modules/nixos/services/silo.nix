@@ -14,6 +14,9 @@
       # silo binds every port to all interfaces; the firewall stays closed
       listenPort = 8190;
       listenUrl = "http://127.0.0.1:${toString listenPort}";
+      # jellyfin has 8096
+      jellyfinPort = 8196;
+      jellyfinHost = "silo-jellyfin.${flake-self.domains.local}";
       dataDir = "/var/lib/silo";
       mediaRoot = "/tank/media";
       redis = config.services.redis.servers.silo;
@@ -81,8 +84,8 @@
           path = [ config.services.postgresql.package ];
           environment = {
             PORT = toString listenPort;
-            # jellyfin has 8096 and audiobookshelf 13378
-            JF_PORT = "8196";
+            JF_PORT = toString jellyfinPort;
+            # audiobookshelf has 13378
             ABS_PORT = "13379";
             DATABASE_URL = "postgres://silo@/silo?host=/run/postgresql&sslmode=disable";
             REDIS_URL = "unix://${redis.unixSocket}";
@@ -268,6 +271,7 @@
               result=$(jq -n --arg provider "$provider" '{
                 values: {
                   "server.public_url": "https://${localHost}",
+                  "jellyfin_compat.public_url": "https://${jellyfinHost}",
                   "email.enabled": "true",
                   "email.smtp_host": $ENV.SMTP_HOST,
                   "email.smtp_port": $ENV.SMTP_PORT,
@@ -350,6 +354,13 @@
         # no proxy-auth - silo has built-in auth
         services.caddy.virtualHosts.${localHost}.extraConfig = ''
           reverse_proxy ${listenUrl} {
+            flush_interval -1
+          }
+        '';
+
+        # jellyfin clients such as streamyfin connect here
+        services.caddy.virtualHosts.${jellyfinHost}.extraConfig = ''
+          reverse_proxy http://127.0.0.1:${toString jellyfinPort} {
             flush_interval -1
           }
         '';
