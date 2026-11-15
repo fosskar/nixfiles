@@ -40,7 +40,7 @@
             search_on_add = true;
             monitor = "all";
             series_type = "standard";
-            season_folder = false;
+            season_folder = true;
           };
         };
         radarr = {
