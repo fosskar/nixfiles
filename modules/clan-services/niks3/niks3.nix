@@ -30,7 +30,7 @@
         description = "niks3 server with bundled garage s3 backend";
 
         perInstance =
-          _:
+          { ... }:
           {
             nixosModule =
               {
