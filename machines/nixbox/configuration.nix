@@ -49,6 +49,7 @@
     self.modules.nixos.kiwix
     self.modules.nixos.microbin
     self.modules.nixos.larapaper
+    self.modules.nixos.silo
   ]
   ++ (nflib.scanPaths ./. { });
 
