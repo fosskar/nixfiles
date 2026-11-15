@@ -61,13 +61,23 @@
           ZED_EMAIL_ADDR = [ "zfs@${flake-self.domains.local}" ];
           ZED_NOTIFY_VERBOSE = true;
         };
-        autoSnapshot = {
-          enable = lib.mkDefault true;
-          frequent = 0;
+        # clan-core enables zfs-auto-snapshot without mkDefault; sanoid replaces it
+        autoSnapshot.enable = lib.mkForce false;
+      };
+
+      # datasets opt in with services.sanoid.datasets.<name>.useTemplate = [ "standard" ]
+      services.sanoid = lib.mkIf config.boot.zfs.enabled {
+        enable = lib.mkDefault true;
+        # periods left unset fall back to sanoid.defaults.conf (hourly 48, daily 90, monthly 6)
+        templates.standard = {
+          frequently = 0;
           hourly = 0;
-          daily = 7;
-          weekly = 2;
-          monthly = 0;
+          daily = 14;
+          weekly = 4;
+          monthly = 6;
+          yearly = 0;
+          autosnap = true;
+          autoprune = true;
         };
       };
 
