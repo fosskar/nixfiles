@@ -14,16 +14,23 @@
       # same datasets as sanoid, so a broken migration can be restored from
       # right before the switch. sanoid prunes only its autosnap_ snapshots, so
       # this keeps the newest ${toString keep} itself. a failed snapshot warns
-      # instead of blocking the switch
+      # instead of blocking the switch. clan runs "boot" and then "switch" for
+      # the same system; the marker in /run makes the second call a no-op
       system.preSwitchChecks.zfs-snapshot =
         lib.mkIf (config.boot.zfs.enabled && config.services.sanoid.enable)
           ''
             case "$2" in
               switch | boot | test)
+                marker=/run/zfs-preswitch-snapshot
+                if [ -e "$marker" ] && [ "$(< "$marker")" = "$1" ]; then
+                  exit 0
+                fi
+                failed=
                 stamp=$(${pkgs.coreutils}/bin/date -u +%Y-%m-%d_%H:%M:%S)
                 for dataset in ${lib.escapeShellArgs (lib.attrNames config.services.sanoid.datasets)}; do
                   if ! ${zfs} snapshot "$dataset@preswitch_$stamp"; then
                     echo "warning: zfs snapshot $dataset@preswitch_$stamp failed" >&2
+                    failed=1
                     continue
                   fi
                   if ! old=$(${zfs} list -H -t snapshot -o name -s creation -d 1 "$dataset" \
@@ -38,6 +45,9 @@
                     fi
                   done
                 done
+                if [ -z "$failed" ]; then
+                  echo "$1" > "$marker"
+                fi
                 ;;
             esac
           '';
