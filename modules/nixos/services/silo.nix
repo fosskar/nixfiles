@@ -26,6 +26,7 @@
       embeddingModel = "qwen3-embedding-0.6b";
       oidcPlugin = "silo.auth.oidc";
       requestsPlugin = "silo.requests.arr";
+      autoscanPlugin = "silo.autoscan.arr";
       # requests go to the sonarr and radarr of the arr-stack feature, with
       # the profiles and folders seerr used
       requestIntegrations = {
@@ -232,11 +233,13 @@
               printf 'Authorization: Bearer %s\n' "$(cat "$CREDENTIALS_DIRECTORY/api-key")" > /tmp/api-key.header
               base=${apiUrl}
 
+              # --retry: an api key is limited to 20 requests a second, and
+              # silo answers 429 above that
               api() {
                 method=$1
                 path=$2
                 shift 2
-                curl -sfS -X "$method" -H @/tmp/api-key.header -H 'Content-Type: application/json' "$@" "$base$path"
+                curl -sfS --retry 5 -X "$method" -H @/tmp/api-key.header -H 'Content-Type: application/json' "$@" "$base$path"
               }
 
               ready=""
@@ -355,6 +358,42 @@
                 | jq -c '. + {requests_enabled: true, global_auto_approval_enabled: true}' \
                 | api PUT /admin/request-settings -H 'If-Match: *' --data-binary @- >/dev/null
               echo "enabled requests"
+
+              # autoscan: silo polls sonarr and radarr for imports and rescans
+              # those paths, through the request integrations' credentials
+              plugin ${autoscanPlugin} >/dev/null
+              autoscan() {
+                name=$1
+                connection=$(api GET /admin/autoscan/connections \
+                  | jq -r --arg name "$name" '.items[] | select(.name == $name) | .id')
+                if [ -z "$connection" ]; then
+                  connection=$(api GET /admin/request-integrations \
+                    | jq -ce --arg name "$name" '.items[] | select(.name == $name)
+                        | {name: $name, kind: $name, request_integration_id: .id}' \
+                    | api POST /admin/autoscan/connections --data-binary @- | jq -re .id)
+                fi
+                source=$(jq -nc --arg name "$name" --arg connection "$connection" '{
+                  label: $name,
+                  connection_id: $connection,
+                  delivery_mode: "poll",
+                  poll_interval_seconds: 60,
+                  enabled: true,
+                  path_rewrites: []
+                }')
+                id=$(api GET /admin/autoscan/sources \
+                  | jq -r --arg name "$name" '.items[] | select(.label == $name) | .id')
+                if [ -n "$id" ]; then
+                  api PUT "/admin/autoscan/sources/$id" -H 'If-Match: *' --data-binary "$source" >/dev/null
+                else
+                  jq -c '. + {plugin_id: "${autoscanPlugin}", capability_id: "arr"}' <<<"$source" \
+                    | api POST /admin/autoscan/sources --data-binary @- >/dev/null
+                fi
+                echo "synced autoscan source $name"
+              }
+              ${lib.concatMapStringsSep "\n" (name: "autoscan ${name}") (lib.attrNames requestIntegrations)}
+              api GET /admin/autoscan/settings | jq -c '.enabled = true' \
+                | api PUT /admin/autoscan/settings -H 'If-Match: *' --data-binary @- >/dev/null
+              echo "enabled autoscan"
 
               # port 587 is starttls
               result=$(jq -n --arg provider "$provider" '{
