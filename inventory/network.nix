@@ -76,6 +76,16 @@
     iroh-ssh = {
       module.name = "p2p-ssh-iroh";
       roles.server.tags = [ "all" ];
+      # dumbpipe forwards whoever holds the ticket to sshd on loopback, so keep
+      # it out of the public repo; only the clan cli reads it
+      roles.server.extraModules = [
+        (
+          { lib, ... }:
+          {
+            clan.core.vars.generators."p2p-ssh-iroh-iroh-ssh".files.ticket.secret = lib.mkForce true;
+          }
+        )
+      ];
     };
 
   };
