@@ -24,13 +24,30 @@
     in
     {
       services.crowdsec.settings = {
-        parsers.s02Enrich = lib.mkIf (trustedIPs != [ ]) [
+        parsers.s02Enrich = [
           {
             name = "nixfiles/clan-whitelist";
-            description = "whitelist clan mesh network IPs";
+            description = "whitelist clan mesh network IPs and loopback";
             whitelist = {
-              reason = "clan mesh network";
+              reason = "clan mesh network or loopback";
               ip = trustedIPs;
+              # tor and p2p-ssh-iroh deliver every ssh client from loopback; a
+              # loopback ban would cut traefik from netbird-server and lapi
+              cidr = [
+                "127.0.0.0/8"
+                "::1/128"
+              ];
+            };
+          }
+          {
+            name = "nixfiles/sshd-injected-ip-whitelist";
+            description = "drop sshd events whose client-chosen user name carries an address";
+            whitelist = {
+              # sshd appends the real peer after the user name; an earlier address came from the client
+              reason = "sshd line holds more than one address";
+              expression = [
+                "evt.Meta.service == 'ssh' && evt.Parsed.message matches '(?:[0-9]{1,3}[.]){3}[0-9]{1,3}.* (?:(?:[0-9]{1,3}[.]){3}[0-9]{1,3}|[0-9a-fA-F]{0,4}:[0-9a-fA-F]{0,4}:[0-9a-fA-F:]*)'"
+              ];
             };
           }
         ];
