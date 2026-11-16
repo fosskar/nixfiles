@@ -31,9 +31,10 @@
         type filter hook input priority filter - 1; policy accept;
         iifname "eth0" udp dport { 5353, 9001 } drop
       }
-      chain forward {
-        type filter hook forward priority filter - 1; policy accept;
-        iifname "wt0" oifname "ygg" drop
+      # prerouting: netbird prepends `iifname "wt0" accept` to input and forward chains
+      chain prerouting {
+        type filter hook prerouting priority filter; policy accept;
+        iifname "wt0" fib daddr oifname "ygg" drop
         iifname "wt0" ip daddr 169.254.0.0/16 drop
       }
     '';
