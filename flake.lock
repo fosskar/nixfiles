@@ -1373,7 +1373,7 @@
         "treefmt-nix": "treefmt-nix",
         "umbriel": "umbriel",
         "voxtype": "voxtype",
-        "wiki": "wiki",
+        "website": "website",
         "zen-browser": "zen-browser"
       }
     },
@@ -1679,7 +1679,7 @@
         "type": "github"
       }
     },
-    "wiki": {
+    "website": {
       "inputs": {
         "flake-parts": [
           "flake-parts"
@@ -1695,16 +1695,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1794776435,
-        "narHash": "sha256-067EWKmwt7cJwT88U/VHcD8RUHihDbqp5wO5c+wuTo4=",
+        "lastModified": 1794839223,
+        "narHash": "sha256-ShRimYh1BF3BcPzNa334oWaIZksxt0QN0zQPKIxlGuc=",
         "owner": "fosskar",
-        "repo": "wiki",
-        "rev": "b875ffec7dd417c4207dc562f8e437a4cbb8e3e9",
+        "repo": "website",
+        "rev": "235f040a26a932e3c78b5c6422bb57f910d16513",
         "type": "github"
       },
       "original": {
         "owner": "fosskar",
-        "repo": "wiki",
+        "repo": "website",
         "type": "github"
       }
     },

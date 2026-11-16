@@ -18,7 +18,7 @@
       services.static-web-server = {
         enable = true;
         listen = "127.0.0.1:${toString port}";
-        root = inputs.wiki.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        root = inputs.website.packages.${pkgs.stdenv.hostPlatform.system}.default;
       };
 
       services.homepage-dashboard.services = [

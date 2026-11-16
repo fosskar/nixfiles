@@ -225,8 +225,8 @@
       inputs.nixbot.follows = "nixbot";
     };
 
-    wiki = {
-      url = "github:fosskar/wiki";
+    website = {
+      url = "github:fosskar/website";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
