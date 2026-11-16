@@ -29,6 +29,8 @@
         JellyseerrUrls = "http://127.0.0.1:${toString config.services.seerr.port}";
         JellyseerrApiKey = "@SEERR_API_KEY@";
         JellyseerrAutoImportUsers = "true";
+        # quality profile, server and folder can be picked per request
+        JellyseerrShowAdvanced = "true";
         SyncJellyseerrWatchlist = "true";
         SyncJellyfinWatchlistToSeerr = "true";
         RecommendationsPageEnabled = "true";
@@ -38,6 +40,7 @@
         ActivityFeedEnabled = "true";
         ActivityFeedUseNativeTab = "true";
         StatusTagsEnabled = "true";
+        QualityTagsEnabled = "true";
       };
     in
     {
