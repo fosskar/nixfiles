@@ -41,6 +41,10 @@
         ActivityFeedUseNativeTab = "true";
         StatusTagsEnabled = "true";
         QualityTagsEnabled = "true";
+        # imdb and rotten tomatoes on title pages
+        MdblistRatingsEnabled = "true";
+        MdblistApiKey = "@MDBLIST_API_KEY@";
+        MdblistRatingsSources = "imdb,tomatoes";
       };
     in
     {
@@ -163,7 +167,17 @@
 
         systemd.services.jellyfin.serviceConfig.LoadCredential = [
           "seerr-api-key:${config.clan.core.vars.generators.seerr-api.files.api-key.path}"
+          "mdblist-api-key:${config.clan.core.vars.generators.mdblist.files.api-key.path}"
         ];
+
+        clan.core.vars.generators.mdblist = {
+          prompts.api-key = {
+            description = "mdblist api key (https://mdblist.com/preferences/#api)";
+            type = "hidden";
+            persist = true;
+          };
+          files.api-key.restartUnits = [ "jellyfin.service" ];
+        };
 
         # jellyfin rewrites meta.json at runtime, so it is a copy; other
         # installs of the same plugin guid, manual or older, are removed.
@@ -197,7 +211,7 @@
             fi
           ''
           # jellyfin loads a partial file and keeps its defaults for the rest.
-          # the key is substituted with shell builtins: argv is world-readable
+          # the keys are substituted with shell builtins: argv is world-readable
           # in /proc/<pid>/cmdline
           + ''
             (
@@ -215,9 +229,10 @@
                   )
                 } \
                 "$enhanced"
-              key=$(<"$CREDENTIALS_DIRECTORY/seerr-api-key")
               content=$(<"$enhanced")
-              printf '%s\n' "''${content//@SEERR_API_KEY@/$key}" > "$enhanced"
+              content=''${content//@SEERR_API_KEY@/$(<"$CREDENTIALS_DIRECTORY/seerr-api-key")}
+              content=''${content//@MDBLIST_API_KEY@/$(<"$CREDENTIALS_DIRECTORY/mdblist-api-key")}
+              printf '%s\n' "$content" > "$enhanced"
             )
           ''
         );
