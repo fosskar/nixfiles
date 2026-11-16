@@ -299,8 +299,9 @@
               RestrictNamespaces = true;
               RestrictRealtime = true;
               RestrictSUIDSGID = true;
-              AmbientCapabilities = [ "CAP_NET_ADMIN" ];
-              CapabilityBoundingSet = [ "CAP_NET_ADMIN" ];
+              # the embedded client runs in netstack mode and needs no capability
+              AmbientCapabilities = [ "" ];
+              CapabilityBoundingSet = [ "" ];
               # not netbird: the internet-facing proxy must not read netbird-server state
               User = "netbird-proxy";
               Group = "netbird-proxy";
