@@ -456,7 +456,7 @@
               {
                 "Silo" = {
                   href = "https://${localHost}";
-                  icon = "mdi-silo";
+                  icon = "https://${localHost}/web-app-icon-192.png";
                   siteMonitor = listenUrl;
                 };
               }
