@@ -45,6 +45,7 @@ in
           config.flake.modules.nixos.homeManager
           config.flake.modules.nixos.workstation
           config.flake.modules.nixos.nixAccessTokens
+          config.flake.modules.nixos.hcloud
           config.flake.modules.nixos.yubikey
           config.flake.modules.nixos.niri
           config.flake.modules.nixos.umbriel

@@ -34,7 +34,6 @@
           '';
           packages = [
             inputs'.nixbot.packages.nixbot-cli
-            pkgs.hcloud
             pkgs.nix-fast-build
           ]
           ++ scripts;
