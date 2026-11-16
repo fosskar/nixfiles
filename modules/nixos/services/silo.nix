@@ -27,6 +27,7 @@
       oidcPlugin = "silo.auth.oidc";
       requestsPlugin = "silo.requests.arr";
       autoscanPlugin = "silo.autoscan.arr";
+      ratingsPlugin = "silo.mdblist";
       # requests go to the sonarr and radarr of the arr-stack feature, with
       # the profiles and folders seerr used
       requestIntegrations = {
@@ -150,6 +151,15 @@
           files.api-key.restartUnits = [ "silo-sync.service" ];
         };
 
+        clan.core.vars.generators.silo-mdblist = {
+          prompts.api-key = {
+            description = "mdblist api key (https://mdblist.com/preferences/#api)";
+            type = "hidden";
+            persist = true;
+          };
+          files.api-key.restartUnits = [ "silo-sync.service" ];
+        };
+
         clan.core.vars.generators.silo-oidc = {
           files = {
             "oauth-client-secret-hash" = {
@@ -207,6 +217,7 @@
             LoadCredential = [
               "api-key:${generators.silo-api.files.api-key.path}"
               "oidc-client-secret:${generators.silo-oidc.files."oauth-client-secret".path}"
+              "mdblist-api-key:${generators.silo-mdblist.files.api-key.path}"
             ];
             ProtectSystem = "strict";
             ProtectHome = true;
@@ -395,11 +406,36 @@
                 | api PUT /admin/autoscan/settings -H 'If-Match: *' --data-binary @- >/dev/null
               echo "enabled autoscan"
 
+              # ratings: tmdb only has its own score. mdblist adds imdb and
+              # rotten tomatoes to titles the other providers matched, so it
+              # goes last in the movie and series chains
+              ratings=$(plugin ${ratingsPlugin})
+              jq -n --rawfile key "$CREDENTIALS_DIRECTORY/mdblist-api-key" \
+                '{key: "account", value: {api_key: ($key | sub("\n+$"; ""))}}' \
+                | api PUT "/admin/plugins/installations/$ratings/config" --data-binary @-
+              for library in $(api GET /libraries | jq -r '.items[] | select(.type == "movies" or .type == "series") | .id'); do
+                api GET "/libraries/$library/providers" | jq -c --arg id "$ratings" '
+                  .levels |= map(
+                    if (.content_level == "movie" or .content_level == "series")
+                      and (any(.entries[]; .capability_id == "mdblist") | not)
+                    then .entries += [{
+                      plugin_installation_id: $id,
+                      capability_id: "mdblist",
+                      priority: ((.entries | map(.priority) | max) + 1),
+                      enabled: true
+                    }]
+                    else . end
+                    | .entries |= map({plugin_installation_id, capability_id, priority, enabled}))' \
+                  | api PUT "/libraries/$library/providers" -H 'If-Match: *' --data-binary @- >/dev/null
+              done
+              echo "synced ${ratingsPlugin}"
+
               # port 587 is starttls
               result=$(jq -n --arg provider "$provider" '{
                 values: {
                   "server.public_url": "https://${localHost}",
                   "jellyfin_compat.public_url": "https://${jellyfinHost}",
+                  "catalog.extra_rating_sources": "rt_critic",
                   "email.enabled": "true",
                   "email.smtp_host": $ENV.SMTP_HOST,
                   "email.smtp_port": $ENV.SMTP_PORT,
