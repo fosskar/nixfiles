@@ -14,6 +14,13 @@ _: {
             script = "openssl rand -hex 32 > $out/password";
           };
         };
+
+      # nut 2.8.5 installs samples under etc/nut/, the nixpkgs module default still points at etc/
+      schedulerRules =
+        { config, ... }:
+        {
+          power.ups.schedulerRules = "${config.power.ups.package}/etc/nut/upssched.conf.sample";
+        };
     in
     {
       manifest.name = "ups";
@@ -27,7 +34,10 @@ _: {
           nixosModule =
             { config, lib, ... }:
             {
-              imports = [ passwordGenerator ];
+              imports = [
+                passwordGenerator
+                schedulerRules
+              ];
 
               # nut config files don't need to be world-readable; silences upsd
               # "world readable" warning. upsmon.conf and upsd.users already 0400.
@@ -169,7 +179,10 @@ _: {
                     "${lib.head primaryMachines}.s";
               in
               {
-                imports = [ passwordGenerator ];
+                imports = [
+                  passwordGenerator
+                  schedulerRules
+                ];
 
                 environment.etc = {
                   "nut/nut.conf".mode = lib.mkForce "0640";
