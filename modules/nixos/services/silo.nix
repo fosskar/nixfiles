@@ -24,6 +24,9 @@
       generators = config.clan.core.vars.generators;
       llamaCpp = config.services.llama-cpp.settings;
       embeddingModel = "qwen3-embedding-0.6b";
+      # translates subtitles; the model the llama-cpp router keeps loaded, and
+      # one job at a time because the agents share it
+      chatModel = "qwen3.6-35b-a3b-mtp";
       oidcPlugin = "silo.auth.oidc";
       requestsPlugin = "silo.requests.arr";
       autoscanPlugin = "silo.autoscan.arr";
@@ -445,7 +448,12 @@
                   "email.from_address": $ENV.SMTP_FROM,
                   "recommendations.enabled": "true",
                   "recommendations.embedding_provider_id": $provider,
-                  "recommendations.embedding_model": "${embeddingModel}"
+                  "recommendations.embedding_model": "${embeddingModel}",
+                  "subtitle_ai.enabled": "true",
+                  "ai.text_provider_id": $provider,
+                  "ai.chat_model": "${chatModel}",
+                  "ai.reasoning_effort": "low",
+                  "ai.max_concurrent_jobs": "1"
                 }
               }' | api PUT /admin/settings -H 'If-Match: *' --data-binary @-)
               echo "updated settings"
