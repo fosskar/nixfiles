@@ -25,6 +25,8 @@ Builder role:
   certificates signed by the clan CA
 - `trustClients = true`; access rules grant `trusted` only to the client
   machines' certificate CNs (their machine names)
+- `writeOnlyClients` holds the listed clients to `write`: signed imports
+  and server-side builds only
 - enables the build features the advertised `supportedFeatures` need
   (`auto-allocate-uids`, cgroups, `uid-range`, `recursive-nix`) and sets
   `max-jobs` from `maxJobs`
@@ -35,7 +37,8 @@ Client role:
 - gets a certificate signed by the clan CA, linked to
   `/run/nix-grpc-store/client.{crt,key}` where the plugin looks by default
 - adds every builder to `nix.buildMachines` as `grpc://<builder>.<domain>:50051`
-  with the CA passed as `ca-cert`
+  with the CA passed as `ca-cert`; a builder that lists the machine in
+  `writeOnlyClients` is left out, because a remote builder needs `trusted`
 
 Machines assigned both roles skip the client config.
 

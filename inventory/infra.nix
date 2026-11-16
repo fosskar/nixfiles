@@ -61,10 +61,14 @@
       };
       roles = {
         # aarch64 through binfmt emulation (boot.binfmt.emulatedSystems on nixworker)
-        builder.machines."nixworker".settings.systems = [
-          "x86_64-linux"
-          "aarch64-linux"
-        ];
+        builder.machines."nixworker".settings = {
+          systems = [
+            "x86_64-linux"
+            "aarch64-linux"
+          ];
+          # root on the public edge must not become a trusted nix user on the builder
+          writeOnlyClients = [ "gateway" ];
+        };
         # service no-ops client config on builder machines
         client.tags = [ "all" ];
       };

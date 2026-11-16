@@ -109,6 +109,11 @@
                 ];
                 description = "features advertised to clients; uid-range and recursive-nix also enable the matching nix settings on the builder";
               };
+              writeOnlyClients = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                description = "clients held to the write role: signed imports and server-side builds, no remote-builder offload";
+              };
             };
           };
 
@@ -159,7 +164,7 @@
                   trustClients = true;
                   accessRules = map (machine: {
                     cn = machine;
-                    role = "trusted";
+                    role = if lib.elem machine settings.writeOnlyClients then "write" else "trusted";
                   }) clientMachines;
                 };
 
@@ -240,6 +245,7 @@
                     "L+ ${certDir}/client.key - - - - ${vars.${certGenerator}.files."key.pem".path}"
                   ];
 
+                  # nix.buildMachines needs the trusted role
                   nix.buildMachines = lib.mapAttrsToList (
                     builderName: builder:
                     let
@@ -258,7 +264,7 @@
                         supportedFeatures
                         ;
                     }
-                  ) builderMachines;
+                  ) (lib.filterAttrs (_: b: !lib.elem machine.name b.settings.writeOnlyClients) builderMachines);
                 };
               };
           };
