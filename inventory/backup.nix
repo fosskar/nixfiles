@@ -100,9 +100,11 @@ _: {
                 exclude = exclude ++ [
                   "sh:**/var/lib/netbird-server/store.db*"
                 ];
+                # one storage box sub-account per machine, homed in its own repo
+                # directory, so a machine's key cannot reach the other repos
                 destinations = {
                   "storagebox" = {
-                    repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./gateway";
+                    repo = "ssh://u499127-sub2@u499127.your-storagebox.de:23/./";
                   };
                 };
               };
@@ -115,7 +117,7 @@ _: {
                 ];
                 destinations = {
                   "storagebox" = {
-                    repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./nixbox";
+                    repo = "ssh://u499127-sub3@u499127.your-storagebox.de:23/./";
                   };
                 };
               };
@@ -124,7 +126,7 @@ _: {
                 inherit exclude;
                 destinations = {
                   "storagebox" = {
-                    repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./ha-green";
+                    repo = "ssh://u499127-sub5@u499127.your-storagebox.de:23/./";
                   };
                 };
               };
@@ -133,7 +135,7 @@ _: {
                 inherit exclude;
                 destinations = {
                   "storagebox" = {
-                    repo = "ssh://u499127-sub1@u499127.your-storagebox.de:23/./nixworker";
+                    repo = "ssh://u499127-sub4@u499127.your-storagebox.de:23/./";
                   };
                 };
               };
