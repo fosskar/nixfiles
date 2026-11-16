@@ -221,6 +221,8 @@
               RestrictNamespaces = true;
               RestrictRealtime = true;
               RestrictSUIDSGID = true;
+              # group netbird also guards the root client daemon's socket directory
+              InaccessiblePaths = [ "-/run/netbird" ];
               User = "netbird";
               Group = "netbird";
             };
