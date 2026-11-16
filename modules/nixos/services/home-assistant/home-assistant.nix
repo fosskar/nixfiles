@@ -97,7 +97,13 @@ in
 
         customComponents = [
           pkgs.home-assistant-custom-components.roborock_custom_map
-          pkgs.home-assistant-custom-components.auth_oidc
+          # 1.2.1 tests index PersonData, which home-assistant 2026.11 no longer allows
+          (pkgs.home-assistant-custom-components.auth_oidc.overridePythonAttrs (old: {
+            disabledTests = (old.disabledTests or [ ]) ++ [
+              "test_login_with_person_create"
+              "test_login_without_person_create_does_not_create_person"
+            ];
+          }))
         ];
 
         customLovelaceModules = [
