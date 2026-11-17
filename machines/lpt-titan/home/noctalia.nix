@@ -1,8 +1,4 @@
-{ config, ... }:
-{
-  programs.noctalia.settings.wallpaper.directory =
-    "${config.home.homeDirectory}/pictures/wallpapers/wallpaper";
-
+_: {
   programs.noctalia.settings.idle.behavior = {
     lock.timeout = 900;
     suspend.timeout = 1800;
