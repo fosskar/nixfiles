@@ -813,6 +813,26 @@
         "type": "github"
       }
     },
+    "luciole": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794889510,
+        "narHash": "sha256-k7qcGqJnMBDmd4Ww8iPmRscD04tF76ZauU1z3s3xfsg=",
+        "owner": "noctalia-dev",
+        "repo": "luciole",
+        "rev": "b40c96336d97a15a3874bc93cb7b61627aeb3563",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "luciole",
+        "type": "github"
+      }
+    },
     "microvm": {
       "inputs": {
         "nixpkgs": [
@@ -1350,6 +1370,7 @@
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
         "llm-agents": "llm-agents",
+        "luciole": "luciole",
         "microvm": "microvm",
         "mics-skills": "mics-skills",
         "niks3": "niks3",

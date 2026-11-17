@@ -5,7 +5,7 @@
 let
   browser = [ "zen-beta.desktop" ];
   pdf = [ "org.pwmt.zathura.desktop" ];
-  fileManager = [ "org.gnome.Nautilus.desktop" ];
+  fileManager = [ "dev.noctalia.luciole.desktop" ];
   editor = [ "dev.zed.Zed.desktop" ];
   imageViewer = [ "imv.desktop" ];
   mediaPlayer = [ "mpv.desktop" ];
