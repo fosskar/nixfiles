@@ -43,7 +43,7 @@
     self.modules.nixos.msmtp
     self.modules.nixos.miniflux
     self.modules.nixos.netbirdAuthelia
-    self.modules.nixos.wiki
+    self.modules.nixos.website
     self.modules.nixos.vdirsyncer
     self.modules.nixos.talosVm
     self.modules.nixos.kiwix

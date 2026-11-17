@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.wiki =
+  flake.modules.nixos.website =
     {
       flake-self,
       inputs,
@@ -9,6 +9,7 @@
     let
       port = 8086;
       localHost = "fosskar.${flake-self.domains.local}";
+      publicHost = "simon.${flake-self.domains.public}";
     in
     {
       services.caddy.virtualHosts.${localHost}.extraConfig = ''
@@ -35,12 +36,15 @@
         }
       ];
 
-      services.anubis.instances.bliki.settings = {
+      services.anubis.instances.website.settings = {
         TARGET = "http://127.0.0.1:${toString port}";
         BIND = "0.0.0.0:8098";
         BIND_NETWORK = "tcp";
         METRICS_BIND = "127.0.0.1:8099";
         METRICS_BIND_NETWORK = "tcp";
+        # bliki stays until its netbird mapping is removed
+        REDIRECT_DOMAINS = "${publicHost},bliki.${flake-self.domains.public}";
+        OG_PASSTHROUGH = true;
       };
     };
 }
