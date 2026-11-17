@@ -1226,6 +1226,22 @@
         "type": "github"
       }
     },
+    "pi-subagent-manager": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794703311,
+        "narHash": "sha256-mdX5M+gdZCixYpKOf3F/IchItJG1hRIg8PA+unMeCnk=",
+        "owner": "championswimmer",
+        "repo": "pi-subagent-manager",
+        "rev": "653c63b0f65241ca6d062c391de13745d537c2c5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "championswimmer",
+        "repo": "pi-subagent-manager",
+        "type": "github"
+      }
+    },
     "pkgs-by-name-for-flake-parts": {
       "locked": {
         "lastModified": 1789628227,
@@ -1383,6 +1399,7 @@
         "nixpkgs-small": "nixpkgs-small",
         "nixpkgs-stable": "nixpkgs-stable",
         "pi-pack": "pi-pack",
+        "pi-subagent-manager": "pi-subagent-manager",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "preservation": "preservation",
         "radicle-mirror": "radicle-mirror",

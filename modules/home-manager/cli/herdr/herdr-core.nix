@@ -13,6 +13,26 @@
       hc = lib.getExe herdr-core;
       jq = lib.getExe pkgs.jq;
       machines = config.programs.herdr-core.machines;
+
+      # pi-subagent-manager agents as hc templates: thinkingLevel and tools.allow
+      # become pi flags, the body stays the opening instructions
+      templates = pkgs.runCommand "herdr-core-templates" { nativeBuildInputs = [ pkgs.yq-go ]; } ''
+        mkdir $out
+        for f in ${inputs.pi-subagent-manager}/agents/*.md; do
+          name=$(basename "$f" .md)
+          head=$(awk 'NR == 1 && /^---$/ { next } /^---$/ { exit } { print }' "$f")
+          description=$(printf '%s\n' "$head" | yq -e '.description' | tr '\n' ' ' | sed 's/ *$//')
+          thinking=$(printf '%s\n' "$head" | yq -e '.thinkingLevel')
+          tools=$(printf '%s\n' "$head" | yq -e '.tools.allow | join(",")')
+          {
+            echo ---
+            echo "description: $description"
+            echo "command: pi --thinking $thinking --tools $tools"
+            echo ---
+            awk 'f == 2 { print; next } /^---$/ { f++ }' "$f"
+          } > "$out/$name.md"
+        done
+      '';
     in
     {
       options.programs.herdr-core.machines = lib.mkOption {
@@ -24,6 +44,14 @@
 
       config = {
         home.packages = [ herdr-core ];
+
+        xdg.configFile = {
+          # off by default: show a lost kept program's last screen above the new shell
+          "herdr-core/config.toml".text = ''
+            restore_screen = true
+          '';
+          "herdr-core/templates".source = templates;
+        };
 
         llm = lib.optionalAttrs (options.llm or { } ? externalSkills) {
           externalSkills.herdr-core = "${herdr-core}/share/skills/herdr-core/herdr-core/SKILL.md";

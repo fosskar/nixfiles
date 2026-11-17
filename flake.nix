@@ -210,6 +210,10 @@
       url = "github:herdrdev/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pi-subagent-manager = {
+      url = "github:championswimmer/pi-subagent-manager";
+      flake = false;
+    };
 
     sofka = {
       url = "github:nklmilojevic/sofka";
