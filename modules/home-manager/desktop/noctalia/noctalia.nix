@@ -363,7 +363,6 @@
               allow_empty_password = lib.mkDefault true;
               blurred_desktop = lib.mkDefault true;
               tint_intensity = lib.mkDefault 0.50;
-              tint_color = lib.mkDefault "primary";
               dnd = lib.mkDefault true;
             };
 
