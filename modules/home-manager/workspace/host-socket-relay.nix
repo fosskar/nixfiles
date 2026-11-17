@@ -1,8 +1,10 @@
 # multiplex per-client RemoteForward sockets behind the fixed paths consumers
 # use. each attached client forwards its sockets to $XDG_RUNTIME_DIR/fwd/
 # <hostname>.<name> (client.nix); every connection to a fixed path is
-# relayed to the newest still-live forward. desktop and laptop can stay
-# attached simultaneously; a forgotten session on one never blocks the other.
+# relayed to the client named in $XDG_RUNTIME_DIR/fwd/active (written by
+# workspace-claim on that client) while it is live, else to the newest
+# still-live forward. desktop and laptop can stay attached simultaneously;
+# a forgotten session on one never blocks the other.
 _: {
   flake.modules.homeManager.workspaceHost =
     { pkgs, lib, ... }:
@@ -17,14 +19,19 @@ _: {
       relayScript =
         name:
         pkgs.writeShellScript "socket-relay-${name}" ''
-          # newest forward first: the client attached last is where the user sits.
+          # the claimed client first, then newest forward first.
           # a connect-only probe cannot see a half-dead ssh connection (suspended
           # laptop, roamed wifi): sshd still accepts on the forward socket and the
           # relay would hang forever. instead demand a real agent reply from the
           # client's ssh-agent forward; all forwards of one client share the same
           # ssh connection, so agent liveness vouches for the other sockets too.
           # ssh-add exits 1 when the agent answers "no identities"; still live.
-          for s in $(${pkgs.coreutils}/bin/ls -t "$XDG_RUNTIME_DIR"/fwd/*.${name} 2>/dev/null); do
+          claimed=
+          if [ -r "$XDG_RUNTIME_DIR/fwd/active" ]; then
+            claimed="$XDG_RUNTIME_DIR/fwd/$(${pkgs.coreutils}/bin/cat "$XDG_RUNTIME_DIR/fwd/active").${name}"
+          fi
+          for s in $claimed $(${pkgs.coreutils}/bin/ls -t "$XDG_RUNTIME_DIR"/fwd/*.${name} 2>/dev/null); do
+            [ -S "$s" ] || continue
             agent="''${s%.${name}}.ssh-agent"
             SSH_AUTH_SOCK="$agent" ${pkgs.coreutils}/bin/timeout 2 ${pkgs.openssh}/bin/ssh-add -l >/dev/null 2>&1
             case $? in
