@@ -65,6 +65,14 @@
           locked = true;
           cmd = "brightness-down";
         };
+        "Alt+Tab" = {
+          title = "Window Switcher";
+          cmd = "window-switcher hold";
+        };
+        "Alt+Shift+Tab" = {
+          title = "Window Switcher (reverse)";
+          cmd = "window-switcher hold reverse";
+        };
       };
 
       shellNiriBinds = lib.mapAttrs (
@@ -76,35 +84,37 @@
         // lib.optionalAttrs (bind.locked or false) { _props.allow-when-locked = true; }
       ) shellBinds;
 
+      # palette format 2: keys are noctalia's color role names
       mkPalette = mode: ansi: {
-        mPrimary = mode.accent.primary;
-        mOnPrimary = mode.bg.base;
-        mSecondary = mode.accent.secondary;
-        mOnSecondary = mode.bg.base;
-        mTertiary = mode.accent.tertiary;
-        mOnTertiary = mode.bg.base;
-        mError = mode.semantic.error;
-        mOnError = mode.bg.base;
-        mSurface = mode.bg.base;
-        mOnSurface = mode.fg.base;
-        mSurfaceVariant = mode.bg.surface;
-        mOnSurfaceVariant = mode.fg.muted;
-        mOutline = mode.fg.dim;
-        mShadow = mode.bg.base;
-        mHover = mode.accent.primary;
-        mOnHover = mode.bg.base;
+        primary = mode.accent.primary;
+        on_primary = mode.bg.base;
+        secondary = mode.accent.secondary;
+        on_secondary = mode.bg.base;
+        tertiary = mode.accent.tertiary;
+        on_tertiary = mode.bg.base;
+        error = mode.semantic.error;
+        on_error = mode.bg.base;
+        surface = mode.bg.base;
+        on_surface = mode.fg.base;
+        surface_container = mode.bg.surface;
+        on_surface_variant = mode.fg.muted;
+        outline_variant = mode.fg.dim;
+        shadow = mode.bg.base;
+        hover = mode.accent.primary;
+        on_hover = mode.bg.base;
         terminal = {
           background = mode.bg.base;
           foreground = mode.fg.base;
           cursor = mode.fg.base;
-          cursorText = mode.bg.base;
-          selectionBg = mode.fg.base;
-          selectionFg = mode.bg.base;
+          cursor_text = mode.bg.base;
+          selection_bg = mode.fg.base;
+          selection_fg = mode.bg.base;
           inherit (ansi) normal bright;
         };
       };
 
       palette = {
+        version = 2;
         dark = mkPalette theme.dark theme.ansi;
         light = mkPalette theme.light theme.light.ansi;
       };
@@ -140,6 +150,10 @@
           debug.honor-xdg-activation-with-invalid-serial = [ true ];
         };
 
+        # home-manager's noctalia service lacks noctalia's own Type=notify, which
+        # makes units ordered after it wait until the tray watcher is up
+        systemd.user.services.noctalia.Service.Type = "notify";
+
         programs.noctalia = {
           enable = lib.mkDefault true;
           package = pkgs.noctalia;
@@ -157,6 +171,9 @@
               screen_corners.enabled = lib.mkDefault true;
               niri_overview_type_to_launch_enabled = lib.mkDefault true;
               umbriel_overview_type_to_launch_enabled = lib.mkDefault true;
+              umbriel_audio_provider_enabled = lib.mkDefault true;
+              settings_show_advanced = lib.mkDefault true;
+              readline_shortcuts = lib.mkDefault true;
               greeter_sync.auto_sync = lib.mkDefault true;
               panel = {
                 transparency_mode = lib.mkDefault "soft";
@@ -172,6 +189,7 @@
               position_vertical = lib.mkDefault "center_right";
               orientation = lib.mkDefault "vertical";
               background_opacity = lib.mkDefault 0.80;
+              follow_focused_output = lib.mkDefault true;
               kinds = {
                 lock_keys = lib.mkDefault false;
                 keyboard_layout = lib.mkDefault false;
@@ -293,18 +311,20 @@
               input-volume = {
                 type = "volume";
                 device = "input";
+                peek = lib.mkDefault true;
               };
               output-volume = {
                 type = "volume";
                 device = "output";
+                peek = lib.mkDefault true;
               };
-              brightness.show_label = lib.mkDefault false;
+              brightness.peek = lib.mkDefault true;
               tray-volume-spacer = {
                 type = "spacer";
                 length = lib.mkDefault 20;
               };
               tray.drawer = lib.mkDefault false;
-              network.show_label = lib.mkDefault false;
+              network.peek = lib.mkDefault true;
               notifications.hide_when_no_unread = lib.mkDefault false;
               session.color = lib.mkDefault "error";
             };
@@ -332,6 +352,8 @@
 
             brightness.enable_ddcutil = lib.mkDefault true;
 
+            bluetooth.connection_notifications = lib.mkDefault true;
+
             calendar = {
               enabled = lib.mkDefault true;
               refresh_minutes = lib.mkDefault 15;
@@ -341,6 +363,8 @@
               allow_empty_password = lib.mkDefault true;
               blurred_desktop = lib.mkDefault true;
               tint_intensity = lib.mkDefault 0.50;
+              tint_color = lib.mkDefault "primary";
+              dnd = lib.mkDefault true;
             };
 
             # widgets and login boxes are placed per output in absolute
@@ -358,6 +382,7 @@
             notification = {
               position = lib.mkDefault "top_right";
               background_opacity = lib.mkDefault 0.80;
+              follow_focused_output = lib.mkDefault true;
             };
           };
         };

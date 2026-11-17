@@ -78,8 +78,6 @@
         overview.backdrop-color = lib.mkDefault theme.dark.bg.elevated;
 
         _children = [
-          { spawn-sh-at-startup._args = [ "sleep 3 && element-desktop" ]; }
-
           # all windows
           {
             window-rule = {
@@ -145,7 +143,9 @@
           {
             layer-rule = {
               _children = matches [
-                { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|background|launcher-overlay)(-.*)?$"; }
+                {
+                  namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd|window-switcher)$";
+                }
               ];
               background-effect.xray = false;
               popups.background-effect.blur = true;

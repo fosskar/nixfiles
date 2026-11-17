@@ -5,16 +5,6 @@
     # small channel: signal hard-expires old clients; stay ahead of the cutoff
     pkgs.small.signal-desktop
 
-    (pkgs.symlinkJoin {
-      name = "element-desktop";
-      paths = [ pkgs.element-desktop ];
-      buildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/element-desktop \
-          --add-flags "--password-store=gnome-libsecret"
-      '';
-    })
-
     pkgs.cinny-desktop
 
     # media

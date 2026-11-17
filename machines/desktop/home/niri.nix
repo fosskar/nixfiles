@@ -53,9 +53,6 @@ _: {
           default-column-width.fixed = 1700;
         };
       }
-
-      # desktop-only startup apps
-      { spawn-sh-at-startup._args = [ "steam -silent" ]; }
     ];
 
     # steam is desktop-only; running `steam` against the silent instance

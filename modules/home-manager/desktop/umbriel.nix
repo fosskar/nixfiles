@@ -33,10 +33,7 @@
         enable = true;
 
         settings = {
-          general = {
-            show_cheatsheet = false;
-            autostart = [ "sleep 3 && element-desktop" ];
-          };
+          general.show_cheatsheet = false;
 
           environment = {
             NIXOS_OZONE_WL = "1";
@@ -163,6 +160,8 @@
             "Mod+X" = noRepeat "spawn noctalia msg panel-toggle session";
             "Mod+Shift+L" = noRepeat "spawn noctalia msg session lock";
             "Mod+M" = noRepeat "spawn noctalia msg panel-toggle control-center";
+            "Alt+Tab" = noRepeat "spawn noctalia msg window-switcher hold";
+            "Alt+Shift+Tab" = noRepeat "spawn noctalia msg window-switcher hold reverse";
             "XF86AudioRaiseVolume" = whenLocked "spawn noctalia msg volume-up";
             "XF86AudioLowerVolume" = whenLocked "spawn noctalia msg volume-down";
             "XF86AudioMute" = whenLocked "spawn noctalia msg volume-mute";
