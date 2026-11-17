@@ -80,6 +80,7 @@
               "fosskar" = "website: blog, wiki, cv";
               "Garage" = "s3 object storage";
               "Gatus" = "uptime, health checks";
+              "GoatCounter" = "website visits, analytics";
               "Grafana" = "dashboards, metrics";
               "Home Assistant" = "smart home";
               "HP Printer" = "print, scan";
