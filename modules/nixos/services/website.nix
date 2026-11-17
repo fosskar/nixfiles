@@ -113,8 +113,7 @@
         BIND_NETWORK = "tcp";
         METRICS_BIND = "127.0.0.1:8099";
         METRICS_BIND_NETWORK = "tcp";
-        # bliki stays until its netbird mapping is removed
-        REDIRECT_DOMAINS = "${publicHost},bliki.${flake-self.domains.public}";
+        REDIRECT_DOMAINS = publicHost;
         OG_PASSTHROUGH = true;
       };
     };
