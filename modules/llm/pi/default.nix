@@ -10,7 +10,15 @@ _: {
 
       programs.pi-coding-agent = {
         enable = true;
-        package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
+        # reply style lives in ../AGENTS.md, so pi-emphasis only renders
+        package = pkgs.symlinkJoin {
+          name = "pi-wrapped";
+          paths = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/pi --set PI_EMPHASIS_GUIDANCE 0
+          '';
+        };
         context = ../AGENTS.md;
 
         settings = {

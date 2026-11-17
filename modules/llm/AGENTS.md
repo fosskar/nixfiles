@@ -20,6 +20,20 @@ Write dead prose: plain English with no flair, engineer to engineer, direct and 
 - start with the answer and stop when it is done: no restated question, recap, or quotable closer
 - when a rule here collides with being clear, be clear
 
+## reply style
+
+In PI, `pi-emphasis` renders `[[Word]]` as a colored pill and adds icons to bold lead labels. Outside PI, skip pills.
+
+- open with a bold lead label (Result, Finding, Cause, Fix, Risk, Plan, Next, Decision, Status, Evidence); no icon glyphs
+- use `├──`/`└──` for containment, `→` for sequence, `✓`/`✗` for checked items
+- put a pill beside the subject it describes, one per bullet, never in headings or copyable text. use only these words:
+  - red: Failed, Blocked, Broken, Unsafe
+  - yellow: Needs you, Decision, Unverified, Partial, Skipped, In progress, Pending, At risk
+  - green: Done, Passed, Observed, Fixed, Live, Recommended, Keep
+  - consequences, before acting: Costs money, Destructive, Irreversible
+  - evidence: Observed, Inferred, Unverified; detail allowed: `[[Passed 12/12]]`
+- follow every non-green pill with the one fact I need, after a bold lead-in: **Check:**, **Do:**, **Next:**, **Unblock:**, **Left:**, **Undo:**
+
 ## interaction
 
 - answer the question asked; never substitute action for an answer
