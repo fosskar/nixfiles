@@ -80,7 +80,6 @@
               "fosskar" = "website: blog, wiki, cv";
               "Garage" = "s3 object storage";
               "Gatus" = "uptime, health checks";
-              "GoatCounter" = "website visits, analytics";
               "Grafana" = "dashboards, metrics";
               "Home Assistant" = "smart home";
               "HP Printer" = "print, scan";
@@ -93,6 +92,7 @@
               "Kiwix" = "offline wikipedia";
               "Lidarr" = "music downloads";
               "llama.cpp" = "llm, ai chat";
+              "Liwan" = "website visits, analytics";
               "LLDAP" = "ldap, users";
               "MicroBin" = "pastebin, share files";
               "Miniflux" = "rss, feeds, news";

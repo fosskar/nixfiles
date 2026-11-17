@@ -11,7 +11,15 @@
     let
       sitePort = 8086;
       frontPort = 8087;
-      counterPort = 8088;
+      statsPort = 8088;
+      # liwan's id for this site; the script on the site sends it as data-entity
+      entity = "website";
+      liwan = lib.getExe pkgs.local.liwan;
+      liwanConfig = (pkgs.formats.toml { }).generate "liwan.config.toml" {
+        base_url = "https://${statsHost}";
+        listen = "127.0.0.1:${toString statsPort}";
+        data_dir = "/var/lib/liwan";
+      };
       localHost = "fosskar.${flake-self.domains.local}";
       statsHost = "stats.${flake-self.domains.local}";
       publicHost = "simon.${flake-self.domains.public}";
@@ -22,21 +30,21 @@
           reverse_proxy 127.0.0.1:${toString sitePort}
         '';
 
-        # the goatcounter dashboard; lan only
+        # the liwan dashboard; lan only
         ${statsHost}.extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString counterPort}
+          reverse_proxy 127.0.0.1:${toString statsPort}
         '';
 
-        # what anubis serves: the site, plus goatcounter's count endpoint under
-        # the site's own domain, so counting needs no public mapping of its own.
+        # what anubis serves: the site, plus liwan's script and event endpoint
+        # under the site's own domain, so counting needs no public mapping.
         # no host in the address: anubis passes the public host name through
         "http://:${toString frontPort}" = {
           logFormat = "output file ${config.services.caddy.logDir}/access-website.log";
           extraConfig = ''
             bind 127.0.0.1
-            @count path /count /count.js
-            handle @count {
-              reverse_proxy 127.0.0.1:${toString counterPort} {
+            @stats path /script.js /api/event
+            handle @stats {
+              reverse_proxy 127.0.0.1:${toString statsPort} {
                 # caddy replaces X-Forwarded-For from anubis with 127.0.0.1;
                 # netbird-proxy puts the visitor's address in X-Real-Ip
                 header_up X-Forwarded-For {http.request.header.X-Real-Ip}
@@ -55,34 +63,66 @@
         root = inputs.website.packages.${pkgs.stdenv.hostPlatform.system}.default;
       };
 
-      services.goatcounter = {
-        enable = true;
-        address = "127.0.0.1";
-        port = counterPort;
-        proxy = true;
-        extraArgs = [ "-automigrate" ];
-      };
-
-      clan.core.vars.generators.goatcounter = {
+      clan.core.vars.generators.liwan = {
+        prompts.password = {
+          description = "password for the liwan dashboard user simon";
+          type = "hidden";
+          persist = true;
+        };
         files."password" = { };
-        runtimeInputs = [ pkgs.pwgen ];
-        script = ''
-          pwgen -s 32 1 | tr -d '\n' > "$out/password"
-        '';
       };
 
-      # first start: create the one site and its login. with a single site
-      # goatcounter answers on every host name, so the vhost is only a label
-      systemd.services.goatcounter.serviceConfig = {
-        LoadCredential = [
-          "password:${config.clan.core.vars.generators.goatcounter.files."password".path}"
-        ];
-        ExecStartPre = pkgs.writeShellScript "goatcounter-create-site" ''
-          [ -e goatcounter-data/db.sqlite3 ] && exit 0
-          ${lib.getExe config.services.goatcounter.package} db create site -createdb \
-            -vhost ${statsHost} \
-            -user.email simon@${flake-self.domains.local} \
-            -password "$(cat "$CREDENTIALS_DIRECTORY/password")"
+      systemd.services.liwan = {
+        description = "liwan web analytics";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
+        serviceConfig = {
+          DynamicUser = true;
+          StateDirectory = "liwan";
+          LoadCredential = [
+            "password:${config.clan.core.vars.generators.liwan.files."password".path}"
+          ];
+          # the clan var is the password: set it on every start. liwan locks
+          # its database, so this only works while the server is down
+          ExecStartPre = pkgs.writeShellScript "liwan-user" ''
+            password=$(cat "$CREDENTIALS_DIRECTORY/password")
+            if ${liwan} --config ${liwanConfig} users | grep -q -- "- simon "; then
+              ${liwan} --config ${liwanConfig} update-password simon "$password"
+            else
+              ${liwan} --config ${liwanConfig} add-user --admin true simon "$password"
+            fi
+          '';
+          ExecStart = "${liwan} --config ${liwanConfig}";
+          Restart = "on-failure";
+        };
+      };
+
+      # the entity and its project, through liwan's api; both calls fail with
+      # 400 once they exist
+      systemd.services.liwan-configure = {
+        description = "create the liwan entity and project for the website";
+        after = [ "liwan.service" ];
+        requires = [ "liwan.service" ];
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.curl ];
+        serviceConfig = {
+          Type = "oneshot";
+          DynamicUser = true;
+          RuntimeDirectory = "liwan-configure";
+          LoadCredential = [
+            "password:${config.clan.core.vars.generators.liwan.files."password".path}"
+          ];
+        };
+        script = ''
+          api=http://127.0.0.1:${toString statsPort}/api/dashboard
+          jar=$RUNTIME_DIRECTORY/cookies
+          json() { curl --silent --show-error --cookie "$jar" --cookie-jar "$jar" \
+            --header 'Content-Type: application/json' --retry 10 --retry-connrefused "$@"; }
+          ${pkgs.jq}/bin/jq --null-input --rawfile p "$CREDENTIALS_DIRECTORY/password" \
+            '{username: "simon", password: $p}' | json --fail --data @- "$api/auth/login" >/dev/null
+          json --data '{"id":"${entity}","displayName":"${publicHost}","projects":[]}' "$api/entity"
+          json --data '{"displayName":"${publicHost}","visibility":"private","entities":["${entity}"]}' \
+            "$api/project/${entity}"
         '';
       };
 
@@ -97,7 +137,7 @@
               };
             }
             {
-              "GoatCounter" = {
+              "Liwan" = {
                 href = "https://${statsHost}/";
                 icon = "mdi-chart-line";
                 siteMonitor = "https://${statsHost}/";
