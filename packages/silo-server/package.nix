@@ -1,6 +1,6 @@
 {
   lib,
-  buildGo126Module,
+  buildGo127Module,
   fetchFromGitHub,
   fetchPnpmDeps,
   jellyfin-ffmpeg,
@@ -15,14 +15,14 @@
 }:
 let
   # upstream has no tags or releases yet
-  version = "0-unstable-2026-11-16";
-  rev = "abd85d0cadac28f4ab7db6821dad9634fc114790";
+  version = "0-unstable-2026-11-17";
+  rev = "217ff25abc5b9d0d3dc359de63349b7dc3d1d2eb";
 
   src = fetchFromGitHub {
     owner = "Silo-Server";
     repo = "silo-server";
     inherit rev;
-    hash = "sha256-A0gGINyM0ovslIY1VCoObXBDxA/UFKaFCqlLTKQEhRg=";
+    hash = "sha256-ZzhBVJYiQYdnyIe/7hUOX7vlBZIgpC3tnR7wNniVutM=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -63,7 +63,7 @@ let
     '';
   });
 in
-buildGo126Module {
+buildGo127Module {
   pname = "silo-server";
   inherit version src;
 
@@ -76,6 +76,11 @@ buildGo126Module {
   buildInputs = [ vips ];
 
   subPackages = [ "cmd/silo" ];
+
+  # upstream requires go 1.27.4; nixpkgs has 1.27.3
+  postPatch = ''
+    substituteInPlace go.mod --replace-fail 'go 1.27.4' 'go 1.27.3'
+  '';
 
   # web/embed.go embeds web/dist
   preBuild = ''
