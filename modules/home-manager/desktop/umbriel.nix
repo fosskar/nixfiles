@@ -49,7 +49,7 @@
               disable_while_typing = true;
             };
             focus = {
-              follows_mouse = lib.mkDefault true;
+              follows_mouse = lib.mkDefault "sloppy";
               follows_mouse_max_scroll = lib.mkDefault 0.0;
             };
             cursor.follows_focus = lib.mkDefault true;
