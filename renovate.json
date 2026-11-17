@@ -12,7 +12,9 @@
     ":rebaseStalePrs",
     ":prImmediately"
   ],
-  "dependencyDashboard": true,
+  "dependencyDashboard": {
+    "enabled": true
+  },
   "automerge": true,
   "platformAutomerge": true,
   "lockFileMaintenance": {
