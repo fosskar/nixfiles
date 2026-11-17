@@ -33,8 +33,6 @@
     })
     pkgs.obsidian
 
-    pkgs.nautilus
-
     pkgs.ausweisapp
   ];
 }

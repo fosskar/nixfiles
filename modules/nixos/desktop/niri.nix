@@ -5,6 +5,8 @@
       programs.niri = {
         enable = true;
         package = pkgs.niri;
+        # luciole is the file chooser; true puts nautilus on the session bus
+        useNautilus = false;
       };
 
       xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];

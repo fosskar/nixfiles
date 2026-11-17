@@ -191,7 +191,6 @@
                 ];
                 community_ids = [
                   "zathura"
-                  "yazi"
                   "papirus-icons"
                 ];
                 user.luciole = {

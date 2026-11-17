@@ -44,7 +44,6 @@ in
         self.modules.homeManager.ssh
         self.modules.homeManager.starship
         self.modules.homeManager.workspaceHost
-        self.modules.homeManager.yazi
         self.modules.homeManager.zellij
       ]
       ++ nflib.scanPaths ./. { };
