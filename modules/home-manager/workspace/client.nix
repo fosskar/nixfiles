@@ -88,6 +88,9 @@ _: {
               # the relay is the master; workspace-claim runs over it
               ControlMaster = "auto";
               ControlPath = ctl;
+              # the global ControlPersist would fork the master into the background;
+              # systemd then sees ExecStart exit and kills the connection
+              ControlPersist = "no";
               ExitOnForwardFailure = "yes";
               SessionType = "none";
               ServerAliveInterval = 5;
