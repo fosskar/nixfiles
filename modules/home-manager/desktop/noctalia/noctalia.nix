@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   flake.modules.homeManager.noctalia =
     {
@@ -193,6 +194,12 @@
                   "yazi"
                   "papirus-icons"
                 ];
+                user.luciole = {
+                  input_path = "${
+                    inputs.luciole.packages.${pkgs.stdenv.hostPlatform.system}.default
+                  }/share/luciole/templates/colors.toml";
+                  output_path = "$XDG_CONFIG_HOME/luciole/colors.toml";
+                };
               };
             };
 
