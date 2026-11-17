@@ -77,7 +77,7 @@
               "Dawarich" = "location history, gps";
               "DroppedNeedle" = "music";
               "Element" = "matrix chat";
-              "fosskar's bliki" = "blog, wiki, notes";
+              "fosskar" = "website: blog, wiki, cv";
               "Garage" = "s3 object storage";
               "Gatus" = "uptime, health checks";
               "Grafana" = "dashboards, metrics";

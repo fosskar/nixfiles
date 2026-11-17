@@ -25,9 +25,9 @@
         {
           "tools" = [
             {
-              "fosskar's bliki" = {
+              "fosskar" = {
                 href = "https://${localHost}/";
-                icon = "https://${localHost}/icon.svg";
+                icon = "https://${localHost}/icon.png";
                 siteMonitor = "https://${localHost}/";
               };
             }
