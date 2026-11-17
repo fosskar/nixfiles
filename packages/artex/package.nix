@@ -3,7 +3,41 @@
   buildGoModule,
   buildNpmPackage,
   fetchFromGitHub,
+  makeBinaryWrapper,
   nix-update-script,
+  bash,
+  bbot,
+  coreutils,
+  curl,
+  dalfox,
+  dnsutils,
+  ffuf,
+  findutils,
+  gawk,
+  git,
+  gnugrep,
+  gnused,
+  gnutar,
+  gzip,
+  httpx,
+  inetutils,
+  iputils,
+  jq,
+  katana,
+  netcat-openbsd,
+  nmap,
+  nodejs,
+  nuclei,
+  playwright-mcp,
+  procps,
+  python3,
+  ripgrep,
+  sqlmap,
+  subfinder,
+  unzip,
+  wget,
+  whois,
+  xz,
 }:
 let
   version = "0.6.0";
@@ -27,6 +61,44 @@ let
       runHook postInstall
     '';
   };
+
+  # the docker image's tool set; norma's bash tool runs worker commands via
+  # `bash -c` from PATH
+  tools = [
+    bash
+    bbot
+    coreutils
+    curl
+    dalfox
+    dnsutils
+    ffuf
+    findutils
+    gawk
+    git
+    gnugrep
+    gnused
+    gnutar
+    gzip
+    httpx
+    inetutils
+    iputils
+    jq
+    katana
+    netcat-openbsd
+    nmap
+    nodejs
+    nuclei
+    playwright-mcp
+    procps
+    python3
+    ripgrep
+    sqlmap
+    subfinder
+    unzip
+    wget
+    whois
+    xz
+  ];
 in
 buildGoModule (_finalAttrs: {
   pname = "artex";
@@ -37,6 +109,16 @@ buildGoModule (_finalAttrs: {
   subPackages = [ "cmd/artex" ];
 
   env.CGO_ENABLED = 0;
+
+  nativeBuildInputs = [ makeBinaryWrapper ];
+
+  # the seeded browser mcp runs `npx @playwright/mcp`, which downloads at
+  # runtime; nixpkgs playwright-mcp ships its own chromium
+  postPatch = ''
+    substituteInPlace db/db.go \
+      --replace-fail "VALUES ('browser', 'stdio', 'npx', \$1" "VALUES ('browser', 'stdio', 'playwright-mcp', \$1" \
+      --replace-fail '`["@playwright/mcp","--headless"]`' '`["--headless"]`'
+  '';
 
   tags = [ "embedui" ];
 
@@ -59,6 +141,7 @@ buildGoModule (_finalAttrs: {
   postInstall = ''
     mkdir -p $out/share/artex
     cp -r skills config.example.json $out/share/artex/
+    wrapProgram $out/bin/artex --prefix PATH : ${lib.makeBinPath tools}
   '';
 
   passthru = {
