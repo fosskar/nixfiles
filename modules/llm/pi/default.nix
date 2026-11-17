@@ -27,6 +27,7 @@ _: {
           packages = [
             { source = "git:github.com/rytswd/pi-agent-extensions"; }
             { source = "git:github.com/championswimmer/pi-subagent-manager@v1.9.0"; }
+            { source = "git:github.com/johnlindquist/pi-emphasis"; }
           ];
         };
       };
