@@ -1,23 +1,10 @@
 { self, ... }:
 {
   flake.modules."clan.service".harmonia =
-    { lib, ... }:
+    { clanLib, lib, ... }:
     let
       inherit (lib) attrNames flip;
-
-      varsForInstance = instanceName: pkgs: {
-        clan.core.vars.generators."harmonia" = {
-          share = true;
-          files.sign-key.secret = true;
-          files.sign-key.deploy = false;
-          files.pub-key.secret = false;
-          script = ''
-            ${pkgs.nix}/bin/nix-store --generate-binary-cache-key ${instanceName}-1 \
-              $out/sign-key \
-              $out/pub-key
-          '';
-        };
-      };
+      generatorName = instanceName: "harmonia-${instanceName}";
     in
     {
       manifest.name = "harmonia";
@@ -37,7 +24,12 @@
         };
 
         perInstance =
-          { settings, instanceName, ... }:
+          {
+            settings,
+            instanceName,
+            machine,
+            ...
+          }:
           {
             nixosModule =
               {
@@ -46,13 +38,15 @@
                 ...
               }:
               {
-                imports = [ (varsForInstance instanceName pkgs) ];
-
-                clan.core.vars.generators."harmonia-private" = {
-                  dependencies = [ "harmonia" ];
+                # one key per server: a leaked key only compromises that server's cache
+                clan.core.vars.generators.${generatorName instanceName} = {
                   files.sign-key.secret = true;
+                  files.pub-key.secret = false;
+                  runtimeInputs = [ pkgs.nix ];
                   script = ''
-                    cp $in/harmonia/sign-key $out/sign-key
+                    nix-store --generate-binary-cache-key ${instanceName}-${machine.name}-1 \
+                      $out/sign-key \
+                      $out/pub-key
                   '';
                 };
 
@@ -60,7 +54,7 @@
                   enable = true;
                   settings.bind = "[::]:${toString settings.port}";
                   signKeyPaths = [
-                    config.clan.core.vars.generators."harmonia-private".files.sign-key.path
+                    config.clan.core.vars.generators.${generatorName instanceName}.files.sign-key.path
                   ];
                 };
 
@@ -83,13 +77,10 @@
             nixosModule =
               {
                 config,
-                pkgs,
                 lib,
                 ...
               }:
               {
-                imports = [ (varsForInstance instanceName pkgs) ];
-
                 nix.settings = lib.mkIf (!(builtins.hasAttr config.networking.hostName roles.server.machines)) {
                   substituters =
                     let
@@ -103,9 +94,15 @@
                       }?priority=3"
                     );
 
-                  trusted-public-keys = [
-                    config.clan.core.vars.generators."harmonia".files.pub-key.value
-                  ];
+                  trusted-public-keys = flip map (attrNames roles.server.machines) (
+                    machine:
+                    clanLib.getPublicValue {
+                      flake = config.clan.core.settings.directory;
+                      inherit machine;
+                      generator = generatorName instanceName;
+                      file = "pub-key";
+                    }
+                  );
                 };
               };
           };

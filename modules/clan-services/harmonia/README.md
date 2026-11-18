@@ -22,13 +22,13 @@ inventory.instances = {
 Server role:
 
 - enables `services.harmonia.cache`
-- generates a binary cache signing key with clan vars
+- generates a per-machine binary cache signing key `<instance>-<machine>-1` with clan vars
 - opens the Harmonia TCP port
 - signs cache paths with the generated private key
 
 Client role:
 
-- trusts the generated public key
+- trusts each server's public key
 - adds each server as a Nix substituter with priority `3`
 
 ## Settings
