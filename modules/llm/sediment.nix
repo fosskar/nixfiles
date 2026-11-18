@@ -19,6 +19,12 @@ _: {
       mcpJson = (pkgs.formats.json { }).generate "sediment-mcp.json" {
         mcpServers.sediment = server;
       };
+      # pi's default codemode exposure hides the tools until the model searches for them
+      piMcpJson = (pkgs.formats.json { }).generate "sediment-pi-mcp.json" {
+        mcpServers.sediment = server // {
+          exposure = "direct";
+        };
+      };
     in
     {
       programs.mcp = {
@@ -29,7 +35,7 @@ _: {
       programs.codex.enableMcpIntegration = true;
       programs.opencode.enableMcpIntegration = true;
 
-      home.file.".pi/agent/mcp.json".source = mcpJson;
+      home.file.".pi/agent/mcp.json".source = piMcpJson;
       home.file.".omp/agent/mcp.json".source = mcpJson;
 
       # every harness stores explicitly through the mcp server
