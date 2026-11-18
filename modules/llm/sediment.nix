@@ -2,7 +2,6 @@ _: {
   flake.modules.homeManager.sediment =
     {
       config,
-      inputs,
       lib,
       pkgs,
       ...
@@ -90,9 +89,6 @@ _: {
 
       home.file.".pi/agent/mcp.json".source = piMcpJson;
       home.file.".omp/agent/mcp.json".source = mcpJson;
-
-      # every harness stores explicitly through the mcp server
-      programs.pi-pack.extensions = lib.remove "sediment-memory" inputs.pi-pack.lib.extensions;
 
       # recall hooks: the harness runs recall at the start of a session, so recall does not depend on the model
       programs.claude-code.settings.hooks.UserPromptSubmit = [ { hooks = [ recallCommand ]; } ];
