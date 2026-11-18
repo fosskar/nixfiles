@@ -11,17 +11,11 @@ _: {
         name = "fosskar";
         email = "117449098+fosskar@users.noreply.github.com";
       };
-      codeberg = {
-        name = "fosskar";
-        email = "fosskar@noreply.codeberg.org";
-      };
     in
     {
       home.packages = [
         pkgs.gh
         pkgs.glab
-        pkgs.fjo
-        pkgs.forgejo-cli
       ];
 
       programs.delta = {
@@ -146,21 +140,6 @@ _: {
           {
             condition = "hasconfig:remote.*.url:ssh://git@github.com/**";
             contents.user = github;
-          }
-          # codeberg (ssh)
-          {
-            condition = "hasconfig:remote.*.url:git@codeberg.org:*/**";
-            contents.user = codeberg;
-          }
-          # codeberg (https)
-          {
-            condition = "hasconfig:remote.*.url:https://codeberg.org/**";
-            contents.user = codeberg;
-          }
-          # codeberg (ssh://)
-          {
-            condition = "hasconfig:remote.*.url:ssh://git@codeberg.org/**";
-            contents.user = codeberg;
           }
         ];
       };
