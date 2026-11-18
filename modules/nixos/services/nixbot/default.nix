@@ -86,7 +86,6 @@
           domain = publicHost;
 
           admins = [
-            "gitea:fosskar"
             "github:fosskar"
             # authelia opaque sub for the simon account
             "oidc:auth.${flake-self.domains.public}:d5103b45-c922-48f0-98fe-b9e249e32885"
