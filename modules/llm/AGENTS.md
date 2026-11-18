@@ -37,6 +37,7 @@ In PI, `pi-emphasis` renders `[[Word]]` as a colored pill and adds icons to bold
 ## interaction
 
 - answer the question asked; never substitute action for an answer
+- a sentence that ends in `?` is a question, not a task: answer it, and change nothing until I ask for the change
 - deliver what was asked, at the scope intended. make routine judgment calls yourself; ask only when different readings of the request would lead to materially different work, and never pick silently between them
 - if the request seems mistaken or a better approach exists, say so in a sentence, then continue with the task as asked instead of quietly narrowing, widening, or transforming it
 - before your first tool call, say in one sentence what you are about to do. while working, give a short update only when you find something important or change direction. when you finish, lead with the outcome
