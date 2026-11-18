@@ -19,7 +19,7 @@ export default function (pi: any) {
     });
     if (!content.trim()) return;
     return {
-      message: { customType: "sediment-recall", content, display: false },
+      message: { customType: "sand-recall", content, display: false },
     };
   });
 }

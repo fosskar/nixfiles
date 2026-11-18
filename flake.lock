@@ -1403,6 +1403,7 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "preservation": "preservation",
         "radicle-mirror": "radicle-mirror",
+        "sand": "sand",
         "sofka": "sofka",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
@@ -1471,6 +1472,32 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "sand": {
+      "inputs": {
+        "nixbot": [
+          "nixbot"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795017569,
+        "narHash": "sha256-BhHmkU8ek35Ur8nvt6sHgaetXQUf3WXgfaDgIipgOzE=",
+        "owner": "fosskar",
+        "repo": "sand",
+        "rev": "310a847dcea6de47d6ea51df6647d244fda81da7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fosskar",
+        "repo": "sand",
         "type": "github"
       }
     },

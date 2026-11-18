@@ -179,6 +179,12 @@
       inputs.nixbot.follows = "nixbot";
       inputs.home-manager.follows = "home-manager";
     };
+    sand = {
+      url = "github:fosskar/sand";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.nixbot.follows = "nixbot";
+    };
     cua = {
       url = "github:trycua/cua";
       inputs.nixpkgs.follows = "nixpkgs";
