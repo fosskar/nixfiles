@@ -79,10 +79,12 @@ in
       programs.git.signing.key = workspaceSshKey;
       programs.jujutsu.settings.signing.key = workspaceSshKey;
       # IdentitiesOnly: the forwarded agent keys would be offered first
-      programs.ssh.settings = lib.genAttrs [ "github.com" "codeberg.org" ] (_: {
-        IdentityFile = workspaceSshKey;
-        IdentitiesOnly = "yes";
-      });
+      programs.ssh.settings = {
+        "github.com" = {
+          IdentityFile = workspaceSshKey;
+          IdentitiesOnly = "yes";
+        };
+      };
 
       systemd.user.startServices = "sd-switch";
       nix.channels = { };
