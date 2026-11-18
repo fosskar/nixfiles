@@ -18,7 +18,7 @@ from packages import Package, UpdateResult, discover, update
 
 def group_packages(packages: list[Package]) -> dict[str, list[Package]]:
     # Packages sharing a name prefix (netbird-*, nextcloud-*) go in one
-    # branch/PR: Codeberg's anti-spam rejects a burst of similar PRs.
+    # branch/PR to keep the PR count down.
     # Singletons keep their full name.
     by_prefix: dict[str, list[Package]] = {}
     for pkg in packages:

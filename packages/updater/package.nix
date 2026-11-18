@@ -59,7 +59,7 @@ stdenvNoCC.mkDerivation {
   '';
 
   meta = {
-    description = "update packages/ and flake inputs, one pull request per unit on Codeberg or GitHub";
+    description = "update packages/ and flake inputs, one pull request per unit on GitHub";
     mainProgram = "updater-packages";
   };
 }

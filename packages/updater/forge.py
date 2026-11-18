@@ -1,4 +1,4 @@
-"""Forge REST clients (Codeberg/Gitea, GitHub); stdlib only, retries on rate limit."""
+"""GitHub REST client; stdlib only, retries on rate limit."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-# sleeps *between* attempts (attempts = len + 1); codeberg's rate-limit
-# window is undocumented and its 429s carry no Retry-After, so geometric
-# growth probes short burst limits cheaply and still outlasts a
-# minutes-scale bucket (185s cumulative before the final attempt).
+# sleeps *between* attempts (attempts = len + 1), used when a 429 carries
+# no Retry-After; geometric growth probes short burst limits cheaply and
+# still outlasts a minutes-scale bucket (185s cumulative before the final
+# attempt).
 _BACKOFF = (5, 15, 45, 120)
 # generous: a stalled connection must not hang the effect, a slow forge
 # must not fail it.
@@ -102,52 +102,6 @@ class Forge:
         )
 
 
-class Codeberg(Forge):
-    def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
-        super().__init__(token)
-        self.api = f"https://{host}/api/v1/repos/{owner}/{repo}"
-
-    def _headers(self) -> dict[str, str]:
-        return {"Authorization": f"token {self._token}"}
-
-    def open_pulls(self) -> list[dict[str, Any]]:
-        return self._request("GET", f"{self.api}/pulls?state=open&limit=50") or []
-
-    def merge_if_green(self, index: int) -> None:
-        # Forgejo automerge only fires on a *future* status event; checks
-        # that finished before enable_automerge (fast CI, rate-limit backoff
-        # delaying the schedule call) leave the PR scheduled forever. main is
-        # protected (required status: nixbot/nix-build), so this fails
-        # harmlessly while checks are pending and succeeds once green.
-        try:
-            self._request(
-                "POST",
-                f"{self.api}/pulls/{index}/merge",
-                {"Do": "squash", "delete_branch_after_merge": True},
-            )
-            print(f":: PR {index} - checks already green, merged directly")
-        except ForgeError as e:
-            # 405 = not mergeable (yet): checks pending or conflicts - the
-            # expected outcome when racing CI; automerge or the next run
-            # covers it. Anything else (auth, 5xx) must be visible.
-            if e.status != 405:
-                print(f":: PR {index} - merge attempt failed: {e}")
-
-    def enable_automerge(self, index: int) -> None:
-        try:
-            self._request(
-                "POST",
-                f"{self.api}/pulls/{index}/merge",
-                {
-                    "Do": "squash",
-                    "merge_when_checks_succeed": True,
-                    "delete_branch_after_merge": True,
-                },
-            )
-        except ForgeError as e:
-            print(f":: automerge request queued or pending: {e}")
-
-
 class Github(Forge):
     def __init__(self, host: str, owner: str, repo: str, token: str) -> None:
         super().__init__(token)
@@ -163,14 +117,14 @@ class Github(Forge):
     def open_pulls(self) -> list[dict[str, Any]]:
         return self._request("GET", f"{self.api}/pulls?state=open&per_page=50") or []
 
-    # The check run gating direct merges. Mirrors the required status of the
-    # Codeberg branch protection; nixbot creates it per push and it succeeds
-    # only when every build attribute did.
+    # The check run gating direct merges; nixbot creates it per push and it
+    # succeeds only when every build attribute did.
     REQUIRED_CHECK = "nixbot/nix-build"
 
     def merge_if_green(self, index: int) -> None:
-        # Same green-race unsticking as Codeberg, but GitHub cannot be
-        # trusted to reject the merge: branch protection is unavailable on
+        # GitHub refuses automerge on a PR whose checks already passed;
+        # this direct merge unsticks such PRs. GitHub cannot be trusted to
+        # reject the merge: branch protection is unavailable on
         # private repos under the free plan, so an unconditional PUT merges
         # anything (nixwork PR #28 merged 96s after creation, hours before
         # nix-build failed). Verify CI ourselves: the aggregate nixbot check

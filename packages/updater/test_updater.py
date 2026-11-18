@@ -19,7 +19,7 @@ import changelog
 import pipeline
 import update_flake_inputs
 import update_packages
-from forge import Codeberg, ForgeError, Github
+from forge import ForgeError, Github
 from update_flake_inputs import FlakeInput
 from update_packages import commit_message, group_packages
 
@@ -391,9 +391,9 @@ class TestParseOrigin(unittest.TestCase):
     def test_https_with_credentials(self):
         self.assertEqual(
             pipeline.parse_origin(
-                "https://oauth2:tok@codeberg.org/fosskar/nixfiles.git"
+                "https://x-access-token:tok@github.com/fosskar/nixfiles.git"
             ),
-            ("codeberg.org", "fosskar", "nixfiles"),
+            ("github.com", "fosskar", "nixfiles"),
         )
 
     def test_plain_https_without_git_suffix(self):
@@ -419,7 +419,7 @@ class TestParseOrigin(unittest.TestCase):
 
 class TestForgeRetryStatus(unittest.TestCase):
     def _exhaust(self, exc: Exception, method: str = "GET") -> ForgeError:
-        cb = Codeberg("h", "o", "r", "tok")
+        gh = Github("h", "o", "r", "tok")
         self.urlopen = mock.Mock(side_effect=exc)
         with (
             mock.patch("forge._BACKOFF", (0,)),
@@ -428,7 +428,7 @@ class TestForgeRetryStatus(unittest.TestCase):
             contextlib.redirect_stdout(io.StringIO()),
             self.assertRaises(ForgeError) as ctx,
         ):
-            cb._request(method, "https://h/x")
+            gh._request(method, "https://h/x")
         return ctx.exception
 
     def test_write_not_retried_on_network_error(self):
@@ -806,7 +806,7 @@ class TestGithubEnableAutomerge(unittest.TestCase):
 
 
 class TestConnectDispatch(unittest.TestCase):
-    """connect picks Github for github.com origins, Codeberg otherwise."""
+    """connect accepts only github.com origins."""
 
     def _connect(self, url: str) -> object:
         def fake_capture(*, repo, cmd, check=True):
@@ -822,7 +822,6 @@ class TestConnectDispatch(unittest.TestCase):
             mock.patch("pipeline.default_branch", return_value="main"),
             mock.patch("pipeline.read_token", return_value="tok"),
             mock.patch.object(Github, "open_pulls", return_value=[]),
-            mock.patch.object(Codeberg, "open_pulls", return_value=[]),
         ):
             forge, prs = pipeline.connect(Path("/repo"), dry_run=False)
         self.assertEqual(prs, [])
@@ -831,8 +830,9 @@ class TestConnectDispatch(unittest.TestCase):
     def test_github_host(self):
         self.assertIsInstance(self._connect("https://github.com/o/r.git"), Github)
 
-    def test_codeberg_host(self):
-        self.assertIsInstance(self._connect("https://codeberg.org/o/r.git"), Codeberg)
+    def test_other_host_exits(self):
+        with self.assertRaises(SystemExit):
+            self._connect("https://gitlab.com/o/r.git")
 
 
 class TestParseUpdateScript(unittest.TestCase):

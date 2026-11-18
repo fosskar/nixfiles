@@ -1,8 +1,8 @@
 # updater
 
 Updates third-party sources in this repository and opens one PR per unit,
-with automerge. The forge (GitHub, or Codeberg/Forgejo) is detected from
-the origin remote. Two entrypoints share one pipeline
+with automerge on GitHub; an origin remote on any other host is refused.
+Two entrypoints share one pipeline
 (branch, push dedupe, PR create/refresh, automerge, green-race unstick):
 
 | binary                 | unit                | branch                      | commit message         |
@@ -19,8 +19,7 @@ nix shell .#updater -c updater-flake-inputs --list
 nix shell .#updater -c updater-flake-inputs --dry-run -i nixpkgs
 ```
 
-Without `--dry-run` a forge token is required: `FORGE_TOKEN` (or
-`CODEBERG_TOKEN`); on a GitHub-hosted repo this is a GitHub token.
+Without `--dry-run` a GitHub token is required in `FORGE_TOKEN`.
 `GITHUB_TOKEN` is optional but avoids GitHub API rate limits (nix-update
 version lookups, release-note enrichment). In production both are set from
 the same nixbot secret.
@@ -59,8 +58,7 @@ mkEffect {
 - opt out explicitly with `passthru.updateScript = null`.
 
 Packages sharing a name prefix (`netbird-*`) are grouped into one branch/PR
-to keep the PR count down (originally because Codeberg's anti-spam rejected
-bursts of similar PRs).
+to keep the PR count down.
 
 ## Flake inputs
 
@@ -84,15 +82,12 @@ package updates whose `Diff:` URL names a tag.
 - tree + commit-message comparison against the remote branch skips no-op force-pushes (and CI
   reruns)
 - existing PR gets title/body refreshed instead of a duplicate
-- automerge (squash) is scheduled via API: Forgejo
-  `merge_when_checks_succeed` (deletes the branch on merge), GitHub GraphQL
+- automerge (squash) is scheduled via the GitHub GraphQL
   `enablePullRequestAutoMerge` (needs the repo settings "allow auto-merge"
   and "automatically delete head branches"); if checks went green _before_
-  automerge was scheduled it never fires - the next run detects the stuck
+  automerge was scheduled GitHub refuses it - the next run detects the stuck
   PR and merges it directly (`merge_if_green`)
-- on Codeberg `merge_if_green` trusts branch protection: the direct merge
-  405s while the required status is pending. On GitHub it verifies CI
-  itself - branch protection is unavailable on private free-plan repos, so
+- `merge_if_green` verifies CI itself - branch protection is unavailable on private free-plan repos, so
   it merges (pinned to the verified head sha) only when the
   `nixbot/nix-build` check run on the PR head concluded successfully; a
   missing run fails closed
@@ -109,7 +104,7 @@ package updates whose `Diff:` URL names a tag.
 | `update_effect.py`       | entrypoint: nixbot effect setup, then updater |
 | `pipeline.py`            | shared: token, dirty guard, push/PR/automerge |
 | `packages.py`            | package discovery + nix-update/update.sh runs |
-| `forge.py`               | forge REST clients (GitHub, Codeberg/Forgejo) |
+| `forge.py`               | GitHub REST client                            |
 | `changelog.py`           | release-note enrichment, stale-URL fix        |
 | `test_updater.py`        | pure-logic tests, run in checkPhase           |
 

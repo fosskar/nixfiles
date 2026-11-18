@@ -9,7 +9,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 import changelog
-from forge import Codeberg, Forge, ForgeError, Github
+from forge import Forge, ForgeError, Github
 
 BASE = "main"
 
@@ -29,9 +29,9 @@ def capture(
 
 
 def read_token() -> str:
-    token = os.environ.get("FORGE_TOKEN") or os.environ.get("CODEBERG_TOKEN")
+    token = os.environ.get("FORGE_TOKEN")
     if not token:
-        sys.exit("no token: set FORGE_TOKEN (or CODEBERG_TOKEN)")
+        sys.exit("no token: set FORGE_TOKEN")
     return token
 
 
@@ -75,8 +75,9 @@ def connect(repo: Path, *, dry_run: bool) -> tuple[Forge | None, list[dict]]:
         return None, []
     origin = capture(repo=repo, cmd=["git", "remote", "get-url", "origin"])
     host, owner, name = parse_origin(origin.stdout.strip())
-    cls = Github if host == "github.com" else Codeberg
-    forge = cls(host, owner, name, read_token())
+    if host != "github.com":
+        sys.exit(f"unsupported forge host: {host!r}; only github.com")
+    forge = Github(host, owner, name, read_token())
     return forge, forge.open_pulls()
 
 
@@ -254,11 +255,9 @@ def publish(
 
 
 def sweep(forge: Forge | None, indexes: list[int]) -> None:
-    # Codeberg rate-limits the merge endpoint hard (observed Retry-After up
-    # to 120s), so enable_automerge often lands only after CI went green -
-    # and Forgejo automerge fires solely on a *future* status event, leaving
-    # the PR scheduled forever. By the end of the run CI is finished; one
-    # merge attempt per touched PR either merges it now or no-ops (405).
+    # GitHub refuses automerge on a PR whose checks already passed, so a
+    # PR that went green before enable_automerge stays open. By the end of the run CI is finished; one
+    # merge attempt per touched PR either merges it now or no-ops.
     if forge is None:
         return
     for index in indexes:
@@ -290,9 +289,8 @@ def run_units(
             print(f":: {unit} - FAILED, skipping: {e}")
             failures.append(unit)
 
-    # automerge scheduled after CI already went green never fires (Forgejo
-    # is event-driven; the merge endpoint's rate-limit backoff makes that
-    # the common case here). CI is done by now: merge whatever is green.
+    # PRs that went green before enable_automerge got no automerge. CI is
+    # done by now: merge whatever is green.
     sweep(forge, touched)
 
     if failures:
