@@ -468,6 +468,7 @@
                   "recommendations.enabled": "true",
                   "recommendations.embedding_provider_id": $provider,
                   "recommendations.embedding_model": "${embeddingModel}",
+                  ${lib.optionalString meilisearch.enable ''"catalog.search.meilisearch.semantic_enabled": "true",''}
                   "subtitle_ai.enabled": "true",
                   "ai.text_provider_id": $provider,
                   "ai.chat_model": "${chatModel}",
