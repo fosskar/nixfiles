@@ -21,7 +21,11 @@ rustPlatform.buildRustPackage rec {
   };
 
   # copied from pi-pack; keeps the project id config out of every repo as .sediment/
-  patches = [ ./central-project-config.patch ];
+  patches = [
+    ./central-project-config.patch
+    # tool descriptions reach every harness; they say when to recall and store
+    ./agent-guidance.patch
+  ];
 
   cargoHash = "sha256-NfXChnMYyNyyT3ocdT65Ic6Iu3Zp0LtuTR/Je8FzqZc=";
 
