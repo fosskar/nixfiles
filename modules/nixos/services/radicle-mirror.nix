@@ -11,7 +11,9 @@
       publicHost = "radicle.${flake-self.domains.public}";
       mirrorPort = 4128;
       apiPort = 8080;
-      searchPort = 7700;
+      # the meilisearch feature runs on another host
+      searchUrl = flake-self.meilisearch.url;
+      searchIndex = "radicle_repos";
       explorerPort = 8090;
       anubisPort = 8097;
       publicPort = 8098;
@@ -125,29 +127,31 @@
         };
       };
 
-      services.meilisearch = {
-        enable = true;
-        listenAddress = "127.0.0.1";
-        listenPort = searchPort;
+      clan.core.vars.generators.meilisearch-master = flake-self.meilisearch.masterGenerator pkgs;
+
+      clan.core.vars.generators.radicle-search = {
+        dependencies = [ "meilisearch-master" ];
+        files."indexer.env".restartUnits = [ "radicle-search.service" ];
+        files."httpd.env".restartUnits = [ "radicle-httpd.service" ];
+        script = ''
+          echo "RADICLE_SEARCH_MEILI_KEY=$(${flake-self.meilisearch.tenantKey pkgs "radicle-search"})" > "$out/indexer.env"
+          echo "RADICLE_SEARCH_KEY=$(${flake-self.meilisearch.tenantKey pkgs "radicle-httpd"})" > "$out/httpd.env"
+        '';
       };
 
       systemd.services.radicle-search = {
         description = "Radicle repository search indexer";
         wantedBy = [ "multi-user.target" ];
-        after = [
-          "meilisearch.service"
-          "radicle-mirror.service"
-        ];
-        requires = [
-          "meilisearch.service"
-          "radicle-mirror.service"
-        ];
+        after = [ "radicle-mirror.service" ];
+        requires = [ "radicle-mirror.service" ];
         serviceConfig = {
           ExecStart = lib.getExe' pkgs.radicle-httpd "radicle-search";
           Environment = [
             "RAD_HOME=/var/lib/radicle-mirror/rad"
-            "RADICLE_SEARCH_MEILI_URL=http://127.0.0.1:${toString searchPort}"
+            "RADICLE_SEARCH_MEILI_URL=${searchUrl}"
+            "RADICLE_SEARCH_INDEX_NAME=${searchIndex}"
           ];
+          EnvironmentFile = generators.radicle-search.files."indexer.env".path;
           Restart = "on-failure";
           RestartSec = 5;
           DynamicUser = true;
@@ -186,8 +190,10 @@
           ExecStart = "${lib.getExe pkgs.radicle-httpd} --listen 127.0.0.1:${toString apiPort}";
           Environment = [
             "RAD_HOME=/var/lib/radicle-mirror/rad"
-            "RADICLE_SEARCH_URL=http://127.0.0.1:${toString searchPort}"
+            "RADICLE_SEARCH_URL=${searchUrl}"
+            "RADICLE_SEARCH_INDEX_NAME=${searchIndex}"
           ];
+          EnvironmentFile = generators.radicle-search.files."httpd.env".path;
           Restart = "on-failure";
           RestartSec = 5;
           DynamicUser = true;

@@ -22,6 +22,8 @@
       redis = config.services.redis.servers.silo;
       apiUrl = "${listenUrl}/api/v2";
       generators = config.clan.core.vars.generators;
+      # catalog search moves to the meilisearch feature when this host has it
+      meilisearch = config.services.meilisearch;
       llamaCpp = config.services.llama-cpp.settings;
       embeddingModel = "qwen3-embedding-0.6b";
       # translates subtitles; the model the llama-cpp router keeps loaded, and
@@ -98,6 +100,14 @@
           ];
         };
 
+        clan.core.vars.generators.silo-meilisearch = lib.mkIf meilisearch.enable {
+          dependencies = [ "meilisearch-master" ];
+          files."meilisearch.env".restartUnits = [ "silo.service" ];
+          script = ''
+            echo "SILO_MEILISEARCH_API_KEY=$(${flake-self.meilisearch.tenantKey pkgs "silo"})" > "$out/meilisearch.env"
+          '';
+        };
+
         services.redis.servers.silo.enable = true;
 
         systemd.services.silo = {
@@ -107,8 +117,10 @@
             "postgresql.service"
             "redis-silo.service"
             "silo-postgresql-extensions.service"
-          ];
-          wants = [ "network-online.target" ];
+          ]
+          ++ lib.optional meilisearch.enable "meilisearch-keys.service";
+          # wants, not requires: silo searches postgres while meilisearch is down
+          wants = [ "network-online.target" ] ++ lib.optional meilisearch.enable "meilisearch-keys.service";
           requires = [
             "postgresql.service"
             "redis-silo.service"
@@ -128,13 +140,20 @@
             REDIS_URL = "unix://${redis.unixSocket}";
             SILO_PLUGIN_CACHE_DIR = "${dataDir}/plugins";
             HOME = dataDir;
+          }
+          // lib.optionalAttrs meilisearch.enable {
+            SILO_SEARCH_PROVIDER = "meilisearch";
+            SILO_MEILISEARCH_URL = "http://${meilisearch.listenAddress}:${toString meilisearch.listenPort}";
           };
           serviceConfig = {
             User = "silo";
             Group = "silo";
             StateDirectory = "silo";
             WorkingDirectory = dataDir;
-            EnvironmentFile = config.clan.core.vars.generators.silo.files."secret.env".path;
+            EnvironmentFile = [
+              generators.silo.files."secret.env".path
+            ]
+            ++ lib.optional meilisearch.enable generators.silo-meilisearch.files."meilisearch.env".path;
             ExecStart = lib.getExe pkgs.local.silo-server;
             # the restart button in the admin ui exits cleanly
             Restart = "always";
