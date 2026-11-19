@@ -108,6 +108,17 @@
           '';
         };
 
+        clan.core.vars.generators.silo-smtp = {
+          dependencies = [ "smtp" ];
+          files."smtp.env".restartUnits = [ "silo.service" ];
+          runtimeInputs = [ pkgs.gnused ];
+          script = ''
+            sed -n -e 's/^SMTP_\(HOST\|PORT\|USER\|PASSWORD\)=/SILO_SMTP_\1=/p' \
+              -e 's/^SMTP_FROM=/SILO_SMTP_FROM_ADDRESS=/p' \
+              "$in/smtp/smtp-env" > "$out/smtp.env"
+          '';
+        };
+
         services.redis.servers.silo.enable = true;
 
         systemd.services.silo = {
@@ -140,6 +151,12 @@
             REDIS_URL = "unix://${redis.unixSocket}";
             SILO_PLUGIN_CACHE_DIR = "${dataDir}/plugins";
             HOME = dataDir;
+            # settings set here are stored at startup and read-only in the admin ui
+            SILO_PUBLIC_URL = "https://${localHost}";
+            SILO_JELLYFIN_PUBLIC_URL = "https://${jellyfinHost}";
+            SILO_SMTP_ENABLED = "true";
+            # port 587 is starttls
+            SILO_SMTP_SECURITY = "starttls";
           }
           // lib.optionalAttrs meilisearch.enable {
             SILO_SEARCH_PROVIDER = "meilisearch";
@@ -152,6 +169,7 @@
             WorkingDirectory = dataDir;
             EnvironmentFile = [
               generators.silo.files."secret.env".path
+              generators.silo-smtp.files."smtp.env".path
             ]
             ++ lib.optional meilisearch.enable generators.silo-meilisearch.files."meilisearch.env".path;
             ExecStart = lib.getExe pkgs.local.silo-server;
@@ -235,7 +253,6 @@
             Type = "oneshot";
             RemainAfterExit = true;
             DynamicUser = true;
-            EnvironmentFile = generators.smtp.files."smtp-env".path;
             LoadCredential = [
               "api-key:${generators.silo-api.files.api-key.path}"
               "oidc-client-secret:${generators.silo-oidc.files."oauth-client-secret".path}"
@@ -452,19 +469,9 @@
               done
               echo "synced ${ratingsPlugin}"
 
-              # port 587 is starttls
               result=$(jq -n --arg provider "$provider" '{
                 values: {
-                  "server.public_url": "https://${localHost}",
-                  "jellyfin_compat.public_url": "https://${jellyfinHost}",
                   "catalog.extra_rating_sources": "rt_critic",
-                  "email.enabled": "true",
-                  "email.smtp_host": $ENV.SMTP_HOST,
-                  "email.smtp_port": $ENV.SMTP_PORT,
-                  "email.smtp_security": "starttls",
-                  "email.smtp_username": $ENV.SMTP_USER,
-                  "email.smtp_password": $ENV.SMTP_PASSWORD,
-                  "email.from_address": $ENV.SMTP_FROM,
                   "recommendations.enabled": "true",
                   "recommendations.embedding_provider_id": $provider,
                   "recommendations.embedding_model": "${embeddingModel}",
