@@ -248,7 +248,7 @@
 
             PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD = "none";
             PROXY_OIDC_USERINFO_CACHE_TTL = "10m";
-            GRAPH_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
+            OC_SPACES_DEFAULT_QUOTA = "107374182400"; # 100GB
             PROXY_USER_OIDC_CLAIM = "preferred_username";
             PROXY_AUTOPROVISION_CLAIM_USERNAME = "preferred_username";
             PROXY_AUTOPROVISION_CLAIM_EMAIL = "email";
