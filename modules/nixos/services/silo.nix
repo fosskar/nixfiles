@@ -108,17 +108,6 @@
           '';
         };
 
-        clan.core.vars.generators.silo-smtp = {
-          dependencies = [ "smtp" ];
-          files."smtp.env".restartUnits = [ "silo.service" ];
-          runtimeInputs = [ pkgs.gnused ];
-          script = ''
-            sed -n -e 's/^SMTP_\(HOST\|PORT\|USER\|PASSWORD\)=/SILO_SMTP_\1=/p' \
-              -e 's/^SMTP_FROM=/SILO_SMTP_FROM_ADDRESS=/p' \
-              "$in/smtp/smtp-env" > "$out/smtp.env"
-          '';
-        };
-
         services.redis.servers.silo.enable = true;
 
         systemd.services.silo = {
@@ -169,10 +158,17 @@
             WorkingDirectory = dataDir;
             EnvironmentFile = [
               generators.silo.files."secret.env".path
-              generators.silo-smtp.files."smtp.env".path
+              generators.smtp.files."smtp-env".path
             ]
             ++ lib.optional meilisearch.enable generators.silo-meilisearch.files."meilisearch.env".path;
-            ExecStart = lib.getExe pkgs.local.silo-server;
+            # silo reads SILO_SMTP_*; the shared smtp-env names them SMTP_*
+            ExecStart = pkgs.writeShellScript "silo-start" ''
+              set -u
+              export SILO_SMTP_HOST="$SMTP_HOST" SILO_SMTP_PORT="$SMTP_PORT" \
+                SILO_SMTP_USER="$SMTP_USER" SILO_SMTP_PASSWORD="$SMTP_PASSWORD" \
+                SILO_SMTP_FROM_ADDRESS="$SMTP_FROM"
+              exec ${lib.getExe pkgs.local.silo-server}
+            '';
             # the restart button in the admin ui exits cleanly
             Restart = "always";
             # transcodes go to /tmp/silo-transcode
