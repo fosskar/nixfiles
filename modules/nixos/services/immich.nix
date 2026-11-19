@@ -105,7 +105,7 @@
       services.immich = {
         enable = true;
         package = pkgs.immich.override {
-          immich-machine-learning = pkgs.immich-machine-learning.override { python3 = python3Cuda; };
+          immich-ml = pkgs.immich-ml.override { python3 = python3Cuda; };
         };
         host = listenAddress;
         port = listenPort;
