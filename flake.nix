@@ -156,6 +156,10 @@
       url = "github:noctalia-dev/luciole";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    yo = {
+      url = "github:QuackHack-McBlindy/yo";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # gaming
     nix-gaming = {

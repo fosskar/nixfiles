@@ -19,6 +19,7 @@
     self.modules.nixos.yubikeyGpgSsh
     self.modules.nixos.yubikeyU2f
     self.modules.nixos.agentDesktop
+    self.modules.nixos.yo
   ]
   ++ nflib.scanPaths ./. { };
 }
