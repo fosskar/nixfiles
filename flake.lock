@@ -1630,10 +1630,10 @@
         "timeless-fonts-src": "timeless-fonts-src"
       },
       "locked": {
-        "lastModified": 1795210404,
-        "narHash": "sha256-e+mkvW8tEIYyzEZrSHoQ/gsj5BJOqt6RO3BXDA3cyu4=",
+        "lastModified": 1795285735,
+        "narHash": "sha256-ajiR7g6JVJN1pY0Qdo1pYWg2tZJWj9f1TgZwEYA7QOs=",
         "ref": "refs/heads/master",
-        "rev": "718bc1fac948ff540155cf586854894bfea1410f",
+        "rev": "982caf28bdb4e0205a60bbc11148959ab6445405",
         "shallow": true,
         "type": "git",
         "url": "https://tangled.org/@tangled.org/core"
