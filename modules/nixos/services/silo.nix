@@ -30,7 +30,8 @@
       llamaCpp = config.services.llama-cpp.settings;
       embeddingModel = "qwen3-embedding-0.6b";
       # translates subtitles; the model the llama-cpp router keeps loaded, and
-      # one job at a time because the agents share it
+      # one job at a time because the agents share it. reasoning is off: with
+      # "low" a batch of 40 lines took 72 s, most of it discarded thinking
       chatModel = "qwen3.6-35b-a3b-mtp";
       aiProvider = "llama-cpp";
       # writes subtitles from audio; whisper.cpp on the arc gpu in nixworker
@@ -503,7 +504,7 @@
                   "ai.asr_model": "${flake-self.whisperServer.model}",
                   "ai.text_provider_id": "${aiProvider}",
                   "ai.chat_model": "${chatModel}",
-                  "ai.reasoning_effort": "low",
+                  "ai.reasoning_effort": "none",
                   "ai.max_concurrent_jobs": "1"
                 }
               }' | api PUT /admin/settings -H 'If-Match: *' --data-binary @-)
