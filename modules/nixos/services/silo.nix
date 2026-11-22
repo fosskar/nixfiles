@@ -34,9 +34,10 @@
       # translates subtitles. the local model took 46 s for a batch of 40 lines;
       # the openrouter key's guardrail allows only this model alias and only
       # zero-retention endpoints of river and inceptron, which run in finland
-      # and iceland. the alias follows new deepseek flash versions: if one
-      # refuses reasoning effort "none" or neither provider hosts it yet,
-      # translations fail until the model is pinned here and in the guardrail
+      # and iceland. the alias follows new deepseek flash versions: if neither
+      # provider hosts one yet, translations fail until the model is pinned
+      # here and in the guardrail. reasoning effort is "low": with "none" the
+      # model dropped lines of a 40-line batch three times and the job failed
       textProvider = "openrouter";
       chatModel = "~deepseek/deepseek-flash-latest";
       # writes subtitles from audio; whisper.cpp on the arc gpu in nixworker
@@ -523,7 +524,7 @@
                   "ai.asr_model": "${flake-self.whisperServer.model}",
                   "ai.text_provider_id": "${textProvider}",
                   "ai.chat_model": "${chatModel}",
-                  "ai.reasoning_effort": "none",
+                  "ai.reasoning_effort": "low",
                   "ai.max_concurrent_jobs": "2"
                 }
               }' | api PUT /admin/settings -H 'If-Match: *' --data-binary @-)
