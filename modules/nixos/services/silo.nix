@@ -29,11 +29,13 @@
       meilisearch = config.services.meilisearch;
       llamaCpp = config.services.llama-cpp.settings;
       embeddingModel = "qwen3-embedding-0.6b";
-      # translates subtitles; the model the llama-cpp router keeps loaded, and
-      # one job at a time because the agents share it. reasoning is off: with
-      # "low" a batch of 40 lines took 72 s, most of it discarded thinking
-      chatModel = "qwen3.6-35b-a3b-mtp";
+      # embeds library items for recommendations
       aiProvider = "llama-cpp";
+      # translates subtitles. the local model took 46 s for a batch of 40 lines;
+      # the openrouter key's guardrail allows only zero-retention endpoints of
+      # the provider river, which runs in finland and iceland
+      textProvider = "openrouter";
+      chatModel = "z-ai/glm-5.3-flash";
       # writes subtitles from audio; whisper.cpp on the arc gpu in nixworker
       speechProvider = "whisper-cpp";
       requestsPlugin = "silo.requests.arr";
@@ -183,11 +185,15 @@
                 "embeddings"
               ];
             };
-            # a whisper provider's capabilities are fixed to speech
+            # the capabilities of whisper and openrouter providers are fixed
             ${speechProvider} = {
               type = "whisper";
               name = "whisper.cpp";
               base_url = flake-self.whisperServer.url;
+            };
+            ${textProvider} = {
+              type = "openrouter";
+              api_key.fromFile = "${credentialsDir}/openrouter-api-key";
             };
           };
         };
@@ -250,6 +256,7 @@
             LoadCredential = [
               "oidc-client-secret:${generators.silo-oidc.files."oauth-client-secret".path}"
               "mdblist-api-key:${generators.silo-mdblist.files.api-key.path}"
+              "openrouter-api-key:${generators.silo-openrouter.files.api-key.path}"
             ];
             ExecStart = lib.getExe pkgs.local.silo-server;
             # the restart button in the admin ui exits cleanly
@@ -268,6 +275,15 @@
             persist = true;
           };
           files.api-key.restartUnits = [ "silo-sync.service" ];
+        };
+
+        clan.core.vars.generators.silo-openrouter = {
+          prompts.api-key = {
+            description = "openrouter api key for silo (https://openrouter.ai/settings/keys)";
+            type = "hidden";
+            persist = true;
+          };
+          files.api-key.restartUnits = [ "silo.service" ];
         };
 
         clan.core.vars.generators.silo-mdblist = {
@@ -502,7 +518,7 @@
                   "subtitle_ai.transcribe_enabled": "true",
                   "ai.speech_provider_id": "${speechProvider}",
                   "ai.asr_model": "${flake-self.whisperServer.model}",
-                  "ai.text_provider_id": "${aiProvider}",
+                  "ai.text_provider_id": "${textProvider}",
                   "ai.chat_model": "${chatModel}",
                   "ai.reasoning_effort": "none",
                   "ai.max_concurrent_jobs": "1"
