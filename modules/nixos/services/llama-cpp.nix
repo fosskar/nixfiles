@@ -117,11 +117,18 @@ in
               mmproj = modelPath "unsloth/Qwen3.6-35B-A3B-MTP-GGUF" "mmproj-F16.gguf";
               alias = startupModelAlias;
               load-on-startup = true;
-              # 2 slots of 122880 each; kv is only unified when parallel is auto.
-              # fit offloads 12 expert layers, peak 23136/24467 MiB with a 4k image.
+              # 2 slots sharing 245760; kv is only unified by default when parallel is auto.
               # ubatch 2048 cuts per-chunk expert copies over pcie: +68% prompt speed
               ctx-size = 245760;
               parallel = 2;
+              kv-unified = true;
+              # every expert in ram, the most used ones cached in vram: +25% generation
+              # over fit's 12 offloaded expert layers. the rest peaks at 9817/24467 MiB;
+              # a 13500 MiB cache left too little for encoding a 4k image
+              cpu-moe = true;
+              fit = "off";
+              n-gpu-layers = 999;
+              moe-cache-mib = 11500;
               ubatch-size = 2048;
               temp = 1.0;
               top-p = 0.95;
