@@ -13,7 +13,7 @@
               # terminals such as herdr paste on ctrl+shift+v only
               paste_with_shift = true;
               sound_theme = "soft";
-              recording_audio_behavior = "duck";
+              recording_audio_behavior = "do_nothing";
               indicator_position = "bottom";
               "labs.live_text" = true;
               "labs.vocabulary_biasing" = true;
