@@ -1229,11 +1229,11 @@
     "pi-subagent-manager": {
       "flake": false,
       "locked": {
-        "lastModified": 1794703311,
-        "narHash": "sha256-mdX5M+gdZCixYpKOf3F/IchItJG1hRIg8PA+unMeCnk=",
+        "lastModified": 1795323293,
+        "narHash": "sha256-0xxkVpludhdIOLTSiAwLLn2uCU0WnDHUvyGiep7WedA=",
         "owner": "championswimmer",
         "repo": "pi-subagent-manager",
-        "rev": "653c63b0f65241ca6d062c391de13745d537c2c5",
+        "rev": "8f1ee3c4d43ad1088d2b5b82bb565b14f70a2e74",
         "type": "github"
       },
       "original": {
