@@ -521,7 +521,7 @@
                   "ai.text_provider_id": "${textProvider}",
                   "ai.chat_model": "${chatModel}",
                   "ai.reasoning_effort": "none",
-                  "ai.max_concurrent_jobs": "1"
+                  "ai.max_concurrent_jobs": "2"
                 }
               }' | api PUT /admin/settings -H 'If-Match: *' --data-binary @-)
               echo "updated settings"
