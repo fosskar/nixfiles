@@ -19,6 +19,7 @@
               "labs.vocabulary_biasing" = true;
               "labs.spoken_symbols" = true;
               "labs.appearance_theme" = "dark";
+              "labs.live_typing" = true;
             };
           };
           # niri 26.04 has no org.gnome.Shell GrabAccelerators, so the
@@ -34,10 +35,9 @@
           };
         }
         (lib.optionalAttrs (options.programs ? umbriel) {
-          programs.umbriel.settings.keybinds."Alt+Space" = {
-            action = "spawn hex dictation toggle";
-            repeat = false;
-          };
+          # hex registers its shortcuts through umbriel's GlobalShortcuts portal,
+          # which delivers press and release, so hold-to-talk works
+          programs.umbriel.settings.global_shortcuts."anomaly.hex".dictation = "Alt+Space";
         })
       ];
     };
