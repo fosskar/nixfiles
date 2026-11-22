@@ -8,7 +8,21 @@
   git,
   openssh,
   cacert,
+  fetchpatch,
 }:
+let
+  # nix 2.35 no longer copies a flake to the store in `nix flake metadata`, so
+  # --flake updates fail; drop with the next nix-update release
+  # https://redirect.github.com/Mic92/nix-update/pull/698
+  nix-update' = nix-update.overridePythonAttrs (old: {
+    patches = old.patches or [ ] ++ [
+      (fetchpatch {
+        url = "https://github.com/Mic92/nix-update/commit/dcef4fdd7edbd9ef83c701e5d92a3df81fbd0e33.patch";
+        hash = "sha256-uNOfiYbLAm/0Ret2nUQ3Wxd1IoOsclRbF11z2gGx0vM=";
+      })
+    ];
+  });
+in
 stdenvNoCC.mkDerivation {
   pname = "updater";
   version = "0.1.0";
@@ -45,7 +59,7 @@ stdenvNoCC.mkDerivation {
         --add-flags "$out/lib/updater/$entry.py" \
         --prefix PATH : ${
           lib.makeBinPath [
-            nix-update
+            nix-update'
             nix
             git
             openssh
