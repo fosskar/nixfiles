@@ -32,12 +32,14 @@
               icon_theme = lib.mkDefault "Material Icon Theme";
             };
           };
+        }
+        (lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
           wayland.windowManager.niri.settings.binds."Mod+Z".spawn = [
             "focus-or-spawn"
             "dev.zed.Zed"
             "zeditor"
           ];
-        }
+        })
         (lib.optionalAttrs (options.programs ? umbriel) {
           programs.umbriel.settings.keybinds."Mod+Z" = {
             action = "spawn focus-or-spawn dev.zed.Zed zeditor";

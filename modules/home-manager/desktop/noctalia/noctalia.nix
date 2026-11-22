@@ -5,6 +5,7 @@
       self,
       config,
       lib,
+      options,
       pkgs,
       ...
     }:
@@ -131,23 +132,25 @@
           pkgs.wdisplays
         ];
 
-        wayland.windowManager.niri.settings = {
-          binds = shellNiriBinds;
-          _children = [
-            {
-              window-rule = {
-                _children = [ { match._props.app-id = "dev.noctalia.Noctalia.Settings"; } ];
-                open-floating = true;
-                default-column-width = {
-                  fixed = 1080;
+        wayland = lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
+          windowManager.niri.settings = {
+            binds = shellNiriBinds;
+            _children = [
+              {
+                window-rule = {
+                  _children = [ { match._props.app-id = "dev.noctalia.Noctalia.Settings"; } ];
+                  open-floating = true;
+                  default-column-width = {
+                    fixed = 1080;
+                  };
+                  default-window-height = {
+                    fixed = 920;
+                  };
                 };
-                default-window-height = {
-                  fixed = 920;
-                };
-              };
-            }
-          ];
-          debug.honor-xdg-activation-with-invalid-serial = [ true ];
+              }
+            ];
+            debug.honor-xdg-activation-with-invalid-serial = [ true ];
+          };
         };
 
         # home-manager's noctalia service lacks noctalia's own Type=notify, which

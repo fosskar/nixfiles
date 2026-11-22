@@ -25,6 +25,8 @@
               "labs.section_key_alone" = true;
             };
           };
+        }
+        (lib.optionalAttrs (options.wayland.windowManager or { } ? niri) {
           # niri 26.04 has no org.gnome.Shell GrabAccelerators, so the
           # GlobalShortcuts portal cannot bind; hold mode needs release binds
           # https://redirect.github.com/niri-wm/niri/pull/4744
@@ -36,7 +38,7 @@
             ];
             _props.hotkey-overlay-title = "Toggle Hex dictation";
           };
-        }
+        })
         (lib.optionalAttrs (options.programs ? umbriel) {
           # hex asks the portal for the `section` keysym, which no key types alone
           # on the de layout; the key left of 1 types dead_circumflex there
