@@ -78,7 +78,6 @@ in
         settings = {
           host = listenAddress;
           port = listenPort;
-          metrics = true;
           models-max = 2;
           models-preset = (pkgs.formats.ini { }).generate "llama-cpp-models-preset.ini" {
             "*" = {
@@ -275,15 +274,6 @@ in
           alerts = [ { type = "matrix"; } ];
           interval = "5m";
           conditions = [ "[STATUS] == 200" ];
-        }
-      ];
-
-      # the router answers /metrics only for a named model instance
-      services.telegraf.extraConfig.inputs.prometheus = [
-        {
-          urls = [ "${listenUrl}/metrics?model=${startupModelAlias}" ];
-          metric_version = 2;
-          fieldinclude = [ "llamacpp:*" ];
         }
       ];
 

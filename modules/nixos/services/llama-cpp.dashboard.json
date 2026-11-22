@@ -29,7 +29,7 @@
       "gridPos": {
         "x": 0,
         "y": 0,
-        "w": 4,
+        "w": 5,
         "h": 4
       },
       "fieldConfig": {
@@ -87,9 +87,9 @@
       "title": "gpu memory free",
       "datasource": "VictoriaMetrics",
       "gridPos": {
-        "x": 4,
+        "x": 5,
         "y": 0,
-        "w": 4,
+        "w": 5,
         "h": 4
       },
       "fieldConfig": {
@@ -147,9 +147,9 @@
       "title": "gpu utilization",
       "datasource": "VictoriaMetrics",
       "gridPos": {
-        "x": 8,
+        "x": 10,
         "y": 0,
-        "w": 4,
+        "w": 5,
         "h": 4
       },
       "fieldConfig": {
@@ -199,9 +199,9 @@
       "title": "gpu temperature",
       "datasource": "VictoriaMetrics",
       "gridPos": {
-        "x": 12,
+        "x": 15,
         "y": 0,
-        "w": 4,
+        "w": 5,
         "h": 4
       },
       "fieldConfig": {
@@ -259,7 +259,7 @@
       "title": "gpu power",
       "datasource": "VictoriaMetrics",
       "gridPos": {
-        "x": 16,
+        "x": 20,
         "y": 0,
         "w": 4,
         "h": 4
@@ -299,58 +299,6 @@
         {
           "datasource": "VictoriaMetrics",
           "expr": "nvidia_smi_power_draw",
-          "legendFormat": "",
-          "refId": "A",
-          "range": true
-        }
-      ]
-    },
-    {
-      "type": "stat",
-      "id": 6,
-      "title": "requests processing",
-      "datasource": "VictoriaMetrics",
-      "gridPos": {
-        "x": 20,
-        "y": 0,
-        "w": 4,
-        "h": 4
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "none",
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "wideLayout": true
-      },
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "sum(llamacpp:requests_processing)",
           "legendFormat": "",
           "refId": "A",
           "range": true
@@ -478,236 +426,6 @@
           "expr": "nvidia_smi_power_draw",
           "legendFormat": "watt",
           "refId": "C",
-          "range": true
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "id": 9,
-      "title": "throughput",
-      "datasource": "VictoriaMetrics",
-      "gridPos": {
-        "x": 0,
-        "y": 12,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            }
-          },
-          "min": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "sum(rate(llamacpp:prompt_tokens_total[5m]))",
-          "legendFormat": "prompt tok/s",
-          "refId": "A",
-          "range": true
-        },
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "sum(rate(llamacpp:tokens_predicted_total[5m]))",
-          "legendFormat": "generated tok/s",
-          "refId": "B",
-          "range": true
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "id": 10,
-      "title": "speed per request",
-      "datasource": "VictoriaMetrics",
-      "gridPos": {
-        "x": 12,
-        "y": 12,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            }
-          },
-          "min": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "llamacpp:prompt_tokens_seconds",
-          "legendFormat": "prompt tok/s",
-          "refId": "A",
-          "range": true
-        },
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "llamacpp:predicted_tokens_seconds",
-          "legendFormat": "generate tok/s",
-          "refId": "B",
-          "range": true
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "id": 11,
-      "title": "kv cache",
-      "datasource": "VictoriaMetrics",
-      "gridPos": {
-        "x": 0,
-        "y": 20,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            }
-          },
-          "max": 100,
-          "min": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "llamacpp:kv_cache_usage_ratio * 100",
-          "legendFormat": "usage %",
-          "refId": "A",
-          "range": true
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "id": 12,
-      "title": "requests",
-      "datasource": "VictoriaMetrics",
-      "gridPos": {
-        "x": 12,
-        "y": 20,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "none",
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            }
-          },
-          "min": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "llamacpp:requests_processing",
-          "legendFormat": "processing",
-          "refId": "A",
-          "range": true
-        },
-        {
-          "datasource": "VictoriaMetrics",
-          "expr": "llamacpp:requests_deferred",
-          "legendFormat": "deferred",
-          "refId": "B",
           "range": true
         }
       ]
