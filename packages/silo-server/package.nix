@@ -2,6 +2,8 @@
   lib,
   buildGo127Module,
   fetchFromGitHub,
+  fetchurl,
+  go_1_27,
   fetchPnpmDeps,
   jellyfin-ffmpeg,
   makeWrapper,
@@ -15,14 +17,14 @@
 }:
 let
   # upstream has no tags or releases yet
-  version = "0-unstable-2026-11-19";
-  rev = "c7c155927e98454587375f4c134db73157064a51";
+  version = "0-unstable-2026-11-22";
+  rev = "4d5040effc8d39cc52ef9e92482c4c0bd0552bf0";
 
   src = fetchFromGitHub {
     owner = "Silo-Server";
     repo = "silo-server";
     inherit rev;
-    hash = "sha256-eoZsQPuYZBzQDz/UGaZzeWEtBhzHXv5m6N4XktgxX1E=";
+    hash = "sha256-Q/M36V9RNRxF088xptUuVWEUsskIcMZ9D3VPnBVu1Cc=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -62,12 +64,25 @@ let
       runHook postInstall
     '';
   });
+
+  # upstream and its shunpike module require go 1.27.4; nixpkgs has it in
+  # staging. drop once go_1_27 reaches 1.27.4
+  # https://redirect.github.com/NixOS/nixpkgs/pull/586269
+  go = go_1_27.overrideAttrs (
+    finalAttrs: _: {
+      version = "1.27.4";
+      src = fetchurl {
+        url = "https://go.dev/dl/go${finalAttrs.version}.src.tar.gz";
+        hash = "sha256-c8+4VxrsDAEXdofbhxY9Rqog6XeWcncokaoXZU2aYJk=";
+      };
+    }
+  );
 in
-buildGo127Module {
+(buildGo127Module.override { inherit go; }) {
   pname = "silo-server";
   inherit version src;
 
-  vendorHash = "sha256-4Ac+u3qNZuU4/J+iutOTAILwL033O6hgLo7+YCorMBQ=";
+  vendorHash = "sha256-MLe6C+BzDv089H8DX8tdR+udcZ4JhWQ6wU6FQgB9Ikk=";
 
   nativeBuildInputs = [
     makeWrapper
@@ -76,11 +91,6 @@ buildGo127Module {
   buildInputs = [ vips ];
 
   subPackages = [ "cmd/silo" ];
-
-  # upstream requires go 1.27.4; nixpkgs has 1.27.3
-  postPatch = ''
-    substituteInPlace go.mod --replace-fail 'go 1.27.4' 'go 1.27.3'
-  '';
 
   # web/embed.go embeds web/dist
   preBuild = ''
