@@ -33,6 +33,8 @@
       # one job at a time because the agents share it
       chatModel = "qwen3.6-35b-a3b-mtp";
       aiProvider = "llama-cpp";
+      # writes subtitles from audio; whisper.cpp on the arc gpu in nixworker
+      speechProvider = "whisper-cpp";
       requestsPlugin = "silo.requests.arr";
       autoscanPlugin = "silo.autoscan.arr";
       # requests go to the sonarr and radarr of the arr-stack feature, with
@@ -168,16 +170,24 @@
             # install places it after them in the movie and series chains
             "silo.mdblist".config.account.api_key.fromFile = "${credentialsDir}/mdblist-api-key";
           };
-          ai_providers.${aiProvider} = {
-            type = "custom";
-            # silo refuses a name another provider id has; "llama-cpp" is the
-            # provider silo-sync used to create on nixbox
-            name = "llama.cpp";
-            base_url = "http://${llamaCpp.host}:${toString llamaCpp.port}";
-            capabilities = [
-              "chat"
-              "embeddings"
-            ];
+          ai_providers = {
+            ${aiProvider} = {
+              type = "custom";
+              # silo refuses a name another provider id has; "llama-cpp" is the
+              # provider silo-sync used to create on nixbox
+              name = "llama.cpp";
+              base_url = "http://${llamaCpp.host}:${toString llamaCpp.port}";
+              capabilities = [
+                "chat"
+                "embeddings"
+              ];
+            };
+            # a whisper provider's capabilities are fixed to speech
+            ${speechProvider} = {
+              type = "whisper";
+              name = "whisper.cpp";
+              base_url = flake-self.whisperServer.url;
+            };
           };
         };
 
@@ -488,6 +498,9 @@
                   "catalog.extra_rating_sources": "rt_critic",
                   ${lib.optionalString meilisearch.enable ''"catalog.search.meilisearch.semantic_enabled": "true",''}
                   "subtitle_ai.enabled": "true",
+                  "subtitle_ai.transcribe_enabled": "true",
+                  "ai.speech_provider_id": "${speechProvider}",
+                  "ai.asr_model": "${flake-self.whisperServer.model}",
                   "ai.text_provider_id": "${aiProvider}",
                   "ai.chat_model": "${chatModel}",
                   "ai.reasoning_effort": "low",
