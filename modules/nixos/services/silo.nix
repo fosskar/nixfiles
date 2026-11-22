@@ -32,12 +32,13 @@
       # embeds library items for recommendations
       aiProvider = "llama-cpp";
       # translates subtitles. the local model took 46 s for a batch of 40 lines;
-      # the openrouter key's guardrail allows only zero-retention endpoints of
-      # the provider river, which runs in finland and iceland. the snapshot is
-      # pinned: a "latest" alias can move to a version river does not host, or
-      # to one that refuses reasoning effort "none" as glm-5.3-flash does
+      # the openrouter key's guardrail allows only this model alias and only
+      # zero-retention endpoints of river and inceptron, which run in finland
+      # and iceland. the alias follows new deepseek flash versions: if one
+      # refuses reasoning effort "none" or neither provider hosts it yet,
+      # translations fail until the model is pinned here and in the guardrail
       textProvider = "openrouter";
-      chatModel = "deepseek/deepseek-v4.1-flash-1017";
+      chatModel = "~deepseek/deepseek-flash-latest";
       # writes subtitles from audio; whisper.cpp on the arc gpu in nixworker
       speechProvider = "whisper-cpp";
       requestsPlugin = "silo.requests.arr";
