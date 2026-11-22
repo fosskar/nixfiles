@@ -33,10 +33,11 @@
       aiProvider = "llama-cpp";
       # translates subtitles. the local model took 46 s for a batch of 40 lines;
       # the openrouter key's guardrail allows only zero-retention endpoints of
-      # the provider river, which runs in finland and iceland. that endpoint
-      # answers 400 to reasoning effort "none", so the effort is "low"
+      # the provider river, which runs in finland and iceland. the snapshot is
+      # pinned: a "latest" alias can move to a version river does not host, or
+      # to one that refuses reasoning effort "none" as glm-5.3-flash does
       textProvider = "openrouter";
-      chatModel = "z-ai/glm-5.3-flash";
+      chatModel = "deepseek/deepseek-v4.1-flash-1017";
       # writes subtitles from audio; whisper.cpp on the arc gpu in nixworker
       speechProvider = "whisper-cpp";
       requestsPlugin = "silo.requests.arr";
@@ -521,7 +522,7 @@
                   "ai.asr_model": "${flake-self.whisperServer.model}",
                   "ai.text_provider_id": "${textProvider}",
                   "ai.chat_model": "${chatModel}",
-                  "ai.reasoning_effort": "low",
+                  "ai.reasoning_effort": "none",
                   "ai.max_concurrent_jobs": "2"
                 }
               }' | api PUT /admin/settings -H 'If-Match: *' --data-binary @-)
