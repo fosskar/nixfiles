@@ -22,6 +22,9 @@
       redis = config.services.redis.servers.silo;
       apiUrl = "${listenUrl}/api/v2";
       generators = config.clan.core.vars.generators;
+      # the deployment document reads secrets as silo from these credentials
+      credentialsDir = "/run/credentials/silo.service";
+      settingsFormat = pkgs.formats.json { };
       # catalog search moves to the meilisearch feature when this host has it
       meilisearch = config.services.meilisearch;
       llamaCpp = config.services.llama-cpp.settings;
@@ -29,10 +32,9 @@
       # translates subtitles; the model the llama-cpp router keeps loaded, and
       # one job at a time because the agents share it
       chatModel = "qwen3.6-35b-a3b-mtp";
-      oidcPlugin = "silo.auth.oidc";
+      aiProvider = "llama-cpp";
       requestsPlugin = "silo.requests.arr";
       autoscanPlugin = "silo.autoscan.arr";
-      ratingsPlugin = "silo.mdblist";
       # requests go to the sonarr and radarr of the arr-stack feature, with
       # the profiles and folders seerr used
       requestIntegrations = {
@@ -64,14 +66,19 @@
         };
       };
       arrKeyUnits = map (name: "${name}-api.service") (lib.attrNames requestIntegrations);
-      # the callback path carries the plugin's installation id, a database
-      # serial that only exists after the install, so every id it can
-      # plausibly get is registered
-      oidcRedirectUris = map (id: "https://${localHost}/api/v2/auth/oauth/${toString id}/callback") (
-        lib.range 1 20
-      );
     in
     {
+      options.services.silo.settings = lib.mkOption {
+        inherit (settingsFormat) type;
+        default = { };
+        description = ''
+          silo deployment document, passed as SILO_CONFIG_FILE. it declares
+          official plugins and ai providers; give secrets as
+          `{ fromFile = "<path>"; }`. see
+          https://github.com/Silo-Server/silo-server/blob/main/contracts/plugins/provisioning/v1/schema.json
+        '';
+      };
+
       config = {
         # --- service ---
 
@@ -108,7 +115,71 @@
           '';
         };
 
+        # silo reads SILO_SMTP_*; the shared smtp-env names them SMTP_*
+        clan.core.vars.generators.silo-smtp = {
+          dependencies = [ "smtp" ];
+          files."smtp.env".restartUnits = [ "silo.service" ];
+          runtimeInputs = [ pkgs.gnused ];
+          script = ''
+            sed -n \
+              -e 's/^SMTP_HOST=/SILO_SMTP_HOST=/p' \
+              -e 's/^SMTP_PORT=/SILO_SMTP_PORT=/p' \
+              -e 's/^SMTP_USER=/SILO_SMTP_USER=/p' \
+              -e 's/^SMTP_PASSWORD=/SILO_SMTP_PASSWORD=/p' \
+              -e 's/^SMTP_FROM=/SILO_SMTP_FROM_ADDRESS=/p' \
+              "$in/smtp/smtp-env" > "$out/smtp.env"
+          '';
+        };
+
         services.redis.servers.silo.enable = true;
+
+        services.silo.settings = {
+          apiVersion = 1;
+          # unpinned, so silo keeps updating them
+          plugins = {
+            "silo.tmdb" = { };
+            "silo.tvdb" = { };
+            "silo.theintrodb" = { };
+            "silo.auth.oidc" = {
+              config = {
+                connection = {
+                  issuer_url = "https://auth.${flake-self.domains.public}";
+                  client_id = "silo";
+                  client_secret.fromFile = "${credentialsDir}/oidc-client-secret";
+                  request_groups_scope = true;
+                };
+                display_name.value = "Authelia";
+                access.admin_groups = "admin";
+              };
+              auth_binding = {
+                capability_id = "oidc";
+                enabled = true;
+                display_order = 0;
+                default_login = false;
+                auto_provision = true;
+                # <public url>/api/v2/auth/oauth/callback, without the installation id
+                callback = "stable";
+              };
+            };
+            # silo polls sonarr and radarr for imports and rescans those paths
+            "${autoscanPlugin}" = { };
+            # ratings: tmdb only has its own score. mdblist adds imdb and
+            # rotten tomatoes to titles the other providers matched; a fresh
+            # install places it after them in the movie and series chains
+            "silo.mdblist".config.account.api_key.fromFile = "${credentialsDir}/mdblist-api-key";
+          };
+          ai_providers.${aiProvider} = {
+            type = "custom";
+            # silo refuses a name another provider id has; "llama-cpp" is the
+            # provider silo-sync used to create on nixbox
+            name = "llama.cpp";
+            base_url = "http://${llamaCpp.host}:${toString llamaCpp.port}";
+            capabilities = [
+              "chat"
+              "embeddings"
+            ];
+          };
+        };
 
         systemd.services.silo = {
           description = "silo media server";
@@ -146,6 +217,10 @@
             SILO_SMTP_ENABLED = "true";
             # port 587 is starttls
             SILO_SMTP_SECURITY = "starttls";
+            SILO_CONFIG_FILE = settingsFormat.generate "silo-config.json" config.services.silo.settings;
+            SILO_RECOMMENDATIONS_ENABLED = "true";
+            SILO_RECOMMENDATIONS_PROVIDER = aiProvider;
+            SILO_RECOMMENDATIONS_MODEL = embeddingModel;
           }
           // lib.optionalAttrs meilisearch.enable {
             SILO_SEARCH_PROVIDER = "meilisearch";
@@ -158,17 +233,14 @@
             WorkingDirectory = dataDir;
             EnvironmentFile = [
               generators.silo.files."secret.env".path
-              generators.smtp.files."smtp-env".path
+              generators.silo-smtp.files."smtp.env".path
             ]
             ++ lib.optional meilisearch.enable generators.silo-meilisearch.files."meilisearch.env".path;
-            # silo reads SILO_SMTP_*; the shared smtp-env names them SMTP_*
-            ExecStart = pkgs.writeShellScript "silo-start" ''
-              set -u
-              export SILO_SMTP_HOST="$SMTP_HOST" SILO_SMTP_PORT="$SMTP_PORT" \
-                SILO_SMTP_USER="$SMTP_USER" SILO_SMTP_PASSWORD="$SMTP_PASSWORD" \
-                SILO_SMTP_FROM_ADDRESS="$SMTP_FROM"
-              exec ${lib.getExe pkgs.local.silo-server}
-            '';
+            LoadCredential = [
+              "oidc-client-secret:${generators.silo-oidc.files."oauth-client-secret".path}"
+              "mdblist-api-key:${generators.silo-mdblist.files.api-key.path}"
+            ];
+            ExecStart = lib.getExe pkgs.local.silo-server;
             # the restart button in the admin ui exits cleanly
             Restart = "always";
             # transcodes go to /tmp/silo-transcode
@@ -193,7 +265,7 @@
             type = "hidden";
             persist = true;
           };
-          files.api-key.restartUnits = [ "silo-sync.service" ];
+          files.api-key.restartUnits = [ "silo.service" ];
         };
 
         clan.core.vars.generators.silo-oidc = {
@@ -202,7 +274,7 @@
               owner = "authelia-main";
               group = "authelia-main";
             };
-            "oauth-client-secret".restartUnits = [ "silo-sync.service" ];
+            "oauth-client-secret".restartUnits = [ "silo.service" ];
           };
 
           runtimeInputs = [
@@ -224,7 +296,7 @@
             public = false;
             consent_mode = "implicit";
             authorization_policy = "users";
-            redirect_uris = oidcRedirectUris;
+            redirect_uris = [ "https://${localHost}/api/v2/auth/oauth/callback" ];
             scopes = [
               "openid"
               "profile"
@@ -249,11 +321,7 @@
             Type = "oneshot";
             RemainAfterExit = true;
             DynamicUser = true;
-            LoadCredential = [
-              "api-key:${generators.silo-api.files.api-key.path}"
-              "oidc-client-secret:${generators.silo-oidc.files."oauth-client-secret".path}"
-              "mdblist-api-key:${generators.silo-mdblist.files.api-key.path}"
-            ];
+            LoadCredential = [ "api-key:${generators.silo-api.files.api-key.path}" ];
             ProtectSystem = "strict";
             ProtectHome = true;
             PrivateDevices = true;
@@ -301,27 +369,20 @@
                 exit 1
               fi
 
-              # ai provider: the llama-cpp router on this host
-              provider_fields=${
-                lib.escapeShellArg (
-                  builtins.toJSON {
-                    name = "llama-cpp";
-                    base_url = "http://${llamaCpp.host}:${toString llamaCpp.port}";
-                    capabilities = [
-                      "chat"
-                      "embeddings"
-                    ];
-                  }
-                )
-              }
-              provider=$(api GET /admin/ai/providers | jq -r '.providers[] | select(.name == "llama-cpp") | .id')
-              if [ -n "$provider" ]; then
-                api PATCH "/admin/ai/providers/$provider" --data-binary "$provider_fields" >/dev/null
-              else
-                provider=$(jq -c '. + {type: "custom"}' <<<"$provider_fields" \
-                  | api POST /admin/ai/providers --data-binary @- | jq -re .id)
+              # the deployment document's plugins install after the listener starts
+              for _ in $(seq 150); do
+                status=$(api GET /admin/plugins/provisioning-status)
+                if jq -e 'all(.items[]; .state != "pending")' <<<"$status" >/dev/null; then
+                  break
+                fi
+                sleep 2
+              done
+              # "held" is a plugin an administrator disabled
+              failed=$(jq -r '.items[] | select(.state == "pending" or .state == "refused") | "\(.plugin_id): \(.state) \(.detail)"' <<<"$status")
+              if [ -n "$failed" ]; then
+                echo "$failed" >&2
+                exit 1
               fi
-              echo "ai provider llama-cpp is $provider"
 
               # prints the installation id of a plugin, installing it when missing
               plugin() {
@@ -339,25 +400,6 @@
                 fi
                 printf '%s' "$id"
               }
-
-              # oidc plugin
-              installation=$(plugin ${oidcPlugin})
-              jq -n --rawfile secret "$CREDENTIALS_DIRECTORY/oidc-client-secret" '{
-                key: "connection",
-                value: {
-                  issuer_url: "https://auth.${flake-self.domains.public}",
-                  client_id: "silo",
-                  client_secret: $secret,
-                  request_groups_scope: true
-                }
-              }' | api PUT "/admin/plugins/installations/$installation/config" --data-binary @-
-              api PUT "/admin/plugins/installations/$installation/config" \
-                --data-binary '{"key": "display_name", "value": {"value": "Authelia"}}'
-              api PUT "/admin/plugins/installations/$installation/config" \
-                --data-binary '{"key": "access", "value": {"admin_groups": "admin"}}'
-              api PUT "/admin/plugins/installations/$installation/auth-binding" \
-                --data-binary '{"capability_id": "oidc", "enabled": true, "display_order": 0, "default_login": false, "auto_provision": true}'
-              echo "configured ${oidcPlugin} installation $installation"
 
               # requests: the router plugin is in the approved community catalog
               api PUT /admin/plugins/catalog-settings -H 'If-Match: *' \
@@ -405,9 +447,8 @@
                 | api PUT /admin/request-settings -H 'If-Match: *' --data-binary @- >/dev/null
               echo "enabled requests"
 
-              # autoscan: silo polls sonarr and radarr for imports and rescans
-              # those paths, through the request integrations' credentials
-              plugin ${autoscanPlugin} >/dev/null
+              # autoscan reads sonarr and radarr through the request
+              # integrations' credentials
               autoscan() {
                 name=$1
                 connection=$(api GET /admin/autoscan/connections \
@@ -441,39 +482,13 @@
                 | api PUT /admin/autoscan/settings -H 'If-Match: *' --data-binary @- >/dev/null
               echo "enabled autoscan"
 
-              # ratings: tmdb only has its own score. mdblist adds imdb and
-              # rotten tomatoes to titles the other providers matched, so it
-              # goes last in the movie and series chains
-              ratings=$(plugin ${ratingsPlugin})
-              jq -n --rawfile key "$CREDENTIALS_DIRECTORY/mdblist-api-key" \
-                '{key: "account", value: {api_key: ($key | sub("\n+$"; ""))}}' \
-                | api PUT "/admin/plugins/installations/$ratings/config" --data-binary @-
-              for library in $(api GET /libraries | jq -r '.items[] | select(.type == "movies" or .type == "series") | .id'); do
-                api GET "/libraries/$library/providers" | jq -c --arg id "$ratings" '
-                  .levels |= map(
-                    if (.content_level == "movie" or .content_level == "series")
-                      and (any(.entries[]; .capability_id == "mdblist") | not)
-                    then .entries += [{
-                      plugin_installation_id: $id,
-                      capability_id: "mdblist",
-                      priority: ((.entries | map(.priority) | max) + 1),
-                      enabled: true
-                    }]
-                    else . end
-                    | .entries |= map({plugin_installation_id, capability_id, priority, enabled}))' \
-                  | api PUT "/libraries/$library/providers" -H 'If-Match: *' --data-binary @- >/dev/null
-              done
-              echo "synced ${ratingsPlugin}"
-
-              result=$(jq -n --arg provider "$provider" '{
+              # no environment variables exist for these
+              result=$(jq -n '{
                 values: {
                   "catalog.extra_rating_sources": "rt_critic",
-                  "recommendations.enabled": "true",
-                  "recommendations.embedding_provider_id": $provider,
-                  "recommendations.embedding_model": "${embeddingModel}",
                   ${lib.optionalString meilisearch.enable ''"catalog.search.meilisearch.semantic_enabled": "true",''}
                   "subtitle_ai.enabled": "true",
-                  "ai.text_provider_id": $provider,
+                  "ai.text_provider_id": "${aiProvider}",
                   "ai.chat_model": "${chatModel}",
                   "ai.reasoning_effort": "low",
                   "ai.max_concurrent_jobs": "1"
