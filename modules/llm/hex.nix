@@ -19,6 +19,8 @@
               indicator_position = "bottom";
               "labs.live_text" = true;
               "labs.spoken_symbols" = true;
+              "labs.spoken_formatting" = true;
+              "labs.filler_words" = true;
               "labs.live_typing" = true;
               "labs.section_key_alone" = true;
             };
