@@ -20,17 +20,6 @@
     let
       inherit (flake-self.whisperServer) port;
       listenAddress = flake-self.hosts.${config.networking.hostName}.lan;
-      # with vad, 1.9.5 returns word times on the vad-compressed timeline
-      # while segment times are mapped back; silo cuts cues by word.
-      # https://redirect.github.com/ggml-org/whisper.cpp/issues/4046
-      package = pkgs.whisper-cpp-vulkan.overrideAttrs (old: {
-        patches = old.patches or [ ] ++ [ ./whisper-server-vad-word-times.patch ];
-      });
-      # skips music and silence, where whisper invents text
-      vadModel = pkgs.fetchurl {
-        url = "https://huggingface.co/ggml-org/whisper-vad/resolve/9ffd54a1e1ee413ddf265af9913beaf518d1639b/ggml-silero-v6.2.0.bin";
-        hash = "sha256-KqJpt4XutTqCmDogUB3ffB2cSOM6tjpBORrGyff7aYc=";
-      };
       model = pkgs.fetchurl {
         url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-large-v3-turbo.bin";
         hash = "sha256-H8cPd0046xaZk6w5Huo1fvR8iHV+9y7llDh5t+jivGk=";
@@ -45,13 +34,12 @@
         # only the intel icd, so the amd igpu is not exposed and the arc is Vulkan0
         environment.VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json";
         serviceConfig = {
+          # no --vad: with it the word times stay on the vad-compressed
+          # timeline while segment times do not, and silo cuts cues by word
           ExecStart = lib.escapeShellArgs [
-            (lib.getExe' package "whisper-server")
+            (lib.getExe' pkgs.whisper-cpp-vulkan "whisper-server")
             "--model"
             model
-            "--vad"
-            "--vad-model"
-            vadModel
             "--language"
             "auto"
             "--host"
