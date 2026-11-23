@@ -6,11 +6,11 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencloud-web-excalidraw";
-  version = "1.1.0";
+  version = "1.2.0";
 
   src = fetchzip {
     url = "https://github.com/opencloud-eu/web-extensions/releases/download/excalidraw-v${finalAttrs.version}/excalidraw-${finalAttrs.version}.zip";
-    hash = "sha256-aVXIg6+zxNXW41VqZJDf9zjsnbMU6F7YaEdrgtj6zoY=";
+    hash = "sha256-9t/WHVbTWrWm6o96vjidwIQtP1+JCCqmKxlnwZUAjnY=";
   };
 
   dontConfigure = true;
