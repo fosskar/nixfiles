@@ -271,6 +271,32 @@
           files.api-key.restartUnits = [ "silo-sync.service" ];
         };
 
+        # online subtitle search; opensubtitles needs a login, subsource a key
+        clan.core.vars.generators.silo-subtitles = {
+          prompts = {
+            opensubtitles-username = {
+              description = "opensubtitles.com username";
+              type = "line";
+              persist = true;
+            };
+            opensubtitles-password = {
+              description = "opensubtitles.com password";
+              type = "hidden";
+              persist = true;
+            };
+            subsource-api-key = {
+              description = "subsource api key (https://subsource.net, profile, api)";
+              type = "hidden";
+              persist = true;
+            };
+          };
+          files = {
+            opensubtitles-username.restartUnits = [ "silo-sync.service" ];
+            opensubtitles-password.restartUnits = [ "silo-sync.service" ];
+            subsource-api-key.restartUnits = [ "silo-sync.service" ];
+          };
+        };
+
         clan.core.vars.generators.silo-mdblist = {
           prompts.api-key = {
             description = "mdblist api key (https://mdblist.com/preferences/#api)";
@@ -333,7 +359,12 @@
             Type = "oneshot";
             RemainAfterExit = true;
             DynamicUser = true;
-            LoadCredential = [ "api-key:${generators.silo-api.files.api-key.path}" ];
+            LoadCredential = [
+              "api-key:${generators.silo-api.files.api-key.path}"
+              "opensubtitles-username:${generators.silo-subtitles.files.opensubtitles-username.path}"
+              "opensubtitles-password:${generators.silo-subtitles.files.opensubtitles-password.path}"
+              "subsource-api-key:${generators.silo-subtitles.files.subsource-api-key.path}"
+            ];
             ProtectSystem = "strict";
             ProtectHome = true;
             PrivateDevices = true;
@@ -493,6 +524,23 @@
               api GET /admin/autoscan/settings | jq -c '.enabled = true' \
                 | api PUT /admin/autoscan/settings -H 'If-Match: *' --data-binary @- >/dev/null
               echo "enabled autoscan"
+
+              # subtitle providers: reads a provider configuration from stdin and
+              # saves it with the validator silo returns for the stored one
+              subtitle_provider() {
+                api GET "/admin/subtitle-providers/$1" -o /dev/null -D /tmp/subtitle-provider.headers
+                etag=$(tr -d '\r' < /tmp/subtitle-provider.headers | sed -n 's/^[Ee][Tt]ag: //p')
+                api PUT "/admin/subtitle-providers/$1" -H "If-Match: $etag" --data-binary @- >/dev/null
+                echo "enabled subtitle provider $1"
+              }
+              jq -n --rawfile username "$CREDENTIALS_DIRECTORY/opensubtitles-username" \
+                --rawfile password "$CREDENTIALS_DIRECTORY/opensubtitles-password" '{
+                  enabled: true,
+                  username: ($username | sub("\n+$"; "")),
+                  password: ($password | sub("\n+$"; ""))
+                }' | subtitle_provider opensubtitles
+              jq -n --rawfile key "$CREDENTIALS_DIRECTORY/subsource-api-key" \
+                '{enabled: true, api_key: ($key | sub("\n+$"; ""))}' | subtitle_provider subsource
 
               # no environment variables exist for these
               result=$(jq -n '{
