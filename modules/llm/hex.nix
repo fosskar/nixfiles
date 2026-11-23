@@ -18,9 +18,7 @@
               recording_audio_behavior = "do_nothing";
               indicator_position = "bottom";
               "labs.live_text" = true;
-              "labs.vocabulary_biasing" = true;
               "labs.spoken_symbols" = true;
-              "labs.appearance_theme" = "dark";
               "labs.live_typing" = true;
               "labs.section_key_alone" = true;
             };
