@@ -72,10 +72,16 @@
           wantedBy = [ "multi-user.target" ];
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
+          # python plugins run through python3 from PATH
+          path = [ pkgs.python3 ];
           environment = {
             ROOT_APP_DIR = stateDir;
             BIND_HOST = listenAddress;
             PORT = toString listenPort;
+            # unset, the server calls itself a dev build and always offers an update
+            COMMIT_TAG = "v${pkgs.local.droppedneedle.version}";
+            # the daily scan runs at its set time in this zone; the host is on utc
+            TZ = "Europe/Berlin";
           };
           serviceConfig = {
             ExecStart = lib.getExe pkgs.local.droppedneedle;
