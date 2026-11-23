@@ -380,6 +380,7 @@
                 lib.makeBinPath [
                   pkgs.coreutils
                   pkgs.curl
+                  pkgs.gnused
                   pkgs.jq
                 ]
               }
