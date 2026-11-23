@@ -1,16 +1,15 @@
 {
   lib,
   stdenvNoCC,
+  rustPlatform,
   fetchFromGitHub,
   fetchPnpmDeps,
   pnpm_10,
   pnpmConfigHook,
   nodejs,
-  python3,
+  cmake,
   makeBinaryWrapper,
-  chromaprint,
   ffmpeg,
-  loudgain,
   nix-update-script,
 }:
 let
@@ -43,6 +42,9 @@ let
       pnpmConfigHook
     ];
 
+    # the server stamps BASE_PATH into the placeholder at startup and refuses a build without it
+    env.DROPPEDNEEDLE_BASE_PATH_PLACEHOLDER = "1";
+
     buildPhase = ''
       runHook preBuild
       pnpm run build
@@ -55,60 +57,54 @@ let
       runHook postInstall
     '';
   });
-
-  python = python3.withPackages (
-    packages:
-    [
-      packages.aiofiles
-      packages.bcrypt
-      packages.cryptography
-      packages.fastapi
-      packages.h2
-      packages.httpx
-      packages.msgspec
-      packages.mutagen
-      packages.packaging
-      packages.pillow
-      packages.pydantic
-      packages.pydantic-settings
-      packages.python-dotenv
-      packages.python-multipart
-      packages.rapidfuzz
-      packages.starlette
-      packages.unidecode
-      packages.uvicorn
-    ]
-    ++ packages.httpx.optional-dependencies.http2
-    ++ packages.uvicorn.optional-dependencies.standard
-  );
 in
-stdenvNoCC.mkDerivation {
+rustPlatform.buildRustPackage {
   inherit pname version src;
 
-  nativeBuildInputs = [ makeBinaryWrapper ];
+  # the build also reads ../sdk and ../frontend/src/lib/stores/customCssRules.json
+  sourceRoot = "${src.name}/server";
 
-  dontBuild = true;
+  cargoHash = "sha256-4I5YjmqGwPEwteBKuK0qI9FkAvQvWXaK29dvJ6Q70Dk=";
 
-  installPhase = ''
-    runHook preInstall
+  cargoBuildFlags = [
+    "-p"
+    "droppedneedle"
+    "-p"
+    "droppedneedle-tool"
+  ];
+  # upstream's suite has timing windows a loaded builder misses, and tests
+  # that need debug builds or files outside the sandbox
+  doCheck = false;
 
-    mkdir -p $out/share/droppedneedle/frontend
-    cp -r backend $out/share/droppedneedle/backend
-    rm -r $out/share/droppedneedle/backend/tests
-    ln -s ${frontend} $out/share/droppedneedle/frontend/build
+  # opusic-sys builds its bundled libopus through the cmake crate
+  nativeBuildInputs = [
+    cmake
+    makeBinaryWrapper
+  ];
+  dontUseCmakeConfigure = true;
 
-    makeWrapper ${lib.getExe python} $out/bin/droppedneedle \
-      --prefix PYTHONPATH : $out/share/droppedneedle/backend \
-      --prefix PATH : ${
-        lib.makeBinPath [
-          chromaprint
-          ffmpeg
-          loudgain
-        ]
-      } \
-      --add-flags "-m maintenance.automatic_upgrade --start-target"
+  # build the bundled sqlite with the flags of upstream's Dockerfile; the
+  # cargo setup hook would link the system sqlite instead
+  env.LIBSQLITE3_FLAGS = "-DSQLITE_DEFAULT_MEMSTATUS=0";
+  postConfigure = ''
+    export LIBSQLITE3_SYS_USE_PKG_CONFIG=0
+  '';
 
-    runHook postInstall
+  # the web ui is copied out of the read-only store and then rewritten in place,
+  # and fs::copy keeps the 0444 mode
+  postPatch = ''
+    substituteInPlace src/web.rs \
+      --replace-fail \
+        'std::fs::copy(&source, &target).map_err(io_error(&source))?;' \
+        'std::fs::copy(&source, &target).map_err(io_error(&source))?;
+            std::fs::set_permissions(&target, std::os::unix::fs::PermissionsExt::from_mode(0o644)).map_err(io_error(&target))?;'
+  '';
+
+  # the server finds droppedneedle-tool beside its own executable
+  postInstall = ''
+    wrapProgram $out/bin/droppedneedle \
+      --prefix PATH : ${lib.makeBinPath [ ffmpeg ]} \
+      --set-default DROPPEDNEEDLE_STATIC_DIR ${frontend}
   '';
 
   passthru = {
@@ -124,7 +120,7 @@ stdenvNoCC.mkDerivation {
   meta = {
     description = "Self-hosted music request and library engine";
     homepage = "https://droppedneedle.com";
-    license = lib.licenses.agpl3Only;
+    license = lib.licenses.agpl3Plus;
     mainProgram = "droppedneedle";
     platforms = lib.platforms.linux;
   };
