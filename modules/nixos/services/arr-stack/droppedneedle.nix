@@ -21,8 +21,7 @@
       generators = config.clan.core.vars.generators;
       sabnzbd = config.services.sabnzbd.settings.misc;
       prowlarr = config.services.prowlarr.settings.server;
-      # the admin account droppedneedle-sync signs in as. the listenbrainz link
-      # belongs to an account, so this is also the account that gets it
+      # the admin account droppedneedle-sync signs in as
       syncUser = "simon";
       keyUnits = [
         "sabnzbd-api.service"
@@ -58,28 +57,8 @@
               type = "hidden";
               persist = true;
             };
-            acoustid-api-key = {
-              description = "acoustid application api key (https://acoustid.org/new-application)";
-              type = "hidden";
-              persist = true;
-            };
-            listenbrainz-username = {
-              description = "listenbrainz username";
-              type = "line";
-              persist = true;
-            };
-            listenbrainz-token = {
-              description = "listenbrainz user token (https://listenbrainz.org/settings/)";
-              type = "hidden";
-              persist = true;
-            };
           };
-          files = {
-            password.restartUnits = [ "droppedneedle-sync.service" ];
-            acoustid-api-key.restartUnits = [ "droppedneedle-sync.service" ];
-            listenbrainz-username.restartUnits = [ "droppedneedle-sync.service" ];
-            listenbrainz-token.restartUnits = [ "droppedneedle-sync.service" ];
-          };
+          files.password.restartUnits = [ "droppedneedle-sync.service" ];
         };
 
         # --- authelia ---
@@ -159,9 +138,6 @@
             ];
             LoadCredential = [
               "password:${generators.droppedneedle-sync.files.password.path}"
-              "acoustid-api-key:${generators.droppedneedle-sync.files.acoustid-api-key.path}"
-              "listenbrainz-username:${generators.droppedneedle-sync.files.listenbrainz-username.path}"
-              "listenbrainz-token:${generators.droppedneedle-sync.files.listenbrainz-token.path}"
               "oidc-client-secret:${generators.droppedneedle.files."oidc-client-secret".path}"
             ];
             ProtectSystem = "strict";
@@ -240,21 +216,6 @@
                 api_key: ($key | sub("\n+$"; ""))
               }' | api PUT /settings/prowlarr/config --data-binary @- >/dev/null
               echo "synced prowlarr"
-
-              # the library section also holds the folders and the naming
-              # script, which stay as set in the ui
-              api GET /settings/library | jq -c --rawfile key "$CREDENTIALS_DIRECTORY/acoustid-api-key" '{
-                expected_policy_revision: .policy_revision,
-                settings: ({library_roots, staging_path, naming_script, acoustid_api_key, enabled} | .acoustid_api_key = ($key | sub("\n+$"; "")))
-              }' | api PUT /settings/library --data-binary @- >/dev/null
-              echo "synced the acoustid key"
-
-              # last, because droppedneedle checks the token with listenbrainz
-              jq -n --rawfile username "$CREDENTIALS_DIRECTORY/listenbrainz-username" \
-                --rawfile token "$CREDENTIALS_DIRECTORY/listenbrainz-token" \
-                '{username: ($username | sub("\n+$"; "")), user_token: ($token | sub("\n+$"; ""))}' \
-                | api PUT /me/connections/listenbrainz --data-binary @- >/dev/null
-              echo "linked listenbrainz for ${syncUser}"
             '';
           };
         };
