@@ -6,11 +6,11 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "jellyfin-plugin-intro-skipper";
-  version = "12.0.6.0";
+  version = "12.0.8.0";
 
   src = fetchzip {
     url = "https://github.com/intro-skipper/intro-skipper/releases/download/12.0/v${finalAttrs.version}/intro-skipper-v${finalAttrs.version}.zip";
-    hash = "sha256-g8Oiyt4NK8pyCXt2M1B7EpEL71kUGGkxtXSzKndUuOQ=";
+    hash = "sha256-cX7ygtQOhJdvAcVrpMpdxpyOmZMPQeCAExswme5J18A=";
     stripRoot = false;
   };
 
