@@ -19,7 +19,8 @@
       servers = {
         primary.priority = 0;
         secondary.priority = 1;
-        tertiary.priority = 1;
+        tertiary.priority = 2;
+        quaternary.priority = 3;
       };
 
       # field -> prompt wording. clan only shows a description when it differs
