@@ -15,13 +15,13 @@
 }:
 let
   pname = "droppedneedle";
-  version = "2.15.0";
+  version = "3.1.0";
 
   src = fetchFromGitHub {
     owner = "DroppedNeedle";
     repo = "DroppedNeedle";
     tag = "v${version}";
-    hash = "sha256-qj7R8UnCVwsO5YkmsM3KiyS8gsaNrkmee3KypW72o2M=";
+    hash = "sha256-dgL8w8P6e2hcpWUMGHwM8k+HCJhzETiSFVM53YDSoNU=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -34,7 +34,7 @@ let
       sourceRoot = "${src.name}/frontend";
       pnpm = pnpm_10;
       fetcherVersion = 3;
-      hash = "sha256-JCOBjvv5LlBQyok+OLwj3d+2piX7FrU/sAmTBw5IDe0=";
+      hash = "sha256-VCC8/D948fx+cgaIMhX/M7etOysAWXEFa/wKJ/TXNbE=";
     };
 
     nativeBuildInputs = [
