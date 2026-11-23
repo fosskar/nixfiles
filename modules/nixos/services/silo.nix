@@ -35,8 +35,8 @@
       # off, with "low" a batch took 72 s
       aiProvider = "llama-cpp";
       chatModel = "qwen3.6-35b-a3b-mtp";
-      # writes subtitles from audio; whisper.cpp on the arc gpu in nixworker
-      speechProvider = "whisper-cpp";
+      # writes subtitles from audio; the whisperServer feature on this host
+      speechProvider = "whisper";
       requestsPlugin = "silo.requests.arr";
       autoscanPlugin = "silo.autoscan.arr";
       # requests go to the sonarr and radarr of the arr-stack feature, with
@@ -187,7 +187,7 @@
             # a whisper provider's capabilities are fixed to speech
             ${speechProvider} = {
               type = "whisper";
-              name = "whisper.cpp";
+              name = "faster-whisper";
               base_url = flake-self.whisperServer.url;
             };
           };

@@ -50,6 +50,7 @@
     self.modules.nixos.microbin
     self.modules.nixos.larapaper
     self.modules.nixos.silo
+    self.modules.nixos.whisperServer
     self.modules.nixos.meilisearch
   ]
   ++ (nflib.scanPaths ./. { });

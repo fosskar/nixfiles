@@ -1,17 +1,18 @@
 { config, ... }:
 {
-  # read through flake-self by consumers on other hosts, such as silo
+  # read through flake-self by consumers such as silo
   flake.whisperServer = {
     port = 8178;
-    url = "http://${config.flake.hosts.nixworker.lan}:${toString config.flake.whisperServer.port}";
+    url = "http://127.0.0.1:${toString config.flake.whisperServer.port}";
     # the server loads one model and ignores the name a request sends
     model = "whisper-large-v3-turbo";
   };
 
-  # openai-style speech-to-text with timed segments, on the arc gpu
+  # openai-style speech-to-text with whole words and word times, on the
+  # nvidia gpu. whisper.cpp returns sub-word tokens as words, which silo
+  # joins with spaces
   flake.modules.nixos.whisperServer =
     {
-      config,
       flake-self,
       lib,
       pkgs,
@@ -19,43 +20,68 @@
     }:
     let
       inherit (flake-self.whisperServer) port;
-      listenAddress = flake-self.hosts.${config.networking.hostName}.lan;
-      model = pkgs.fetchurl {
-        url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-large-v3-turbo.bin";
-        hash = "sha256-H8cPd0046xaZk6w5Huo1fvR8iHV+9y7llDh5t+jivGk=";
+      # plain nixpkgs with cuda: the nixos-cuda cache has these builds. this
+      # host's own cuda package set would compile onnxruntime, opencv and more
+      cudaPkgs = import pkgs.path {
+        inherit (pkgs.stdenv.hostPlatform) system;
+        config = {
+          allowUnfree = true;
+          cudaSupport = true;
+        };
       };
+      server = cudaPkgs.writers.writePython3Bin "whisper-server" {
+        libraries = [
+          cudaPkgs.python3Packages.faster-whisper
+          cudaPkgs.python3Packages.fastapi
+          cudaPkgs.python3Packages.python-multipart
+          cudaPkgs.python3Packages.uvicorn
+        ];
+      } (builtins.readFile ./whisper-server.py);
+      modelRepo = "https://huggingface.co/mobiuslabsgmbh/faster-whisper-large-v3-turbo/resolve/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf";
+      model = pkgs.linkFarm "faster-whisper-large-v3-turbo" (
+        lib.mapAttrs
+          (
+            name: hash:
+            pkgs.fetchurl {
+              url = "${modelRepo}/${name}";
+              inherit hash;
+            }
+          )
+          {
+            "config.json" = "sha256-sCU+psDTvqax4Z6RoCrP07U/RGc2Lvy1o+axbJs6m34=";
+            "model.bin" = "sha256-52Yg+D1fW2nv09h+PcGAwb0h35++us/UM15eHvzAGNo=";
+            "preprocessor_config.json" = "sha256-fMxixvJ2WvHztGwAybWJRCaDWgUCHIucAe7LbftUJxE=";
+            "tokenizer.json" = "sha256-KXsTNyrEORYoVkT7loet08xi7ioa22DaPcJcyUwYcf0=";
+            "vocabulary.json" = "sha256-xpJg8qsm1lm3w5j5orK0jtDfFsO0fXMmeC/Zy6cWkME=";
+          }
+      );
     in
     {
       systemd.services.whisper-server = {
-        description = "whisper.cpp speech-to-text server";
+        description = "faster-whisper speech-to-text server";
         wantedBy = [ "multi-user.target" ];
-        after = [ "network-online.target" ];
-        wants = [ "network-online.target" ];
-        # only the intel icd, so the amd igpu is not exposed and the arc is Vulkan0
-        environment.VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json";
+        environment = {
+          WHISPER_HOST = "127.0.0.1";
+          WHISPER_PORT = toString port;
+          WHISPER_MODEL = model;
+          # the model takes 1356 MiB of the 2932 MiB llama-cpp leaves free,
+          # and a 4k transcode up to 1390 MiB; it loads in 2 s
+          WHISPER_IDLE_SECONDS = "60";
+        };
         serviceConfig = {
-          # no --vad: with it the word times stay on the vad-compressed
-          # timeline while segment times do not, and silo cuts cues by word
-          ExecStart = lib.escapeShellArgs [
-            (lib.getExe' pkgs.whisper-cpp-vulkan "whisper-server")
-            "--model"
-            model
-            "--language"
-            "auto"
-            "--host"
-            listenAddress
-            "--port"
-            (toString port)
-            "--inference-path"
-            "/v1/audio/transcriptions"
-          ];
+          ExecStart = lib.getExe server;
           DynamicUser = true;
-          SupplementaryGroups = [ "render" ];
-          Restart = "on-failure";
-          RestartSec = 5;
+          # the server exits when idle to free the vram
+          Restart = "always";
+          RestartSec = 1;
 
           CapabilityBoundingSet = "";
-          DeviceAllow = [ "char-drm rw" ];
+          DeviceAllow = [
+            "char-nvidia-uvm"
+            "char-nvidia-frontend"
+            "char-nvidia-caps"
+            "char-nvidiactl"
+          ];
           DevicePolicy = "closed";
           LockPersonality = true;
           NoNewPrivileges = true;
@@ -72,7 +98,6 @@
             "AF_INET"
             "AF_INET6"
             "AF_UNIX"
-            "AF_NETLINK"
           ];
           RestrictNamespaces = true;
           RestrictRealtime = true;
@@ -85,12 +110,6 @@
           UMask = "0077";
         };
       };
-
-      # no authentication, and /load reads any model path; only silo's host
-      # may connect
-      networking.firewall.extraInputRules = ''
-        ip saddr ${flake-self.hosts.nixbox.lan} tcp dport ${toString port} accept
-      '';
 
       services.gatus.settings.endpoints = [
         {
