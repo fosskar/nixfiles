@@ -88,6 +88,8 @@
             "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG7nahd/01skftk7ujmj2F2T8vzqUH/UWqQViSz7XEVaQbPIEYTwR6V/TpFx54wKlzJA75BDV+fHIBJsmhNzd3U="
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMrLx75Wq6NNCZrKdTRMCs2dD9TJ61WYVwRRqBRpofpd"
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEgzEmF5ShOwD/c0KohR2SvNoDqmkhffcSPCw0w6WBuC"
+            # phonetpm
+            "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBA4qpyAJl0h2gsRP1vLiCjuo+SCXwJ24jEMviE6tMouu/pR+3lnuG+RRNqaZ3MpeiahOYnbZxDK7hsTY9VlA1Mk="
           ];
         };
         extraModules = [ "${self}/users/workspace" ];
