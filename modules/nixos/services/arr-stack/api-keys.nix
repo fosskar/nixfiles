@@ -20,7 +20,6 @@
       sources = {
         sonarr = arrConfig config.services.sonarr.user "/var/lib/sonarr/.config/NzbDrone/config.xml";
         radarr = arrConfig config.services.radarr.user "/var/lib/radarr/.config/Radarr/config.xml";
-        lidarr = arrConfig config.services.lidarr.user "/var/lib/lidarr/.config/Lidarr/config.xml";
         chaptarr = arrConfig config.services.chaptarr.user "${config.services.chaptarr.dataDir}/config.xml";
         sabnzbd = {
           user = config.services.sabnzbd.user;
@@ -35,6 +34,9 @@
             StateDirectory = "prowlarr";
           };
         };
+      }
+      // lib.optionalAttrs config.services.lidarr.enable {
+        lidarr = arrConfig config.services.lidarr.user "/var/lib/lidarr/.config/Lidarr/config.xml";
       };
 
       extractScript =

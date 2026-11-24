@@ -9,15 +9,17 @@
     let
       mediaRoot = "/tank/media";
       # authelia matches a "*" only as the leftmost label, so "sonarr.*" never matched
-      arrHosts = map (app: "${app}.${flake-self.domains.local}") [
-        "sonarr"
-        "radarr"
-        "lidarr"
-        "chaptarr"
-        "prowlarr"
-        "bazarr"
-        "sabnzbd"
-      ];
+      arrHosts = map (app: "${app}.${flake-self.domains.local}") (
+        [
+          "sonarr"
+          "radarr"
+          "chaptarr"
+          "prowlarr"
+          "bazarr"
+          "sabnzbd"
+        ]
+        ++ lib.optional config.services.lidarr.enable "lidarr"
+      );
       autheliaEnabled = config.services.authelia.instances.main.enable or false;
     in
     {
@@ -44,18 +46,20 @@
         # recyclarr, and seerr only talk to APIs and stay out of this list.
         systemd.services =
           lib.genAttrs
-            [
-              "sonarr"
-              "radarr"
-              "lidarr"
-              "chaptarr"
-              "bazarr"
-              "sabnzbd"
-              "jellyfin"
-              "navidrome"
-              "audiobookshelf"
-              "droppedneedle"
-            ]
+            (
+              [
+                "sonarr"
+                "radarr"
+                "chaptarr"
+                "bazarr"
+                "sabnzbd"
+                "jellyfin"
+                "audiobookshelf"
+                "droppedneedle"
+              ]
+              ++ lib.optional config.services.lidarr.enable "lidarr"
+              ++ lib.optional config.services.navidrome.enable "navidrome"
+            )
             (_: {
               unitConfig.RequiresMountsFor = [ mediaRoot ];
             });

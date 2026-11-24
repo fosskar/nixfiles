@@ -185,11 +185,15 @@
           prowlarrApp = "Radarr";
           categories.movieCategory = "movies";
         };
+      }
+      // lib.optionalAttrs config.services.lidarr.enable {
         lidarr = {
           apiVersion = "v1";
           prowlarrApp = "Lidarr";
           categories.musicCategory = "music";
         };
+      }
+      // {
         # prowlarr has no chaptarr app; chaptarr keeps the readarr v1 api
         chaptarr = {
           apiVersion = "v1";

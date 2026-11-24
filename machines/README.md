@@ -116,7 +116,7 @@ home server (ryzen 7 5700x, 64gb, nvidia rtx pro 4000 blackwell sff, zfs)
 
 **llm & agents:** llama.cpp on the rtx pro 4000, offloading to nixworker over ggml rpc
 
-**media:** jellyfin, seerr, immich, navidrome, audiobookshelf, and the arr stack (prowlarr, sonarr, radarr, lidarr, chaptarr, bazarr, sabnzbd, recyclarr)
+**media:** jellyfin, seerr, immich, audiobookshelf, droppedneedle, and the arr stack (prowlarr, sonarr, radarr, chaptarr, bazarr, sabnzbd, recyclarr)
 
 **apps:** opencloud with collabora and radicale, vaultwarden, matrix (continuwuity), buzz relay, miniflux, searxng, kiwix, dawarich, protomaps, and smaller tools
 
