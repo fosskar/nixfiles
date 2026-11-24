@@ -72,6 +72,10 @@ in
       # shells and never source hm-session-vars
       programs.fish.shellInit = ''
         set -gx EDITOR ${lib.getExe pkgs.micro}
+        # sops: the forwarded yubikey gpg-agent first, the phone ("age" is the
+        # key label in the phonetpm app) when no client is attached
+        set -gx SOPS_AGE_KEY_CMD "phonetpm identity age"
+        set -gx SOPS_DECRYPTION_ORDER pgp,age
       '';
 
       # own key instead of the forwarded yubikey agent, so pushes and signing
