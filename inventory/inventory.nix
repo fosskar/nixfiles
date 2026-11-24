@@ -21,6 +21,8 @@
 
     secrets.age.plugins = [
       "age-plugin-yubikey"
+      # age-plugin-phone, not in nixpkgs
+      "${self}#phonetpm"
     ];
 
     inventory.machines = {
