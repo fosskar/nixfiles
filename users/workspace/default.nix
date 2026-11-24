@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   lib,
   pkgs,
@@ -9,9 +10,24 @@
 let
   # a file, not a literal: git only takes a bare literal for "ssh-" key types
   phoneSshKey = pkgs.writeText "id_phonetpm.pub" "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBA4qpyAJl0h2gsRP1vLiCjuo+SCXwJ24jEMviE6tMouu/pR+3lnuG+RRNqaZ3MpeiahOYnbZxDK7hsTY9VlA1Mk=";
-  # git and jj sign through the phone, not through the relayed yubikey agent
-  phoneSshKeygen = pkgs.writeShellScript "ssh-keygen-phonetpm" ''
-    SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/phonetpm/agent.sock" exec ${pkgs.openssh}/bin/ssh-keygen "$@"
+  yubikeySshKey = config.clan.core.vars.generators.yubikey.files."id_yubikey.pub".path;
+  # sign with the yubikey while a client forwards its agent (socket relay),
+  # else with the phone; git and jj pass the configured key as -f
+  sshKeygen = pkgs.writeShellScript "ssh-keygen-agent-key" ''
+    args=("$@")
+    case " $* " in
+      *" -Y sign "*)
+        key=${phoneSshKey}
+        if ${pkgs.openssh}/bin/ssh-add -L 2>/dev/null |
+          ${pkgs.gnugrep}/bin/grep -qF "$(${pkgs.coreutils}/bin/cut -d' ' -f2 ${yubikeySshKey})"; then
+          key=${yubikeySshKey}
+        fi
+        for i in "''${!args[@]}"; do
+          if [ "''${args[$i]}" = -f ]; then args[$((i + 1))]=$key; fi
+        done
+        ;;
+    esac
+    exec ${pkgs.openssh}/bin/ssh-keygen "''${args[@]}"
   '';
 in
 {
@@ -82,12 +98,11 @@ in
         set -gx SOPS_DECRYPTION_ORDER pgp,age
       '';
 
-      # every signature asks for a fingerprint on the phone
       programs.git.signing.key = "${phoneSshKey}";
-      programs.git.signing.signer = "${phoneSshKeygen}";
+      programs.git.signing.signer = "${sshKeygen}";
       programs.jujutsu.settings.signing = {
         key = "${phoneSshKey}";
-        backends.ssh.program = "${phoneSshKeygen}";
+        backends.ssh.program = "${sshKeygen}";
       };
 
       systemd.user.startServices = "sd-switch";
