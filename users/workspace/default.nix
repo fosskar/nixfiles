@@ -35,6 +35,7 @@ in
         self.modules.homeManager.jujutsu
         self.modules.homeManager.k8s
         self.modules.homeManager.llm
+        self.modules.homeManager.phonetpm
         self.modules.homeManager.radicle
         self.modules.homeManager.ripgrep
         self.modules.homeManager.sand
