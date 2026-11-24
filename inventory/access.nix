@@ -24,6 +24,7 @@
           authorizedKeys = {
             simon = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID3AsDe157avF+iFa1TavZHwjDpugyePDqJ6gaRNzGIA openpgp:0xDA6712BE";
             simon-piv = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG7nahd/01skftk7ujmj2F2T8vzqUH/UWqQViSz7XEVaQbPIEYTwR6V/TpFx54wKlzJA75BDV+fHIBJsmhNzd3U=";
+            simon-phone = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBA4qpyAJl0h2gsRP1vLiCjuo+SCXwJ24jEMviE6tMouu/pR+3lnuG+RRNqaZ3MpeiahOYnbZxDK7hsTY9VlA1Mk=";
           };
           certificate.searchDomains = [
             "lan"
