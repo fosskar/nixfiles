@@ -17,6 +17,10 @@
         ) machine.config.clan.core.vars.generators.yggdrasil.files.address.value
       ) (lib.attrValues self.nixosConfigurations);
 
+      # the herdr android app's key (simon on nixworker, inventory/access.nix):
+      # the phone roams between dhcp leases and netbird, so no address fits
+      exemptKey = "SHA256:cE4/w9PTMKXpuUcUHcuH8HBGm2MZBKiI+anNVHK/wUA";
+
       logRule =
         {
           uid,
@@ -144,9 +148,9 @@
             (logRule {
               uid = "168083f0626c4d";
               title = "SSH login from unknown source";
-              expr = ''SYSLOG_IDENTIFIER:="sshd-session" _msg:"Accepted" | extract "Accepted <method> for <user> from <ip> port" | filter -ip:in(${
+              expr = ''SYSLOG_IDENTIFIER:="sshd-session" _msg:"Accepted" | extract "Accepted <method> for <user> from <ip> port <port> ssh2: <keytype> <fp>" | filter -ip:in(${
                 lib.concatMapStringsSep "," builtins.toJSON knownSources
-              }) | stats by (_HOSTNAME, user, ip) count() as logins'';
+              }) -fp:=${builtins.toJSON exemptKey} | stats by (_HOSTNAME, user, ip) count() as logins'';
               summary = "ssh login as {{ $labels.user }} from {{ $labels.ip }}";
               description = "sshd accepted a login from an address that is no clan machine, lan host, or router in the nix config.";
             })
