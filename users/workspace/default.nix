@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   lib,
   pkgs,
@@ -8,7 +7,12 @@
   ...
 }:
 let
-  workspaceSshKey = config.clan.core.vars.generators.workspace-ssh.files."id_ed25519".path;
+  # a file, not a literal: git only takes a bare literal for "ssh-" key types
+  phoneSshKey = pkgs.writeText "id_phonetpm.pub" "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBA4qpyAJl0h2gsRP1vLiCjuo+SCXwJ24jEMviE6tMouu/pR+3lnuG+RRNqaZ3MpeiahOYnbZxDK7hsTY9VlA1Mk=";
+  # git and jj sign through the phone, not through the relayed yubikey agent
+  phoneSshKeygen = pkgs.writeShellScript "ssh-keygen-phonetpm" ''
+    SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/phonetpm/agent.sock" exec ${pkgs.openssh}/bin/ssh-keygen "$@"
+  '';
 in
 {
   imports = [
@@ -78,17 +82,12 @@ in
         set -gx SOPS_DECRYPTION_ORDER pgp,age
       '';
 
-      # own key instead of the forwarded yubikey agent, so pushes and signing
-      # work without an attached client (e.g. mobile). a private key path
-      # makes git and jj sign from the file, not the agent
-      programs.git.signing.key = workspaceSshKey;
-      programs.jujutsu.settings.signing.key = workspaceSshKey;
-      # IdentitiesOnly: the forwarded agent keys would be offered first
-      programs.ssh.settings = {
-        "github.com" = {
-          IdentityFile = workspaceSshKey;
-          IdentitiesOnly = "yes";
-        };
+      # every signature asks for a fingerprint on the phone
+      programs.git.signing.key = "${phoneSshKey}";
+      programs.git.signing.signer = "${phoneSshKeygen}";
+      programs.jujutsu.settings.signing = {
+        key = "${phoneSshKey}";
+        backends.ssh.program = "${phoneSshKeygen}";
       };
 
       systemd.user.startServices = "sd-switch";
@@ -134,21 +133,6 @@ in
       test -n "$public"
       printf 'BUZZ_PRIVATE_KEY=%s\n' "$private" > "$out/agent.env"
       printf '%s\n' "$public" > "$out/pubkey"
-    '';
-  };
-
-  clan.core.vars.generators.workspace-ssh = {
-    files = {
-      "id_ed25519" = {
-        owner = "simon";
-        group = "users";
-        mode = "0400";
-      };
-      "id_ed25519.pub".secret = false;
-    };
-    runtimeInputs = [ pkgs.openssh ];
-    script = ''
-      ssh-keygen -t ed25519 -N "" -C "simon@nixworker" -f "$out/id_ed25519"
     '';
   };
 
