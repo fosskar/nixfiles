@@ -36,7 +36,8 @@ Source routing:
 Non-obvious areas:
 
 - clan services export through `flake.modules."clan.service".<service>`; `modules/flake-parts/clan.nix` assigns that set to `clan.modules`
-- `modules/flake-parts/hosts.nix` is the single source of machine IPs
+- `modules/flake-parts/hosts.nix` is the single source of machine IPs; read them as `self.hosts` or `flake-self.hosts` in modules and `config.flake.hosts` in flake-parts and clan modules
+- `modules/llm/AGENTS.md` is the user-global agent instruction file installed for pi, omp, claude-code, codex, and opencode; it does not scope `modules/llm/`
 - `modules/llm/` owns agent tooling, souls, and `pi-pack` wiring; pi installs applicable `pi-pack` extensions, and the `omp` feature does the same for omp
 - `flake.llm.skills.<name>` exposes skills to NixOS consumers such as Hermes
 - a tool feature contributes its agent skill through the home-manager option `llm.externalSkills` in the module that installs the tool; `modules/llm/skills/default.nix` keeps only `nixbot-cli`, which the devshell installs
