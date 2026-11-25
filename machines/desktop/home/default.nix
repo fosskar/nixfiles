@@ -10,6 +10,7 @@
       self.modules.homeManager.herdrApp
       self.modules.homeManager.herdrCore
       self.modules.homeManager.hex
+      self.modules.homeManager.voiceAssistant
       self.modules.homeManager.noctalia
     ]
     ++ nflib.scanPaths ./. { };
