@@ -989,6 +989,28 @@
         "type": "github"
       }
     },
+    "nix-github-actions_3": {
+      "inputs": {
+        "nixpkgs": [
+          "yo",
+          "nix-unit",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1737420293,
+        "narHash": "sha256-F1G5ifvqTpJq7fdkT34e/Jy9VCyzd5XfJ9TO8fHhJWE=",
+        "owner": "nix-community",
+        "repo": "nix-github-actions",
+        "rev": "f4158fa080ef4503c8f4c820967d946c2af31ec9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-github-actions",
+        "type": "github"
+      }
+    },
     "nix-grpc-store": {
       "inputs": {
         "niks3": [
@@ -1056,6 +1078,26 @@
           "clan-community",
           "treefmt-nix"
         ]
+      },
+      "locked": {
+        "lastModified": 1784925540,
+        "narHash": "sha256-11IOL5tyJbB3vMQzzhIULuPtoHJpkLFz4BaKApm6t0Q=",
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "rev": "b3d16367c54621fd073aa8c1dd510042f771f624",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "type": "github"
+      }
+    },
+    "nix-unit_2": {
+      "inputs": {
+        "nix-github-actions": "nix-github-actions_3",
+        "nixpkgs": "nixpkgs_3",
+        "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
         "lastModified": 1784925540,
@@ -1189,6 +1231,38 @@
       },
       "original": {
         "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1784783405,
+        "narHash": "sha256-4IHyyLgLBdKefkljdKod4IMn023pQiDXAWJA187cmdY=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "7525d999cd850b9a488817abc89c75dc733acf17",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1794890597,
+        "narHash": "sha256-lME2lHoDHAaSHP3/okgiVoJ0icVEvsQH8LeU3We7tcc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
@@ -1413,6 +1487,7 @@
         "umbriel": "umbriel",
         "voxtype": "voxtype",
         "website": "website",
+        "yo": "yo",
         "zen-browser": "zen-browser"
       }
     },
@@ -1657,6 +1732,24 @@
         "url": "https://media.timeless.co/type/Timeless-Type-Family-1.094.zip"
       }
     },
+    "tinyFlake": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_4"
+      },
+      "locked": {
+        "lastModified": 1786980976,
+        "narHash": "sha256-lWIRKi2OF4wSNCQ4NAWxs5Ch7o3kYYJqqu+SKf8dKAE=",
+        "owner": "quackhack-mcblindy",
+        "repo": "tinyFlake",
+        "rev": "c418eaa4d15282b8ce47d9edb37c0fe3111e9b46",
+        "type": "github"
+      },
+      "original": {
+        "owner": "quackhack-mcblindy",
+        "repo": "tinyFlake",
+        "type": "github"
+      }
+    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -1669,6 +1762,28 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "rev": "a0a97e31a897a3537eea5c49df4f8adaa83b3b37",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treefmt-nix_2": {
+      "inputs": {
+        "nixpkgs": [
+          "yo",
+          "nix-unit",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784369104,
+        "narHash": "sha256-47cxbcZODibHv3rELFQ9vZly0vUNkND/atn/U7HLeb0=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "df3c0640565d04a0261253cdd89fce78ec50168a",
         "type": "github"
       },
       "original": {
@@ -1791,6 +1906,28 @@
       "original": {
         "owner": "noctalia-dev",
         "repo": "xdg-desktop-portal-umbriel",
+        "type": "github"
+      }
+    },
+    "yo": {
+      "inputs": {
+        "nix-unit": "nix-unit_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "tinyFlake": "tinyFlake"
+      },
+      "locked": {
+        "lastModified": 1795110738,
+        "narHash": "sha256-TGb84+80Uwn8GaTJWSV32l2oCp04gVaupvrYJYzZv+8=",
+        "owner": "QuackHack-McBlindy",
+        "repo": "yo",
+        "rev": "369d497affa503da2de85593bc076125087b9784",
+        "type": "github"
+      },
+      "original": {
+        "owner": "QuackHack-McBlindy",
+        "repo": "yo",
         "type": "github"
       }
     },
