@@ -39,9 +39,10 @@ _: {
             esac
           done
           ${lib.optionalString (name == "ssh-agent") ''
-            # no client attached (e.g. mobile): the phone signs, see phonetpm.nix
-            if [ -S "$XDG_RUNTIME_DIR/phonetpm/agent.sock" ]; then
-              exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"$XDG_RUNTIME_DIR/phonetpm/agent.sock"
+            # no client attached (e.g. mobile): the phone session signs
+            # (users/workspace/phone-session.nix)
+            if [ -S "$XDG_RUNTIME_DIR/phone-session/agent.sock" ]; then
+              exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"$XDG_RUNTIME_DIR/phone-session/agent.sock"
             fi
           ''}
           echo "socket-relay-${name}: no live client forward" >&2

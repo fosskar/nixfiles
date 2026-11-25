@@ -8,16 +8,14 @@
   ...
 }:
 let
-  # a file, not a literal: git only takes a bare literal for "ssh-" key types
-  phoneSshKey = pkgs.writeText "id_phonetpm.pub" "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBA4qpyAJl0h2gsRP1vLiCjuo+SCXwJ24jEMviE6tMouu/pR+3lnuG+RRNqaZ3MpeiahOYnbZxDK7hsTY9VlA1Mk=";
   yubikeySshKey = config.clan.core.vars.generators.yubikey.files."id_yubikey.pub".path;
   # sign with the yubikey while a client forwards its agent (socket relay),
-  # else with the phone; git and jj pass the configured key as -f
+  # else with the phone session key; git and jj pass the configured key as -f
   sshKeygen = pkgs.writeShellScript "ssh-keygen-agent-key" ''
     args=("$@")
     case " $* " in
       *" -Y sign "*)
-        key=${phoneSshKey}
+        key=${./phone-session.pub}
         if ${pkgs.openssh}/bin/ssh-add -L 2>/dev/null |
           ${pkgs.gnugrep}/bin/grep -qF "$(${pkgs.coreutils}/bin/cut -d' ' -f2 ${yubikeySshKey})"; then
           key=${yubikeySshKey}
@@ -92,16 +90,16 @@ in
       # shells and never source hm-session-vars
       programs.fish.shellInit = ''
         set -gx EDITOR ${lib.getExe pkgs.micro}
-        # sops: the forwarded yubikey gpg-agent first, the phone ("age" is the
-        # key label in the phonetpm app) when no client is attached
-        set -gx SOPS_AGE_KEY_CMD "phonetpm identity age"
+        # sops: the forwarded yubikey gpg-agent first, the phone session
+        # (phone-session.nix) when no client is attached
+        set -gx SOPS_AGE_KEY_CMD "phone-session age-key"
         set -gx SOPS_DECRYPTION_ORDER pgp,age
       '';
 
-      programs.git.signing.key = "${phoneSshKey}";
+      programs.git.signing.key = "${./phone-session.pub}";
       programs.git.signing.signer = "${sshKeygen}";
       programs.jujutsu.settings.signing = {
-        key = "${phoneSshKey}";
+        key = "${./phone-session.pub}";
         backends.ssh.program = "${sshKeygen}";
       };
 
