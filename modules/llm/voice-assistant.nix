@@ -1,7 +1,7 @@
 { self, ... }:
 {
-  # alt+shift+space toggles listening; mic -> speech-to-speech model on openrouter
-  # with a shell tool -> headset, with turn detection and interruption from pipecat
+  # alt+shift+space toggles listening; mic -> audio-input model on openrouter with
+  # a shell tool -> fish audio voice, with turn detection and interruption from pipecat
   flake.modules.homeManager.voiceAssistant =
     {
       config,
@@ -16,9 +16,9 @@
         ## voice assistant
 
         You run on simon's desktop (NixOS, umbriel compositor, noctalia shell) and act on it with the run_shell tool.
-        You hear him directly and answer in speech. Speak fast and lively, like someone excited to help.
+        You hear him directly. Your reply is read aloud by a text-to-speech voice.
 
-        - one to three short sentences; no lists, code, paths, or urls
+        - one to three short sentences; plain words only, no markdown, lists, code, paths, or urls
         - when a request needs a command, call run_shell at once and say nothing first; speak only after you have the result
         - start gui apps with `umbriel msg spawn <cmd>` or `focus-or-spawn <app-id> <cmd>`, never as a child of the shell
         - volume: `wpctl`; media: `playerctl`; shell panels: `noctalia msg`
@@ -54,9 +54,14 @@
           ExecStart = lib.getExe start;
           Environment = [
             "VOICE_ASSISTANT_PROMPT=${systemPrompt}"
-            # 1.3 s to first sound; the full gpt-audio took 1.5 s and cost 15x more
+            # hears the audio itself: 1.2 s to a first sentence, against 1.9 s for
+            # gpt-4o-mini-transcribe followed by claude-haiku-5.5
             "VOICE_ASSISTANT_MODEL=openai/gpt-audio-mini"
-            "VOICE_ASSISTANT_VOICE=ash"
+            # fish audio is not zdr: it receives the text of every reply. it needs zdr
+            # off for "all other models" in the openrouter account and its guardrail
+            "VOICE_ASSISTANT_TTS_MODEL=fish-audio/s2.1-pro"
+            # the rocky voice from https://github.com/cgro00/desk-robot, a fan clone
+            "VOICE_ASSISTANT_VOICE=6dd07916890445e59c5f019ad0fc7879"
           ];
           Restart = "on-failure";
           RestartSec = 5;

@@ -1,22 +1,23 @@
-"""Voice assistant: headset mic -> a speech-to-speech chat model with a shell tool -> headset.
+"""Voice assistant: headset mic -> audio-input chat model with a shell tool -> cloud voice.
 
-The model hears the user's audio and answers in audio, so there is no local
-speech-to-text or text-to-speech. pipecat supplies turn detection (silero vad +
-smart turn v3) and interruption. SIGUSR1 toggles listening; the process starts
-deaf.
+The model hears the user's audio directly, so there is no speech-to-text stage;
+a separate text-to-speech model speaks its replies in a cloned voice. pipecat
+supplies turn detection (silero vad + smart turn v3), interruption and sentence
+streaming. SIGUSR1 toggles listening; the process starts deaf.
 """
 
 import array
 import asyncio
-import base64
 import math
 import os
 import signal
 import sys
 import time
 from collections import deque
+from collections.abc import AsyncGenerator
 
 from loguru import logger
+from openai import AsyncOpenAI
 from pipecat.audio.turn.smart_turn.local_smart_turn_v3 import LocalSmartTurnAnalyzerV3
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.frames.frames import (
@@ -24,8 +25,6 @@ from pipecat.frames.frames import (
     InputAudioRawFrame,
     InterruptionWorkerFrame,
     TTSAudioRawFrame,
-    TTSStartedFrame,
-    TTSStoppedFrame,
 )
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
@@ -37,6 +36,8 @@ from pipecat.processors.aggregators.llm_response_universal import (
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.services.llm_service import FunctionCallParams
 from pipecat.services.openrouter.llm import OpenRouterLLMService
+from pipecat.services.settings import TTSSettings
+from pipecat.services.tts_service import TTSService
 from pipecat.transports.local.audio import (
     LocalAudioTransport,
     LocalAudioTransportParams,
@@ -46,8 +47,9 @@ from pipecat.turns.user_stop import TurnAnalyzerUserTurnStopStrategy
 from pipecat.turns.user_turn_strategies import UserTurnStrategies
 from pipecat.workers.runner import WorkerRunner
 
-# the model's pcm16 output rate
-OUTPUT_SAMPLE_RATE = 24000
+OPENROUTER_URL = "https://openrouter.ai/api/v1"
+# fish audio's pcm rate on openrouter
+OUTPUT_SAMPLE_RATE = 44100
 # the vad needs some speech before it reports a turn; keep what came before it
 PRE_ROLL_SECONDS = 0.6
 # each kept turn is re-uploaded as audio on every request
@@ -83,43 +85,41 @@ class Mic(FrameProcessor):
         return frames
 
 
-class SpeechLLM(OpenRouterLLMService):
-    """pipecat forwards this model's transcript but drops its audio; play the audio."""
+class CloudTTS(TTSService):
+    """Speaks through openrouter's speech endpoint; pipecat's fish service needs a fish account."""
 
-    async def get_chat_completions(self, context: LLMContext):
-        return self._play_audio(await super().get_chat_completions(context))
+    def __init__(self, *, api_key: str, model: str, voice: str, **kwargs):
+        super().__init__(
+            push_start_frame=True,
+            push_stop_frames=True,
+            sample_rate=OUTPUT_SAMPLE_RATE,
+            settings=TTSSettings(model=model, voice=voice, language=None),
+            **kwargs,
+        )
+        self._client = AsyncOpenAI(api_key=api_key, base_url=OPENROUTER_URL)
+        self._model = model
+        self._voice = voice
 
-    async def _play_audio(self, chunks):
-        speaking = False
-        # a base64 chunk can end in the middle of a 16-bit sample
+    async def run_tts(self, text: str, context_id: str) -> AsyncGenerator[Frame, None]:
+        # a chunk can end in the middle of a 16-bit sample
         carry = b""
-        try:
-            async for chunk in chunks:
-                delta = chunk.choices[0].delta if chunk.choices else None
-                audio = getattr(delta, "audio", None) or {}
-                if audio.get("data"):
-                    if not speaking:
-                        speaking = True
-                        await self.push_frame(TTSStartedFrame())
-                    pcm = carry + base64.b64decode(audio["data"])
-                    cut = len(pcm) - len(pcm) % 2
-                    carry = pcm[cut:]
-                    await self.push_frame(
-                        TTSAudioRawFrame(
-                            audio=pcm[:cut],
-                            sample_rate=OUTPUT_SAMPLE_RATE,
-                            num_channels=1,
-                        )
-                    )
-                yield chunk
-        finally:
-            await chunks.close()
-            if speaking:
-                await self.push_frame(TTSStoppedFrame())
+        async with self._client.audio.speech.with_streaming_response.create(
+            model=self._model, voice=self._voice, input=text, response_format="pcm"
+        ) as response:
+            async for chunk in response.iter_bytes(8192):
+                pcm = carry + chunk
+                cut = len(pcm) - len(pcm) % 2
+                carry = pcm[cut:]
+                yield TTSAudioRawFrame(
+                    audio=pcm[:cut],
+                    sample_rate=OUTPUT_SAMPLE_RATE,
+                    num_channels=1,
+                    context_id=context_id,
+                )
 
 
 def beep(rising: bool) -> TTSAudioRawFrame:
-    """Two short tones: the only cue for the listening state, as nothing speaks locally."""
+    """Two short tones mark the listening state; faster than a spoken cue."""
     tones = (660, 880) if rising else (880, 660)
     samples = array.array("h")
     for tone in tones:
@@ -182,19 +182,18 @@ async def main(system_prompt: str):
         )
     )
     mic = Mic()
-    llm = SpeechLLM(
-        api_key=os.environ["OPENROUTER_API_KEY"],
-        settings=SpeechLLM.Settings(
+    api_key = os.environ["OPENROUTER_API_KEY"]
+    llm = OpenRouterLLMService(
+        api_key=api_key,
+        settings=OpenRouterLLMService.Settings(
             model=os.environ["VOICE_ASSISTANT_MODEL"],
             system_instruction=system_prompt,
-            extra={
-                "modalities": ["text", "audio"],
-                "audio": {
-                    "voice": os.environ["VOICE_ASSISTANT_VOICE"],
-                    "format": "pcm16",
-                },
-            },
         ),
+    )
+    tts = CloudTTS(
+        api_key=api_key,
+        model=os.environ["VOICE_ASSISTANT_TTS_MODEL"],
+        voice=os.environ["VOICE_ASSISTANT_VOICE"],
     )
 
     context = LLMContext(tools=[run_shell])
@@ -237,6 +236,7 @@ async def main(system_prompt: str):
                 mic,
                 user_aggregator,
                 llm,
+                tts,
                 transport.output(),
                 assistant_aggregator,
             ]
