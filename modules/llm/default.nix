@@ -12,4 +12,5 @@ in
   flake.llm.skills = skillsFrom ./skills // skillsFrom (inputs.pi-pack + "/skills");
 
   flake.llm.souls.tars = ./souls/TARS.md;
+  flake.llm.souls.rocky = ./souls/ROCKY.md;
 }
