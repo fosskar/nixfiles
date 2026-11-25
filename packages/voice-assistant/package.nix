@@ -78,18 +78,12 @@ let
       pyyaml
       num2words
       onnxruntime
-      # extras: local audio transport, whisper stt
+      # extra: local audio transport
       pyaudio
-      faster-whisper
     ]);
   };
 
-  pythonEnv = python3.withPackages (ps: [
-    pipecat-ai
-    ps.kokoro
-    # misaki's english g2p runs `spacy.cli.download` when this model is missing
-    ps.spacy-models.en_core_web_sm
-  ]);
+  pythonEnv = python3.withPackages (_: [ pipecat-ai ]);
 in
 stdenv.mkDerivation {
   pname = "voice-assistant";

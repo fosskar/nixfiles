@@ -1,25 +1,31 @@
-"""Voice assistant: headset mic -> whisper -> openrouter llm with a shell tool -> kokoro.
+"""Voice assistant: headset mic -> a speech-to-speech chat model with a shell tool -> headset.
 
-pipecat supplies turn detection (silero vad + smart turn v3), interruption and
-sentence streaming. SIGUSR1 toggles listening; the process starts deaf.
+The model hears the user's audio and answers in audio, so there is no local
+speech-to-text or text-to-speech. pipecat supplies turn detection (silero vad +
+smart turn v3) and interruption. SIGUSR1 toggles listening; the process starts
+deaf.
 """
 
+import array
 import asyncio
+import base64
+import math
 import os
 import signal
 import sys
-from collections.abc import AsyncGenerator
+import time
+from collections import deque
 
-import numpy as np
-from kokoro import KModel, KPipeline
 from loguru import logger
+from pipecat.audio.turn.smart_turn.local_smart_turn_v3 import LocalSmartTurnAnalyzerV3
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.frames.frames import (
     Frame,
     InputAudioRawFrame,
     InterruptionWorkerFrame,
     TTSAudioRawFrame,
-    TTSSpeakFrame,
+    TTSStartedFrame,
+    TTSStoppedFrame,
 )
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
@@ -31,63 +37,112 @@ from pipecat.processors.aggregators.llm_response_universal import (
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.services.llm_service import FunctionCallParams
 from pipecat.services.openrouter.llm import OpenRouterLLMService
-from pipecat.services.settings import TTSSettings
-from pipecat.services.tts_service import TTSService
-from pipecat.services.whisper.stt import WhisperSTTService
 from pipecat.transports.local.audio import (
     LocalAudioTransport,
     LocalAudioTransportParams,
 )
+from pipecat.turns.user_start import VADUserTurnStartStrategy
+from pipecat.turns.user_stop import TurnAnalyzerUserTurnStopStrategy
+from pipecat.turns.user_turn_strategies import UserTurnStrategies
 from pipecat.workers.runner import WorkerRunner
 
-KOKORO_REPO = "hexgrad/Kokoro-82M"
-KOKORO_SAMPLE_RATE = 24000
+# the model's pcm16 output rate
+OUTPUT_SAMPLE_RATE = 24000
+# the vad needs some speech before it reports a turn; keep what came before it
+PRE_ROLL_SECONDS = 0.6
+# each kept turn is re-uploaded as audio on every request
+KEPT_AUDIO_TURNS = 4
 
 
-class KokoroTTS(TTSService):
-    """pipecat's own kokoro service needs kokoro-onnx, which nixpkgs lacks."""
-
-    def __init__(self, *, config: str, weights: str, voice: str, **kwargs):
-        super().__init__(
-            push_start_frame=True,
-            push_stop_frames=True,
-            sample_rate=KOKORO_SAMPLE_RATE,
-            settings=TTSSettings(model=None, voice=voice, language=None),
-            **kwargs,
-        )
-        model = KModel(repo_id=KOKORO_REPO, config=config, model=weights).eval()
-        self._pipeline = KPipeline(lang_code="a", repo_id=KOKORO_REPO, model=model)
-        self._voice = voice
-
-    def _synthesize(self, text: str) -> bytes:
-        chunks = [r.audio.numpy() for r in self._pipeline(text, voice=self._voice)]
-        if not chunks:
-            return b""
-        pcm = (np.concatenate(chunks) * 32767).clip(-32768, 32767)
-        return pcm.astype(np.int16).tobytes()
-
-    async def run_tts(self, text: str, context_id: str) -> AsyncGenerator[Frame, None]:
-        audio = await asyncio.to_thread(self._synthesize, text)
-        yield TTSAudioRawFrame(
-            audio=audio,
-            sample_rate=KOKORO_SAMPLE_RATE,
-            num_channels=1,
-            context_id=context_id,
-        )
-
-
-class MicGate(FrameProcessor):
-    """Drops microphone audio while the assistant is not listening."""
+class Mic(FrameProcessor):
+    """Gates the microphone and keeps its recent audio, so a turn can be sent as audio."""
 
     def __init__(self):
         super().__init__()
         self.listening = False
+        self._frames: deque[tuple[float, InputAudioRawFrame]] = deque()
+        self._turn_start = 0.0
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
-        if isinstance(frame, InputAudioRawFrame) and not self.listening:
-            return
+        if isinstance(frame, InputAudioRawFrame):
+            if not self.listening:
+                return
+            now = time.monotonic()
+            self._frames.append((now, frame))
+            while self._frames[0][0] < now - 60:
+                self._frames.popleft()
         await self.push_frame(frame, direction)
+
+    def turn_started(self):
+        self._turn_start = time.monotonic() - PRE_ROLL_SECONDS
+
+    def take_turn(self) -> list[InputAudioRawFrame]:
+        frames = [frame for at, frame in self._frames if at >= self._turn_start]
+        self._frames.clear()
+        return frames
+
+
+class SpeechLLM(OpenRouterLLMService):
+    """pipecat forwards this model's transcript but drops its audio; play the audio."""
+
+    async def get_chat_completions(self, context: LLMContext):
+        return self._play_audio(await super().get_chat_completions(context))
+
+    async def _play_audio(self, chunks):
+        speaking = False
+        # a base64 chunk can end in the middle of a 16-bit sample
+        carry = b""
+        try:
+            async for chunk in chunks:
+                delta = chunk.choices[0].delta if chunk.choices else None
+                audio = getattr(delta, "audio", None) or {}
+                if audio.get("data"):
+                    if not speaking:
+                        speaking = True
+                        await self.push_frame(TTSStartedFrame())
+                    pcm = carry + base64.b64decode(audio["data"])
+                    cut = len(pcm) - len(pcm) % 2
+                    carry = pcm[cut:]
+                    await self.push_frame(
+                        TTSAudioRawFrame(
+                            audio=pcm[:cut],
+                            sample_rate=OUTPUT_SAMPLE_RATE,
+                            num_channels=1,
+                        )
+                    )
+                yield chunk
+        finally:
+            await chunks.close()
+            if speaking:
+                await self.push_frame(TTSStoppedFrame())
+
+
+def beep(rising: bool) -> TTSAudioRawFrame:
+    """Two short tones: the only cue for the listening state, as nothing speaks locally."""
+    tones = (660, 880) if rising else (880, 660)
+    samples = array.array("h")
+    for tone in tones:
+        for n in range(OUTPUT_SAMPLE_RATE // 12):
+            samples.append(
+                int(6000 * math.sin(2 * math.pi * tone * n / OUTPUT_SAMPLE_RATE))
+            )
+    return TTSAudioRawFrame(
+        audio=samples.tobytes(), sample_rate=OUTPUT_SAMPLE_RATE, num_channels=1
+    )
+
+
+def drop_old_audio(context: LLMContext):
+    """Replace all but the newest turns' audio with a note, to bound the upload."""
+    spoken = [
+        message
+        for message in context.get_messages()
+        if message["role"] == "user"
+        and isinstance(message["content"], list)
+        and any(part["type"] == "input_audio" for part in message["content"])
+    ]
+    for message in spoken[: -(KEPT_AUDIO_TURNS - 1)]:
+        message["content"] = "(earlier spoken request; audio no longer available)"
 
 
 async def run_shell(params: FunctionCallParams, command: str):
@@ -120,42 +175,68 @@ async def run_shell(params: FunctionCallParams, command: str):
 
 async def main(system_prompt: str):
     transport = LocalAudioTransport(
-        LocalAudioTransportParams(audio_in_enabled=True, audio_out_enabled=True)
+        LocalAudioTransportParams(
+            audio_in_enabled=True,
+            audio_out_enabled=True,
+            audio_out_sample_rate=OUTPUT_SAMPLE_RATE,
+        )
     )
-    gate = MicGate()
-    stt = WhisperSTTService(
-        device="cpu",
-        compute_type="int8",
-        settings=WhisperSTTService.Settings(model=os.environ["WHISPER_MODEL"]),
-    )
-    llm = OpenRouterLLMService(
+    mic = Mic()
+    llm = SpeechLLM(
         api_key=os.environ["OPENROUTER_API_KEY"],
-        settings=OpenRouterLLMService.Settings(
+        settings=SpeechLLM.Settings(
             model=os.environ["VOICE_ASSISTANT_MODEL"],
             system_instruction=system_prompt,
+            extra={
+                "modalities": ["text", "audio"],
+                "audio": {
+                    "voice": os.environ["VOICE_ASSISTANT_VOICE"],
+                    "format": "pcm16",
+                },
+            },
         ),
-    )
-    tts = KokoroTTS(
-        config=os.environ["KOKORO_CONFIG"],
-        weights=os.environ["KOKORO_WEIGHTS"],
-        voice=os.environ["KOKORO_VOICE"],
     )
 
     context = LLMContext(tools=[run_shell])
     user_aggregator, assistant_aggregator = LLMContextAggregatorPair(
         context,
-        user_params=LLMUserAggregatorParams(vad_analyzer=SileroVADAnalyzer()),
+        user_params=LLMUserAggregatorParams(
+            vad_analyzer=SileroVADAnalyzer(),
+            user_turn_strategies=UserTurnStrategies(
+                start=[VADUserTurnStartStrategy()],
+                stop=[
+                    # there is no transcript; the turn ends on smart turn alone
+                    TurnAnalyzerUserTurnStopStrategy(
+                        turn_analyzer=LocalSmartTurnAnalyzerV3(),
+                        wait_for_transcript=False,
+                    )
+                ],
+            ),
+            # every turn looks empty without a transcript; the handler below answers it
+            empty_user_turn=None,
+        ),
     )
+
+    @user_aggregator.event_handler("on_user_turn_started")
+    async def on_user_turn_started(aggregator, strategy):
+        mic.turn_started()
+
+    @user_aggregator.event_handler("on_user_turn_stopped")
+    async def on_user_turn_stopped(aggregator, strategy, message):
+        frames = mic.take_turn()
+        if not frames:
+            return
+        drop_old_audio(context)
+        await context.add_audio_frames_message(audio_frames=frames, text="(spoken)")
+        await aggregator.push_context_frame()
 
     worker = PipelineWorker(
         Pipeline(
             [
                 transport.input(),
-                gate,
-                stt,
+                mic,
                 user_aggregator,
                 llm,
-                tts,
                 transport.output(),
                 assistant_aggregator,
             ]
@@ -164,12 +245,11 @@ async def main(system_prompt: str):
     )
 
     async def toggle():
-        gate.listening = not gate.listening
-        logger.info(f"listening: {gate.listening}")
-        if gate.listening:
-            await worker.queue_frames([TTSSpeakFrame("Listening.")])
-        else:
+        mic.listening = not mic.listening
+        logger.info(f"listening: {mic.listening}")
+        if not mic.listening:
             await worker.queue_frames([InterruptionWorkerFrame()])
+        await worker.queue_frames([beep(rising=mic.listening)])
 
     asyncio.get_running_loop().add_signal_handler(
         signal.SIGUSR1, lambda: asyncio.create_task(toggle())
