@@ -17,14 +17,14 @@
 }:
 let
   # upstream has no tags or releases yet
-  version = "0-unstable-2026-11-25";
-  rev = "b024fdaccab9ee05df805a796ca3015adf4296cf";
+  version = "0-unstable-2026-11-26";
+  rev = "e0630b77651a3b7a988019b9b8961445ff96d51f";
 
   src = fetchFromGitHub {
     owner = "Silo-Server";
     repo = "silo-server";
     inherit rev;
-    hash = "sha256-vzDtaxx5PAvBCI+y+dyYtXk/Z3jgOilNz30DB1vwBAs=";
+    hash = "sha256-ozeiwDTo9jGChf4eq5tm8r00D/3glMQrqZgJ3zQ8oWU=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -82,7 +82,7 @@ in
   pname = "silo-server";
   inherit version src;
 
-  vendorHash = "sha256-MLe6C+BzDv089H8DX8tdR+udcZ4JhWQ6wU6FQgB9Ikk=";
+  vendorHash = "sha256-0Ox8JhfCl74yLIM7KzU9tLWjNZeREToUrLGBfDM5ypk=";
 
   nativeBuildInputs = [
     makeWrapper
