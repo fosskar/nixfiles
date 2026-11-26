@@ -59,6 +59,8 @@
       roles.server.machines."gateway".settings = {
         domain = "nb.${config.flake.domains.public}";
         proxyDomain = "proxy.${config.flake.domains.public}";
+        # tangled knot ssh on nixworker, mapped by a tcp service in the netbird ui
+        proxyTCPPorts = [ 2222 ];
         port = 51821;
       };
       roles.client = {
