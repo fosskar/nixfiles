@@ -12,6 +12,7 @@
     self.modules.nixos.tunedServerPowersave
     self.modules.nixos.nixbot
     self.modules.nixos.radicleMirror
+    self.modules.nixos.tangledKnot
     self.modules.nixos.homeManager
     self.modules.nixos.nixAccessTokens
     self.modules.nixos.wyomingPiper
