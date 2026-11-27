@@ -116,6 +116,16 @@
 
               mnemosyne.enable = lib.mkEnableOption "mnemosyne, a local sqlite memory provider with vector recall";
 
+              fastModel = lib.mkOption {
+                type = lib.types.nullOr (lib.types.attrsOf lib.types.str);
+                default = null;
+                example = {
+                  provider = "opencode-go";
+                  model = "glm-5.3-flash";
+                };
+                description = "small model for helper calls and a fast subagent route.";
+              };
+
               buzz = {
                 enable = lib.mkEnableOption "the buzz channel";
                 channels = lib.mkOption {
@@ -377,6 +387,7 @@
                           {
                             services.hermes-agent = {
                               localProvider.enable = localProvider;
+                              inherit (settings) fastModel;
 
                               skillDirs =
                                 map (

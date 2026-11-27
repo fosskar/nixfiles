@@ -13,6 +13,10 @@
           default = "glm-5.3";
           provider = "opencode-go";
         };
+        fastModel = {
+          provider = "opencode-go";
+          model = "glm-5.3-flash";
+        };
         mnemosyne.enable = true;
         providers = {
           local.enable = true;
@@ -37,6 +41,10 @@
         agentSettings.model = {
           default = "glm-5.3";
           provider = "opencode-go";
+        };
+        fastModel = {
+          provider = "opencode-go";
+          model = "glm-5.3-flash";
         };
         telegram.enable = false;
       };

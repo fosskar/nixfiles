@@ -112,10 +112,46 @@
         memory.provider = "";
         # summarise old turns instead of hitting the context wall
         compression.enabled = true;
+        # its default preset names openai-codex and openrouter models
+        moa.presets.default.enabled = false;
+        display.show_reasoning = false;
         # no metrics upload to nous, and the consent dialog cannot turn it on
         telemetry.shared_metrics = {
           enabled = false;
           send = false;
+        };
+      }
+      // lib.optionalAttrs (cfg.fastModel != null) {
+        # background helper calls on the small model instead of the main one
+        auxiliary = lib.genAttrs [
+          "approval"
+          "background_review"
+          "compression"
+          "curator"
+          "goal_judge"
+          "group_router"
+          "kanban_decomposer"
+          "mcp"
+          "memory_query_rewrite"
+          "monitor"
+          "profile_describer"
+          "title_generation"
+          "triage_specifier"
+          "tts_audio_tags"
+        ] (_: cfg.fastModel);
+        # advanced-delegation: a subagent may pick the fast route; one that
+        # picks none runs on the main model
+        delegation = {
+          backend = "model_map";
+          backends.model_map.options = [
+            (
+              {
+                name = "fast";
+                description = "Quick and cheap: lookups, summaries, short single-step tasks.";
+              }
+              // cfg.fastModel
+            )
+          ];
         };
       }
       // lib.optionalAttrs cfg.localProvider.enable {
@@ -141,6 +177,23 @@
 
       options.services.hermes-agent = {
         localProvider.enable = lib.mkEnableOption "the homelab llama-cpp endpoint as the default model provider";
+
+        fastModel = lib.mkOption {
+          type = lib.types.nullOr (
+            lib.types.submodule {
+              options = {
+                provider = lib.mkOption { type = lib.types.str; };
+                model = lib.mkOption { type = lib.types.str; };
+              };
+            }
+          );
+          default = null;
+          example = {
+            provider = "opencode-go";
+            model = "glm-5.3-flash";
+          };
+          description = "small model for helper calls (compression, titles, ...) and a fast subagent route.";
+        };
 
         soul = lib.mkOption {
           type = lib.types.nullOr lib.types.path;
@@ -187,13 +240,15 @@
       config = {
         services.hermes-agent = {
           enable = true;
+          catalogPlugins = lib.mkIf (cfg.fastModel != null) [ "advanced-delegation" ];
           addToSystemPackages = true;
 
           # upstream commits version 0.0.0 and only release jobs stamp the real
           # one; the flake package keeps 0.0.0, which fails every catalog
-          # plugin's requires_hermes. bump with the hermes-agent input
+          # plugin's requires_hermes. the latest release tag the pinned input
+          # contains; bump it when the input passes a new release
           package = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-            version = "0.21.5";
+            version = "0.23.4";
           };
 
           # piper-tts for tts.provider; it is an optional extra outside the default package
