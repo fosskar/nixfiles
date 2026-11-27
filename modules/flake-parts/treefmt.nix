@@ -54,7 +54,7 @@
             "--config"
             "${pkgs.writeText "flake-edit.toml" ''
               [follow]
-              ignore = ["zed.nixpkgs", "llm-agents.nixpkgs", "llm-agents.bun2nix.nixpkgs"]
+              ignore = ["zed.nixpkgs", "llm-agents.nixpkgs", "llm-agents.bun2nix.nixpkgs", "hermes-agent.nixpkgs", "hermes-agent.pyproject-nix.nixpkgs", "hermes-agent.pyproject-build-systems.nixpkgs", "hermes-agent.uv2nix.nixpkgs"]
             ''}"
             "follow"
           ];

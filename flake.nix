@@ -192,7 +192,7 @@
     };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # no nixpkgs follow: its patchelf patch targets the 0.19.2 in its own pin
       inputs.flake-parts.follows = "flake-parts";
       inputs.home-manager.follows = "home-manager";
     };
