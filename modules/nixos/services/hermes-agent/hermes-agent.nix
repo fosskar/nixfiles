@@ -104,6 +104,11 @@
         memory.provider = "holographic";
         # summarise old turns instead of hitting the context wall
         compression.enabled = true;
+        # no metrics upload to nous, and the consent dialog cannot turn it on
+        telemetry.shared_metrics = {
+          enabled = false;
+          send = false;
+        };
       }
       // lib.optionalAttrs cfg.localProvider.enable {
         providers.local = {
@@ -228,9 +233,13 @@
         );
 
         # upstream's setup merges config.yaml as root and only chmods it, so a
-        # fresh state dir leaves it root:root and the gateway cannot read it
+        # fresh state dir leaves it root:root and the gateway cannot read it.
+        # on first boot the user does not exist yet during activation; the
+        # ExecStartPre below covers that boot
         system.activationScripts.hermes-agent-config-owner = lib.stringAfter [ "hermes-agent-setup" ] ''
-          ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${stateDir}/.hermes/config.yaml
+          if ${pkgs.coreutils}/bin/id ${cfg.user} >/dev/null 2>&1; then
+            ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${stateDir}/.hermes/config.yaml
+          fi
         '';
 
         # -i, not -H: a login shell resets PATH to hermes' own profile. with the
@@ -280,6 +289,10 @@
         # installed, not even pip itself
         systemd.services.hermes-agent = {
           serviceConfig.PAMName = "login";
+          # "+" runs as root
+          serviceConfig.ExecStartPre = lib.mkBefore [
+            "+${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${stateDir}/.hermes/config.yaml"
+          ];
           environment = {
             # system users otherwise get a session that does not start a user manager.
             XDG_SESSION_CLASS = "background";
