@@ -95,7 +95,6 @@
         # (matrix, searxng) auto-load and are not affected by this list
         plugins.enabled = [
           "disk-cleanup"
-          "hermes-achievements"
           "rtk-rewrite"
         ]
         ++ map (plugin: plugin.pluginName) catalogPlugins;
@@ -253,6 +252,8 @@
           "d ${stateDir}/venv 0750 hermes hermes - -"
           "d ${stateDir}/npm 0750 hermes hermes - -"
           "d ${stateDir}/lazy-deps 0750 hermes hermes - -"
+          # opt out of seeding the bundled skill catalog; only hermes' essential skills get copied
+          "f ${stateDir}/.hermes/.no-bundled-skills 0640 hermes hermes - -"
         ];
 
         systemd.services.hermes-venv = {
