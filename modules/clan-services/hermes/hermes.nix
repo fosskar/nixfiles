@@ -396,6 +396,19 @@
                     reverse_proxy ${sandbox.ip}:${toString webappPort}
                   '';
 
+                  # one agent per person: only members of the ldap group named after
+                  # the instance sign in, since every account acts as the agent's owner
+                  services.authelia.instances.main.settings.identity_providers.oidc.authorization_policies.${oidcClientId} =
+                    lib.mkIf settings.webapp.enable {
+                      default_policy = "deny";
+                      rules = [
+                        {
+                          policy = "two_factor";
+                          subject = [ "group:${instanceName}" ];
+                        }
+                      ];
+                    };
+
                   services.authelia.instances.main.settings.identity_providers.oidc.clients =
                     lib.mkIf settings.webapp.enable
                       [
@@ -404,8 +417,7 @@
                           client_name = "Hermes ${instanceName}";
                           public = true;
                           consent_mode = "implicit";
-                          # every account that signs in acts as the machine owner
-                          authorization_policy = "admins";
+                          authorization_policy = oidcClientId;
                           redirect_uris = [ "https://${webHost}/auth/callback" ];
                           scopes = [
                             "openid"

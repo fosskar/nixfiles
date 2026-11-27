@@ -33,7 +33,7 @@ The server role:
 - builds the agent sandbox with the engine and the channels enabled in settings (`matrix.nix`, `signal.nix`, `telegram.nix`, `home-assistant.nix` under `modules/nixos/services/hermes-agent/`)
 - derives the vars generator from the instance name (`<instance>-agent`) and prompts only for enabled channels and key-bearing providers
 - stages the rendered `.env` into the sandbox; provider keys stay on the host in fencr credentials
-- with `webapp.enable`: the gateway serves the webapp on the guest address, port 9120; fencr opens that port to the host; caddy serves `https://<instance>.<local domain>`; authelia registers the public pkce client `hermes-<instance>` under the `admins` policy
+- with `webapp.enable`: the gateway serves the webapp on the guest address, port 9120; fencr opens that port to the host; caddy serves `https://<instance>.<local domain>`; authelia registers the public pkce client `hermes-<instance>` with its own policy: two-factor, only members of the ldap group `<instance>`. create the group in lldap and add the agent's one person to it
 
 The instance name is also the VM name; it must be at most 11 chars so interface names fit IFNAMSIZ.
 
