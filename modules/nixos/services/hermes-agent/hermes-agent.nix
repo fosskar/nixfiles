@@ -292,6 +292,14 @@
           # "+" runs as root
           serviceConfig.ExecStartPre = lib.mkBefore [
             "+${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${stateDir}/.hermes/config.yaml"
+            # hermes stages a plugin's desktop half by copying it; from the read-only
+            # store the copy cannot take its marker, and the failed staging dir
+            # cannot be removed either, so one leaks on every reconcile
+            "+${pkgs.writeShellScript "hermes-desktop-plugins-staging-cleanup" ''
+              ${pkgs.findutils}/bin/find ${stateDir}/.hermes/desktop-plugins -maxdepth 1 -name '.*.staging-*' \
+                -exec ${pkgs.coreutils}/bin/chmod -R u+w {} + \
+                -exec ${pkgs.coreutils}/bin/rm -rf {} +
+            ''}"
           ];
           environment = {
             # system users otherwise get a session that does not start a user manager.

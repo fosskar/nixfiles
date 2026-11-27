@@ -14,10 +14,6 @@
           opencode_go.enable = true;
         };
         packageSkills = [ "optional-skills/devops/watchers" ];
-        catalogPlugins = [
-          "hermes-memory-ui"
-          "hermes-terminal"
-        ];
         telegram.enable = false;
       };
       roles.client.tags = [ "workstation" ];
