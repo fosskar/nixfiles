@@ -129,13 +129,6 @@
       options.services.hermes-agent = {
         localProvider.enable = lib.mkEnableOption "the homelab llama-cpp endpoint as the default model provider";
 
-        dashboard.enable = lib.mkEnableOption "the Hermes dashboard";
-
-        dashboardTokenFile = lib.mkOption {
-          type = lib.types.str;
-          description = "runtime file containing the dashboard session token.";
-        };
-
         soul = lib.mkOption {
           type = lib.types.nullOr lib.types.path;
           default = null;
@@ -238,38 +231,6 @@
         # caller's PATH the agent's packages are not found and unreadable /root
         # entries turn "command not found" into EACCES
         environment.shellAliases.hermes = "sudo -iu hermes env HERMES_MANAGED=false HERMES_MANAGED_DIR=${managedDir} HERMES_LAZY_INSTALL_TARGET=${stateDir}/lazy-deps NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
-
-        systemd.services.hermes-dashboard = lib.mkIf cfg.dashboard.enable {
-          description = "Hermes Agent dashboard";
-          path = config.systemd.services.hermes-agent.path;
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network-online.target" ];
-          wants = [ "network-online.target" ];
-          environment = {
-            HOME = stateDir;
-            HERMES_HOME = "${stateDir}/.hermes";
-            HERMES_MANAGED = "false";
-            HERMES_MANAGED_DIR = "${managedDir}";
-            HERMES_LAZY_INSTALL_TARGET = "${stateDir}/lazy-deps";
-            NPM_CONFIG_PREFIX = "${stateDir}/npm";
-            VIRTUAL_ENV = "${stateDir}/venv";
-          };
-          serviceConfig = {
-            User = "hermes";
-            Group = "hermes";
-            WorkingDirectory = cfg.workingDirectory;
-            LoadCredential = "dashboard-token:${cfg.dashboardTokenFile}";
-            ExecStart = pkgs.writeShellScript "hermes-dashboard-start" ''
-              export HERMES_DASHBOARD_SESSION_TOKEN
-              HERMES_DASHBOARD_SESSION_TOKEN="$(cat "$CREDENTIALS_DIRECTORY/dashboard-token")"
-              exec ${cfg.package}/bin/hermes dashboard \
-                --no-open --host 127.0.0.1 --port 9119
-            '';
-            Restart = "always";
-            RestartSec = 5;
-            UMask = "0007";
-          };
-        };
 
         # what upstream's ubuntu container mode exists for: somewhere the agent
         # can pip/npm install at runtime

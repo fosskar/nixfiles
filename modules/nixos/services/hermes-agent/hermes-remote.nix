@@ -9,174 +9,28 @@
     }:
     let
       cfg = config.services.hermes-remote;
-      hermesAgent = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      desktopPackage = pkgs.callPackage ./_desktop.nix {
-        inherit (hermesAgent.passthru) hermesNpmLib installStampFile;
-        inherit hermesAgent;
-        generatedIcons = pkgs.callPackage "${inputs.hermes-agent}/nix/icons.nix" {
-          venv = hermesAgent.passthru.hermesVenv;
-        };
-        inherit (pkgs) electron;
-      };
-      clientMatch = ''meta skuid != "${cfg.clientUser}"'';
-      portGuard = import ./_remote-port-guard.nix { inherit pkgs; };
-      knownHosts = pkgs.writeText "hermes-remote-known-hosts" (
-        lib.concatMapStrings (host: "${host} ${cfg.hostKey}\n") cfg.hosts
-      );
-      sshOptions = [
-        "-o"
-        "ExitOnForwardFailure=yes"
-        "-o"
-        "BatchMode=yes"
-        "-o"
-        "IdentitiesOnly=yes"
-        "-o"
-        "IdentityFile=${cfg.identityFile}"
-        "-o"
-        "StrictHostKeyChecking=yes"
-        "-o"
-        "UserKnownHostsFile=${knownHosts}"
-        "-o"
-        "ConnectTimeout=10"
-        "-o"
-        "ControlMaster=no"
-        "-o"
-        "ControlPath=none"
-        "-o"
-        "ServerAliveInterval=30"
-        "-o"
-        "ServerAliveCountMax=3"
-      ]
-      ++ cfg.extraSshOptions;
-      sshOptionsString = lib.escapeShellArgs sshOptions;
-      hostsString = lib.escapeShellArgs cfg.hosts;
-      # first host that answers wins; hosts come in network-priority order
-      sshFirstHost = pkgs.writeShellScript "hermes-remote-ssh" ''
-        for h in ${hostsString}; do
-          ${pkgs.openssh}/bin/ssh ${sshOptionsString} "${cfg.user}@$h" "$@" && exit 0
-        done
-        exit 1
-      '';
-      tunnelScript = pkgs.writeShellScript "hermes-remote-tunnel" ''
-        # probe, then exec: the launcher's port guard demands that the unit's
-        # MainPID owns the forwarded socket, so ssh must replace this shell
-        for h in ${hostsString}; do
-          if ${pkgs.coreutils}/bin/timeout 5 ${pkgs.bash}/bin/bash \
-            -c "exec 3<>/dev/tcp/$h/22" 2>/dev/null; then
-            exec ${pkgs.openssh}/bin/ssh ${sshOptionsString} -N \
-              -L 127.0.0.1:${toString cfg.localPort}:${cfg.remoteAddress} \
-              "${cfg.user}@$h"
-          fi
-        done
-        # no host answered; fail so the unit restarts and the walk begins
-        # again at the highest priority
-        exit 1
-      '';
-      # the env pair HERMES_DESKTOP_REMOTE_URL/_TOKEN locks Settings -> Gateways
-      # in the app, so seed connection.json once instead; the app migrates it
-      # into its connections.json registry and owns it afterwards
-      seedConnection = pkgs.writeShellScript "hermes-desktop-seed-connection" ''
+      desktopPackage = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop;
+      # the env var HERMES_DESKTOP_REMOTE_URL locks Settings -> Gateways in the
+      # app, so seed connection.json once instead; the app migrates it into its
+      # connections.json registry and owns it afterwards
+      launcher = pkgs.writeShellScriptBin "hermes-desktop-remote" ''
         set -eu
         dir="''${XDG_CONFIG_HOME:-$HOME/.config}/Hermes"
         file="$dir/connection.json"
-        if [ -e "$file" ]; then
-          exit 0
+        if [ ! -e "$file" ]; then
+          umask 077
+          ${pkgs.coreutils}/bin/mkdir -p "$dir"
+          ${pkgs.jq}/bin/jq -n --arg url ${lib.escapeShellArg cfg.url} \
+            '{ mode: "remote", remote: { url: $url, authMode: "oauth" }, profiles: {} }' > "$file"
         fi
-        umask 077
-        ${pkgs.coreutils}/bin/mkdir -p "$dir"
-        tmp="$(${pkgs.coreutils}/bin/mktemp "$dir/.connection.json.XXXXXX")"
-        ${pkgs.jq}/bin/jq -n --arg url "$1" --rawfile token /dev/stdin '{
-          mode: "remote",
-          remote: {
-            url: $url,
-            authMode: "token",
-            token: { encoding: "plain", value: $token }
-          },
-          profiles: {}
-        }' > "$tmp"
-        ${pkgs.coreutils}/bin/mv --no-clobber "$tmp" "$file"
-        ${pkgs.coreutils}/bin/rm -f "$tmp"
-      '';
-      launcher = pkgs.writeShellScriptBin "hermes-desktop-remote" ''
-        set -eu
-
-        started=false
-        ${pkgs.systemd}/bin/systemctl --user is-active --quiet hermes-remote-tunnel.service || started=true
-        stop_tunnel() {
-          if [ "$started" = true ]; then
-            ${pkgs.systemd}/bin/systemctl --user stop hermes-remote-tunnel.service || true
-          fi
-        }
-
-        ${pkgs.systemd}/bin/systemctl --user reset-failed hermes-remote-tunnel.service 2>/dev/null || true
-        ${pkgs.systemd}/bin/systemctl --user start hermes-remote-tunnel.service || {
-          echo "hermes-desktop-remote: cannot start hermes-remote-tunnel.service" >&2
-          exit 1
-        }
-
-        ready=false
-        squatted=false
-        for _ in $(${pkgs.coreutils}/bin/seq 1 60); do
-          mainpid="$(${pkgs.systemd}/bin/systemctl --user show \
-            --property MainPID --value hermes-remote-tunnel.service || echo 0)"
-          guard=0
-          ${portGuard}/bin/hermes-remote-port-guard \
-            ${toString cfg.localPort} "''${mainpid:-0}" || guard=$?
-          if [ "$guard" -eq 0 ]; then
-            ready=true
-            break
-          fi
-          if [ "$guard" -eq 2 ]; then
-            squatted=true
-            break
-          fi
-          ${pkgs.coreutils}/bin/sleep 0.5
-        done
-        if [ "$ready" != true ]; then
-          stop_tunnel
-          if [ "$squatted" = true ]; then
-            echo "hermes-desktop-remote: another process owns 127.0.0.1:${toString cfg.localPort}; refusing to send the dashboard token" >&2
-          else
-            echo "hermes-desktop-remote: SSH tunnel did not become ready" >&2
-          fi
-          exit 1
-        fi
-
-        token="$(${sshFirstHost} hermes-token || true)"
-        if [ -z "$token" ]; then
-          stop_tunnel
-          echo "hermes-desktop-remote: server returned an empty dashboard token" >&2
-          exit 1
-        fi
-
-        ready=false
-        for _ in $(${pkgs.coreutils}/bin/seq 1 60); do
-          if printf 'header = "X-Hermes-Session-Token: %s"\n' "$token" |
-            ${pkgs.curl}/bin/curl --config - --fail --silent --output /dev/null --max-time 2 \
-              "http://127.0.0.1:${toString cfg.localPort}/api/sessions"; then
-            ready=true
-            break
-          fi
-          ${pkgs.coreutils}/bin/sleep 0.5
-        done
-        if [ "$ready" != true ]; then
-          stop_tunnel
-          echo "hermes-desktop-remote: dashboard authentication did not become ready" >&2
-          exit 1
-        fi
-
-        printf '%s' "$token" | ${seedConnection} "http://127.0.0.1:${toString cfg.localPort}"
-        rc=0
-        ${desktopPackage}/bin/hermes-desktop "$@" || rc=$?
-        stop_tunnel
-        exit "$rc"
+        exec ${desktopPackage}/bin/hermes-desktop "$@"
       '';
       desktopItem = pkgs.makeDesktopItem {
         name = "hermes-desktop-remote";
         desktopName = "Hermes Desktop";
         comment = "Hermes Agent desktop client";
         exec = "${launcher}/bin/hermes-desktop-remote";
-        icon = "${desktopPackage}/share/hermes-desktop/dist/hermes.png";
+        icon = "${desktopPackage}/share/icons/hicolor/1024x1024/apps/hermes.png";
         categories = [
           "Network"
           "Chat"
@@ -186,41 +40,10 @@
     {
       options.services.hermes-remote = {
         enable = lib.mkEnableOption "remote Hermes desktop client";
-        hosts = lib.mkOption {
-          type = lib.types.nonEmptyListOf lib.types.str;
-          description = "SSH hosts that reach the Hermes dashboard, tried in order";
-        };
-        user = lib.mkOption {
+        url = lib.mkOption {
           type = lib.types.str;
-          default = "root";
-          description = "SSH user that owns the Hermes dashboard token";
-        };
-        clientUser = lib.mkOption {
-          type = lib.types.str;
-          description = "Only local user allowed to connect to the forwarded port";
-        };
-        localPort = lib.mkOption {
-          type = lib.types.port;
-          default = 23100;
-          description = "Client loopback port for the Hermes dashboard tunnel";
-        };
-        remoteAddress = lib.mkOption {
-          type = lib.types.str;
-          example = "10.99.0.2:9119";
-          description = "host:port the dashboard listens on, as seen from the server";
-        };
-        identityFile = lib.mkOption {
-          type = lib.types.str;
-          description = "Dedicated SSH private key for Hermes remote access";
-        };
-        hostKey = lib.mkOption {
-          type = lib.types.str;
-          description = "Pinned SSH host public key for every configured host";
-        };
-        extraSshOptions = lib.mkOption {
-          type = lib.types.listOf lib.types.str;
-          default = [ ];
-          description = "Additional arguments for the Hermes SSH connections";
+          example = "https://hermes.example.org";
+          description = "Hermes webapp URL the desktop app signs in to with oauth";
         };
       };
 
@@ -229,40 +52,6 @@
           launcher
           desktopItem
         ];
-
-        # loopback tcp has no per-uid access control, and the ungated dashboard
-        # serves its session token to any client of the forwarded port
-        networking.nftables.tables.hermes-remote-client = {
-          family = "inet";
-          content = ''
-            chain output {
-              type filter hook output priority filter; policy accept;
-              ip daddr 127.0.0.1 tcp dport ${toString cfg.localPort} ${clientMatch} counter reject with tcp reset
-            }
-          '';
-        };
-        # the build sandbox lacks the runtime account; only the check uses root
-        networking.nftables.preCheckRuleset = ''
-          substituteInPlace ruleset.conf \
-            --replace-fail '${clientMatch}' 'meta skuid != 0'
-        '';
-
-        systemd.user.services.hermes-remote-tunnel = {
-          description = "Hermes dashboard SSH tunnel";
-          after = [ "network-online.target" ];
-          wants = [ "network-online.target" ];
-          # a tunnel that outlives the launcher (or a killed launcher) must not
-          # retry ssh forever; reset-failed in the launcher re-arms the limit
-          unitConfig = {
-            StartLimitIntervalSec = 300;
-            StartLimitBurst = 10;
-          };
-          serviceConfig = {
-            ExecStart = tunnelScript;
-            Restart = "on-failure";
-            RestartSec = 5;
-          };
-        };
       };
     };
 }

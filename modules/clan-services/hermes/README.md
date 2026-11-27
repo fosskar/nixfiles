@@ -8,12 +8,14 @@ inventory.instances.hermes = {
   };
   roles.server.machines.nixbox.settings = {
     soul = "tars";                         # key into flake.llm.souls; omit for the agent's built-in default
+    webapp.enable = true;                  # https://hermes.<local domain>, authelia oidc
     providers = { local.enable = true; openrouter.enable = true; };
     agentSettings = { };                   # merged over the service defaults
     matrix = { enable = true; userId = "@hermes:example.org"; allowedUsers = [ ... ]; };
     signal.enable = true;
+    telegram = { enable = true; allowedUsers = [ "123456789" ]; };
     homeAssistant.enable = true;
-    mcp.enable = true;                     # requires self.modules.nixos.mcp on the server host
+    mcp.allow = [ "calendar.*" ];          # requires self.modules.nixos.mcp on the server host
   };
   roles.client.tags = [ "workstation" ];
 };
@@ -24,24 +26,15 @@ Each instance is one deployment. A second instance with different settings
 
 ## Overview
 
-`hermes` runs the Hermes agent sealed on one server and connects Hermes Desktop on workstation clients to it. The service carries only mechanism; every deployment-specific fact (soul, model, channels, identity) is inventory settings. This homelab's agent policy (model, voice, search backend, plugins) is not a deployment fact and lives in `modules/nixos/services/hermes-agent/hermes-agent.nix`; `agentSettings` is merged over it.
+`hermes` runs the Hermes agent sealed in a fencr sandbox on one server, serves its webapp, and installs Hermes Desktop on workstation clients. The service carries only mechanism; every deployment-specific fact (soul, model, channels, identity) is inventory settings. This homelab's agent policy (model, voice, search backend, plugins) is not a deployment fact and lives in `modules/nixos/services/hermes-agent/hermes-agent.nix`; `agentSettings` is merged over it.
 
 The server role:
 
-- builds the agent sandbox, `backend = "microvm"` (default, own kernel) or `"container"` (nspawn, same bridge posture), with the engine and the channels enabled in settings (`matrix.nix`, `signal.nix`, `home-assistant.nix` under `modules/nixos/services/hermes-agent/`)
+- builds the agent sandbox with the engine and the channels enabled in settings (`matrix.nix`, `signal.nix`, `telegram.nix`, `home-assistant.nix` under `modules/nixos/services/hermes-agent/`)
 - derives the vars generator from the instance name (`<instance>-agent`) and prompts only for enabled channels and key-bearing providers
-- stages the rendered `.env` into the sandbox
-- creates the dashboard session token with clan vars and shares it read-only
-- asks the sandbox to forward `127.0.0.1:<22100 + id>` on the server to port `9119` inside it; the sandbox module owns the transport (vsock for microvms, TCP over the bridge for containers)
-- keeps the dashboard closed to the LAN
+- stages the rendered `.env` into the sandbox; provider keys stay on the host in fencr credentials
+- with `webapp.enable`: the gateway serves the webapp on the guest address, port 9120; fencr opens that port to the host; caddy serves `https://<instance>.<local domain>`; authelia registers the public pkce client `hermes-<instance>` under the `admins` policy
 
-Souls live in `modules/llm/souls/` and are referenced by their `flake.llm.souls` key. The instance name is also the VM name; it must be at most 11 chars so interface names fit IFNAMSIZ.
+The instance name is also the VM name; it must be at most 11 chars so interface names fit IFNAMSIZ.
 
-The client role:
-
-- installs Hermes Desktop and `hermes-desktop-remote`
-- starts an SSH tunnel to the server when the user launches Hermes Desktop
-- reads the dashboard token through the same SSH identity
-- connects Hermes Desktop to the local tunnel endpoint
-
-The service requires exactly one server role machine. Clients use the existing `root` SSH identity to reach that server. The existing `hermes gateway` service continues to provide Matrix access from phones.
+The client role installs Hermes Desktop with `hermes-desktop-remote`, which seeds the app's first connection to the server's webapp with oauth sign-in. The service requires exactly one server role machine and `webapp.enable` on it.

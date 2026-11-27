@@ -1,10 +1,8 @@
 { self, ... }:
 {
   flake.modules."clan.service".hermes =
-    { clanLib, ... }:
+    _:
     let
-      remoteKeyGenerator = instanceName: "${instanceName}-hermes-remote-ssh";
-      remoteUser = instanceName: "hermes-remote-${instanceName}";
       # hermes provider name -> fencr credential provider preset
       fencrProviders = {
         anthropic = "anthropic";
@@ -12,29 +10,24 @@
         openrouter = "openrouter";
         opencode_go = "opencode";
       };
-      # the hermes dashboard binds loopback only; fencr forwards guest ports
-      # bound on the bridge address
-      dashboardGuestPort = 9119;
+      webappPort = 9120;
+      webappHost = instanceName: "${instanceName}.${self.domains.local}";
     in
     {
 
       manifest.name = "hermes";
-      manifest.description = "Hermes agent server and remote desktop clients";
+      manifest.description = "Hermes agent server, its webapp, and desktop clients";
       manifest.readme = builtins.readFile ./README.md;
       manifest.categories = [ "Utility" ];
-      manifest.exports.inputs = [
-        "peer"
-        "networking"
-      ];
 
       roles.server = {
-        description = "Configure Hermes and its remote desktop endpoint";
+        description = "Run Hermes in a fencr sandbox and serve its webapp";
 
         interface =
           { lib, ... }:
           {
             options = {
-              dashboard.enable = lib.mkEnableOption "the Hermes dashboard and remote desktop access";
+              webapp.enable = lib.mkEnableOption "the Hermes webapp at https://<instance>.<local domain>, behind authelia oidc";
 
               mcp.allow = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
@@ -110,6 +103,15 @@
 
               signal.enable = lib.mkEnableOption "the signal channel";
 
+              telegram = {
+                enable = lib.mkEnableOption "the telegram channel";
+                allowedUsers = lib.mkOption {
+                  type = lib.types.listOf lib.types.str;
+                  default = [ ];
+                  description = "numeric telegram user ids allowed to talk to the agent.";
+                };
+              };
+
               computerUse.enable = lib.mkEnableOption "background desktop control on a headless X display";
 
               buzz = {
@@ -154,7 +156,6 @@
           {
             instanceName,
             settings,
-            roles,
             ...
           }:
           {
@@ -162,39 +163,17 @@
               {
                 config,
                 lib,
-                pkgs,
                 ...
               }:
               let
                 generator = "${instanceName}-agent";
                 generators = config.clan.core.vars.generators;
-                sshUser = remoteUser instanceName;
                 sandbox = config.fencr.sandboxes.${instanceName};
                 sandboxHost = "${instanceName}.fencr";
-                dashboardAddress = "${sandboxHost}:${toString dashboardGuestPort}";
+                webHost = webappHost instanceName;
+                oidcClientId = "hermes-${instanceName}";
                 credentialName = provider: "${instanceName}-${provider}";
                 mcp = settings.mcp.allow != [ ];
-                # one key per client machine: leaving the client role revokes its key
-                remotePublicKeys = lib.filter (key: key != "") (
-                  map (
-                    machine:
-                    lib.trim (
-                      clanLib.getPublicValue {
-                        flake = config.clan.core.settings.directory;
-                        inherit machine;
-                        generator = remoteKeyGenerator instanceName;
-                        file = "id_ed25519.pub";
-                        default = "";
-                      }
-                    )
-                  ) (lib.attrNames (roles.client.machines or { }))
-                );
-                tokenCommand = pkgs.writeShellScript "${instanceName}-hermes-token" ''
-                  if [ "''${SSH_ORIGINAL_COMMAND-}" != hermes-token ]; then
-                    exit 1
-                  fi
-                  exec ${pkgs.coreutils}/bin/cat ${generators."${instanceName}-dashboard".files.token.path}
-                '';
                 localProvider = settings.providers.local.enable or false;
                 keyProviders = lib.attrNames (
                   lib.filterAttrs (name: provider: provider.enable && name != "local") settings.providers
@@ -260,6 +239,19 @@
                     env.BUZZ_PRIVATE_KEY = "buzz-private-key";
                   };
 
+                  telegram = {
+                    enable = settings.telegram.enable;
+                    modules = [
+                      self.modules.nixos.hermesTelegram
+                      {
+                        services.hermes-agent.managed.environment.TELEGRAM_ALLOWED_USERS =
+                          lib.concatStringsSep "," settings.telegram.allowedUsers;
+                      }
+                    ];
+                    prompts.telegram-bot-token = "Telegram bot token from @BotFather";
+                    env.TELEGRAM_BOT_TOKEN = "telegram-bot-token";
+                  };
+
                   homeAssistant = {
                     enable = settings.homeAssistant.enable;
                     modules = [
@@ -285,10 +277,10 @@
                 imports = [ self.modules.nixos.fencr ];
 
                 options.nixfiles.hermes.${instanceName} = {
-                  dashboard.enable = lib.mkOption {
+                  webapp.enable = lib.mkOption {
                     type = lib.types.bool;
                     readOnly = true;
-                    description = "whether this instance provides dashboard access.";
+                    description = "whether this instance serves the webapp.";
                   };
                   module = lib.mkOption {
                     type = lib.types.deferredModule;
@@ -299,21 +291,6 @@
 
                 config = {
                   networking.hosts.${sandbox.ip} = [ sandboxHost ];
-                  # the build sandbox lacks this runtime account; only the check uses root.
-                  networking.nftables.preCheckRuleset = lib.mkIf settings.dashboard.enable ''
-                    substituteInPlace ruleset.conf \
-                      --replace-fail 'meta skuid != "${sshUser}"' 'meta skuid != 0'
-                  '';
-                  networking.nftables.tables."${instanceName}-dashboard" = lib.mkIf settings.dashboard.enable {
-                    family = "inet";
-                    content = ''
-                      chain output {
-                        type filter hook output priority filter - 2; policy accept;
-                        ip daddr ${sandbox.ip} tcp dport ${toString dashboardGuestPort} meta skuid != "${sshUser}" counter drop
-                      }
-                    '';
-                  };
-
                   fencr.sandboxes.${instanceName} = {
                     services = [
                       config.nixfiles.hermes.${instanceName}.module
@@ -323,25 +300,24 @@
                           services.hermes-agent.managed.settings.mcp_servers = lib.mkIf mcp {
                             fencr-gateway.url = agentSandbox.mcp.url;
                           };
-                          services.hermes-agent.dashboardTokenFile = lib.mkIf settings.dashboard.enable "/run/agent-secrets/${instanceName}-dashboard-token";
-                          systemd.services = {
-                            hermes-agent.serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
-                            hermes-dashboard = lib.mkIf settings.dashboard.enable {
-                              serviceConfig.EnvironmentFile = "/run/agent-secrets/${instanceName}.env";
-                            };
-                            hermes-dashboard-relay = lib.mkIf settings.dashboard.enable {
-                              description = "Hermes dashboard on the guest address";
-                              wantedBy = [ "multi-user.target" ];
-                              after = [ "network-online.target" ];
-                              wants = [ "network-online.target" ];
-                              serviceConfig = {
-                                DynamicUser = true;
-                                ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:${toString dashboardGuestPort},bind=${sandbox.ip},fork,reuseaddr TCP:127.0.0.1:${toString dashboardGuestPort}";
-                                Restart = "always";
-                                RestartSec = 5;
-                              };
+                          # the gateway serves the webapp on the guest address (plus a
+                          # loopback twin); the host's caddy proxies to it over fencr inbound
+                          services.hermes-agent.managed.settings.webapp = lib.mkIf settings.webapp.enable {
+                            enabled = true;
+                            host = agentSandbox.ip;
+                            port = webappPort;
+                            public_url = "https://${webHost}";
+                          };
+                          services.hermes-agent.managed.settings.dashboard = lib.mkIf settings.webapp.enable {
+                            trusted_proxies = [ agentSandbox.hostIp ];
+                            # public pkce client; the sign-in gate is mandatory off loopback
+                            oauth.self_hosted = {
+                              issuer = "https://auth.${self.domains.public}";
+                              client_id = oidcClientId;
                             };
                           };
+                          systemd.services.hermes-agent.serviceConfig.EnvironmentFile =
+                            "/run/agent-secrets/${instanceName}.env";
                         }
                       )
                     ];
@@ -350,7 +326,7 @@
                       inherit (self) inputs;
                       flake-self = self;
                     };
-                    inbound = lib.optional settings.dashboard.enable dashboardGuestPort;
+                    inbound = lib.optional settings.webapp.enable webappPort;
                     outbound = [
                       "internet"
                       # *.nx3.eu (search, llama-cpp) is nixbox's caddy; fencr reaches
@@ -365,9 +341,6 @@
                     credentials = map credentialName keyProviders;
                     secrets = {
                       "${instanceName}.env" = generators.${generator}.files.".env".path;
-                    }
-                    // lib.optionalAttrs settings.dashboard.enable {
-                      "${instanceName}-dashboard-token" = generators."${instanceName}-dashboard".files.token.path;
                     };
                   };
 
@@ -388,7 +361,7 @@
                   );
 
                   nixfiles.hermes.${instanceName} = {
-                    dashboard.enable = settings.dashboard.enable;
+                    webapp.enable = settings.webapp.enable;
                     module = {
                       imports = [
                         self.modules.nixos.hermesAgent
@@ -398,7 +371,6 @@
                           {
                             services.hermes-agent = {
                               localProvider.enable = localProvider;
-                              dashboard.enable = settings.dashboard.enable;
 
                               skillDirs =
                                 map (
@@ -420,37 +392,57 @@
                     };
                   };
 
-                  # the desktop tunnel is a -L forward; the key's permitopen limits the
-                  # tcp target only, so unix-socket forwards are switched off here
-                  services.openssh.extraConfig = lib.mkIf settings.dashboard.enable ''
-                    Match User ${sshUser}
-                      AllowTcpForwarding local
-                      AllowStreamLocalForwarding no
-                      PermitListen none
+                  services.caddy.virtualHosts.${webHost}.extraConfig = lib.mkIf settings.webapp.enable ''
+                    reverse_proxy ${sandbox.ip}:${toString webappPort}
                   '';
 
-                  clan.core.vars.generators."${instanceName}-dashboard" = lib.mkIf settings.dashboard.enable {
-                    files.token = {
-                      owner = "root";
-                      group = sshUser;
-                      mode = "0440";
-                    };
-                    runtimeInputs = [ pkgs.openssl ];
-                    script = ''
-                      openssl rand -hex 32 > "$out/token"
-                    '';
-                  };
+                  services.authelia.instances.main.settings.identity_providers.oidc.clients =
+                    lib.mkIf settings.webapp.enable
+                      [
+                        {
+                          client_id = oidcClientId;
+                          client_name = "Hermes ${instanceName}";
+                          public = true;
+                          consent_mode = "implicit";
+                          # every account that signs in acts as the machine owner
+                          authorization_policy = "admins";
+                          redirect_uris = [ "https://${webHost}/auth/callback" ];
+                          scopes = [
+                            "openid"
+                            "profile"
+                            "email"
+                          ];
+                          require_pkce = true;
+                          pkce_challenge_method = "S256";
+                          response_types = [ "code" ];
+                          grant_types = [ "authorization_code" ];
+                          token_endpoint_auth_method = "none";
+                        }
+                      ];
 
-                  users.groups.${sshUser} = lib.mkIf settings.dashboard.enable { };
-                  users.users.${sshUser} = lib.mkIf settings.dashboard.enable {
-                    isSystemUser = true;
-                    group = sshUser;
-                    home = "/var/empty";
-                    shell = pkgs.bashInteractive;
-                    openssh.authorizedKeys.keys = map (
-                      key: ''restrict,port-forwarding,permitopen="${dashboardAddress}",command="${tokenCommand}" ${key}''
-                    ) remotePublicKeys;
-                  };
+                  services.homepage-dashboard.services = lib.mkIf settings.webapp.enable [
+                    {
+                      "llm" = [
+                        {
+                          "Hermes ${instanceName}" = {
+                            href = "https://${webHost}";
+                            icon = "mdi-robot-outline";
+                          };
+                        }
+                      ];
+                    }
+                  ];
+
+                  services.gatus.settings.endpoints = lib.mkIf settings.webapp.enable [
+                    {
+                      name = "Hermes ${instanceName}";
+                      url = "https://${webHost}";
+                      enabled = true;
+                      alerts = [ { type = "matrix"; } ];
+                      interval = "5m";
+                      conditions = [ "[STATUS] == 200" ];
+                    }
+                  ];
 
                   clan.core.vars.generators.${generator} = {
                     files = {
@@ -492,113 +484,37 @@
       };
 
       roles.client = {
-        description = "Connect Hermes Desktop to the server over SSH";
+        description = "Install Hermes Desktop connected to the server's webapp";
         perInstance =
           {
             instanceName,
-            exports,
             roles,
             ...
           }:
           {
             nixosModule =
-              {
-                config,
-                lib,
-                pkgs,
-                ...
-              }:
+              { lib, ... }:
               let
-                serverNames = lib.naturalSort (lib.attrNames (roles.server.machines or { }));
+                serverNames = lib.attrNames (roles.server.machines or { });
                 server = if lib.length serverNames == 1 then lib.head serverNames else null;
-                dashboard = server != null && roles.server.machines.${server}.settings.dashboard.enable;
-                # every network service exports peer.hosts per machine and
-                # networking.priority per instance; walking them here replicates
-                # `clan ssh`'s fallback order declaratively. var-typed hosts
-                # (tor onions) are machine-local secrets and are skipped.
-                peerExports = lib.mapAttrsToList (key: value: {
-                  scope = clanLib.parseScope key;
-                  inherit value;
-                }) (clanLib.selectExports (scope: scope.machineName == server) exports);
-                priorityOf =
-                  scope:
-                  ((exports.${clanLib.buildScopeKey { inherit (scope) serviceName instanceName; }} or { }).networking
-                    or { }
-                  ).priority or 1000;
-                tunnelHosts = lib.pipe peerExports [
-                  (lib.filter (entry: (entry.value.peer.hosts or [ ]) != [ ]))
-                  (lib.sort (a: b: priorityOf a.scope > priorityOf b.scope))
-                  (lib.concatMap (entry: lib.filter (host: host ? plain) entry.value.peer.hosts))
-                  (map (host: host.plain))
-                  lib.unique
-                ];
-                normalUsers = lib.attrNames (lib.filterAttrs (_: user: user.isNormalUser) config.users.users);
-                clientUser = if lib.length normalUsers == 1 then lib.head normalUsers else null;
-                clientGroup = if clientUser == null then null else config.users.users.${clientUser}.group;
-                hostKey =
-                  if server == null then
-                    ""
-                  else
-                    lib.trim (
-                      clanLib.getPublicValue {
-                        flake = config.clan.core.settings.directory;
-                        machine = server;
-                        generator = "openssh";
-                        file = "ssh.id_ed25519.pub";
-                        default = "";
-                      }
-                    );
+                webapp = server != null && roles.server.machines.${server}.settings.webapp.enable;
               in
               {
                 imports = [ self.modules.nixos.hermesRemote ];
 
-                services.hermes-remote = lib.mkIf (server != null && clientUser != null) {
+                services.hermes-remote = lib.mkIf webapp {
                   enable = true;
-                  user = remoteUser instanceName;
-                  inherit clientUser;
-                  hosts = tunnelHosts;
-                  # the server resolves <instance>.fencr to the sandbox
-                  remoteAddress = "${instanceName}.fencr:${toString dashboardGuestPort}";
-                  identityFile =
-                    config.clan.core.vars.generators.${remoteKeyGenerator instanceName}.files."id_ed25519".path;
-                  inherit hostKey;
-                };
-
-                clan.core.vars.generators.${remoteKeyGenerator instanceName} = lib.mkIf (clientUser != null) {
-                  files = {
-                    "id_ed25519" = {
-                      owner = clientUser;
-                      group = clientGroup;
-                      mode = "0400";
-                    };
-                    "id_ed25519.pub".secret = false;
-                  };
-                  runtimeInputs = [ pkgs.openssh ];
-                  script = ''
-                    ssh-keygen -t ed25519 -N "" -C "hermes-remote-${instanceName}" -f "$out/id_ed25519"
-                  '';
+                  url = "https://${webappHost instanceName}";
                 };
 
                 assertions = [
                   {
-                    assertion = lib.length serverNames == 1;
+                    assertion = server != null;
                     message = "clan hermes client requires exactly one machine with the server role";
                   }
                   {
-                    assertion = server == null || tunnelHosts != [ ];
-                    message = "clan hermes client found no networking exports with a plain host for ${toString server}";
-                  }
-                  {
-                    assertion = dashboard;
-                    message = "clan hermes client: instance ${instanceName} has dashboard.enable = false on ${toString server}";
-                  }
-                  {
-                    assertion = lib.length normalUsers == 1;
-                    message = "clan hermes client requires exactly one normal user, found ${toString (lib.length normalUsers)}";
-                  }
-                  {
-                    assertion = server == null || hostKey != "";
-                    message = "clan hermes client found no pinned SSH host key for ${toString server}";
+                    assertion = webapp;
+                    message = "clan hermes client: instance ${instanceName} has webapp.enable = false on ${toString server}";
                   }
                 ];
               };
