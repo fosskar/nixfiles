@@ -21,6 +21,12 @@ let
         hash = "sha256-uNOfiYbLAm/0Ret2nUQ3Wxd1IoOsclRbF11z2gGx0vM=";
       })
     ];
+    # 100 releases with all their assets exceed what github sends in one
+    # response for llama.cpp (IncompleteRead), so the version lookup fails
+    postPatch = old.postPatch or "" + ''
+      substituteInPlace nix_update/version/github.py \
+        --replace-fail "RELEASES_PER_PAGE = 100" "RELEASES_PER_PAGE = 20"
+    '';
   });
 in
 stdenvNoCC.mkDerivation {

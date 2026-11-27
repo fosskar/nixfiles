@@ -41,6 +41,9 @@
       updateScript = nix-update-script {
         extraArgs = [
           "--use-github-releases"
+          # the newest semver release is among the last few nightlies
+          "--github-releases-limit"
+          "100"
           "--version-regex"
           "^v(\\d+\\.\\d+\\.\\d+)$"
         ];
