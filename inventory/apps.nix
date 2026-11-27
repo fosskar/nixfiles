@@ -1,6 +1,29 @@
 { config, ... }:
 {
   flake.clan.inventory.instances = {
+    hermes = {
+      module = {
+        name = "hermes";
+        input = "self";
+      };
+      roles.server.machines.nixbox.settings = {
+        soul = "tars";
+        webapp.enable = true;
+        providers = {
+          local.enable = true;
+          openrouter.enable = true;
+          opencode_go.enable = true;
+        };
+        packageSkills = [ "optional-skills/devops/watchers" ];
+        catalogPlugins = [
+          "hermes-memory-ui"
+          "hermes-terminal"
+        ];
+        telegram.enable = false;
+      };
+      roles.client.tags = [ "workstation" ];
+    };
+
     # self-hosted buzz relay; media and git data in the local garage cluster
     # (bucket buzz-media, inventory/infra.nix). homepage tile and gatus
     # endpoint live in modules/nixos/services/buzz-relay.nix. public ingress
