@@ -1243,11 +1243,11 @@
     "pi-subagent-manager": {
       "flake": false,
       "locked": {
-        "lastModified": 1795725768,
-        "narHash": "sha256-55OTGBxgGlOCw7PLgeiLxes8PoB8OCNFpZPyl0mP7YQ=",
+        "lastModified": 1795814669,
+        "narHash": "sha256-fPuc2imqdqEXywvst6uxxbPLhMwhtxAPIwqMuXj6AuI=",
         "owner": "championswimmer",
         "repo": "pi-subagent-manager",
-        "rev": "5bcb5c47a5b5829bab74c8012df0aa8e1b06594b",
+        "rev": "9a6a6f933666cfa2f73fac1b6e443f132cc691c6",
         "type": "github"
       },
       "original": {
