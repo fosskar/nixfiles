@@ -227,6 +227,12 @@
           ''
         );
 
+        # upstream's setup merges config.yaml as root and only chmods it, so a
+        # fresh state dir leaves it root:root and the gateway cannot read it
+        system.activationScripts.hermes-agent-config-owner = lib.stringAfter [ "hermes-agent-setup" ] ''
+          ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} ${stateDir}/.hermes/config.yaml
+        '';
+
         # -i, not -H: a login shell resets PATH to hermes' own profile. with the
         # caller's PATH the agent's packages are not found and unreadable /root
         # entries turn "command not found" into EACCES
