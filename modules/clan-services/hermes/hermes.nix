@@ -472,9 +472,9 @@
                         ) keyProviders;
                       in
                       ''
-                        # `:` keeps the group valid when no channel adds a line
+                        # never empty: clan opens the sops editor for an empty secret
                         {
-                          :
+                          echo "# hermes channel secrets"
                           ${lib.concatStringsSep "\n  " lines}
                         } > "$out/.env"
                         ${lib.concatStringsSep "\n" authorizations}
