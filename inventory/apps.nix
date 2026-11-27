@@ -23,6 +23,24 @@
       roles.client.tags = [ "workstation" ];
     };
 
+    # no client role: services.hermes-remote takes one url, the hermes instance
+    # owns it; add hermina as a second gateway in hermes desktop instead
+    hermina = {
+      module = {
+        name = "hermes";
+        input = "self";
+      };
+      roles.server.machines.nixbox.settings = {
+        webapp.enable = true;
+        providers.opencode_go.enable = true;
+        agentSettings.model = {
+          default = "kimi-k3";
+          provider = "opencode-go";
+        };
+        telegram.enable = false;
+      };
+    };
+
     # self-hosted buzz relay; media and git data in the local garage cluster
     # (bucket buzz-media, inventory/infra.nix). homepage tile and gatus
     # endpoint live in modules/nixos/services/buzz-relay.nix. public ingress
