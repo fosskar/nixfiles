@@ -363,6 +363,8 @@
             # store the copy cannot take its marker, and the failed staging dir
             # cannot be removed either, so one leaks on every reconcile
             "+${pkgs.writeShellScript "hermes-desktop-plugins-staging-cleanup" ''
+              # absent until hermes first installs a desktop plugin
+              [ -d ${stateDir}/.hermes/desktop-plugins ] || exit 0
               ${pkgs.findutils}/bin/find ${stateDir}/.hermes/desktop-plugins -maxdepth 1 -name '.*.staging-*' \
                 -exec ${pkgs.coreutils}/bin/chmod -R u+w {} + \
                 -exec ${pkgs.coreutils}/bin/rm -rf {} +
