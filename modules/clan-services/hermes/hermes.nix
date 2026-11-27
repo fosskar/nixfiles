@@ -446,7 +446,11 @@
 
                   clan.core.vars.generators.${generator} = {
                     files = {
-                      ".env".secret = true;
+                      ".env" = {
+                        secret = true;
+                        # the guest fetches raw secrets once per boot; a new value needs a new boot
+                        restartUnits = [ "fencr-${instanceName}.service" ];
+                      };
                     }
                     // lib.genAttrs (map (provider: "${provider}-authorization") keyProviders) (_: {
                       secret = true;
