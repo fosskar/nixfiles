@@ -89,6 +89,8 @@
         # the gpu whisper server on nixbox, through its caddy route on :443;
         # it needs no key, but a hostname base_url is not treated as local
         stt = {
+          # hermes defaults to "en"; "" lets whisper detect the language
+          language = "";
           provider = "openai";
           openai = {
             base_url = "https://whisper.${flake-self.domains.local}/v1";
@@ -115,6 +117,7 @@
         # its default preset names openai-codex and openrouter models
         moa.presets.default.enabled = false;
         display.show_reasoning = false;
+        display.message_reactions = true;
         # no metrics upload to nous, and the consent dialog cannot turn it on
         telemetry.shared_metrics = {
           enabled = false;
