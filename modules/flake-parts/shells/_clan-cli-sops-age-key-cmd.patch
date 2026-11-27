@@ -1,6 +1,6 @@
 --- a/clan_cli/secrets/sops.py
 +++ b/clan_cli/secrets/sops.py
-@@ -113,6 +113,21 @@
+@@ -113,6 +113,23 @@
                      raise ClanError(error_msg) from e
  
              # Sops will try every location, see age/keysource.go
@@ -10,6 +10,8 @@
 +                if _result.returncode != 0:
 +                    # the command fails when its key source is absent (no phone session); pgp keys still apply
 +                    log.warning(f"SOPS_AGE_KEY_CMD failed, skipping its age keys: {_result.stderr.strip()}")
++                    # sops subprocesses would rerun the command and wait for the phone on every decrypt
++                    del os.environ["SOPS_AGE_KEY_CMD"]
 +                else:
 +                    content = _result.stdout.strip()
 +                    try:
