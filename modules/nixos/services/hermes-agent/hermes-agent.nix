@@ -229,13 +229,14 @@
         # stays refused by its own /nix/store check
 
         # reinstalled on every activation: the soul is declarative, agent edits
-        # do not survive
+        # do not survive. writable, since creating a bot copies the profile and
+        # then writes the copy's SOUL.md
         system.activationScripts.hermes-agent-soul = lib.mkIf (cfg.soul != null) (
           lib.stringAfter [ "hermes-agent-setup" ] ''
             ${pkgs.coreutils}/bin/install \
               -o ${cfg.user} \
               -g ${cfg.group} \
-              -m 0444 \
+              -m 0644 \
               ${cfg.soul} \
               ${stateDir}/.hermes/SOUL.md
           ''
