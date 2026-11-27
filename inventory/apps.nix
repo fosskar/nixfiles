@@ -11,7 +11,6 @@
         webapp.enable = true;
         providers = {
           local.enable = true;
-          openrouter.enable = true;
           opencode_go.enable = true;
         };
         packageSkills = [ "optional-skills/devops/watchers" ];
