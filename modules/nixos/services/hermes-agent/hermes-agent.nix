@@ -320,6 +320,16 @@
           "d ${stateDir}/lazy-deps 0750 hermes hermes - -"
           # opt out of seeding the bundled skill catalog; only hermes' essential skills get copied
           "f ${stateDir}/.hermes/.no-bundled-skills 0640 hermes hermes - -"
+          # webapp/desktop ui preferences, seeded once: simple interface mode.
+          # f never overwrites, so later changes from the webapp stay
+          "f ${stateDir}/.hermes/ui-preferences.json 0660 hermes hermes - ${
+            builtins.toJSON {
+              version = 1;
+              revision = 1;
+              generation = "nix-seed";
+              values."hermes.desktop.interfaceMode.v1" = "simple";
+            }
+          }"
         ];
 
         systemd.services.hermes-venv = {
