@@ -52,7 +52,6 @@
     self.modules.nixos.silo
     self.modules.nixos.whisperServer
     self.modules.nixos.meilisearch
-    self.modules.nixos.openbot
   ]
   ++ (nflib.scanPaths ./. { });
 
