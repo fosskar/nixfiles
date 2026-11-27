@@ -8,6 +8,7 @@ from typing import Annotated
 
 import uvicorn
 from fastapi import FastAPI, File, Form, UploadFile
+from fastapi.responses import PlainTextResponse
 from faster_whisper import WhisperModel
 
 app = FastAPI()
@@ -36,9 +37,14 @@ def health():
 def transcribe(
     file: Annotated[UploadFile, File()],
     language: Annotated[str, Form()] = "",
-    vad_filter: Annotated[bool, Form()] = False,
+    # on unless a client says otherwise: without it whisper turns silence into
+    # repeated filler words. silo sends the field itself
+    vad_filter: Annotated[bool, Form()] = True,
+    # openai's default; silo asks for verbose_json
+    response_format: Annotated[str, Form()] = "json",
 ):
     global model, last_used
+    verbose = response_format == "verbose_json"
     with lock:
         if model is None:
             model = WhisperModel(
@@ -50,7 +56,7 @@ def transcribe(
             file.file,
             language=language or None,
             vad_filter=vad_filter,
-            word_timestamps=True,
+            word_timestamps=verbose,
             temperature=0,
         )
         # silo joins the words with spaces, so they have to be whole words
@@ -62,17 +68,22 @@ def transcribe(
                 "text": segment.text,
                 "words": [
                     {"word": word.word, "start": word.start, "end": word.end}
-                    for word in segment.words
+                    for word in segment.words or []
                 ],
             }
             for index, segment in enumerate(segments)
         ]
         last_used = time.monotonic()
+    text = "".join(segment["text"] for segment in result)
+    if response_format == "text":
+        return PlainTextResponse(text)
+    if not verbose:
+        return {"text": text}
     return {
         "task": "transcribe",
         "language": info.language,
         "duration": info.duration,
-        "text": "".join(segment["text"] for segment in result),
+        "text": text,
         "segments": result,
     }
 
