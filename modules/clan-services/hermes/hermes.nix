@@ -299,6 +299,10 @@
                       (
                         { agentSandbox, ... }:
                         {
+                          # profiles (bots) read provider keys only from their own .env;
+                          # the managed .env reaches every profile. fencr's placeholders
+                          # are no secret and only work through its proxy
+                          services.hermes-agent.managed.environment = agentSandbox.credentialEnv;
                           services.hermes-agent.managed.settings.mcp_servers = lib.mkIf mcp {
                             fencr-gateway.url = agentSandbox.mcp.url;
                           };
