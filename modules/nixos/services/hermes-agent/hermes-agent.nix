@@ -313,7 +313,13 @@
         # -i, not -H: a login shell resets PATH to hermes' own profile. with the
         # caller's PATH the agent's packages are not found and unreadable /root
         # entries turn "command not found" into EACCES
-        environment.shellAliases.hermes = "sudo -iu hermes env HERMES_MANAGED=false HERMES_MANAGED_DIR=${managedDir} HERMES_LAZY_INSTALL_TARGET=${stateDir}/lazy-deps NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes";
+        # the hermes user (the webapp terminal) runs the cli directly: its
+        # service sets NoNewPrivileges, so sudo refuses there
+        environment.interactiveShellInit = ''
+          if [ "$(id -un)" != ${cfg.user} ]; then
+            alias hermes='sudo -iu hermes env HERMES_MANAGED=false HERMES_MANAGED_DIR=${managedDir} HERMES_LAZY_INSTALL_TARGET=${stateDir}/lazy-deps NPM_CONFIG_PREFIX=${stateDir}/npm VIRTUAL_ENV=${stateDir}/venv hermes'
+          fi
+        '';
 
         # what upstream's ubuntu container mode exists for: somewhere the agent
         # can pip/npm install at runtime
