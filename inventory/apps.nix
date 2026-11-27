@@ -9,6 +9,11 @@
       roles.server.machines.nixbox.settings = {
         soul = "tars";
         webapp.enable = true;
+        agentSettings.model = {
+          default = "deepseek-v4-pro";
+          provider = "opencode-go";
+        };
+        mnemosyne.enable = true;
         providers = {
           local.enable = true;
           opencode_go.enable = true;
@@ -30,7 +35,7 @@
         webapp.enable = true;
         providers.opencode_go.enable = true;
         agentSettings.model = {
-          default = "kimi-k3";
+          default = "deepseek-v4-pro";
           provider = "opencode-go";
         };
         telegram.enable = false;

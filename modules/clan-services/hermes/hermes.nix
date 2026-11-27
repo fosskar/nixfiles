@@ -114,6 +114,8 @@
 
               computerUse.enable = lib.mkEnableOption "background desktop control on a headless X display";
 
+              mnemosyne.enable = lib.mkEnableOption "mnemosyne, a local sqlite memory provider with vector recall";
+
               buzz = {
                 enable = lib.mkEnableOption "the buzz channel";
                 channels = lib.mkOption {
@@ -388,6 +390,7 @@
                         )
                       ]
                       ++ lib.optional settings.computerUse.enable self.modules.nixos.hermesComputerUse
+                      ++ lib.optional settings.mnemosyne.enable self.modules.nixos.hermesMnemosyne
                       ++ lib.concatMap (channel: channel.modules) active;
                     };
                   };
