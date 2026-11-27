@@ -111,6 +111,11 @@
         };
       };
 
+      # the hermes sandboxes reach nixbox only on :443
+      services.caddy.virtualHosts."whisper.${flake-self.domains.local}".extraConfig = ''
+        reverse_proxy ${flake-self.whisperServer.url}
+      '';
+
       services.gatus.settings.endpoints = [
         {
           name = "Whisper Server";

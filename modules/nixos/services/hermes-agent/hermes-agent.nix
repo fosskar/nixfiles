@@ -84,11 +84,21 @@
         timezone = "Europe/Berlin";
         display.personality = "none";
         terminal.backend = "local";
+        # local, in-process; the piper dependency group below ships piper-tts
         tts.provider = "piper";
+        # the gpu whisper server on nixbox, through its caddy route on :443;
+        # it needs no key, but a hostname base_url is not treated as local
         stt = {
-          provider = "local";
-          local.model = "base";
+          provider = "openai";
+          openai = {
+            base_url = "https://whisper.${flake-self.domains.local}/v1";
+            api_key = "not-needed";
+            model = flake-self.whisperServer.model;
+          };
         };
+        # hermes only runs a chromium from PATH on termux; elsewhere it would
+        # download its own build, which does not run on nixos
+        browser.executable_path = lib.getExe pkgs.chromium;
         # own searxng instead of the paid search apis hermes defaults to
         web.search_backend = "searxng";
         # standalone plugins are opt-in; bundled platform/backend ones
@@ -98,9 +108,8 @@
           "rtk-rewrite"
         ]
         ++ map (plugin: plugin.pluginName) catalogPlugins;
-        # local sqlite fact store next to the built-in MEMORY.md, which keeps
-        # loading; the only provider with no api-key path and no llm calls
-        memory.provider = "holographic";
+        # built-in MEMORY.md/USER.md only; an instance can add a provider plugin
+        memory.provider = "";
         # summarise old turns instead of hitting the context wall
         compression.enabled = true;
         # no metrics upload to nous, and the consent dialog cannot turn it on
@@ -187,6 +196,9 @@
             version = "0.21.5";
           };
 
+          # piper-tts for tts.provider; it is an optional extra outside the default package
+          extraDependencyGroups = [ "piper" ];
+
           # symlinked into HERMES_HOME/plugins and gated by plugins.enabled
           # above; both halves are required or the hook silently never registers
           extraPlugins = [ rtkPlugin ] ++ map (plugin: plugin.package) catalogPlugins;
@@ -196,9 +208,7 @@
             # lazy optional-dep installs into HERMES_LAZY_INSTALL_TARGET go
             # through uv; without it the pip tier fails on the store env
             pkgs.uv
-            pkgs.agent-browser
             pkgs.local.blogwatcher-cli
-            pkgs.chromium
             pkgs.curl
             pkgs.gh
             pkgs.gitMinimal
