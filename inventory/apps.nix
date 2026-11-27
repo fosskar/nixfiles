@@ -10,7 +10,7 @@
         soul = "tars";
         webapp.enable = true;
         agentSettings.model = {
-          default = "deepseek-v4-pro";
+          default = "glm-5.3";
           provider = "opencode-go";
         };
         mnemosyne.enable = true;
@@ -35,7 +35,7 @@
         webapp.enable = true;
         providers.opencode_go.enable = true;
         agentSettings.model = {
-          default = "deepseek-v4-pro";
+          default = "glm-5.3";
           provider = "opencode-go";
         };
         telegram.enable = false;
