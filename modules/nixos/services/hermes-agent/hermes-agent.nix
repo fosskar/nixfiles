@@ -223,13 +223,6 @@
       options.services.hermes-agent = {
         localProvider.enable = lib.mkEnableOption "the homelab llama-cpp endpoint as the default model provider";
 
-        userProfile = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "Speaks German. Always answer in German.";
-          description = "starting USER.md memory, copied only while the agent has none.";
-        };
-
         fastModel = lib.mkOption {
           type = lib.types.nullOr (
             lib.types.submodule {
@@ -372,10 +365,6 @@
         # the soul is only the starting identity: C copies it when SOUL.md is
         # missing, before hermes would seed its own, and never overwrites the
         # agent's edits. z makes the copy from the read-only store writable
-        ++ lib.optionals (cfg.userProfile != null) [
-          "C ${stateDir}/.hermes/memories/USER.md - - - - ${pkgs.writeText "USER.md" cfg.userProfile}"
-          "z ${stateDir}/.hermes/memories/USER.md 0660 ${cfg.user} ${cfg.group} -"
-        ]
         ++ lib.optionals (cfg.soul != null) [
           "C ${stateDir}/.hermes/SOUL.md - - - - ${cfg.soul}"
           "z ${stateDir}/.hermes/SOUL.md 0644 ${cfg.user} ${cfg.group} -"
