@@ -65,7 +65,10 @@
     };
   };
 
-  nixfiles.mcpCalendar.accounts = [ "simon" ];
+  nixfiles.mcpCalendar.accounts = [
+    "simon"
+    "hermina"
+  ];
 
   environment.systemPackages = [
     pkgs.ipmitool

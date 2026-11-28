@@ -39,6 +39,7 @@
       roles.server.machines.nixbox.settings = {
         webapp.enable = true;
         providers.opencode_go.enable = true;
+        mcp.allow = [ "calendar-hermina.*" ];
         agentSettings.display.language = "de";
         agentSettings.tts.piper.voice = "de_DE-thorsten-high";
         agentSettings.model = {
