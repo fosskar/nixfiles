@@ -17,7 +17,10 @@
           provider = "opencode-go";
           model = "mimo-v2.6-flash";
         };
-        mcp.allow = [ "grafana.*" ];
+        mcp.allow = [
+          "grafana.*"
+          "calendar-simon.*"
+        ];
         mnemosyne.enable = true;
         providers = {
           local.enable = true;

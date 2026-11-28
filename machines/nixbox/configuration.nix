@@ -65,6 +65,8 @@
     };
   };
 
+  nixfiles.mcpCalendar.accounts = [ "simon" ];
+
   environment.systemPackages = [
     pkgs.ipmitool
   ];
