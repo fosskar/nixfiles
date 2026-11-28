@@ -13,4 +13,9 @@ in
 
   flake.llm.souls.tars = ./souls/TARS.md;
   flake.llm.souls.rocky = ./souls/ROCKY.md;
+  # SOUL.md from github.com/will-assistant/openclaw-agents at 2c04d54d (MIT)
+  flake.llm.souls.ted-lasso = ./souls/TED-LASSO.md;
+  flake.llm.souls.rick-sanchez = ./souls/RICK-SANCHEZ.md;
+  flake.llm.souls.angela-merkel = ./souls/ANGELA-MERKEL.md;
+  flake.llm.souls.captain-picard = ./souls/CAPTAIN-PICARD.md;
 }
