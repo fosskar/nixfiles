@@ -23,6 +23,7 @@
           "opencloud.*"
         ];
         homeAssistant.enable = true;
+        signal.enable = true;
         mnemosyne.enable = true;
         providers = {
           local.enable = true;

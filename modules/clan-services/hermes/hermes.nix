@@ -227,10 +227,15 @@
                   signal = {
                     enable = settings.signal.enable;
                     modules = [ self.modules.nixos.hermesSignal ];
-                    prompts.signal-account-number = "Signal account phone number in E.164 format";
+                    # a numberless account is addressed by its account id; signal-cli
+                    # 0.14.10's event stream only matches the dashed lowercase form
+                    prompts = {
+                      signal-account = "Signal account of the agent: E.164 phone number, or account id as lowercase UUID with dashes";
+                      signal-allowed-users = "Signal senders allowed to talk to the agent: comma-separated E.164 numbers and UUIDs";
+                    };
                     env = {
-                      SIGNAL_ACCOUNT = "signal-account-number";
-                      SIGNAL_ALLOWED_USERS = "signal-account-number";
+                      SIGNAL_ACCOUNT = "signal-account";
+                      SIGNAL_ALLOWED_USERS = "signal-allowed-users";
                     };
                   };
 
