@@ -227,12 +227,16 @@
                   signal = {
                     enable = settings.signal.enable;
                     modules = [ self.modules.nixos.hermesSignal ];
-                    # a numberless account is addressed by its account id.
-                    # SIGNAL_ALLOWED_USERS stays unset here: the owner adds the
-                    # allowed senders in the webapp's messaging settings, where the
-                    # plugin exposes the field, so no sender numbers reach sops
-                    prompts.signal-account = "Signal account of the agent: E.164 phone number, or the account id as the app shows it";
-                    env.SIGNAL_ACCOUNT = "signal-account";
+                    # a numberless account is addressed by its account id. signal
+                    # hides a sender's number by default, so senders are uuids
+                    prompts = {
+                      signal-account = "Signal account of the agent: E.164 phone number, or the account id as the app shows it";
+                      signal-allowed-users = "Signal senders allowed to talk to the agent: comma-separated UUIDs or E.164 numbers";
+                    };
+                    env = {
+                      SIGNAL_ACCOUNT = "signal-account";
+                      SIGNAL_ALLOWED_USERS = "signal-allowed-users";
+                    };
                   };
 
                   buzz = {
