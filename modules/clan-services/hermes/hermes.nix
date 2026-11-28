@@ -280,7 +280,7 @@
                 active = lib.attrValues (lib.filterAttrs (_: channel: channel.enable) channels);
                 mergeAttrsOf = field: lib.foldl' (acc: channel: acc // channel.${field} or { }) { } active;
                 hiddenPrompt = description: {
-                  inherit description;
+                  description = "${instanceName}: ${description}";
                   type = "hidden";
                   persist = true;
                 };
