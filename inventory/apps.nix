@@ -19,8 +19,8 @@
         };
         mcp.allow = [
           "grafana.*"
-          "calendar-simon.*"
-          "opencloud-simon.*"
+          "calendar.*"
+          "opencloud.*"
         ];
         homeAssistant.enable = true;
         mnemosyne.enable = true;
@@ -42,8 +42,8 @@
         webapp.enable = true;
         providers.opencode_go.enable = true;
         mcp.allow = [
-          "calendar-hermina.*"
-          "opencloud-hermina.*"
+          "calendar.*"
+          "opencloud.*"
         ];
         homeAssistant.enable = true;
         agentSettings.display.language = "de";

@@ -53,24 +53,12 @@ _: {
           "create_datasource"
           "update_datasource"
         ];
+        outbound = [ "${flake-self.hosts.nixbox.lan}/32" ];
       };
 
       systemd.services."fencr-mcp-backend-grafana@" = {
         environment.GRAFANA_URL = "https://grafana.${flake-self.domains.local}";
-        serviceConfig = {
-          LoadCredential = [ "token:${vars.files.token.path}" ];
-          IPAddressAllow = [
-            "127.0.0.53/32"
-            "${flake-self.hosts.nixbox.lan}/32"
-            "${builtins.head config.networking.nameservers}/32"
-          ];
-          IPAddressDeny = "any";
-          RestrictAddressFamilies = [
-            "AF_INET"
-            "AF_INET6"
-            "AF_UNIX"
-          ];
-        };
+        serviceConfig.LoadCredential = [ "token:${vars.files.token.path}" ];
       };
     };
 }

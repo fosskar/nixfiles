@@ -65,10 +65,10 @@
     };
   };
 
-  nixfiles.mcpOpencloud.accounts = [
-    "simon"
-    "hermina"
-  ];
+  nixfiles.mcpOpencloud.accounts = {
+    hermes = "simon";
+    hermina = "hermina";
+  };
 
   environment.systemPackages = [
     pkgs.ipmitool
