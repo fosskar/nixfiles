@@ -1,24 +1,13 @@
 {
-  lib,
-  python3,
-  writeShellApplication,
+  python3Packages,
+  writers,
 }:
-let
-  python = python3.withPackages (packages: [
-    packages.anyio
-    packages.caldav
-    packages.mcp
-  ]);
-in
-writeShellApplication {
-  name = "calendar-mcp";
-  runtimeInputs = [ python ];
-  text = ''
-    exec python ${./calendar_mcp.py} "$@"
-  '';
-  meta = {
-    description = "CalDAV MCP server for one account";
-    license = lib.licenses.mit;
-    mainProgram = "calendar-mcp";
-  };
-}
+writers.writePython3Bin "calendar-mcp" {
+  libraries = [
+    python3Packages.anyio
+    python3Packages.caldav
+    python3Packages.mcp
+  ];
+  # ruff formats to 88 columns; flake8 defaults to 79
+  flakeIgnore = [ "E501" ];
+} ./calendar_mcp.py
