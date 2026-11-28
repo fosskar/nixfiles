@@ -66,6 +66,49 @@
 
       catalogPlugins = map catalogPlugin cfg.catalogPlugins;
 
+      # every soul in modules/llm/souls, for the agent to list and apply
+      soulTemplates = pkgs.linkFarm "hermes-soul-templates" (
+        lib.mapAttrsToList (name: path: {
+          name = "${name}.md";
+          inherit path;
+        }) flake-self.llm.souls
+      );
+      soulTemplatesDir = "${stateDir}/.hermes/soul-templates";
+      soulTemplatesSkill = pkgs.writeTextDir "SKILL.md" ''
+        ---
+        name: soul-templates
+        description: List the soul templates (characters, personas, identities) this agent can take on, switch its own soul to one, or start a new bot with one.
+        ---
+
+        # Soul templates
+
+        A soul is an agent's identity: its SOUL.md. Ready-made souls live in
+        `${soulTemplatesDir}/`, one `<name>.md` each. Use this when someone
+        asks which souls, characters or personas are available, wants you to
+        become one, or wants a new bot with one.
+
+        ## List
+
+        List the `*.md` files in `${soulTemplatesDir}/` and give each name with
+        a one-line summary from its first lines.
+
+        ## Become one
+
+        Copy the template over your own soul:
+
+            cp ${soulTemplatesDir}/<name>.md "$HERMES_HOME/SOUL.md"
+
+        The soul is read when a session starts, so it applies from the next
+        new chat. Tell the user to open one.
+
+        ## New bot with a soul
+
+        1. `hermes profile create <bot-name>`
+        2. `cp ${soulTemplatesDir}/<name>.md "$HERMES_HOME/profiles/<bot-name>/SOUL.md"`
+
+        The bot shows up in the webapp's bot list within about 30 seconds.
+      '';
+
       settingsFormat = pkgs.formats.yaml { };
 
       # hermes' managed scope (hermes_cli/managed_scope.py): these keys are
@@ -243,6 +286,7 @@
         services.hermes-agent = {
           enable = true;
           catalogPlugins = lib.mkIf (cfg.fastModel != null) [ "advanced-delegation" ];
+          skillDirs = [ "${soulTemplatesSkill}" ];
           addToSystemPackages = true;
 
           # upstream commits version 0.0.0 and only release jobs stamp the real
@@ -270,6 +314,8 @@
             pkgs.gh
             pkgs.gitMinimal
             pkgs.himalaya
+            # bitwarden logins for the agent's vault backend; hermes calls bw, rbw does not fit
+            pkgs.bitwarden-cli
           ];
 
           # skillDirs comes from the deployment's skill selection, so it wins
@@ -314,6 +360,7 @@
           "d ${stateDir}/lazy-deps 0750 hermes hermes - -"
           # opt out of seeding the bundled skill catalog; only hermes' essential skills get copied
           "f ${stateDir}/.hermes/.no-bundled-skills 0640 hermes hermes - -"
+          "L+ ${soulTemplatesDir} - - - - ${soulTemplates}"
         ]
         # the soul is only the starting identity: C copies it when SOUL.md is
         # missing, before hermes would seed its own, and never overwrites the
