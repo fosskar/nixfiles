@@ -228,15 +228,12 @@
                     enable = settings.signal.enable;
                     modules = [ self.modules.nixos.hermesSignal ];
                     # a numberless account is addressed by its account id; signal-cli
-                    # 0.14.10's event stream only matches the dashed lowercase form
-                    prompts = {
-                      signal-account = "Signal account of the agent: E.164 phone number, or account id as lowercase UUID with dashes";
-                      signal-allowed-users = "Signal senders allowed to talk to the agent: comma-separated E.164 numbers and UUIDs";
-                    };
-                    env = {
-                      SIGNAL_ACCOUNT = "signal-account";
-                      SIGNAL_ALLOWED_USERS = "signal-allowed-users";
-                    };
+                    # 0.14.10's event stream only matches the dashed lowercase form.
+                    # SIGNAL_ALLOWED_USERS stays unset here: the owner adds the
+                    # allowed senders in the webapp's messaging settings, where the
+                    # plugin exposes the field, so no sender numbers reach sops
+                    prompts.signal-account = "Signal account of the agent: E.164 phone number, or account id as lowercase UUID with dashes";
+                    env.SIGNAL_ACCOUNT = "signal-account";
                   };
 
                   buzz = {
