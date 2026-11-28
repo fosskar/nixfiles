@@ -116,6 +116,12 @@
 
               mnemosyne.enable = lib.mkEnableOption "mnemosyne, a local sqlite memory provider with vector recall";
 
+              userProfile = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+                description = "starting USER.md memory, e.g. the language to answer in; the agent may change it.";
+              };
+
               fastModel = lib.mkOption {
                 type = lib.types.nullOr (lib.types.attrsOf lib.types.str);
                 default = null;
@@ -389,7 +395,7 @@
                           {
                             services.hermes-agent = {
                               localProvider.enable = localProvider;
-                              inherit (settings) fastModel;
+                              inherit (settings) fastModel userProfile;
 
                               skillDirs =
                                 map (

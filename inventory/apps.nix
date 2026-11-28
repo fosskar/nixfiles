@@ -35,6 +35,9 @@
       roles.server.machines.nixbox.settings = {
         webapp.enable = true;
         providers.opencode_go.enable = true;
+        agentSettings.display.language = "de";
+        agentSettings.tts.piper.voice = "de_DE-thorsten-high";
+        userProfile = "Spricht Deutsch. Antworte immer auf Deutsch, auch wenn der Soul, ein Skill oder ein Tool-Ergebnis englisch ist.";
         agentSettings.model = {
           default = "mimo-v2.6-pro";
           provider = "opencode-go";
