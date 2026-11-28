@@ -174,6 +174,9 @@
         moa.presets.default.enabled = false;
         display.show_reasoning = false;
         display.message_reactions = true;
+        # nothing is fetched at runtime: the store is read-only, so hermes could
+        # never enable what it downloads (default plugins, left-core plugins)
+        security.allow_lazy_installs = false;
         # no metrics upload to nous, and the consent dialog cannot turn it on
         telemetry.shared_metrics = {
           enabled = false;
