@@ -74,7 +74,7 @@
         }) flake-self.llm.souls
       );
       soulTemplatesDir = "${stateDir}/.hermes/soul-templates";
-      soulTemplatesSkill = pkgs.writeTextDir "SKILL.md" ''
+      soulTemplatesSkill = pkgs.writeTextDir "soul-templates/SKILL.md" ''
         ---
         name: soul-templates
         description: List the soul templates (characters, personas, identities) this agent can take on, switch its own soul to one, or start a new bot with one.
@@ -255,7 +255,7 @@
         skillDirs = lib.mkOption {
           type = lib.types.listOf lib.types.str;
           default = [ ];
-          description = "directories handed to the agent as skills.external_dirs.";
+          description = "skill directories, linked into the agent's skills dir by their name.";
         };
 
         overrides = lib.mkOption {
@@ -286,7 +286,7 @@
         services.hermes-agent = {
           enable = true;
           catalogPlugins = lib.mkIf (cfg.fastModel != null) [ "advanced-delegation" ];
-          skillDirs = [ "${soulTemplatesSkill}" ];
+          skillDirs = [ "${soulTemplatesSkill}/soul-templates" ];
           addToSystemPackages = true;
 
           # upstream commits version 0.0.0 and only release jobs stamp the real
@@ -318,11 +318,7 @@
             pkgs.bitwarden-cli
           ];
 
-          # skillDirs comes from the deployment's skill selection, so it wins
-          # over overrides
-          managed.settings = lib.recursiveUpdate (lib.recursiveUpdate defaults cfg.overrides) (
-            lib.optionalAttrs (cfg.skillDirs != [ ]) { skills.external_dirs = cfg.skillDirs; }
-          );
+          managed.settings = lib.recursiveUpdate defaults cfg.overrides;
 
           managed.environment.SEARXNG_URL = "https://search.${flake-self.domains.local}/";
         };
@@ -362,9 +358,18 @@
           "f ${stateDir}/.hermes/.no-bundled-skills 0640 hermes hermes - -"
           "L+ ${soulTemplatesDir} - - - - ${soulTemplates}"
         ]
-        # the soul is only the starting identity: C copies it when SOUL.md is
-        # missing, before hermes would seed its own, and never overwrites the
-        # agent's edits. z makes the copy from the read-only store writable
+        # skills.external_dirs is read only from the agent's own config.yaml, never
+        # the managed one, so skills go into its skills dir as local skills
+        ++ map (
+          dir:
+          let
+            base = baseNameOf dir;
+            # a store path's basename carries its hash
+            unhashed = builtins.match "[0-9a-z]{32}-(.*)" base;
+            name = if unhashed == null then base else builtins.head unhashed;
+          in
+          "L+ ${stateDir}/.hermes/skills/${name} - - - - ${dir}"
+        ) cfg.skillDirs
         ++ lib.optionals (cfg.soul != null) [
           "C ${stateDir}/.hermes/SOUL.md - - - - ${cfg.soul}"
           "z ${stateDir}/.hermes/SOUL.md 0644 ${cfg.user} ${cfg.group} -"
