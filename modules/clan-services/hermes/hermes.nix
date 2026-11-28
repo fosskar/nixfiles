@@ -330,6 +330,8 @@
                             oauth.self_hosted = {
                               issuer = "https://auth.${self.domains.public}";
                               client_id = oidcClientId;
+                              # without a refresh token the session ends with the id token (1 h)
+                              scopes = "openid profile email offline_access";
                             };
                           };
                           systemd.services.hermes-agent.serviceConfig.EnvironmentFile =
@@ -427,6 +429,14 @@
                       ];
                     };
 
+                  # each refresh issues a new refresh token, so a week only ends an idle login,
+                  # as the authelia session does
+                  services.authelia.instances.main.settings.identity_providers.oidc.lifespans.custom.${oidcClientId} =
+                    lib.mkIf settings.webapp.enable
+                      {
+                        refresh_token = "1w";
+                      };
+
                   services.authelia.instances.main.settings.identity_providers.oidc.clients =
                     lib.mkIf settings.webapp.enable
                       [
@@ -441,11 +451,16 @@
                             "openid"
                             "profile"
                             "email"
+                            "offline_access"
                           ];
                           require_pkce = true;
                           pkce_challenge_method = "S256";
                           response_types = [ "code" ];
-                          grant_types = [ "authorization_code" ];
+                          grant_types = [
+                            "authorization_code"
+                            "refresh_token"
+                          ];
+                          lifespan = oidcClientId;
                           token_endpoint_auth_method = "none";
                         }
                       ];
