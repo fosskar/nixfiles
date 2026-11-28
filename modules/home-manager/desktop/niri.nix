@@ -166,15 +166,6 @@
         binds = {
           "Mod+Shift+Slash".show-hotkey-overlay = [ ];
 
-          "Mod+A" = {
-            spawn = [
-              "focus-or-spawn"
-              "Hermes"
-              "hermes-desktop-remote"
-            ];
-            _props.hotkey-overlay-title = "Open Hermes dashboard";
-          };
-
           # program launches
           "Mod+T".spawn = "ghostty";
           "Mod+D".spawn = [

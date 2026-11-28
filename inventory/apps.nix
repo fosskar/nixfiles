@@ -25,11 +25,8 @@
         packageSkills = [ "optional-skills/devops/watchers" ];
         telegram.enable = false;
       };
-      roles.client.tags = [ "workstation" ];
     };
 
-    # no client role: services.hermes-remote takes one url, the hermes instance
-    # owns it; add hermina as a second gateway in hermes desktop instead
     hermina = {
       module = {
         name = "hermes";

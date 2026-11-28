@@ -16,7 +16,7 @@
     {
 
       manifest.name = "hermes";
-      manifest.description = "Hermes agent server, its webapp, and desktop clients";
+      manifest.description = "Hermes agent server and its webapp";
       manifest.readme = builtins.readFile ./README.md;
       manifest.categories = [ "Utility" ];
 
@@ -530,44 +530,6 @@
                       '';
                   };
                 };
-              };
-          };
-      };
-
-      roles.client = {
-        description = "Install Hermes Desktop connected to the server's webapp";
-        perInstance =
-          {
-            instanceName,
-            roles,
-            ...
-          }:
-          {
-            nixosModule =
-              { lib, ... }:
-              let
-                serverNames = lib.attrNames (roles.server.machines or { });
-                server = if lib.length serverNames == 1 then lib.head serverNames else null;
-                webapp = server != null && roles.server.machines.${server}.settings.webapp.enable;
-              in
-              {
-                imports = [ self.modules.nixos.hermesRemote ];
-
-                services.hermes-remote = lib.mkIf webapp {
-                  enable = true;
-                  url = "https://${webappHost instanceName}";
-                };
-
-                assertions = [
-                  {
-                    assertion = server != null;
-                    message = "clan hermes client requires exactly one machine with the server role";
-                  }
-                  {
-                    assertion = webapp;
-                    message = "clan hermes client: instance ${instanceName} has webapp.enable = false on ${toString server}";
-                  }
-                ];
               };
           };
       };

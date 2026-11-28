@@ -17,7 +17,6 @@ inventory.instances.hermes = {
     homeAssistant.enable = true;
     mcp.allow = [ "calendar.*" ];          # requires self.modules.nixos.mcp on the server host
   };
-  roles.client.tags = [ "workstation" ];
 };
 ```
 
@@ -26,7 +25,7 @@ Each instance is one deployment. A second instance with different settings
 
 ## Overview
 
-`hermes` runs the Hermes agent sealed in a fencr sandbox on one server, serves its webapp, and installs Hermes Desktop on workstation clients. The service carries only mechanism; every deployment-specific fact (soul, model, channels, identity) is inventory settings. This homelab's agent policy (model, voice, search backend, plugins) is not a deployment fact and lives in `modules/nixos/services/hermes-agent/hermes-agent.nix`; `agentSettings` is merged over it.
+`hermes` runs the Hermes agent sealed in a fencr sandbox on one server, and serves its webapp. The service carries only mechanism; every deployment-specific fact (soul, model, channels, identity) is inventory settings. This homelab's agent policy (model, voice, search backend, plugins) is not a deployment fact and lives in `modules/nixos/services/hermes-agent/hermes-agent.nix`; `agentSettings` is merged over it.
 
 The server role:
 
@@ -36,5 +35,3 @@ The server role:
 - with `webapp.enable`: the gateway serves the webapp on the guest address, port 9120; fencr opens that port to the host; caddy serves `https://<instance>.<local domain>`; authelia registers the public pkce client `hermes-<instance>` with its own policy: two-factor, only members of the ldap group `<instance>`. create the group in lldap and add the agent's one person to it
 
 The instance name is also the VM name; it must be at most 11 chars so interface names fit IFNAMSIZ.
-
-The client role installs Hermes Desktop with `hermes-desktop-remote`, which seeds the app's first connection to the server's webapp with oauth sign-in. The service requires exactly one server role machine and `webapp.enable` on it.

@@ -149,7 +149,6 @@
             "Mod+Shift+Slash" = "cheatsheet-toggle";
 
             # program launches
-            "Mod+A" = noRepeat "spawn focus-or-spawn Hermes hermes-desktop-remote";
             "Mod+T" = noRepeat "spawn ghostty";
             "Mod+D" = noRepeat "spawn focus-or-spawn WebCord webcord";
             "Mod+Y" = noRepeat "spawn focus-or-spawn Element element-desktop";
