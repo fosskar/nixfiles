@@ -47,6 +47,7 @@
           "opencloud.*"
         ];
         homeAssistant.enable = true;
+        signal.enable = true;
         agentSettings.display.language = "de";
         agentSettings.tts.piper.voice = "de_DE-thorsten-high";
         agentSettings.model = {
