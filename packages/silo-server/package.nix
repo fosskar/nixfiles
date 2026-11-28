@@ -18,13 +18,13 @@
 let
   # upstream has no tags or releases yet
   version = "0-unstable-2026-11-27";
-  rev = "88db53ae5297255e6647c12c49b46425a051c041";
+  rev = "0a631fb9cba82de78c6461a6edcc9a2291957354";
 
   src = fetchFromGitHub {
     owner = "Silo-Server";
     repo = "silo-server";
     inherit rev;
-    hash = "sha256-2kRU3+oqCsLul7lH4PqcENc2XSq2p1CAQ/ONm/NiT9I=";
+    hash = "sha256-PxYf8iFwTSz8yvsJjQVy8v6cAxBlPQ6rTjV9DOS6rA8=";
   };
 
   frontend = stdenvNoCC.mkDerivation (finalAttrs: {
