@@ -10,12 +10,12 @@
         soul = "tars";
         webapp.enable = true;
         agentSettings.model = {
-          default = "glm-5.3";
+          default = "mimo-v2.6-pro";
           provider = "opencode-go";
         };
         fastModel = {
           provider = "opencode-go";
-          model = "glm-5.3-flash";
+          model = "mimo-v2.6-flash";
         };
         mnemosyne.enable = true;
         providers = {
@@ -39,12 +39,12 @@
         webapp.enable = true;
         providers.opencode_go.enable = true;
         agentSettings.model = {
-          default = "glm-5.3";
+          default = "mimo-v2.6-pro";
           provider = "opencode-go";
         };
         fastModel = {
           provider = "opencode-go";
-          model = "glm-5.3-flash";
+          model = "mimo-v2.6-flash";
         };
         telegram.enable = false;
       };
