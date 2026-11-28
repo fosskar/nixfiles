@@ -66,6 +66,24 @@
 
       catalogPlugins = map catalogPlugin cfg.catalogPlugins;
 
+      # cli tools that ship their own skill: the binary for the agent's PATH,
+      # the skill dir for its skills
+      system = pkgs.stdenv.hostPlatform.system;
+      toolSkills = [
+        {
+          package = inputs.pi-pack.packages.${system}.osm-cli;
+          skill = "${inputs.pi-pack}/skills/osm";
+        }
+        {
+          package = inputs.mics-skills.packages.${system}.db-cli;
+          skill = "${inputs.mics-skills.packages.${system}.db-cli}/share/skills/db-cli";
+        }
+        {
+          package = inputs.mics-skills.packages.${system}.weather-cli;
+          skill = "${inputs.mics-skills.packages.${system}.weather-cli}/share/skills/weather-cli";
+        }
+      ];
+
       # every soul in modules/llm/souls, for the agent to list and apply
       soulTemplates = pkgs.linkFarm "hermes-soul-templates" (
         lib.mapAttrsToList (name: path: {
@@ -286,7 +304,7 @@
         services.hermes-agent = {
           enable = true;
           catalogPlugins = lib.mkIf (cfg.fastModel != null) [ "advanced-delegation" ];
-          skillDirs = [ "${soulTemplatesSkill}/soul-templates" ];
+          skillDirs = [ "${soulTemplatesSkill}/soul-templates" ] ++ map (tool: tool.skill) toolSkills;
           addToSystemPackages = true;
 
           # upstream commits version 0.0.0 and only release jobs stamp the real
@@ -316,7 +334,8 @@
             pkgs.himalaya
             # bitwarden logins for the agent's vault backend; hermes calls bw, rbw does not fit
             pkgs.bitwarden-cli
-          ];
+          ]
+          ++ map (tool: tool.package) toolSkills;
 
           managed.settings = lib.recursiveUpdate defaults cfg.overrides;
 
