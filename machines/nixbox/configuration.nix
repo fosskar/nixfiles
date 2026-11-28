@@ -65,7 +65,7 @@
     };
   };
 
-  nixfiles.mcpCalendar.accounts = [
+  nixfiles.mcpOpencloud.accounts = [
     "simon"
     "hermina"
   ];
