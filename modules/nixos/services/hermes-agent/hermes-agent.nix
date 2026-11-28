@@ -82,7 +82,6 @@
 
       defaults = {
         timezone = "Europe/Berlin";
-        display.personality = "none";
         terminal.backend = "local";
         # local, in-process; the piper dependency group below ships piper-tts
         tts.provider = "piper";
@@ -201,7 +200,7 @@
         soul = lib.mkOption {
           type = lib.types.nullOr lib.types.path;
           default = null;
-          description = "SOUL.md to install read-only on every activation.";
+          description = "starting SOUL.md, copied only while the agent has none; the agent may change it afterwards.";
         };
 
         catalogPlugins = lib.mkOption {
@@ -286,20 +285,6 @@
         # config writes; managedDir pins only the declared keys. hermes update
         # stays refused by its own /nix/store check
 
-        # reinstalled on every activation: the soul is declarative, agent edits
-        # do not survive. writable, since creating a bot copies the profile and
-        # then writes the copy's SOUL.md
-        system.activationScripts.hermes-agent-soul = lib.mkIf (cfg.soul != null) (
-          lib.stringAfter [ "hermes-agent-setup" ] ''
-            ${pkgs.coreutils}/bin/install \
-              -o ${cfg.user} \
-              -g ${cfg.group} \
-              -m 0644 \
-              ${cfg.soul} \
-              ${stateDir}/.hermes/SOUL.md
-          ''
-        );
-
         # upstream's setup merges config.yaml as root and only chmods it, so a
         # fresh state dir leaves it root:root and the gateway cannot read it.
         # on first boot the user does not exist yet during activation; the
@@ -329,6 +314,15 @@
           "d ${stateDir}/lazy-deps 0750 hermes hermes - -"
           # opt out of seeding the bundled skill catalog; only hermes' essential skills get copied
           "f ${stateDir}/.hermes/.no-bundled-skills 0640 hermes hermes - -"
+        ]
+        # the soul is only the starting identity: C copies it when SOUL.md is
+        # missing, before hermes would seed its own, and never overwrites the
+        # agent's edits. z makes the copy from the read-only store writable
+        ++ lib.optionals (cfg.soul != null) [
+          "C ${stateDir}/.hermes/SOUL.md - - - - ${cfg.soul}"
+          "z ${stateDir}/.hermes/SOUL.md 0644 ${cfg.user} ${cfg.group} -"
+        ]
+        ++ [
           # webapp/desktop ui preferences, seeded once: simple interface mode.
           # f never overwrites, so later changes from the webapp stay
           "f ${stateDir}/.hermes/ui-preferences.json 0660 hermes hermes - ${

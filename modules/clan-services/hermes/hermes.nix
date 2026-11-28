@@ -39,7 +39,7 @@
               soul = lib.mkOption {
                 type = lib.types.nullOr lib.types.str;
                 default = null;
-                description = "key into flake.llm.souls, installed declaratively as SOUL.md.";
+                description = "key into flake.llm.souls, the starting SOUL.md; the agent may change it afterwards.";
               };
 
               agentSettings = lib.mkOption {
