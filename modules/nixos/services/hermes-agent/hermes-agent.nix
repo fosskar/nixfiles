@@ -382,6 +382,38 @@
           }"
         ];
 
+        # bw has no server setting outside its own state, and only accepts a
+        # new server while logged out; the login itself stays a one-time
+        # `bw login` in the agent's terminal
+        systemd.services.hermes-bitwarden-server =
+          let
+            server = "https://vault.${flake-self.domains.local}";
+          in
+          {
+            description = "point the bitwarden cli at vaultwarden";
+            wantedBy = [ "hermes-agent.service" ];
+            before = [ "hermes-agent.service" ];
+            path = [
+              pkgs.bitwarden-cli
+              pkgs.jq
+            ];
+            environment.HOME = stateDir;
+            serviceConfig = {
+              Type = "oneshot";
+              User = cfg.user;
+              Group = cfg.group;
+              RemainAfterExit = true;
+            };
+            script = ''
+              # a first run prints "creating it instead" lines before the json
+              status="$(bw status --nointeraction | tail -n 1)"
+              if [ "$(jq -r .status <<<"$status")" = unauthenticated ] \
+                && [ "$(jq -r .serverUrl <<<"$status")" != ${server} ]; then
+                bw config server ${server}
+              fi
+            '';
+          };
+
         systemd.services.hermes-venv = {
           description = "writable pip venv for the agent";
           wantedBy = [ "hermes-agent.service" ];
