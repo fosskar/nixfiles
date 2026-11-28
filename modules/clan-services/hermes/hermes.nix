@@ -227,12 +227,11 @@
                   signal = {
                     enable = settings.signal.enable;
                     modules = [ self.modules.nixos.hermesSignal ];
-                    # a numberless account is addressed by its account id; signal-cli
-                    # 0.14.10's event stream only matches the dashed lowercase form.
+                    # a numberless account is addressed by its account id.
                     # SIGNAL_ALLOWED_USERS stays unset here: the owner adds the
                     # allowed senders in the webapp's messaging settings, where the
                     # plugin exposes the field, so no sender numbers reach sops
-                    prompts.signal-account = "Signal account of the agent: E.164 phone number, or account id as lowercase UUID with dashes";
+                    prompts.signal-account = "Signal account of the agent: E.164 phone number, or the account id as the app shows it";
                     env.SIGNAL_ACCOUNT = "signal-account";
                   };
 
@@ -514,15 +513,38 @@
 
                     script =
                       let
-                        lines = lib.mapAttrsToList (variable: prompt: ''echo "${variable}=$(cat "$prompts/${prompt}")"'') (
-                          mergeAttrsOf "env"
-                        );
+                        envLine =
+                          variable: prompt:
+                          if variable == "SIGNAL_ACCOUNT" then
+                            ''account=$(signal_account "$prompts/${prompt}") || exit 1; echo "${variable}=$account"''
+                          else
+                            ''echo "${variable}=$(cat "$prompts/${prompt}")"'';
+                        lines = lib.mapAttrsToList envLine (mergeAttrsOf "env");
                         authorizations = map (
                           provider:
                           ''printf 'Bearer %s' "$(cat "$prompts/${provider}-api-key")" > "$out/${provider}-authorization"''
                         ) keyProviders;
                       in
                       ''
+                        # a phone number passes through. an account id becomes the
+                        # dashed lowercase uuid whatever way it was pasted: signal-cli
+                        # 0.14.10's event stream matches it exactly, and the app
+                        # shows it in upper case
+                        signal_account() {
+                          local account
+                          account=$(<"$1")
+                          account=''${account//[[:space:]]/}
+                          if [[ $account != +* ]]; then
+                            account=''${account//-/}
+                            account=''${account,,}
+                            if [[ ! $account =~ ^[0-9a-f]{32}$ ]]; then
+                              echo "signal account is neither an E.164 number nor a 32-digit account id" >&2
+                              return 1
+                            fi
+                            account=''${account:0:8}-''${account:8:4}-''${account:12:4}-''${account:16:4}-''${account:20:12}
+                          fi
+                          printf '%s' "$account"
+                        }
                         # never empty: clan opens the sops editor for an empty secret
                         {
                           echo "# hermes channel secrets"
