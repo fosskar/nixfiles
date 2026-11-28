@@ -71,10 +71,6 @@
       system = pkgs.stdenv.hostPlatform.system;
       toolSkills = [
         {
-          package = inputs.pi-pack.packages.${system}.osm-cli;
-          skill = "${inputs.pi-pack}/skills/osm";
-        }
-        {
           package = inputs.mics-skills.packages.${system}.db-cli;
           skill = "${inputs.mics-skills.packages.${system}.db-cli}/share/skills/db-cli";
         }
